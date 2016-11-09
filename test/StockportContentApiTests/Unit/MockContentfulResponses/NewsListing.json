@@ -1,0 +1,217 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 2,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "61e8eZtyUgA6muge0geWak",
+        "type": "Entry",
+        "createdAt": "2016-08-25T14:24:29.301Z",
+        "updatedAt": "2016-08-25T15:38:10.141Z",
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "news"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "This is the news",
+        "slug": "news-of-the-century",
+        "teaser": "Read more for the news",
+        "body": "The news",
+        "sunriseDate": "2016-08-25T00:00+11:30",
+        "sunsetDate": "2016-08-30T00:00+02:00",
+        "alerts": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "7n5AKBF6ViWaQG2SU4oWmu"
+            }
+          }
+        ],
+        "categories": [
+          "Another category"
+        ] 
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "uLgwqcDsY0OaYIQSICwUE",
+        "type": "Entry",
+        "createdAt": "2016-08-26T10:55:07.033Z",
+        "updatedAt": "2016-08-26T10:55:07.033Z",
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "news"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "Another news article",
+        "slug": "another-news-article",
+        "teaser": "This is another news article",
+        "image": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "2s47j1FmnCO48SE4uScgyu"
+          }
+        },
+        "thumbnailImage": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "70PwYhRUPYaKgymWKWOWKm"
+          }
+        },
+        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "sunriseDate": "2016-08-01T00:00+01:00",
+        "sunsetDate": "2017-01-31T00:00+01:00",
+        "alerts": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "7n5AKBF6ViWaQG2SU4oWmu"
+            }
+          }
+        ],
+        "tags": [ "Bramall Hall", "Events" ],
+        "categories": [
+          "A category"
+        ]
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "7n5AKBF6ViWaQG2SU4oWmu",
+          "type": "Entry",
+          "createdAt": "2016-07-19T13:03:18.923Z",
+          "updatedAt": "2016-09-22T09:59:21.581Z",
+          "revision": 3,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "alert"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "New alert",
+          "subHeading": "alert sub heading updated",
+          "body": "Alert body",
+          "severity": "Error",
+          "sunriseDate": "2016-07-01T00:00+01:00",
+          "sunsetDate": "2016-09-30T00:00+01:00"
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "2s47j1FmnCO48SE4uScgyu",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.169Z",
+          "updatedAt": "2016-06-13T15:33:33.543Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "",
+          "description": "",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 3547472,
+              "image": {
+                "width": 3508,
+                "height": 2480
+              }
+            },
+            "fileName": "-01.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "70PwYhRUPYaKgymWKWOWKm",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.166Z",
+          "updatedAt": "2016-06-13T15:33:33.544Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "",
+          "description": "",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 86064,
+              "image": {
+                "width": 768,
+                "height": 432
+              }
+            },
+            "fileName": "Alcohol ",
+            "contentType": "image/png"
+          }
+        }
+      }
+    ]
+  }
+}

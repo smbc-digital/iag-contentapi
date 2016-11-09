@@ -1,0 +1,227 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "6aqgTzYeC4YEEoamMOiOeu",
+        "type": "Entry",
+        "createdAt": "2016-07-14T16:15:15.336Z",
+        "updatedAt": "2016-08-03T09:47:55.687Z",
+        "revision": 12,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "homepage"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "featuredTopics": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6edPPmxkUEOWOiwQ8KSiYi"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "r0wXv8StDECgWMaeOeECE"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "3ixV8Jb1m8EU8WqW6cyeIE",
+          "type": "Entry",
+          "createdAt": "2016-07-14T16:38:01.050Z",
+          "updatedAt": "2016-07-19T16:04:28.874Z",
+          "revision": 3,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "article"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "article without summary/ body",
+          "slug": "article-without-summary-body",
+          "sections": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "43YotS0uPCGgQUwMi8wK6e"
+              }
+            }
+          ],
+          "teaser": "Teaser here"
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5InWqgzGdqEQKIaUOMgyQw",
+          "type": "Entry",
+          "createdAt": "2016-07-21T15:02:44.053Z",
+          "updatedAt": "2016-08-02T10:21:33.270Z",
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "article"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "Tell us about a change",
+          "slug": "tell-us-about-a-change",
+          "sections": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "5lSNMjbyNiomeScYsOOGO2"
+              }
+            },
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1w59JdWka4YWg4wukyiM6A"
+              }
+            }
+          ],
+          "teaser": "Notify us about your change of address or any other changes in your circumstances.",
+          "icon": "si-tickbox",
+          "breadcrumbs": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "6edPPmxkUEOWOiwQ8KSiYi"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "6edPPmxkUEOWOiwQ8KSiYi",
+          "type": "Entry",
+          "createdAt": "2016-07-08T10:54:36.015Z",
+          "updatedAt": "2016-08-01T13:42:30.588Z",
+          "revision": 4,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "topic"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "name": "Council Tax",
+          "slug": "council-tax",
+          "subItems": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "5InWqgzGdqEQKIaUOMgyQw"
+              }
+            }
+          ],
+          "icon": "si-house",
+          "teaser": "How to pay, discounts"
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "r0wXv8StDECgWMaeOeECE",
+          "type": "Entry",
+          "createdAt": "2016-07-08T10:56:12.630Z",
+          "updatedAt": "2016-08-03T09:47:18.486Z",
+          "revision": 3,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "topic"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "name": "Bins & Recycling",
+          "slug": "bins-and-recycling",
+          "subItems": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "3ixV8Jb1m8EU8WqW6cyeIE"
+              }
+            }
+          ],
+          "icon": "si-bin",
+          "teaser": "Collection days, bulky items"
+        }      
+      }
+    ]
+  }
+}

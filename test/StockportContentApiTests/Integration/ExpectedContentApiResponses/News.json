@@ -1,0 +1,38 @@
+﻿{
+  "title": "This is the news",
+  "slug": "news-of-the-century",
+  "teaser": "Read more for the news",
+  "image": "image.jpg",
+  "thumbnailImage": "image.jpg?h=250",
+  "body": "The news {{PDF:Stockport-Metroshuttle.pdf}} {{PDF:a-pdf.pdf}}",
+  "sunriseDate": "2016-07-10T00:00:00+01:00",
+  "sunsetDate": "2016-08-24T00:00:00+01:00",
+  "breadcrumbs": [
+    {
+      "title": "News",
+      "slug": "",
+      "type": "news"
+    }
+  ],
+  "tags": [ "Bramall Hall", "Events" ],
+  "alerts": [
+    {
+      "title": "New alert",
+      "subHeading": "alert sub heading updated",
+      "body": "Alert body",
+      "severity": "Error",
+      "sunriseDate": "2016-07-01T00:00:00+01:00",
+      "sunsetDate": "2016-09-30T00:00:00+01:00"
+    }
+  ],
+  "documents": [
+    {
+      "title": "metroshuttle route map",
+      "size": 674192,
+      "url": "document.pdf",
+      "lastUpdated": "2016-10-05T11:09:48",
+      "fileName": "Stockport-Metroshuttle.pdf"
+    }
+  ],
+  "categories": [ "Category 1", "Category 2" ]
+}

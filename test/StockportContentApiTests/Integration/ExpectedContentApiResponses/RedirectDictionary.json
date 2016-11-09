@@ -1,0 +1,9 @@
+﻿{
+  "unittest": {
+    "starturl.fake/this-is-another-article": "redirecturl.fake/another-article",
+    "starturl.fake/this-is-an-article/ghjgjk/gjyuy": "an article",
+    "starturl.fake/counciltax": "an-article",
+    "starturl.fake/bins": "redirecturl.fake/bins",
+    "starturl.fake/healthystockport": "redirecturl.fake"
+  }
+}

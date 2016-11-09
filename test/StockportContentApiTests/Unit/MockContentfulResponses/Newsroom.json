@@ -1,0 +1,83 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "3pcTJiPCNOAMqu6cS2Uem6",
+        "type": "Entry",
+        "createdAt": "2016-10-18T15:28:58.683Z",
+        "updatedAt": "2016-10-18T15:30:27.817Z",
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "newsroom"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "alerts": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "7n5AKBF6ViWaQG2SU4oWmu"
+            }
+          }
+        ],
+        "emailAlerts": true,
+        "emailAlertsTopicId": "test-id"  
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "7n5AKBF6ViWaQG2SU4oWmu",
+          "type": "Entry",
+          "createdAt": "2016-07-19T13:03:18.923Z",
+          "updatedAt": "2016-10-05T10:30:29.474Z",
+          "revision": 4,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "alert"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "New alert",
+          "subHeading": "alert sub heading updated",
+          "body": "Alert body",
+          "severity": "Error",
+          "sunriseDate": "2016-07-01T00:00+01:00",
+          "sunsetDate": "2017-11-23T00:00+01:00"
+        }
+      }
+    ]
+  }
+}

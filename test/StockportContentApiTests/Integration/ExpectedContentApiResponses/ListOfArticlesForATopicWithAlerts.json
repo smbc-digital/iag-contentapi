@@ -1,0 +1,54 @@
+﻿{
+  "slug": "slug",
+  "name": "Title",
+  "teaser": "Teaser content",
+  "summary": "Summary content",
+  "icon": "fa-book",
+  "backgroundImage": "image.jpg",
+  "subItems": [
+    {
+      "slug": "getting-support",
+      "title": "Getting Support",
+      "teaser": "Teaser",
+      "icon": "",
+      "type": "article",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "0001-01-01T00:00:00+00:00"
+    },
+    {
+      "slug": "drugs",
+      "title": "Drugs",
+      "teaser": "Teaser",
+      "icon": "fa-balance",
+      "type": "article",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "0001-01-01T00:00:00+00:00"
+    },
+    {
+      "slug": "alcohol",
+      "title": "Alcohol ",
+      "teaser": "Teaser",
+      "icon": "",
+      "type": "article",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "0001-01-01T00:00:00+00:00"
+    }
+  ],
+  "secondaryItems": [],
+  "tertiaryItems": [],
+  "breadcrumbs": [],
+  "alerts": [
+    {
+      "title": "Future Alert",
+      "subHeading": "Future Alert",
+      "body": "Future Alerrt",
+      "severity": "Warning",
+      "sunriseDate": "2016-07-01T00:00:00",
+      "sunsetDate": "2116-07-25T00:00:00"
+    }
+  ],
+  "sunriseDate": "0001-01-01T00:00:00+00:00",
+  "sunsetDate": "0001-01-01T00:00:00+00:00",
+  "emailAlerts": false,
+  "emailAlertsTopicId": ""
+}

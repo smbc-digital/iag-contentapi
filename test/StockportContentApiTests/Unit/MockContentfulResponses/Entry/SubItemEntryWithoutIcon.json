@@ -1,0 +1,40 @@
+﻿{
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "space"
+      }
+    },
+    "id": "5xa2HcOI5a4OEwyaamyykc",
+    "type": "Entry",
+    "createdAt": "2016-06-13T14:06:18.892Z",
+    "updatedAt": "2016-06-28T16:38:50.319Z",
+    "revision": 9,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "topic"
+      }
+    },
+    "locale": "en-GB"
+  },
+  "fields": {
+    "name": "Healthy Living",
+    "slug": "healthy-living",
+    "subItems": [
+      {
+        "sys": {
+          "type": "Link",
+          "linkType": "Entry",
+          "id": "7K4KLKy7FCaUkWgAasyqkg"
+        }
+      }
+    ],
+    "teaser": "teaser",
+    "summary": "summary"
+  }
+}
+

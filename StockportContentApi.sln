@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B46FDA30-5316-4A15-8913-70B57C08165C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3FAE3BA-B4A1-486F-B31F-62BC56016B06}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6FE0FA69-A40C-4B84-900C-E42D8FEF86D4}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "StockportContentApi", "src\StockportContentApi\StockportContentApi.xproj", "{AC60C145-4BA2-4D22-8057-69678F565C53}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "StockportContentApiTests", "test\StockportContentApiTests\StockportContentApiTests.xproj", "{275A2CF1-31C0-42DE-8303-059DEDCFF70B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC60C145-4BA2-4D22-8057-69678F565C53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC60C145-4BA2-4D22-8057-69678F565C53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC60C145-4BA2-4D22-8057-69678F565C53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC60C145-4BA2-4D22-8057-69678F565C53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{275A2CF1-31C0-42DE-8303-059DEDCFF70B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{275A2CF1-31C0-42DE-8303-059DEDCFF70B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{275A2CF1-31C0-42DE-8303-059DEDCFF70B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{275A2CF1-31C0-42DE-8303-059DEDCFF70B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AC60C145-4BA2-4D22-8057-69678F565C53} = {B46FDA30-5316-4A15-8913-70B57C08165C}
+		{275A2CF1-31C0-42DE-8303-059DEDCFF70B} = {6FE0FA69-A40C-4B84-900C-E42D8FEF86D4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,144 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "6aqgTzYeC4YEEoamMOiOeu",
+        "type": "Entry",
+        "createdAt": "2016-07-14T16:15:15.336Z",
+        "updatedAt": "2016-08-03T09:47:55.687Z",
+        "revision": 12,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "homepage"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "featuredTopics": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6kJyyXiNu8u8cAg44Q8Ckm"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6kJyyXiNu8u8cAg44Q8Ckn"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "6kJyyXiNu8u8cAg44Q8Ckm",
+          "type": "Entry",
+          "createdAt": "2016-07-18T09:35:42.516Z",
+          "updatedAt": "2016-09-20T15:50:06.431Z",
+          "revision": 36,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "topic"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "name": "Main Topic",
+          "slug": "main-topic",
+          "teaser": "This is the main topic",
+          "icon": "si-car",
+          "subItems": [],
+          "secondaryItems": [],
+          "tertiaryItems": [],
+          "breadcrumbs": [],
+          "alerts": [],
+          "displayOnAZ": true,
+          "alternativeTitles": [
+            "Another Topic",
+            "Topic: Awesome",
+            "Main Topic is good",
+            "Great Topic"
+          ],
+          "sunriseDate": "2016-01-01T00:00:00+00:00",
+          "sunsetDate": "2017-01-01T00:00:00+00:00"
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "6kJyyXiNu8u8cAg44Q8Ckn",
+          "type": "Entry",
+          "createdAt": "2016-07-18T09:35:42.516Z",
+          "updatedAt": "2016-09-20T15:50:06.431Z",
+          "revision": 36,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "topic"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "name": "Main Topic",
+          "slug": "main-topic",
+          "teaser": "This is the main topic",
+          "icon": "si-car",
+          "subItems": [],
+          "secondaryItems": [],
+          "tertiaryItems": [],
+          "breadcrumbs": [],
+          "alerts": [],
+          "displayOnAZ": true,
+          "alternativeTitles": [
+            "Another Topic",
+            "Topic: Awesome",
+            "Main Topic is good",
+            "Great Topic"
+          ],
+          "sunriseDate": "0001-01-01T00:00:00+00:00",
+          "sunsetDate": "0001-01-01T00:00:00+00:00"
+        }
+      }
+    ] 
+  }
+}

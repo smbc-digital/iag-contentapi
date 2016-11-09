@@ -1,0 +1,14 @@
+﻿[
+  {
+    "title": "C Letter Article",
+    "slug": "c-letter-article",
+    "teaser": "A C letter article",
+    "type": "article"
+  },
+  {
+    "title": "C Letter Topic",
+    "slug": "d-letter-topic",
+    "teaser": "This is a d letter topic",
+    "type": "topic"
+  }
+]

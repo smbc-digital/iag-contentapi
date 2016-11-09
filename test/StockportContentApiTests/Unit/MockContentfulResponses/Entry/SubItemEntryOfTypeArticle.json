@@ -1,0 +1,49 @@
+﻿{
+ "sys": {
+   "space": {
+     "sys": {
+       "type": "Link",
+       "linkType": "Space",
+       "id": "space"
+     }
+   },
+   "id": "2b0b07zVwsIwAyigwsi46c",
+   "type": "Entry",
+   "createdAt": "2016-06-13T16:09:24.396Z",
+   "updatedAt": "2016-06-15T13:01:50.749Z",
+   "revision": 2,
+   "contentType": {
+     "sys": {
+       "type": "Link",
+       "linkType": "ContentType",
+       "id": "article"
+     }
+   },
+   "locale": "en-GB"
+ },
+ "fields": {
+   "title": "Test Video",
+   "slug": "test",
+   "sections": [
+     {
+       "sys": {
+         "type": "Link",
+         "linkType": "Entry",
+         "id": "7bAtGnW4lUWW4qY2EAc6WW"
+       }
+     }
+   ],
+
+   "teaser": "Article Teaser",
+   "body": "Article summary",
+   "topics": [
+     {
+       "sys": {
+         "type": "Link",
+         "linkType": "Entry",
+         "id": "7K4KLKy7FCaUkWgAasyqkg"
+       }
+     }
+   ]
+ }
+}

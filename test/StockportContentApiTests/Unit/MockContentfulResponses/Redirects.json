@@ -1,0 +1,43 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "4sqf0hZLLyiKQOQ6GM4eYC",
+        "type": "Entry",
+        "createdAt": "2016-09-14T13:43:34.733Z",
+        "updatedAt": "2016-09-14T15:37:46.634Z",
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "redirect"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "redirects": {
+          "starturl.fake/this-is-another-article": "redirecturl.fake/another-article",
+          "starturl.fake/this-is-an-article/ghjgjk/gjyuy": "an article",
+          "starturl.fake/counciltax": "an-article",
+          "starturl.fake/bins": "redirecturl.fake/bins",
+          "starturl.fake/healthystockport": "redirecturl.fake"
+        }
+      }
+    }
+  ]
+}

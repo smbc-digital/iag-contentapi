@@ -1,0 +1,17 @@
+﻿{
+  "reference": {
+    "sys": {
+      "id": "1"
+    }
+  },
+  "includes": [
+    {
+      "sys": {
+        "id": "1"
+      },
+      "fields": {
+        "name": "name"
+      } 
+    }
+  ]
+}

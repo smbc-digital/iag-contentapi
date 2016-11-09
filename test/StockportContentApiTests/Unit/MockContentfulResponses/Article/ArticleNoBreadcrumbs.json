@@ -1,0 +1,87 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "6faQwHZVBKsMkUkeW08YMG",
+        "type": "Entry",
+        "createdAt": "2016-09-21T14:44:47.149Z",
+        "updatedAt": "2016-09-21T15:07:46.236Z",
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "article"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "Unit Test Article",
+        "slug": "unit-test-article",
+        "teaser": "An article made for unit testing",
+        "body": "An article made for unit testing body text",
+        "icon": "icon",
+        "sunriseDate": "2015-12-31T23:00:00+00:00",
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "backgroundImage": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "5nghPGu9uowomaQCywW2Ue"
+          }
+        }
+      }
+    }
+  ],
+  "includes": {
+    "Asset": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5nghPGu9uowomaQCywW2Ue",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.169Z",
+          "updatedAt": "2016-06-13T15:33:33.558Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "runners",
+          "description": "Runners",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 426261,
+              "image": {
+                "width": 1920,
+                "height": 1280
+              }
+            },
+            "fileName": "runners.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    ]
+  }
+}

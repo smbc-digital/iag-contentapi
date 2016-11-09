@@ -1,0 +1,85 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "6HAVv6Gio8Euu4gYkGe6MS",
+        "type": "Entry",
+        "createdAt": "2016-09-06T09:31:30.731Z",
+        "updatedAt": "2016-09-08T10:28:23.016Z",
+        "revision": 5,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "carouselContent"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "Red Rock is opening this Autumn",
+        "slug": "red-rock-opening",
+        "teaser": "The long awaited cinema complex is due to open late Oct 2016. Come and take a look.",
+        "image": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "4ow0ux7Pk4WMssOcM4Iiia"
+          }
+        },
+        "sunriseDate": "2016-09-01T00:00+01:00",
+        "sunsetDate": "2016-09-29T00:00+01:00",
+        "url": "http://fake.url"
+      }
+    }
+  ],
+  "includes": {
+    "Asset": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "4ow0ux7Pk4WMssOcM4Iiia",
+          "type": "Asset",
+          "createdAt": "2016-08-25T08:25:30.826Z",
+          "updatedAt": "2016-09-06T15:42:10.519Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "image",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 458718,
+              "image": {
+                "width": 1680,
+                "height": 820
+              }
+            },
+            "fileName": "image.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    ]
+  }
+}

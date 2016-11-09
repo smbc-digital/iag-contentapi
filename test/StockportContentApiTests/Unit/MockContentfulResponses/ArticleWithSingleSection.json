@@ -1,0 +1,85 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "6b2s76CHksu2wISGs6YE4Q",
+        "type": "Entry",
+        "createdAt": "2016-06-27T15:35:57.778Z",
+        "updatedAt": "2016-06-27T15:35:57.778Z",
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "article"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "Test",
+        "slug": "test",
+        "sections": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "4uO1gssVBYKYICyyK2gGIe"
+            }
+          }
+        ],
+        "sunriseDate": "2015-12-31T23:00:00+00:00",
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "teaser": "this is a test teaser",
+        "body": "Really fun content about test data",
+        "icon": "fa-test"
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "4uO1gssVBYKYICyyK2gGIe",
+          "type": "Entry",
+          "createdAt": "2016-06-13T14:06:16.810Z",
+          "updatedAt": "2016-06-13T14:06:16.810Z",
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "section"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "Overview ",
+          "slug": "alcohol-overview",
+          "body": "It’s not always easy to recognise when moderate, social drinking or lower risk drinking crosses the line to problem drinking."
+        }
+      }
+    ]
+  }
+}

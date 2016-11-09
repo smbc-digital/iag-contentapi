@@ -1,0 +1,45 @@
+﻿{
+    "sys": {
+        "type": "Array"
+    },
+    "total": 1,
+    "skip": 0,
+    "limit": 100,
+    "items": [
+        {
+            "sys": {
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "space"
+                    }
+                },
+                "id": "2b0b07zVwsIwAyigwsi46c",
+                "type": "Entry",
+                "createdAt": "2016-06-13T16:09:24.396Z",
+                "updatedAt": "2016-06-15T13:01:50.749Z",
+                "revision": 2,
+                "contentType": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "article"
+                    }
+                },
+                "locale": "en-GB"
+            },
+            "fields": {
+                "title": "title",
+                "slug": "slug",
+                "sections": [],
+                "teaser": "teaser",
+                "body": "body",
+              "backgroundImage": null              
+            }
+        }
+    ],
+    "includes": {
+        "Entry": []
+    }
+}

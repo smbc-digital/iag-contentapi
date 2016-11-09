@@ -1,0 +1,24 @@
+﻿{
+  "type": "Success Story",
+  "title": "Test Profile",
+  "slug": "test-profile",
+  "subtitle": "Test sub title",
+  "teaser": null,
+  "image": null,
+  "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "icon": "fa-meh-o",
+  "backgroundImage":
+    "image.jpg",
+  "breadcrumbs": [
+    {
+      "title": "Test sub topic 1",
+      "slug": "test-sub-topic-1",
+      "type": "topic"
+    },
+    {
+      "title": "Test Video",
+      "slug": "test-video",
+      "type": "section"
+    }
+  ]
+}
