@@ -46,7 +46,8 @@
           }
         ],
         "categories": [
-          "Another category"
+          "Another category",
+          "A category"
         ] 
       }
     },

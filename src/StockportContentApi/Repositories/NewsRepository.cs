@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -41,20 +42,22 @@ namespace StockportContentApi.Repositories
                 newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
             }
 
-            var newsContentfulResponse = await _contentfulClient.Get(UrlForNewsWithFilters("news", ReferenceLevelLimit, tag, category));
+            var newsContentfulResponse = await _contentfulClient.Get(UrlForNewsWithFilters("news", ReferenceLevelLimit, tag));
 
             if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
+            List<string> categories;
+
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .Cast<News>()
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
+                .GetTheCategories(out categories)
+                .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
+         
             newsroom.SetNews(newsArticles);
-
-            var categories = new List<string>();
-            newsArticles.ForEach(news => categories.AddRange(news.Categories));
             newsroom.SetCategories(categories.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
@@ -83,11 +86,10 @@ namespace StockportContentApi.Repositories
             var contentfulResponse = await _contentfulClient.Get(url);
 
             if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
-            
             var newsArticles = contentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, contentfulResponse))
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .Cast<News>()
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .Take(limit)
                 .ToList();
@@ -96,7 +98,6 @@ namespace StockportContentApi.Repositories
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No news found")
                 : HttpResponse.Successful(newsArticles);
         }
-
 
         private string UrlForNews(string type, int referenceLevel)
         {
@@ -108,13 +109,12 @@ namespace StockportContentApi.Repositories
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
         }
 
-        private string UrlForNewsWithFilters(string type, int referenceLevel, string tag, string category)
+        private string UrlForNewsWithFilters(string type, int referenceLevel, string tag)
         {
             var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
 
             var querys = "";
             querys += !string.IsNullOrWhiteSpace(tag) ? CreateQueryParameter("fields.tags[in]", tag) : string.Empty;
-            querys += !string.IsNullOrWhiteSpace(category) ? CreateQueryParameter("fields.categories[in]", category) : string.Empty;
 
             var url = string.Concat(baseUrl, querys);
             return url;
@@ -128,6 +128,19 @@ namespace StockportContentApi.Repositories
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+        }
+    }
+
+    public static class NewsExtensions
+    {
+        public static IEnumerable<News> GetTheCategories(this IEnumerable<News> news, out List<string> categories)
+        {
+            var categoriesList = new List<string>();
+
+            news.ToList().ForEach(n => categoriesList.AddRange(n.Categories));
+
+            categories = categoriesList;
+            return news;
         }
     }
 }

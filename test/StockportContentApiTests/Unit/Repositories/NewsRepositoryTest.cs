@@ -246,13 +246,13 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.categories[in]=A category"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
 
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "A category"));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1"));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -271,13 +271,13 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events&fields.categories[in]=A category"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
 
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "A category"));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1"));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
