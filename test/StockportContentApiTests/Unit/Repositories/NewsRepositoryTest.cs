@@ -84,6 +84,10 @@ namespace StockportContentApiTests.Unit.Repositories
             newsroom.Categories.Count.Should().Be(2);
             newsroom.Categories[0].Should().Be("news-category-1");
             newsroom.Categories[1].Should().Be("news-category-2");
+            newsroom.Dates.Should().HaveCount(1);
+            newsroom.Dates[0].Should().HaveMonth(8);
+            newsroom.Dates[0].Should().HaveYear(2016);
+
 
             newsroom.News.Count.Should().Be(2);
             var firstNews = newsroom.News.First();
@@ -132,6 +136,9 @@ namespace StockportContentApiTests.Unit.Repositories
             newsroom.News.First().ThumbnailImage.Should().Be(ThumbnailImage);
             newsroom.News.First().Breadcrumbs.Should().BeEquivalentTo(_crumbs);
             newsroom.News.First().Alerts.Should().BeEquivalentTo(_alerts);
+            newsroom.Dates.Should().HaveCount(1);
+            newsroom.Dates[0].Should().HaveMonth(8);
+            newsroom.Dates[0].Should().HaveYear(2016);
         }
 
         [Fact]

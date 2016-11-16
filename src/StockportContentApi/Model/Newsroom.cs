@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Model
 {
@@ -9,6 +10,7 @@ namespace StockportContentApi.Model
         public readonly string EmailAlertsTopicId;
         public List<News> News { get; private set; }
         public List<string> Categories { get; private set; }
+        public List<DateTime> Dates { get; private set; }
 
         public Newsroom(List<Alert> alerts, bool emailAlerts, string emailAlertsTopicId)
         {
@@ -25,6 +27,11 @@ namespace StockportContentApi.Model
         public void SetCategories(List<string> categories)
         {
             Categories = categories;
+        }
+
+        public void SetDates(List<DateTime> dates)
+        {
+            Dates = dates;
         }
     }
 }

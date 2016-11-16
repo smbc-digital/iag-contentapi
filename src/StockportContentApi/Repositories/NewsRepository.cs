@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +8,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
@@ -47,18 +47,21 @@ namespace StockportContentApi.Repositories
             if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
             List<string> categories;
+            List<DateTime> dates;
 
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
                 .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .GetTheCategories(out categories)
+                .GetNewsDates(out dates)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
          
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories.Distinct().ToList());
+            newsroom.SetDates(dates.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
         }
@@ -128,19 +131,6 @@ namespace StockportContentApi.Repositories
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
-    }
-
-    public static class NewsExtensions
-    {
-        public static IEnumerable<News> GetTheCategories(this IEnumerable<News> news, out List<string> categories)
-        {
-            var categoriesList = new List<string>();
-
-            news.ToList().ForEach(n => categoriesList.AddRange(n.Categories));
-
-            categories = categoriesList;
-            return news;
         }
     }
 }
