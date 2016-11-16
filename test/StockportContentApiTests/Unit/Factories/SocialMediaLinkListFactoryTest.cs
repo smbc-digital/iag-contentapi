@@ -19,7 +19,7 @@ namespace StockportContentApiTests.Unit.Factories
         public SocialMediaLinkListFactoryTest()
         {
             _factory = new SocialMediaLinkListFactory(new SocialMediaLinkFactory());
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/SocialMediaLinks.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/FooterSocialMediaLinks.json"));
             _contentfulResponse = new ContentfulResponse(mockContentfulData);
         }
 

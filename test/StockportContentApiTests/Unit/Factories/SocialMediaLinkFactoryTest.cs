@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsSocialMediaLink()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/SocialMediaLinks.json"));   
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/FooterSocialMediaLinks.json"));   
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
             
             var footer = (SocialMediaLink) _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
