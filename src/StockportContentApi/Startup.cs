@@ -74,6 +74,8 @@ namespace StockportContentApi
                 p => { return x => new StartPageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<StartPage>>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
                 p => { return x => new TopicRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Topic>>()); });
+            services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
+                p => { return x => new FooterRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(), p.GetService<ITimeProvider>(), p.GetService<IVideoRepository>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
@@ -96,6 +98,8 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();
             services.AddSingleton<IFactory<StartPage>, StartPageFactory>();
             services.AddSingleton<IFactory<SubItem>, SubItemFactory>();
+            services.AddSingleton<IFactory<Footer>, FooterFactory>();
+            services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
             services.AddSingleton<IFactory<RedirectDictionary>, RedirectsFactory>();
 
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
@@ -106,6 +110,7 @@ namespace StockportContentApi
             services.AddSingleton<IBuildContentTypesFromReferences<Section>, SectionListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Profile>, ProfileListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Document>, DocumentListFactory>();
+            services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

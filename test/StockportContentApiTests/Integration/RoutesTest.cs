@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
@@ -36,7 +37,9 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(contentfulUrlForCategory("news", 1, "A category")).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
                 fakeHttpClient.For(contentfulUrlFor("article", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));             
                 fakeHttpClient.For(contentfulUrlFor("topic", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
-                fakeHttpClient.For("https://test-host.com/spaces/XX/entries?access_token=XX&content_type=redirect").Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));             
+                fakeHttpClient.For("https://test-host.com/spaces/XX/entries?access_token=XX&content_type=redirect").Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
+                fakeHttpClient.For(contentfulUrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
+
             });   
         }
        
@@ -54,6 +57,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("AtoZTopic", "/api/unittest/atoz/b")]
         [InlineData("AtoZArticleAndTopic", "/api/unittest/atoz/c")]
         [InlineData("RedirectDictionary", "/api/redirects")]
+        [InlineData("Footer", "/api/unittest/footer")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
