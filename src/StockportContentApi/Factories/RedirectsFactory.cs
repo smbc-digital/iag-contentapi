@@ -5,16 +5,19 @@ using System.Linq;
 
 namespace StockportContentApi.Factories
 {
-    public class RedirectsFactory : IFactory<RedirectDictionary>
+    public class RedirectsFactory : IFactory<BusinessIdToRedirects>
     {
-        public RedirectDictionary Build(dynamic entry, IContentfulIncludes contentfulResponse)
+        public BusinessIdToRedirects Build(dynamic entry, IContentfulIncludes contentfulResponse)
         {
-            if (entry == null || entry.fields == null) return new NullRedirectDictionary();
+            if (entry == null || entry.fields == null) return new NullBusinessIdToRedirects();;
 
-            var redirectDynamic = (IEnumerable<KeyValuePair<string, JToken>>)entry.fields.redirects;
-            var newDict = redirectDynamic.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+            var shortUrlRedirectDynamic = (IEnumerable<KeyValuePair<string, JToken>>)entry.fields.redirects;
+            var shortUrlRedirectDictionary = shortUrlRedirectDynamic.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
 
-            return new RedirectDictionary(newDict);
+            var legacyUrlRedirectDynamic = (IEnumerable<KeyValuePair<string, JToken>>)entry.fields.legacyUrls;
+            var legacyUrlRedirectDictionary = legacyUrlRedirectDynamic.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+
+            return new BusinessIdToRedirects(shortUrlRedirectDictionary, legacyUrlRedirectDictionary);
         }
     }
 }

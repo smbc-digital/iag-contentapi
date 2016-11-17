@@ -31,11 +31,11 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ItGetsListOfRedirectsBack()
         {
-            var mockRedirectBuilder = new Mock<IFactory<RedirectDictionary>>();
+            var mockRedirectBuilder = new Mock<IFactory<BusinessIdToRedirects>>();
 
             mockRedirectBuilder.Setup(
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new RedirectDictionary());
+                .Returns(new BusinessIdToRedirects(new Dictionary<string, string> {{"a-url", "another-url"}}, new Dictionary<string, string>() { { "some-url", "some-other-url" }}));
 
             var httpClient = new Mock<IHttpClient>();
             httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=redirect"))
@@ -45,20 +45,28 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var response = AsyncTestHelper.Resolve(repository.GetRedirects());
 
-            var redirects = response.Get<Dictionary<string, RedirectDictionary>>();
-            redirects.Count.Should().Be(1);
-            redirects.Keys.First().Should().Be("unittest");
+            var redirects = response.Get<Redirects>();
+
+            var shortUrls = redirects.ShortUrlRedirects;
+            shortUrls.Count.Should().Be(1);
+            shortUrls.Keys.First().Should().Be("unittest");
+            shortUrls["unittest"].ContainsKey("a-url").Should().BeTrue();
+            var legacyUrls = redirects.LegacyUrlRedirects;
+            legacyUrls.Count.Should().Be(1);
+            legacyUrls.Keys.First().Should().Be("unittest");
+            legacyUrls["unittest"].ContainsKey("some-url").Should().BeTrue();
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
         public void ItGetsAnEmptyListForBusinessIdIfNoRedirectsFound()
         {
-            var mockRedirectBuilder = new Mock<IFactory<RedirectDictionary>>();
+            var mockRedirectBuilder = new Mock<IFactory<BusinessIdToRedirects>>();
 
             mockRedirectBuilder.Setup(
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new RedirectDictionary());
+                .Returns(new BusinessIdToRedirects(new Dictionary<string, string>(), new Dictionary<string, string>()));
 
             var httpClient = new Mock<IHttpClient>();
             httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=redirect"))
@@ -68,17 +76,26 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var response = AsyncTestHelper.Resolve(repository.GetRedirects());
 
+            var redirects = response.Get<Redirects>();
+
+            var shortUrls = redirects.ShortUrlRedirects;
+            shortUrls.Count.Should().Be(1);
+            shortUrls["unittest"].Count.Should().Be(0);
+            var legacyUrls = redirects.LegacyUrlRedirects;
+            legacyUrls.Count.Should().Be(1);
+            legacyUrls["unittest"].Count.Should().Be(0);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+
         }
 
         [Fact]
         public void ItGets404BackForRedirects()
         {
-            var mockRedirectBuilder = new Mock<IFactory<RedirectDictionary>>();
+            var mockRedirectBuilder = new Mock<IFactory<BusinessIdToRedirects>>();
 
             mockRedirectBuilder.Setup(
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new RedirectDictionary());
+                .Returns(new BusinessIdToRedirects(new Dictionary<string, string>(), new Dictionary<string, string>()));
 
             var httpClient = new Mock<IHttpClient>();
             httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=redirect"))

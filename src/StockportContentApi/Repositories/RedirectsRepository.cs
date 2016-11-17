@@ -14,11 +14,11 @@ namespace StockportContentApi.Repositories
     {
         private readonly ContentfulClient _contentfulClient;
         private const string ContentType = "redirect";
-        private readonly IFactory<RedirectDictionary> _factory;
+        private readonly IFactory<BusinessIdToRedirects> _factory;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly RedirectBusinessIds _redirectBusinessIds;
 
-        public RedirectsRepository(IHttpClient httpClient, IFactory<RedirectDictionary> factory, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds)
+        public RedirectsRepository(IHttpClient httpClient, IFactory<BusinessIdToRedirects> factory, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _factory = factory;
@@ -28,7 +28,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetRedirects()
         {
-            var redirectPerBusinessId = new Dictionary<string, RedirectDictionary>();
+            var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
 
             foreach (var businessId in _redirectBusinessIds.BusinessIds)
             {
@@ -37,15 +37,29 @@ namespace StockportContentApi.Repositories
 
             return !redirectPerBusinessId.Any() 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found") 
-                : HttpResponse.Successful(redirectPerBusinessId);
+                : HttpResponse.Successful(GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId));
         }
 
-        private async Task<RedirectDictionary> GetRedirectForBusinessId(string businessId)
+        private Redirects GetRedirectsFromBusinessIdToRedirectsDictionary(Dictionary<string, BusinessIdToRedirects> redirects)
+        {
+            var shortUrlRedirects = new Dictionary<string, RedirectDictionary>();
+            var legacyUrlRedirects = new Dictionary<string, RedirectDictionary>();
+
+            foreach (var businessId in redirects.Keys)
+            {
+                shortUrlRedirects.Add(businessId, redirects[businessId].ShortUrlRedirects);
+                legacyUrlRedirects.Add(businessId, redirects[businessId].LegacyUrlRedirects);
+            }
+
+            return new Redirects(shortUrlRedirects, legacyUrlRedirects);
+        } 
+
+        private async Task<BusinessIdToRedirects> GetRedirectForBusinessId(string businessId)
         {
             var contentfulResponse = await _contentfulClient.Get(UrlFor(ContentType, businessId));
 
             return !contentfulResponse.HasItems() 
-                ? new RedirectDictionary() 
+                ? new NullBusinessIdToRedirects() 
                 : _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
         }
 

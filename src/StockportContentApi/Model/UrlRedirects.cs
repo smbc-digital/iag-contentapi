@@ -7,7 +7,4 @@ namespace StockportContentApi.Model
         public RedirectDictionary() { }
         public RedirectDictionary(IDictionary<string, string> dict) : base(dict) { }
     }
-
-    public class NullRedirectDictionary : RedirectDictionary
-    { }
 }

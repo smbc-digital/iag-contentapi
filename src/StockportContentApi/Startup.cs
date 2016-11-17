@@ -100,7 +100,7 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<SubItem>, SubItemFactory>();
             services.AddSingleton<IFactory<Footer>, FooterFactory>();
             services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
-            services.AddSingleton<IFactory<RedirectDictionary>, RedirectsFactory>();
+            services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
 
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();

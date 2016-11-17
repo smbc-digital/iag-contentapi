@@ -36,6 +36,10 @@
           "starturl.fake/counciltax": "an-article",
           "starturl.fake/bins": "redirecturl.fake/bins",
           "starturl.fake/healthystockport": "redirecturl.fake"
+        },
+        "legacyUrls": {
+          "a-url": "another-url",
+          "start-url": "end-url"
         }
       }
     }
