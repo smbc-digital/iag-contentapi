@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Unit.Extensions
 
             var dates = new List<DateTime>();
 
-            var result = NewsExtensions.GetNewsDates(news, out dates);
+            var result = news.GetNewsDates(out dates);
 
             dates.Should().HaveCount(1);
             dates[0].Month.Should().Be(2);
@@ -66,9 +66,9 @@ namespace StockportContentApiTests.Unit.Extensions
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
             };
 
-            var categories = new List<string>();
+            List<string> categories;
 
-            var result = NewsExtensions.GetTheCategories(news, out categories);
+            var result = news.GetTheCategories(out categories);
 
             categories.Should().HaveCount(2);
             categories[0].Should().Be("test");

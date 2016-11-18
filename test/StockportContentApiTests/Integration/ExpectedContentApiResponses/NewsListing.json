@@ -19,7 +19,7 @@
       "image": "image.jpg",
       "thumbnailImage": "image.jpg?h=250",
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "sunriseDate": "2016-08-01T00:00:00+01:00",
+      "sunriseDate": "2016-08-01T00:00:00+00:00",
       "sunsetDate": "2017-01-30T23:00:00+00:00",
       "breadcrumbs": [
         {
@@ -42,13 +42,13 @@
       "documents": [],
       "categories": [
         "A category"
-      ] 
+      ]
     }
   ],
   "categories": [
     "A category"
   ],
   "dates": [
-    "2016-08-01T00:00:00+01:00"
+    "2016-08-01T00:00:00"
   ]
 }

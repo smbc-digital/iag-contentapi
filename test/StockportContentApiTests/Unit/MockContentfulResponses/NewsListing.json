@@ -93,7 +93,7 @@
           }
         },
         "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        "sunriseDate": "2016-08-01T00:00+01:00",
+        "sunriseDate": "2016-08-01T00:00+00:00",
         "sunsetDate": "2017-01-31T00:00+01:00",
         "alerts": [
           {
