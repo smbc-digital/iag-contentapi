@@ -32,8 +32,10 @@ namespace StockportContentApi.Repositories
             _sunriseSunsetDates = new SunriseSunsetDates(timeProvider);
         }
 
-        public async Task<HttpResponse> Get(string tag, string category)
+        public async Task<HttpResponse> Get(string tag, string category, string start, string end)
         {
+            var startDate = StringToDateTime(start);
+            var endDate = StringToDateTime(end);
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
             var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
 
@@ -56,6 +58,7 @@ namespace StockportContentApi.Repositories
                 .GetTheCategories(out categories)
                 .GetNewsDates(out dates)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
+                .Where(news => (news.SunriseDate >= startDate && news.SunriseDate < endDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
          
@@ -131,6 +134,15 @@ namespace StockportContentApi.Repositories
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+        }
+
+        private DateTime StringToDateTime(string date)
+        {
+            DateTime newDate;
+            if(DateTime.TryParse(date, out newDate))
+                return newDate;
+            return DateTime.MinValue;
+
         }
     }
 }

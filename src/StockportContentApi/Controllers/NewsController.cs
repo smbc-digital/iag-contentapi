@@ -22,12 +22,17 @@ namespace StockportContentApi.Controllers
         }
         
         [Route("/api/{businessId}/news")]
-        public async Task<IActionResult> Index(string businessId, [FromQuery] string tag = null, [FromQuery] string category = null)
+        public async Task<IActionResult> Index(string businessId, 
+                                            [FromQuery] string tag = null, 
+                                            [FromQuery] string category = null,
+                                            [FromQuery] string startDate = null,
+                                            [FromQuery] string endDate = null
+                                            )
         {
             return await _handler.Get(() =>
             {
                 var repository = _newsRepository(_createConfig(businessId));
-                return repository.Get(tag, category);
+                return repository.Get(tag, category,startDate,endDate);
             });
         }
 
@@ -50,5 +55,7 @@ namespace StockportContentApi.Controllers
                 return repository.GetNews(slug);
             });
         }
+
+
     }
 }

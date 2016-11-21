@@ -71,7 +71,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null,null,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var newsroom = response.Get<Newsroom>();
@@ -119,7 +119,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var newsroom = response.Get<Newsroom>();
@@ -234,7 +234,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null,start:null,end: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -259,7 +259,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1"));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",start:null,end:null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -284,7 +284,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1"));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1",start:null, end:null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -298,10 +298,50 @@ namespace StockportContentApiTests.Unit.Repositories
             newsroom.News.First().Slug.Should().Be(Slug);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Fact]
+        public void ShouldReturnListOfNewsForDateRange()
+        {
+            var config = new ContentfulConfig("test")
+                .Add("DELIVERY_URL", "https://fake.url")
+                .Add("TEST_SPACE", "SPACE")
+                .Add("TEST_ACCESS_KEY", "KEY")
+                .Build();
+            //public NewsFactory(IBuildContentTypesFromReferences<Alert> alertListFactory, IBuildContentTypesFromReferences<Document> documentListFactory)
+            var mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
+            var mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
+            var mockTimeProvider = new Mock<ITimeProvider>();
+            var httpClient = new Mock<IHttpClient>();
+            var videoRepository = new Mock<IVideoRepository>();
+            var newsroomFactory = new Mock<IFactory<Newsroom>>();
+            var newsfactory = new NewsFactory(mockAlertlistFactory.Object, mockDocumentListFactory.Object); 
+            var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
+            newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
+               .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
+
+            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, start: "2016-08-01", end:"2016-09-1"));
+            var newsroom = response.Get<Newsroom>();
+
+
+            newsroom.News.Count.Should().Be(2);
+            newsroom.News.First().Title.Should().Be(Title);
+            newsroom.News.First().Slug.Should().Be(Slug);
+        }
+
         [Fact]
         public void ShouldReturnNotFoundForTagAndCategory()
         {
-            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound"));
+            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound",null,null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
