@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,14 +20,42 @@ namespace StockportContentApi
     public class Startup
     {
         private readonly string _contentRootPath;
+        private readonly string ConfigDir = "app-config";
 
         public Startup(IHostingEnvironment env)
         {
-            // Set up configuration sources.
-            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json");
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            if (UseInjectedConfig())
+            {
+                string appConfig = Path.Combine(ConfigDir, "appsettings.json");
+                string envConfig = Path.Combine(ConfigDir, $"appsettings.{env.EnvironmentName}.json");
+                string secretConfig = Path.Combine(ConfigDir, "injected",
+                    $"appsettings.{env.EnvironmentName}.secrets.json");
+
+                Configuration = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile(appConfig)
+                    .AddJsonFile(envConfig)
+                    .AddJsonFile(secretConfig)
+                    .AddEnvironmentVariables()
+                    .Build();
+            }
+            else
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("appsettings.json");
+                builder.AddEnvironmentVariables();
+                Configuration = builder.Build();
+            }
             _contentRootPath = env.ContentRootPath;
+        }
+
+        private static bool UseInjectedConfig()
+        {
+            var value = Environment.GetEnvironmentVariable("USE_INJECTED_CONFIG");
+
+            bool useInjectedConfig;
+            return bool.TryParse(value, out useInjectedConfig) && useInjectedConfig;
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -42,6 +71,14 @@ namespace StockportContentApi
                     .Add($"{ businessId.ToUpper()}_ACCESS_KEY", 
                         Environment.GetEnvironmentVariable($"{ businessId.ToUpper()}_ACCESS_KEY"))
                     .Build();
+            
+            if(UseInjectedConfig())
+                createConfig = businessId => 
+                    new ContentfulConfig(businessId)
+                        .Add("DELIVERY_URL", Configuration["Contentful:DeliveryUrl"])
+                        .Add($"{businessId.ToUpper()}_SPACE", Configuration[$"{businessId}:Space"])
+                        .Add($"{ businessId.ToUpper()}_ACCESS_KEY", Configuration[$"{businessId}:AccessKey"])
+                        .Build();
 
             var redirectBusinessIds = new List<string>();
             Configuration.GetSection("RedirectBusinessIds").Bind(redirectBusinessIds);
