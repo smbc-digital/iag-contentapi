@@ -1,6 +1,7 @@
 ﻿{
   "title": "Start Page",
   "slug": "start-page",
+  "teaser": "this is a teaser", 
   "summary": "This is a summary ",
   "upperBody": "An upper body",
   "formLinkLabel": "Start now",

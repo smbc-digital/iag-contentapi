@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace StockportContentApi.Model
 {
@@ -6,6 +8,7 @@ namespace StockportContentApi.Model
     {
         public string Title { get; }
         public string Slug { get; }
+        public string Teaser { get; }
         public string Summary { get; }
         public string UpperBody { get; }
         public string FormLinkLabel { get; }
@@ -17,11 +20,12 @@ namespace StockportContentApi.Model
         public List<Alert> Alerts { get; }
 
         public StartPage(
-            string title, string slug, string summary, string upperBody, string formLinkLabel,
+            string title, string slug, string teaser, string summary, string upperBody, string formLinkLabel,
             string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts)
         {
             Title = title;
             Slug = slug;
+            Teaser = teaser;
             Summary = summary;
             UpperBody = upperBody;
             FormLinkLabel = formLinkLabel;
@@ -38,7 +42,7 @@ namespace StockportContentApi.Model
     {
         public NullStartPage()
             : base(
-                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, new List<Crumb>(), new List<Alert>()) { }
     }
 }

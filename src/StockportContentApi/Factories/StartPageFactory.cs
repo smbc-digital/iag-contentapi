@@ -22,6 +22,7 @@ namespace StockportContentApi.Factories
 
             string title = fields.title;
             string slug = fields.slug;
+            string teaser = fields.teaser;
             string summary = fields.summary;
             string lowerBody = fields.lowerBody;
             string icon = fields.icon;
@@ -35,7 +36,7 @@ namespace StockportContentApi.Factories
             string backgroundImage = contentfulResponse.GetImageUrl(fields.backgroundImage);
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
 
-            return new StartPage(title, slug, summary, upperBody, formLinkLabel, formLink, lowerBody, backgroundImage, icon, crumbs, alerts);
+            return new StartPage(title, slug, teaser, summary, upperBody, formLinkLabel, formLink, lowerBody, backgroundImage, icon, crumbs, alerts);
         }
     }
 }

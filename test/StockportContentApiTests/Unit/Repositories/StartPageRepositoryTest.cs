@@ -53,6 +53,7 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             startPage.Title.Should().Be("Start Page");
             startPage.Slug.Should().Be(startPageSlug);
+            startPage.Teaser.Should().Be("this is a teaser");
             startPage.Summary.Should().Be("This is a summary ");
             startPage.UpperBody.Should().Be("An upper body");
             startPage.FormLink.Should().Be("http://start.com");
