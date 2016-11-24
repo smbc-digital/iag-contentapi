@@ -309,12 +309,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_SPACE", "SPACE")
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
-            //public NewsFactory(IBuildContentTypesFromReferences<Alert> alertListFactory, IBuildContentTypesFromReferences<Document> documentListFactory)
+          
             var mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-            var mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
-            var mockTimeProvider = new Mock<ITimeProvider>();
-            var httpClient = new Mock<IHttpClient>();
-            var videoRepository = new Mock<IVideoRepository>();
+            var mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();           
             var newsroomFactory = new Mock<IFactory<Newsroom>>();
             var newsfactory = new NewsFactory(mockAlertlistFactory.Object, mockDocumentListFactory.Object); 
             var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
@@ -326,16 +323,11 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-               .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-
             var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, start: "2016-08-01", end:"2016-09-1"));
             var newsroom = response.Get<Newsroom>();
 
-
-            newsroom.News.Count.Should().Be(2);
-            newsroom.News.First().Title.Should().Be(Title);
-            newsroom.News.First().Slug.Should().Be(Slug);
+            newsroom.News.Count.Should().Be(1);
+            newsroom.News.First().Title.Should().Be("This is within the date Range");
         }
 
         [Fact]

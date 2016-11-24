@@ -32,7 +32,7 @@
         "locale": "en-GB"
       },
       "fields": {
-        "title": "Tony News",
+        "title": "This is within the date Range",
         "slug": "news-of-the-century",
         "teaser": "Read more for the news",
         "body": "The news",
@@ -80,7 +80,7 @@
         "locale": "en-GB"
       },
       "fields": {
-        "title": "Simon News",
+        "title": "This is outside the date range",
         "slug": "another-news-article",
         "teaser": "This is another news article",
         "image": {

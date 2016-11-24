@@ -27,8 +27,13 @@ namespace StockportContentApi.Utils
 
        public bool CheckIsWithinSunriseAndSunsetDates(DateTime sunriseDate, DateTime sunsetDate)
         {           
-            return (sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate) &&
-                   (sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate);
+            return IsNowBetweenSunriseAndSunsetDates(sunriseDate, sunsetDate);
+        }
+
+        private bool IsNowBetweenSunriseAndSunsetDates(DateTime sunriseDate, DateTime sunsetDate)
+        {
+            return (sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate) 
+                   && (sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate);
         }
     }
 }
