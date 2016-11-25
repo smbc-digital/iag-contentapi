@@ -30,7 +30,7 @@ namespace StockportContentApi.Factories
                 .Select(entry => BuildSection(entry, contentfulResponse))
                 .Where(item => item != null)
                 .Cast<Section>()
-                .Where(section => sunrisesunsetDates.CheckIsWithinSunriseAndSunsetDates(section.SunriseDate,section.SunsetDate, null, null))
+                .Where(section => sunrisesunsetDates.CheckIsWithinSunriseAndSunsetDates(section.SunriseDate,section.SunsetDate))
                 .ToList();
 
             return sections;

@@ -28,8 +28,8 @@ namespace StockportContentApi.Utils
        public bool CheckIsWithinSunriseAndSunsetDates(
            DateTime sunriseDate, 
            DateTime sunsetDate,
-           DateTime? startDate,
-           DateTime? endDate)
+           DateTime? startDate = null,
+           DateTime? endDate = null)
        {
             bool answerIsIrrelevant = (startDate != null && endDate != null);
 

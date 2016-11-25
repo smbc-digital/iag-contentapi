@@ -28,7 +28,7 @@ namespace StockportContentApi.Factories
             return carouselContentEntries
                 .Select(item => _carouselContentFactory.Build(item, contentfulResponse))
                 .Cast<CarouselContent>()
-                .Where(item => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate, null, null))
+                .Where(item => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
                 .ToList();
         }
 

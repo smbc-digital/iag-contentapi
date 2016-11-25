@@ -44,7 +44,7 @@ namespace StockportContentApi.Repositories
                 section.Body = _videoRepository.Process(section.Body);
             }
             
-           if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(article.SunriseDate,article.SunsetDate, null, null)) article = new NullArticle();
+           if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(article.SunriseDate,article.SunsetDate)) article = new NullArticle();
 
             article.Body = _videoRepository.Process(article.Body);
 

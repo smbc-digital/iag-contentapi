@@ -92,7 +92,7 @@ namespace StockportContentApi.Repositories
 
             news.Body = _videoRepository.Process(news.Body);
 
-            if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, null, null)) news = new NullNews();
+            if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate)) news = new NullNews();
 
             return news.GetType() == typeof(NullNews)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
@@ -108,7 +108,7 @@ namespace StockportContentApi.Repositories
             var newsArticles = contentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, contentfulResponse))
                 .Cast<News>()
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, null, null))
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .Take(limit)
                 .ToList();
