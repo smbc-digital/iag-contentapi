@@ -7,7 +7,7 @@
   "limit": 100,
   "items": [
 
-    //this will pass
+    // this should be in the test date range
     {
       "sys": {
         "space": {
@@ -55,7 +55,7 @@
     },
 
 
-    // this will fail
+    // this should not be in the test date range
     {
       "sys": {
         "space": {

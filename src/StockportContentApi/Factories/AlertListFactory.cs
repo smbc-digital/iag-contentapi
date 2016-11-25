@@ -27,7 +27,7 @@ namespace StockportContentApi.Factories
             return alertEntries
                .Select(item => _alertFactory.Build(item, contentfulResponse))
                .Cast<Alert>()
-               .Where(alert => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+               .Where(alert => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate, null, null))
                .ToList();
         }
     }

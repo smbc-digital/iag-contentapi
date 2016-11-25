@@ -304,9 +304,10 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnListOfNewsForDateRange()
         {
+            // Arrange
             var config = new ContentfulConfig("test")
                 .Add("DELIVERY_URL", "https://fake.url")
-                .Add("TEST_SPACE", "SPACE")
+                .Add("TEST_SPACE", "SPACE")  
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
           
@@ -316,16 +317,17 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsfactory = new NewsFactory(mockAlertlistFactory.Object, mockDocumentListFactory.Object); 
             var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
             newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
-
-
+            
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
-
+            
+            // Act
             var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, start: "2016-08-01", end:"2016-09-1"));
             var newsroom = response.Get<Newsroom>();
 
+            // Assert
             newsroom.News.Count.Should().Be(1);
             newsroom.News.First().Title.Should().Be("This is within the date Range");
         }

@@ -29,7 +29,7 @@ namespace StockportContentApi.Factories
             return topicEntries
                 .Select(item => _topicFactory.Build(item, contentfulResponse))
                 .Cast<Topic>()
-                .Where(topic => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(topic.SunriseDate,topic.SunsetDate))
+                .Where(topic => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(topic.SunriseDate,topic.SunsetDate, null, null))
                 .ToList();
         }
     }

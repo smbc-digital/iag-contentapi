@@ -34,8 +34,9 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get(string tag, string category, string start, string end)
         {
-            var startDate = StringToDateTime(start);
-            var endDate = StringToDateTime(end);
+            DateTime? startDate = StringToNullableDateTime(start);
+            DateTime? endDate = StringToNullableDateTime(end);
+
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
             var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
 
@@ -54,19 +55,31 @@ namespace StockportContentApi.Repositories
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
-                //.Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, startDate, endDate))
                 .GetTheCategories(out categories)
                 .GetNewsDates(out dates)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
-                .Where(news => (news.SunriseDate >= startDate && news.SunriseDate < endDate))
+                .Where(news => SunriseDateIsBetweenStartAndEndDates(news, startDate, endDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
-         
+
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories.Distinct().ToList());
             newsroom.SetDates(dates.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
+        }
+
+        private static bool SunriseDateIsBetweenStartAndEndDates(News news, DateTime? startDate, DateTime? endDate)
+        {
+            bool success = true;
+
+            if (startDate != null && endDate != null)
+            {
+                success = (news.SunriseDate >= startDate && news.SunriseDate < endDate);
+            }
+
+            return success;
         }
 
         public async Task<HttpResponse> GetNews(string slug)
@@ -79,7 +92,7 @@ namespace StockportContentApi.Repositories
 
             news.Body = _videoRepository.Process(news.Body);
 
-            if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate)) news = new NullNews();
+            if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, null, null)) news = new NullNews();
 
             return news.GetType() == typeof(NullNews)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
@@ -95,7 +108,7 @@ namespace StockportContentApi.Repositories
             var newsArticles = contentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, contentfulResponse))
                 .Cast<News>()
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, null, null))
                 .OrderByDescending(o => o.SunriseDate)
                 .Take(limit)
                 .ToList();
@@ -136,13 +149,17 @@ namespace StockportContentApi.Repositories
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
         }
 
-        private DateTime StringToDateTime(string date)
+        private DateTime? StringToDateTime(string date)
         {
             DateTime newDate;
             if(DateTime.TryParse(date, out newDate))
                 return newDate;
             return DateTime.MinValue;
+        }
 
+        private DateTime? StringToNullableDateTime(string date)
+        {
+            return String.IsNullOrEmpty(date) ? null : StringToDateTime(date);
         }
     }
 }
