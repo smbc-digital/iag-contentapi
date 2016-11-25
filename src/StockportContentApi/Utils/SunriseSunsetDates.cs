@@ -31,15 +31,14 @@ namespace StockportContentApi.Utils
            DateTime? startDate,
            DateTime? endDate)
        {
-            var searchDate = _timeProvider.Now();
-            if (startDate != null && endDate != null)
-            {
-                searchDate = startDate ?? new DateTime();
-            }
-            return IsDateBetweenSunriseAndSunsetDates(searchDate, sunriseDate, sunsetDate);
+            bool answerIsIrrelevant = (startDate != null && endDate != null);
+
+            bool success = answerIsIrrelevant || IsNowBetweenSunriseAndSunsetDates(sunriseDate, sunsetDate);
+
+            return success;
         }
 
-        private bool IsDateBetweenSunriseAndSunsetDates(DateTime candidateDate, DateTime sunriseDate, DateTime sunsetDate)
+        private bool IsNowBetweenSunriseAndSunsetDates(DateTime sunriseDate, DateTime sunsetDate)
         {
             return (sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate) 
                    && (sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate);
