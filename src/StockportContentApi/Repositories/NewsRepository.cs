@@ -76,7 +76,7 @@ namespace StockportContentApi.Repositories
 
             if (startDate != null && endDate != null)
             {
-                success = (news.SunriseDate >= startDate && news.SunriseDate < endDate);
+                success = (news.SunriseDate >= startDate && news.SunriseDate < endDate) && news.SunriseDate <= DateTime.Now;
             }
 
             return success;

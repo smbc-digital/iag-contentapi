@@ -23,7 +23,7 @@ namespace StockportContentApi.Extensions
 
             foreach (var item in news.ToList())
             {
-                if (!datesList.Any(d => d.Month.Equals(item.SunriseDate.Month) && d.Year.Equals(item.SunriseDate.Year)))
+                if (datesList.Any(d => !(d.Month.Equals(item.SunriseDate.Month) && d.Year.Equals(item.SunriseDate.Year)) && item.SunriseDate <= DateTime.Now))
                 {
                     datesList.Add(new DateTime(item.SunriseDate.Year, item.SunriseDate.Month, 01));
                 }
