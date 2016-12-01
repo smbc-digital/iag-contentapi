@@ -36,9 +36,12 @@ machine-env:
 # ---------------------------------------------------------------------------------------
 PROJECT_NAME = StockportContentApi
 CONTAINER_NAME = content
-IMAGE = contentapi
+IMAGE = smbc/contentapi
 TAG = latest
 APP_VERSION ?= $(GO_PIPELINE_LABEL)
+AWS_DEFAULT_REGION ?= eu-west-1
+AWS_ACCOUNT ?= 390744977344
+DOCKER_REPOSITORY = $(AWS_ACCOUNT).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 
 .PHONY: build run clean
 build:
@@ -70,14 +73,14 @@ clean:
 
 # Deployment targets: (these push to Amazon ECR and EB, and require AWS creds)
 # ---------------------------------------------------------------------------------------
-AWS_REGION = eu-west-1
+AWS_DEFAULT_REGION = eu-west-1
 
 .PHONY: tag login push package docker-clean
 tag:
 	docker tag $(IMAGE) $(DOCKER_REPOSITORY)/$(IMAGE):$(APP_VERSION)
 
 login:
-	eval $$(aws --region $(AWS_REGION) ecr get-login)
+	eval $$(aws --region $(AWS_DEFAULT_REGION) ecr get-login)
 
 push: login
 	docker push $(DOCKER_REPOSITORY)/$(IMAGE):$(APP_VERSION)
