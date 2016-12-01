@@ -298,9 +298,7 @@ namespace StockportContentApiTests.Unit.Repositories
             newsroom.News.First().Slug.Should().Be(Slug);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+
         [Fact]
         public void ShouldReturnListOfNewsForDateRange()
         {
