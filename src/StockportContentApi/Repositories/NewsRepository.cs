@@ -51,13 +51,12 @@ namespace StockportContentApi.Repositories
 
             List<string> categories;
             List<DateTime> dates;
-
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, startDate, endDate))
-                .GetTheCategories(out categories)
                 .GetNewsDates(out dates)
+                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, startDate, endDate))
+                .GetTheCategories(out categories)                
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .Where(news => SunriseDateIsBetweenStartAndEndDates(news, startDate, endDate))
                 .OrderByDescending(o => o.SunriseDate)
