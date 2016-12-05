@@ -28,8 +28,8 @@ namespace StockportContentApi.Factories
 
             var body = (string)entry.fields.body ?? string.Empty;
 
-            DateTime sunriseDate = SunriseSunsetDates.DateFieldToDate(entry.fields.sunriseDate);
-            DateTime sunsetDate = SunriseSunsetDates.DateFieldToDate(entry.fields.sunsetDate);
+            DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
+            DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
 
             var breadcrumbs = new List<Crumb>() { new Crumb("News", string.Empty, "news") };
             var alerts = _alertListFactory.BuildFromReferences(entry.fields.alerts, contentfulResponse);

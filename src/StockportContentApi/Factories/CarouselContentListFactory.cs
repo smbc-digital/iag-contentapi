@@ -9,13 +9,13 @@ namespace StockportContentApi.Factories
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IFactory<CarouselContent> _carouselContentFactory;
-        private readonly SunriseSunsetDates _sunriseSunsetDates;
+        private readonly DateComparer _dateComparer;
 
         public CarouselContentListFactory(ITimeProvider timeProvider, IFactory<CarouselContent> carouselContentFactory)
         {
             _timeProvider = timeProvider;
             _carouselContentFactory = carouselContentFactory;
-            _sunriseSunsetDates = new SunriseSunsetDates(_timeProvider);
+            _dateComparer = new DateComparer(_timeProvider);
         }
 
         public IEnumerable<CarouselContent> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
@@ -28,7 +28,7 @@ namespace StockportContentApi.Factories
             return carouselContentEntries
                 .Select(item => _carouselContentFactory.Build(item, contentfulResponse))
                 .Cast<CarouselContent>()
-                .Where(item => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
+                .Where(item => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
                 .ToList();
         }
 

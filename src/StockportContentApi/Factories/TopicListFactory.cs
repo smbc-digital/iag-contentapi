@@ -10,13 +10,13 @@ namespace StockportContentApi.Factories
     {
         private readonly IFactory<Topic> _topicFactory;
         private readonly ITimeProvider _timeProvider;
-        private readonly SunriseSunsetDates _sunriseSunsetDates;
+        private readonly DateComparer _dateComparer;
 
         public TopicListFactory(IFactory<Topic> topicFactory, ITimeProvider timeProvider)
         {
             _topicFactory = topicFactory;
             _timeProvider = timeProvider;
-            _sunriseSunsetDates = new SunriseSunsetDates(_timeProvider);
+            _dateComparer = new DateComparer(_timeProvider);
         }
 
         public IEnumerable<Topic> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
@@ -29,7 +29,7 @@ namespace StockportContentApi.Factories
             return topicEntries
                 .Select(item => _topicFactory.Build(item, contentfulResponse))
                 .Cast<Topic>()
-                .Where(topic => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(topic.SunriseDate,topic.SunsetDate))
+                .Where(topic => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(topic.SunriseDate,topic.SunsetDate))
                 .ToList();
         }
     }

@@ -234,7 +234,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null,start:null,end: null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -259,7 +259,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",start:null,end:null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -284,7 +284,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1",start:null, end:null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -297,7 +297,6 @@ namespace StockportContentApiTests.Unit.Repositories
             newsroom.News.First().Title.Should().Be(Title);
             newsroom.News.First().Slug.Should().Be(Slug);
         }
-
 
         [Fact]
         public void ShouldReturnListOfNewsForDateRange()
@@ -316,13 +315,13 @@ namespace StockportContentApiTests.Unit.Repositories
             var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
             newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
             
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
             
             // Act
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, start: "2016-08-01", end:"2016-09-1"));
+            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
             // Assert
@@ -353,7 +352,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
 
             // Act
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, start: null, end: null));
+            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             // Assert

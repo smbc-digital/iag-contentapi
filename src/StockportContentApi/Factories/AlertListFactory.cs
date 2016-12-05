@@ -9,13 +9,13 @@ namespace StockportContentApi.Factories
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IFactory<Alert> _alertFactory;
-        private readonly SunriseSunsetDates _sunriseSunsetDates;
+        private readonly DateComparer _dateComparer;
 
         public AlertListFactory(ITimeProvider timeProvider, IFactory<Alert> alertFactory)
         {
             _timeProvider = timeProvider;
             _alertFactory = alertFactory;
-            _sunriseSunsetDates = new SunriseSunsetDates(_timeProvider);
+            _dateComparer = new DateComparer(_timeProvider);
         }
 
         public IEnumerable<Alert> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
@@ -27,7 +27,7 @@ namespace StockportContentApi.Factories
             return alertEntries
                .Select(item => _alertFactory.Build(item, contentfulResponse))
                .Cast<Alert>()
-               .Where(alert => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+               .Where(alert => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                .ToList();
         }
     }
