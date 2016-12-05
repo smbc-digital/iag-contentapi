@@ -22,7 +22,7 @@ namespace StockportContentApi.Factories
         public IEnumerable<Section> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
         {
 
-            var sunrisesunsetDates =  new SunriseSunsetDates(_timeProvider);
+            var sunrisesunsetDates =  new DateComparer(_timeProvider);
 
             if (references == null) return new List<Section>();
             var sectionEntries = contentfulResponse.GetEntriesFor(references);
@@ -30,7 +30,7 @@ namespace StockportContentApi.Factories
                 .Select(entry => BuildSection(entry, contentfulResponse))
                 .Where(item => item != null)
                 .Cast<Section>()
-                .Where(section => sunrisesunsetDates.CheckIsWithinSunriseAndSunsetDates(section.SunriseDate,section.SunsetDate))
+                .Where(section => sunrisesunsetDates.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate,section.SunsetDate))
                 .ToList();
 
             return sections;
@@ -46,8 +46,8 @@ namespace StockportContentApi.Factories
             var profiles = _profileListFactory.BuildFromReferences(entry.fields.profiles, contentfulResponse);
             var documents = _documentListFactory.BuildFromReferences(entry.fields.documents, contentfulResponse);
 
-            DateTime sunriseDate = SunriseSunsetDates.DateFieldToDate(entry.fields.sunriseDate);
-            DateTime sunsetDate = SunriseSunsetDates.DateFieldToDate(entry.fields.sunsetDate);
+            DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
+            DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
 
             return new Section(title, slug, body, profiles, documents,sunriseDate,sunsetDate);
         }

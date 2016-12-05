@@ -52,6 +52,29 @@ namespace StockportContentApiTests.Unit.Extensions
         }
 
         [Fact]
+        public void ShouldReturnOnlyReturnCurrentAndPastNewsItems()
+        {
+            var futureDate = DateTime.Now.AddMonths(1);
+            var news = new List<News>()
+            {
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", DateTime.Today, DateTime.Today.AddMonths(1), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", DateTime.Today.AddMonths(-1), DateTime.Today, new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", futureDate, futureDate.AddMonths(8), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
+            };
+
+            var dates = new List<DateTime>();
+
+            var result = news.GetNewsDates(out dates);
+
+            dates.Should().HaveCount(3);
+            dates[0].Month.Should().Be(2);
+            dates[0].Year.Should().Be(2016);
+
+            result.Should().BeEquivalentTo(news);
+        }
+
+        [Fact]
         public void ShouldReturnNewsCategories()
         {
             var newsCategories = new List<string>()

@@ -37,7 +37,54 @@
         "teaser": "Read more for the news",
         "body": "The news",
         "sunriseDate": "2016-08-25T00:00+11:30",
-        "sunsetDate": "2016-08-30T00:00+02:00",
+        "sunsetDate": "2016-10-30T00:00+02:00",
+        "alerts": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "7n5AKBF6ViWaQG2SU4oWmu"
+            }
+          }
+        ],
+        "categories": [
+          "Another category",
+          "A category"
+        ]
+      }
+    },
+
+    // this should not be in the dates list as it is in the future
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space"
+          }
+        },
+        "id": "99e4eZxyKgA6muge9geDak",
+        "type": "Entry",
+        "createdAt": "2016-08-25T14:24:29.301Z",
+        "updatedAt": "2016-08-25T15:38:10.141Z",
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "news"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "title": "This is a future piece of news",
+        "slug": "news-of-the-next-century",
+        "teaser": "Read more for the news",
+        "body": "The news of the future",
+        "sunriseDate": "2090-08-25T00:00+11:30",
+        "sunsetDate": "2090-08-30T00:00+02:00",
         "alerts": [
           {
             "sys": {

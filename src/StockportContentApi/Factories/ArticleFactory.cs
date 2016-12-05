@@ -47,8 +47,8 @@ namespace StockportContentApi.Factories
             var profiles = _profileListFactory.BuildFromReferences(fields.profiles, contentfulResponse);
             var documents = _documentListFactory.BuildFromReferences(fields.documents, contentfulResponse);
 
-            DateTime sunriseDate = SunriseSunsetDates.DateFieldToDate(fields.sunriseDate);
-            DateTime sunsetDate = SunriseSunsetDates.DateFieldToDate(fields.sunsetDate);
+            DateTime sunriseDate = DateComparer.DateFieldToDate(fields.sunriseDate);
+            DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
            
             // find the parent topic from the breadcrumbs (the last topic in the list)
             var parentTopicFromTheBreadcrumb = BuildParentTopic(fields.breadcrumbs, contentfulResponse);

@@ -25,14 +25,13 @@ namespace StockportContentApi.Controllers
         public async Task<IActionResult> Index(string businessId, 
                                             [FromQuery] string tag = null, 
                                             [FromQuery] string category = null,
-                                            [FromQuery] string dateFrom = null,
-                                            [FromQuery] string dateTo = null
-                                            )
+                                            [FromQuery] DateTime? dateFrom = null,
+                                            [FromQuery] DateTime? dateTo = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _newsRepository(_createConfig(businessId));
-                return repository.Get(tag, category,dateFrom,dateTo);
+                return repository.Get(tag, category, dateFrom, dateTo);
             });
         }
 

@@ -20,7 +20,7 @@ namespace StockportContentApi.Repositories
         private readonly ContentfulClient _contentfulClient;
         private const int ReferenceLevelLimit = 1;
         private readonly IVideoRepository _videoRepository;
-        private readonly SunriseSunsetDates _sunriseSunsetDates;
+        private readonly DateComparer _dateComparer;
 
         public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, IFactory<Newsroom> newsroomFactory, ITimeProvider timeProvider, IVideoRepository videoRepository)
         {
@@ -29,14 +29,11 @@ namespace StockportContentApi.Repositories
             _newsFactory = newsFactory;
             _newsroomFactory = newsroomFactory;
             _videoRepository = videoRepository;
-            _sunriseSunsetDates = new SunriseSunsetDates(timeProvider);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
-        public async Task<HttpResponse> Get(string tag, string category, string start, string end)
+        public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
-            DateTime? startDate = StringToNullableDateTime(start);
-            DateTime? endDate = StringToNullableDateTime(end);
-
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
             var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
 
@@ -51,15 +48,13 @@ namespace StockportContentApi.Repositories
 
             List<string> categories;
             List<DateTime> dates;
-
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate, startDate, endDate))
-                .GetTheCategories(out categories)
                 .GetNewsDates(out dates)
+                .Where(news => CheckDates(startDate, endDate, news))
+                .GetTheCategories(out categories)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
-                .Where(news => SunriseDateIsBetweenStartAndEndDates(news, startDate, endDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
 
@@ -70,16 +65,11 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(newsroom);
         }
 
-        private static bool SunriseDateIsBetweenStartAndEndDates(News news, DateTime? startDate, DateTime? endDate)
+        private bool CheckDates(DateTime? startDate, DateTime? endDate, News news)
         {
-            bool success = true;
-
-            if (startDate != null && endDate != null)
-            {
-                success = (news.SunriseDate >= startDate && news.SunriseDate < endDate);
-            }
-
-            return success;
+            return startDate.HasValue && endDate.HasValue 
+                ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) 
+                : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
         }
 
         public async Task<HttpResponse> GetNews(string slug)
@@ -92,7 +82,7 @@ namespace StockportContentApi.Repositories
 
             news.Body = _videoRepository.Process(news.Body);
 
-            if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate)) news = new NullNews();
+            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate)) news = new NullNews();
 
             return news.GetType() == typeof(NullNews)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
@@ -108,7 +98,7 @@ namespace StockportContentApi.Repositories
             var newsArticles = contentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, contentfulResponse))
                 .Cast<News>()
-                .Where(news => _sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
+                .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .Take(limit)
                 .ToList();
@@ -147,19 +137,6 @@ namespace StockportContentApi.Repositories
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
-
-        private DateTime? StringToDateTime(string date)
-        {
-            DateTime newDate;
-            if(DateTime.TryParse(date, out newDate))
-                return newDate;
-            return DateTime.MinValue;
-        }
-
-        private DateTime? StringToNullableDateTime(string date)
-        {
-            return String.IsNullOrEmpty(date) ? null : StringToDateTime(date);
         }
     }
 }

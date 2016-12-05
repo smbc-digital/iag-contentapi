@@ -16,7 +16,7 @@ namespace StockportContentApi.Repositories
         private readonly IFactory<Article> _articleFactory;
         private readonly IVideoRepository _videoRepository;
         private readonly ITimeProvider _timeProvider;
-        private readonly SunriseSunsetDates _sunriseSunsetDates;
+        private readonly DateComparer _dateComparer;
 
         public ArticleRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Article> articleFactory, IVideoRepository videoRepository, ITimeProvider timeProvider)
         {
@@ -25,7 +25,7 @@ namespace StockportContentApi.Repositories
             _articleFactory = articleFactory;
             _videoRepository = videoRepository;
             _timeProvider = timeProvider;
-            _sunriseSunsetDates = new SunriseSunsetDates(_timeProvider);
+            _dateComparer = new DateComparer(_timeProvider);
         }
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
@@ -44,7 +44,7 @@ namespace StockportContentApi.Repositories
                 section.Body = _videoRepository.Process(section.Body);
             }
             
-           if (!_sunriseSunsetDates.CheckIsWithinSunriseAndSunsetDates(article.SunriseDate,article.SunsetDate)) article = new NullArticle();
+           if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate,article.SunsetDate)) article = new NullArticle();
 
             article.Body = _videoRepository.Process(article.Body);
 
