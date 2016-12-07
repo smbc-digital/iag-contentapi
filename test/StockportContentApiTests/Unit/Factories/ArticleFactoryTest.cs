@@ -23,9 +23,13 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly IBuildContentTypesFromReferences<Section> _sectionListFactory;
         private readonly IBuildContentTypesFromReferences<Profile> _profileListFactory;
         private readonly Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory;
+        private readonly Mock<IBuildContentTypeFromReference<LiveChat>> _liveChatListFactory;
 
         private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, DateTime.Now, "/thisisaurl", "filename1.pdf"),
                                                                             new Document("Title 2", 3412, DateTime.Now.AddHours(2), "/anotherurl", "filename2.pdf") };
+
+        private readonly  LiveChat _liveChat = new LiveChat("Title","Text");
+        private List<LiveChat> _liveChats = new List<LiveChat>();
 
         public ArticleFactoryTest()
         {
@@ -47,10 +51,18 @@ namespace StockportContentApiTests.Unit.Factories
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(_documents);
 
+            _liveChatListFactory = new Mock<IBuildContentTypeFromReference<LiveChat>>();
+
+            _liveChats.Add(_liveChat);
+            _liveChatListFactory.Setup(
+                    o => o.BuildFromReference(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
+                .Returns(_liveChat);
+                
+
             _breadcrumbFactory = new BreadcrumbFactory();
             _sectionListFactory = new SectionListFactory(new ProfileListFactory(), _mockDocumentListFactory.Object,_mockTimeProvider.Object);
             _profileListFactory = new ProfileListFactory();
-            _articleFactory = new ArticleFactory(_mockTopicBuilder.Object, _mockAlertListFactory.Object, _breadcrumbFactory,_sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object);
+            _articleFactory = new ArticleFactory(_mockTopicBuilder.Object, _mockAlertListFactory.Object, _breadcrumbFactory,_sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object, _liveChatListFactory.Object);
         }
 
         [Fact]
@@ -72,6 +84,9 @@ namespace StockportContentApiTests.Unit.Factories
             article.Profiles.First().Slug.Should().Be("profile-no-pic");
             article.Sections.Should().HaveCount(1);
             article.Documents.Should().BeEquivalentTo(_documents);
+            article.LiveChatVisible.Should().Be(true);
+            article.LiveChat.Title.Should().Be("Title");
+            article.LiveChat.Text.Should().NotBeEmpty();
         }
 
        [Fact]
@@ -206,7 +221,7 @@ namespace StockportContentApiTests.Unit.Factories
             mockAlertBuilder.Setup(
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(alert);
-            var articleFactory = new ArticleFactory(_mockTopicBuilder.Object, new AlertListFactory(_mockTimeProvider.Object, mockAlertBuilder.Object), _breadcrumbFactory,_sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object);
+            var articleFactory = new ArticleFactory(_mockTopicBuilder.Object, new AlertListFactory(_mockTimeProvider.Object, mockAlertBuilder.Object), _breadcrumbFactory,_sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object, _liveChatListFactory.Object);
 
             var entry = contentfulResponse.GetFirstItem();
             Article article = articleFactory.Build(entry, contentfulResponse);
@@ -238,7 +253,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             var realTopicFactory = new TopicFactory(_mockAlertListFactory.Object, new SubItemListFactory(new SubItemFactory(), _mockTimeProvider.Object),
                 _breadcrumbFactory);
-            var articleFactory = new ArticleFactory(realTopicFactory, _mockAlertListFactory.Object, _breadcrumbFactory, _sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object);
+            var articleFactory = new ArticleFactory(realTopicFactory, _mockAlertListFactory.Object, _breadcrumbFactory, _sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object, _liveChatListFactory.Object);
 
             dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);

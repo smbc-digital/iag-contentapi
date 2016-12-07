@@ -138,6 +138,7 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<Footer>, FooterFactory>();
             services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
             services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
+            services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
 
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();
@@ -148,6 +149,7 @@ namespace StockportContentApi
             services.AddSingleton<IBuildContentTypesFromReferences<Profile>, ProfileListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Document>, DocumentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
+            services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

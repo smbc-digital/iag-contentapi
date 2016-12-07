@@ -15,8 +15,15 @@ namespace StockportContentApi.Factories
         private readonly IBuildContentTypesFromReferences<Section> _sectionListFactory;
         private readonly IBuildContentTypesFromReferences<Profile> _profileListFactory;
         private readonly IBuildContentTypesFromReferences<Document> _documentListFactory;
-
-        public ArticleFactory(IFactory<Topic> topicFactory, IBuildContentTypesFromReferences<Alert> alertListFactory, IBuildContentTypesFromReferences<Crumb> breadcrumbFactory, IBuildContentTypesFromReferences<Section> sectionListFactory, IBuildContentTypesFromReferences<Profile> profileListFactory, IBuildContentTypesFromReferences<Document> documentListFactory)
+        private readonly IBuildContentTypeFromReference<LiveChat> _liveChatListFactory;
+      
+        public ArticleFactory(IFactory<Topic> topicFactory,
+                              IBuildContentTypesFromReferences<Alert> alertListFactory, 
+                              IBuildContentTypesFromReferences<Crumb> breadcrumbFactory, 
+                              IBuildContentTypesFromReferences<Section> sectionListFactory, 
+                              IBuildContentTypesFromReferences<Profile> profileListFactory, 
+                              IBuildContentTypesFromReferences<Document> documentListFactory,
+                              IBuildContentTypeFromReference<LiveChat>  liveChatListFactory)
         {
             _alertListFactory = alertListFactory;
             _topicFactory = topicFactory;
@@ -24,6 +31,7 @@ namespace StockportContentApi.Factories
             _sectionListFactory = sectionListFactory;
             _profileListFactory = profileListFactory;
             _documentListFactory = documentListFactory;
+            _liveChatListFactory = liveChatListFactory;
         }
 
         public Article Build(dynamic entry, IContentfulIncludes contentfulResponse)
@@ -46,14 +54,18 @@ namespace StockportContentApi.Factories
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
             var profiles = _profileListFactory.BuildFromReferences(fields.profiles, contentfulResponse);
             var documents = _documentListFactory.BuildFromReferences(fields.documents, contentfulResponse);
+            var liveChatVisible = MakeFalseIfBooleanIsNull(fields.liveChatVisible);
+            var liveChat = _liveChatListFactory.BuildFromReference(fields.liveChatText, contentfulResponse);
 
             DateTime sunriseDate = DateComparer.DateFieldToDate(fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
            
+           
             // find the parent topic from the breadcrumbs (the last topic in the list)
             var parentTopicFromTheBreadcrumb = BuildParentTopic(fields.breadcrumbs, contentfulResponse);
 
-            return new Article(body, slug, title, teaser, icon, backgroundImage, sections, breadcrumbs, alerts, profiles, parentTopicFromTheBreadcrumb, documents,sunriseDate, sunsetDate);
+            return new Article(body, slug, title, teaser, icon, backgroundImage, sections, breadcrumbs, alerts, 
+                profiles, parentTopicFromTheBreadcrumb, documents,sunriseDate, sunsetDate, liveChatVisible, liveChat);
         }
 
         private Topic BuildParentTopic(dynamic references, IContentfulIncludes contentfulResponse)
@@ -89,5 +101,15 @@ namespace StockportContentApi.Factories
             return ((string)superBody) ?? string.Empty;
         }
 
+
+        private static bool MakeFalseIfBooleanIsNull(dynamic field)
+        {
+
+            if (field == null)
+                return false;
+           
+            return (bool) field;
+           
+        }
     }
 };

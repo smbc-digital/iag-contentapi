@@ -6,4 +6,10 @@ namespace StockportContentApi.Factories
     {
         IEnumerable<T> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse);
     }
+
+
+    public interface IBuildContentTypeFromReference<out T>
+    {
+        T BuildFromReference(dynamic reference, IContentfulIncludes contentfulResponse);
+    }
 }

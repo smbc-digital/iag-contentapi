@@ -91,7 +91,7 @@
     "sunriseDate": "0001-01-01T00:00:00+00:00",
     "sunsetDate": "0001-01-01T00:00:00+00:00",
     "emailAlerts": false,
-    "emailAlertsTopicId":  "" 
+    "emailAlertsTopicId": ""
   },
   "documents": [
     {
@@ -103,5 +103,10 @@
     }
   ],
   "sunriseDate": "2015-12-31T23:00:00+00:00",
-  "sunsetDate": "2017-12-31T23:00:00+00:00"
+  "sunsetDate": "2017-12-31T23:00:00+00:00",
+  "liveChatVisible": true,
+  "liveChat": {
+    "title": "Title",
+    "text": "Text"
+  }
 }

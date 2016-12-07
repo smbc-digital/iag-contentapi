@@ -9,7 +9,7 @@
     {
       "title": "Test Video and Profile Section",
       "slug": "video-profile-section",
-      "body": "This is the body text for section 1\n\n{{PROFILE:sarahs-story}}\n\n{{VIDEO:kQl5D}}",      
+      "body": "This is the body text for section 1\n\n{{PROFILE:sarahs-story}}\n\n{{VIDEO:kQl5D}}",
       "profiles": [
         {
           "type": "Success Story",
@@ -190,5 +190,10 @@
   },
   "documents": [],
   "sunriseDate": "2015-12-31T23:00:00+00:00",
-  "sunsetDate": "2017-12-31T23:00:00+00:00"
+  "sunsetDate": "2017-12-31T23:00:00+00:00",
+  "liveChatVisible": true,
+  "liveChat": {
+    "title": "Title",
+    "text": "text"
+  }
 }

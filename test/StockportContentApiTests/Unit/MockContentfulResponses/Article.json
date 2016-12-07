@@ -80,12 +80,48 @@
         ],
         "displayOnAZ": false,
         "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00"
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "liveChatVisible": true,
+        "liveChatText": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "3oLGHjI7UcimkSyAm2sIqu"
+          }
+        }
       }
     }
   ],
   "includes": {
     "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "3oLGHjI7UcimkSyAm2sIqu",
+          "type": "Entry",
+          "createdAt": "2016-08-05T17:06:56.225Z",
+          "updatedAt": "2016-08-05T17:06:56.225Z",
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "liveChat"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "Title",
+          "text": "Text"
+        }
+      },
       {
         "sys": {
           "space": {
@@ -280,7 +316,7 @@
           "body": "test parsing:\n\nmarkdown:\n# heading",
           "icon": "si-house",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
-          "sunsetDate":"0001-01-01T00:00:00+00:00",
+          "sunsetDate": "0001-01-01T00:00:00+00:00",
           "breadcrumbs": [
             {
               "sys": {
