@@ -11,7 +11,7 @@ namespace StockportContentApi.Utils
     {
         public DateTime Now()
         {
-            return DateTime.Now;
+            return DateTime.UtcNow;
         }
     }
 }

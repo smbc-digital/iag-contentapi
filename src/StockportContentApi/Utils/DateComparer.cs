@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace StockportContentApi.Utils
 {
@@ -11,17 +12,17 @@ namespace StockportContentApi.Utils
             _timeProvider = timeProvider;
         }
 
-        public static DateTime DateFieldToDate(dynamic fieldDate)
+        public static DateTime DateFieldToDate(dynamic date)
         {
-            DateTime sunriseDate = MakeMinValueDateIfNull(fieldDate);
-            DateTime outSunriseDate;
-            DateTime.TryParse(sunriseDate.ToString("yyyy-MM-ddTHH:mm:sszzz") ?? string.Empty, out outSunriseDate);
-            return outSunriseDate;
+            return !IsValidDateTime(date) 
+                ? DateTime.MinValue.ToUniversalTime()
+                : ((DateTimeOffset)DateTimeOffset.Parse(date.ToString("u"), CultureInfo.InvariantCulture)).UtcDateTime;
         }
 
-        private static DateTime MakeMinValueDateIfNull(dynamic date)
+        private static bool IsValidDateTime(dynamic date)
         {
-            return date ?? DateTime.MinValue;
+            DateTime datetime;
+            return date != null && DateTime.TryParse(date.ToString(), out datetime);
         }
 
         public bool DateNowIsWithinSunriseAndSunsetDates(DateTime sunriseDate, DateTime sunsetDate)
@@ -32,7 +33,7 @@ namespace StockportContentApi.Utils
 
         public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate)
         {
-            return sunriseDate >= startDate && sunriseDate < endDate && sunriseDate <= _timeProvider.Now();
+            return sunriseDate.Date >= startDate.Date && sunriseDate.Date <= endDate.Date && sunriseDate <= _timeProvider.Now();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace StockportContentApi
 
             if (response == null || response.StatusCode != HttpStatusCode.OK) return new NullContentfulResponse();
 
-            var content = JsonConvert.DeserializeObject<dynamic>(response.Get<string>());
+            var content = JsonConvert.DeserializeObject<dynamic>(response.Get<string>(), new JsonSerializerSettings { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc });
             return new ContentfulResponse(content);
         }
     }

@@ -346,7 +346,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
             newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
 
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 7));
 
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));

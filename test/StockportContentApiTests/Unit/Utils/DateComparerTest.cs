@@ -46,5 +46,33 @@ namespace StockportContentApiTests.Unit.Utils
 
             isWithin.Should().BeFalse();
         }
+
+        [Fact]
+        public void ShouldReturnADateTimeFromAOffsetDateTime()
+        {
+            var offsetDateTime = new DateTimeOffset(2016, 09, 21, 0, 0, 0, new TimeSpan(+1, 0, 0));
+
+            var date = DateComparer.DateFieldToDate(offsetDateTime);
+
+            date.Should().Be(new DateTime(2016, 09, 20, 23, 0, 0));
+        }
+
+        [Fact]
+        public void ShouldReturnADateTimeFromANormalDateTime()
+        {
+            var inputDate = new DateTime(2016, 01, 20);
+
+            var date = DateComparer.DateFieldToDate(inputDate);
+
+            date.Should().Be(inputDate);
+        }
+
+        [Fact]
+        public void ShouldReturnMinimumDateTimePossibleFromAInvalidDateString()
+        {
+            var date = DateComparer.DateFieldToDate("not-valid");
+
+            date.Should().Be(DateTime.MinValue);
+        }
     }
 }

@@ -4,11 +4,21 @@ using StockportContentApi.Extensions;
 using System.Collections.Generic;
 using StockportContentApi.Model;
 using System;
+using Moq;
+using StockportContentApi.Utils;
 
 namespace StockportContentApiTests.Unit.Extensions
 {
     public class NewsExtensionsTests
     {
+        private readonly Mock<ITimeProvider> _timeProvider;
+
+        public NewsExtensionsTests()
+        {
+            _timeProvider = new Mock<ITimeProvider>();
+            _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 07));
+        }
+
         [Fact]
         public void ShouldReturnTwoDatesForNewsItems()
         {
@@ -20,7 +30,7 @@ namespace StockportContentApiTests.Unit.Extensions
 
             var dates = new List<DateTime>();
 
-            var result = NewsExtensions.GetNewsDates(news, out dates);
+            var result = news.GetNewsDates(out dates, _timeProvider.Object);
 
             dates.Should().HaveCount(2);
             dates[0].Month.Should().Be(2);
@@ -42,7 +52,7 @@ namespace StockportContentApiTests.Unit.Extensions
 
             var dates = new List<DateTime>();
 
-            var result = news.GetNewsDates(out dates);
+            var result = news.GetNewsDates(out dates, _timeProvider.Object);
 
             dates.Should().HaveCount(1);
             dates[0].Month.Should().Be(2);
@@ -65,7 +75,7 @@ namespace StockportContentApiTests.Unit.Extensions
 
             var dates = new List<DateTime>();
 
-            var result = news.GetNewsDates(out dates);
+            var result = news.GetNewsDates(out dates, _timeProvider.Object);
 
             dates.Should().HaveCount(3);
             dates[0].Month.Should().Be(2);

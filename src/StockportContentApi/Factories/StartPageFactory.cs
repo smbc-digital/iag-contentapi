@@ -26,13 +26,10 @@ namespace StockportContentApi.Factories
             string summary = fields.summary;
             string lowerBody = fields.lowerBody;
             string icon = fields.icon;
-
             string upperBody = fields.upperBody;
             string formLinkLabel = fields.formLinkLabel;
             string formLink = fields.formLink;
-
             var crumbs = _breadcrumbFactory.BuildFromReferences(fields.breadcrumbs, contentfulResponse);
-
             string backgroundImage = contentfulResponse.GetImageUrl(fields.backgroundImage);
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
 

@@ -41,7 +41,7 @@ namespace StockportContentApi.Factories
             return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, featuredTopics, alerts, carouselContents, backgroundImage, freeText);
         }
 
-        private IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)
+        private static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)
         {
             return term.Cast<string>().ToList();
         }

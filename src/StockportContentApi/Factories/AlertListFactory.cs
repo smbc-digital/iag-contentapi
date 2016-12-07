@@ -7,15 +7,13 @@ namespace StockportContentApi.Factories
 {
     public class AlertListFactory : IBuildContentTypesFromReferences<Alert>
     {
-        private readonly ITimeProvider _timeProvider;
         private readonly IFactory<Alert> _alertFactory;
         private readonly DateComparer _dateComparer;
 
         public AlertListFactory(ITimeProvider timeProvider, IFactory<Alert> alertFactory)
         {
-            _timeProvider = timeProvider;
             _alertFactory = alertFactory;
-            _dateComparer = new DateComparer(_timeProvider);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public IEnumerable<Alert> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using StockportContentApi.Model;
 using System.Linq;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Factories
 {
@@ -22,14 +23,9 @@ namespace StockportContentApi.Factories
         private static Document BuildDocument(dynamic entry)
         {
             var title = (string)entry.fields.description ?? string.Empty;
-
             int size;
             int.TryParse((string) entry.fields.file.details.size, out size);
-
-            var date = entry.sys.updatedAt.ToString();
-            DateTime lastUpdated;
-            DateTime.TryParse(date ?? string.Empty, out lastUpdated);
-
+            DateTime lastUpdated = DateComparer.DateFieldToDate(entry.sys.updatedAt);
             var url = (string)entry.fields.file.url ?? string.Empty;
             var filename = (string)entry.fields.file.fileName ?? string.Empty;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using StockportContentApi.Model;
 using System.Linq;
 using StockportContentApi.Utils;
@@ -9,14 +8,12 @@ namespace StockportContentApi.Factories
     public class TopicListFactory :  IBuildContentTypesFromReferences<Topic>
     {
         private readonly IFactory<Topic> _topicFactory;
-        private readonly ITimeProvider _timeProvider;
         private readonly DateComparer _dateComparer;
 
         public TopicListFactory(IFactory<Topic> topicFactory, ITimeProvider timeProvider)
         {
             _topicFactory = topicFactory;
-            _timeProvider = timeProvider;
-            _dateComparer = new DateComparer(_timeProvider);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public IEnumerable<Topic> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)

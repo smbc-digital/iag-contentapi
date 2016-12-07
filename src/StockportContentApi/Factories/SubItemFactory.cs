@@ -2,7 +2,6 @@
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
-
 namespace StockportContentApi.Factories
 {
     public class SubItemFactory : IFactory<SubItem>
@@ -19,7 +18,6 @@ namespace StockportContentApi.Factories
             var title = (string)fields.title ?? (string)fields.name ?? string.Empty;
             var teaser = (string)fields.teaser ?? string.Empty;
             var icon = (string)fields.icon ?? string.Empty;
-
             DateTime sunriseDate = DateComparer.DateFieldToDate(fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
 

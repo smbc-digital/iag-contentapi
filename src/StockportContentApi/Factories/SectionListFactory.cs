@@ -21,7 +21,6 @@ namespace StockportContentApi.Factories
 
         public IEnumerable<Section> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
         {
-
             var sunrisesunsetDates =  new DateComparer(_timeProvider);
 
             if (references == null) return new List<Section>();

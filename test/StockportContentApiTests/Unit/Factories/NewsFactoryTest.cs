@@ -43,8 +43,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsNews()
         {
-            dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/News.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/News.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             News news = _newsFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -55,8 +54,8 @@ namespace StockportContentApiTests.Unit.Factories
             news.Image.Should().Be("image.jpg");
             news.ThumbnailImage.Should().Be("image.jpg" + ThumbnailImageExtension);
             news.Body.Should().Be("The news {{PDF:Stockport-Metroshuttle.pdf}} {{PDF:a-pdf.pdf}}");
-            news.SunriseDate.Should().Be(DateTime.Parse("2016-07-10T00:00:00+01:00"));
-            news.SunsetDate.Should().Be(DateTime.Parse("2016-08-24T00:00:00+01:00"));
+            news.SunriseDate.Should().Be(new DateTime(2016, 07, 09, 23, 00, 00));
+            news.SunsetDate.Should().Be(new DateTime(2016, 08, 23, 23, 00, 00));
 
             news.Breadcrumbs.Should().HaveCount(1);
             news.Breadcrumbs.First().Title.Should().Be("News");
@@ -101,8 +100,8 @@ namespace StockportContentApiTests.Unit.Factories
             news.Image.Should().Be("");
             news.ThumbnailImage.Should().Be("");
             news.Body.Should().Be("The news now");
-            news.SunriseDate.Should().Be(DateTime.Parse("2016-08-25T00:00+01:00"));
-            news.SunsetDate.Should().Be(DateTime.Parse("2016-08-30T00:00+01:00"));
+            news.SunriseDate.Date.Should().Be(new DateTime(2016, 08, 24));
+            news.SunsetDate.Date.Should().Be(new DateTime(2016, 08, 29));
         }
     }
 }

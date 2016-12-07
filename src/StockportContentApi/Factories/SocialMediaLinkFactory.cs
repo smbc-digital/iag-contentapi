@@ -1,6 +1,4 @@
-﻿using System;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
+﻿using StockportContentApi.Model;
 
 namespace StockportContentApi.Factories
 {

@@ -107,9 +107,11 @@ namespace StockportContentApiTests.Integration
             responseString.Should().Contain("sha");
         }
 
-        private string JsonNormalize(string jsonString)
+        private static string JsonNormalize(string jsonString)
         {
-            return JsonConvert.SerializeObject(JsonConvert.DeserializeObject<dynamic>(jsonString));
+            return JsonConvert.SerializeObject(
+                JsonConvert.DeserializeObject<dynamic>(jsonString, 
+                new JsonSerializerSettings { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }));
         }
 
         private string contentfulUrlFor(string type, int referenceLevelLimit, string slug = null)

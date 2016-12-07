@@ -16,6 +16,7 @@ namespace StockportContentApi.Repositories
     {
         private readonly IFactory<News> _newsFactory;
         private readonly IFactory<Newsroom> _newsroomFactory;
+        private readonly ITimeProvider _timeProvider;
         private readonly string _contentfulApiUrl;
         private readonly ContentfulClient _contentfulClient;
         private const int ReferenceLevelLimit = 1;
@@ -28,6 +29,7 @@ namespace StockportContentApi.Repositories
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _newsFactory = newsFactory;
             _newsroomFactory = newsroomFactory;
+            _timeProvider = timeProvider;
             _videoRepository = videoRepository;
             _dateComparer = new DateComparer(timeProvider);
         }
@@ -51,7 +53,7 @@ namespace StockportContentApi.Repositories
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
-                .GetNewsDates(out dates)
+                .GetNewsDates(out dates, _timeProvider)
                 .Where(news => CheckDates(startDate, endDate, news))
                 .GetTheCategories(out categories)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))

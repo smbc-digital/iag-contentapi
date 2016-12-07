@@ -107,8 +107,8 @@
           "subHeading": "Future Alert",
           "body": "Future Alerrt",
           "severity": "Warning",
-          "sunriseDate": "2016-07-01T00:00",
-          "sunsetDate": "2116-07-25T00:00"
+          "sunriseDate": "2016-07-01T00:00+01:00",
+          "sunsetDate": "2116-07-25T00:00+01:00"
         }
       },
       {

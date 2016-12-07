@@ -44,22 +44,20 @@ namespace StockportContentApi.Factories
             var slug = MustNotBeNull(fields.slug);
             var title = MustNotBeNull(fields.title);
             var teaser = MustNotBeNull(fields.teaser);
-
             var body = MakeEmptyStringIfNull(fields.body);
             var icon = MakeEmptyStringIfNull(fields.icon);
-
             var backgroundImage = contentfulResponse.GetImageUrl(fields.backgroundImage);
             var sections = _sectionListFactory.BuildFromReferences(fields.sections, contentfulResponse);
             var breadcrumbs = _breadcrumbFactory.BuildFromReferences(fields.breadcrumbs, contentfulResponse);
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
             var profiles = _profileListFactory.BuildFromReferences(fields.profiles, contentfulResponse);
             var documents = _documentListFactory.BuildFromReferences(fields.documents, contentfulResponse);
+
             var liveChatVisible = MakeFalseIfBooleanIsNull(fields.liveChatVisible);
             var liveChat = _liveChatListFactory.BuildFromReference(fields.liveChatText, contentfulResponse);
 
             DateTime sunriseDate = DateComparer.DateFieldToDate(fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
-           
            
             // find the parent topic from the breadcrumbs (the last topic in the list)
             var parentTopicFromTheBreadcrumb = BuildParentTopic(fields.breadcrumbs, contentfulResponse);

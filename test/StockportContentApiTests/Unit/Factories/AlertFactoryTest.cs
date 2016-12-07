@@ -31,8 +31,8 @@ namespace StockportContentApiTests.Unit.Factories
             alert.SubHeading.Should().Be("test");
             alert.Body.Should().Be("This is an information alert.");
             alert.Severity.Should().Be("Information");
-            alert.SunriseDate.Should().Be(DateTime.Parse("2016-07-01T00:00+01:00"));
-            alert.SunsetDate.Should().Be(DateTime.Parse("2016-08-31T00:00+01:00"));
+            alert.SunriseDate.Should().Be(new DateTime(2016, 06, 30, 23, 0, 0, 0, DateTimeKind.Utc));
+            alert.SunsetDate.Should().Be(new DateTime(2016, 08, 30, 23, 0, 0, 0, DateTimeKind.Utc));
         }
 
         [Fact]

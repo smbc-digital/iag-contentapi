@@ -21,20 +21,14 @@ namespace StockportContentApi.Factories
             var title = (string)entry.fields.title ?? string.Empty;
             var slug = (string)entry.fields.slug ?? string.Empty;
             var teaser = (string)entry.fields.teaser ?? string.Empty;
-
             var image = contentfulResponse.GetImageUrl(entry.fields.image);
-            var thumbnailImage = contentfulResponse.GetImageUrl(entry.fields.image);
-            thumbnailImage = ConvertToThumbnail(thumbnailImage); 
-
+            var thumbnailImage = ConvertToThumbnail(contentfulResponse.GetImageUrl(entry.fields.image));
             var body = (string)entry.fields.body ?? string.Empty;
-
             DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
-
             var breadcrumbs = new List<Crumb>() { new Crumb("News", string.Empty, "news") };
             var alerts = _alertListFactory.BuildFromReferences(entry.fields.alerts, contentfulResponse);
             var documents = _documentListFactory.BuildFromReferences(entry.fields.documents, contentfulResponse);
-
             var tags = GetListOfStrings(entry.fields.tags);
             var categories = GetListOfStrings(entry.fields.categories);
 
@@ -46,7 +40,6 @@ namespace StockportContentApi.Factories
             thumbnailImage += !string.IsNullOrEmpty(thumbnailImage) ? "?h=250" : "";
             return thumbnailImage;
         }
-
 
         private static List<string> GetListOfStrings(dynamic entries)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.Utils;
@@ -9,14 +8,12 @@ namespace StockportContentApi.Factories
     public class SubItemListFactory : IBuildContentTypesFromReferences<SubItem>
     {
         private readonly IFactory<SubItem> _subitemFactory;
-        private readonly ITimeProvider _timeProvider;
         private readonly DateComparer _dateComparer;
 
         public SubItemListFactory(IFactory<SubItem> subitemFactory, ITimeProvider timeProvider)
         {
             _subitemFactory = subitemFactory;
-            _timeProvider = timeProvider;
-            _dateComparer = new DateComparer(_timeProvider);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public IEnumerable<SubItem> BuildFromReferences(IEnumerable<dynamic> references,

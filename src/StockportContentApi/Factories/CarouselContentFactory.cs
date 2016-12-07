@@ -1,5 +1,6 @@
 ﻿using System;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Factories
 {
@@ -15,10 +16,8 @@ namespace StockportContentApi.Factories
 
             var url = (string) entry.fields.url ?? string.Empty;
 
-            DateTime sunriseDate;
-            DateTime.TryParse((string)entry.fields.sunriseDate ?? string.Empty, out sunriseDate);
-            DateTime sunsetDate;
-            DateTime.TryParse((string)entry.fields.sunsetDate ?? string.Empty, out sunsetDate);
+            DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
+            DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
 
             return new CarouselContent(title, slug, teaser, image, sunriseDate, sunsetDate, url);
         }

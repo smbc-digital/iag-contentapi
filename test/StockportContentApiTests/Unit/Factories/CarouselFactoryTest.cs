@@ -31,12 +31,10 @@ namespace StockportContentApiTests.Unit.Factories
             carouselContent.Slug.Should().Be("red-rock-opening");
             carouselContent.Teaser.Should().Be("The long awaited cinema complex is due to open late Oct 2016. Come and take a look.");
 
-            DateTime sunriseDate;
-            DateTime.TryParse("2016-09-01T00:00+01:00", out sunriseDate);
+            var sunriseDate = new DateTime(2016, 08, 31, 23, 0, 0, 0, DateTimeKind.Utc);
             carouselContent.SunriseDate.Should().Be(sunriseDate);
 
-            DateTime sunsetDate;
-            DateTime.TryParse("2016-09-29T00:00+01:00", out sunsetDate);
+            var sunsetDate = new DateTime(2016, 09, 28, 23, 0, 0, 0, DateTimeKind.Utc);
             carouselContent.SunsetDate.Should().Be(sunsetDate);
 
             carouselContent.Url.Should().Be("http://fake.url");
