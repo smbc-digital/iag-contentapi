@@ -19,8 +19,8 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly SectionListFactory _sectionListFactory;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory;
-        private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, DateTime.Now, "/thisisaurl", "filename1.pdf"),
-                                                                            new Document("Title 2", 3412, DateTime.Now.AddHours(2), "/anotherurl", "filename2.pdf") };
+        private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, new DateTime(2016, 12, 08), "/thisisaurl", "filename1.pdf"),
+                                                                            new Document("Title 2", 3412, new DateTime(2016, 12, 09), "/anotherurl", "filename2.pdf") };
 
         public SectionListFactoryTest()
         {

@@ -170,7 +170,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void Gets404ForNewsOutsideOfSunriseDate()
+        public void Gets200ForNewsOutsideOfSunriseDate()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 06, 01));
 
@@ -179,11 +179,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews("news-of-the-century"));
 
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
-        public void Gets404ForNewsOutsideOfSunsetDate()
+        public void Gets200ForNewsOutsideOfSunsetDate()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 10, 01));
 
@@ -192,7 +192,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews("news-of-the-century"));
 
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]

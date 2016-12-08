@@ -84,8 +84,6 @@ namespace StockportContentApi.Repositories
 
             news.Body = _videoRepository.Process(news.Body);
 
-            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate)) news = new NullNews();
-
             return news.GetType() == typeof(NullNews)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
                 : HttpResponse.Successful(news);

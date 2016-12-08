@@ -22,8 +22,8 @@ namespace StockportContentApiTests.Unit.Factories
         private const string AlertSeverity = "Error";
         private readonly DateTime _alertSunriseDate = new DateTime(2016, 10, 10);
         private readonly DateTime _alertSunsetDate = new DateTime(2016, 10, 20);
-        private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, DateTime.Now, "/thisisaurl", "filename1.pdf"),
-                                                                            new Document("Title 2", 3412, DateTime.Now.AddHours(2), "/anotherurl", "filename2.pdf") };
+        private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, new DateTime(2016, 12, 08), "/thisisaurl", "filename1.pdf"),
+                                                                            new Document("Title 2", 3412, new DateTime(2016, 12, 09), "/anotherurl", "filename2.pdf") };
 
         public NewsFactoryTest()
         {
