@@ -44,7 +44,7 @@ namespace StockportContentApiTests.Unit.Extensions
         [Fact]
         public void ShouldReturnOneDateForDuplicateMonths()
         {
-            var news = new List<News>()
+            var news = new List<News>
             {
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
@@ -64,13 +64,12 @@ namespace StockportContentApiTests.Unit.Extensions
         [Fact]
         public void ShouldReturnOnlyReturnCurrentAndPastNewsItems()
         {
-            var futureDate = DateTime.Now.AddMonths(1);
-            var news = new List<News>()
+            var news = new List<News>
             {
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
-                new News("title", "slug", "teaser", "image", "thumbnail", "body", DateTime.Today, DateTime.Today.AddMonths(1), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
-                new News("title", "slug", "teaser", "image", "thumbnail", "body", DateTime.Today.AddMonths(-1), DateTime.Today, new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
-                new News("title", "slug", "teaser", "image", "thumbnail", "body", futureDate, futureDate.AddMonths(8), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 06, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>()),
+                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 12, 10), new DateTime(2016, 12, 25), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
             };
 
             var dates = new List<DateTime>();
@@ -93,7 +92,7 @@ namespace StockportContentApiTests.Unit.Extensions
                 "business"
             };
 
-            var news = new List<News>()
+            var news = new List<News>
             {
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), newsCategories),
                 new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
