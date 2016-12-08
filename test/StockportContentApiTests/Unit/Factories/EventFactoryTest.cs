@@ -36,5 +36,23 @@ namespace StockportContentApiTests.Unit.Factories
             eventItem.SunriseDate.Should().Be(new DateTime(2016, 12, 08, 00, 00, 00));
             eventItem.SunsetDate.Should().Be(new DateTime(2016, 12, 22, 00, 00, 00));
         }
+
+
+        [Fact]
+        public void BuildsEventWithImage()
+        {
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/EventWithImage.json"));
+            var contentfulResponse = new ContentfulResponse(mockContentfulData);
+
+            Event eventItem = _eventFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
+
+            eventItem.Title.Should().Be("This is the event");
+            eventItem.Slug.Should().Be("event-of-the-century");
+            eventItem.Teaser.Should().Be("Read more for the event");
+            eventItem.Description.Should().Be("The event  description");
+            eventItem.Image.Should().Be("image.jpg");
+            eventItem.SunriseDate.Should().Be(new DateTime(2016, 12, 08, 00, 00, 00));
+            eventItem.SunsetDate.Should().Be(new DateTime(2016, 12, 22, 00, 00, 00));
+        }
     }
 }
