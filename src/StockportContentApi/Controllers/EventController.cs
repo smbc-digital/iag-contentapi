@@ -21,5 +21,24 @@ namespace StockportContentApi.Controllers
             _eventRepository = eventRepository;
         }
 
+        [Route("/api/{businessId}/events/{slug}")]
+        public async Task<IActionResult> Detail(string slug, string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _eventRepository(_createConfig(businessId));
+                return repository.GetEvent(slug);
+            });
+        }
+
+        [Route("/api/{businessId}/events")]
+        public async Task<IActionResult> Index(string businessId,[FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _eventRepository(_createConfig(businessId));
+                return repository.Get();
+            });
+        }
     }
 }

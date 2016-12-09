@@ -74,5 +74,55 @@ namespace StockportContentApiTests.Unit.Utils
 
             date.Should().Be(DateTime.MinValue);
         }
+
+        [Fact]
+        public void ShouldReturnTrueForSunriseDateIsWithinAndNoSunsetDate()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+
+            var isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 4), DateTime.MinValue);
+
+            isWithin.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldReturnTrueForNoSunriseDateIsWithinAndASunsetDateWhenSunsetDate()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+
+            var isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(DateTime.MinValue, new DateTime(2016, 8, 6));
+
+            isWithin.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldReturnTrueForSunriseDateIsWithinAndSunsetDateWithin()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+
+            var isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 4), new DateTime(2016, 8, 6));
+
+            isWithin.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldReturnFalseForSunriseDateIsWithinAndSunsetDateOutside()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+
+            var isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 1), new DateTime(2016, 8, 4));
+
+            isWithin.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldReturnFalseForSunriseDateIsOutsideAndSunsetDateWithin()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+
+            var isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 6), new DateTime(2016, 8, 10));
+
+            isWithin.Should().BeFalse();
+        }
     }
 }

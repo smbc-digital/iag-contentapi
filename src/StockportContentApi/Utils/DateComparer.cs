@@ -19,21 +19,24 @@ namespace StockportContentApi.Utils
                 : ((DateTimeOffset)DateTimeOffset.Parse(date.ToString("u"), CultureInfo.InvariantCulture)).UtcDateTime;
         }
 
-        private static bool IsValidDateTime(dynamic date)
-        {
-            DateTime datetime;
-            return date != null && DateTime.TryParse(date.ToString(), out datetime);
-        }
-
         public bool DateNowIsWithinSunriseAndSunsetDates(DateTime sunriseDate, DateTime sunsetDate)
         {
-            return (sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate)
-                   && (sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate);
+            var sunriseCheck = sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate;
+            var sunsetCheck = sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate;
+
+            return sunriseCheck
+                   && sunsetCheck;
         }
 
         public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate)
         {
             return sunriseDate.Date >= startDate.Date && sunriseDate.Date <= endDate.Date && sunriseDate <= _timeProvider.Now();
+        }
+
+        private static bool IsValidDateTime(dynamic date)
+        {
+            DateTime datetime;
+            return date != null && DateTime.TryParse(date.ToString(), out datetime);
         }
     }
 }

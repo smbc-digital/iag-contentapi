@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,80 +7,84 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
     public class EventRepository
     {
-        private readonly IFactory<Event> _eventFactory;       
+        private readonly IFactory<Event> _eventFactory;
+        private readonly IFactory<EventCalender> _eventCalanderFactory;
         private readonly ITimeProvider _timeProvider;
         private readonly string _contentfulApiUrl;
         private readonly ContentfulClient _contentfulClient;
         private readonly DateComparer _dateComparer;
         private const int ReferenceLevelLimit = 1;
 
-        public EventRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Event> eventFactory,ITimeProvider timeProvider)
+        public EventRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Event> eventFactory, IFactory<EventCalender> evenCalanderFactory, ITimeProvider timeProvider)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _eventFactory = eventFactory;
+            _eventCalanderFactory = evenCalanderFactory;
             _timeProvider = timeProvider;
             _dateComparer = new DateComparer(timeProvider);
         }
 
-        public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
+        public async Task<HttpResponse> Get()
         {
-            var eventCalender = new Newsroom(new List<Alert>(), false, string.Empty);
-            //var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
+            var eventCalender = new EventCalender();
 
-            //if (newsroomContentfulResponse.HasItems())
-            //{
-            //    newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
-            //}
+            var eventsContentfulResponse = await _contentfulClient.Get(UrlForEvents("events", ReferenceLevelLimit));
 
-            //var newsContentfulResponse = await _contentfulClient.Get(UrlForNewsWithFilters("news", ReferenceLevelLimit, tag));
+            if (!eventsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
-            //if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+            var eventsArticles =
+                eventsContentfulResponse.GetAllItems()
+                    .Select(item => _eventFactory.Build(item, eventsContentfulResponse))
+                    .Cast<Event>()
+                    .Where(CheckDates)
+                    .OrderByDescending(o => o.SunriseDate)
+                    .ToList();
 
-            //List<string> categories;
-            //List<DateTime> dates;
-            //var newsArticles = newsContentfulResponse.GetAllItems()
-            //    .Select(item => _newsFactory.Build(item, newsContentfulResponse))
-            //    .Cast<News>()
-            //    .GetNewsDates(out dates, _timeProvider)
-            //    .Where(news => CheckDates(startDate, endDate, news))
-            //    .GetTheCategories(out categories)
-            //    .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
-            //    .OrderByDescending(o => o.SunriseDate)
-            //    .ToList();
+            eventCalender.SetEvents(eventsArticles);
 
-            //newsroom.SetNews(newsArticles);
-            //newsroom.SetCategories(categories.Distinct().ToList());
-            //newsroom.SetDates(dates.Distinct().ToList());
-
-            return HttpResponse.Successful(newsroom);
+            return !eventsArticles.Any() ? HttpResponse.Failure(HttpStatusCode.NotFound, "No events found") : HttpResponse.Successful(eventCalender);         
         }
-
 
         public async Task<HttpResponse> GetEvent(string slug)
         {
-            var contentfulResponse = await _contentfulClient.Get(UrlForSlug("event", ReferenceLevelLimit, slug));
+            var contentfulResponse = await _contentfulClient.Get(UrlForSlug("events", ReferenceLevelLimit, slug));
 
             if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
 
             Event eventItem = _eventFactory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
 
-       
+            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(eventItem.SunriseDate, eventItem.SunsetDate)) eventItem = new NullEvent();
 
             return eventItem.GetType() == typeof(NullEvent)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
                 : HttpResponse.Successful(eventItem);
         }
 
+        private bool CheckDates(Event eventItem)
+        {
+            return _dateComparer.DateNowIsWithinSunriseAndSunsetDates(eventItem.SunriseDate, eventItem.SunsetDate);
+        }
+
+        private string UrlForEvents(string type, int referenceLevel)
+        {
+            var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";                 
+            return baseUrl;
+        }
+
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+        }
+
+        private string UrlForEventCalander(string type, int referenceLevel)
+        {
+            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
         }
     }
 }

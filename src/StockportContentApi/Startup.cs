@@ -119,6 +119,8 @@ namespace StockportContentApi
                 p => { return x => new AtoZRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<AtoZ>>()); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<RedirectsRepository>();
+            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
+              p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Event>>(), p.GetService<IFactory<EventCalender>>(), p.GetService<ITimeProvider>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)
@@ -139,6 +141,7 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
             services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
+            services.AddSingleton<IFactory<Event>, EventFactory>();         
 
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();

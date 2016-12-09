@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
-using Moq;
 using Newtonsoft.Json;
 using StockportContentApi;
 using StockportContentApi.Factories;
@@ -37,7 +35,6 @@ namespace StockportContentApiTests.Unit.Factories
             eventItem.SunsetDate.Should().Be(new DateTime(2016, 12, 22, 00, 00, 00));
         }
 
-
         [Fact]
         public void BuildsEventWithImage()
         {
@@ -51,6 +48,7 @@ namespace StockportContentApiTests.Unit.Factories
             eventItem.Teaser.Should().Be("Read more for the event");
             eventItem.Description.Should().Be("The event  description");
             eventItem.Image.Should().Be("image.jpg");
+            eventItem.ThumbnailImage.Should().Be("image.jpg?h=250");
             eventItem.SunriseDate.Should().Be(new DateTime(2016, 12, 08, 00, 00, 00));
             eventItem.SunsetDate.Should().Be(new DateTime(2016, 12, 22, 00, 00, 00));
         }

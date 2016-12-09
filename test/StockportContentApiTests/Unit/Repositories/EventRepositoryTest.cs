@@ -44,20 +44,21 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _mockTimeProvider = new Mock<ITimeProvider>();
             _httpClient = new Mock<IHttpClient>();            
-            var eventFactory = new Mock<IFactory<Event>>();            
-            _repository = new EventRepository(config, _httpClient.Object, eventFactory.Object, _mockTimeProvider.Object);
+            var eventFactory = new Mock<IFactory<Event>>();
+            var eventCalanderFactory = new Mock<IFactory<EventCalender>>();
+            _repository = new EventRepository(config, _httpClient.Object, eventFactory.Object, eventCalanderFactory.Object, _mockTimeProvider.Object);
 
             eventFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
-                new Event(Title, Slug, Teaser, Image, Description, _sunriseDate, _sunsetDate));            
+                new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate));            
         }
 
 
         [Fact]
         public void GetsASingleEventItemFromASlug()
         {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=event&include=1&fields.slug=event-of-the-century"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
@@ -75,52 +76,94 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void GetsAllNewsItems()
+        public void GetsA404ForANotFoundEventItem()
         {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-not-found"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-          
-
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var newsroom = response.Get<Newsroom>();
-
-            newsroom.Alerts.Count.Should().Be(1);
-            newsroom.Alerts.Should().BeEquivalentTo(_alerts);
-
-            newsroom.EmailAlerts.Should().Be(true);
-            newsroom.EmailAlertsTopicId.Should().Be("test-id");
-            newsroom.Categories.Count.Should().Be(2);
-            newsroom.Categories[0].Should().Be("news-category-1");
-            newsroom.Categories[1].Should().Be("news-category-2");
-            newsroom.Dates.Should().HaveCount(1);
-            newsroom.Dates[0].Should().HaveMonth(8);
-            newsroom.Dates[0].Should().HaveYear(2016);
-
-
-            newsroom.News.Count.Should().Be(2);
-            var firstNews = newsroom.News.First();
-            firstNews.Title.Should().Be(Title);
-            firstNews.Body.Should().Be(Body);
-            firstNews.Slug.Should().Be(Slug);
-            firstNews.Teaser.Should().Be(Teaser);
-            firstNews.SunriseDate.Should().Be(_sunriseDate);
-            firstNews.SunsetDate.Should().Be(_sunsetDate);
-            firstNews.Image.Should().Be(Image);
-            firstNews.ThumbnailImage.Should().Be(ThumbnailImage);
-            firstNews.Breadcrumbs.Should().BeEquivalentTo(_crumbs);
-            firstNews.Alerts.Should().BeEquivalentTo(_alerts);
-            firstNews.Categories.Count.Should().Be(2);
-            firstNews.Categories[0].Should().Be("news-category-1");
-            firstNews.Categories[1].Should().Be("news-category-2");
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found"));
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.Error.Should().Be("No event found for 'event-not-found'");
         }
 
+        [Fact]
+        public void GetsA404ForAEventOutsideOfSunriseDate()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 11, 5));
 
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.Error.Should().Be("No event found for 'event-of-the-century'");
+        }
+
+        [Fact]
+        public void GetsA404ForAEventOutsideOfSunsetDate()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 23));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public void GetAllEvents()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.Get());
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var events = response.Get<EventCalender>();
+
+            events.Events.Should().HaveCount(3);
+            events.Events[0].Title.Should().Be(Title);
+            events.Events[0].Slug.Should().Be(Slug);
+            events.Events[0].Description.Should().Be(Description);
+            events.Events[0].Teaser.Should().Be(Teaser);
+            events.Events[0].SunriseDate.Should().Be(_sunriseDate);
+            events.Events[0].SunsetDate.Should().Be(_sunsetDate);
+        }
+
+        [Fact]
+        public void ShouldGetNoneEventsWithOutSideDates()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.Get());
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.Error.Should().Be("No events found");
+        }
+
+        [Fact]
+        public void ShouldGet404IfContentNotFound()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.Get());
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.Error.Should().Be("No events found");
+        }
     }
 }
