@@ -4,6 +4,12 @@ in_docker_machine = $(shell docker-machine env $(MACHINE_NAME))
 help:
 		@cat ./MakefileHelp
 
+require-envs-%:
+	@for i in $$(echo $* | sed "s/,/ /g"); do \
+	  if [[ -z $${!i} ]]; then echo "[FAIL] Environment variable $$i is not set." && FAIL=yes; fi \
+	done; \
+	if [[ -n $$FAIL ]]; then echo "Aborting..." && exit 1; fi
+
 # Docker machine targets: (manage the environment to run docker locally)
 # ---------------------------------------------------------------------------------------
 MACHINE_NAME = smbc
@@ -43,28 +49,23 @@ AWS_DEFAULT_REGION ?= eu-west-1
 AWS_ACCOUNT ?= 390744977344
 DOCKER_REPOSITORY = $(AWS_ACCOUNT).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 
-.PHONY: build run clean
+.PHONY: build run
 build:
 	git rev-parse HEAD > src/$(PROJECT_NAME)/sha.txt
 	echo $(APP_VERSION) > src/$(PROJECT_NAME)/version.txt
 	./docker.sh build $(IMAGE) $(TAG) Dockerfile
 
-run: clean
-	eval "$(in_docker_machine)" ; \
-	docker run --name $(CONTAINER_NAME) \
-		-p 5001:5001 \
-		-e HTTP_PROXY=$(HTTP_PROXY) \
-		-e HTTPS_PROXY=$(HTTPS_PROXY) \
-		-e NO_PROXY=$(NO_PROXY) \
-		-e HEALTHYSTOCKPORT_ACCESS_KEY=$(HEALTHYSTOCKPORT_ACCESS_KEY) \
-		-e HEALTHYSTOCKPORT_SPACE=$(HEALTHYSTOCKPORT_SPACE) \
-		-e STOCKPORTGOV_ACCESS_KEY=$(STOCKPORTGOV_ACCESS_KEY) \
-		-e STOCKPORTGOV_SPACE=$(STOCKPORTGOV_SPACE) \
-		$(IMAGE):$(TAG)
+run: copy-secrets
+	./docker.sh run \
+		$(CONTAINER_NAME) \
+		$(IMAGE) \
+		$(TAG) \
+		$(ASPNETCORE_ENVIRONMENT)
 
-clean:
-	eval "$(in_docker_machine)" ; \
-	docker rm -f $(CONTAINER_NAME) ; exit 0
+.PHONY: copy-secrets
+copy-secrets: require-envs-ASPNETCORE_ENVIRONMENT
+	cp ../iag-secrets/contentapi/appsettings.$(ASPNETCORE_ENVIRONMENT).secrets.json \
+	src/StockportContentApi/app-config/injected/
 
 # Deployment targets: (these push to Amazon ECR and EB, and require AWS creds)
 # ---------------------------------------------------------------------------------------
