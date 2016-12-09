@@ -9,7 +9,7 @@ Docker machine targets available:
 Project automation targets: (these run in docker)
   build:               build the Dockerfile, download all the requirements, compile the code
   run:                 compile the code into a docker layer and run it
-  clean:               remove the docker file system layer with the compiled code
+  copy-secrets:        copy secrets into application
 
 Deployment targets: (these push to Amazon ECR and EB, and require AWS creds)
   tag:                 tag the current image with pipeline number
