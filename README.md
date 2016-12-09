@@ -15,6 +15,14 @@ make build
 * The app can run several different business Ids at once, as long as the corresponding
 business Ids are provided.
 
+### Configuration
+The app has three config files which are kept in `src/StockportContentApi/app-config/`
+
+1. `appsettings.json` - this is for generic application config.
+2. `appsettings.{ASPNETCORE_ENVIRONMENT}.json` - this is for environment specific config, i.e. external service settings.
+3. `injected/appsettings.{ASPNETCORE_ENVIRONMENT}.secrets.json` - this is for secret config, i.e. the Contentful space keys and access keys ([template found here](src/StockportContentApi/app-config/injected/readme.md)).
+
+### How to run
 ```
 make run
 ```
