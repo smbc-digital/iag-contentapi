@@ -37,24 +37,29 @@ namespace StockportContentApiTests.Unit.Repositories
                 new Alert("title", "subheading", "body", "severity", new DateTime(2016, 08, 5), new DateTime(2016, 08, 11)) };
         private readonly List<string> _newsCategories = new List<string>() { "news-category-1", "news-category-2" };
 
-        public NewsRepositoryTest()
-        {
-            var config = new ContentfulConfig("test")
+        private readonly ContentfulConfig _config = new ContentfulConfig("test")
                 .Add("DELIVERY_URL", "https://fake.url")
                 .Add("TEST_SPACE", "SPACE")
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
+        private Mock<IBuildContentTypesFromReferences<Alert>> _mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
+        private Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
+        private Mock<IFactory<Newsroom>> _newsroomFactory = new Mock<IFactory<Newsroom>>();
+
+        public NewsRepositoryTest()
+        {
             _mockTimeProvider = new Mock<ITimeProvider>();
             _httpClient = new Mock<IHttpClient>();
             _videoRepository = new Mock<IVideoRepository>();
             var newsFactory = new Mock<IFactory<News>>();
             var newsroomFactory = new Mock<IFactory<Newsroom>>();
-            _repository = new NewsRepository(config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
+            _repository = new NewsRepository(_config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
 
             newsFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
                 new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, 
                 new List<string>{ "Bramall Hall" }, new List<Document>(), _newsCategories));
+
             newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
         }
 
@@ -301,19 +306,10 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnListOfNewsForDateRange()
         {
-            // Arrange
-            var config = new ContentfulConfig("test")
-                .Add("DELIVERY_URL", "https://fake.url")
-                .Add("TEST_SPACE", "SPACE")  
-                .Add("TEST_ACCESS_KEY", "KEY")
-                .Build();
-          
-            var mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-            var mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();           
-            var newsroomFactory = new Mock<IFactory<Newsroom>>();
-            var newsfactory = new NewsFactory(mockAlertlistFactory.Object, mockDocumentListFactory.Object); 
-            var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
-            newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object); 
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
+
+            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
             
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
@@ -332,19 +328,10 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnListOfFilterDatesForAllNewsThatIsCurrentOrPast()
         {
-            // Arrange
-            var config = new ContentfulConfig("test")
-                .Add("DELIVERY_URL", "https://fake.url")
-                .Add("TEST_SPACE", "SPACE")
-                .Add("TEST_ACCESS_KEY", "KEY")
-                .Build();
+            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
 
-            var mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-            var mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
-            var newsroomFactory = new Mock<IFactory<Newsroom>>();
-            var newsfactory = new NewsFactory(mockAlertlistFactory.Object, mockDocumentListFactory.Object);
-            var repository = new NewsRepository(config, _httpClient.Object, newsfactory, newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
-            newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 7));
 
@@ -369,6 +356,62 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             newsroom.Should().BeNull();
+        }
+
+        [Fact]
+        public void ShouldReturnNewsItemsWithExactMatchingesForTagsWithoutHash()
+        {
+            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
+            
+            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
+
+            var tag = "testTag";
+
+            var queryString = $"&content_type=news&include=1&fields.tags[in]={tag}";
+
+            _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithoutHashTagTest.json")));
+
+            // Act
+            var response = AsyncTestHelper.Resolve(repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+            var newsroom = response.Get<Newsroom>();
+
+            // Assert
+            _httpClient.Verify(client => client.Get($"{MockContentfulApiUrl}{queryString}"), Times.Once());
+            newsroom.News.Count.Should().Be(1);
+            newsroom.News.First().Tags.Any(t => t == tag).Should().BeTrue(); ;
+        }
+
+        [Fact]
+        public void ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
+        {            
+            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _mockTimeProvider.Object, _videoRepository.Object);
+
+            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
+
+            const string tag = "#testTag";
+            const string expectedTagQueryValue = "testTag";
+
+            var queryString = $"&content_type=news&include=1&fields.tags[match]={expectedTagQueryValue}";
+            
+            _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithHashTagTest.json")));
+
+            // Act
+            var response = AsyncTestHelper.Resolve(repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+            var newsroom = response.Get<Newsroom>();
+
+            // Assert
+            _httpClient.Verify(client => client.Get($"{MockContentfulApiUrl}{queryString}"), Times.Once());
+            newsroom.News.Count.Should().Be(2);            
+
+            newsroom.News[1].Tags.Any(t => t == tag).Should().BeTrue();
         }
     }
 }

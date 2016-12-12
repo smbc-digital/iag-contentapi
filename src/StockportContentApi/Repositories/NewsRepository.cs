@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
@@ -123,10 +124,30 @@ namespace StockportContentApi.Repositories
             var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
 
             var querys = "";
-            querys += !string.IsNullOrWhiteSpace(tag) ? CreateQueryParameter("fields.tags[in]", tag) : string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(tag))
+            {
+                var searchType = GetSearchTypeForTag(ref tag);
+                querys += CreateQueryParameter($"fields.tags[{searchType}]",  tag);
+            }
 
             var url = string.Concat(baseUrl, querys);
             return url;
+        }
+
+        private static string GetSearchTypeForTag(ref string tag)
+        {
+            var searchType = "in";
+            
+            if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#"))
+            {
+                return searchType;
+            }
+
+            searchType = "match";
+            tag = tag.Remove(0, 1);
+
+            return searchType;
         }
 
         private static string CreateQueryParameter(string queryName, string queryValue)
