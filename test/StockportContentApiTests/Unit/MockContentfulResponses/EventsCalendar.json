@@ -35,7 +35,16 @@
         "teaser": "Read more for the event",
         "description": "The event  description",
         "sunriseDate": "2016-12-08T00:00+00:00",
-        "sunsetDate": "2016-12-22T00:00+00:00"
+        "sunsetDate": "2016-12-22T00:00+00:00",
+        "fee": "Free",
+        "location": "Bramall Hall, Carpark, SK7 6HG",
+        "submittedBy": "Friends of Stockport",
+        "longitude": "",
+        "latitude": "",
+        "featured": false,
+        "eventDate": "2016-12-30T00:00:00Z",
+        "startTime": "10:00",
+        "endTime": "17:00"
       }
     },
     {
@@ -67,7 +76,16 @@
         "teaser": "Read more for the event",
         "description": "The event  description",
         "sunriseDate": "2016-11-08T00:00+00:00",
-        "sunsetDate": "2016-12-22T00:00+00:00"
+        "sunsetDate": "2016-12-22T00:00+00:00",
+        "fee": "Free",
+        "location": "Bramall Hall, Carpark, SK7 6HG",
+        "submittedBy": "Friends of Stockport",
+        "longitude": "",
+        "latitude": "",
+        "featured": false,
+        "eventDate": "2016-12-30T00:00:00Z",
+        "startTime": "10:00",
+        "endTime": "17:00"
       }
     },
     {
@@ -99,7 +117,16 @@
         "teaser": "Read more for the event",
         "description": "The event  description",
         "sunriseDate": "2016-10-08T00:00+00:00",
-        "sunsetDate": "2016-12-22T00:00+00:00"
+        "sunsetDate": "2016-12-22T00:00+00:00",
+        "fee": "Free",
+        "location": "Bramall Hall, Carpark, SK7 6HG",
+        "submittedBy": "Friends of Stockport",
+        "longitude": "",
+        "latitude": "",
+        "featured": false,
+        "eventDate": "2016-12-30T00:00:00Z",
+        "startTime": "10:00",
+        "endTime": "17:00"
       }
     }
   ]

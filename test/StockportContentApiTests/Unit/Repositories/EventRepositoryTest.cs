@@ -32,7 +32,12 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly DateTime _sunsetDate = new DateTime(2016, 08, 10);
         private const string Image = "image.jpg";
         private const string ThumbnailImage = "thumbnail.jpg";
-
+        private const string Fee = "Free";
+        private const string Location = "Bramall Hall, Carpark, SK7 6HG";
+        private const string SubmittedBy = "Friends of Stockport";
+        private const string StartTime = "10:00";
+        private const string EndTime = "17:00";
+        private readonly DateTime _eventDate = new DateTime(2016, 12, 30);
 
         public EventRepositoryTest()
         {
@@ -49,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _repository = new EventRepository(config, _httpClient.Object, eventFactory.Object, eventCalanderFactory.Object, _mockTimeProvider.Object);
 
             eventFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
-                new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate));            
+                new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate, Fee, Location, SubmittedBy, null, null, false, _eventDate, StartTime, EndTime));            
         }
 
 
@@ -72,7 +77,13 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.Teaser.Should().Be(Teaser);
             eventItem.SunriseDate.Should().Be(_sunriseDate);
             eventItem.SunsetDate.Should().Be(_sunsetDate);
-            eventItem.Image.Should().Be(Image);                   
+            eventItem.Image.Should().Be(Image);
+            eventItem.Fee.Should().Be(Fee);
+            eventItem.Location.Should().Be(Location);
+            eventItem.SubmittedBy.Should().Be(SubmittedBy);
+            eventItem.EventDate.Should().Be(_eventDate);
+            eventItem.StartTime.Should().Be(StartTime);
+            eventItem.EndTime.Should().Be(EndTime);
         }
 
         [Fact]
@@ -136,6 +147,12 @@ namespace StockportContentApiTests.Unit.Repositories
             events.Events[0].Teaser.Should().Be(Teaser);
             events.Events[0].SunriseDate.Should().Be(_sunriseDate);
             events.Events[0].SunsetDate.Should().Be(_sunsetDate);
+            events.Events[0].Fee.Should().Be(Fee);
+            events.Events[0].Location.Should().Be(Location);
+            events.Events[0].SubmittedBy.Should().Be(SubmittedBy);
+            events.Events[0].EventDate.Should().Be(_eventDate);
+            events.Events[0].StartTime.Should().Be(StartTime);
+            events.Events[0].EndTime.Should().Be(EndTime);
         }
 
         [Fact]

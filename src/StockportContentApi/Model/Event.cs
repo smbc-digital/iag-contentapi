@@ -12,9 +12,18 @@ namespace StockportContentApi.Model
         public string Description { get; set; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
+        public string Fee { get;  }
+        public string Location { get; }
+        public string SubmittedBy { get; }
+        public string Longitude { get; }
+        public string Latitude { get; }
+        public bool Featured { get; }
+        public DateTime EventDate { get; }
+        public string StartTime { get; }
+        public string EndTime { get; }
 
         public Event(string title, string slug, string teaser, string image, string thumbnailImage, string description, DateTime sunriseDate,
-            DateTime sunsetDate)
+            DateTime sunsetDate, string fee, string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, string endTime) 
         {
             Title = title;
             Slug = slug;
@@ -24,6 +33,15 @@ namespace StockportContentApi.Model
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
             ThumbnailImage = thumbnailImage;
+            Fee = fee;
+            Location = location;
+            SubmittedBy = submittedBy;
+            Longitude = longitude;
+            Latitude = latitude;
+            Featured = featured;
+            EventDate = eventDate;
+            StartTime = startTime;
+            EndTime = endTime;
         }
     }
 
@@ -31,7 +49,8 @@ namespace StockportContentApi.Model
     {
         public NullEvent()
             : base(
-                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime(), new DateTime())
+                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime(), new DateTime(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
+                false, new DateTime(), string.Empty, string.Empty)
         { }
     }
 }

@@ -15,9 +15,19 @@ namespace StockportContentApi.Factories
             var thumbnailImage = ConvertToThumbnail(image);
             var description = (string)entry.fields.description ?? string.Empty;
             DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
-            DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);         
+            DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
+            var fee = (string)entry.fields.fee ?? string.Empty;
+            var location = (string)entry.fields.location ?? string.Empty;
+            var submittedBy = (string)entry.fields.submittedBy ?? string.Empty;
+            var longitude = (string)entry.fields.longitude ?? string.Empty;
+            var latitude = (string)entry.fields.latitude ?? string.Empty;
+            bool featured = entry.fields.featured ?? false;
+            DateTime eventDate = DateComparer.DateFieldToDate(entry.fields.eventDate);
+            var startTime = (string)entry.fields.startTime ?? string.Empty;
+            var endTime = (string)entry.fields.endTime ?? string.Empty;
 
-            return new Event(title, slug, teaser, image, thumbnailImage, description, sunriseDate, sunsetDate);
+            return new Event(title, slug, teaser, image, thumbnailImage, description, sunriseDate, sunsetDate, fee, location,
+                submittedBy, longitude, latitude, featured, eventDate, startTime, endTime);
            
         }
 
