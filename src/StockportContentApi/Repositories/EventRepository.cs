@@ -43,7 +43,8 @@ namespace StockportContentApi.Repositories
                     .Select(item => _eventFactory.Build(item, eventsContentfulResponse))
                     .Cast<Event>()
                     .Where(CheckDates)
-                    .OrderByDescending(o => o.SunriseDate)
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(t => t.Title)
                     .ToList();
 
             eventCalender.SetEvents(eventsArticles);
