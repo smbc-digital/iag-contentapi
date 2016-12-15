@@ -15,5 +15,12 @@
   "featured": false,
   "eventDate": "2016-12-30T00:00:00Z",
   "startTime": "10:00",
-  "endTime": "17:00"
+  "endTime": "17:00",
+  "breadcrumbs": [
+    {
+      "title": "Events",
+      "slug": "",
+      "type": "events"
+    }
+  ]
 }

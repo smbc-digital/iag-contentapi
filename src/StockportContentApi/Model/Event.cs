@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Model
 {
@@ -21,9 +22,10 @@ namespace StockportContentApi.Model
         public DateTime EventDate { get; }
         public string StartTime { get; }
         public string EndTime { get; }
+        public List<Crumb> Breadcrumbs { get; set; }
 
         public Event(string title, string slug, string teaser, string image, string thumbnailImage, string description, DateTime sunriseDate,
-            DateTime sunsetDate, string fee, string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, string endTime) 
+            DateTime sunsetDate, string fee, string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, string endTime, List<Crumb> breadcrumbs) 
         {
             Title = title;
             Slug = slug;
@@ -42,6 +44,7 @@ namespace StockportContentApi.Model
             EventDate = eventDate;
             StartTime = startTime;
             EndTime = endTime;
+            Breadcrumbs = breadcrumbs;
         }
     }
 
@@ -50,7 +53,7 @@ namespace StockportContentApi.Model
         public NullEvent()
             : base(
                 string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime(), new DateTime(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                false, new DateTime(), string.Empty, string.Empty)
+                false, new DateTime(), string.Empty, string.Empty, new List<Crumb>())
         { }
     }
 }

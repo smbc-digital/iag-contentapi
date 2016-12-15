@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _repository = new EventRepository(config, _httpClient.Object, eventFactory.Object, eventCalanderFactory.Object, _mockTimeProvider.Object);
 
             eventFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
-                new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate, Fee, Location, SubmittedBy, null, null, false, _eventDate, StartTime, EndTime));            
+                new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate, Fee, Location, SubmittedBy, null, null, false, _eventDate, StartTime, EndTime, new List<Crumb>()));            
         }
 
 

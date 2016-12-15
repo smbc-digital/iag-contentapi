@@ -32,7 +32,7 @@ namespace StockportContentApi.Factories
             var tags = GetListOfStrings(entry.fields.tags);
             var categories = GetListOfStrings(entry.fields.categories);
 
-            return new News(title, slug, teaser, image, thumbnailImage, body, sunriseDate, sunsetDate, breadcrumbs,alerts, tags, documents, categories);
+            return new News(title, slug, teaser, image, thumbnailImage, body, sunriseDate, sunsetDate, breadcrumbs ,alerts, tags, documents, categories);
         }
 
         private static dynamic ConvertToThumbnail(dynamic thumbnailImage)

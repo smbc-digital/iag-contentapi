@@ -1,6 +1,7 @@
 ﻿using System;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Factories
 {
@@ -25,9 +26,10 @@ namespace StockportContentApi.Factories
             DateTime eventDate = DateComparer.DateFieldToDate(entry.fields.eventDate);
             var startTime = (string)entry.fields.startTime ?? string.Empty;
             var endTime = (string)entry.fields.endTime ?? string.Empty;
+            var breadcrumbs = new List<Crumb>() { new Crumb("Events", string.Empty, "events") };
 
             return new Event(title, slug, teaser, image, thumbnailImage, description, sunriseDate, sunsetDate, fee, location,
-                submittedBy, longitude, latitude, featured, eventDate, startTime, endTime);
+                submittedBy, longitude, latitude, featured, eventDate, startTime, endTime, breadcrumbs);
            
         }
 
