@@ -44,6 +44,7 @@ namespace StockportContentApi.Repositories
                     .Cast<Event>()
                     .Where(CheckDates)
                     .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
 
