@@ -30,7 +30,7 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
         }
 
-        public async Task<HttpResponse> Get()
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo)
         {
             var eventCalender = new EventCalender();
 
@@ -42,7 +42,7 @@ namespace StockportContentApi.Repositories
                 eventsContentfulResponse.GetAllItems()
                     .Select(item => _eventFactory.Build(item, eventsContentfulResponse))
                     .Cast<Event>()
-                    .Where(CheckDates)
+                    .Where(events => CheckDates(dateFrom, dateTo, events))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
@@ -87,6 +87,14 @@ namespace StockportContentApi.Repositories
         private string UrlForEventCalander(string type, int referenceLevel)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
+        }
+
+        private bool CheckDates(DateTime? startDate, DateTime? endDate, Event events)
+        {
+            return startDate.HasValue && endDate.HasValue
+                           ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(events.SunriseDate, startDate.Value, endDate.Value)
+                           && _dateComparer.EventDateIsBetweenStartAndEndDates(events.EventDate, startDate.Value, endDate.Value)
+                           : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(events.SunriseDate, events.SunsetDate);
         }
     }
 }

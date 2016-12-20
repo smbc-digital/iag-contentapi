@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private const string SubmittedBy = "Friends of Stockport";
         private const string StartTime = "10:00";
         private const string EndTime = "17:00";
-        private readonly DateTime _eventDate = new DateTime(2016, 12, 30);
+        private readonly DateTime _eventDate = new DateTime(2016, 08, 03);
 
         public EventRepositoryTest()
         {
@@ -134,7 +134,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var response = AsyncTestHelper.Resolve(_repository.Get(null,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -163,7 +163,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var response = AsyncTestHelper.Resolve(_repository.Get(null,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No events found");
@@ -177,10 +177,26 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
 
-            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var response = AsyncTestHelper.Resolve(_repository.Get(null,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No events found");
+        }
+
+        [Fact]
+        public void ShouldGetEventsWithinDateRange()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
+                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(new DateTime(2016, 07, 28), new DateTime(2016, 08, 30)));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var events = response.Get<EventCalender>();
+            events.Events.Should().HaveCount(3);
         }
     }
 }
