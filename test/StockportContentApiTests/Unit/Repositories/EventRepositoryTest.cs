@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private const string SubmittedBy = "Friends of Stockport";
         private const string StartTime = "10:00";
         private const string EndTime = "17:00";
-        private readonly DateTime _eventDate = new DateTime(2016, 08, 03);
+        private readonly DateTime _eventDate = new DateTime(2016, 08, 08);
 
         public EventRepositoryTest()
         {

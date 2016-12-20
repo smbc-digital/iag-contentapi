@@ -92,9 +92,8 @@ namespace StockportContentApi.Repositories
         private bool CheckDates(DateTime? startDate, DateTime? endDate, Event events)
         {
             return startDate.HasValue && endDate.HasValue
-                           ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(events.SunriseDate, startDate.Value, endDate.Value)
-                           && _dateComparer.EventDateIsBetweenStartAndEndDates(events.EventDate, startDate.Value, endDate.Value)
-                           : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(events.SunriseDate, events.SunsetDate);
+                ? _dateComparer.EventDateIsBetweenStartAndEndDates(events.EventDate, startDate.Value, endDate.Value)
+                : _dateComparer.EventDateIsBetweenTodayAndLater(events.EventDate);
         }
     }
 }

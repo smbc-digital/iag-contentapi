@@ -40,6 +40,11 @@ namespace StockportContentApi.Utils
             return eventDate.Date >= startDate.Date && eventDate.Date <= endDate.Date;
         }
 
+        public bool EventDateIsBetweenTodayAndLater(DateTime eventDate)
+        {           
+            return eventDate.Date >= _timeProvider.Now().Date;
+        }    
+
         private static bool IsValidDateTime(dynamic date)
         {
             DateTime datetime;
