@@ -156,20 +156,6 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void ShouldGetNoneEventsWithOutSideDates()
-        {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/EventsCalendar.json")));
-
-            var response = AsyncTestHelper.Resolve(_repository.Get(null,null));
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("No events found");
-        }
-
-        [Fact]
         public void ShouldGet404IfContentNotFound()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));

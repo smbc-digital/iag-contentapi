@@ -49,8 +49,8 @@ namespace StockportContentApi.Repositories
                     .ToList();
 
             eventCalender.SetEvents(eventsArticles);
-
-            return !eventsArticles.Any() ? HttpResponse.Failure(HttpStatusCode.NotFound, "No events found") : HttpResponse.Successful(eventCalender);         
+  
+            return HttpResponse.Successful(eventCalender);
         }
 
         public async Task<HttpResponse> GetEvent(string slug)
