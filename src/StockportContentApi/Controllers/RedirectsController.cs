@@ -16,6 +16,7 @@ namespace StockportContentApi.Controllers
             _repository = repository;
         }
 
+        [HttpGet]
         [Route("api/redirects")]
         public async Task<IActionResult> GetRedirects(string businessId)
         {

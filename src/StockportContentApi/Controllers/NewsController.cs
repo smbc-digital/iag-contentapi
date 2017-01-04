@@ -20,7 +20,8 @@ namespace StockportContentApi.Controllers
             _createConfig = createConfig;
             _newsRepository = newsRepository;
         }
-        
+
+        [HttpGet]
         [Route("/api/{businessId}/news")]
         public async Task<IActionResult> Index(string businessId, 
                                             [FromQuery] string tag = null, 
@@ -35,6 +36,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [HttpGet]
         [Route("/api/{businessId}/news/latest/{limit}")]
         public async Task<IActionResult> LatestNews(string businessId, int limit)
         {
@@ -45,6 +47,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [HttpGet]
         [Route("/api/{businessId}/news/{slug}")]
         public async Task<IActionResult> Detail(string slug, string businessId)
         {

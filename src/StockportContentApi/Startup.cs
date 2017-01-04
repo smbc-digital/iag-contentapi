@@ -14,6 +14,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
+using Swashbuckle.Swagger.Model;
 
 namespace StockportContentApi
 {
@@ -95,6 +96,11 @@ namespace StockportContentApi
             RegisterBuilders(services);
             RegisterRepos(services);
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" });
+            });
+
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
         }
@@ -158,6 +164,9 @@ namespace StockportContentApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseSwagger();
+            app.UseSwaggerUi();
+
             loggerFactory.AddNLog();
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();

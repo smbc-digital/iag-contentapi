@@ -20,6 +20,7 @@ namespace StockportContentApi.Controllers
             _createRepository = createRepository;
         }
 
+        [HttpGet]
         [Route("/api/{businessId}/atoz/{letter}")]
         public async Task<IActionResult> Index(string letter, string businessId)
         {

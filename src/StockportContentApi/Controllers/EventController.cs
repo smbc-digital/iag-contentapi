@@ -21,6 +21,7 @@ namespace StockportContentApi.Controllers
             _eventRepository = eventRepository;
         }
 
+        [HttpGet]
         [Route("/api/{businessId}/events/{slug}")]
         public async Task<IActionResult> Detail(string slug, string businessId)
         {
@@ -31,6 +32,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [HttpGet]
         [Route("/api/{businessId}/events")]
         public async Task<IActionResult> Index(string businessId,[FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
         {

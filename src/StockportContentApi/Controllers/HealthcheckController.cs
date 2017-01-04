@@ -13,6 +13,7 @@ namespace StockportContentApi.Controllers
             _healthcheckService = healthcheckService;
         }
 
+        [HttpGet]
         [Route("/_healthcheck")]
         public async Task<IActionResult> Index(string articleSlug, string businessId)
         {
