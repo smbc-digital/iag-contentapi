@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
@@ -13,21 +15,32 @@ namespace StockportContentApi.Repositories
     public class EventRepository
     {
         private readonly IFactory<Event> _eventFactory;
-        private readonly IFactory<EventCalender> _eventCalanderFactory;
-        private readonly ITimeProvider _timeProvider;
         private readonly string _contentfulApiUrl;
         private readonly ContentfulClient _contentfulClient;
         private readonly DateComparer _dateComparer;
+        private readonly Contentful.Core.IContentfulClient _client;
         private const int ReferenceLevelLimit = 1;
 
-        public EventRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Event> eventFactory, IFactory<EventCalender> evenCalanderFactory, ITimeProvider timeProvider)
+        public EventRepository(ContentfulConfig config, IHttpClient httpClient, IContentfulClientManager contentfulClientManager, IFactory<Event> eventFactory, ITimeProvider timeProvider)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _eventFactory = eventFactory;
-            _eventCalanderFactory = evenCalanderFactory;
-            _timeProvider = timeProvider;
             _dateComparer = new DateComparer(timeProvider);
+            _client = contentfulClientManager.GetClient(config);
+        }
+
+        public async Task<HttpResponse> GetEvent(string slug)
+        {
+            var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync<Event>(builder);
+
+            var entry = entries.FirstOrDefault();
+            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
+
+            return !_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate) 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
+                : HttpResponse.Successful(entry);
         }
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo)
@@ -53,40 +66,10 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
-        public async Task<HttpResponse> GetEvent(string slug)
-        {
-            var contentfulResponse = await _contentfulClient.Get(UrlForSlug("events", ReferenceLevelLimit, slug));
-
-            if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
-
-            Event eventItem = _eventFactory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
-
-            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(eventItem.SunriseDate, eventItem.SunsetDate)) eventItem = new NullEvent();
-
-            return eventItem.GetType() == typeof(NullEvent)
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
-                : HttpResponse.Successful(eventItem);
-        }
-
-        private bool CheckDates(Event eventItem)
-        {
-            return _dateComparer.DateNowIsWithinSunriseAndSunsetDates(eventItem.SunriseDate, eventItem.SunsetDate);
-        }
-
         private string UrlForEvents(string type, int referenceLevel)
         {
             var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";                 
             return baseUrl;
-        }
-
-        private string UrlForSlug(string type, int referenceLevel, string slug)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
-
-        private string UrlForEventCalander(string type, int referenceLevel)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
         }
 
         private bool CheckDates(DateTime? startDate, DateTime? endDate, Event events)

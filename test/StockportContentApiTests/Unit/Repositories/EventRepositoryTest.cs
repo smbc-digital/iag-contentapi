@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using Contentful.Core;
+using Contentful.Core.Search;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Moq;
 using StockportContentApi;
+using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
@@ -14,12 +19,12 @@ using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Xunit;
 using HttpResponse = StockportContentApi.Http.HttpResponse;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class EventRepositoryTest
     {
-
         private readonly Mock<IHttpClient> _httpClient;
         private readonly EventRepository _repository;
         private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
@@ -38,6 +43,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private const string StartTime = "10:00";
         private const string EndTime = "17:00";
         private readonly DateTime _eventDate = new DateTime(2016, 08, 08);
+        private readonly Mock<IContentfulClient> _contentfulClient;
 
         public EventRepositoryTest()
         {
@@ -50,49 +56,37 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider = new Mock<ITimeProvider>();
             _httpClient = new Mock<IHttpClient>();            
             var eventFactory = new Mock<IFactory<Event>>();
-            var eventCalanderFactory = new Mock<IFactory<EventCalender>>();
-            _repository = new EventRepository(config, _httpClient.Object, eventFactory.Object, eventCalanderFactory.Object, _mockTimeProvider.Object);
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
+            _contentfulClient = new Mock<Contentful.Core.IContentfulClient>();
+            contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, eventFactory.Object, _mockTimeProvider.Object);
 
             eventFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
                 new Event(Title, Slug, Teaser, Image, ThumbnailImage, Description, _sunriseDate, _sunsetDate, Fee, Location, SubmittedBy, null, null, false, _eventDate, StartTime, EndTime, new List<Crumb>()));            
         }
 
-
         [Fact]
         public void GetsASingleEventItemFromASlug()
         {
+            const string slug = "event-of-the-century";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
+            var anEvent = new Event("title", "slug", "teaser", "image", "thumbnailImage", "description", new DateTime(2016, 07, 01), new DateTime(2017, 07, 01), 
+                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", new List<Crumb>() { new Crumb("title", "slug", "type")});
+            var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {anEvent});
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
-
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
-
-            eventItem.Title.Should().Be(Title);
-            eventItem.Description.Should().Be(Description);
-            eventItem.Slug.Should().Be(Slug);
-            eventItem.Teaser.Should().Be(Teaser);
-            eventItem.SunriseDate.Should().Be(_sunriseDate);
-            eventItem.SunsetDate.Should().Be(_sunsetDate);
-            eventItem.Image.Should().Be(Image);
-            eventItem.Fee.Should().Be(Fee);
-            eventItem.Location.Should().Be(Location);
-            eventItem.SubmittedBy.Should().Be(SubmittedBy);
-            eventItem.EventDate.Should().Be(_eventDate);
-            eventItem.StartTime.Should().Be(StartTime);
-            eventItem.EndTime.Should().Be(EndTime);
+            eventItem.Should().Be(anEvent);
         }
 
         [Fact]
         public void GetsA404ForANotFoundEventItem()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-not-found"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found"));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -103,9 +97,10 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsA404ForAEventOutsideOfSunriseDate()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 11, 5));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
+            var sunriseDate = new DateTime(2016, 12, 01);
+            var anEvent = new Event("title", "slug", "teaser", "image", "thumbnailImage", "description", sunriseDate, new DateTime(2017, 07, 01),
+                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", new List<Crumb>() { new Crumb("title", "slug", "type") });
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
 
@@ -116,10 +111,11 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void GetsA404ForAEventOutsideOfSunsetDate()
         {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 23));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=events&include=1&fields.slug=event-of-the-century"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Event.json")));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 6, 23));
+            var sunsetDate = new DateTime(2017, 1, 01);
+            var anEvent = new Event("title", "slug", "teaser", "image", "thumbnailImage", "description", new DateTime(2016, 12, 01), sunsetDate,
+                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", new List<Crumb>() { new Crumb("title", "slug", "type") });
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
 

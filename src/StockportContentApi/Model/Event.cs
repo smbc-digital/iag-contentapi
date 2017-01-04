@@ -1,28 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using Contentful.Core.Configuration;
+using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
 {
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Event
     {
-        public string Title { get; }
-        public string Slug { get; }
-        public string Teaser { get; }
-        public string Image { get; }     
-        public string ThumbnailImage { get; }     
+        public string Title { get; set; }
+        public string Slug { get; set; }
+        public string Teaser { get; set; }
+        public string Image { get; set; }     
+        public string ThumbnailImage { get; set; }     
         public string Description { get; set; }
-        public DateTime SunriseDate { get; }
-        public DateTime SunsetDate { get; }
-        public string Fee { get;  }
-        public string Location { get; }
-        public string SubmittedBy { get; }
-        public string Longitude { get; }
-        public string Latitude { get; }
-        public bool Featured { get; }
-        public DateTime EventDate { get; }
-        public string StartTime { get; }
-        public string EndTime { get; }
+        public DateTime SunriseDate { get; set; }
+        public DateTime SunsetDate { get; set; }
+        public string Fee { get; set; }
+        public string Location { get; set; }
+        public string SubmittedBy { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
+        public bool Featured { get; set; }
+        public DateTime EventDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public List<Crumb> Breadcrumbs { get; set; }
+
+        public Event() {}
 
         public Event(string title, string slug, string teaser, string image, string thumbnailImage, string description, DateTime sunriseDate,
             DateTime sunsetDate, string fee, string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, string endTime, List<Crumb> breadcrumbs) 

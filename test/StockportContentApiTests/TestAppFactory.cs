@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Contentful.Core;
+using Contentful.Core.Search;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi;
+using StockportContentApi.Client;
+using StockportContentApi.Config;
 using StockportContentApi.Http;
+using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Fakes;
 
@@ -30,9 +37,7 @@ namespace StockportContentApiTests
 
         public class FakeStartup : Startup
         {
-            public FakeStartup(IHostingEnvironment env) : base(env)
-            {
-            }
+            public FakeStartup(IHostingEnvironment env) : base(env) {}
 
             public override void ConfigureServices(IServiceCollection services)
             {
@@ -43,6 +48,10 @@ namespace StockportContentApiTests
                 dateTime.Setup(o => o.Now()).Returns(FakeTimeProvider.DateTime);
 
                 services.AddSingleton(dateTime.Object);
+
+                var contentfulClientManager = new Mock<IContentfulClientManager>();
+                contentfulClientManager.Setup(o => o.GetClient(It.IsAny<ContentfulConfig>())).Returns(FakeContentfulClientFactory.Client.Object);
+                services.AddSingleton(contentfulClientManager.Object);                
             }
 
             public LoggingHttpClient GetHttpClient(ILoggerFactory loggingFactory)
@@ -62,6 +71,17 @@ namespace StockportContentApiTests
             }
 
             public static DateTime DateTime { get; private set; }
+        }
+
+        public class FakeContentfulClientFactory
+        {
+            public static void MakeContentfulClientWithConfiguration(Action<Mock<Contentful.Core.IContentfulClient>> configureFakeContentfulClient)
+            {
+                Client = new Mock<Contentful.Core.IContentfulClient>();
+                configureFakeContentfulClient(Client);
+            }
+
+            public static Mock<Contentful.Core.IContentfulClient> Client { get; private set; }
         }
 
         public class FakeHttpClientFactory

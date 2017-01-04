@@ -7,6 +7,8 @@ namespace StockportContentApi.Config
     {
         public readonly string BusinessId;
         private readonly Dictionary<string, string> _config = new Dictionary<string, string>();
+        public string SpaceKey;
+        public string AccessKey;
 
         public ContentfulConfig(string businessId)
         {
@@ -24,12 +26,12 @@ namespace StockportContentApi.Config
 
         public ContentfulConfig Build()
         {
-            var spaceKey = $"{BusinessId.ToUpper()}_SPACE";
-            var acccessKey = $"{BusinessId.ToUpper()}_ACCESS_KEY";
+            SpaceKey = GetConfigValue($"{BusinessId.ToUpper()}_SPACE");
+            AccessKey = GetConfigValue($"{BusinessId.ToUpper()}_ACCESS_KEY");
 
             ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
-                                    $"spaces/{GetConfigValue(spaceKey)}/" +
-                                    $"entries?access_token={GetConfigValue(acccessKey)}");
+                                    $"spaces/{SpaceKey}/" +
+                                    $"entries?access_token={AccessKey}");
             return this;
         }
 

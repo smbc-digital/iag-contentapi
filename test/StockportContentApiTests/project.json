@@ -12,7 +12,8 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.AspNetCore.TestHost": "1.0.0-*",
     "Moq": "4.6.25-alpha",
-    "System.Diagnostics.TraceSource": "4.0.0"
+    "System.Diagnostics.TraceSource": "4.0.0",
+    "contentful.csharp": "0.8.3-alpha"
   },
 
   "frameworks": {

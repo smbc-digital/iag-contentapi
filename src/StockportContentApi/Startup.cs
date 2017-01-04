@@ -7,10 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
-using StockportContentApi.Repositories;
 using StockportContentApi.Http;
+using StockportContentApi.Repositories;
 using StockportContentApi.Model;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
@@ -107,6 +108,7 @@ namespace StockportContentApi
 
         private static void RegisterRepos(IServiceCollection services)
         {
+            services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
                 p => { return x => new ArticleRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Article>>(), p.GetService<IVideoRepository>(),p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
@@ -126,7 +128,7 @@ namespace StockportContentApi
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
-              p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Event>>(), p.GetService<IFactory<EventCalender>>(), p.GetService<ITimeProvider>()); });
+              p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<IFactory<Event>>(), p.GetService<ITimeProvider>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)

@@ -6,17 +6,17 @@ using StockportContentApi;
 using StockportContentApi.Http;
 using Xunit;
 
-namespace StockportContentApiTests.Unit.Contentful
+namespace StockportContentApiTests.Unit.ContentfulClient
 {
     public class ContentfulClientTest
     {
         private readonly Mock<IHttpClient> _httpClient;
-        private readonly ContentfulClient _contentfulClient;
+        private readonly StockportContentApi.ContentfulClient _contentfulClient;
 
         public ContentfulClientTest()
         {
             _httpClient = new Mock<IHttpClient>();
-            _contentfulClient = new ContentfulClient(_httpClient.Object);
+            _contentfulClient = new StockportContentApi.ContentfulClient(_httpClient.Object);
         }
 
         [Fact]
