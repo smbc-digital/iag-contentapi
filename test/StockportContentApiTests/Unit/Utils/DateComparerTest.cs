@@ -28,6 +28,16 @@ namespace StockportContentApiTests.Unit.Utils
         }
 
         [Fact]
+        public void ShouldReturnTrueIfSunriseDateIsWithinTheToAndFromDatesWithTimes()
+        {
+            _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 10, 9, 35, 07));
+
+            var isWithin = _comparer.SunriseDateIsBetweenStartAndEndDates(new DateTime(2016, 8, 5, 15, 15, 0), new DateTime(2016, 8, 1, 0, 0, 0), new DateTime(2016, 8, 31, 0, 0, 0));
+
+            isWithin.Should().BeTrue();
+        }
+
+        [Fact]
         public void ShouldReturnFalseIfSunriseDateIsOutsideTheToAndFromDates()
         {
             _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 10));
