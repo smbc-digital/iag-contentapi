@@ -22,7 +22,7 @@ namespace StockportContentApi
     public class Startup
     {
         private readonly string _contentRootPath;
-        private readonly string ConfigDir = "app-config";
+        private const string ConfigDir = "app-config";
 
         public Startup(IHostingEnvironment env)
         {
@@ -128,12 +128,11 @@ namespace StockportContentApi
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
-              p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<IFactory<Event>>(), p.GetService<ITimeProvider>()); });
+                p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)
         {
-
             services.AddSingleton<IFactory<Article>, ArticleFactory>();
             services.AddSingleton<IFactory<Alert>, AlertFactory>();
             services.AddSingleton<IFactory<CarouselContent>, CarouselContentFactory>();
@@ -149,7 +148,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
             services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
-            services.AddSingleton<IFactory<Event>, EventFactory>();         
 
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();

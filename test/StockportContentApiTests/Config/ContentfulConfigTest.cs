@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using StockportContentApi.Config;
 using Xunit;
 
@@ -9,11 +10,17 @@ namespace StockportContentApiTests.Config
         [Fact]
         public void BuildsContentfulUrlForBusinessIdBasedOnEnvironmentVariables()
         {
+            var key = "KEY";
+            var space = "SPACE";
+
             var config = new ContentfulConfig("testid")
                 .Add("DELIVERY_URL", "https://fake.url")
-                .Add("TESTID_ACCESS_KEY", "KEY")
-                .Add("TESTID_SPACE", "SPACE")
+                .Add("TESTID_ACCESS_KEY", key)
+                .Add("TESTID_SPACE", space)
                 .Build();
+
+            config.AccessKey.Should().Be(key);
+            config.SpaceKey.Should().Be(space);
 
             Assert.Equal(
                 config.ContentfulUrl.ToString(),

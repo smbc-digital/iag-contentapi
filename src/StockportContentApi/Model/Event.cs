@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Configuration;
+using Contentful.Core.Models;
 using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
@@ -8,38 +9,42 @@ namespace StockportContentApi.Model
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Event
     {
-        public string Title { get; set; }
-        public string Slug { get; set; }
-        public string Teaser { get; set; }
-        public string Image { get; set; }     
-        public string ThumbnailImage { get; set; }     
-        public string Description { get; set; }
-        public DateTime SunriseDate { get; set; }
-        public DateTime SunsetDate { get; set; }
-        public string Fee { get; set; }
-        public string Location { get; set; }
-        public string SubmittedBy { get; set; }
-        public string Longitude { get; set; }
-        public string Latitude { get; set; }
-        public bool Featured { get; set; }
-        public DateTime EventDate { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-        public List<Crumb> Breadcrumbs { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
+        public string Teaser { get; set; } = string.Empty;
+        [JsonProperty(Required = Required.Default)]
+        public string ImageUrl => ImageAsset?.File?.Url ?? string.Empty;
+        [JsonProperty("image")]
+        public Asset ImageAsset { get; set; } = new Asset { File = new File { Url = "" } };
+        [JsonProperty(Required = Required.Default)]
+        public string ThumbnailImageUrl => ConvertToThumbnail(ImageAsset?.File?.Url);
+        public string Description { get; set; } = string.Empty;
+        public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
+        public DateTime SunsetDate { get; set; } = DateTime.MinValue.ToUniversalTime();
+        public string Fee { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+        public string SubmittedBy { get; set; } = string.Empty;
+        public string Longitude { get; set; } = string.Empty;
+        public string Latitude { get; set; } = string.Empty;
+        public bool Featured { get; set; } = false;
+        public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
+        public string StartTime { get; set; } = string.Empty;
+        public string EndTime { get; set; } = string.Empty;
+        public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
 
         public Event() {}
 
-        public Event(string title, string slug, string teaser, string image, string thumbnailImage, string description, DateTime sunriseDate,
-            DateTime sunsetDate, string fee, string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, string endTime, List<Crumb> breadcrumbs) 
+        public Event(string title, string slug, string teaser, string imageUrl, string description, DateTime sunriseDate, DateTime sunsetDate, string fee, 
+                     string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
+                     string endTime, List<Crumb> breadcrumbs) 
         {
             Title = title;
             Slug = slug;
             Teaser = teaser;
-            Image = image;
+            ImageAsset = new Asset { File = new File { Url = imageUrl } };
             Description = description;
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
-            ThumbnailImage = thumbnailImage;
             Fee = fee;
             Location = location;
             SubmittedBy = submittedBy;
@@ -51,14 +56,15 @@ namespace StockportContentApi.Model
             EndTime = endTime;
             Breadcrumbs = breadcrumbs;
         }
-    }
 
-    public class NullEvent : Event
-    {
-        public NullEvent()
-            : base(
-                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime(), new DateTime(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                false, new DateTime(), string.Empty, string.Empty, new List<Crumb>())
-        { }
+        private static string ConvertToThumbnail(string thumbnailImage)
+        {
+            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
+        }
+
+        public bool ShouldSerializeImageAsset()
+        {
+            return false;
+        }
     }
 }

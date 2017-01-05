@@ -43,7 +43,6 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(contentfulUrlFor("topic", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
                 fakeHttpClient.For("https://test-host.com/spaces/XX/entries?access_token=XX&content_type=redirect").Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
                 fakeHttpClient.For(contentfulUrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
-                fakeHttpClient.For(contentfulUrlFor("events", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/EventsCalendar.json"));
             });   
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
@@ -51,9 +50,20 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync<Event>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {
-                                    new Event("This is the event", "event-of-the-century", "Read more for the event", "", "", "The event  description", 
+                                    new Event("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description", 
                                         new DateTime(2016, 12, 08, 0, 0, 0, DateTimeKind.Utc), new DateTime(2016, 12, 22, 0, 0, 0, DateTimeKind.Utc), 
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false, 
+                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00", new List<Crumb> { new Crumb("Events", "", "events") })});
+                httpClient.Setup(o => o.GetEntriesAsync<Event>(
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {
+                                    new Event("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description",
+                                        new DateTime(2016, 12, 08, 0, 0, 0, DateTimeKind.Utc), new DateTime(2016, 12, 22, 0, 0, 0, DateTimeKind.Utc),
+                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
+                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00", new List<Crumb> { new Crumb("Events", "", "events") }),
+                                    new Event("This is the second event", "second-event", "Read more for the event", "", "The event  description",
+                                        new DateTime(2016, 11, 08, 0, 0, 0, DateTimeKind.Utc), new DateTime(2016, 12, 22, 0, 0, 0, DateTimeKind.Utc),
+                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
                                         new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00", new List<Crumb> { new Crumb("Events", "", "events") })});
             });
         }
