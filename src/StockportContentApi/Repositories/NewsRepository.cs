@@ -19,6 +19,7 @@ namespace StockportContentApi.Repositories
         private readonly IFactory<Newsroom> _newsroomFactory;
         private readonly ITimeProvider _timeProvider;
         private readonly string _contentfulApiUrl;
+        private readonly string _contentfulContentTypesUrl;
         private readonly ContentfulClient _contentfulClient;
         private const int ReferenceLevelLimit = 1;
         private readonly IVideoRepository _videoRepository;
@@ -32,25 +33,29 @@ namespace StockportContentApi.Repositories
             _newsroomFactory = newsroomFactory;
             _timeProvider = timeProvider;
             _videoRepository = videoRepository;
-            _dateComparer = new DateComparer(timeProvider);
+            _dateComparer = new DateComparer(timeProvider);            
         }
 
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
             var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
+            List<string> categories;
 
             if (newsroomContentfulResponse.HasItems())
             {
                 newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
             }
 
+
             var newsContentfulResponse = await _contentfulClient.Get(UrlForNewsWithFilters("news", ReferenceLevelLimit, tag));
+           
+            if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");           
 
-            if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
-
-            List<string> categories;
             List<DateTime> dates;
+
+            
+
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
                 .Cast<News>()
@@ -60,6 +65,8 @@ namespace StockportContentApi.Repositories
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
+          
+
 
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories.Distinct().ToList());
@@ -158,6 +165,15 @@ namespace StockportContentApi.Repositories
         private string UrlForSlug(string type, int referenceLevel, string slug)
         {
             return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+        }
+
+        public async Task <List<string>>GetCategories()
+        {
+            List<string> categories = new List<string>();
+            var baseUrl = _contentfulApiUrl;
+            var contentfulResponse = await _contentfulClient.Get(baseUrl);
+            dynamic fields = contentfulResponse.GetAllItems();
+            return categories;
         }
     }
 }
