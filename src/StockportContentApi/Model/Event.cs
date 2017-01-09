@@ -8,7 +8,7 @@ namespace StockportContentApi.Model
 {
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Event
-    {
+    {      
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
@@ -30,13 +30,15 @@ namespace StockportContentApi.Model
         public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public string StartTime { get; set; } = string.Empty;
         public string EndTime { get; set; } = string.Empty;
+        public int Occurences { get; set; } = 0;
+        public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
 
         public Event() {}
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, DateTime sunriseDate, DateTime sunsetDate, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
-                     string endTime, List<Crumb> breadcrumbs) 
+                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs) 
         {
             Title = title;
             Slug = slug;
@@ -54,6 +56,8 @@ namespace StockportContentApi.Model
             EventDate = eventDate;
             StartTime = startTime;
             EndTime = endTime;
+            Occurences = occurences;
+            Frequency = frequency;
             Breadcrumbs = breadcrumbs;
         }
 
@@ -63,6 +67,16 @@ namespace StockportContentApi.Model
         }
 
         public bool ShouldSerializeImageAsset()
+        {
+            return false;
+        }
+
+        public bool ShouldSerializeFrequency()
+        {
+            return false;
+        }
+
+        public bool ShouldSerializeOccurences()
         {
             return false;
         }
