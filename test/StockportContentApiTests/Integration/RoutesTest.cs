@@ -43,6 +43,7 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(contentfulUrlFor("topic", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
                 fakeHttpClient.For("https://test-host.com/spaces/XX/entries?access_token=XX&content_type=redirect").Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
                 fakeHttpClient.For(contentfulUrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
+                fakeHttpClient.For(contentfulContentTypesUrlFor("contenttypes")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
             });   
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
@@ -100,6 +101,7 @@ namespace StockportContentApiTests.Integration
 
         [Theory]
         [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]
+        
         [InlineData("NewsListing", "/api/unittest/news", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
@@ -139,6 +141,11 @@ namespace StockportContentApiTests.Integration
             return JsonConvert.SerializeObject(
                 JsonConvert.DeserializeObject<dynamic>(jsonString, 
                 new JsonSerializerSettings { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }));
+        }
+
+        private string contentfulContentTypesUrlFor(string type)
+        {
+            return "https://test-host.com/spaces/XX/content_types?access_token=XX";
         }
 
         private string contentfulUrlFor(string type, int referenceLevelLimit, string slug = null)

@@ -10,6 +10,8 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApi.Extensions;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace StockportContentApi.Repositories
 {
@@ -18,6 +20,7 @@ namespace StockportContentApi.Repositories
         private readonly IFactory<News> _newsFactory;
         private readonly IFactory<Newsroom> _newsroomFactory;
         private readonly ITimeProvider _timeProvider;
+        private readonly INewsCategoriesFactory _newsCategoryFactory;
         private readonly string _contentfulApiUrl;
         private readonly string _contentfulContentTypesUrl;
         private readonly ContentfulClient _contentfulClient;
@@ -25,15 +28,23 @@ namespace StockportContentApi.Repositories
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
 
-        public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, IFactory<Newsroom> newsroomFactory, ITimeProvider timeProvider, IVideoRepository videoRepository)
+        public NewsRepository(ContentfulConfig config, 
+            IHttpClient httpClient, 
+            IFactory<News> newsFactory, 
+            IFactory<Newsroom> newsroomFactory,
+            INewsCategoriesFactory newsCategoriesFactory,
+            ITimeProvider timeProvider, 
+            IVideoRepository videoRepository)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
+            _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
             _newsFactory = newsFactory;
             _newsroomFactory = newsroomFactory;
             _timeProvider = timeProvider;
             _videoRepository = videoRepository;
-            _dateComparer = new DateComparer(timeProvider);            
+            _dateComparer = new DateComparer(timeProvider);
+            _newsCategoryFactory = newsCategoriesFactory;
         }
 
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
@@ -65,11 +76,11 @@ namespace StockportContentApi.Repositories
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
-          
 
-
+            categories = await GetCategories();
+         
             newsroom.SetNews(newsArticles);
-            newsroom.SetCategories(categories.Distinct().ToList());
+            newsroom.SetCategories(categories);
             newsroom.SetDates(dates.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
@@ -168,12 +179,11 @@ namespace StockportContentApi.Repositories
         }
 
         public async Task <List<string>>GetCategories()
-        {
-            List<string> categories = new List<string>();
-            var baseUrl = _contentfulApiUrl;
-            var contentfulResponse = await _contentfulClient.Get(baseUrl);
-            dynamic fields = contentfulResponse.GetAllItems();
-            return categories;
+        {           
+            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
+            var contentfulData = contentfulResponse.Items;
+            var newsCategories = _newsCategoryFactory.Build(contentfulData);
+            return newsCategories;
         }
     }
 }

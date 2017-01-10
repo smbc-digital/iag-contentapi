@@ -5,21 +5,35 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
+
+
 namespace StockportContentApi.Factories
 {
-    public class NewsCategoriesFactory
+    public interface INewsCategoriesFactory
+    {
+        List<string> Build(IList<dynamic> contentTypes);
+    }
+
+    public class NewsCategoriesFactory : INewsCategoriesFactory
     {
 
-        public List<string> Build(dynamic contentTypes)
-        {  
-            Newtonsoft.Json.Linq.JArray categories = contentTypes.items[0].fields[0].items.validations[0].NewsCategoryList;
-
+        public List<string> Build(IList<dynamic> items)
+        {
             List<string> categoryStrings = new List<string>();
-            for(int count = 0; count < categories.Count; count++)
-            {
-                categoryStrings.Add(contentTypes.items[0].fields[0].items.validations[0].NewsCategoryList[count].Value);
+            foreach(var item in items)
+            { 
+                //JArray categories = items[0].fields[0].items.validations[0].@in;
+                var name = item.name;
+                if (name.Value.ToString().ToLower() == "news")
+                {
+                    JArray categories = item.fields[0].items.validations[0].@in;
+                    for (int count = 0; count < categories.Count; count++)
+                    {
+                        categoryStrings.Add(items[0].fields[0].items.validations[0].@in[count].Value);
+                    }
+                }
             }
-           
+
             return categoryStrings;
         }
     }

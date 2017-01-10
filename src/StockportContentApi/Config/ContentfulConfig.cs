@@ -17,6 +17,7 @@ namespace StockportContentApi.Config
         }
 
         public Uri ContentfulUrl { get; private set; }
+        public Uri ContentfulContentTypesUrl { get; private set; }
 
         public ContentfulConfig Add(string key, string value)
         {
@@ -32,6 +33,11 @@ namespace StockportContentApi.Config
             ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
                                     $"spaces/{SpaceKey}/" +
                                     $"entries?access_token={AccessKey}");
+
+            ContentfulContentTypesUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
+                                    $"spaces/{SpaceKey}/" +
+                                    $"content_types?access_token={AccessKey}");
+
             return this;
         }
 

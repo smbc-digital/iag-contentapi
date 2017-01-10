@@ -40,13 +40,28 @@
         }
       ],
       "documents": [],
-      "categories": [
-        "A category"
-      ]
+      "categories": [ "A category" ]
     }
   ],
   "categories": [
-    "A category"
+    "Benefits",
+    "Business",
+    "Council leader",
+    "Crime prevention and safety",
+    "Children and families",
+    "Environment",
+    "Elections",
+    "Health and social care",
+    "Housing",
+    "Jobs",
+    "Leisure and culture",
+    "Libraries",
+    "Licensing",
+    "Partner organisations",
+    "Planning and building",
+    "Roads and travel",
+    "Schools and education",
+    "Waste and recycling"
   ],
   "dates": [
     "2016-08-01T00:00:00"

@@ -29,8 +29,8 @@ namespace StockportContentApiTests.Unit.Factories
             dynamic mockContentfulData =
              JsonConvert.DeserializeObject(
                  File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json"));
-
-            List<string> newsCategories = _newsCategoriesFactory.Build(mockContentfulData);
+            ContentfulResponse contentfulResponse = new ContentfulResponse(mockContentfulData);
+            List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
             newsCategories.Count().Should().Be(18);
             newsCategories.First().Should().Be("Benefits");
             newsCategories.Last().Should().Be("Waste and recycling");

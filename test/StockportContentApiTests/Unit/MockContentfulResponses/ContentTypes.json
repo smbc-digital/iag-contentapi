@@ -10,7 +10,7 @@
           "items": {
             "validations": [
               {
-                "NewsCategoryList": [
+                "in": [
                   "Benefits",
                   "Business",
                   "Council leader",

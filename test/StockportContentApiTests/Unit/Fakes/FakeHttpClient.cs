@@ -28,6 +28,10 @@ namespace StockportContentApiTests.Unit.Fakes
 
         public Task<HttpResponse> Get(string url)
         {
+            if (!_responses.ContainsKey(url))
+            {
+                throw new Exception("The url requested was not stubbed in our fake http client: " + url);
+            }
             object response = _responses[url];
 
             var exception = response as Exception;
