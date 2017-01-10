@@ -26,10 +26,18 @@ namespace StockportContentApi.Factories
                 var name = item.name;
                 if (name.Value.ToString().ToLower() == "news")
                 {
-                    JArray categories = item.fields[0].items.validations[0].@in;
-                    for (int count = 0; count < categories.Count; count++)
+                    var fields = item.fields;
+                    //JArray categories = item.fields[0].items.validations[0].@in;
+                    foreach (var field in fields)
                     {
-                        categoryStrings.Add(items[0].fields[0].items.validations[0].@in[count].Value);
+                        if (field.name.Value == "Categories")
+                        {
+                            var categories = field.items.validations[0].@in;
+                            for (int count = 0; count < categories.Count; count++)
+                            {
+                                categoryStrings.Add(categories[count].Value);
+                            }
+                        }
                     }
                 }
             }
