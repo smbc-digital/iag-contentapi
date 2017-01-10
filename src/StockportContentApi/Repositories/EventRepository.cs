@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
@@ -8,6 +10,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
@@ -42,8 +45,15 @@ namespace StockportContentApi.Repositories
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
+            var entriesList = new List<Event>();
+            foreach (var entry in entries)
+            {
+                entriesList.Add(entry);
+                entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(entry));              
+            }
+
             var eventsArticles =
-                    entries
+                    entriesList
                     .Where(events => CheckDates(dateFrom, dateTo, events))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)

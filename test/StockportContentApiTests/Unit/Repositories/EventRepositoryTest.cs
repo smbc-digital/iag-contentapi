@@ -105,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void GetAllEvents()
+        public void ShouldGetAllEvents()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
             var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
@@ -133,6 +133,133 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No events found");
+        }
+
+        [Fact]
+        public void ShouldGetAllEventsWithTheirDailyReccuringParts()
+        {
+            const int occurences = 3;
+            const EventFrequency frequency = EventFrequency.Daily;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(occurences);
+            eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 02));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 03));           
+        }
+
+        [Fact]
+        public void ShouldGetAllEventsWithTheirWeeklyReccuringParts()
+        {
+            const int occurences = 4;
+            const EventFrequency frequency = EventFrequency.Weekly;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), 
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(occurences);
+            eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 08));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 15));
+            eventCalender.Events[3].EventDate.Should().Be(new DateTime(2017, 04, 22));
+        }
+
+        [Fact]
+        public void ShouldGetWeeklyRepeatedDates_BetweenDates()
+        {
+            const int occurences = 4;
+            const EventFrequency frequency = EventFrequency.Weekly;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16)));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(3);
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 08));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 15));
+        }
+
+        [Fact]
+        public void ShouldGetAllEventsWithTheirForthnightlyReccuringParts()
+        {
+            const int occurences = 3;
+            const EventFrequency frequency = EventFrequency.Fortnightly;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(occurences);
+            eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 15));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 29));          
+        }
+
+        [Fact]
+        public void ShouldGetAllEventsWithTheirMonthlyReccuringParts()
+        {
+            const int occurences = 5;
+            const EventFrequency frequency = EventFrequency.Monthly;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(occurences);
+            eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 05, 01));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 06, 01));
+            eventCalender.Events[3].EventDate.Should().Be(new DateTime(2017, 07, 01));
+        }
+
+        [Fact]
+        public void ShouldGetAllEventsWithTheirYearlyReccuringParts()
+        {
+            const int occurences = 3;
+            const EventFrequency frequency = EventFrequency.Yearly;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
+                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var events = new List<Event> { anEvent };
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null));
+
+            var eventCalender = response.Get<EventCalender>();
+            eventCalender.Events.Count.Should().Be(occurences);
+            eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
+            eventCalender.Events[1].EventDate.Should().Be(new DateTime(2018, 04, 01));
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2019, 04, 01));          
         }
 
         [Fact]
