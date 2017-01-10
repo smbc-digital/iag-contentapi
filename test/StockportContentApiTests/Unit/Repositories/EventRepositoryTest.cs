@@ -57,11 +57,29 @@ namespace StockportContentApiTests.Unit.Repositories
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {anEvent});
 
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
             eventItem.Should().Be(anEvent);
+        }
+
+        [Fact]
+        public void GetsParticularReccuringEventFromASlug()
+        {
+            const string slug = "event-of-the-century";
+            const int occurences = 3;
+            const EventFrequency frequency = EventFrequency.Daily;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 07, 01), new DateTime(2017, 07, 01),
+                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
+
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 04, 02)));
+            var eventItem = response.Get<Event>();
+
+            eventItem.EventDate.Should().Be(new DateTime(2017, 04, 02));
         }
 
         [Fact]
@@ -70,7 +88,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event>());
 
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found"));
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found", new DateTime(2017, 4, 1)));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No event found for 'event-not-found'");
         }
@@ -84,7 +102,7 @@ namespace StockportContentApiTests.Unit.Repositories
                                     "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
 
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century", new DateTime(2017, 4, 1)));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No event found for 'event-of-the-century'");
@@ -99,7 +117,7 @@ namespace StockportContentApiTests.Unit.Repositories
                                     "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
 
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century"));
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century", new DateTime(2017, 4, 1)));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

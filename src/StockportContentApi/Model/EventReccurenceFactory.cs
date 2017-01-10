@@ -22,11 +22,7 @@ namespace StockportContentApi.Model
             for (var i = 1; i < eventItem.Occurences; i++)
             {
                 var recurringEvent = _recurranceDictionary[eventItem.Frequency].Invoke(eventItem, i);
-
-                if (recurringEvent != null)
-                {
-                    reoccuredEventsByFrequency.Add(recurringEvent);
-                }
+                if (recurringEvent != null) reoccuredEventsByFrequency.Add(recurringEvent);
             }
             return reoccuredEventsByFrequency;
         }

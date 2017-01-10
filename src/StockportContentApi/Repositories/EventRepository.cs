@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
@@ -10,7 +9,6 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
@@ -25,12 +23,20 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
         }
 
-        public async Task<HttpResponse> GetEvent(string slug)
+        public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             var entries = await _client.GetEntriesAsync<Event>(builder);
 
             var entry = entries.FirstOrDefault();
+
+            var entriesList = new List<Event>();
+            if (entry != null && date.HasValue && entry.EventDate != date)
+            {               
+                entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(entry));
+                entry = entriesList.SingleOrDefault(x => x.EventDate == date);
+            }
+
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
 
             return !_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate) 

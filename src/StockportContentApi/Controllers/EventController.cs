@@ -23,12 +23,12 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("/api/{businessId}/events/{slug}")]
-        public async Task<IActionResult> Detail(string slug, string businessId)
+        public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.GetEvent(slug);
+                return repository.GetEvent(slug, date);
             });
         }
 
