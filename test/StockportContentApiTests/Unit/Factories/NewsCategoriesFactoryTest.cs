@@ -22,18 +22,33 @@ namespace StockportContentApiTests.Unit.Factories
             _newsCategoriesFactory = new NewsCategoriesFactory();
         }
 
-
         [Fact]
         public void ShouldGenerateListOfCategoriesFromContentfulApiCAll()
         {
-            dynamic mockContentfulData =
-             JsonConvert.DeserializeObject(
-                 File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json"));
-            ContentfulResponse contentfulResponse = new ContentfulResponse(mockContentfulData);
+            var contentfulResponse = CreateResponse("Unit/MockContentfulResponses/ContentTypes.json");
+
             List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
+
             newsCategories.Count().Should().Be(18);
             newsCategories.First().Should().Be("Benefits");
             newsCategories.Last().Should().Be("Waste and recycling");
+        }
+
+        [Fact]
+        public void ShouldGenerateEmptyListIfNewsHasNoCategories()
+        {
+            var contentfulResponse = CreateResponse("Unit/MockContentfulResponses/ContentTypesWithNoNewsCategories.json");
+
+            List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
+
+            newsCategories.Count().Should().Be(0);
+        }
+
+        private static ContentfulResponse CreateResponse(string stubbedContentfulJsonFile)
+        {
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText(stubbedContentfulJsonFile));
+            ContentfulResponse contentfulResponse = new ContentfulResponse(mockContentfulData);
+            return contentfulResponse;
         }
 
     }

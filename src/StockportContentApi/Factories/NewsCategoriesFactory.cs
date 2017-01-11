@@ -16,33 +16,52 @@ namespace StockportContentApi.Factories
 
     public class NewsCategoriesFactory : INewsCategoriesFactory
     {
+        public static List<string> emptyList = new List<string>();
 
-        public List<string> Build(IList<dynamic> items)
+        public List<string> Build(IList<dynamic> contentTypes)
         {
-            List<string> categoryStrings = new List<string>();
-            foreach(var item in items)
-            { 
-                //JArray categories = items[0].fields[0].items.validations[0].@in;
+            return ExtractCategoriesFromNewsType(FindNewsType(contentTypes));
+        }
+
+        private dynamic FindNewsType(IList<dynamic> items)
+        {
+            foreach (var item in items)
+            {
                 var name = item.name;
                 if (name.Value.ToString().ToLower() == "news")
                 {
-                    var fields = item.fields;
-                    //JArray categories = item.fields[0].items.validations[0].@in;
-                    foreach (var field in fields)
-                    {
-                        if (field.name.Value == "Categories")
-                        {
-                            var categories = field.items.validations[0].@in;
-                            for (int count = 0; count < categories.Count; count++)
-                            {
-                                categoryStrings.Add(categories[count].Value);
-                            }
-                        }
-                    }
+                    return item;
                 }
             }
+            return null;
+        }
 
+        private static List<string> ExtractCategoriesFromNewsType(dynamic newsType)
+        {
+            foreach (var field in newsType.fields)
+            {
+                if (field.name.Value == "Categories")
+                {
+                    return ExtractCategories(field);
+                }
+            }
+            return emptyList;
+        }
+
+        private static List<string> ExtractCategories(dynamic categoryField)
+        {
+            var categoryStrings = new List<string>();
+            dynamic validCategories = ValidValues(categoryField);
+            foreach (var validCategory in validCategories)
+            {
+                categoryStrings.Add(validCategory.Value);
+            }
             return categoryStrings;
+        }
+
+        private static dynamic ValidValues(dynamic field)
+        {
+            return field.items.validations[0].@in;
         }
     }
 }
