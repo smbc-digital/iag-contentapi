@@ -27,7 +27,6 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             var entries = await _client.GetEntriesAsync<Event>(builder);
-
             var entry = entries.FirstOrDefault();
 
             var entriesList = new List<Event>();
@@ -37,9 +36,7 @@ namespace StockportContentApi.Repositories
                 entry = entriesList.SingleOrDefault(x => x.EventDate == date);
             }
 
-            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
-
-            return !_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate) 
+            return (entry == null) 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
                 : HttpResponse.Successful(entry);
         }

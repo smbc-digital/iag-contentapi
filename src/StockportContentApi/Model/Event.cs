@@ -19,8 +19,6 @@ namespace StockportContentApi.Model
         [JsonProperty(Required = Required.Default)]
         public string ThumbnailImageUrl => ConvertToThumbnail(ImageAsset?.File?.Url);
         public string Description { get; set; } = string.Empty;
-        public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
-        public DateTime SunsetDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string SubmittedBy { get; set; } = string.Empty;
@@ -36,7 +34,7 @@ namespace StockportContentApi.Model
 
         public Event() {}
 
-        public Event(string title, string slug, string teaser, string imageUrl, string description, DateTime sunriseDate, DateTime sunsetDate, string fee, 
+        public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
                      string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs) 
         {
@@ -45,8 +43,6 @@ namespace StockportContentApi.Model
             Teaser = teaser;
             ImageAsset = new Asset { File = new File { Url = imageUrl } };
             Description = description;
-            SunriseDate = sunriseDate;
-            SunsetDate = sunsetDate;
             Fee = fee;
             Location = location;
             SubmittedBy = submittedBy;

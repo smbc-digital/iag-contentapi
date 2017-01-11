@@ -14,8 +14,7 @@ namespace StockportContentApiTests.Unit.Model
         public void ShouldSetDefaultsOnModel()
         {
             var anEvent = new Event();
-            var expectedEvent = new Event(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 
-                                          DateTime.MinValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), string.Empty, 
+            var expectedEvent = new Event(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 
                                           string.Empty, string.Empty, string.Empty, string.Empty, false , DateTime.MinValue.ToUniversalTime(), 
                                           string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") });
 
@@ -26,8 +25,7 @@ namespace StockportContentApiTests.Unit.Model
         public void ShouldSetImageUrl()
         {
             const string imageUrl = "//image-url";
-            var expectedEvent = new Event(string.Empty, string.Empty, string.Empty, imageUrl, string.Empty,
-                                          DateTime.MinValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), string.Empty,
+            var expectedEvent = new Event(string.Empty, string.Empty, string.Empty, imageUrl, string.Empty, string.Empty,
                                           string.Empty, string.Empty, string.Empty, string.Empty, false, DateTime.MinValue.ToUniversalTime(),
                                           string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") });
 

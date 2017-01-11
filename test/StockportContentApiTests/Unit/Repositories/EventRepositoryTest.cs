@@ -42,9 +42,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             eventFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
                 new Event("This is the event", "event-of-the-century", "Read more for the event", "image.jpg", "The event",
-                          new DateTime(2016, 08, 01), new DateTime(2016, 08, 10), "Free", "Bramall Hall, Carpark, SK7 6HG", 
-                          "Friends of Stockport", string.Empty, string.Empty, false, new DateTime(2016, 08, 08), "10:00", 
-                          "17:00", 0, EventFrequency.None, new List<Crumb>()));            
+                          "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", string.Empty, string.Empty,
+                          false, new DateTime(2016, 08, 08), "10:00", "17:00", 0, EventFrequency.None, new List<Crumb>()));            
         }
 
         [Fact]
@@ -52,8 +51,9 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             const string slug = "event-of-the-century";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 07, 01), new DateTime(2017, 07, 01), 
-                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type")});
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, 
+                                    EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type")});
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {anEvent});
 
@@ -71,8 +71,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Daily;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 07, 01), new DateTime(2017, 07, 01),
-                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", occurences, 
+                                    frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
 
@@ -94,42 +95,16 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void GetsA404ForAEventOutsideOfSunriseDate()
-        {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 11, 5));
-            var sunriseDate = new DateTime(2016, 12, 01);
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", sunriseDate, new DateTime(2017, 07, 01),
-                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
-            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
-
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century", new DateTime(2017, 4, 1)));
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("No event found for 'event-of-the-century'");
-        }
-
-        [Fact]
-        public void GetsA404ForAEventOutsideOfSunsetDate()
-        {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 6, 23));
-            var sunsetDate = new DateTime(2017, 1, 01);
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), sunsetDate,
-                                    "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
-            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> { anEvent });
-
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-of-the-century", new DateTime(2017, 4, 1)));
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
-
-        [Fact]
         public void ShouldGetAllEvents()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
-            var anotherEvent = new Event("title2", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, 
+                                    EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anotherEvent = new Event("title2", "slug", "teaser", "image", "description", "fee", "location", 
+                                         "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), 
+                                         "18:00", "22:00", 0, EventFrequency.None, 
+                                         new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> {anEvent, anotherEvent};
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(events);
@@ -159,8 +134,8 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Daily;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1),
                                    "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
@@ -180,9 +155,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 4;
             const EventFrequency frequency = EventFrequency.Weekly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), 
-                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 
+                                    occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
@@ -202,9 +177,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 4;
             const EventFrequency frequency = EventFrequency.Weekly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
-                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 
+                                    occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
@@ -222,9 +197,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Fortnightly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
-                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 
+                                    occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
@@ -243,9 +218,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 5;
             const EventFrequency frequency = EventFrequency.Monthly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
-                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 
+                                    occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
@@ -265,9 +240,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Yearly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 1, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1),
-                                   "18:00", "22:00", occurences, frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy",
+                                    "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", occurences, 
+                                    frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
@@ -284,10 +259,12 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldGetEventsWithinDateRange()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-            var anEvent = new Event("title", "slug", "teaser", "image", "description", new DateTime(2016, 12, 01), new DateTime(2017, 07, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 1, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
-            var anotherEvent = new Event("title2", "slug", "teaser", "image", "description", new DateTime(2016, 05, 01), new DateTime(2017, 06, 01),
-                                   "fee", "location", "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anEvent = new Event("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+                                    "longitude", "latitude", true, new DateTime(2017, 1, 1), "18:00", "22:00", 0, 
+                                    EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
+            var anotherEvent = new Event("title2", "slug", "teaser", "image", "description", "fee", "location", 
+                                         "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), 
+                                         "18:00", "22:00", 0, EventFrequency.None, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> { anEvent, anotherEvent };
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
