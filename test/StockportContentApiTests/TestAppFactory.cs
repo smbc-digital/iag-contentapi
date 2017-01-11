@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using Contentful.Core;
-using Contentful.Core.Search;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +9,6 @@ using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
-using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Fakes;
 
@@ -22,15 +18,13 @@ namespace StockportContentApiTests
     {
         public static TestServer MakeFakeApp()
         {
-            Environment.SetEnvironmentVariable("UNITTEST_SPACE", "XX");
-            Environment.SetEnvironmentVariable("UNITTEST_ACCESS_KEY", "XX");
-
             var hostBuilder = new WebHostBuilder()
              
              .UseStartup<FakeStartup>()
              .UseUrls("http://localhost:5001")
              .UseKestrel()
-             .UseEnvironment("Development");
+             .UseEnvironment("test")
+             .UseContentRoot(Directory.GetCurrentDirectory());
 
             return new TestServer(hostBuilder);
         }

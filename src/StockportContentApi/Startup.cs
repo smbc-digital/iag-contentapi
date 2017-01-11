@@ -26,38 +26,20 @@ namespace StockportContentApi
 
         public Startup(IHostingEnvironment env)
         {
-            if (UseInjectedConfig())
-            {
-                string appConfig = Path.Combine(ConfigDir, "appsettings.json");
-                string envConfig = Path.Combine(ConfigDir, $"appsettings.{env.EnvironmentName}.json");
-                string secretConfig = Path.Combine(ConfigDir, "injected",
-                    $"appsettings.{env.EnvironmentName}.secrets.json");
+            var appConfig = Path.Combine(ConfigDir, "appsettings.json");
+            var envConfig = Path.Combine(ConfigDir, $"appsettings.{env.EnvironmentName}.json");
+            var secretConfig = Path.Combine(ConfigDir, "injected",
+                $"appsettings.{env.EnvironmentName}.secrets.json");
 
-                Configuration = new ConfigurationBuilder()
-                    .SetBasePath(env.ContentRootPath)
-                    .AddJsonFile(appConfig)
-                    .AddJsonFile(envConfig)
-                    .AddJsonFile(secretConfig)
-                    .AddEnvironmentVariables()
-                    .Build();
-            }
-            else
-            {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(env.ContentRootPath)
-                    .AddJsonFile("appsettings.json");
-                builder.AddEnvironmentVariables();
-                Configuration = builder.Build();
-            }
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile(appConfig)
+                .AddJsonFile(envConfig)
+                .AddJsonFile(secretConfig)
+                .AddEnvironmentVariables()
+                .Build();
+
             _contentRootPath = env.ContentRootPath;
-        }
-
-        private static bool UseInjectedConfig()
-        {
-            var value = Environment.GetEnvironmentVariable("USE_INJECTED_CONFIG");
-
-            bool useInjectedConfig;
-            return bool.TryParse(value, out useInjectedConfig) && useInjectedConfig;
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -65,21 +47,11 @@ namespace StockportContentApi
         // This method gets called by the runtime. Use this method to add services to the container
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            Func<string, ContentfulConfig> createConfig = businessId =>
-                new ContentfulConfig(businessId)
-                    .Add("DELIVERY_URL", Configuration["Contentful:DeliveryUrl"])
-                    .Add($"{ businessId.ToUpper()}_SPACE", 
-                        Environment.GetEnvironmentVariable($"{ businessId.ToUpper()}_SPACE"))
-                    .Add($"{ businessId.ToUpper()}_ACCESS_KEY", 
-                        Environment.GetEnvironmentVariable($"{ businessId.ToUpper()}_ACCESS_KEY"))
-                    .Build();
-            
-            if(UseInjectedConfig())
-                createConfig = businessId => 
+            Func<string, ContentfulConfig> createConfig = businessId => 
                     new ContentfulConfig(businessId)
                         .Add("DELIVERY_URL", Configuration["Contentful:DeliveryUrl"])
                         .Add($"{businessId.ToUpper()}_SPACE", Configuration[$"{businessId}:Space"])
-                        .Add($"{ businessId.ToUpper()}_ACCESS_KEY", Configuration[$"{businessId}:AccessKey"])
+                        .Add($"{businessId.ToUpper()}_ACCESS_KEY", Configuration[$"{businessId}:AccessKey"])
                         .Build();
 
             var redirectBusinessIds = new List<string>();
@@ -89,7 +61,7 @@ namespace StockportContentApi
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton<IHttpClient>(
                 p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
-            services.AddTransient(_=>createConfig);
+            services.AddTransient(_ => createConfig);
             services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper()));
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
