@@ -26,17 +26,22 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync<Event>(builder);
+            var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             var entry = entries.FirstOrDefault();
 
-            var entriesList = new List<Event>();
+            Event eventItem = null;
+
+
+            var eventsList = new List<Event>();
             if (entry != null && date.HasValue && entry.EventDate != date)
-            {               
-                entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(entry));
-                entry = entriesList.SingleOrDefault(x => x.EventDate == date);
+            {
+
+                eventItem = entry.ToModel();
+                eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
+                eventItem = eventsList.SingleOrDefault(x => x.EventDate == date);
             }
 
-            return (entry == null) 
+            return (entry == null || eventItem == null) 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
                 : HttpResponse.Successful(entry);
         }
