@@ -28,36 +28,43 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             var entry = entries.FirstOrDefault();
-
-            Event eventItem = null;
-
-
-            var eventsList = new List<Event>();
-            if (entry != null && date.HasValue && entry.EventDate != date)
+            if (entry == null)
             {
-
-                eventItem = entry.ToModel();
-                eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
-                eventItem = eventsList.SingleOrDefault(x => x.EventDate == date);
+                return NotFoundResponse(slug);
             }
 
-            return (entry == null || eventItem == null) 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
-                : HttpResponse.Successful(entry);
+            Event eventItem = entry.ToModel();
+
+            var eventsList = new List<Event>();
+            if (date.HasValue && entry.EventDate != date)
+            {
+                eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
+                eventItem = eventsList.SingleOrDefault(x => x.EventDate == date);
+            }   
+
+            return (eventItem == null) 
+                ? NotFoundResponse(slug)
+                : HttpResponse.Successful(eventItem);
+        }
+
+        private static HttpResponse NotFoundResponse(string slug)
+        {
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
         }
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1);
-            var entries = await _client.GetEntriesAsync<Event>(builder);
+            var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
             var entriesList = new List<Event>();
             foreach (var entry in entries)
             {
-                entriesList.Add(entry);
-                entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(entry));              
+                var eventItem = entry.ToModel();
+                entriesList.Add(eventItem);
+                entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));              
             }
 
             var eventsArticles =

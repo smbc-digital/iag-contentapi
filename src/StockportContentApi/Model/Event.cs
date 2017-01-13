@@ -12,12 +12,8 @@ namespace StockportContentApi.Model
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
-        [JsonProperty(Required = Required.Default)]
-        public string ImageUrl => ImageAsset?.File?.Url ?? string.Empty;
-        [JsonProperty("image")]
-        public Asset ImageAsset { get; set; } = new Asset { File = new File { Url = "" } };
-        [JsonProperty(Required = Required.Default)]
-        public string ThumbnailImageUrl => ConvertToThumbnail(ImageAsset?.File?.Url);
+        public string ImageUrl { get; set; } = string.Empty;
+        public string ThumbnailImageImageUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
@@ -36,12 +32,11 @@ namespace StockportContentApi.Model
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
-                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs) 
+                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl) 
         {
             Title = title;
             Slug = slug;
             Teaser = teaser;
-            ImageAsset = new Asset { File = new File { Url = imageUrl } };
             Description = description;
             Fee = fee;
             Location = location;
@@ -55,11 +50,8 @@ namespace StockportContentApi.Model
             Occurences = occurences;
             Frequency = frequency;
             Breadcrumbs = breadcrumbs;
-        }
-
-        private static string ConvertToThumbnail(string thumbnailImage)
-        {
-            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
+            ThumbnailImageImageUrl = thumbnailImageUrl;
+            ImageUrl = imageUrl;
         }
 
         public bool ShouldSerializeImageAsset()

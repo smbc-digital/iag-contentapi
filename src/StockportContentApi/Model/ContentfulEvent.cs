@@ -81,7 +81,24 @@ namespace StockportContentApi.Model
         {
             return new Event
             {
-                Title = "bob"
+                Title = Title,
+                EventDate = EventDate,
+                Breadcrumbs = Breadcrumbs,
+                Description = Description,
+                EndTime = EndTime,
+                Featured =  Featured,
+                Fee = Fee,
+                Frequency = Frequency,
+                ImageUrl = ImageUrl,
+                Latitude = Latitude,
+                Longitude = Longitude,
+                Location = Location,
+                Occurences = Occurences,
+                Slug = Slug,
+                StartTime = StartTime,
+                SubmittedBy = SubmittedBy,
+                Teaser = Teaser,
+                ThumbnailImageImageUrl = ThumbnailImageUrl
             };
         }
     }
