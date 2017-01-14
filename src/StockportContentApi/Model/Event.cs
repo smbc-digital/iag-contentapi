@@ -13,7 +13,7 @@ namespace StockportContentApi.Model
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
-        public string ThumbnailImageImageUrl { get; set; } = string.Empty;
+        public string ThumbnailImageUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
@@ -50,7 +50,7 @@ namespace StockportContentApi.Model
             Occurences = occurences;
             Frequency = frequency;
             Breadcrumbs = breadcrumbs;
-            ThumbnailImageImageUrl = thumbnailImageUrl;
+            ThumbnailImageUrl = thumbnailImageUrl;
             ImageUrl = imageUrl;
         }
 

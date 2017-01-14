@@ -61,8 +61,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
-            eventItem.ShouldBeEquivalentTo(rawEvent, o => o.Excluding(raw => raw.ThumbnailImageImageUrl));
-            eventItem.ThumbnailImageImageUrl.Should().Be(rawEvent.ImageUrl + "?h=250");
+            eventItem.ShouldBeEquivalentTo(rawEvent, o => o.Excluding(raw => raw.ThumbnailImageUrl));
+            eventItem.ThumbnailImageUrl.Should().Be(rawEvent.ImageUrl + "?h=250");
         }
 
         [Fact]
@@ -115,8 +115,8 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(2);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageImageUrl));
-            eventCalender.Events.Last().ShouldBeEquivalentTo(anotherEvent, o => o.Excluding(e => e.ThumbnailImageImageUrl));
+            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
+            eventCalender.Events.Last().ShouldBeEquivalentTo(anotherEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageImageUrl));
+            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
         }
     }
 }

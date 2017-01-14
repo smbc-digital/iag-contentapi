@@ -98,7 +98,7 @@ namespace StockportContentApi.Model
                 StartTime = StartTime,
                 SubmittedBy = SubmittedBy,
                 Teaser = Teaser,
-                ThumbnailImageImageUrl = ThumbnailImageUrl
+                ThumbnailImageUrl = ThumbnailImageUrl
             };
         }
     }

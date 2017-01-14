@@ -241,3 +241,4 @@ _Pvt_Extensions
 .fake/
 
 src/StockportContentApi/app-config/injected/*.secrets.json
+.vscode/

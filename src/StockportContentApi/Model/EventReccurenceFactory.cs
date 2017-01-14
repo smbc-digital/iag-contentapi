@@ -31,7 +31,7 @@ namespace StockportContentApi.Model
         {
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
                            entry.Location, entry.SubmittedBy, entry.Longitude, entry.Latitude, entry.Featured, newDate, entry.StartTime,
-                           entry.EndTime, entry.Occurences, entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageImageUrl);
+                           entry.EndTime, entry.Occurences, entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl);
         }
     }
 }
