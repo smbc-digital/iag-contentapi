@@ -13,6 +13,7 @@ namespace StockportContentApi.Model
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
+        public Asset ImageAsset { get; set; } = null;
         public string ThumbnailImageUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
