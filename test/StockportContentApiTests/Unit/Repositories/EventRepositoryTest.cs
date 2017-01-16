@@ -61,8 +61,29 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
+
             eventItem.ShouldBeEquivalentTo(rawEvent, o => o.Excluding(raw => raw.ThumbnailImageUrl));
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.ImageUrl + "?h=250");
+
+           // eventItem.Should().Be((Event)anEvent.ToModel());
+
+            eventItem.Title.Should().Be(rawEvent.Title);
+            eventItem.Slug.Should().Be(rawEvent.Slug);
+            eventItem.Teaser.Should().Be(rawEvent.Teaser);
+            eventItem.ImageAsset.Should().Be(rawEvent.ImageAsset);
+            eventItem.Description.Should().Be(rawEvent.Description);
+            eventItem.Fee.Should().Be(rawEvent.Fee);
+            eventItem.Location.Should().Be(rawEvent.Location);
+            eventItem.SubmittedBy.Should().Be(rawEvent.SubmittedBy);
+            eventItem.Longitude.Should().Be(rawEvent.Longitude);
+            eventItem.Latitude.Should().Be(rawEvent.Latitude);
+            eventItem.Featured.Should().Be(rawEvent.Featured);
+            eventItem.EventDate.Should().Be(rawEvent.EventDate);
+            eventItem.StartTime.Should().Be(rawEvent.StartTime);
+            eventItem.EndTime.Should().Be(rawEvent.EndTime);
+            eventItem.Occurences.Should().Be(rawEvent.Occurences);
+            eventItem.Frequency.Should().Be(rawEvent.Frequency);
+            eventItem.Breadcrumbs.Count().Should().Be(rawEvent.Breadcrumbs.Count());
         }
 
         [Fact]
@@ -72,11 +93,13 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Daily;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
-            var rawEvent = new ContentfulEvent("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
+            
+            var anEvent = new ContentfulEvent("title", "slug", "teaser", "image", "description", "fee", "location", "submittedBy", 
                                     "longitude", "latitude", true, new DateTime(2017, 4, 1), "18:00", "22:00", occurences, 
                                     frequency, new List<Crumb>() { new Crumb("title", "slug", "type") });
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { rawEvent });
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
+
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 04, 02)));
             var eventItem = response.Get<Event>();
@@ -106,17 +129,27 @@ namespace StockportContentApiTests.Unit.Repositories
                                          "submittedBy", "longitude", "latitude", true, new DateTime(2017, 4, 1), 
                                          "18:00", "22:00", 0, EventFrequency.None, 
                                          new List<Crumb>() { new Crumb("title", "slug", "type") });
-            var rawEvents = new List<ContentfulEvent> {anEvent, anotherEvent};
+
+            var events = new List<ContentfulEvent> {anEvent, anotherEvent};
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(rawEvents);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
+
             eventCalender.Events.Count.Should().Be(2);
             eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
             eventCalender.Events.Last().ShouldBeEquivalentTo(anotherEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
+
+            // Assert
+            events.Count.Should().Be(eventCalender.Events.Count);
+            for (int index = 0; index < events.Count; index++)
+            {
+                var matchingEvent = eventCalender.Events[index];
+                events[index].IsSameAs(matchingEvent).Should().BeTrue();
+            }
         }
 
         [Fact]
@@ -276,7 +309,10 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
+
             eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl));
+
+            anEvent.IsSameAs(eventCalender.Events.First()).Should().BeTrue();         
         }
     }
 }

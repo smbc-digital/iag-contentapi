@@ -98,8 +98,31 @@ namespace StockportContentApi.Model
                 StartTime = StartTime,
                 SubmittedBy = SubmittedBy,
                 Teaser = Teaser,
-                ThumbnailImageUrl = ThumbnailImageUrl
+                ThumbnailImageUrl = ThumbnailImageUrl,
+                ImageAsset = ImageAsset,
             };
+        }
+
+        public bool IsSameAs(Event otherEvent)
+        {
+            return 
+                Title == otherEvent.Title &&
+                Slug == otherEvent.Slug &&
+                Teaser == otherEvent.Teaser &&
+                ImageAsset == otherEvent.ImageAsset &&
+                Description == otherEvent.Description &&
+                Fee == otherEvent.Fee &&
+                Location == otherEvent.Location &&
+                SubmittedBy == otherEvent.SubmittedBy &&
+                Longitude == otherEvent.Longitude &&
+                Latitude == otherEvent.Latitude &&
+                Featured == otherEvent.Featured &&
+                EventDate == otherEvent.EventDate &&
+                StartTime == otherEvent.StartTime &&
+                EndTime == otherEvent.EndTime &&
+                Occurences == otherEvent.Occurences &&
+                Frequency == otherEvent.Frequency &&
+                Breadcrumbs == otherEvent.Breadcrumbs;
         }
     }
 }

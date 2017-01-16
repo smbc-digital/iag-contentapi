@@ -28,28 +28,25 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             var entry = entries.FirstOrDefault();
-            if (entry == null)
-            {
-                return NotFoundResponse(slug);
-            }
 
-            Event eventItem = entry.ToModel();
+            Event eventItem = null;
 
             var eventsList = new List<Event>();
-            if (date.HasValue && entry.EventDate != date)
+            if (entry != null && date.HasValue && entry.EventDate != date)
             {
+
+                eventItem = (Event)entry.ToModel();
                 eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
                 eventItem = eventsList.SingleOrDefault(x => x.EventDate == date);
-            }   
+            }
+            else if (entry != null && entry.EventDate == date)
+            {
+                eventItem = (Event)entry.ToModel();
+            }
 
-            return (eventItem == null) 
-                ? NotFoundResponse(slug)
+            return (entry == null || eventItem == null) 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
                 : HttpResponse.Successful(eventItem);
-        }
-
-        private static HttpResponse NotFoundResponse(string slug)
-        {
-            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
         }
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo)
@@ -59,10 +56,12 @@ namespace StockportContentApi.Repositories
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
+            Event eventItem = null;
+
             var entriesList = new List<Event>();
             foreach (var entry in entries)
             {
-                var eventItem = entry.ToModel();
+                eventItem = (Event)entry.ToModel();
                 entriesList.Add(eventItem);
                 entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));              
             }

@@ -103,7 +103,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListingFilteredByDate", "/api/unittest/news?dateFrom=2016-08-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
-        [InlineData("Event", "/api/unittest/events/event_item", "2016-12-10T01:00:00+01:00")]
+        [InlineData("Event", "/api/unittest/events/event_item?date=2016-12-30", "2016-12-10T01:00:00+01:00")]
         [InlineData("EventsCalendar", "/api/unittest/events", "2016-12-10T01:00:00+01:00")]
         public async Task EndToEnd_ReturnsPageForASlug_WithTimeframeCheck(string file, string path, string stringDate)
         {
