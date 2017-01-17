@@ -53,16 +53,17 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEvent("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description", 
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false, 
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
+                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }, 
+                                        new List<Document> { new Document("metroshuttle route map", 674192, new DateTime(2016, 10, 05, 11, 09, 48), "document.pdf", "Stockport-Metroshuttle.pdf") })});
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEvent("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description",
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }),
+                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") } , new List<Document> { new Document("metroshuttle route map", 674192, new DateTime(2016, 10, 05, 11, 09, 48), "document.pdf", "Stockport-Metroshuttle.pdf") }),
                                     new ContentfulEvent("This is the second event", "second-event", "Read more for the event", "", "The event  description",
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
+                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }, new List<Document> { new Document("metroshuttle route map", 674192, new DateTime(2016, 10, 05, 11, 09, 48), "document.pdf", "Stockport-Metroshuttle.pdf") })});
             });
         }
        

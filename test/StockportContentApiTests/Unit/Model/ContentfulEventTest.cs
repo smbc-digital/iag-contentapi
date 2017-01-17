@@ -16,7 +16,7 @@ namespace StockportContentApiTests.Unit.Model
             const string imageUrl = "//image-url";
             var rawEvent = new ContentfulEvent(string.Empty, string.Empty, string.Empty, imageUrl, string.Empty, string.Empty,
                                           string.Empty, string.Empty, string.Empty, string.Empty, false, DateTime.MinValue.ToUniversalTime(),
-                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") });
+                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") }, new List<Document>());
 
             var builtEvent = rawEvent.ToModel();
 

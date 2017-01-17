@@ -31,12 +31,13 @@ namespace StockportContentApi.Model
         public int Occurences { get; set; } = 0;
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
+        public List<Document> Documents { get; set; } = new List<Document> {};
 
         public ContentfulEvent() {}
 
         public ContentfulEvent(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
-                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs) 
+                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, List<Document> documents)
         {
             Title = title;
             Slug = slug;
@@ -55,6 +56,7 @@ namespace StockportContentApi.Model
             Occurences = occurences;
             Frequency = frequency;
             Breadcrumbs = breadcrumbs;
+            Documents = documents;
         }
 
         private static string ConvertToThumbnail(string thumbnailImage)
@@ -100,6 +102,7 @@ namespace StockportContentApi.Model
                 Teaser = Teaser,
                 ThumbnailImageUrl = ThumbnailImageUrl,
                 ImageAsset = ImageAsset,
+                Documents = Documents
             };
         }
 

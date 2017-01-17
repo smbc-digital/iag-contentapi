@@ -22,6 +22,15 @@
           "slug": "",
           "type": "events"
         }
+      ],
+      "documents": [
+        {
+          "title": "metroshuttle route map",
+          "size": 674192,
+          "url": "document.pdf",
+          "lastUpdated": "2016-10-05T11:09:48",
+          "fileName": "Stockport-Metroshuttle.pdf"
+        }
       ]
     },
     {
@@ -45,6 +54,15 @@
           "title": "Events",
           "slug": "",
           "type": "events"
+        }
+      ],
+      "documents": [
+        {
+          "title": "metroshuttle route map",
+          "size": 674192,
+          "url": "document.pdf",
+          "lastUpdated": "2016-10-05T11:09:48",
+          "fileName": "Stockport-Metroshuttle.pdf"
         }
       ]
     }

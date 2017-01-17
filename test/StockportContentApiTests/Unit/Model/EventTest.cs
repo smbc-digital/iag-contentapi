@@ -16,7 +16,7 @@ namespace StockportContentApiTests.Unit.Model
             var anEvent = new Event();
             var expectedEvent = new Event(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 
                                           string.Empty, string.Empty, string.Empty, string.Empty, false , DateTime.MinValue.ToUniversalTime(), 
-                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") }, string.Empty);
+                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") }, string.Empty, new List<Document>());
 
             anEvent.ShouldBeEquivalentTo(expectedEvent);
         }
