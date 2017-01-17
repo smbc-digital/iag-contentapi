@@ -77,17 +77,12 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsAllNewsItems()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-         
-
              _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,null,null));
@@ -130,15 +125,10 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
-               .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
             .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
 
@@ -234,9 +224,8 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
             .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
 
@@ -265,9 +254,8 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
@@ -292,12 +280,10 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
             .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
 
@@ -320,13 +306,11 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-
             _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-
-                _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
@@ -353,15 +337,14 @@ namespace StockportContentApiTests.Unit.Repositories
             
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
             .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
-            // Act
+
             var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
-            // Assert
             newsroom.News.Count.Should().Be(1);
             newsroom.News.First().Title.Should().Be("This is within the date Range");
         }
@@ -376,15 +359,14 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 7));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1"))
+            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
             .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
-            // Act
+
             var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
-            // Assert
             newsroom.Dates.Count.Should().Be(2);
             newsroom.Dates.First().Date.Should().Be(new DateTime(2016, 08, 01));
         }
@@ -412,7 +394,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var tag = "testTag";
 
-            var queryString = $"&content_type=news&include=1&fields.tags[in]={tag}";
+            var queryString = $"&content_type=news&include=1&fields.tags[in]={tag}&limit={ContentfulQueryValues.LIMIT_MAX}";
 
             _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithoutHashTagTest.json")));
@@ -441,7 +423,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string tag = "#testTag";
             const string expectedTagQueryValue = "testTag";
 
-            var queryString = $"&content_type=news&include=1&fields.tags[match]={expectedTagQueryValue}";
+            var queryString = $"&content_type=news&include=1&fields.tags[match]={expectedTagQueryValue}&limit={ContentfulQueryValues.LIMIT_MAX}";
             
             _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithHashTagTest.json")));

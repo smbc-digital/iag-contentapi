@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
@@ -10,8 +9,6 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApi.Extensions;
-using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 
 namespace StockportContentApi.Repositories
 {
@@ -28,13 +25,9 @@ namespace StockportContentApi.Repositories
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
 
-        public NewsRepository(ContentfulConfig config, 
-            IHttpClient httpClient, 
-            IFactory<News> newsFactory, 
-            IFactory<Newsroom> newsroomFactory,
-            INewsCategoriesFactory newsCategoriesFactory,
-            ITimeProvider timeProvider, 
-            IVideoRepository videoRepository)
+        public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, 
+            IFactory<Newsroom> newsroomFactory, INewsCategoriesFactory newsCategoriesFactory,
+            ITimeProvider timeProvider, IVideoRepository videoRepository)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
@@ -50,7 +43,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
-            var newsroomContentfulResponse = await _contentfulClient.Get(UrlForNewsroom("newsroom", ReferenceLevelLimit));
+            var newsroomContentfulResponse = await _contentfulClient.Get(UrlFor("newsroom", ReferenceLevelLimit));
             List<string> categories;
 
             if (newsroomContentfulResponse.HasItems())
@@ -58,14 +51,11 @@ namespace StockportContentApi.Repositories
                 newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
             }
 
-
-            var newsContentfulResponse = await _contentfulClient.Get(UrlForNewsWithFilters("news", ReferenceLevelLimit, tag));
+            var newsContentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, tag: tag, limit: ContentfulQueryValues.LIMIT_MAX));
            
             if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");           
 
-            List<DateTime> dates;
-
-            
+            List<DateTime> dates;            
 
             var newsArticles = newsContentfulResponse.GetAllItems()
                 .Select(item => _newsFactory.Build(item, newsContentfulResponse))
@@ -95,7 +85,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNews(string slug)
         {
-            var contentfulResponse = await _contentfulClient.Get(UrlForSlug("news", ReferenceLevelLimit, slug));
+            var contentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, slug));
 
             if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'");
 
@@ -110,8 +100,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)
         {
-            var url = UrlForNews("news", ReferenceLevelLimit);
-            var contentfulResponse = await _contentfulClient.Get(url);
+            var contentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, limit: ContentfulQueryValues.LIMIT_MAX));
 
             if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
             var newsArticles = contentfulResponse.GetAllItems()
@@ -127,55 +116,26 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(newsArticles);
         }
 
-        private string UrlForNews(string type, int referenceLevel)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
-        }
-
-        private string UrlForNewsroom(string type, int referenceLevel)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
-        }
-
-        private string UrlForNewsWithFilters(string type, int referenceLevel, string tag)
+        private string UrlFor(string type, int referenceLevel, string slug = null, int limit = -1, string tag = null)
         {
             var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
 
-            var querys = "";
+            if (!string.IsNullOrWhiteSpace(slug)) baseUrl = $"{baseUrl}&fields.slug={slug}";
 
             if (!string.IsNullOrWhiteSpace(tag))
-            {
-                var searchType = GetSearchTypeForTag(ref tag);
-                querys += CreateQueryParameter($"fields.tags[{searchType}]",  tag);
-            }
+                baseUrl = string.Concat(baseUrl, $"&fields.tags[{GetSearchTypeForTag(ref tag)}]={tag}");
 
-            var url = string.Concat(baseUrl, querys);
-            return url;
+            if (limit >= 0) baseUrl = $"{baseUrl}&limit={limit}";
+
+            return baseUrl;
         }
 
         private static string GetSearchTypeForTag(ref string tag)
-        {
-            var searchType = "in";
-            
-            if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#"))
-            {
-                return searchType;
-            }
-
-            searchType = "match";
+        {            
+            if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) return "in";
             tag = tag.Remove(0, 1);
 
-            return searchType;
-        }
-
-        private static string CreateQueryParameter(string queryName, string queryValue)
-        {
-            return string.Concat("&", queryName, "=", queryValue);
-        }
-
-        private string UrlForSlug(string type, int referenceLevel, string slug)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+            return "match";
         }
 
         public async Task <List<string>>GetCategories()

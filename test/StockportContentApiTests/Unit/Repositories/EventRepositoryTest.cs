@@ -106,7 +106,7 @@ namespace StockportContentApiTests.Unit.Repositories
                                          "18:00", "22:00", 0, EventFrequency.None, 
                                          new List<Crumb>() { new Crumb("title", "slug", "type") });
             var events = new List<Event> {anEvent, anotherEvent};
-            var builder = new QueryBuilder().ContentTypeIs("events").Include(1);
+            var builder = new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null,null));

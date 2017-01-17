@@ -12,6 +12,7 @@ using FluentAssertions;
 using Moq;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApiTests.Integration
 {
@@ -19,31 +20,33 @@ namespace StockportContentApiTests.Integration
     {
         private HttpClient _client;
         private readonly DateTime DEFAULT_DATE = new DateTime(2016, 09, 01);
+        private const string ENTRIES_BASE_URL = "https://test-host.com/spaces/XX/entries?access_token=XX";
+        private const string CONTENT_TYPES_BASE_URL = "https://test-host.com/spaces/XX/content_types?access_token=XX";
 
         public RoutesTest()
         {
             TestAppFactory.FakeHttpClientFactory.MakeFakeHttpClientWithConfiguration(fakeHttpClient =>
             {
-                fakeHttpClient.For(contentfulUrlFor("topic", 1, "test-topic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopic.json"));
-                fakeHttpClient.For(contentfulUrlFor("topic", 1, "test-topic-with-subtopic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItems.json"));
-                fakeHttpClient.For(contentfulUrlFor("topic", 1, "test-topic-with-alerts")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopicWithAlerts.json"));
-                fakeHttpClient.For(contentfulUrlFor("article", 2, "test-article")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(contentfulUrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
-                fakeHttpClient.For(contentfulUrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
+                fakeHttpClient.For(UrlFor("topic", 1, "test-topic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopic.json"));
+                fakeHttpClient.For(UrlFor("topic", 1, "test-topic-with-subtopic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItems.json"));
+                fakeHttpClient.For(UrlFor("topic", 1, "test-topic-with-alerts")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopicWithAlerts.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "test-article")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
                 fakeHttpClient.For("https://buto-host.tv/video/kQl5D").Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(contentfulUrlFor("profile", 1, "test-profile")).Return((CreateHttpResponse("Unit/MockContentfulResponses/ProfileWithBreadcrumbs.json")));
-                fakeHttpClient.For(contentfulUrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
-                fakeHttpClient.For(contentfulUrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
-                fakeHttpClient.For(contentfulUrlFor("news", 1, "news_item")).Return(CreateHttpResponse("Unit/MockContentfulResponses/News.json"));
-                fakeHttpClient.For(contentfulUrlFor("news", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(contentfulUrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
-                fakeHttpClient.For(contentfulUrlForTag("news", 1, "Events")).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(contentfulUrlForCategory("news", 1, "A category")).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(contentfulUrlFor("article", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));             
-                fakeHttpClient.For(contentfulUrlFor("topic", true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
-                fakeHttpClient.For("https://test-host.com/spaces/XX/entries?access_token=XX&content_type=redirect").Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
-                fakeHttpClient.For(contentfulUrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
-                fakeHttpClient.For(contentfulContentTypesUrlFor("contenttypes")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
+                fakeHttpClient.For(UrlFor("profile", 1, "test-profile")).Return((CreateHttpResponse("Unit/MockContentfulResponses/ProfileWithBreadcrumbs.json")));
+                fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
+                fakeHttpClient.For(UrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
+                fakeHttpClient.For(UrlFor("news", 1, "news_item")).Return(CreateHttpResponse("Unit/MockContentfulResponses/News.json"));
+                fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
+                fakeHttpClient.For(UrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
+                fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
+                fakeHttpClient.For(UrlFor("news", 1, category: "A category", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
+                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));             
+                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
+                fakeHttpClient.For(UrlFor("redirect")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
+                fakeHttpClient.For(UrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
+                fakeHttpClient.For(ContentTypesUrlFor()).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
             });   
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
@@ -55,7 +58,7 @@ namespace StockportContentApiTests.Integration
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false, 
                                         new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
                 httpClient.Setup(o => o.GetEntriesAsync<Event>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Build()),
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {
                                     new Event("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description",
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
@@ -97,8 +100,7 @@ namespace StockportContentApiTests.Integration
         }
 
         [Theory]
-        [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]
-        
+        [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]      
         [InlineData("NewsListing", "/api/unittest/news", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
@@ -140,31 +142,23 @@ namespace StockportContentApiTests.Integration
                 new JsonSerializerSettings { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }));
         }
 
-        private string contentfulContentTypesUrlFor(string type)
+        private static string ContentTypesUrlFor()
         {
-            return "https://test-host.com/spaces/XX/content_types?access_token=XX";
+            return CONTENT_TYPES_BASE_URL;
         }
 
-        private string contentfulUrlFor(string type, int referenceLevelLimit, string slug = null)
+        private string UrlFor(string type, int referenceLevelLimit = -1, string slug = null,
+            bool displayOnAz = false, string tag = null, string category = null, int limit = -1)
         {
-            return slug == null
-                ? $"https://test-host.com/spaces/XX/entries?access_token=XX&content_type={type}&include={referenceLevelLimit}"
-                : $"https://test-host.com/spaces/XX/entries?access_token=XX&content_type={type}&include={referenceLevelLimit}&fields.slug={slug}";
-        }
+            var url = $"{ENTRIES_BASE_URL}&content_type={type}";
+            if (referenceLevelLimit >= 0) url = $"{url}&include={referenceLevelLimit}";
+            if (!string.IsNullOrEmpty(slug)) url = $"{url}&fields.slug={slug}";
+            if (displayOnAz) url = $"{url}&fields.displayOnAZ={displayOnAz.ToString().ToLower()}";
+            if (!string.IsNullOrEmpty(tag)) url = $"{url}&fields.tags[in]={tag}";
+            if (!string.IsNullOrEmpty(category)) url = $"{url}&fields.categories[in]={category}";
+            if (limit >= 0) url = $"{url}&limit={limit}";
 
-        private string contentfulUrlFor(string type, bool displayOnAz = false)
-        {
-            return $"https://test-host.com/spaces/XX/entries?access_token=XX&content_type={type}&fields.displayOnAZ={displayOnAz.ToString().ToLower()}";
-        }
-
-        private string contentfulUrlForTag(string type, int referenceLevelLimit, string tag)
-        {
-            return $"https://test-host.com/spaces/XX/entries?access_token=XX&content_type={type}&include={referenceLevelLimit}&fields.tags[in]={tag}";
-        }
-
-        private string contentfulUrlForCategory(string type, int referenceLevelLimit, string category)
-        {
-            return $"https://test-host.com/spaces/XX/entries?access_token=XX&content_type={type}&include={referenceLevelLimit}&fields.categories[in]={category}";
+            return url;
         }
 
         private static string GetFilePath(string file)
