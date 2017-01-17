@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
@@ -24,10 +26,11 @@ namespace StockportContentApi.Repositories
         private const int ReferenceLevelLimit = 1;
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
+        private readonly Contentful.Core.IContentfulClient _client;
 
         public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, 
             IFactory<Newsroom> newsroomFactory, INewsCategoriesFactory newsCategoriesFactory,
-            ITimeProvider timeProvider, IVideoRepository videoRepository)
+            ITimeProvider timeProvider, IVideoRepository videoRepository, IContentfulClientManager contentfulClientManager)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
@@ -38,6 +41,33 @@ namespace StockportContentApi.Repositories
             _videoRepository = videoRepository;
             _dateComparer = new DateComparer(timeProvider);
             _newsCategoryFactory = newsCategoriesFactory;
+            _client = contentfulClientManager.GetClient(config);
+        }
+
+        public async Task<HttpResponse> GetNews(string slug)
+        {
+            var builder = new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync<ContentfulNews>(builder);
+            var entry = entries.FirstOrDefault();
+
+            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'");
+
+            var news = new News(entry.Title, entry.Slug, entry.Teaser, entry.Image.File.Url, 
+                ConvertToThumbnail(entry.Image.File.Url), _videoRepository.Process(entry.Body), 
+                entry.SunriseDate, entry.SunsetDate, entry.Breadcrumbs, entry.Alerts, entry.Tags,
+                entry.Documents.Select(x => new Document(x.Description, 
+                                                         unchecked((int)x.File.Details.Size), 
+                                                         x.SystemProperties.UpdatedAt.Value, 
+                                                         x.File.Url, 
+                                                         x.File.FileName)).ToList(), 
+                entry.Categories);
+
+            return HttpResponse.Successful(news);
+        }
+
+        private static string ConvertToThumbnail(string thumbnailImage)
+        {
+            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
         }
 
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
@@ -81,21 +111,6 @@ namespace StockportContentApi.Repositories
             return startDate.HasValue && endDate.HasValue 
                 ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) 
                 : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
-        }
-
-        public async Task<HttpResponse> GetNews(string slug)
-        {
-            var contentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, slug));
-
-            if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'");
-
-            News news = _newsFactory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
-
-            news.Body = _videoRepository.Process(news.Body);
-
-            return news.GetType() == typeof(NullNews)
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
-                : HttpResponse.Successful(news);
         }
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)

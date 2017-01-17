@@ -10,10 +10,10 @@ namespace StockportContentApi.Model
         public string Teaser { get; }
         public string Image { get; }
         public string ThumbnailImage { get; }
-        public string Body { get; set; }
+        public string Body { get; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
-        public List<Crumb> Breadcrumbs { get; set; }
+        public List<Crumb> Breadcrumbs { get; }
         public List<string> Tags { get; set; }
         public List<Alert> Alerts { get; }
         public List<Document> Documents { get; }
@@ -35,15 +35,5 @@ namespace StockportContentApi.Model
             Documents = documents;
             Categories = categories;
         }
-    }
-
-    public class NullNews : News
-    {
-        public NullNews()
-            : base(
-                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime(),
-
-                new DateTime(), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
-        { }
     }
 }

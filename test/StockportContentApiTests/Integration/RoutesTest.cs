@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
 using Xunit;
@@ -13,6 +13,7 @@ using Moq;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using File = System.IO.File;
 
 namespace StockportContentApiTests.Integration
 {
@@ -66,6 +67,18 @@ namespace StockportContentApiTests.Integration
                                     new Event("This is the second event", "second-event", "Read more for the event", "", "The event  description",
                                         "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
                                         new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
+                                    new ContentfulNews {Title = "This is the news", Slug = "news-of-the-century", Teaser = "Read more for the news", Image = new Asset { File = new Contentful.Core.Models.File {Url = "image.jpg"} }, Body = "The news {{PDF:Stockport-Metroshuttle.pdf}} {{PDF:a-pdf.pdf}}",
+                                        SunriseDate = new DateTime(2016, 07, 09, 23, 0, 0, DateTimeKind.Utc), SunsetDate = new DateTime(2016, 8, 23, 23, 0, 0, DateTimeKind.Utc),
+                                        Breadcrumbs = new List<Crumb> { new Crumb("News", "", "news")}, Alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body", "Error", new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc), new DateTime(2016, 9, 29, 23, 0, 0, DateTimeKind.Utc)) },
+                                        Tags = new List<string> { "Bramall Hall", "Events" }, 
+                                        Documents = new List<Asset> { new Asset { Description = "metroshuttle route map", File = new Contentful.Core.Models.File {Url = "document.pdf" , FileName = "Stockport-Metroshuttle.pdf", Details = new FileDetails {Size = 674192 }}, SystemProperties = new SystemProperties
+                                        {
+                                            UpdatedAt = new DateTime(2016, 10, 5, 11, 09, 48, DateTimeKind.Utc) 
+                                        }}},
+                                        Categories = new List<string> { "Category 1", "Category 2" } } });
             });
         }
        
