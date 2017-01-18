@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Model
 {
@@ -11,13 +13,8 @@ namespace StockportContentApi.Model
     {      
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
-        public string Teaser { get; set; } = string.Empty;
-        [JsonProperty(Required = Required.Default)]
-        public string ImageUrl => ImageAsset?.File?.Url ?? string.Empty;
-        [JsonProperty("image")]
-        public Asset ImageAsset { get; set; } = new Asset { File = new File { Url = "" } };
-        [JsonProperty(Required = Required.Default)]
-        public string ThumbnailImageUrl => ConvertToThumbnail(ImageAsset?.File?.Url);
+        public string Teaser { get; set; } = string.Empty;      
+        public Asset Image { get; set; } = new Asset { File = new File { Url = "" } };             
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
@@ -31,18 +28,17 @@ namespace StockportContentApi.Model
         public int Occurences { get; set; } = 0;
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
-        public List<Document> Documents { get; set; } = new List<Document> {};
+        public List<Asset> Documents { get; set; } = new List<Asset> { new Asset()};
 
         public ContentfulEvent() {}
 
-        public ContentfulEvent(string title, string slug, string teaser, string imageUrl, string description, string fee, 
+        public ContentfulEvent(string title, string slug, string teaser, string description, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
-                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, List<Document> documents)
+                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, List<Asset> documents)
         {
             Title = title;
             Slug = slug;
             Teaser = teaser;
-            ImageAsset = new Asset { File = new File { Url = imageUrl } };
             Description = description;
             Fee = fee;
             Location = location;
@@ -59,28 +55,15 @@ namespace StockportContentApi.Model
             Documents = documents;
         }
 
-        private static string ConvertToThumbnail(string thumbnailImage)
-        {
-            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
-        }
-
-        public bool ShouldSerializeImageAsset()
-        {
-            return false;
-        }
-
-        public bool ShouldSerializeFrequency()
-        {
-            return false;
-        }
-
-        public bool ShouldSerializeOccurences()
-        {
-            return false;
-        }
-
         public Event ToModel()
         {
+            var eventDocuments = Documents.Select(
+                document => 
+                new Document(document.Title, 
+                             (int)document.File.Details.Size, 
+                             DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt), 
+                             document.File.Url, document.File.FileName)).ToList();
+
             return new Event
             {
                 Title = Title,
@@ -91,7 +74,7 @@ namespace StockportContentApi.Model
                 Featured =  Featured,
                 Fee = Fee,
                 Frequency = Frequency,
-                ImageUrl = ImageUrl,
+                ImageUrl = Image.File.Url,
                 Latitude = Latitude,
                 Longitude = Longitude,
                 Location = Location,
@@ -100,10 +83,14 @@ namespace StockportContentApi.Model
                 StartTime = StartTime,
                 SubmittedBy = SubmittedBy,
                 Teaser = Teaser,
-                ThumbnailImageUrl = ThumbnailImageUrl,
-                ImageAsset = ImageAsset,
-                Documents = Documents
+                ThumbnailImageUrl = ConvertToThumbnail(Image.File.Url),
+                Documents = eventDocuments
             };
+        }
+
+        private static string ConvertToThumbnail(string thumbnailImage)
+        {
+            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
         }
 
         public bool IsSameAs(Event otherEvent)
@@ -112,7 +99,6 @@ namespace StockportContentApi.Model
                 Title == otherEvent.Title &&
                 Slug == otherEvent.Slug &&
                 Teaser == otherEvent.Teaser &&
-                ImageAsset == otherEvent.ImageAsset &&
                 Description == otherEvent.Description &&
                 Fee == otherEvent.Fee &&
                 Location == otherEvent.Location &&

@@ -29,7 +29,7 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             var entry = entries.FirstOrDefault();
 
-            Event eventItem = null;
+             Event eventItem = null;
 
             var eventsList = new List<Event>();
             if (entry != null && date.HasValue && entry.EventDate != date)

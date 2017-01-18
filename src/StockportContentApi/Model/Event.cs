@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Configuration;
-using Contentful.Core.Models;
 using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
@@ -13,7 +12,6 @@ namespace StockportContentApi.Model
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
-        public Asset ImageAsset { get; set; } = null;
         public string ThumbnailImageUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
@@ -55,11 +53,6 @@ namespace StockportContentApi.Model
             ThumbnailImageUrl = thumbnailImageUrl;
             ImageUrl = imageUrl;
             Documents = documents;
-        }
-
-        public bool ShouldSerializeImageAsset()
-        {
-            return false;
         }
 
         public bool ShouldSerializeFrequency()
