@@ -13,6 +13,7 @@ using Moq;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
 
 namespace StockportContentApiTests.Integration
@@ -52,21 +53,17 @@ namespace StockportContentApiTests.Integration
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
             {
-                httpClient.Setup(o => o.GetEntriesAsync<Event>(
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
-                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {
-                                    new Event("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description", 
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false, 
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
-                httpClient.Setup(o => o.GetEntriesAsync<Event>(
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
+                                                                    new ContentfulEventBuilder().Slug("event_item").EventDate(new DateTime(2016, 12, 30)).Build()
+                                                                });
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
-                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event> {
-                                    new Event("This is the event", "event-of-the-century", "Read more for the event", "", "The event  description",
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }),
-                                    new Event("This is the second event", "second-event", "Read more for the event", "", "The event  description",
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") })});
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
+                                        new ContentfulEventBuilder().Slug("event1").Build(),
+                                        new ContentfulEventBuilder().Slug("event2").Build()
+                                });
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
@@ -80,7 +77,7 @@ namespace StockportContentApiTests.Integration
                                         }}},
                                         Categories = new List<string> { "Category 1", "Category 2" } } });
             });
-        }
+        }                                         
        
         [Theory]
         [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]
@@ -118,7 +115,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListingFilteredByDate", "/api/unittest/news?dateFrom=2016-08-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
-        [InlineData("Event", "/api/unittest/events/event_item", "2016-12-10T01:00:00+01:00")]
+        [InlineData("Event", "/api/unittest/events/event_item?date=2016-12-30", "2016-12-10T01:00:00+01:00")]
         [InlineData("EventsCalendar", "/api/unittest/events", "2016-12-10T01:00:00+01:00")]
         public async Task EndToEnd_ReturnsPageForASlug_WithTimeframeCheck(string file, string path, string stringDate)
         {
