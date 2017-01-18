@@ -28,90 +28,25 @@ namespace StockportContentApi.Model
         public int Occurences { get; set; } = 0;
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
-        public List<Asset> Documents { get; set; } = new List<Asset> { new Asset()};
-
-        public ContentfulEvent() {}
-
-        public ContentfulEvent(string title, string slug, string teaser, string description, string fee, 
-                     string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 
-                     string endTime, int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, List<Asset> documents)
-        {
-            Title = title;
-            Slug = slug;
-            Teaser = teaser;
-            Description = description;
-            Fee = fee;
-            Location = location;
-            SubmittedBy = submittedBy;
-            Longitude = longitude;
-            Latitude = latitude;
-            Featured = featured;
-            EventDate = eventDate;
-            StartTime = startTime;
-            EndTime = endTime;
-            Occurences = occurences;
-            Frequency = frequency;
-            Breadcrumbs = breadcrumbs;
-            Documents = documents;
-        }
+        public List<Asset> Documents { get; set; } = new List<Asset>();
 
         public Event ToModel()
         {
             var eventDocuments = Documents.Select(
                 document => 
-                new Document(document.Title, 
+                new Document(document.Description, 
                              (int)document.File.Details.Size, 
                              DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt), 
                              document.File.Url, document.File.FileName)).ToList();
 
-            return new Event
-            {
-                Title = Title,
-                EventDate = EventDate,
-                Breadcrumbs = Breadcrumbs,
-                Description = Description,
-                EndTime = EndTime,
-                Featured =  Featured,
-                Fee = Fee,
-                Frequency = Frequency,
-                ImageUrl = Image.File.Url,
-                Latitude = Latitude,
-                Longitude = Longitude,
-                Location = Location,
-                Occurences = Occurences,
-                Slug = Slug,
-                StartTime = StartTime,
-                SubmittedBy = SubmittedBy,
-                Teaser = Teaser,
-                ThumbnailImageUrl = ConvertToThumbnail(Image.File.Url),
-                Documents = eventDocuments
-            };
+            return new Event(Title, Slug, Teaser, Image.File.Url, Description, Fee, Location, SubmittedBy, Longitude,
+                Latitude, Featured, EventDate, StartTime, EndTime, Occurences, Frequency, Breadcrumbs,
+                ConvertToThumbnail(Image.File.Url), eventDocuments);
         }
 
         private static string ConvertToThumbnail(string thumbnailImage)
         {
             return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
-        }
-
-        public bool IsSameAs(Event otherEvent)
-        {
-            return 
-                Title == otherEvent.Title &&
-                Slug == otherEvent.Slug &&
-                Teaser == otherEvent.Teaser &&
-                Description == otherEvent.Description &&
-                Fee == otherEvent.Fee &&
-                Location == otherEvent.Location &&
-                SubmittedBy == otherEvent.SubmittedBy &&
-                Longitude == otherEvent.Longitude &&
-                Latitude == otherEvent.Latitude &&
-                Featured == otherEvent.Featured &&
-                EventDate == otherEvent.EventDate &&
-                StartTime == otherEvent.StartTime &&
-                EndTime == otherEvent.EndTime &&
-                Occurences == otherEvent.Occurences &&
-                Frequency == otherEvent.Frequency &&
-                Breadcrumbs == otherEvent.Breadcrumbs;
         }
     }
 }

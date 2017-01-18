@@ -14,25 +14,44 @@ namespace StockportContentApiTests.Unit.Model
         [Fact]
         public void ShouldSetDefaultsOnModel()
         {
-            var anEvent = new ContentfulEvent();
-            var expectedEvent = new ContentfulEvent(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                                          string.Empty, string.Empty, string.Empty, string.Empty, false, DateTime.MinValue.ToUniversalTime(),
-                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") }, new List<Asset>());
-
-            anEvent.ShouldBeEquivalentTo(expectedEvent);
+            var actual = new ContentfulEvent();
+            var expected = new ContentfulEvent
+            {
+                Title = string.Empty,
+                Slug = string.Empty,
+                Teaser = string.Empty,
+                Image = new Asset { File = new File { Url = string.Empty }},
+                Description = string.Empty,
+                Fee = string.Empty,
+                Location = string.Empty,
+                SubmittedBy = string.Empty,
+                Longitude = string.Empty,
+                Latitude = string.Empty,
+                Featured = false,
+                EventDate = DateTime.MinValue.ToUniversalTime(),
+                StartTime = string.Empty,
+                EndTime = string.Empty,
+                Occurences = 0,
+                Frequency = EventFrequency.None,
+                Breadcrumbs = new List<Crumb> { new Crumb("Events", string.Empty, "events") },
+                Documents = new List<Asset>()
+            };
+            actual.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
         public void ShouldSetImageUrlsOnBuiltEventModel()
         {
-            var rawEvent = new ContentfulEvent(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                                          string.Empty, string.Empty, string.Empty, string.Empty, false, DateTime.MinValue.ToUniversalTime(),
-                                          string.Empty, string.Empty, 0, EventFrequency.None, new List<Crumb> { new Crumb("Events", string.Empty, "events") } , new List<Asset>() { new Asset { File = new File { Url = "test.img" } } });
+            const string imageUrl = "image.jpg";
+            var rawEvent = new ContentfulEvent
+            {
+                Image = new Asset { File = new File { Url = imageUrl } },
+            };
 
             var builtEvent = rawEvent.ToModel();
 
-            builtEvent.ImageUrl.Should().Be(rawEvent.Image.File.Url);
-            builtEvent.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + ThumbnailQuery);
+            builtEvent.ImageUrl.Should().Be(imageUrl);
+            builtEvent.ThumbnailImageUrl.Should().Be(imageUrl + ThumbnailQuery);
         }
     }
 }

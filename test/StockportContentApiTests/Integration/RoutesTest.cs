@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
@@ -13,6 +12,7 @@ using FluentAssertions;
 using Moq;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
 
 namespace StockportContentApiTests.Integration
@@ -53,20 +53,16 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
-                                    new ContentfulEvent("This is the event", "event-of-the-century", "Read more for the event", "The event  description", 
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false, 
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }, new List<Asset>())});
+                                    new ContentfulEventBuilder().Slug("event_item").EventDate(new DateTime(2016, 12, 30)).Build()
+                                });   
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
-                                    new ContentfulEvent("This is the event", "event-of-the-century", "Read more for the event", "The event  description",
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }, new List<Asset>()),
-                                    new ContentfulEvent("This is the second event", "second-event", "Read more for the event", "The event  description",
-                                        "Free", "Bramall Hall, Carpark, SK7 6HG", "Friends of Stockport", "", "", false,
-                                        new DateTime(2016, 12, 30, 0, 0, 0, DateTimeKind.Utc), "10:00", "17:00",  0, EventFrequency.None, new List<Crumb> { new Crumb("Events", "", "events") }, new List<Asset>())});
+                                   new ContentfulEventBuilder().Slug("event1").Build(),
+                                   new ContentfulEventBuilder().Slug("event2").Build()
+                                });
             });
-        }
+        }                                         
        
         [Theory]
         [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]

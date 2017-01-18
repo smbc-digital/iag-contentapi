@@ -1,15 +1,15 @@
 ﻿{
-  "title": "This is the event",
-  "slug": "event-of-the-century",
-  "teaser": "Read more for the event",
-  "imageUrl": "",
-  "thumbnailImageUrl": "",
-  "description": "The event  description",
-  "fee": "Free",
-  "location": "Bramall Hall, Carpark, SK7 6HG",
-  "submittedBy": "Friends of Stockport",
-  "longitude": "",
-  "latitude": "",
+  "title": "title",
+  "slug": "event_item",
+  "teaser": "teaser",
+  "imageUrl": "image-url.jpg",
+  "thumbnailImageUrl": "image-url.jpg?h=250",
+  "description": "description",
+  "fee": "fee",
+  "location": "location",
+  "submittedBy": "submittedBy",
+  "longitude": "longitude",
+  "latitude": "latitude",
   "featured": false,
   "eventDate": "2016-12-30T00:00:00Z",
   "startTime": "10:00",
@@ -21,5 +21,13 @@
       "type": "events"
     }
   ],
-  "documents": []
+  "documents": [
+    {
+      "title": "documentTitle",
+      "size": 674192,
+      "url": "url.pdf",
+      "lastUpdated": "2016-10-05T00:00:00Z",
+      "fileName": "fileName"
+    }
+  ]
 }

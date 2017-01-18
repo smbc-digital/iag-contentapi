@@ -1,34 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contentful.Core.Configuration;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Event
-    {      
-        public string Title { get; set; } = string.Empty;
-        public string Slug { get; set; } = string.Empty;
-        public string Teaser { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
-        public string ThumbnailImageUrl { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Fee { get; set; } = string.Empty;
-        public string Location { get; set; } = string.Empty;
-        public string SubmittedBy { get; set; } = string.Empty;
-        public string Longitude { get; set; } = string.Empty;
-        public string Latitude { get; set; } = string.Empty;
-        public bool Featured { get; set; } = false;
-        public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
-        public string StartTime { get; set; } = string.Empty;
-        public string EndTime { get; set; } = string.Empty;
-        public int Occurences { get; set; } = 0;
-        public EventFrequency Frequency { get; set; } = EventFrequency.None;
-        public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
-        public List<Document> Documents { get; set; } = new List<Document>();
-
-        public Event() {}
+    {
+        public string Title { get; }
+        public string Slug { get; }
+        public string Teaser { get; }
+        public string ImageUrl { get; }
+        public string ThumbnailImageUrl { get; }
+        public string Description { get; }
+        public string Fee { get; }
+        public string Location { get; }
+        public string SubmittedBy { get; }
+        public string Longitude { get; }
+        public string Latitude { get; }
+        public bool Featured { get; }
+        public DateTime EventDate { get; }
+        public string StartTime { get; }
+        public string EndTime { get; }
+        public int Occurences { get; } 
+        public EventFrequency Frequency { get; }
+        public List<Crumb> Breadcrumbs { get; }
+        public List<Document> Documents { get; }
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, string longitude, string latitude, bool featured, DateTime eventDate, string startTime, 

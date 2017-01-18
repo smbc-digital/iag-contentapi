@@ -29,19 +29,18 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             var entry = entries.FirstOrDefault();
 
-             Event eventItem = null;
+            Event eventItem = null;
 
             var eventsList = new List<Event>();
             if (entry != null && date.HasValue && entry.EventDate != date)
             {
-
-                eventItem = (Event)entry.ToModel();
+                eventItem = entry.ToModel();
                 eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
                 eventItem = eventsList.SingleOrDefault(x => x.EventDate == date);
             }
-            else if (entry != null && entry.EventDate == date)
+            else if (entry != null)
             {
-                eventItem = (Event)entry.ToModel();
+                eventItem = entry.ToModel();
             }
 
             return (entry == null || eventItem == null) 

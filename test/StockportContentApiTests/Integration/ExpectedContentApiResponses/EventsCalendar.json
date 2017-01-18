@@ -1,19 +1,19 @@
 ﻿{
   "events": [
     {
-      "title": "This is the event",
-      "slug": "event-of-the-century",
-      "teaser": "Read more for the event",
-      "imageUrl": "",
-      "thumbnailImageUrl": "",
-      "description": "The event  description",
-      "fee": "Free",
-      "location": "Bramall Hall, Carpark, SK7 6HG",
-      "submittedBy": "Friends of Stockport",
-      "longitude": "",
-      "latitude": "",
+      "title": "title",
+      "slug": "event1",
+      "teaser": "teaser",
+      "imageUrl": "image-url.jpg",
+      "thumbnailImageUrl": "image-url.jpg?h=250",
+      "description": "description",
+      "fee": "fee",
+      "location": "location",
+      "submittedBy": "submittedBy",
+      "longitude": "longitude",
+      "latitude": "latitude",
       "featured": false,
-      "eventDate": "2016-12-30T00:00:00Z",
+      "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
       "breadcrumbs": [
@@ -23,22 +23,30 @@
           "type": "events"
         }
       ],
-      "documents": []
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00Z",
+          "fileName": "fileName"
+        }
+      ]
     },
     {
-      "title": "This is the second event",
-      "slug": "second-event",
-      "teaser": "Read more for the event",
-      "imageUrl": "",
-      "thumbnailImageUrl": "",
-      "description": "The event  description",
-      "fee": "Free",
-      "location": "Bramall Hall, Carpark, SK7 6HG",
-      "submittedBy": "Friends of Stockport",
-      "longitude": "",
-      "latitude": "",
+      "title": "title",
+      "slug": "event2",
+      "teaser": "teaser",
+      "imageUrl": "image-url.jpg",
+      "thumbnailImageUrl": "image-url.jpg?h=250",
+      "description": "description",
+      "fee": "fee",
+      "location": "location",
+      "submittedBy": "submittedBy",
+      "longitude": "longitude",
+      "latitude": "latitude",
       "featured": false,
-      "eventDate": "2016-12-30T00:00:00Z",
+      "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
       "breadcrumbs": [
@@ -48,7 +56,15 @@
           "type": "events"
         }
       ],
-      "documents": []
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00Z",
+          "fileName": "fileName"
+        }
+      ]
     }
   ]
 }
