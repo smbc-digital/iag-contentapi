@@ -15,7 +15,7 @@ namespace StockportContentApi.Model
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty } };
         public string Body { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
-        public DateTime SunsetDate { get; set; } = DateTime.MinValue.ToUniversalTime();
+        public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("News", string.Empty, "news") };
         public List<string> Tags { get; set; } = new List<string>();
         public List<Alert> Alerts { get; set; } = new List<Alert>();
