@@ -15,6 +15,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using File = System.IO.File;
 using HttpResponse = StockportContentApi.Http.HttpResponse;
@@ -86,52 +87,22 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsANewsItemFromASlug()
         {
             const string slug = "news-of-the-century";
-            var document = new Asset
-            {
-                Description = "metroshuttle route map",
-                File = new Contentful.Core.Models.File
-                {
-                    Url = "document.pdf",
-                    FileName = "Stockport-Metroshuttle.pdf",
-                    Details = new FileDetails { Size = 674192 }
-                },
-                SystemProperties = new SystemProperties { UpdatedAt = new DateTime(2016, 10, 5, 11, 09, 48, DateTimeKind.Utc) }
-            };
-
+            var contentfulNews = new ContentfulNewsBuilder().Slug(slug).Build();
+            
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                 It.Is<QueryBuilder>(q => q.Build() ==
-                 new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1).Build()),
-                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> { new ContentfulNews
-            {
-                Title = Title, Alerts = _alerts, Body = Body, Slug = Slug, Teaser = Teaser, SunriseDate =  _sunriseDate,
-                SunsetDate =  _sunsetDate, Breadcrumbs = _crumbs, Tags = new List<string>() { "Bramall Hall"},
-                Image = new Asset { File = new Contentful.Core.Models.File { Url = Image }  }, Categories = new List<string> { "cat1" },
-                Documents = new List<Asset> { document }
-            }});
-
-            _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(Body);
+                It.Is<QueryBuilder>(q => 
+                    q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1) .Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> { contentfulNews });
+            _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var news = response.Get<News>();
-
-            news.Title.Should().Be(Title);
-            news.Body.Should().Be(Body);
-            news.Slug.Should().Be(Slug);
-            news.Teaser.Should().Be(Teaser);
-            news.SunriseDate.Should().Be(_sunriseDate);
-            news.SunsetDate.Should().Be(_sunsetDate);
-            news.Image.Should().Be(Image);
-            news.ThumbnailImage.Should().Be($"{Image}?h=250");
-            news.Breadcrumbs.Should().BeEquivalentTo(_crumbs);
-            news.Alerts.Should().BeEquivalentTo(_alerts);
-            news.Tags.First().Should().Be("Bramall Hall");
-            news.Categories.Count.Should().Be(1);
-            news.Categories.First().Should().Be("cat1");
-            news.Documents.Count.Should().Be(1);
-            news.Documents.First().ShouldBeEquivalentTo(new Document("metroshuttle route map", 674192, new DateTime(2016, 10, 5, 11, 09, 48, DateTimeKind.Utc), "document.pdf", "Stockport-Metroshuttle.pdf"));
+            var news = response.Get<News>();        
+            news.ShouldBeEquivalentTo(contentfulNews, o => o.Excluding(e => e.Image).Excluding(e => e.ThumbnailImage).Excluding(e => e.Documents));
+            news.Image.Should().Be(contentfulNews.Image.File.Url);
+            news.ThumbnailImage.Should().Be(contentfulNews.Image.File.Url + "?h=250");
         }
 
         [Fact]
