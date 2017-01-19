@@ -10,6 +10,7 @@ using Xunit;
 using HttpClient = System.Net.Http.HttpClient;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;

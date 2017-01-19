@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using FluentAssertions;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using Xunit;
 

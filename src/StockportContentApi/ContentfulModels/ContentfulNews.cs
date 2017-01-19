@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
+using StockportContentApi.Model;
 
-namespace StockportContentApi.Model
+namespace StockportContentApi.ContentfulModels
 {
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulNews

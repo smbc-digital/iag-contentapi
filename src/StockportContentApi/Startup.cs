@@ -11,6 +11,7 @@ using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Repositories;
 using StockportContentApi.Model;

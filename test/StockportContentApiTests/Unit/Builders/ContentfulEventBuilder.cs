@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -21,8 +22,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _fee = "fee";
         private string _location = "location";
         private string _submittedby = "submittedBy";
-        private string _longitude = "longitude";
-        private string _latitude = "latitude";
         private DateTime _eventDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private string _startTime = "10:00";
         private string _endTime = "17:00";
@@ -57,9 +56,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Fee = _fee,
                 Location = _location,
                 SubmittedBy = _submittedby,
-                Longitude = _longitude,
-                Latitude = _latitude,
-                Featured = false,
                 EventDate = _eventDate,
                 StartTime = _startTime,
                 EndTime = _endTime,

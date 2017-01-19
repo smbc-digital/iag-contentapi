@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
+using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
-namespace StockportContentApi.Model
+namespace StockportContentApi.ContentfulModels
 {
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulEvent
@@ -19,9 +20,6 @@ namespace StockportContentApi.Model
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string SubmittedBy { get; set; } = string.Empty;
-        public string Longitude { get; set; } = string.Empty;
-        public string Latitude { get; set; } = string.Empty;
-        public bool Featured { get; set; } = false;
         public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public string StartTime { get; set; } = string.Empty;
         public string EndTime { get; set; } = string.Empty;
@@ -39,9 +37,9 @@ namespace StockportContentApi.Model
                              DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt), 
                              document.File.Url, document.File.FileName)).ToList();
 
-            return new Event(Title, Slug, Teaser, Image.File.Url, Description, Fee, Location, SubmittedBy, Longitude,
-                Latitude, Featured, EventDate, StartTime, EndTime, Occurences, Frequency, Breadcrumbs,
-                ImageConverter.ConvertToThumbnail(Image.File.Url), eventDocuments);
+            return new Event(Title, Slug, Teaser, Image.File.Url, Description, Fee, Location, SubmittedBy, 
+                             EventDate, StartTime, EndTime, Occurences, Frequency, Breadcrumbs,
+                             ImageConverter.ConvertToThumbnail(Image.File.Url), eventDocuments);
         }
     }
 }

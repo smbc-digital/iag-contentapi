@@ -30,8 +30,8 @@ namespace StockportContentApi.Model
         public static Event GetReccuringEvent(Event entry, DateTime newDate)
         {
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
-                           entry.Location, entry.SubmittedBy, entry.Longitude, entry.Latitude, entry.Featured, newDate, entry.StartTime,
-                           entry.EndTime, entry.Occurences, entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents);
+                             entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences, 
+                             entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents);
         }
     }
 }

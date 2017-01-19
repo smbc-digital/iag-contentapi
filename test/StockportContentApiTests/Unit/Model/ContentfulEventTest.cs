@@ -4,6 +4,7 @@ using FluentAssertions;
 using StockportContentApi.Model;
 using Xunit;
 using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Model
 {
@@ -25,9 +26,6 @@ namespace StockportContentApiTests.Unit.Model
                 Fee = string.Empty,
                 Location = string.Empty,
                 SubmittedBy = string.Empty,
-                Longitude = string.Empty,
-                Latitude = string.Empty,
-                Featured = false,
                 EventDate = DateTime.MinValue.ToUniversalTime(),
                 StartTime = string.Empty,
                 EndTime = string.Empty,

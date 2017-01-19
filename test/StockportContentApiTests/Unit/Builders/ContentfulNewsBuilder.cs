@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
