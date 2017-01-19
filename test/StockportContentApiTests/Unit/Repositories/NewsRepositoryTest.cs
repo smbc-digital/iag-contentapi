@@ -11,6 +11,7 @@ using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -56,6 +57,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private Mock<INewsCategoriesFactory> _newsCategoriesFactory = new Mock<INewsCategoriesFactory>();
         private readonly Mock<IContentfulClient> _client;
         private readonly Mock<IContentfulClientManager> _contentfulManager;
+        private readonly NewsContentfulFactory _contentfulFactory;
 
         public NewsRepositoryTest()
         {
@@ -73,8 +75,9 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
             _contentfulManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-
-            _repository = new NewsRepository(_config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _newsCategoriesFactory.Object, _mockTimeProvider.Object, _videoRepository.Object, _contentfulManager.Object);
+            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object);
+            _repository = new NewsRepository(_config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _newsCategoriesFactory.Object, 
+                                            _mockTimeProvider.Object, _contentfulManager.Object, _contentfulFactory);
 
             newsFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
                 new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, 
@@ -287,7 +290,9 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnListOfNewsForDateRange()
         {
             var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object); 
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object,_newsCategoriesFactory.Object, _mockTimeProvider.Object, _videoRepository.Object, _contentfulManager.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object,
+                                                _newsCategoriesFactory.Object, _mockTimeProvider.Object, _contentfulManager.Object,
+                                                _contentfulFactory);
 
             _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
             
@@ -309,7 +314,9 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnListOfFilterDatesForAllNewsThatIsCurrentOrPast()
         {
             var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object,  _newsCategoriesFactory.Object,_mockTimeProvider.Object, _videoRepository.Object, _contentfulManager.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, 
+                                                _newsCategoriesFactory.Object,_mockTimeProvider.Object, _contentfulManager.Object,
+                                                _contentfulFactory);
 
             _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
 
@@ -342,7 +349,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnNewsItemsWithExactMatchingesForTagsWithoutHash()
         {
             var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _newsCategoriesFactory.Object, _mockTimeProvider.Object, _videoRepository.Object, _contentfulManager.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _newsCategoriesFactory.Object, 
+                                                _mockTimeProvider.Object, _contentfulManager.Object, _contentfulFactory);
             
             _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
 
@@ -370,7 +378,9 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
         {            
             var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _newsCategoriesFactory.Object, _mockTimeProvider.Object, _videoRepository.Object, _contentfulManager.Object);
+            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, 
+                                                _newsCategoriesFactory.Object, _mockTimeProvider.Object, _contentfulManager.Object,
+                                                _contentfulFactory);
 
             _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
 

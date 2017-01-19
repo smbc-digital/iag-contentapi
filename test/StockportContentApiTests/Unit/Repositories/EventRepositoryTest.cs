@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
@@ -32,11 +33,13 @@ namespace StockportContentApiTests.Unit.Repositories
                .Add("TEST_ACCESS_KEY", "KEY")
                .Build();
 
+            var contentfulFactory = new EventContentfulFactory();
+
             _mockTimeProvider = new Mock<ITimeProvider>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new EventRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object);
+            _repository = new EventRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory);
         }
 
         [Fact]

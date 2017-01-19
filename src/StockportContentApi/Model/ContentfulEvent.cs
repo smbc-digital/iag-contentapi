@@ -41,12 +41,7 @@ namespace StockportContentApi.Model
 
             return new Event(Title, Slug, Teaser, Image.File.Url, Description, Fee, Location, SubmittedBy, Longitude,
                 Latitude, Featured, EventDate, StartTime, EndTime, Occurences, Frequency, Breadcrumbs,
-                ConvertToThumbnail(Image.File.Url), eventDocuments);
-        }
-
-        private static string ConvertToThumbnail(string thumbnailImage)
-        {
-            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
+                ImageConverter.ConvertToThumbnail(Image.File.Url), eventDocuments);
         }
     }
 }

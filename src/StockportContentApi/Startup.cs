@@ -10,6 +10,7 @@ using NLog.Extensions.Logging;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Http;
 using StockportContentApi.Repositories;
 using StockportContentApi.Model;
@@ -80,6 +81,9 @@ namespace StockportContentApi
 
         private static void RegisterRepos(IServiceCollection services)
         {
+            services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(new EventContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>()));
+
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
                 p => { return x => new ArticleRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Article>>(), p.GetService<IVideoRepository>(),p.GetService<ITimeProvider>()); });
@@ -94,13 +98,13 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
                 p => { return x => new FooterRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
-                p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(),p.GetService<INewsCategoriesFactory>(), p.GetService<ITimeProvider>(), p.GetService<IVideoRepository>(), p.GetService<IContentfulClientManager>()); });
+                p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(),p.GetService<INewsCategoriesFactory>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
                 p => { return x => new AtoZRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<AtoZ>>()); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
-                p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
+                p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)

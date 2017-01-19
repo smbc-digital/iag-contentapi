@@ -7,6 +7,7 @@ using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -24,13 +25,14 @@ namespace StockportContentApi.Repositories
         private readonly string _contentfulContentTypesUrl;
         private readonly ContentfulClient _contentfulClient;
         private const int ReferenceLevelLimit = 1;
-        private readonly IVideoRepository _videoRepository;
+        private readonly IContentfulFactory<ContentfulNews, News> _contentfulFactory;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
 
         public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, 
             IFactory<Newsroom> newsroomFactory, INewsCategoriesFactory newsCategoriesFactory,
-            ITimeProvider timeProvider, IVideoRepository videoRepository, IContentfulClientManager contentfulClientManager)
+            ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
+            IContentfulFactory<ContentfulNews, News> contentfulFactory)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
@@ -38,7 +40,7 @@ namespace StockportContentApi.Repositories
             _newsFactory = newsFactory;
             _newsroomFactory = newsroomFactory;
             _timeProvider = timeProvider;
-            _videoRepository = videoRepository;
+            _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _newsCategoryFactory = newsCategoriesFactory;
             _client = contentfulClientManager.GetClient(config);
@@ -50,24 +52,9 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync<ContentfulNews>(builder);
             var entry = entries.FirstOrDefault();
 
-            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'");
-
-            var news = new News(entry.Title, entry.Slug, entry.Teaser, entry.Image.File.Url, 
-                ConvertToThumbnail(entry.Image.File.Url), _videoRepository.Process(entry.Body), 
-                entry.SunriseDate, entry.SunsetDate, entry.Breadcrumbs, entry.Alerts, entry.Tags,
-                entry.Documents.Select(x => new Document(x.Description, 
-                                                         unchecked((int)x.File.Details.Size), 
-                                                         x.SystemProperties.UpdatedAt.Value, 
-                                                         x.File.Url, 
-                                                         x.File.FileName)).ToList(), 
-                entry.Categories);
-
-            return HttpResponse.Successful(news);
-        }
-
-        private static string ConvertToThumbnail(string thumbnailImage)
-        {
-            return string.IsNullOrEmpty(thumbnailImage) ? "" : thumbnailImage + "?h=250";
+            return entry == null 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'") 
+                : HttpResponse.Successful(_contentfulFactory.ToModel(entry));
         }
 
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
