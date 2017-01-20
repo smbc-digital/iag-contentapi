@@ -49,9 +49,9 @@ namespace StockportContentApi.Repositories
         {
             if (eventItem == null || !date.HasValue || eventItem.EventDate == date) return eventItem;
 
-            var eventsList = new List<Event>();
-            eventsList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
-            return eventsList.SingleOrDefault(x => x.EventDate == date);
+            return new EventReccurenceFactory()
+                .GetReccuringEventsOfEvent(eventItem)
+                .SingleOrDefault(x => x.EventDate == date);
         }
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo)

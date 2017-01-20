@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -27,19 +25,5 @@ namespace StockportContentApi.ContentfulModels
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
         public List<Asset> Documents { get; set; } = new List<Asset>();
-
-        public Event ToModel()
-        {
-            var eventDocuments = Documents.Select(
-                document => 
-                new Document(document.Description, 
-                             (int)document.File.Details.Size, 
-                             DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt), 
-                             document.File.Url, document.File.FileName)).ToList();
-
-            return new Event(Title, Slug, Teaser, Image.File.Url, Description, Fee, Location, SubmittedBy, 
-                             EventDate, StartTime, EndTime, Occurences, Frequency, Breadcrumbs,
-                             ImageConverter.ConvertToThumbnail(Image.File.Url), eventDocuments);
-        }
     }
 }

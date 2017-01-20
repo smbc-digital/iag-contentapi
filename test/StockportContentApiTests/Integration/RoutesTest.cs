@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
 using Xunit;
@@ -12,7 +11,6 @@ using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
-using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
@@ -40,7 +38,6 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(UrlFor("profile", 1, "test-profile")).Return((CreateHttpResponse("Unit/MockContentfulResponses/ProfileWithBreadcrumbs.json")));
                 fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
                 fakeHttpClient.For(UrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
-                fakeHttpClient.For(UrlFor("news", 1, "news_item")).Return(CreateHttpResponse("Unit/MockContentfulResponses/News.json"));
                 fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
                 fakeHttpClient.For(UrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
                 fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
@@ -151,7 +148,7 @@ namespace StockportContentApiTests.Integration
             return CONTENT_TYPES_BASE_URL;
         }
 
-        private string UrlFor(string type, int referenceLevelLimit = -1, string slug = null,
+        private static string UrlFor(string type, int referenceLevelLimit = -1, string slug = null,
             bool displayOnAz = false, string tag = null, string category = null, int limit = -1)
         {
             var url = $"{ENTRIES_BASE_URL}&content_type={type}";

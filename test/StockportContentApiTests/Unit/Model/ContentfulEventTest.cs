@@ -10,8 +10,6 @@ namespace StockportContentApiTests.Unit.Model
 {
     public class ContentfulEventTest
     {
-        private const string ThumbnailQuery = "?h=250";
-
         [Fact]
         public void ShouldSetDefaultsOnModel()
         {
@@ -35,21 +33,6 @@ namespace StockportContentApiTests.Unit.Model
                 Documents = new List<Asset>()
             };
             actual.ShouldBeEquivalentTo(expected);
-        }
-
-        [Fact]
-        public void ShouldSetImageUrlsOnBuiltEventModel()
-        {
-            const string imageUrl = "image.jpg";
-            var rawEvent = new ContentfulEvent
-            {
-                Image = new Asset { File = new File { Url = imageUrl } },
-            };
-
-            var builtEvent = rawEvent.ToModel();
-
-            builtEvent.ImageUrl.Should().Be(imageUrl);
-            builtEvent.ThumbnailImageUrl.Should().Be(imageUrl + ThumbnailQuery);
         }
     }
 }
