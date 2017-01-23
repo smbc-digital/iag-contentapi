@@ -15,7 +15,7 @@ namespace StockportContentApi.ContentfulModels
         public string Teaser { get; set; } = string.Empty;
         public string Summary { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
-        public string BackgroundImage { get; set; } = string.Empty;
+        public Asset BackgroundImage { get; set; } = new Asset {File = new File {Url = string.Empty}};
         public List<Entry<ContentfulSubItem>> SubItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulSubItem>> SecondaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulSubItem>> TertiaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();

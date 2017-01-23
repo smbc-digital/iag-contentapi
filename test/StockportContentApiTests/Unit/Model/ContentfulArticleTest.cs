@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Model
                 Title = string.Empty,
                 Teaser = string.Empty,
                 Icon = string.Empty,
-                BackgroundImage = string.Empty,
+                BackgroundImage = new Asset { File = new File { Url = string.Empty } },
                 Sections = new List<ContentfulSection>(),
                 Breadcrumbs = new List<Entry<ContentfulCrumb>>(),
                 Alerts = new List<Alert>(),
