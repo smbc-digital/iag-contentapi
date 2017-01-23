@@ -2,7 +2,6 @@
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -12,16 +11,19 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
+        private readonly IContentfulFactory<Asset, Document> _documentFactory;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
             IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
-            IContentfulFactory<ContentfulTopic, Topic> topicFactory)
+            IContentfulFactory<ContentfulTopic, Topic> topicFactory,
+            IContentfulFactory<Asset, Document> documentFactory)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
             _profileFactory = profileFactory;
             _topicFactory = topicFactory;
+            _documentFactory = documentFactory;
         }
 
         public Article ToModel(ContentfulArticle entry)
@@ -30,12 +32,7 @@ namespace StockportContentApi.ContentfulFactories
             var breadcrumbs = entry.Breadcrumbs.Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
             var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile)).ToList();
             var topic = _topicFactory.ToModel(entry.ParentTopic);
-            var documents = entry.Documents.Select(
-                document =>
-                    new Document(document.Description,
-                        (int)document.File.Details.Size,
-                        DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt),
-                        document.File.Url, document.File.FileName)).ToList();
+            var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
 
             return new Article(entry.Body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, entry.BackgroundImage.File.Url, 
                 sections, breadcrumbs, entry.Alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 

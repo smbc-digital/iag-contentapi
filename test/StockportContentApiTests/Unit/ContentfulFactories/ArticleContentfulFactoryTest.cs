@@ -34,9 +34,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 DateTime.MinValue, DateTime.MaxValue, false, "id");
             var topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             topicFactory.Setup(o => o.ToModel(contentfulArticle.ParentTopic)).Returns(topic);
+            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            documentFactory.Setup(o => o.ToModel(contentfulArticle.Documents.First())).Returns(document);
 
             var articleFactory = new ArticleContentfulFactory(sectionFactory.Object, crumbFactory.Object, profileFactory.Object, 
-                topicFactory.Object);
+                topicFactory.Object, documentFactory.Object);
             var article = articleFactory.ToModel(contentfulArticle);
 
             article.ShouldBeEquivalentTo(contentfulArticle, o => o.Excluding(e => e.BackgroundImage)
@@ -47,12 +50,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                   .Excluding(e => e.Breadcrumbs));
 
             article.BackgroundImage.Should().Be(contentfulArticle.BackgroundImage.File.Url);
-            article.Documents.Count.Should().Be(contentfulArticle.Documents.Count);
-            article.Documents.First().Url.Should().Be(contentfulArticle.Documents.First().File.Url);
-            article.Documents.First().Title.Should().Be(contentfulArticle.Documents.First().Description);
-            article.Documents.First().FileName.Should().Be(contentfulArticle.Documents.First().File.FileName);
-            article.Documents.First().Size.Should().Be((int)contentfulArticle.Documents.First().File.Details.Size);
-            article.Documents.First().LastUpdated.Should().Be(contentfulArticle.Documents.First().SystemProperties.UpdatedAt.Value);
 
             sectionFactory.Verify(o => o.ToModel(contentfulArticle.Sections.First()), Times.Once);
             article.Sections.First().ShouldBeEquivalentTo(section);
@@ -66,6 +63,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             topicFactory.Verify(o => o.ToModel(contentfulArticle.ParentTopic), Times.Once);
             article.ParentTopic.ShouldBeEquivalentTo(topic);
 
+            documentFactory.Verify(o => o.ToModel(contentfulArticle.Documents.First()), Times.Once);
+            article.Documents.Count.Should().Be(1);
+            article.Documents.First().Should().Be(document);
         }
     }
 }

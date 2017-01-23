@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Contentful.Core.Models;
 using FluentAssertions;
+using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 
@@ -13,17 +17,19 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var contentfulEvent = new ContentfulEventBuilder().Build();
 
-            var anEvent = new EventContentfulFactory().ToModel(contentfulEvent);
+            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            documentFactory.Setup(o => o.ToModel(contentfulEvent.Documents.First())).Returns(document);
+
+            var anEvent = new EventContentfulFactory(documentFactory.Object).ToModel(contentfulEvent);
 
             anEvent.ShouldBeEquivalentTo(contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents));
             anEvent.ImageUrl.Should().Be(contentfulEvent.Image.File.Url);
             anEvent.ThumbnailImageUrl.Should().Be(contentfulEvent.Image.File.Url + "?h=250");
-            anEvent.Documents.Count.Should().Be(contentfulEvent.Documents.Count);
-            anEvent.Documents.First().Url.Should().Be(contentfulEvent.Documents.First().File.Url);
-            anEvent.Documents.First().Title.Should().Be(contentfulEvent.Documents.First().Description);
-            anEvent.Documents.First().FileName.Should().Be(contentfulEvent.Documents.First().File.FileName);
-            anEvent.Documents.First().Size.Should().Be((int)contentfulEvent.Documents.First().File.Details.Size);
-            anEvent.Documents.First().LastUpdated.Should().Be(contentfulEvent.Documents.First().SystemProperties.UpdatedAt.Value);
+
+            anEvent.Documents.Count.Should().Be(1);
+            anEvent.Documents.First().Should().Be(document);
+            documentFactory.Verify(o => o.ToModel(contentfulEvent.Documents.First()), Times.Once);
         }
     }
 }

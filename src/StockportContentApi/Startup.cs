@@ -18,6 +18,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
 using Swashbuckle.Swagger.Model;
+using Contentful.Core.Models;
 
 namespace StockportContentApi
 {
@@ -82,8 +83,9 @@ namespace StockportContentApi
 
         private static void RegisterRepos(IServiceCollection services)
         {
-            services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(new EventContentfulFactory());
-            services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>()));
+            services.AddSingleton<IContentfulFactory<Asset, Document>>(new DocumentContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(), p.GetService<IContentfulFactory<Asset, Document>>()));
 
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(

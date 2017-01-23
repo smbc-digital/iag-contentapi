@@ -12,22 +12,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<Asset> _documents = new List<Asset>
-        {
-            new Asset
-            {
-                Description = "documentTitle",
-                File = new File
-                {
-                    Details = new FileDetails {Size = 674192},
-                    Url = "url.pdf",
-                    FileName = "fileName"
-                },
-                SystemProperties =
-                    new SystemProperties { UpdatedAt = new DateTime(2016, 10, 05, 00, 00, 00, DateTimeKind.Utc) }
-            }
-        };
-
+        private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private List<ContentfulProfile> _profiles = new List<ContentfulProfile> { new ContentfulProfileBuilder().Build() };
 
         public ContentfulSection Build()

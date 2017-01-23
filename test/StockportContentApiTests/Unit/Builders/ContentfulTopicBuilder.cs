@@ -30,7 +30,8 @@ namespace StockportContentApiTests.Unit.Builders
         {
             Fields = new ContentfulSubItem { Icon = "icon", Slug = "slug",
                 SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"}
+                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
+            SystemProperties = new SystemProperties { Id = "id" }
         } };
 
         public ContentfulTopic Build()

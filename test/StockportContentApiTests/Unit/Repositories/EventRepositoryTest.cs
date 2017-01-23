@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -37,8 +36,9 @@ namespace StockportContentApiTests.Unit.Repositories
                .Add("TEST_SPACE", "SPACE")
                .Add("TEST_ACCESS_KEY", "KEY")
                .Build();
-
-            var contentfulFactory = new EventContentfulFactory();
+            
+            var documentFactory = new DocumentContentfulFactory();
+            var contentfulFactory = new EventContentfulFactory(documentFactory);
             _httpClient = new Mock<IHttpClient>();
             _mockTimeProvider = new Mock<ITimeProvider>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();

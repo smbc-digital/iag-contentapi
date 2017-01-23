@@ -76,7 +76,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
             _contentfulManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object);
+            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory());
             _repository = new NewsRepository(_config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _newsCategoriesFactory.Object, 
                                             _mockTimeProvider.Object, _contentfulManager.Object, _contentfulFactory);
 
