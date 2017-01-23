@@ -3,6 +3,7 @@ using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulModels;
 using Contentful.Core.Models;
+using StockportContentApi.ContentfulFactories;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

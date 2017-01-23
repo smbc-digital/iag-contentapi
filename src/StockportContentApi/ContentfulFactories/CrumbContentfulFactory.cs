@@ -1,12 +1,14 @@
 using Contentful.Core.Models;
-using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
-public class CrumbContentfulFactory : IContentfulFactory<Entry<ContentfulCrumb>, Crumb>
+namespace StockportContentApi.ContentfulFactories
 {
-    public Crumb ToModel(Entry<ContentfulCrumb> entry)
+    public class CrumbContentfulFactory : IContentfulFactory<Entry<ContentfulCrumb>, Crumb>
     {
-        return new Crumb(entry.Fields.Title, entry.Fields.Slug, entry.SystemProperties.Id);
+        public Crumb ToModel(Entry<ContentfulCrumb> entry)
+        {
+            return new Crumb(entry.Fields.Title, entry.Fields.Slug, entry.SystemProperties.Id);
+        }
     }
 }
