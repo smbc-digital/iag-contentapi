@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
@@ -34,12 +35,12 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("/api/{businessId}/events")]
-        public async Task<IActionResult> Index(string businessId,[FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
+        public async Task<IActionResult> Index(string businessId,[FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null, [FromQuery] string category = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom,dateTo);
+                return repository.Get(dateFrom,dateTo,category);
             });
         }
     }
