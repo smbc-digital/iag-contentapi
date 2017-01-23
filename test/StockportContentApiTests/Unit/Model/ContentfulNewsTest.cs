@@ -14,7 +14,7 @@ namespace StockportContentApiTests.Unit.Model
         public void ShouldSetDefaultsOnModel()
         {
             var actual = new ContentfulNews();
-            var expected = new ContentfulNews()
+            var expected = new ContentfulNews
             {
                 Alerts = new List<Alert>(),
                 Body = string.Empty,
