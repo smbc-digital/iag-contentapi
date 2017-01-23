@@ -5,9 +5,9 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using Xunit;
 using System.Linq;
+using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
-using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -21,8 +21,22 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime());
             var sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             sectionFactory.Setup(o => o.ToModel(contentfulArticle.Sections.First())).Returns(section);
+            var crumb = new Crumb("title", "slug", "type");
+            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            crumbFactory.Setup(o => o.ToModel(contentfulArticle.Breadcrumbs.First())).Returns(crumb);
+            var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { crumb });
+            var profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+            profileFactory.Setup(o => o.ToModel(contentfulArticle.Profiles.First())).Returns(profile);
+            var subItems = new List<SubItem> { new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue) };
+            var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", subItems, subItems, subItems, 
+                new List<Crumb> {crumb}, 
+                new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) }, 
+                DateTime.MinValue, DateTime.MaxValue, false, "id");
+            var topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
+            topicFactory.Setup(o => o.ToModel(contentfulArticle.ParentTopic)).Returns(topic);
 
-            var articleFactory = new ArticleContentfulFactory(sectionFactory.Object);
+            var articleFactory = new ArticleContentfulFactory(sectionFactory.Object, crumbFactory.Object, profileFactory.Object, 
+                topicFactory.Object);
             var article = articleFactory.ToModel(contentfulArticle);
 
             article.ShouldBeEquivalentTo(contentfulArticle, o => o.Excluding(e => e.BackgroundImage)
@@ -43,34 +57,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             sectionFactory.Verify(o => o.ToModel(contentfulArticle.Sections.First()), Times.Once);
             article.Sections.First().ShouldBeEquivalentTo(section);
 
-        }
-    }
+            crumbFactory.Verify(o => o.ToModel(contentfulArticle.Breadcrumbs.First()), Times.Once);
+            article.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
 
-    public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Article>
-    {
-        private readonly IContentfulFactory<ContentfulSection, Section> _sectionFactory;
+            profileFactory.Verify(o => o.ToModel(contentfulArticle.Profiles.First()), Times.Once);
+            article.Profiles.First().ShouldBeEquivalentTo(profile);
 
-        public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory)
-        {
-            _sectionFactory = sectionFactory;
-        }
+            topicFactory.Verify(o => o.ToModel(contentfulArticle.ParentTopic), Times.Once);
+            article.ParentTopic.ShouldBeEquivalentTo(topic);
 
-        public Article ToModel(ContentfulArticle entry)
-        {
-            var sections = entry.Sections.Select(section => _sectionFactory.ToModel(section)).ToList();
-            var breadcrumbs = new List<Crumb>();
-            var profiles = new List<Profile>();
-            var topic = new NullTopic();
-            var documents = entry.Documents.Select(
-                document =>
-                    new Document(document.Description,
-                        (int)document.File.Details.Size,
-                        DateComparer.DateFieldToDate(document.SystemProperties.UpdatedAt),
-                        document.File.Url, document.File.FileName)).ToList();
-
-            return new Article(entry.Body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, entry.BackgroundImage.File.Url, 
-                               sections, breadcrumbs, entry.Alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                               entry.LiveChatVisible, entry.LiveChat);
         }
     }
 }
