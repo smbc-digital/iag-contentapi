@@ -28,7 +28,8 @@
           "lastUpdated": "2016-10-05T00:00:00Z",
           "fileName": "fileName"
         }
-      ]
+      ],
+      "categories": [ "Category 1", "Category 2" ]
     },
     {
       "title": "title",
@@ -58,7 +59,9 @@
           "lastUpdated": "2016-10-05T00:00:00Z",
           "fileName": "fileName"
         }
-      ]
+      ],
+      "categories": [ "Category 1", "Category 2" ]
     }
-  ]
+  ],
+  "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]
 }

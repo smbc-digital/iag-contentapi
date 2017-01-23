@@ -25,5 +25,6 @@ namespace StockportContentApi.ContentfulModels
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
         public List<Asset> Documents { get; set; } = new List<Asset>();
+        public List<string> Categories { get; set; } = new List<string>();
     }
 }

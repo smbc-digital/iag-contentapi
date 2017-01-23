@@ -18,7 +18,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.Image.File.Url, entry.Description, entry.Fee, entry.Location, 
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency, entry.Breadcrumbs,
-                ImageConverter.ConvertToThumbnail(entry.Image.File.Url), eventDocuments);
+                ImageConverter.ConvertToThumbnail(entry.Image.File.Url), eventDocuments, entry.Categories);
         }
     }
 }

@@ -29,9 +29,9 @@ namespace StockportContentApiTests.Unit.Factories
 
             List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
 
-            newsCategories.Count().Should().Be(18);
+            newsCategories.Count().Should().Be(19);
             newsCategories.First().Should().Be("Benefits");
-            newsCategories.Last().Should().Be("Waste and recycling");
+            newsCategories.Last().Should().Be("Test Category");
         }
 
         [Fact]

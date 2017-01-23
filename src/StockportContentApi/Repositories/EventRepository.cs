@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
+using Microsoft.CodeAnalysis.Semantics;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -18,14 +20,24 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IEventCategoriesFactory _eventCategoriesFactory;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly string _contentfulContentTypesUrl;
+        private readonly IContentfulClient _contentfulClient;
 
-        public EventRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
-                               IContentfulFactory<ContentfulEvent, Event> contentfulFactory)
+        public EventRepository(ContentfulConfig config,
+            IHttpClient httpClient,
+            IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
+            IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
+            IEventCategoriesFactory eventCategoriesFactory            
+            )
         {
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
+            _eventCategoriesFactory = eventCategoriesFactory;
+            _contentfulClient = new ContentfulClient(httpClient);
+            _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -68,8 +80,10 @@ namespace StockportContentApi.Repositories
                     .ThenBy(t => t.Title)
                     .ToList();
 
+            var eventCategories = await GetCategories();
+
             var eventCalender = new EventCalender();
-            eventCalender.SetEvents(eventsArticles);
+            eventCalender.SetEvents(eventsArticles, eventCategories);
 
             return HttpResponse.Successful(eventCalender);
         }
@@ -91,6 +105,14 @@ namespace StockportContentApi.Repositories
             return startDate.HasValue && endDate.HasValue
                 ? _dateComparer.EventDateIsBetweenStartAndEndDates(events.EventDate, startDate.Value, endDate.Value)
                 : _dateComparer.EventDateIsBetweenTodayAndLater(events.EventDate);
+        }
+
+        public async Task<List<string>> GetCategories()
+        {
+            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
+            var contentfulData = contentfulResponse.Items;
+            var eventCategories = _eventCategoriesFactory.Build(contentfulData);
+            return eventCategories;
         }
     }
 }

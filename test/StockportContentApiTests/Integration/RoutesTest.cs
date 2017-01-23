@@ -57,7 +57,8 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEventBuilder().Slug("event_item").EventDate(new DateTime(2016, 12, 30)).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
+                                It.Is<QueryBuilder>(q => q.Build() == 
+                                new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event1").Build(),
                                     new ContentfulEventBuilder().Slug("event2").Build()
@@ -67,6 +68,8 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
                                     new ContentfulNewsBuilder().Slug("news_item").Build()
                                 });
+
+
             });
         }                                         
        

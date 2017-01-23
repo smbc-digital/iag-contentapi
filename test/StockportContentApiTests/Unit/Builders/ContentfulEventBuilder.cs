@@ -28,6 +28,7 @@ namespace StockportContentApiTests.Unit.Builders
         private int _occurences = -1;
         private EventFrequency _eventFrequency = StockportContentApi.Model.EventFrequency.None;
         private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Events", "", "events")};
+
         private List<Asset> _documents = new List<Asset>
         {
             new Asset
@@ -40,9 +41,12 @@ namespace StockportContentApiTests.Unit.Builders
                     FileName = "fileName"
                 },
                 SystemProperties =
-                    new SystemProperties { UpdatedAt = new DateTime(2016, 10, 05, 00, 00, 00, DateTimeKind.Utc) }
+                    new SystemProperties {UpdatedAt = new DateTime(2016, 10, 05, 00, 00, 00, DateTimeKind.Utc)}
             }
         };
+
+
+        private List<string> _categories = new List<string> {"Category 1", "Category 2"};
 
         public ContentfulEvent Build()
         {
@@ -62,7 +66,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Occurences = _occurences,
                 Frequency = _eventFrequency,
                 Breadcrumbs = _breadcrumbs,
-                Documents = _documents
+                Documents = _documents,
+                Categories = _categories
             };
         }
 

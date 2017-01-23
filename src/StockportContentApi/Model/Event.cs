@@ -21,10 +21,12 @@ namespace StockportContentApi.Model
         public EventFrequency Frequency { get; }
         public List<Crumb> Breadcrumbs { get; }
         public List<Document> Documents { get; }
+        public List<string> Categories { get; }
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime, 
-                     int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, List<Document> documents ) 
+                     int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, 
+                     List<Document> documents, List<string> categories) 
         {
             Title = title;
             Slug = slug;
@@ -42,6 +44,7 @@ namespace StockportContentApi.Model
             ThumbnailImageUrl = thumbnailImageUrl;
             ImageUrl = imageUrl;
             Documents = documents;
+            Categories = categories;
         }
 
         public bool ShouldSerializeFrequency()

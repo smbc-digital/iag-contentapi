@@ -11,6 +11,8 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Factories;
+using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
@@ -25,6 +27,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly EventRepository _repository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IContentfulClient> _contentfulClient;
+        private readonly Mock<IHttpClient> _httpClient;
+        private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
 
         public EventRepositoryTest()
         {
@@ -35,12 +39,12 @@ namespace StockportContentApiTests.Unit.Repositories
                .Build();
 
             var contentfulFactory = new EventContentfulFactory();
-
+            _httpClient = new Mock<IHttpClient>();
             _mockTimeProvider = new Mock<ITimeProvider>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new EventRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory);
+            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory,_eventCategoriesFactory.Object);
         }
 
         [Fact]
