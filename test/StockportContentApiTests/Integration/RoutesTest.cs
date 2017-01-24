@@ -111,6 +111,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("NewsListingFilteredByDate", "/api/unittest/news?dateFrom=2016-08-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
         [InlineData("Event", "/api/unittest/events/event_item?date=2016-12-30", "2016-12-10T01:00:00+01:00")]
         [InlineData("EventsCalendar", "/api/unittest/events", "2016-12-10T01:00:00+01:00")]
+        [InlineData("EventsLatest", "/api/unittest/events/latest/1", "2016-12-10T01:00:00+01:00")]
         public async Task EndToEnd_ReturnsPageForASlug_WithTimeframeCheck(string file, string path, string stringDate)
         {
             var date = DateTime.Parse(stringDate);

@@ -1,0 +1,36 @@
+﻿{
+  "events": [
+    {
+      "title": "title",
+      "slug": "event1",
+      "teaser": "teaser",
+      "imageUrl": "image-url.jpg",
+      "thumbnailImageUrl": "image-url.jpg?h=250",
+      "description": "description",
+      "fee": "fee",
+      "location": "location",
+      "submittedBy": "submittedBy",
+      "eventDate": "9999-09-09T00:00:00Z",
+      "startTime": "10:00",
+      "endTime": "17:00",
+      "breadcrumbs": [
+        {
+          "title": "Events",
+          "slug": "",
+          "type": "events"
+        }
+      ],
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00Z",
+          "fileName": "fileName"
+        }
+      ],
+      "categories": [ "Category 1", "Category 2" ]
+    }
+  ],
+  "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]
+}

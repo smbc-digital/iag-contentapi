@@ -66,25 +66,27 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
-            var eventsArticles =
+            var events =
                     GetAllEventsAndTheirReccurrences(entries)
-                    .Where(events => CheckDates(dateFrom, dateTo, events))
-                    .Where(events => string.IsNullOrWhiteSpace(category) || events.Categories.Contains(category))
+                    .Where(e => CheckDates(dateFrom, dateTo, e))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
 
+            if (limit > 0) events = events.Take(limit).ToList();
+
             var eventCategories = await GetCategories();
 
             var eventCalender = new EventCalender();
-            eventCalender.SetEvents(eventsArticles, eventCategories);
+            eventCalender.SetEvents(events, eventCategories);
 
             return HttpResponse.Successful(eventCalender);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Contentful.Core.Errors;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
@@ -35,13 +36,15 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("/api/{businessId}/events")]
-        public async Task<IActionResult> Index(string businessId,[FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null, [FromQuery] string category = null)
+        [Route("/api/{businessId}/events/latest/{limit}")]
+        public async Task<IActionResult> Index(string businessId, int limit = 0, [FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null, [FromQuery] string category = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom,dateTo,category);
+                return repository.Get(dateFrom, dateTo, category, limit);
             });
         }
+
     }
 }
