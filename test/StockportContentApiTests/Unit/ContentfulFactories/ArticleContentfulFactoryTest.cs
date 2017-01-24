@@ -8,6 +8,7 @@ using System.Linq;
 using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -18,6 +19,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateAnArticleFromAContentfulArticle()
         {
             var contentfulArticle = new ContentfulArticleBuilder().Build();
+            var videoRepository = new Mock<IVideoRepository>();
+            const string processedBody = "this is processed body";
+            videoRepository.Setup(o => o.Process(contentfulArticle.Body)).Returns(processedBody);
             var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime());
             var sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             sectionFactory.Setup(o => o.ToModel(contentfulArticle.Sections.First())).Returns(section);
@@ -39,7 +43,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             documentFactory.Setup(o => o.ToModel(contentfulArticle.Documents.First())).Returns(document);
 
             var articleFactory = new ArticleContentfulFactory(sectionFactory.Object, crumbFactory.Object, profileFactory.Object, 
-                topicFactory.Object, documentFactory.Object);
+                topicFactory.Object, documentFactory.Object, videoRepository.Object);
             var article = articleFactory.ToModel(contentfulArticle);
 
             article.ShouldBeEquivalentTo(contentfulArticle, o => o.Excluding(e => e.BackgroundImage)
@@ -47,8 +51,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                   .Excluding(e => e.Sections)
                                                                   .Excluding(e => e.Profiles)
                                                                   .Excluding(e => e.ParentTopic)
-                                                                  .Excluding(e => e.Breadcrumbs));
+                                                                  .Excluding(e => e.Breadcrumbs)
+                                                                  .Excluding(e => e.Body));
 
+            videoRepository.Verify(o => o.Process(contentfulArticle.Body), Times.Once());
+            article.Body.Should().Be(processedBody);
             article.BackgroundImage.Should().Be(contentfulArticle.BackgroundImage.File.Url);
 
             sectionFactory.Verify(o => o.ToModel(contentfulArticle.Sections.First()), Times.Once);
