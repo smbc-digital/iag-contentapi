@@ -7,6 +7,8 @@
         Weekly,
         Fortnightly,
         Monthly,
+        MonthlyDay,
+        MonthlyDate,
         Yearly
     }
 }
