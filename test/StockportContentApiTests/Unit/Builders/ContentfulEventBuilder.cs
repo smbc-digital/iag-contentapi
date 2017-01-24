@@ -77,5 +77,11 @@ namespace StockportContentApiTests.Unit.Builders
             _eventDate = eventDate;
             return this;
         }
+
+        public ContentfulEventBuilder EventCategory(List<string> categoriesList)
+        {
+            _categories = categoriesList;
+            return this;
+        }
     }
 }
