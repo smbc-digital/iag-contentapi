@@ -29,28 +29,22 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
             new Entry<ContentfulSubItem>
             {
-                Fields = new ContentfulSubItem { Icon = "icon", Slug = "sub-slug",
-                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
-                SystemProperties = new SystemProperties { Id = "id" }
+                Fields = new ContentfulSubItemBuilder().Slug("sub-slug").Build(),
+                SystemProperties = new SystemProperties { ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "id"} } }
             }
         };
         private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
             new Entry<ContentfulSubItem>
             {
-                Fields = new ContentfulSubItem { Icon = "icon", Slug = "secondary-slug",
-                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
-                SystemProperties = new SystemProperties { Id = "id" }
+                Fields = new ContentfulSubItemBuilder().Slug("secondary-slug").Build(),
+                SystemProperties = new SystemProperties { ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "id"} } }
             }
         };
         private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
             new Entry<ContentfulSubItem>
             {
-                Fields = new ContentfulSubItem { Icon = "icon", Slug = "tertiary-slug",
-                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
-                SystemProperties = new SystemProperties { Id = "id" }
+                Fields = new ContentfulSubItemBuilder().Slug("tertiary-slug").Build(),
+                SystemProperties = new SystemProperties { ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "id"} } }
             }
         };
 
