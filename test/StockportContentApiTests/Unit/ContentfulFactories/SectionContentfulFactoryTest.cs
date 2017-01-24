@@ -7,6 +7,7 @@ using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 
@@ -24,11 +25,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
             documentFactory.Setup(o => o.ToModel(contentfulSection.Documents.First())).Returns(document);
+            var videoRepository = new Mock<IVideoRepository>();
+            const string processedBody = "this is processed body";
+            videoRepository.Setup(o => o.Process(contentfulSection.Body)).Returns(processedBody);
 
-            var section = new SectionContentfulFactory(profileFactory.Object, documentFactory.Object).ToModel(contentfulSection);
+            var sectionFactory = new SectionContentfulFactory(profileFactory.Object, documentFactory.Object,
+                videoRepository.Object);
+            var section = sectionFactory.ToModel(contentfulSection);
 
             section.ShouldBeEquivalentTo(contentfulSection, o => o.Excluding(e => e.Profiles)
-                                                                  .Excluding(e => e.Documents));
+                                                                  .Excluding(e => e.Documents)
+                                                                  .Excluding(e => e.Body));
+
+            videoRepository.Verify(o => o.Process(contentfulSection.Body), Times.Once());
+            section.Body.Should().Be(processedBody);
             profileFactory.Verify(o => o.ToModel(contentfulSection.Profiles.First()), Times.Once);
             section.Profiles.First().ShouldBeEquivalentTo(profile);
 
