@@ -1,5 +1,9 @@
-﻿namespace StockportContentApi.Model
+﻿using Contentful.Core.Configuration;
+using Newtonsoft.Json;
+
+namespace StockportContentApi.Model
 {
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class LiveChat
     {
         public string Title { get; }
