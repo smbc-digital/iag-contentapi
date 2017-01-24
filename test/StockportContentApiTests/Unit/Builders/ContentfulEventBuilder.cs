@@ -17,6 +17,7 @@ namespace StockportContentApiTests.Unit.Builders
                 {
                     Url = "image-url.jpg",
                 },
+                SystemProperties = new SystemProperties { Type = "Asset" }
             };
         private string _description = "description";
         private string _fee = "fee";

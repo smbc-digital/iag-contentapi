@@ -23,7 +23,8 @@ namespace StockportContentApiTests.Unit.Builders
                     FileName = _fileName
                 },
                 SystemProperties =
-                    new SystemProperties { UpdatedAt = _updatedAt }
+                    new SystemProperties { UpdatedAt = _updatedAt, 
+                                           Type = "Asset" }
             };
         }
     }

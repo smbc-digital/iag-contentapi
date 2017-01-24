@@ -31,5 +31,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             anEvent.Documents.First().Should().Be(document);
             documentFactory.Verify(o => o.ToModel(contentfulEvent.Documents.First()), Times.Once);
         }
+
+        [Fact]
+        public void ShouldNotAddDocumentsOrImageIfTheyAreLinks() 
+        {
+            var contentfulEvent = new ContentfulEventBuilder().Build();
+            contentfulEvent.Documents.First().SystemProperties.Type = "Link";
+            contentfulEvent.Image.SystemProperties.Type = "Link";
+            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+
+            var anEvent = new EventContentfulFactory(documentFactory.Object).ToModel(contentfulEvent);
+
+            anEvent.Documents.Count.Should().Be(0);
+            anEvent.ImageUrl.Should().Be(string.Empty);
+            anEvent.ThumbnailImageUrl.Should().Be(string.Empty);
+        }
     }
 }
