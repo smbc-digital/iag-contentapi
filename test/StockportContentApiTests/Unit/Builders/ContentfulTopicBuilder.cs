@@ -26,13 +26,33 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Alert> _alerts = new List<Alert> {new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> { new Entry<ContentfulSubItem>
-        {
-            Fields = new ContentfulSubItem { Icon = "icon", Slug = "slug",
-                SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
-            SystemProperties = new SystemProperties { Id = "id" }
-        } };
+        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
+            new Entry<ContentfulSubItem>
+            {
+                Fields = new ContentfulSubItem { Icon = "icon", Slug = "sub-slug",
+                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
+                SystemProperties = new SystemProperties { Id = "id" }
+            }
+        };
+        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
+            new Entry<ContentfulSubItem>
+            {
+                Fields = new ContentfulSubItem { Icon = "icon", Slug = "secondary-slug",
+                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
+                SystemProperties = new SystemProperties { Id = "id" }
+            }
+        };
+        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
+            new Entry<ContentfulSubItem>
+            {
+                Fields = new ContentfulSubItem { Icon = "icon", Slug = "tertiary-slug",
+                    SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), Title = "title", Teaser = "teaser"},
+                SystemProperties = new SystemProperties { Id = "id" }
+            }
+        };
 
         public ContentfulTopic Build()
         {
@@ -45,8 +65,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Icon = _icon,
                 BackgroundImage = _backgroundImage,
                 SubItems = _subItems,
-                SecondaryItems = _subItems,
-                TertiaryItems  = _subItems,
+                SecondaryItems = _secondaryItems,
+                TertiaryItems  = _tertiaryItems,
                 Breadcrumbs  = _breadcrumbs,
                 Alerts = _alerts,
                 SunriseDate = _sunriseDate,

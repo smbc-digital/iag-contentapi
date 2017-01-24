@@ -7,7 +7,7 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Profile>
     {
-        private IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
 
         public ProfileContentfulFactory(IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
         {

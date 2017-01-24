@@ -7,8 +7,8 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Section>
     {
-        private IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-        private IContentfulFactory<Asset, Document> _documentFactory;
+        private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
+        private readonly IContentfulFactory<Asset, Document> _documentFactory;
 
         public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory, IContentfulFactory<Asset, Document> documentFactory)
         {

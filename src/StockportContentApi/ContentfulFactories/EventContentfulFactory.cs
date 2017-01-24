@@ -8,7 +8,7 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
     {
-        private IContentfulFactory<Asset, Document> _documentFactory;
+        private readonly IContentfulFactory<Asset, Document> _documentFactory;
 
         public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory)
         {
