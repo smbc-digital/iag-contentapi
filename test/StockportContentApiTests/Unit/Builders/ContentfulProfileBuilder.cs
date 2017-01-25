@@ -13,8 +13,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _teaser = "teaser";
         private string _body = "body";
         private string _type = "type";
-        private Asset _image = new Asset { File = new File { Url = "image-url.jpg" } };
-        private Asset _backgroundImage = new Asset { File = new File { Url = "background-image-url.jpg" } };
+        private Asset _image = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        private Asset _backgroundImage = new Asset { File = new File { Url = "background-image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
         {
             new Entry<ContentfulCrumb>() {Fields = new ContentfulCrumbBuilder().Build(),

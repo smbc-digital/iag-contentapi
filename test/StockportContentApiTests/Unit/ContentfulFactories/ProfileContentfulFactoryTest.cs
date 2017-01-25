@@ -12,24 +12,46 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ProfileContentfulFactoryTest
     {
+        private readonly ContentfulProfile _contentfulProfile;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly ProfileContentfulFactory _profileContentfulFactory;
+
+        public ProfileContentfulFactoryTest()
+        {
+            _contentfulProfile = new ContentfulProfileBuilder().Build();
+            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object);
+        }
+
         [Fact]
         public void ShouldCreateAProfileFromAContentfulProfile()
         {
-            var contentfulProfile = new ContentfulProfileBuilder().Build();
-            
             var crumb = new Crumb("title", "slug", "type");
-            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
-            crumbFactory.Setup(o => o.ToModel(contentfulProfile.Breadcrumbs.First())).Returns(crumb);
+            _crumbFactory.Setup(o => o.ToModel(_contentfulProfile.Breadcrumbs.First())).Returns(crumb);
 
-            var profile = new ProfileContentfulFactory(crumbFactory.Object).ToModel(contentfulProfile);
+            var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
-            profile.ShouldBeEquivalentTo(contentfulProfile, o => o.Excluding(e => e.Breadcrumbs)
-                                                    .Excluding(e => e.Image).Excluding(e => e.BackgroundImage));
-            profile.Image.Should().Be(contentfulProfile.Image.File.Url);
-            profile.BackgroundImage.Should().Be(contentfulProfile.BackgroundImage.File.Url);
+            profile.ShouldBeEquivalentTo(_contentfulProfile, o => o.Excluding(e => e.Breadcrumbs)
+                .Excluding(e => e.Image).Excluding(e => e.BackgroundImage));
+            profile.Image.Should().Be(_contentfulProfile.Image.File.Url);
+            profile.BackgroundImage.Should().Be(_contentfulProfile.BackgroundImage.File.Url);
+            _crumbFactory.Verify(o => o.ToModel(_contentfulProfile.Breadcrumbs.First()), Times.Once);
+            profile.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
+        }
 
-            crumbFactory.Verify(o => o.ToModel(contentfulProfile.Breadcrumbs.First()), Times.Once);
-            profile.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);      
+        [Fact]
+        public void ShouldNotAddBreadcrumbsOrImageIfTheyAreLinks()
+        {
+            _contentfulProfile.Image.SystemProperties.Type = "Link";
+            _contentfulProfile.BackgroundImage.SystemProperties.Type = "Link";
+            _contentfulProfile.Breadcrumbs.First().SystemProperties.Type = "Link";
+
+            var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
+
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Never);
+            profile.Breadcrumbs.Count().Should().Be(0);
+            profile.BackgroundImage.Should().BeEmpty();
+            profile.Image.Should().BeEmpty();
         }
     }
 }
