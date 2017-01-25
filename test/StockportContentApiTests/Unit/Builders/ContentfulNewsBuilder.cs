@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Title = _title,
                 Slug = _slug,
                 Teaser = _teaser,
-                Image = new Asset { File = new File { Url = _imageUrl} },
+                Image = new Asset { File = new File { Url = _imageUrl}, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Body = _body,
                 SunriseDate  = _sunriseDate,
                 SunsetDate  = _sunsetDate,

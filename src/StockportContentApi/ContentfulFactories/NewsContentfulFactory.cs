@@ -20,12 +20,13 @@ namespace StockportContentApi.ContentfulFactories
 
         public News ToModel(ContentfulNews entry)
         {
-            var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
+            var documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                                           .Select(document => _documentFactory.ToModel(document)).ToList();
+            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
-            return new News(entry.Title, entry.Slug, entry.Teaser, entry.Image.File.Url,
-                ImageConverter.ConvertToThumbnail(entry.Image.File.Url), _videoRepository.Process(entry.Body),
-                entry.SunriseDate, entry.SunsetDate, entry.Breadcrumbs, entry.Alerts, entry.Tags,
-                documents, entry.Categories);
+            return new News(entry.Title, entry.Slug, entry.Teaser, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
+                _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, entry.Breadcrumbs, 
+                entry.Alerts, entry.Tags, documents, entry.Categories);
         }
     }
 }

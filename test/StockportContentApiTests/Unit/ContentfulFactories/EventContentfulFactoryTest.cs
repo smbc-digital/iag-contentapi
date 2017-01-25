@@ -4,6 +4,7 @@ using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
@@ -12,35 +13,41 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class EventContentfulFactoryTest
     {
+        private readonly ContentfulEvent _contentfulEvent;
+        private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
+        private readonly EventContentfulFactory _eventContentfulFactory;
+
+        public EventContentfulFactoryTest()
+        {
+            _contentfulEvent = new ContentfulEventBuilder().Build();
+
+            _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object);
+        }
+
         [Fact]
         public void ShouldCreateAnEventFromAContentfulEvent()
         {
-            var contentfulEvent = new ContentfulEventBuilder().Build();
-
-            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
-            documentFactory.Setup(o => o.ToModel(contentfulEvent.Documents.First())).Returns(document);
+            _documentFactory.Setup(o => o.ToModel(_contentfulEvent.Documents.First())).Returns(document);
 
-            var anEvent = new EventContentfulFactory(documentFactory.Object).ToModel(contentfulEvent);
+            var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
-            anEvent.ShouldBeEquivalentTo(contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents));
-            anEvent.ImageUrl.Should().Be(contentfulEvent.Image.File.Url);
-            anEvent.ThumbnailImageUrl.Should().Be(contentfulEvent.Image.File.Url + "?h=250");
-
+            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents));
+            anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
+            anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
             anEvent.Documents.Count.Should().Be(1);
             anEvent.Documents.First().Should().Be(document);
-            documentFactory.Verify(o => o.ToModel(contentfulEvent.Documents.First()), Times.Once);
+            _documentFactory.Verify(o => o.ToModel(_contentfulEvent.Documents.First()), Times.Once);
         }
 
         [Fact]
         public void ShouldNotAddDocumentsOrImageIfTheyAreLinks() 
         {
-            var contentfulEvent = new ContentfulEventBuilder().Build();
-            contentfulEvent.Documents.First().SystemProperties.Type = "Link";
-            contentfulEvent.Image.SystemProperties.Type = "Link";
-            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            _contentfulEvent.Documents.First().SystemProperties.Type = "Link";
+            _contentfulEvent.Image.SystemProperties.Type = "Link";
 
-            var anEvent = new EventContentfulFactory(documentFactory.Object).ToModel(contentfulEvent);
+            var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
             anEvent.Documents.Count.Should().Be(0);
             anEvent.ImageUrl.Should().Be(string.Empty);
