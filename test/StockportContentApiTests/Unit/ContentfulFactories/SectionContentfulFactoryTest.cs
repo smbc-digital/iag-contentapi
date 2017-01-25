@@ -15,36 +15,61 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class SectionContentfulFactoryTest
     {
+        private readonly ContentfulSection _contentfulSection;
+        private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+        private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
+        private readonly Mock<IVideoRepository> _videoRepository;
+        private readonly SectionContentfulFactory _sectionFactory;
+
+        public SectionContentfulFactoryTest()
+        {
+            _contentfulSection = new ContentfulSectionBuilder().Build();
+            _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+            _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            _videoRepository = new Mock<IVideoRepository>();
+            _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
+                _videoRepository.Object);
+        }
+
         [Fact]
         public void ShouldCreateASectionFromAContentfulSection()
         {
-            var contentfulSection = new ContentfulSectionBuilder().Build();                      
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
-            var profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-            profileFactory.Setup(o => o.ToModel(contentfulSection.Profiles.First().Fields)).Returns(profile);
-            var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First().Fields)).Returns(profile);
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
-            documentFactory.Setup(o => o.ToModel(contentfulSection.Documents.First())).Returns(document);
-            var videoRepository = new Mock<IVideoRepository>();
+            _documentFactory.Setup(o => o.ToModel(_contentfulSection.Documents.First())).Returns(document);
             const string processedBody = "this is processed body";
-            videoRepository.Setup(o => o.Process(contentfulSection.Body)).Returns(processedBody);
+            _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-            var sectionFactory = new SectionContentfulFactory(profileFactory.Object, documentFactory.Object,
-                videoRepository.Object);
-            var section = sectionFactory.ToModel(contentfulSection);
+            var section = _sectionFactory.ToModel(_contentfulSection);
 
-            section.ShouldBeEquivalentTo(contentfulSection, o => o.Excluding(e => e.Profiles)
+            section.ShouldBeEquivalentTo(_contentfulSection, o => o.Excluding(e => e.Profiles)
                                                                   .Excluding(e => e.Documents)
                                                                   .Excluding(e => e.Body));
 
-            videoRepository.Verify(o => o.Process(contentfulSection.Body), Times.Once());
+            _videoRepository.Verify(o => o.Process(_contentfulSection.Body), Times.Once());
             section.Body.Should().Be(processedBody);
-            profileFactory.Verify(o => o.ToModel(contentfulSection.Profiles.First().Fields), Times.Once);
+            _profileFactory.Verify(o => o.ToModel(_contentfulSection.Profiles.First().Fields), Times.Once);
             section.Profiles.First().ShouldBeEquivalentTo(profile);
-
-            documentFactory.Verify(o => o.ToModel(contentfulSection.Documents.First()), Times.Once);
+            _documentFactory.Verify(o => o.ToModel(_contentfulSection.Documents.First()), Times.Once);
             section.Documents.Count.Should().Be(1);
             section.Documents.First().Should().Be(document);    
         }
+
+        [Fact]
+        public void ShouldNotAddDocumentsOrProfilesIfTheyAreLinks()
+        {
+            _contentfulSection.Documents.First().SystemProperties.Type = "Link";
+            _contentfulSection.Profiles.First().SystemProperties.Type = "Link";
+            _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(_contentfulSection.Body);
+
+            var section = _sectionFactory.ToModel(_contentfulSection);
+
+            section.Documents.Count().Should().Be(0);
+            _documentFactory.Verify(o => o.ToModel(It.IsAny<Asset>()), Times.Never);
+            section.Profiles.Count().Should().Be(0);
+            _profileFactory.Verify(o => o.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);
+        }
+
     }
 }

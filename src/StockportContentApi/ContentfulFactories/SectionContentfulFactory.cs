@@ -3,6 +3,7 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -23,8 +24,10 @@ namespace StockportContentApi.ContentfulFactories
 
         public Section ToModel(ContentfulSection entry)
         {
-            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
-            var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
+            var profiles = entry.Profiles.Where(profile => ContentfulHelpers.EntryIsNotALink(profile.SystemProperties))
+                                         .Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
+            var documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                                           .Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
 
             return new Section(entry.Title, entry.Slug, body, profiles, documents, 
