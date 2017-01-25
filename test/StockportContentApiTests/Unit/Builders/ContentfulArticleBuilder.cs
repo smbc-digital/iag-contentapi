@@ -12,24 +12,32 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _teaser = "teaser";
         private string _icon = "icon";
-        private LiveChat _liveChat = new LiveChat("title", "text");
-        private Asset _backgroundImage = new Asset { File = new File { Url = "image-url.jpg" } };
+        private Entry<LiveChat> _liveChat = new Entry<LiveChat> { Fields = new LiveChat("title", "text"),
+                                                                  SystemProperties = new SystemProperties { Type = "Entry" } };
+        private Asset _backgroundImage = new Asset { File = new File { Url = "image-url.jpg" },
+                                                     SystemProperties = new SystemProperties { Type = "Asset" } };
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
-        {
+        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
             new Entry<ContentfulCrumb>() {Fields = new ContentfulCrumbBuilder().Build(),
-                SystemProperties = new SystemProperties() { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }}
-        };
-        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", 
-                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
+                SystemProperties = new SystemProperties() { ContentType = new ContentType {
+                    SystemProperties = new SystemProperties { Id = "id" } }, Type = "Entry" } } };
+        private List<Entry<Alert>> _alerts = new List<Entry<Alert>> { new Entry<Alert> {
+                                                       Fields = new Alert("title", "subHeading", "body", "severity", 
+                                                                          new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
+                                                                          new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)),
+                                                       SystemProperties = new SystemProperties { Type = "Entry" } } };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private bool _liveChatVisible = false;
-        private ContentfulTopic _topic = new ContentfulTopicBuilder().Build();
-        private List<ContentfulProfile> _profiles = new List<ContentfulProfile> { new ContentfulProfileBuilder().Build() };
-        private List<ContentfulSection> _sections = new List<ContentfulSection> { new ContentfulSectionBuilder().Build() };
+        private Entry<ContentfulTopic> _topic = new Entry<ContentfulTopic> { Fields = new ContentfulTopicBuilder().Build(),
+                                                                             SystemProperties = new SystemProperties { Type = "Entry" } };
+        private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
+                                    new Entry<ContentfulProfile> { Fields = new ContentfulProfileBuilder().Build(),
+                                                                   SystemProperties = new SystemProperties { Type = "Entry" } } };
+        private List<Entry<ContentfulSection>> _sections = new List<Entry<ContentfulSection>> {
+                                    new Entry<ContentfulSection> { Fields = new ContentfulSectionBuilder().Build(),
+                                                                   SystemProperties = new SystemProperties { Type = "Entry" } } };
 
         public ContentfulArticle Build()
         {

@@ -32,16 +32,19 @@ namespace StockportContentApi.ContentfulFactories
 
         public Article ToModel(ContentfulArticle entry)
         {
-            var sections = entry.Sections.Select(section => _sectionFactory.ToModel(section)).ToList();
+            var sections = entry.Sections.Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
             var breadcrumbs = entry.Breadcrumbs.Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile)).ToList();
-            var topic = _topicFactory.ToModel(entry.ParentTopic);
+            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
+            var topic = _topicFactory.ToModel(entry.ParentTopic.Fields);
             var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
+            var alerts = entry.Alerts.Select(alert => alert.Fields);
+            var liveChat = entry.LiveChat.Fields;
+            var backgroundImage = entry.BackgroundImage.File.Url;
 
-            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, entry.BackgroundImage.File.Url, 
-                sections, breadcrumbs, entry.Alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                entry.LiveChatVisible, entry.LiveChat);
+            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, 
+                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
+                entry.LiveChatVisible, liveChat);
         }
     }
 }

@@ -21,17 +21,17 @@ namespace StockportContentApiTests.Unit.Model
                 Title = string.Empty,
                 Teaser = string.Empty,
                 Icon = string.Empty,
-                BackgroundImage = new Asset { File = new File { Url = string.Empty } },
-                Sections = new List<ContentfulSection>(),
+                BackgroundImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
+                Sections = new List<Entry<ContentfulSection>>(),
                 Breadcrumbs = new List<Entry<ContentfulCrumb>>(),
-                Alerts = new List<Alert>(),
-                Profiles = new List<ContentfulProfile>(),
-                ParentTopic = new ContentfulTopic(),
+                Alerts = new List<Entry<Alert>>(),
+                Profiles = new List<Entry<ContentfulProfile>>(),
+                ParentTopic = new Entry<ContentfulTopic> { Fields = new ContentfulTopic(), SystemProperties = new SystemProperties { Type = "Entry" } },
                 Documents = new List<Asset>(),
                 SunriseDate = DateTime.MinValue,
                 SunsetDate = DateTime.MaxValue,
                 LiveChatVisible = false,
-                LiveChat = new NullLiveChat()
+                LiveChat = new Entry<LiveChat> { Fields = new NullLiveChat(), SystemProperties = new SystemProperties { Type = "Entry" } }
             };
             actual.ShouldBeEquivalentTo(expected);
         }

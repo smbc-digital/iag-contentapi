@@ -15,16 +15,19 @@ namespace StockportContentApi.ContentfulModels
         public string Title { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
-        public Asset BackgroundImage { get; set; } = new Asset { File = new File { Url = string.Empty } };
-        public List<ContentfulSection> Sections { get; set; } = new List<ContentfulSection>();
+        public Asset BackgroundImage { get; set; } = new Asset { File = new File { Url = string.Empty },
+                                                                 SystemProperties = new SystemProperties { Type = "Asset" } };
+        public List<Entry<ContentfulSection>> Sections { get; set; } = new List<Entry<ContentfulSection>>();
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
-        public List<Alert> Alerts { get; set; } = new List<Alert>();
-        public List<ContentfulProfile> Profiles { get; set; } = new List<ContentfulProfile>();
-        public ContentfulTopic ParentTopic { get; set; } = new ContentfulTopic();
+        public List<Entry<Alert>> Alerts { get; set; } = new List<Entry<Alert>>();
+        public List<Entry<ContentfulProfile>> Profiles { get; set; } = new List<Entry<ContentfulProfile>>();
+        public Entry<ContentfulTopic> ParentTopic { get; set; } = new Entry<ContentfulTopic> { Fields = new ContentfulTopic(),
+                                                                                               SystemProperties = new SystemProperties { Type = "Entry" } };
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool LiveChatVisible { get; set; } = false;
-        public LiveChat LiveChat { get; set; } = new NullLiveChat();
+        public Entry<LiveChat> LiveChat { get; set; } = new Entry<LiveChat> { Fields = new NullLiveChat(),
+                                                                              SystemProperties = new SystemProperties { Type = "Entry" } };
     }
 }
