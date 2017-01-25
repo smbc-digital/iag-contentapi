@@ -18,7 +18,7 @@ namespace StockportContentApiTests.Unit.Model
                 Title = string.Empty,
                 Slug = string.Empty,
                 Body = string.Empty,
-                Profiles = new List<ContentfulProfile>(),
+                Profiles = new List<Entry<ContentfulProfile>>(),
                 Documents = new List<Asset>(),
                 SunriseDate = DateTime.MinValue.ToUniversalTime(),
                 SunsetDate = DateTime.MaxValue.ToUniversalTime()

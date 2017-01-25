@@ -23,7 +23,7 @@ namespace StockportContentApi.ContentfulFactories
 
         public Section ToModel(ContentfulSection entry)
         {
-            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile)).ToList();
+            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
             var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
 

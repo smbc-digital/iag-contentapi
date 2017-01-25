@@ -18,10 +18,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateASectionFromAContentfulSection()
         {
-            var contentfulSection = new ContentfulSectionBuilder().Build();          
+            var contentfulSection = new ContentfulSectionBuilder().Build();                      
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
             var profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-            profileFactory.Setup(o => o.ToModel(contentfulSection.Profiles.First())).Returns(profile);
+            profileFactory.Setup(o => o.ToModel(contentfulSection.Profiles.First().Fields)).Returns(profile);
             var documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
             documentFactory.Setup(o => o.ToModel(contentfulSection.Documents.First())).Returns(document);
@@ -39,7 +39,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             videoRepository.Verify(o => o.Process(contentfulSection.Body), Times.Once());
             section.Body.Should().Be(processedBody);
-            profileFactory.Verify(o => o.ToModel(contentfulSection.Profiles.First()), Times.Once);
+            profileFactory.Verify(o => o.ToModel(contentfulSection.Profiles.First().Fields), Times.Once);
             section.Profiles.First().ShouldBeEquivalentTo(profile);
 
             documentFactory.Verify(o => o.ToModel(contentfulSection.Documents.First()), Times.Once);
