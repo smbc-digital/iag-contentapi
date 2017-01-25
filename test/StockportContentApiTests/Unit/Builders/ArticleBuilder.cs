@@ -10,7 +10,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _body = "body";
         private string _teaser = "teaser";
-        private string _image = "image-url.jpg";
         private string _icon = "icon";
         private string _backgroundImage = "back-image-url.jpg";
         private bool _liveChatVisible =  false;

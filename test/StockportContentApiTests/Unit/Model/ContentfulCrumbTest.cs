@@ -13,6 +13,7 @@ namespace StockportContentApiTests.Unit.Model
             var expected = new ContentfulCrumb
             {
                Title = string.Empty,
+               Name = string.Empty,
                Slug = string.Empty
             };
             actual.ShouldBeEquivalentTo(expected);

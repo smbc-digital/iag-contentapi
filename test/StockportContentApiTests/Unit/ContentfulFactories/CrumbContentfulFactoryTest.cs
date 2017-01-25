@@ -24,5 +24,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             crumb.Title.Should().Be(contentfulCrumb.Fields.Title);
             crumb.Type.Should().Be(contentfulCrumb.SystemProperties.ContentType.SystemProperties.Id);
         }
+
+        [Fact]
+        public void ShouldCreateACrumbWithNameIfSet()
+        {
+            var contentfulCrumb =
+               new Entry<ContentfulCrumb>
+               {
+                   Fields = new ContentfulCrumbBuilder().Name("name").Title(string.Empty).Build(),
+                   SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
+               };
+
+            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
+
+            crumb.Title.Should().Be(contentfulCrumb.Fields.Name);
+        }
     }
 }
