@@ -19,10 +19,10 @@ namespace StockportContentApiTests.Unit.Model
                 Slug = string.Empty,
                 Subtitle = string.Empty,
                 Teaser = string.Empty,
-                Image = new Asset { File = new File { Url = string.Empty }},
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Body = string.Empty,
                 Icon = string.Empty,
-                BackgroundImage = new Asset { File = new File { Url = string.Empty }},
+                BackgroundImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Breadcrumbs = new List<Entry<ContentfulCrumb>>()
             };
             actual.ShouldBeEquivalentTo(expected);
