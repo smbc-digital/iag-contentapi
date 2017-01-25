@@ -3,6 +3,7 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -32,15 +33,23 @@ namespace StockportContentApi.ContentfulFactories
 
         public Article ToModel(ContentfulArticle entry)
         {
-            var sections = entry.Sections.Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
-            var breadcrumbs = entry.Breadcrumbs.Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-            var profiles = entry.Profiles.Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
-            var topic = _topicFactory.ToModel(entry.ParentTopic.Fields);
-            var documents = entry.Documents.Select(document => _documentFactory.ToModel(document)).ToList();
+            var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                         .Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
+            var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                               .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+            var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                         .Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
+            var topic = ContentfulHelpers.EntryIsNotALink(entry.ParentTopic.SystemProperties) 
+                                ? _topicFactory.ToModel(entry.ParentTopic.Fields) : new NullTopic();
+            var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                           .Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
-            var alerts = entry.Alerts.Select(alert => alert.Fields);
-            var liveChat = entry.LiveChat.Fields;
-            var backgroundImage = entry.BackgroundImage.File.Url;
+            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                     .Select(alert => alert.Fields);
+            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChat.SystemProperties) 
+                                ? entry.LiveChat.Fields : new NullLiveChat();
+            var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
+                                        ? entry.BackgroundImage.File.Url : string.Empty;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, 
                 sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
