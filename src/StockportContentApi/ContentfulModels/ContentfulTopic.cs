@@ -15,12 +15,12 @@ namespace StockportContentApi.ContentfulModels
         public string Teaser { get; set; } = string.Empty;
         public string Summary { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
-        public Asset BackgroundImage { get; set; } = new Asset {File = new File {Url = string.Empty}};
+        public Asset BackgroundImage { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset"} };
         public List<Entry<ContentfulSubItem>> SubItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulSubItem>> SecondaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulSubItem>> TertiaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
-        public List<Alert> Alerts { get; set; } = new List<Alert>();
+        public List<Entry<Alert>> Alerts { get; set; } = new List<Entry<Alert>>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool EmailAlerts { get; set; } = false;

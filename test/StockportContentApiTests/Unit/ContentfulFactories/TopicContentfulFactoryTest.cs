@@ -34,11 +34,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                 .Excluding(e => e.SubItems)
                                                                 .Excluding(e => e.SecondaryItems)
                                                                 .Excluding(e => e.TertiaryItems)
-                                                                .Excluding(e => e.BackgroundImage));
+                                                                .Excluding(e => e.BackgroundImage)
+                                                                .Excluding(e => e.Alerts));
 
             crumbFactory.Verify(o => o.ToModel(contentfulTopic.Breadcrumbs.First()), Times.Once);
             section.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
             section.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
+            section.Alerts.First().ShouldBeEquivalentTo(contentfulTopic.Alerts.First().Fields);
 
             subItemFactory.Verify(o => o.ToModel(contentfulTopic.SubItems.First()), Times.Once);
             subItemFactory.Verify(o => o.ToModel(contentfulTopic.SecondaryItems.First()), Times.Once);

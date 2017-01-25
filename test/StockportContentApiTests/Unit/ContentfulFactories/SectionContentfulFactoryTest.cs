@@ -70,6 +70,5 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             section.Profiles.Count().Should().Be(0);
             _profileFactory.Verify(o => o.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);
         }
-
     }
 }
