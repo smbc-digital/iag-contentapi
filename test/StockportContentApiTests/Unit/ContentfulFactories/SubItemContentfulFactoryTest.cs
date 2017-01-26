@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulModels;
@@ -9,6 +10,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class SubItemContentfulFactoryTest
     {
+        private readonly SubItemContentfulFactory _subItemContentfulFactory;
+
+        public SubItemContentfulFactoryTest()
+        {
+            _subItemContentfulFactory = new SubItemContentfulFactory();
+        }
+
         [Fact]
         public void ShouldCreateASubItemFromAContentfulSubItem()
         {
@@ -18,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
                 };
  
-            var subItem = new SubItemContentfulFactory().ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
 
             subItem.Slug.Should().Be(contentfulSubItem.Fields.Slug);
             subItem.Title.Should().Be(contentfulSubItem.Fields.Title);
@@ -31,7 +39,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
         // TODO: remove start page inconsistency
         [Fact]
-        public void ShouldSetStartPageToADifferentIDThanProvided()
+        public void ShouldSetStartPageToADifferentIdThanProvided()
         {
             var contentfulSubItem =
                 new Entry<ContentfulSubItem>
@@ -40,9 +48,25 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
                 };
 
-            var subItem = new SubItemContentfulFactory().ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
 
             subItem.Type.Should().Be("start-page");
+        }
+
+        [Fact]
+        public void ShouldCreateSubItemWithNameForTitleWhenNoTitleProvided()
+        {
+            var contentfulSubItem =
+                new Entry<ContentfulSubItem>
+                {
+                    Fields = new ContentfulSubItemBuilder().Title(string.Empty).Name("name").Build(),
+                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+                };
+
+            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+
+            subItem.Title.Should().Be(contentfulSubItem.Fields.Name);
+
         }
     }
 }

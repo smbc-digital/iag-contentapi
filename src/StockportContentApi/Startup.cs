@@ -83,9 +83,25 @@ namespace StockportContentApi
 
         private static void RegisterRepos(IServiceCollection services)
         {
+            services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<IContentfulFactory<Asset, Document>>(new DocumentContentfulFactory());
+            services.AddSingleton<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(p => new CrumbContentfulFactory());
+            services.AddSingleton<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(p => new SubItemContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
+                                                                                                                    p.GetService<IContentfulFactory<Asset, Document>>(),
+                                                                                                                    p.GetService<IVideoRepository>()));
             services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(), p.GetService<IContentfulFactory<Asset, Document>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(),
+                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
+                                                                                                           p.GetService<IContentfulFactory<Asset, Document>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>>(p => new ArticleContentfulFactory(p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
+                                                                                                                    p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
+                                                                                                                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
+                                                                                                                    p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(),
+                                                                                                                    p.GetService<IContentfulFactory<Asset, Document>>(),
+                                                                                                                    p.GetService<IVideoRepository>()));
 
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
@@ -97,14 +113,13 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, StartPageRepository>>(
                 p => { return x => new StartPageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<StartPage>>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
-                p => { return x => new TopicRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Topic>>()); });
+                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()); });
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
                 p => { return x => new FooterRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(),p.GetService<INewsCategoriesFactory>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
                 p => { return x => new AtoZRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<AtoZ>>()); });
-            services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
                 p => { return x => new EventRepository(x, p.GetService<IHttpClient>(),p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>()); });

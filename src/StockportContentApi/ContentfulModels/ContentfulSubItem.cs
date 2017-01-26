@@ -9,6 +9,7 @@ namespace StockportContentApi.ContentfulModels
     {
         public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();

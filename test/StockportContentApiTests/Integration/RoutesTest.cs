@@ -28,9 +28,6 @@ namespace StockportContentApiTests.Integration
         {
             TestAppFactory.FakeHttpClientFactory.MakeFakeHttpClientWithConfiguration(fakeHttpClient =>
             {
-                fakeHttpClient.For(UrlFor("topic", 1, "test-topic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopic.json"));
-                fakeHttpClient.For(UrlFor("topic", 1, "test-topic-with-subtopic")).Return(CreateHttpResponse("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItems.json"));
-                fakeHttpClient.For(UrlFor("topic", 1, "test-topic-with-alerts")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ListOfArticlesForTopicWithAlerts.json"));
                 fakeHttpClient.For(UrlFor("article", 2, "test-article")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
                 fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
                 fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
@@ -68,6 +65,11 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
                                     new ContentfulNewsBuilder().Slug("news_item").Build()
                                 });
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> {
+                                    new ContentfulTopicBuilder().Slug("topic_slug").Build()
+                                });
 
 
             });
@@ -76,9 +78,7 @@ namespace StockportContentApiTests.Integration
         [Theory]
         [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]
         [InlineData("Profile", "/api/unittest/profile/test-profile")]
-        [InlineData("TopicWithPrimarySecondaryAndTertiaryItems", "/api/unittest/topic/test-topic-with-subtopic")]
-        [InlineData("ListOfArticlesForATopicWithAlerts", "/api/unittest/topic/test-topic-with-alerts")]
-        [InlineData("ListOfArticlesForATopic", "/api/unittest/topic/test-topic")]
+        [InlineData("Topic", "/api/unittest/topic/topic_slug")]
         [InlineData("ArticleWithoutSections", "/api/unittest/article/about-us")]
         [InlineData("Article", "/api/unittest/article/test-article")]
         [InlineData("Homepage", "/api/unittest/homepage")]

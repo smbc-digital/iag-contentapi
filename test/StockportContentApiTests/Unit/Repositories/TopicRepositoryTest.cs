@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
+using System.Threading;
+using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using StockportContentApi;
-using StockportContentApi.Factories;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
-using StockportContentApi.Http;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using StockportContentApiTests.Unit.Fakes;
+using StockportContentApiTests.Unit.Builders;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class TopicRepositoryTest
     {
-        private readonly Mock<IFactory<Topic>> _mockTopicBuilder;
-        private readonly FakeHttpClient _httpClient = new FakeHttpClient();
         private readonly TopicRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
         private readonly Topic _topic;
+        private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
+        private readonly Mock<Contentful.Core.IContentfulClient> _contentfulClient;
 
         public TopicRepositoryTest()
         {
@@ -34,41 +35,44 @@ namespace StockportContentApiTests.Unit.Repositories
             _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
                 new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
-            _mockTopicBuilder = new Mock<IFactory<Topic>>();
+            _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
+            _contentfulClient = new Mock<Contentful.Core.IContentfulClient>();
+            contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new TopicRepository(config, _httpClient, _mockTopicBuilder.Object);
+            _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object);
         }
 
         [Fact]
         public void GetsTopicByTopicSlug()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=topic&include=1&fields.slug=healthy-living")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Topic.json")));
+            const string slug = "a-slug";
+            var contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
+            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), 
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> { contentfulTopic });
 
-            _mockTopicBuilder.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-                 .Returns(_topic);
+            _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topic);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug("healthy-living"));
+            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-
             var topic = response.Get<Topic>();
-
-            topic.Name.Should().Be(_topic.Name);
-            topic.Slug.Should().Be(_topic.Slug);
-            topic.EmailAlerts.Should().Be(_topic.EmailAlerts);
-            topic.EmailAlertsTopicId.Should().Be(_topic.EmailAlertsTopicId);
+            topic.ShouldBeEquivalentTo(_topic);
         }
 
         [Fact]
         public void GetsNotFoundIfTopicDoesNotExist()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=topic&include=1&fields.slug=blah")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+            const string slug = "not-found";
+            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic>());
 
-            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug("blah"));
+            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("No topic found for 'blah'");
+            response.Error.Should().Be($"No topic found for '{slug}'");
         }
     }
 }

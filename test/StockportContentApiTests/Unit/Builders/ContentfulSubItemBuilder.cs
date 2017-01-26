@@ -7,6 +7,7 @@ namespace StockportContentApiTests.Unit.Builders
     {
         private string _slug = "slug";
         private string _title = "title";
+        private string _name = "name";
         private string _teaser = "teaser";
         private string _icon = "icon";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -18,6 +19,7 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Slug = _slug,
                 Title = _title,
+                Name = _name,
                 Teaser = _teaser,
                 Icon = _icon,
                 SunriseDate = _sunriseDate,
@@ -28,6 +30,18 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulSubItemBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulSubItemBuilder Title(string title)
+        {
+            _title = title;
+            return this;
+        }
+
+        public ContentfulSubItemBuilder Name(string name)
+        {
+            _name = name;
             return this;
         }
     }

@@ -1,0 +1,62 @@
+﻿{
+  "slug": "topic_slug",
+  "name": "name",
+  "teaser": "teaser",
+  "summary": "summary",
+  "icon": "icon",
+  "backgroundImage": "background-image-url.jpg",
+  "subItems": [
+    {
+      "slug": "sub-slug",
+      "title": "title",
+      "teaser": "teaser",
+      "icon": "icon",
+      "type": "id",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00+00:00"
+    }
+  ],
+  "secondaryItems": [
+    {
+      "slug": "secondary-slug",
+      "title": "title",
+      "teaser": "teaser",
+      "icon": "icon",
+      "type": "id",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00+00:00"
+    }
+  ],
+  "tertiaryItems": [
+    {
+      "slug": "tertiary-slug",
+      "title": "title",
+      "teaser": "teaser",
+      "icon": "icon",
+      "type": "id",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00+00:00"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "title": "title",
+      "slug": "slug",
+      "type": "id"
+    }
+  ],
+  "alerts": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00+00:00"
+    }
+  ],
+  "sunriseDate": "0001-01-01T00:00:00+00:00",
+  "sunsetDate": "9999-09-09T00:00:00+00:00",
+  "emailAlerts": false,
+  "emailAlertsTopicId": "id"
+}

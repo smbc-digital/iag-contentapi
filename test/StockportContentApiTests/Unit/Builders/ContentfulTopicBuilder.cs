@@ -61,5 +61,11 @@ namespace StockportContentApiTests.Unit.Builders
                 EmailAlertsTopicId  = _emailAlertsTopicId
             };
         }
+
+        public ContentfulTopicBuilder Slug(string slug)
+        {
+            _slug = slug;
+            return this;
+        }
     }
 }

@@ -1,7 +1,11 @@
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using StockportContentApi.Factories;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 
@@ -9,43 +13,25 @@ namespace StockportContentApi.Repositories
 {
     public class TopicRepository
     {
-        private readonly string _contentfulApiUrl;
-        private readonly string _contentType = "topic";
-        private readonly IFactory<Topic> _factory;
-        private readonly ContentfulClient _contentfulClient;
+        private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
+        private readonly Contentful.Core.IContentfulClient _client;
 
-        public TopicRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Topic> factory)
+        public TopicRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
+                               IContentfulFactory<ContentfulTopic, Topic> topicFactory)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _factory = factory;
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
+            _client = clientManager.GetClient(config);
+            _topicFactory = topicFactory;
         }
 
-        public async Task<HttpResponse> GetTopicByTopicSlug(string topicSlug)
+        public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
         {
-            var referenceLevelLimit = 1;
-            var contentfulResponse = await _contentfulClient.Get(UrlFor(_contentType, referenceLevelLimit, topicSlug));
+            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync<ContentfulTopic>(builder);
+            var entry = entries.FirstOrDefault();
 
-            if (!contentfulResponse.HasItems())
-                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{topicSlug}'");
-
-            var topic = _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
-
-            return topic == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{topicSlug}'")
-                : HttpResponse.Successful(topic);
-        }
-
-        //TODO: extract out to its own class ContentfulUrlBuilder [Tech-time]
-        // + single responsibility for building urls for contentful
-        // + easier to test it out and use it in the test
-        // + single source of truth for building contentful urls and query
-        // + one place to change the url and query
-        private string UrlFor(string type, int referenceLevel, string slug = null)
-        {
-            return slug == null
-                ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
-                : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}"; 
+            return entry == null 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'") 
+                : HttpResponse.Successful(_topicFactory.ToModel(entry));
         }
     }
 }

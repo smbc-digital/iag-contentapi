@@ -11,8 +11,9 @@ namespace StockportContentApi.ContentfulFactories
             var type = entry.SystemProperties.ContentType.SystemProperties.Id == "startPage" 
                 ? "start-page" 
                 : entry.SystemProperties.ContentType.SystemProperties.Id;
+            var title = !string.IsNullOrEmpty(entry.Fields.Title) ? entry.Fields.Title : entry.Fields.Name;
 
-            return new SubItem(entry.Fields.Slug, entry.Fields.Title, entry.Fields.Teaser, 
+            return new SubItem(entry.Fields.Slug, title, entry.Fields.Teaser, 
                 entry.Fields.Icon, type, entry.Fields.SunriseDate, entry.Fields.SunsetDate);
         }
     }

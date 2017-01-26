@@ -15,6 +15,7 @@ namespace StockportContentApiTests.Unit.Model
             {
                Slug = string.Empty,
                Title = string.Empty,
+               Name = string.Empty,
                Teaser = string.Empty,
                Icon = string.Empty,
                SunriseDate = DateTime.MinValue.ToUniversalTime(),
