@@ -1,24 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net;
+using System.Threading;
+using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi;
-using StockportContentApi.Factories;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
-using StockportContentApi.Http;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using StockportContentApiTests.Unit.Fakes;
+using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class ProfileRepositoryTest
     {
         private readonly ProfileRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private readonly FakeHttpClient _httpClient = new FakeHttpClient();
+        private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+        private readonly Mock<IContentfulClient> _client;
 
         public ProfileRepositoryTest()
         {
@@ -28,34 +30,47 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
-            var mockBreadcrumbFactory = new Mock<IBuildContentTypesFromReferences<Crumb>>();
-            mockBreadcrumbFactory.Setup(o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new List<Crumb>() { new NullCrumb() });
+            _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
+            _client = new Mock<IContentfulClient>();
+            contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _repository = new ProfileRepository(config, _httpClient, new ProfileFactory(mockBreadcrumbFactory.Object));
+            _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object);
         }
 
         [Fact]
         public void GetsProfileForProfileSlug()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=profile&include=1&fields.slug=test-profile")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Profile.json")));
+            const string slug = "a-slug";
+            var contentfulTopic = new ContentfulProfileBuilder().Slug(slug).Build();
+            var profile = new Profile("type", "title", "slug", "subtitle",
+                "teaser", "image", "body", "icon", "backgroundImage",
+                new List<Crumb> {new Crumb("title", "slug", "type")});
+            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync<ContentfulProfile>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> { contentfulTopic });
+            _profileFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(profile);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetProfile("test-profile"));
+            var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.Get<Profile>().Slug.Should().Be("test-profile");
+            var responseProfile = response.Get<Profile>();
+            responseProfile.ShouldBeEquivalentTo(profile);
+
         }
 
         [Fact]
         public void Return404WhenProfileWhenItemsDontExist()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=profile&include=1&fields.slug=nope")
-               .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+            const string slug = "not-found";
+            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync<ContentfulProfile>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile>());
 
-            var response = AsyncTestHelper.Resolve(_repository.GetProfile("nope"));
+            var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
+
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("No profile found for 'nope'");
+            response.Error.Should().Be($"No profile found for '{slug}'");
         }
 
     }

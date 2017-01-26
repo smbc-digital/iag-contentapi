@@ -1,42 +1,37 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using StockportContentApi.Factories;
+using Contentful.Core.Search;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using System.Linq;
+using StockportContentApi.Client;
 
 namespace StockportContentApi.Repositories
 {
     public class ProfileRepository
     {
-        private readonly string _contentfulApiUrl;
-        private readonly ContentfulClient _contentfulClient;
-        private const string ContentType = "profile";
-        private readonly IFactory<Profile> _factory;
+        private readonly Contentful.Core.IContentfulClient _client;
+        private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
-        public ProfileRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Profile> factory)
+        public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
+                                 IContentfulFactory<ContentfulProfile, Profile> profileFactory)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
-            _factory = factory;
+            _client = clientManager.GetClient(config);
+            _profileFactory = profileFactory;
         }
 
-        public async Task<HttpResponse> GetProfile(string profileSlug)
+        public async Task<HttpResponse> GetProfile(string slug)
         {
-            var referenceLevelLimit = 1;
-            var contentfulResponse = await _contentfulClient.Get(UrlFor(ContentType, referenceLevelLimit, profileSlug));
+            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync<ContentfulProfile>(builder);
+            var entry = entries.FirstOrDefault();
 
-            if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{profileSlug}'");
-
-            var profile = _factory.Build(contentfulResponse.GetFirstItem() ,contentfulResponse);
-            return HttpResponse.Successful(profile);
-        }
-
-        private string UrlFor(string type, int referenceLevel, string slug = null)
-        {
-            return slug == null
-                ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
-                : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
+            return entry == null 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'") 
+                : HttpResponse.Successful(_profileFactory.ToModel(entry));
         }
     }
 }

@@ -34,5 +34,11 @@ namespace StockportContentApiTests.Unit.Builders
                 Breadcrumbs = _breadcrumbs
             };
         }
+
+        public ContentfulProfileBuilder Slug(string slug)
+        {
+            _slug = slug;
+            return this;
+        }
     }
 }

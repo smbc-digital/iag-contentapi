@@ -1,5 +1,4 @@
-﻿using System;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -7,7 +6,6 @@ namespace StockportContentApiTests.Unit.Builders
     {
         private I _fields = default(I);
         private string _contentTypeSystemId = "id";
-        private int _include = int.MaxValue;
         private string _type = "Entry";
         private string _systemId = "id";
 

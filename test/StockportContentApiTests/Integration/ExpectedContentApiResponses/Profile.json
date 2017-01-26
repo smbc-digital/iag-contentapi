@@ -1,24 +1,18 @@
 ﻿{
-  "type": "Success Story",
-  "title": "Test Profile",
-  "slug": "test-profile",
-  "subtitle": "Test sub title",
-  "teaser": null,
-  "image": null,
-  "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  "icon": "fa-meh-o",
-  "backgroundImage":
-    "image.jpg",
+  "type": "type",
+  "title": "title",
+  "slug": "profile_slug",
+  "subtitle": "subtitle",
+  "teaser": "teaser",
+  "image": "image-url.jpg",
+  "body": "body",
+  "icon": "icon",
+  "backgroundImage": "background-image-url.jpg",
   "breadcrumbs": [
     {
-      "title": "Test sub topic 1",
-      "slug": "test-sub-topic-1",
-      "type": "topic"
-    },
-    {
-      "title": "Test Video",
-      "slug": "test-video",
-      "type": "section"
+      "title": "title",
+      "slug": "slug",
+      "type": "id"
     }
   ]
 }

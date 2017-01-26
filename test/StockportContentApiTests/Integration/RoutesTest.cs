@@ -32,7 +32,6 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
                 fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
                 fakeHttpClient.For("https://buto-host.tv/video/kQl5D").Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(UrlFor("profile", 1, "test-profile")).Return((CreateHttpResponse("Unit/MockContentfulResponses/ProfileWithBreadcrumbs.json")));
                 fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
                 fakeHttpClient.For(UrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
                 fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
@@ -70,14 +69,17 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> {
                                     new ContentfulTopicBuilder().Slug("topic_slug").Build()
                                 });
-
-
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulProfile>(
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> {
+                                    new ContentfulProfileBuilder().Slug("profile_slug").Build()
+                                });
             });
         }                                         
        
         [Theory]
         [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]
-        [InlineData("Profile", "/api/unittest/profile/test-profile")]
+        [InlineData("Profile", "/api/unittest/profile/profile_slug")]
         [InlineData("Topic", "/api/unittest/topic/topic_slug")]
         [InlineData("ArticleWithoutSections", "/api/unittest/article/about-us")]
         [InlineData("Article", "/api/unittest/article/test-article")]
