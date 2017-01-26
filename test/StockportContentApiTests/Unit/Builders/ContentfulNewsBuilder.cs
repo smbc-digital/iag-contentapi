@@ -16,13 +16,13 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("News", string.Empty, "news") };
-        private List<string> _tags = new List<string> {"tag"};
-        private List<Alert> _alerts = new List<Alert> {new Alert("title", "subHeading", "body", 
+        private List<string> _tags = new List<string> { "tag" };
+        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", 
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
 
-        private List<string> _categories = new List<string> {"category"};
+        private List<string> _categories = new List<string> { "category" };
 
         public ContentfulNews Build()
         {
@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Title = _title,
                 Slug = _slug,
                 Teaser = _teaser,
-                Image = new Asset { File = new File { Url = _imageUrl}, SystemProperties = new SystemProperties { Type = "Asset" } },
+                Image = new ContentfulAssetBuilder().Url(_imageUrl).Build(),
                 Body = _body,
                 SunriseDate  = _sunriseDate,
                 SunsetDate  = _sunsetDate,

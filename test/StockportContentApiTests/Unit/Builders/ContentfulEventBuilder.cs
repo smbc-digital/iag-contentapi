@@ -11,14 +11,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _title = "title";
         private string _teaser = "teaser";
-        private Asset _image = new Asset
-            {
-                File = new Contentful.Core.Models.File()
-                {
-                    Url = "image-url.jpg",
-                },
-                SystemProperties = new SystemProperties { Type = "Asset" }
-            };
+        private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private string _description = "description";
         private string _fee = "fee";
         private string _location = "location";
@@ -27,8 +20,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _startTime = "10:00";
         private string _endTime = "17:00";
         private int _occurences = -1;
-        private EventFrequency _eventFrequency = StockportContentApi.Model.EventFrequency.None;
-        private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Events", "", "events")};
+        private EventFrequency _eventFrequency = EventFrequency.None;
+        private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
 

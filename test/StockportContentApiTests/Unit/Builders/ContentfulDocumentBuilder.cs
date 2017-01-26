@@ -13,19 +13,12 @@ namespace StockportContentApiTests.Unit.Builders
 
         public Asset Build()
         {
-            return new Asset
-            {
-                Description = _description,
-                File = new File
-                {
-                    Details = new FileDetails { Size = _size },
-                    Url = _url,
-                    FileName = _fileName
-                },
-                SystemProperties =
-                    new SystemProperties { UpdatedAt = _updatedAt, 
-                                           Type = "Asset" }
-            };
+            return new ContentfulAssetBuilder().Url(_url)
+                                               .FileName(_fileName)
+                                               .Description(_description)
+                                               .FileSize(_size)
+                                               .UpdatedAt(_updatedAt)
+                                               .Build();
         }
     }
 }

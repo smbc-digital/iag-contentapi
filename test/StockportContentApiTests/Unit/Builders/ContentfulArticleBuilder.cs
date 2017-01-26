@@ -12,32 +12,24 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _teaser = "teaser";
         private string _icon = "icon";
-        private Entry<LiveChat> _liveChat = new Entry<LiveChat> { Fields = new LiveChat("title", "text"),
-                                                                  SystemProperties = new SystemProperties { Type = "Entry" } };
-        private Asset _backgroundImage = new Asset { File = new File { Url = "image-url.jpg" },
-                                                     SystemProperties = new SystemProperties { Type = "Asset" } };
+        private Entry<LiveChat> _liveChat = new ContentfulEntryBuilder<LiveChat>().Fields(new LiveChat("title", "text")).Build();
+        private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
-            new Entry<ContentfulCrumb>() {Fields = new ContentfulCrumbBuilder().Build(),
-                SystemProperties = new SystemProperties() { ContentType = new ContentType {
-                    SystemProperties = new SystemProperties { Id = "id" } }, Type = "Entry" } } };
-        private List<Entry<Alert>> _alerts = new List<Entry<Alert>> { new Entry<Alert> {
-                                                       Fields = new Alert("title", "subHeading", "body", "severity", 
-                                                                          new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
-                                                                          new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)),
-                                                       SystemProperties = new SystemProperties { Type = "Entry" } } };
+        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
+            { new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
+        private List<Entry<Alert>> _alerts = new List<Entry<Alert>>
+            { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
+                                                         new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                         new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private bool _liveChatVisible = false;
-        private Entry<ContentfulTopic> _topic = new Entry<ContentfulTopic> { Fields = new ContentfulTopicBuilder().Build(),
-                                                                             SystemProperties = new SystemProperties { Type = "Entry" } };
+        private Entry<ContentfulTopic> _topic = new ContentfulEntryBuilder<ContentfulTopic>().Fields(new ContentfulTopicBuilder().Build()).Build();
         private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
-                                    new Entry<ContentfulProfile> { Fields = new ContentfulProfileBuilder().Build(),
-                                                                   SystemProperties = new SystemProperties { Type = "Entry" } } };
+                                    new ContentfulEntryBuilder<ContentfulProfile>().Fields(new ContentfulProfileBuilder().Build()).Build() };
         private List<Entry<ContentfulSection>> _sections = new List<Entry<ContentfulSection>> {
-                                    new Entry<ContentfulSection> { Fields = new ContentfulSectionBuilder().Build(),
-                                                                   SystemProperties = new SystemProperties { Type = "Entry" } } };
+                                    new ContentfulEntryBuilder<ContentfulSection>().Fields(new ContentfulSectionBuilder().Build()).Build() };
 
         public ContentfulArticle Build()
         {
