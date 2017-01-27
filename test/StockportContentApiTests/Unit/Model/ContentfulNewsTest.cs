@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Model
                 Breadcrumbs = new List<Crumb> { new Crumb("News", string.Empty, "news")},
                 Categories = new List<string>(),
                 Documents = new List<Asset>(),
-                Image = new Asset { File = new File { Url = string.Empty }},
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Slug = string.Empty,
                 SunriseDate = DateTime.MinValue.ToUniversalTime(),
                 SunsetDate = DateTime.MaxValue.ToUniversalTime(),
