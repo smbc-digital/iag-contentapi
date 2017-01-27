@@ -242,3 +242,6 @@ _Pvt_Extensions
 
 src/StockportContentApi/app-config/injected/*.secrets.json
 .vscode/
+
+src/StockportContentApi/app-config/appsettings.dev-local.json
+
