@@ -38,12 +38,13 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(UrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
                 fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
                 fakeHttpClient.For(UrlFor("news", 1, category: "A category", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));             
-                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));             
+                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));
+                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));
                 fakeHttpClient.For(UrlFor("redirect")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
                 fakeHttpClient.For(UrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
+                fakeHttpClient.For(UrlFor("group", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Group.json"));
                 fakeHttpClient.For(ContentTypesUrlFor()).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
-            });   
+            });
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
             {
@@ -53,12 +54,17 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEventBuilder().Slug("event_item").EventDate(new DateTime(2016, 12, 30)).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
-                                It.Is<QueryBuilder>(q => q.Build() == 
+                                It.Is<QueryBuilder>(q => q.Build() ==
                                 new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event1").Build(),
                                     new ContentfulEventBuilder().Slug("event2").Build()
                                 });
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulGroup>(
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("groupDirectory").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> {
+                                    new ContentfulGroupBuilder().Slug("group_slug").Build()
+                               });
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
@@ -75,8 +81,8 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulProfileBuilder().Slug("profile_slug").Build()
                                 });
             });
-        }                                         
-       
+        }
+
         [Theory]
         [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]
         [InlineData("Profile", "/api/unittest/profile/profile_slug")]
@@ -90,6 +96,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("AtoZArticleAndTopic", "/api/unittest/atoz/c")]
         [InlineData("RedirectDictionary", "/api/redirects")]
         [InlineData("Footer", "/api/unittest/footer")]
+        [InlineData("Group", "/api/unittest/groupDirectory/group_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
@@ -100,13 +107,13 @@ namespace StockportContentApiTests.Integration
             var response = await _client.GetAsync(path);
             var responseString = await response.Content.ReadAsStringAsync();
             var parsedResponse = JsonNormalize(responseString);
-            
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             parsedResponse.Should().Be(contentResponse);
         }
 
         [Theory]
-        [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]      
+        [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
@@ -145,7 +152,7 @@ namespace StockportContentApiTests.Integration
         private static string JsonNormalize(string jsonString)
         {
             return JsonConvert.SerializeObject(
-                JsonConvert.DeserializeObject<dynamic>(jsonString, 
+                JsonConvert.DeserializeObject<dynamic>(jsonString,
                 new JsonSerializerSettings { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }));
         }
 

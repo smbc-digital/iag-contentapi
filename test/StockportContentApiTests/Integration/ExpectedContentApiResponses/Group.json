@@ -1,0 +1,14 @@
+﻿{
+  "name": "_name",
+  "slug": "_slug",
+  "phoneNumber": "_phoneNumber",
+  "email": "_email",
+  "website": "_website",
+  "twitter": "_twitter",
+  "facebook": "_facebook",
+  "address": "_address",
+  "description": "_description",
+  "categories": [
+    "_category"
+  ]
+}
