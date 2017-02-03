@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description");
-            var builder = new QueryBuilder().ContentTypeIs("groupDirectory").FieldEquals("fields.slug", slug).Include(1);
+            var builder = new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync<ContentfulGroup>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroup });
             _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);

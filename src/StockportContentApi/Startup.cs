@@ -92,7 +92,7 @@ namespace StockportContentApi
                                                                                                                     p.GetService<IVideoRepository>()));
             services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),

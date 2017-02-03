@@ -1,0 +1,30 @@
+﻿using System.Collections.Generic;
+using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
+using Xunit;
+using FluentAssertions;
+
+namespace StockportContentApiTests.Unit.Model
+{
+    public class ContentfulGroupTest
+    {
+        [Fact]
+        public void ShouldSetDefaultsOnModel()
+        {
+            var actual = new ContentfulGroup();
+            var expected = new ContentfulGroup
+            {
+                Name = string.Empty,
+                Slug = string.Empty,
+                PhoneNumber = string.Empty,
+                Email = string.Empty,
+                Website = string.Empty,
+                Twitter = string.Empty,
+                Facebook = string.Empty,
+                Address = string.Empty,
+                Description = string.Empty
+            };
+            actual.ShouldBeEquivalentTo(expected);
+        }
+    }
+}

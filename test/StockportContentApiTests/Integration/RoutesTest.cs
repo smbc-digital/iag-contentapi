@@ -61,7 +61,7 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEventBuilder().Slug("event2").Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulGroup>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("groupDirectory").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
+                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> {
                                     new ContentfulGroupBuilder().Slug("group_slug").Build()
                                });
@@ -96,7 +96,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("AtoZArticleAndTopic", "/api/unittest/atoz/c")]
         [InlineData("RedirectDictionary", "/api/redirects")]
         [InlineData("Footer", "/api/unittest/footer")]
-        [InlineData("Group", "/api/unittest/groupDirectory/group_slug")]
+        [InlineData("Group", "/api/unittest/group/group_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

@@ -16,7 +16,7 @@
       "sys": {
         "type": "Link",
         "linkType": "ContentType",
-        "id": "groupDirectory"
+        "id": "group"
       }
     },
     "locale": "en-GB"
