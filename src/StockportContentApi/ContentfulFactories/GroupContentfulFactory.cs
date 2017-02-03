@@ -17,7 +17,7 @@ namespace StockportContentApi.ContentfulFactories
 
         public Group ToModel(ContentfulGroup entry)
         {
-            return new Group(entry.Type, entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
+            return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description);  
         }
     }

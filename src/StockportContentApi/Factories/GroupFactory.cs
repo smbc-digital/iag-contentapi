@@ -11,7 +11,7 @@ namespace StockportContentApi.Factories
             if (fields == null)
                 return null;
 
-            string type = fields.type;
+            //string type = fields.type;
             string name = fields.name;
             string slug = fields.slug;
             string phoneNumber = fields.phoneNumber;
@@ -22,7 +22,7 @@ namespace StockportContentApi.Factories
             string address = fields.address;
             string description = fields.description;
 
-            return new Group(type, name, slug, phoneNumber, email, website, twitter, facebook, address, description);
+            return new Group(name, slug, phoneNumber, email, website, twitter, facebook, address, description);
         }
     }
 }

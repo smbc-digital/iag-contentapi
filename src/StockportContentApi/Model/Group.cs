@@ -7,7 +7,6 @@ namespace StockportContentApi.Model
 {
     public class Group
     {
-        public string Type { get; }
         public string Name { get; }
         public string Slug { get; }
         public string PhoneNumber { get; }
@@ -18,10 +17,9 @@ namespace StockportContentApi.Model
         public string Address { get; }
         public string Description { get; }
 
-        public Group(string type, string name, string slug, string phoneNumber, string email, string website,
+        public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description)
         {
-            Type = type;
             Name = name;
             Slug = slug;
             PhoneNumber = phoneNumber;

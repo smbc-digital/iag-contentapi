@@ -6,15 +6,15 @@ namespace StockportContentApiTests.Unit.Builders
 {
     public class ContentfulGroupBuilder
     {
-       private string _name = "name";
-        private string _slug = "slug";
-        private string _phoneNumber = "phoneNumber";
-        private string _email = "email";
-        private string _website = "website";
-        private string _twitter = "twitter";
-        private string _facebook = "facebook";
-        private string _address = "address";
-        private string _description = "description";
+        private string _name = "_name";
+        private string _slug = "_slug";
+        private string _phoneNumber = "_phoneNumber";
+        private string _email = "_email";
+        private string _website = "_website";
+        private string _twitter = "_twitter";
+        private string _facebook = "_facebook";
+        private string _address = "_address";
+        private string _description = "_description";
 
         public ContentfulGroup Build()
         {

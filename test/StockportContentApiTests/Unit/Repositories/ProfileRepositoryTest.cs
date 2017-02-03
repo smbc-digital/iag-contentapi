@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulTopic = new ContentfulProfileBuilder().Slug(slug).Build();
             var profile = new Profile("type", "title", "slug", "subtitle",
                 "teaser", "image", "body", "icon", "backgroundImage",
-                new List<Crumb> {new Crumb("title", "slug", "type")});
+                new List<Crumb> { new Crumb("title", "slug", "type") });
             var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync<ContentfulProfile>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> { contentfulTopic });
@@ -72,6 +72,5 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No profile found for '{slug}'");
         }
-
     }
 }

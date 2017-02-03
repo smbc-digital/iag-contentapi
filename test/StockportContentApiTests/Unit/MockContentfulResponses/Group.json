@@ -23,7 +23,7 @@
   },
   "fields": {
     "name": "_name",
-    "slug": "_slug",
+    "slug": "group_slug",
     "phoneNumber": "_phoneNumber",
     "email": "_email",
     "website": "_website",
