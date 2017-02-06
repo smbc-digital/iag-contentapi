@@ -15,7 +15,7 @@ namespace StockportContentApi.Model
         public IEnumerable<SubItem> SecondaryItems { get; }
         public IEnumerable<SubItem> TertiaryItems { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
-        public IEnumerable<Alert> Alerts { get; }
+        public IEnumerable<Alert> Alerts { get; private set; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
         public bool EmailAlerts { get; }
@@ -39,6 +39,11 @@ namespace StockportContentApi.Model
             SunsetDate = sunsetDate;
             EmailAlerts = emailAlerts;
             EmailAlertsTopicId = emailAlertsTopicId;
+        }
+
+        internal void SetAlerts(List<Alert> alertsFiltered)
+        {
+            Alerts = alertsFiltered;
         }
     }
 

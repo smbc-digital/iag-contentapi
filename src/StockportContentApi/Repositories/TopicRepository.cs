@@ -8,6 +8,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
@@ -15,12 +16,14 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly ITimeProvider _timeProvider;
 
         public TopicRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
-                               IContentfulFactory<ContentfulTopic, Topic> topicFactory)
+                               IContentfulFactory<ContentfulTopic, Topic> topicFactory, ITimeProvider timeProvider)
         {
             _client = clientManager.GetClient(config);
             _topicFactory = topicFactory;
+            _timeProvider = timeProvider;
         }
 
         public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
@@ -29,9 +32,16 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync<ContentfulTopic>(builder);
             var entry = entries.FirstOrDefault();
 
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'") 
-                : HttpResponse.Successful(_topicFactory.ToModel(entry));
+            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
+
+            var model = _topicFactory.ToModel(entry);
+
+            // filter alerts
+            var alertsFiltered = model.Alerts.Where(a => a.SunriseDate <= _timeProvider.Now() && a.SunsetDate >= _timeProvider.Now()).ToList();
+
+            model.SetAlerts(alertsFiltered);
+            
+            return HttpResponse.Successful(model);
         }
     }
 }

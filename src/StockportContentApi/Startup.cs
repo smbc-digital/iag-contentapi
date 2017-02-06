@@ -116,7 +116,7 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, StartPageRepository>>(
                 p => { return x => new StartPageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<StartPage>>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
-                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()); });
+                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
                 p => { return x => new FooterRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
