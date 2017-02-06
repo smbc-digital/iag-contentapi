@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Group
     {
@@ -16,9 +11,11 @@ namespace StockportContentApi.Model
         public string Facebook { get; }
         public string Address { get; }
         public string Description { get; }
+        public string ImageUrl { get; }
+        public string ThumbnailImageUrl { get; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
-            string twitter, string facebook, string address, string description)
+            string twitter, string facebook, string address, string description, string imageUrl, string thumbnailImageUrl)
         {
             Name = name;
             Slug = slug;
@@ -29,6 +26,8 @@ namespace StockportContentApi.Model
             Facebook = facebook;
             Address = address;
             Description = description;
+            ImageUrl = imageUrl;
+            ThumbnailImageUrl = thumbnailImageUrl;
         }
     }
 }

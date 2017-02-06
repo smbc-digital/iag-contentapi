@@ -44,7 +44,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "group_slug";
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description");
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl");
             var builder = new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync<ContentfulGroup>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroup });

@@ -22,7 +22,8 @@ namespace StockportContentApiTests.Unit.Model
                 Twitter = string.Empty,
                 Facebook = string.Empty,
                 Address = string.Empty,
-                Description = string.Empty
+                Description = string.Empty,
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } }
             };
             actual.ShouldBeEquivalentTo(expected);
         }

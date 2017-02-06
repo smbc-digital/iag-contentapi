@@ -15,6 +15,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _facebook = "_facebook";
         private string _address = "_address";
         private string _description = "_description";
+        private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
 
         public ContentfulGroup Build()
         {
@@ -28,7 +29,8 @@ namespace StockportContentApiTests.Unit.Builders
                 PhoneNumber = _phoneNumber,
                 Slug = _slug,
                 Twitter = _twitter,
-                Website = _website
+                Website = _website,
+                Image = _image,
             };
         }
 

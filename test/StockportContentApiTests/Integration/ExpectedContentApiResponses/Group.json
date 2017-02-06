@@ -7,5 +7,7 @@
   "twitter": "_twitter",
   "facebook": "_facebook",
   "address": "_address",
-  "description": "_description"
+  "description": "_description",
+  "imageUrl": "image-url.jpg",
+  "thumbnailImageUrl": "image-url.jpg?h=250"
 }

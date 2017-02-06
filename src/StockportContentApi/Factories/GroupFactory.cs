@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.Factories
@@ -21,8 +22,10 @@ namespace StockportContentApi.Factories
             string facebook = fields.facebook;
             string address = fields.address;
             string description = fields.description;
+            string imageUrl = fields.image;
+            string thumbnailImageUrl = fields.thumbnailImageUrl;
 
-            return new Group(name, slug, phoneNumber, email, website, twitter, facebook, address, description);
+            return new Group(name, slug, phoneNumber, email, website, twitter, facebook, address, description, imageUrl, thumbnailImageUrl);
         }
     }
 }

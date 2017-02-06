@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var group = _groupContentfulFactory.ToModel(_contentfulGroup);
 
-            group.ShouldBeEquivalentTo(_contentfulGroup);
+            group.ShouldBeEquivalentTo(_contentfulGroup, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl));
         }
     }
 }
