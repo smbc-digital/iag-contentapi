@@ -10,11 +10,15 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subItemFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<Entry<ContentfulAlert>, Alert> _alertFactory;
+        private readonly DateComparer _dateComparer;
 
-        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
+        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
+            _alertFactory = alertFactory;
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -27,8 +31,11 @@ namespace StockportContentApi.ContentfulFactories
                                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
             var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.SystemProperties))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.SystemProperties))
-                                     .Select(alert => alert.Fields);
+
+            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.SystemProperties)
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.Fields.SunriseDate, alert.Fields.SunsetDate))
+                                     .Select(alert => _alertFactory.ToModel(alert)).ToList();
+
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
 

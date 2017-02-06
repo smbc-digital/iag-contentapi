@@ -26,7 +26,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Topic _topicWithAlertsInsideSunsetDate;
         private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
         private readonly Mock<Contentful.Core.IContentfulClient> _contentfulClient;
-        private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
 
         public TopicRepositoryTest()
         {
@@ -50,13 +49,12 @@ namespace StockportContentApiTests.Unit.Repositories
             _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
                 new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
-            _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<Contentful.Core.IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object, _timeProvider.Object);
+            _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object);
         }
 
         [Fact]
@@ -89,42 +87,6 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No topic found for '{slug}'");
-        }
-
-        [Fact]
-        public void GetsTopicWithAlertsOutsideOfSunsetDate()
-        {
-            const string slug = "topic-with-alerts";
-            var contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> { contentfulTopic });
-
-            _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topicWithAlertsOutsideSunsetDate);
-
-            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var topic = response.Get<Topic>();
-            topic.Alerts.Count().Should().Be(0);
-        }
-
-        [Fact]
-        public void GetsTopicWithAlertsInsideOfSunsetDate()
-        {
-            const string slug = "topic-with-alerts-inside";
-            var contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> { contentfulTopic });
-
-            _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topicWithAlertsInsideSunsetDate);
-
-            var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var topic = response.Get<Topic>();
-            topic.Alerts.Count().Should().Be(1);
         }
     }
 }

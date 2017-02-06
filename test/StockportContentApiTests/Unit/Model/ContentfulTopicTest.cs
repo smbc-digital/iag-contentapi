@@ -26,7 +26,7 @@ namespace StockportContentApiTests.Unit.Model
                 SecondaryItems = new List<Entry<ContentfulSubItem>>(),
                 TertiaryItems = new List<Entry<ContentfulSubItem>>(),
                 Breadcrumbs = new List<Entry<ContentfulCrumb>>(),
-                Alerts = new List<Entry<Alert>>(),
+                Alerts = new List<Entry<ContentfulAlert>>(),
                 SunriseDate = DateTime.MinValue.ToUniversalTime(),
                 SunsetDate = DateTime.MaxValue.ToUniversalTime(),
                 EmailAlerts = false,

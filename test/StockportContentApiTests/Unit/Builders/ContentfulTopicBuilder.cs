@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -20,10 +19,8 @@ namespace StockportContentApiTests.Unit.Builders
             new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
         private bool _emailAlerts = false;
         private string _emailAlertsTopicId = "id";
-        private List<Entry<Alert>> _alerts = new List<Entry<Alert>> {
-            new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body",
-                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
+        private List<Entry<ContentfulAlert>> _alerts = new List<Entry<ContentfulAlert>> {
+            new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().Build()).Build()};
         private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
             new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build() };
         private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
@@ -56,6 +53,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulTopicBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Alerts(List<Entry<ContentfulAlert>> alerts)
+        {
+            _alerts = alerts;
             return this;
         }
     }

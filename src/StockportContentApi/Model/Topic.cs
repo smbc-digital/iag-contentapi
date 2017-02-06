@@ -40,11 +40,6 @@ namespace StockportContentApi.Model
             EmailAlerts = emailAlerts;
             EmailAlertsTopicId = emailAlertsTopicId;
         }
-
-        internal void SetAlerts(List<Alert> alertsFiltered)
-        {
-            Alerts = alertsFiltered;
-        }
     }
 
     public class NullTopic : Topic

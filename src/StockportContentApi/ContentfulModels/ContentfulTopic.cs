@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
-using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -20,7 +19,7 @@ namespace StockportContentApi.ContentfulModels
         public List<Entry<ContentfulSubItem>> SecondaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulSubItem>> TertiaryItems { get; set; } = new List<Entry<ContentfulSubItem>>();
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
-        public List<Entry<Alert>> Alerts { get; set; } = new List<Entry<Alert>>();
+        public List<Entry<ContentfulAlert>> Alerts { get; set; } = new List<Entry<ContentfulAlert>>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool EmailAlerts { get; set; } = false;
