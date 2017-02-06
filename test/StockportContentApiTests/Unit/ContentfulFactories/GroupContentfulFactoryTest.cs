@@ -30,20 +30,5 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             group.ShouldBeEquivalentTo(_contentfulGroup);
         }
-
-        //[Fact]
-        //public void ShouldNotAddBreadcrumbsOrImageIfTheyAreLinks()
-        //{
-        //    _contentfulGroup.Image.SystemProperties.Type = "Link";
-        //    _contentfulGroup.BackgroundImage.SystemProperties.Type = "Link";
-        //    _contentfulGroup.Breadcrumbs.First().SystemProperties.Type = "Link";
-
-        //    var group = _groupContentfulFactory.ToModel(_contentfulGroup);
-
-        //    _crumbFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Never);
-        //    group.Breadcrumbs.Count().Should().Be(0);
-        //    group.BackgroundImage.Should().BeEmpty();
-        //    group.Image.Should().BeEmpty();
-        //}
     }
 }
