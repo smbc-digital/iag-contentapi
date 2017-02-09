@@ -34,7 +34,7 @@ namespace StockportContentApi.Factories
         {
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
                              entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences, 
-                             entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories);
+                             entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories, entry.MapPosition);
         }
 
         private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

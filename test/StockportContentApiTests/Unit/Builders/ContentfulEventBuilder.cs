@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
-
+        private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         public ContentfulEvent Build()
         {
             return new ContentfulEvent()
@@ -44,7 +44,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Frequency = _eventFrequency,
                 Breadcrumbs = _breadcrumbs,
                 Documents = _documents,
-                Categories = _categories
+                Categories = _categories,
+                MapPosition = _mapPosition
             };
         }
 
@@ -75,6 +76,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulEventBuilder EventCategory(List<string> categoriesList)
         {
             _categories = categoriesList;
+            return this;
+        }
+
+        public ContentfulEventBuilder MapPosition(MapPosition mapPosition)
+        {
+            _mapPosition = mapPosition;
             return this;
         }
     }

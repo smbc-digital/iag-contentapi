@@ -33,11 +33,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
+            var mapPosition = new MapPosition() {Lat = 53.5, Lon = -2.5};
+
             anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents));
             anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
             anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
             anEvent.Documents.Count.Should().Be(1);
             anEvent.Documents.First().Should().Be(document);
+            anEvent.MapPosition.Lat.Should().Be(mapPosition.Lat);
+            anEvent.MapPosition.Lon.Should().Be(mapPosition.Lon);
             _documentFactory.Verify(o => o.ToModel(_contentfulEvent.Documents.First()), Times.Once);
         }
 
