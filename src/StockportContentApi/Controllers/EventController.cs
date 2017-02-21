@@ -37,12 +37,12 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("/api/{businessId}/events")]
         [Route("/api/{businessId}/events/latest/{limit}")]
-        public async Task<IActionResult> Index(string businessId, int limit = 0, [FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null, [FromQuery] string category = null)
+        public async Task<IActionResult> Index(string businessId, int limit = 0, [FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null, [FromQuery] string category = null, [FromQuery] bool? featured = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom, dateTo, category, limit);
+                return repository.Get(dateFrom, dateTo, category, limit, featured);
             });
         }
 

@@ -66,7 +66,7 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
@@ -81,7 +81,13 @@ namespace StockportContentApi.Repositories
                     .ThenBy(t => t.Title)
                     .ToList();
 
+            if (displayFeatured != null && displayFeatured == true)
+            {
+                events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
+            }
+
             if (limit > 0) events = events.Take(limit).ToList();
+           
 
             var eventCategories = await GetCategories();
 

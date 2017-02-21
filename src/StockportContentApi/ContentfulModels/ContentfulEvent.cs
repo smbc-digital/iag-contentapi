@@ -28,5 +28,6 @@ namespace StockportContentApi.ContentfulModels
         public List<string> Categories { get; set; } = new List<string>();
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public string BookingInformation { get; set; } = string.Empty;
+        public bool Featured { get; set; } = false;
     }
 }

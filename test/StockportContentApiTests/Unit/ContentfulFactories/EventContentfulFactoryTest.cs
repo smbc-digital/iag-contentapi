@@ -42,6 +42,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             anEvent.Documents.First().Should().Be(document);
             anEvent.MapPosition.Lat.Should().Be(mapPosition.Lat);
             anEvent.MapPosition.Lon.Should().Be(mapPosition.Lon);
+            anEvent.Featured.Should().BeFalse();
             _documentFactory.Verify(o => o.ToModel(_contentfulEvent.Documents.First()), Times.Once);
         }
 

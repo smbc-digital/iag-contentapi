@@ -32,7 +32,8 @@ namespace StockportContentApiTests.Unit.Model
                 Breadcrumbs = new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 Documents = new List<Asset>(),
                 MapPosition = new MapPosition(),
-                BookingInformation = string.Empty
+                BookingInformation = string.Empty,
+                Featured = false
             };
             actual.ShouldBeEquivalentTo(expected);
         }

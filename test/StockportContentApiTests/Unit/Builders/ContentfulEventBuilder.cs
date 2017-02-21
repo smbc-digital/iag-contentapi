@@ -26,6 +26,8 @@ namespace StockportContentApiTests.Unit.Builders
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         private string _bookingInformation = "booking information";
+        private bool _featured = false;
+
         public ContentfulEvent Build()
         {
             return new ContentfulEvent()
@@ -47,7 +49,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Documents = _documents,
                 Categories = _categories,
                 MapPosition = _mapPosition,
-                BookingInformation = _bookingInformation
+                BookingInformation = _bookingInformation,
+                Featured =  _featured
             };
         }
 
@@ -84,6 +87,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulEventBuilder MapPosition(MapPosition mapPosition)
         {
             _mapPosition = mapPosition;
+            return this;
+        }
+
+        public ContentfulEventBuilder Featured(bool featured)
+        {
+            _featured = featured;
             return this;
         }
     }

@@ -32,5 +32,6 @@
     "lon": -2.5,
     "lat": 53.5
   },
-  "bookingInformation": "booking information"
+  "bookingInformation": "booking information",
+  "featured" :  false
 }

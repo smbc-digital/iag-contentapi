@@ -32,11 +32,11 @@ namespace StockportContentApiTests.Unit.Repositories
         public EventRepositoryTest()
         {
             var config = new ContentfulConfig("test")
-               .Add("DELIVERY_URL", "https://fake.url")
-               .Add("TEST_SPACE", "SPACE")
-               .Add("TEST_ACCESS_KEY", "KEY")
-               .Build();
-            
+                .Add("DELIVERY_URL", "https://fake.url")
+                .Add("TEST_SPACE", "SPACE")
+                .Add("TEST_ACCESS_KEY", "KEY")
+                .Build();
+
             var documentFactory = new DocumentContentfulFactory();
             var contentfulFactory = new EventContentfulFactory(documentFactory);
             _httpClient = new Mock<IHttpClient>();
@@ -44,7 +44,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory,_eventCategoriesFactory.Object);
+            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
+                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object);
         }
 
         [Fact]
@@ -55,18 +56,26 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {rawEvent});
+            _contentfulClient.Setup(
+                o =>
+                    o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {rawEvent});
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
 
-            eventItem.ShouldBeEquivalentTo(rawEvent, o => o.Excluding(raw => raw.ThumbnailImageUrl).Excluding(raw => raw.ImageUrl).Excluding(raw => raw.Documents));
+            eventItem.ShouldBeEquivalentTo(rawEvent,
+                o =>
+                    o.Excluding(raw => raw.ThumbnailImageUrl)
+                        .Excluding(raw => raw.ImageUrl)
+                        .Excluding(raw => raw.Documents));
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
+            eventItem.Featured.Should().BeFalse();
         }
 
         [Fact]
@@ -76,12 +85,17 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Daily;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
-            
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
+
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
 
             var builder = new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), 
-                                                                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
+            _contentfulClient.Setup(
+                o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {anEvent});
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 04, 02)));
             var eventItem = response.Get<Event>();
@@ -93,7 +107,9 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsA404ForANotFoundEventItem()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent>());
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulEvent>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found", new DateTime(2017, 4, 1)));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -108,24 +124,33 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _contentfulClient.Setup(
+                o =>
+                    o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(2);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
-            eventCalender.Events.Last().ShouldBeEquivalentTo(anotherEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.First()
+                .ShouldBeEquivalentTo(anEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.Last()
+                .ShouldBeEquivalentTo(anotherEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
         }
 
         [Fact]
         public void ShouldGet404IfContentNotFound()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-            _contentfulClient.Setup(o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Event>());
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<Event>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Event>());
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No events found");
@@ -137,17 +162,23 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Daily;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
             eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
             eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 02));
-            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 03));           
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 03));
         }
 
         [Fact]
@@ -156,12 +187,18 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 4;
             const EventFrequency frequency = EventFrequency.Weekly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
 
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
@@ -177,11 +214,18 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 4;
             const EventFrequency frequency = EventFrequency.Weekly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16), null, 0));
+            var response =
+                AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16), null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(3);
@@ -196,17 +240,23 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Fortnightly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
             eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
             eventCalender.Events[1].EventDate.Should().Be(new DateTime(2017, 04, 15));
-            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 29));          
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2017, 04, 29));
         }
 
         [Fact]
@@ -215,11 +265,17 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 5;
             const EventFrequency frequency = EventFrequency.Monthly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
@@ -235,17 +291,23 @@ namespace StockportContentApiTests.Unit.Repositories
             const int occurences = 3;
             const EventFrequency frequency = EventFrequency.Yearly;
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Frequency(frequency).Occurrences(occurences).Build();
-            var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            var anEvent =
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                    .Frequency(frequency)
+                    .Occurrences(occurences)
+                    .Build();
+            var events = new List<ContentfulEvent> {anEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
             eventCalender.Events[0].EventDate.Should().Be(new DateTime(2017, 04, 01));
             eventCalender.Events[1].EventDate.Should().Be(new DateTime(2018, 04, 01));
-            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2019, 04, 01));          
+            eventCalender.Events[2].EventDate.Should().Be(new DateTime(2019, 04, 01));
         }
 
         [Fact]
@@ -257,47 +319,61 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
             var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 09, 01)).Build();
             var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Build();
-            var events = new List<ContentfulEvent> { anEvent, anotherEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
-           
-            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, null, 0));
+            var events = new List<ContentfulEvent> {anEvent, anotherEvent};
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, null, 0,null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.First()
+                .ShouldBeEquivalentTo(anEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
         }
 
         [Fact]
         public void ShouldGetOneEventForACategory()
         {
-            var anEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"Category 1", "Category 2"}).Build();
-            var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 2" }).Build();
-            var events = new List<ContentfulEvent> { anEvent, anotherEvent };
+            var anEvent =
+                new ContentfulEventBuilder().EventCategory(new List<string> {"Category 1", "Category 2"}).Build();
+            var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"Category 2"}).Build();
+            var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "Category 1", 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "Category 1", 0,null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.First()
+                .ShouldBeEquivalentTo(anEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
         }
 
         [Fact]
         public void ShouldGetTwoEventsForACategory()
         {
-            var anEvent = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 1", "Category 2" }).Build();
-            var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 2" }).Build();
-            var events = new List<ContentfulEvent> { anEvent, anotherEvent };
+            var anEvent =
+                new ContentfulEventBuilder().EventCategory(new List<string> {"Category 1", "Category 2"}).Build();
+            var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"Category 2"}).Build();
+            var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "Category 2", 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "Category 2", 0,null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(2);
-            eventCalender.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.First()
+                .ShouldBeEquivalentTo(anEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
         }
 
         [Fact]
@@ -308,18 +384,31 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
 
-            var event1 = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 1"}).EventDate(new DateTime(2017,08,01)).Build();
-            var event2 = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 3" }).EventDate(new DateTime(2016, 08, 01)).Build();
-            var event3 = new ContentfulEventBuilder().EventCategory(new List<string> { "Category 1" }).EventDate(new DateTime(2016, 08, 01)).Build();
-            var events = new List<ContentfulEvent> { event1, event2, event3 };
+            var event1 =
+                new ContentfulEventBuilder().EventCategory(new List<string> {"Category 1"})
+                    .EventDate(new DateTime(2017, 08, 01))
+                    .Build();
+            var event2 =
+                new ContentfulEventBuilder().EventCategory(new List<string> {"Category 3"})
+                    .EventDate(new DateTime(2016, 08, 01))
+                    .Build();
+            var event3 =
+                new ContentfulEventBuilder().EventCategory(new List<string> {"Category 1"})
+                    .EventDate(new DateTime(2016, 08, 01))
+                    .Build();
+            var events = new List<ContentfulEvent> {event1, event2, event3};
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, "Category 1", 0));
+            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, "Category 1", 0, null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First().ShouldBeEquivalentTo(event3, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventCalender.Events.First()
+                .ShouldBeEquivalentTo(event3,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
         }
 
         public void ShouldGetEventsWithLimitOfTwo()
@@ -327,18 +416,121 @@ namespace StockportContentApiTests.Unit.Repositories
             var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 09, 01)).Build();
             var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 10, 10)).Build();
             var eventThree = new ContentfulEventBuilder().EventDate(new DateTime(2017, 10, 11)).Build();
-            var events = new List<ContentfulEvent> { anEvent, anotherEvent, eventThree };
+            var events = new List<ContentfulEvent> {anEvent, anotherEvent, eventThree};
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventsCalendar = response.Get<EventCalender>();
             eventsCalendar.Events.Should().HaveCount(2);
 
-            eventsCalendar.Events.First().ShouldBeEquivalentTo(anEvent, o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+            eventsCalendar.Events.First()
+                .ShouldBeEquivalentTo(anEvent,
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+        }
+
+
+        public void ShouldCreateEventWithFauteredSetToTrue()
+        {
+            const string slug = "event-of-the-century";
+            var anEvent = new ContentfulEventBuilder().Featured(true).Build();
+            _contentfulClient.Setup(
+                o =>
+                    o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
+
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var eventItem = response.Get<Event>();
+            eventItem.Featured.Should().BeTrue();
+        }
+
+        public void ShouldCreateEventWithFauteredSetToFalse()
+        {
+            const string slug = "event-of-the-century";
+            var anEvent = new ContentfulEventBuilder().Featured(false).Build();
+            _contentfulClient.Setup(
+                o =>
+                    o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
+
+            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var eventItem = response.Get<Event>();
+            eventItem.Featured.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldGetTwoFeaturedEvents()
+        {
+            var anEvent = new ContentfulEventBuilder().Featured(true).EventDate(new DateTime(2017, 09, 01)).Build();
+            var anotherEvent = new ContentfulEventBuilder().Featured(true).EventDate(new DateTime(2017, 10, 10)).Build();
+            var aThirdEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var eventsCalendar = response.Get<EventCalender>();
+
+            eventsCalendar.Events[0].Featured.Should().BeTrue();
+            eventsCalendar.Events[1].Featured.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldGetOneFeaturedEventAndOneNoneFeatured()
+        {
+            var anEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            var anotherEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 10, 10)).Build();
+            var aThirdEvent = new ContentfulEventBuilder().Featured(true).EventDate(new DateTime(2017, 09, 15)).Build();
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var eventsCalendar = response.Get<EventCalender>();
+
+            eventsCalendar.Events[0].Featured.Should().BeTrue();
+            eventsCalendar.Events[1].Featured.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldGetNoFeaturedEventsBecauseNonExist()
+        {
+            var anEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            var anotherEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 10, 10)).Build();
+            var aThirdEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+            _contentfulClient.Setup(
+                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(events);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var eventsCalendar = response.Get<EventCalender>();
+
+            eventsCalendar.Events[0].Featured.Should().BeFalse();
+            eventsCalendar.Events[1].Featured.Should().BeFalse();
         }
     }
 }
