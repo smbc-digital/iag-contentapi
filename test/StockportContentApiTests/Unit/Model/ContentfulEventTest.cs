@@ -33,7 +33,8 @@ namespace StockportContentApiTests.Unit.Model
                 Documents = new List<Asset>(),
                 MapPosition = new MapPosition(),
                 BookingInformation = string.Empty,
-                Featured = false
+                Featured = false,
+                Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue }
             };
             actual.ShouldBeEquivalentTo(expected);
         }

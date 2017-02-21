@@ -27,6 +27,7 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         private string _bookingInformation = "booking information";
         private bool _featured = false;
+        public ContentfulEventSys _sys = new ContentfulEventSys();
 
         public ContentfulEvent Build()
         {
@@ -50,7 +51,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Categories = _categories,
                 MapPosition = _mapPosition,
                 BookingInformation = _bookingInformation,
-                Featured =  _featured
+                Featured =  _featured,
+                Sys = _sys
             };
         }
 
@@ -93,6 +95,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulEventBuilder Featured(bool featured)
         {
             _featured = featured;
+            return this;
+        }
+
+        public ContentfulEventBuilder UpdatedAt(DateTime updatedAt)
+        {
+            _sys.UpdatedAt = updatedAt;
             return this;
         }
     }

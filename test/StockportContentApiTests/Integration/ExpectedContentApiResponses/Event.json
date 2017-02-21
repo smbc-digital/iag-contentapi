@@ -33,5 +33,6 @@
     "lat": 53.5
   },
   "bookingInformation": "booking information",
-  "featured" :  false
+  "featured": false,
+  "updatedAt": "2016-10-05T00:00:00Z"
 }

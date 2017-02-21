@@ -35,7 +35,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var mapPosition = new MapPosition() {Lat = 53.5, Lon = -2.5};
 
-            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents));
+            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
             anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
             anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
             anEvent.Documents.Count.Should().Be(1);

@@ -29,5 +29,11 @@ namespace StockportContentApi.ContentfulModels
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public string BookingInformation { get; set; } = string.Empty;
         public bool Featured { get; set; } = false;
+        public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
+    }
+
+    public class ContentfulEventSys
+    {
+        public DateTime UpdatedAt { get; set; } = DateTime.MinValue.ToUniversalTime();
     }
 }

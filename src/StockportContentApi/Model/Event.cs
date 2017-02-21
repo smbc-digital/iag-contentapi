@@ -25,34 +25,36 @@ namespace StockportContentApi.Model
         public MapPosition MapPosition { get; }
         public string BookingInformation { get; }
         public bool Featured { get; }
+        public DateTime UpdatedAt { get; }
 
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime, 
                      int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, 
-                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation) 
+                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt) 
             {
-            Title = title;
-            Slug = slug;
-            Teaser = teaser;
-            Description = description;
-            Fee = fee;
-            Location = location;
-            SubmittedBy = submittedBy;
-            EventDate = eventDate;
-            StartTime = startTime;
-            EndTime = endTime;
-            Occurences = occurences;
-            Frequency = frequency;
-            Breadcrumbs = breadcrumbs;
-            ThumbnailImageUrl = thumbnailImageUrl;
-            ImageUrl = imageUrl;
-            Documents = documents;
-            Categories = categories;
-            MapPosition = mapPosition;
-            BookingInformation = bookingInformation;
-            Featured = featured;
-        }
+                Title = title;
+                Slug = slug;
+                Teaser = teaser;
+                Description = description;
+                Fee = fee;
+                Location = location;
+                SubmittedBy = submittedBy;
+                EventDate = eventDate;
+                StartTime = startTime;
+                EndTime = endTime;
+                Occurences = occurences;
+                Frequency = frequency;
+                Breadcrumbs = breadcrumbs;
+                ThumbnailImageUrl = thumbnailImageUrl;
+                ImageUrl = imageUrl;
+                Documents = documents;
+                Categories = categories;
+                MapPosition = mapPosition;
+                BookingInformation = bookingInformation;
+                Featured = featured;
+                UpdatedAt = updatedAt;
+            }
 
         public bool ShouldSerializeFrequency()
         {

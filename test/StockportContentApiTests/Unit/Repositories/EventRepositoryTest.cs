@@ -70,7 +70,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 o =>
                     o.Excluding(raw => raw.ThumbnailImageUrl)
                         .Excluding(raw => raw.ImageUrl)
-                        .Excluding(raw => raw.Documents));
+                        .Excluding(raw => raw.Documents)
+                        .Excluding(e => e.UpdatedAt));
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
@@ -136,10 +137,10 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Count.Should().Be(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
             eventCalender.Events.Last()
                 .ShouldBeEquivalentTo(anotherEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
         }
 
         [Fact]
@@ -331,7 +332,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
         }
 
         [Fact]
@@ -352,7 +353,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
         }
 
         [Fact]
@@ -373,7 +374,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
         }
 
         [Fact]
@@ -408,7 +409,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(event3,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
         }
 
         public void ShouldGetEventsWithLimitOfTwo()
