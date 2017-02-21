@@ -66,6 +66,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
+            eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
         }
 
         [Fact]

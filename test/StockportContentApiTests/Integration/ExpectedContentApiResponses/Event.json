@@ -28,5 +28,9 @@
     }
   ],
   "categories": [ "Category 1", "Category 2" ],
-  "mapPosition":{"lon":-2.5,"lat":53.5}
+  "mapPosition": {
+    "lon": -2.5,
+    "lat": 53.5
+  },
+  "bookingInformation": "booking information"
 }

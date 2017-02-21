@@ -24,12 +24,13 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Document> _documents = new List<Document> { new Document("title", 22, DateTime.MinValue, "url", "fileName") };
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
         private MapPosition _mapPosition = new MapPosition() {Lat = 53.47, Lon = -2.2};
+        private string _bookingInformation = "booking information";
 
         public Event Build()
         {
             return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
                 _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs,
-                _thumbnailImage, _documents, _categories,_mapPosition);
+                _thumbnailImage, _documents, _categories, _mapPosition, _bookingInformation);
         }
 
         public EventBuilder Slug(string slug)
@@ -59,6 +60,12 @@ namespace StockportContentApiTests.Unit.Builders
         public EventBuilder EventCategory(List<string> categoriesList)
         {
             _categories = categoriesList;
+            return this;
+        }
+
+        public EventBuilder EventBookingInformation(string bookingInformation)
+        {
+            _bookingInformation = bookingInformation;
             return this;
         }
     }

@@ -25,6 +25,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
+        private string _bookingInformation = "booking information";
         public ContentfulEvent Build()
         {
             return new ContentfulEvent()
@@ -45,7 +46,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Breadcrumbs = _breadcrumbs,
                 Documents = _documents,
                 Categories = _categories,
-                MapPosition = _mapPosition
+                MapPosition = _mapPosition,
+                BookingInformation = _bookingInformation
             };
         }
 

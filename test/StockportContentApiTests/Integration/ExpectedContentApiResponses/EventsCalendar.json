@@ -33,7 +33,8 @@
       "mapPosition": {
         "lon": -2.5,
         "lat": 53.5
-      }
+      },
+      "bookingInformation": "booking information" 
     },
     {
       "title": "title",
@@ -68,7 +69,8 @@
       "mapPosition": {
         "lon": -2.5,
         "lat": 53.5
-      }
+      },
+      "bookingInformation": "booking information" 
     }
   ],
   "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]

@@ -31,7 +31,8 @@ namespace StockportContentApiTests.Unit.Model
                 Frequency = EventFrequency.None,
                 Breadcrumbs = new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 Documents = new List<Asset>(),
-                MapPosition = new MapPosition()
+                MapPosition = new MapPosition(),
+                BookingInformation = string.Empty
             };
             actual.ShouldBeEquivalentTo(expected);
         }
