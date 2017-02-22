@@ -1048,6 +1048,39 @@
             "contentType": "image/jpg"
           }
         }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5nghPGu9uowomaQCywW2Ux",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.169Z",
+          "updatedAt": "2016-06-13T15:33:33.558Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "runners",
+          "description": "Runners",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 426261,
+              "image": {
+                "width": 1920,
+                "height": 1280
+              }
+            },
+            "fileName": "runners.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
       }
     ]
   }

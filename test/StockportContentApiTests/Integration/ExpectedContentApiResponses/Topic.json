@@ -5,6 +5,7 @@
   "summary": "summary",
   "icon": "icon",
   "backgroundImage": "background-image-url.jpg",
+  "image": "",
   "subItems": [
     {
       "slug": "sub-slug",

@@ -96,6 +96,7 @@ namespace StockportContentApiTests.Unit.Factories
             topic.Summary.Should().Be("This is the summary");
             topic.Icon.Should().Be("si-car");
             topic.BackgroundImage.Should().Be(string.Empty);
+            topic.Image.Should().Be(string.Empty);
             topic.Breadcrumbs.ToList().Count.Should().Be(1);
             topic.Alerts.ToList().Count.Should().Be(1);
             topic.SubItems.Should().HaveCount(1);

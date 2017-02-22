@@ -22,6 +22,7 @@ namespace StockportContentApiTests.Unit.Model
                 Summary = string.Empty,
                 Icon = string.Empty,
                 BackgroundImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 SubItems = new List<Entry<ContentfulSubItem>>(),
                 SecondaryItems = new List<Entry<ContentfulSubItem>>(),
                 TertiaryItems = new List<Entry<ContentfulSubItem>>(),

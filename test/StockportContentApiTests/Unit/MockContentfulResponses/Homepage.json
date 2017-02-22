@@ -89,6 +89,13 @@
             "id": "5gxy9SLbqEm2c0aKm8oMKO"
           }
         },
+        "image": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "5gxy9SLbqEm2c0aKm8oMKx"
+          }
+        },
         "freeText": "homepage text",
         "featuredTasks": [
           {
@@ -683,6 +690,39 @@
             }
           },
           "id": "5gxy9SLbqEm2c0aKm8oMKO",
+          "type": "Asset",
+          "createdAt": "2016-08-19T13:33:04.605Z",
+          "updatedAt": "2016-08-19T13:33:04.605Z",
+          "revision": 1,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "image",
+          "description": "image",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 85625,
+              "image": {
+                "width": 960,
+                "height": 720
+              }
+            },
+            "fileName": "image.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5gxy9SLbqEm2c0aKm8oMKx",
           "type": "Asset",
           "createdAt": "2016-08-19T13:33:04.605Z",
           "updatedAt": "2016-08-19T13:33:04.605Z",

@@ -54,6 +54,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  .Excluding(e => e.SecondaryItems)
                                                                  .Excluding(e => e.TertiaryItems)
                                                                  .Excluding(e => e.BackgroundImage)
+                                                                 .Excluding(e => e.Image)
                                                                  .Excluding(e => e.Alerts));
 
             _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Once);

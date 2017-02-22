@@ -28,6 +28,7 @@ namespace StockportContentApi.Factories
             var summary = (string)fields.summary ?? string.Empty;
             var icon = (string)fields.icon ?? string.Empty;
             var backgroundImage = contentfulResponse.GetImageUrl(fields.backgroundImage);
+            var image = contentfulResponse.GetImageUrl(fields.image);
             var breadcrumbs = _breadcrumbFactory.BuildFromReferences(fields.breadcrumbs, contentfulResponse);
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
             var subItems = _subitemFactory.BuildFromReferences(fields.subItems, contentfulResponse);
@@ -39,7 +40,7 @@ namespace StockportContentApi.Factories
             if (entry.fields.emailAlerts != null) bool.TryParse((string)entry.fields.emailAlerts, out emailAlerts);
             var emailAlertsTopicId = (string)entry.fields.emailAlertsTopicId ?? string.Empty;
 
-            return new Topic(slug, name, teaser, summary, icon, backgroundImage, subItems, secondaryItems,
+            return new Topic(slug, name, teaser, summary, icon, backgroundImage, image, subItems, secondaryItems,
                 tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId);
         }
     }

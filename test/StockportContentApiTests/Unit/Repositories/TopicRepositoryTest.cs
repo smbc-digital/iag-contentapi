@@ -35,7 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
-            _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
+            _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
                 new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
@@ -43,11 +43,13 @@ namespace StockportContentApiTests.Unit.Repositories
             var alertInside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
                 new DateTime(2017, 02, 03));
 
-            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside }, DateTime.MinValue, DateTime.MinValue, true, "test-id");
+            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image",
+                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
+                DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
-            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, DateTime.MinValue, DateTime.MinValue, true, "test-id");
+            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", 
+                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, 
+                DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();

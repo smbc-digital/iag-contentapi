@@ -39,7 +39,10 @@ namespace StockportContentApi.ContentfulFactories
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
 
-            return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, 
+            var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                                        ? entry.Image.File.Url : string.Empty;
+
+            return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
                 entry.EmailAlerts, entry.EmailAlertsTopicId);
         }

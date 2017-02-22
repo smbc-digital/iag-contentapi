@@ -5,6 +5,7 @@
   "teaser": "Teaser",
   "icon": "",
   "backgroundImage": "",
+  "image": "",
   "sections": [
     {
       "title": "Test Video and Profile Section",
@@ -45,6 +46,7 @@
     "summary": "",
     "icon": "si-buildings",
     "backgroundImage": "",
+    "image": "",
     "subItems": [
       {
         "slug": "sub-topic",
