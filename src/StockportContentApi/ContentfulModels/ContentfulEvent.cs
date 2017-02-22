@@ -30,6 +30,7 @@ namespace StockportContentApi.ContentfulModels
         public string BookingInformation { get; set; } = string.Empty;
         public bool Featured { get; set; } = false;
         public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
+        public List<string> Tags { get; set; } = new List<string>();
     }
 
     public class ContentfulEventSys

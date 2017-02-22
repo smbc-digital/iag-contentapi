@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -28,6 +29,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _bookingInformation = "booking information";
         private bool _featured = false;
         public ContentfulEventSys _sys = new ContentfulEventSys();
+        private List<string> _tags = new List<string>{"Tag 1", "Tag 2"};
 
         public ContentfulEvent Build()
         {
@@ -52,7 +54,8 @@ namespace StockportContentApiTests.Unit.Builders
                 MapPosition = _mapPosition,
                 BookingInformation = _bookingInformation,
                 Featured =  _featured,
-                Sys = _sys
+                Sys = _sys,
+                Tags = _tags
             };
         }
 
@@ -101,6 +104,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulEventBuilder UpdatedAt(DateTime updatedAt)
         {
             _sys.UpdatedAt = updatedAt;
+            return this;
+        }
+
+        public ContentfulEventBuilder Tags(List<string> tags )
+        {
+            _tags = tags;
             return this;
         }
     }

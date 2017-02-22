@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StockportContentApi.Model
 {
@@ -26,12 +27,13 @@ namespace StockportContentApi.Model
         public string BookingInformation { get; }
         public bool Featured { get; }
         public DateTime UpdatedAt { get; }
+        public List<string> Tags { get; }
 
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime, 
                      int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, 
-                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt) 
+                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt, List<string> tags ) 
             {
                 Title = title;
                 Slug = slug;
@@ -49,12 +51,13 @@ namespace StockportContentApi.Model
                 ThumbnailImageUrl = thumbnailImageUrl;
                 ImageUrl = imageUrl;
                 Documents = documents;
-                Categories = categories;
+                Categories = categories.Select(s => s.ToLower()).ToList();
                 MapPosition = mapPosition;
                 BookingInformation = bookingInformation;
                 Featured = featured;
                 UpdatedAt = updatedAt;
-            }
+                Tags = tags.Select(s => s.ToLower()).ToList();
+        }
 
         public bool ShouldSerializeFrequency()
         {

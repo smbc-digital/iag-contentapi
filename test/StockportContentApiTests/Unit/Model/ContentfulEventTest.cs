@@ -34,7 +34,8 @@ namespace StockportContentApiTests.Unit.Model
                 MapPosition = new MapPosition(),
                 BookingInformation = string.Empty,
                 Featured = false,
-                Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue }
+                Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue },
+                Tags = new List<string>()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

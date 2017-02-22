@@ -27,12 +27,13 @@ namespace StockportContentApiTests.Unit.Builders
         private string _bookingInformation = "booking information";
         private bool _featured = true;
         private DateTime _updatedAt = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private List<string> _tags = new List<string>();
 
         public Event Build()
         {
             return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
                 _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs,
-                  _thumbnailImage, _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt);
+                  _thumbnailImage, _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags);
         }
 
         public EventBuilder Slug(string slug)

@@ -26,7 +26,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 entry.Breadcrumbs,
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags);
         }
     }
 }

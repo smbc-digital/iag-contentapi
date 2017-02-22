@@ -65,7 +65,7 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
         {
             var builder = new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync<ContentfulEvent>(builder);
@@ -74,7 +74,8 @@ namespace StockportContentApi.Repositories
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => CheckDates(dateFrom, dateTo, e))
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)

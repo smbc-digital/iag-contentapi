@@ -36,7 +36,8 @@
       },
       "bookingInformation": "booking information",
       "featured": false,
-      "updatedAt": "2016-10-05T00:00:00Z"
+      "updatedAt": "2016-10-05T00:00:00Z",
+      "tags": [ "Tag 1", "Tag 2" ]
     }
   ],
   "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]
