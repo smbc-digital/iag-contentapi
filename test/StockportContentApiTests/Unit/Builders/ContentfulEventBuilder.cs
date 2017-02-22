@@ -24,12 +24,12 @@ namespace StockportContentApiTests.Unit.Builders
         private EventFrequency _eventFrequency = EventFrequency.None;
         private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-        private List<string> _categories = new List<string> {"Category 1", "Category 2"};
+        private List<string> _categories = new List<string> {"category 1", "category 2"};
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         private string _bookingInformation = "booking information";
         private bool _featured = false;
         public ContentfulEventSys _sys = new ContentfulEventSys();
-        private List<string> _tags = new List<string>{"Tag 1", "Tag 2"};
+        private List<string> _tags = new List<string>{"tag 1", "tag 2"};
 
         public ContentfulEvent Build()
         {
