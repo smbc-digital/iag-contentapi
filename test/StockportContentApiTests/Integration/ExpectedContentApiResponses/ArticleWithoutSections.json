@@ -16,7 +16,7 @@
       "slug": "test-profile",
       "subtitle": "This is a test profile",
       "teaser": "profile teaser",
-      "image": "image.jpg",
+      "image": null,
       "body": null,
       "icon": null,
       "backgroundImage": null,

@@ -106,7 +106,6 @@ namespace StockportContentApiTests.Unit.Factories
             article.Body.Should().Be("Content {{PROFILE:test-profile}} test video: {{VIDEO:kQl5D}}");
             article.Icon.Should().Be("fa-about");
             article.BackgroundImage.Should().Be("image.jpg");
-            article.Image.Should().Be("image.jpg");
             article.Profiles.First().Title.Should().Be("A profile");
             article.Profiles.First().Image.Should().Be("image.jpg");
             article.Sections.Should().BeEmpty();
