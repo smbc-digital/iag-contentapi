@@ -205,6 +205,7 @@
         "fields": {
           "title": "Pay Council Tax",
           "slug": "pay-council-tax",
+          "image": "image",
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -240,7 +241,8 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-search"
+          "icon": "si-search",
+          "image": "image"
         }
       },
       {
@@ -269,6 +271,7 @@
         "fields": {
           "title": "Check your bin day",
           "slug": "check-your-bin-day",
+          "image": "image",
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -302,6 +305,7 @@
         "fields": {
           "title": "article without summary/ body",
           "slug": "article-without-summary-body",
+          "image": "image",
           "sections": [
             {
               "sys": {
@@ -375,7 +379,8 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-page"
+          "icon": "si-page",
+          "image": "image"
         }
       },
       {
@@ -404,6 +409,7 @@
         "fields": {
           "title": "Tell us about a change",
           "slug": "tell-us-about-a-change",
+          "image": "image",
           "sections": [
             {
               "sys": {
@@ -533,7 +539,8 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-stationary"
+          "icon": "si-stationary",
+          "image": "image"
         }
       },
       {
@@ -604,7 +611,8 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-book"
+          "icon": "si-book",
+          "image": "image"
         }
       },
       {

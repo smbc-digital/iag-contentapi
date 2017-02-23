@@ -20,8 +20,9 @@ namespace StockportContentApi.Factories
             var icon = (string)fields.icon ?? string.Empty;
             DateTime sunriseDate = DateComparer.DateFieldToDate(fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
+            var image = (string)fields.image ?? string.Empty;
 
-            return new SubItem(slug, title, teaser, icon, contentType, sunriseDate,sunsetDate);
+            return new SubItem(slug, title, teaser, icon, contentType, sunriseDate,sunsetDate, image);
         }
 
     }

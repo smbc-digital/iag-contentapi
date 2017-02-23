@@ -498,6 +498,7 @@
           ],
           "teaser": "Notify us about your change of address or any other changes in your circumstances.",
           "icon": "si-tickbox",
+          "image" : "image", 
           "breadcrumbs": [
             {
               "sys": {
@@ -732,7 +733,8 @@
             }
           ],
           "icon": "si-house",
-          "teaser": "How to pay, discounts"
+          "teaser": "How to pay, discounts",
+          "image": "image"
         }
       },
       {
@@ -902,6 +904,7 @@
           "slug": "benefits-and-support",
           "icon": "si-wallet",
           "teaser": "Benefits & Support",
+          "image": "image",
           "alerts": [
             {
               "sys": {
@@ -963,7 +966,8 @@
             }
           ],
           "icon": "si-bin",
-          "teaser": "Collection days, bulky items"
+          "teaser": "Collection days, bulky items",
+          "image": "image"
         }
       },
       {
@@ -1003,6 +1007,7 @@
           ],
           "icon": "fa-gbp",
           "teaser": "This is the sub topic",
+          "image" : "image", 
           "breadcrumbs": [
             {
               "sys": {

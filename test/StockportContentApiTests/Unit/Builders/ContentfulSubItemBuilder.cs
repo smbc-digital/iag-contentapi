@@ -12,6 +12,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private string _image = "image";
 
         public ContentfulSubItem Build()
         {
@@ -23,7 +24,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Teaser = _teaser,
                 Icon = _icon,
                 SunriseDate = _sunriseDate,
-                SunsetDate = _sunsetDate
+                SunsetDate = _sunsetDate,
+                Image = _image
             };
         }
 

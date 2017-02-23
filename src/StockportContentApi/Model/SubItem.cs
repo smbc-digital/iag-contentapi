@@ -8,12 +8,13 @@ namespace StockportContentApi.Model
         public readonly string Title;
         public readonly string Teaser;
         public readonly string Icon;
-        public readonly string Type;
+        public readonly string Type;        
         public readonly DateTime SunriseDate;
         public readonly DateTime SunsetDate;
-       
+        public readonly string Image;
 
-        public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate)
+
+        public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image)
         {
             Slug = slug;
             Teaser = teaser;
@@ -22,6 +23,7 @@ namespace StockportContentApi.Model
             Type = type;
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
+            Image = image;
         }
     }
 }

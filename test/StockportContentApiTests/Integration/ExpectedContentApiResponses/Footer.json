@@ -10,7 +10,8 @@
       "icon": "",
       "type": "article",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "tell-us-about-a-change",
@@ -19,7 +20,8 @@
       "icon": "si-tickbox",
       "type": "article",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "change-of-address-electoral",
@@ -28,7 +30,8 @@
       "icon": "",
       "type": "article",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "how-to-pay-council-tax",
@@ -37,7 +40,8 @@
       "icon": "",
       "type": "article",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "testarticle",
@@ -46,7 +50,8 @@
       "icon": "",
       "type": "article",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     }
   ],
   "socialMediaLinks": [

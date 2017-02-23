@@ -52,7 +52,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 new List<Crumb> { crumb });
             _profileFactory.Setup(o => o.ToModel(_contentfulArticle.Profiles.First().Fields)).Returns(profile);
             var subItems = new List<SubItem> {
-                new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue) };
+                new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image") };
             var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },

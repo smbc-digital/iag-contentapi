@@ -14,7 +14,7 @@ namespace StockportContentApi.ContentfulFactories
             var title = !string.IsNullOrEmpty(entry.Fields.Title) ? entry.Fields.Title : entry.Fields.Name;
 
             return new SubItem(entry.Fields.Slug, title, entry.Fields.Teaser, 
-                entry.Fields.Icon, type, entry.Fields.SunriseDate, entry.Fields.SunsetDate);
+                entry.Fields.Icon, type, entry.Fields.SunriseDate, entry.Fields.SunsetDate, entry.Fields.Image);
         }
     }
 }

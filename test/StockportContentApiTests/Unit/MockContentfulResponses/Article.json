@@ -199,7 +199,8 @@
           "body": "pay this away.\n",
           "displayOnAZ": true,
           "sunriseDate": "2015-12-31T23:00:00+00:00",
-          "sunsetDate": "2017-12-31T23:00:00+00:00"
+          "sunsetDate": "2017-12-31T23:00:00+00:00",
+          "image": "image"
         }
       },
       {
@@ -324,6 +325,7 @@
           "icon": "si-house",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
+          "image": "image",
           "breadcrumbs": [
             {
               "sys": {
@@ -374,7 +376,8 @@
           ],
           "displayOnAZ": true,
           "sunriseDate": "2015-12-31T23:00:00+00:00",
-          "sunsetDate": "2017-12-31T23:00:00+00:00"
+          "sunsetDate": "2017-12-31T23:00:00+00:00",
+          "image": "image"
         }
       }
     ],

@@ -55,7 +55,8 @@
         "icon": "fa-gbp",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image"
       },
       {
         "slug": "test-me",
@@ -64,7 +65,8 @@
         "icon": "",
         "type": "article",
         "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00"
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "bins-and-recycling",
@@ -73,7 +75,8 @@
         "icon": "si-bin",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image"
       },
       {
         "slug": "tell-us-about-a-change",
@@ -82,7 +85,8 @@
         "icon": "si-tickbox",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image"
       },
       {
         "slug": "benefits-and-support",
@@ -91,7 +95,8 @@
         "icon": "si-wallet",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image"
       },
       {
         "slug": "work-and-jobs",
@@ -100,7 +105,8 @@
         "icon": "si-briefcase",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "libraries",
@@ -109,7 +115,8 @@
         "icon": "si-books",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "council-tax",
@@ -118,7 +125,8 @@
         "icon": "si-house",
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image"
       },
       {
         "slug": "article-without-body-379",
@@ -127,7 +135,8 @@
         "icon": "",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "one-line-article",
@@ -136,7 +145,8 @@
         "icon": "",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "information-about-getting-married",
@@ -145,7 +155,8 @@
         "icon": "fa-info",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "article-without-summary-body",
@@ -154,7 +165,8 @@
         "icon": "",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "testing-call-to-action-button",
@@ -163,7 +175,8 @@
         "icon": "fa-form",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       },
       {
         "slug": "article-no-summary",
@@ -172,7 +185,8 @@
         "icon": "fa-gbp",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": ""
       }
     ],
     "secondaryItems": [],

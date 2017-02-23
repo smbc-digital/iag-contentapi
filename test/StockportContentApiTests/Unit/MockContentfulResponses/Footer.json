@@ -131,6 +131,7 @@
         "fields": {
           "title": "Article with profile, video and table",
           "slug": "testarticle",
+          "image": "image",
           "sections": [
             {
               "sys": {
@@ -205,6 +206,7 @@
           "title": "How to pay council tax",
           "slug": "how-to-pay-council-tax",
           "teaser": "ways to pay council tax",
+          "image": "image",
           "body": "pay this away.\n",
           "displayOnAZ": true,
           "alternativeTitles": [
@@ -241,7 +243,8 @@
           "title": "Facebook",
           "slug": "facebook",
           "url": "https://www.facebook.com/test",
-          "icon": "fa-facebook"
+          "icon": "fa-facebook",
+          "image": "image"
         }
       },
       {
@@ -330,6 +333,7 @@
         "fields": {
           "title": "change of address",
           "slug": "change-of-address-electoral",
+          "image": "image",
           "teaser": "this is change of address on electoral",
           "body": "please use this page to change address on your council tax.",
           "displayOnAZ": false,
@@ -364,6 +368,7 @@
         "fields": {
           "title": "Tell us about a change",
           "slug": "tell-us-about-a-change",
+          "image": "image",
           "sections": [
             {
               "sys": {
@@ -452,6 +457,7 @@
           "slug": "council-tax",
           "teaser": "council tax",
           "body": "dummy council tax page. ",
+          "image": "image",
           "breadcrumbs": [
             {
               "sys": {

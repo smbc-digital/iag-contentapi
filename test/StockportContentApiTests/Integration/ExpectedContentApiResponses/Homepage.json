@@ -12,7 +12,8 @@
       "icon": "fa fa-home",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "check-your-bin-day",
@@ -21,7 +22,8 @@
       "icon": "si-house",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "find-a-planning-application",
@@ -30,7 +32,8 @@
       "icon": "si-page",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "find-or-renew-a-book",
@@ -39,7 +42,8 @@
       "icon": "si-book",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "school-holiday-and-term-dates",
@@ -48,7 +52,8 @@
       "icon": "si-stationary",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     },
     {
       "slug": "search-job-vacancies",
@@ -57,7 +62,8 @@
       "icon": "si-search",
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00"
+      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "image": "image"
     }
   ],
   "featuredTopics": [
@@ -77,7 +83,8 @@
           "icon": "si-tickbox",
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
-          "sunsetDate": "0001-01-01T00:00:00+00:00"
+          "sunsetDate": "0001-01-01T00:00:00+00:00",
+          "image": "image"
         }
       ],
       "secondaryItems": [],
@@ -105,7 +112,8 @@
           "icon": "",
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
-          "sunsetDate": "0001-01-01T00:00:00+00:00"
+          "sunsetDate": "0001-01-01T00:00:00+00:00",
+          "image": "image"
         }
       ],
       "secondaryItems": [],
