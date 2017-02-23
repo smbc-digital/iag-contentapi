@@ -56,7 +56,7 @@
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
         "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image"
+        "image": "image.jpg"
       },
       {
         "slug": "test-me",
@@ -76,7 +76,7 @@
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
         "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image"
+        "image": "image.jpg"
       },
       {
         "slug": "tell-us-about-a-change",
@@ -86,7 +86,7 @@
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
         "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image"
+        "image": "image.jpg"
       },
       {
         "slug": "benefits-and-support",
@@ -96,7 +96,7 @@
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
         "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image"
+        "image": "image.jpg"
       },
       {
         "slug": "work-and-jobs",
@@ -126,7 +126,7 @@
         "type": "topic",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
         "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image"
+        "image": "image.jpg"
       },
       {
         "slug": "article-without-body-379",

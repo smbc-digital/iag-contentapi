@@ -498,7 +498,14 @@
           ],
           "teaser": "Notify us about your change of address or any other changes in your circumstances.",
           "icon": "si-tickbox",
-          "image" : "image", 
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            },
           "breadcrumbs": [
             {
               "sys": {
@@ -734,7 +741,14 @@
           ],
           "icon": "si-house",
           "teaser": "How to pay, discounts",
-          "image": "image"
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }
         }
       },
       {
@@ -904,7 +918,14 @@
           "slug": "benefits-and-support",
           "icon": "si-wallet",
           "teaser": "Benefits & Support",
-          "image": "image",
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            },
           "alerts": [
             {
               "sys": {
@@ -967,7 +988,14 @@
           ],
           "icon": "si-bin",
           "teaser": "Collection days, bulky items",
-          "image": "image"
+          "image":
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }
         }
       },
       {
@@ -1007,7 +1035,14 @@
           ],
           "icon": "fa-gbp",
           "teaser": "This is the sub topic",
-          "image" : "image", 
+          "image":
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }, 
           "breadcrumbs": [
             {
               "sys": {

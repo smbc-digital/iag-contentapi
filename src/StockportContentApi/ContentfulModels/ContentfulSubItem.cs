@@ -1,6 +1,7 @@
 ﻿using System;
 using Contentful.Core.Configuration;
 using Newtonsoft.Json;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -14,6 +15,6 @@ namespace StockportContentApi.ContentfulModels
         public string Icon { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
-        public string Image { get; set; } = string.Empty;
+        public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     }
 }

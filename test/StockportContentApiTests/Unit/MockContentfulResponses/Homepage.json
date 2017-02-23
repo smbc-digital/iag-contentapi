@@ -205,7 +205,13 @@
         "fields": {
           "title": "Pay Council Tax",
           "slug": "pay-council-tax",
-          "image": "image",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -242,7 +248,13 @@
           "formLinkLabel": "-",
           "formLink": "-",
           "icon": "si-search",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -271,7 +283,13 @@
         "fields": {
           "title": "Check your bin day",
           "slug": "check-your-bin-day",
-          "image": "image",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -305,7 +323,13 @@
         "fields": {
           "title": "article without summary/ body",
           "slug": "article-without-summary-body",
-          "image": "image",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -380,7 +404,13 @@
           "formLinkLabel": "-",
           "formLink": "-",
           "icon": "si-page",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -409,7 +439,13 @@
         "fields": {
           "title": "Tell us about a change",
           "slug": "tell-us-about-a-change",
-          "image": "image",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -540,7 +576,13 @@
           "formLinkLabel": "-",
           "formLink": "-",
           "icon": "si-stationary",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -612,7 +654,13 @@
           "formLinkLabel": "-",
           "formLink": "-",
           "icon": "si-book",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {

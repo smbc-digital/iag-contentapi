@@ -49,8 +49,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNews(string slug)
         {
-            var builder = new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync<ContentfulNews>(builder);
+            var builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null 

@@ -13,7 +13,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     },
     {
       "slug": "check-your-bin-day",
@@ -23,7 +23,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     },
     {
       "slug": "find-a-planning-application",
@@ -33,7 +33,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     },
     {
       "slug": "find-or-renew-a-book",
@@ -43,7 +43,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     },
     {
       "slug": "school-holiday-and-term-dates",
@@ -53,7 +53,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     },
     {
       "slug": "search-job-vacancies",
@@ -63,7 +63,7 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image"
+      "image": "image.jpg"
     }
   ],
   "featuredTopics": [
@@ -84,7 +84,7 @@
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
-          "image": "image"
+          "image": "image.jpg"
         }
       ],
       "secondaryItems": [],
@@ -113,7 +113,7 @@
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
-          "image": "image"
+          "image": "image.jpg"
         }
       ],
       "secondaryItems": [],

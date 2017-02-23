@@ -94,9 +94,9 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulNews = new ContentfulNewsBuilder().Slug(slug).Build();
             
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                It.Is<QueryBuilder>(q => 
-                    q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1) .Build()),
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => 
+                    q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1) .Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> { contentfulNews });
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
 
@@ -115,9 +115,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "news-of-the-century";
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                 It.Is<QueryBuilder>(q => q.Build() ==
-                 new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1).Build()),
+            _client.Setup(o => o.GetEntriesAsync(
+                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() ==
+                 new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1).Build()),
                  It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));

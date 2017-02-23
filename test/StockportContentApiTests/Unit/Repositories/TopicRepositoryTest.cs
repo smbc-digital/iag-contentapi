@@ -64,8 +64,8 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             const string slug = "a-slug";
             var contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), 
+            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()), 
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> { contentfulTopic });
 
             _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topic);
@@ -81,8 +81,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsNotFoundIfTopicDoesNotExist()
         {
             const string slug = "not-found";
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));

@@ -25,8 +25,9 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
         {
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync<ContentfulTopic>(builder);
+            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
+            var entries = await _client.GetEntriesAsync(builder);
+
             var entry = entries.FirstOrDefault();
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");

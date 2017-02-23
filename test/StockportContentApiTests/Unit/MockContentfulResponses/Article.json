@@ -200,7 +200,13 @@
           "displayOnAZ": true,
           "sunriseDate": "2015-12-31T23:00:00+00:00",
           "sunsetDate": "2017-12-31T23:00:00+00:00",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          }
         }
       },
       {
@@ -325,7 +331,13 @@
           "icon": "si-house",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
-          "image": "image",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "breadcrumbs": [
             {
               "sys": {
@@ -377,7 +389,13 @@
           "displayOnAZ": true,
           "sunriseDate": "2015-12-31T23:00:00+00:00",
           "sunsetDate": "2017-12-31T23:00:00+00:00",
-          "image": "image"
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          }
         }
       }
     ],

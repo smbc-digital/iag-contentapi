@@ -25,8 +25,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetProfile(string slug)
         {
-            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync<ContentfulProfile>(builder);
+            var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null 
