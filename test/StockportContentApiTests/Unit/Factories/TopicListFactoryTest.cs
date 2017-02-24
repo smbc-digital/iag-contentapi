@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.Factories
                 .Returns(new List<Alert>());
             mockSubitemBuilder.Setup(
                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-               .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue) });
+               .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image") });
 
             var breadcrumbFactory = new BreadcrumbFactory();
             _topicListFactory = new TopicListFactory(new TopicFactory(mockListAlertBuilder.Object, mockSubitemBuilder.Object, breadcrumbFactory), _mockTimeProvider.Object);

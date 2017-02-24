@@ -131,6 +131,13 @@
         "fields": {
           "title": "Article with profile, video and table",
           "slug": "testarticle",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -205,6 +212,13 @@
           "title": "How to pay council tax",
           "slug": "how-to-pay-council-tax",
           "teaser": "ways to pay council tax",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "body": "pay this away.\n",
           "displayOnAZ": true,
           "alternativeTitles": [
@@ -241,7 +255,14 @@
           "title": "Facebook",
           "slug": "facebook",
           "url": "https://www.facebook.com/test",
-          "icon": "fa-facebook"
+          "icon": "fa-facebook",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          }
         }
       },
       {
@@ -330,6 +351,13 @@
         "fields": {
           "title": "change of address",
           "slug": "change-of-address-electoral",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "teaser": "this is change of address on electoral",
           "body": "please use this page to change address on your council tax.",
           "displayOnAZ": false,
@@ -364,6 +392,13 @@
         "fields": {
           "title": "Tell us about a change",
           "slug": "tell-us-about-a-change",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -452,6 +487,13 @@
           "slug": "council-tax",
           "teaser": "council tax",
           "body": "dummy council tax page. ",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Ux"
+            }
+          },
           "breadcrumbs": [
             {
               "sys": {
@@ -499,6 +541,40 @@
             },
             "fileName": "a.pdf",
             "contentType": "application/pdf"
+          }
+        }
+      },
+
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5nghPGu9uowomaQCywW2Ux",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.169Z",
+          "updatedAt": "2016-06-13T15:33:33.558Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "runners",
+          "description": "Runners",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 426261,
+              "image": {
+                "width": 1920,
+                "height": 1280
+              }
+            },
+            "fileName": "runners.jpg",
+            "contentType": "image/jpeg"
           }
         }
       }

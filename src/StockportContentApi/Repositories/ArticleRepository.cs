@@ -58,8 +58,6 @@ namespace StockportContentApi.Repositories
             return slug == null
                 ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
                 : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
-
-       
+        }      
     }
 }

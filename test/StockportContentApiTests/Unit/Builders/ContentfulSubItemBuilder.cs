@@ -1,5 +1,6 @@
 ﻿using System;
 using StockportContentApi.ContentfulModels;
+using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -12,6 +13,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private Asset _image = new Asset { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
 
         public ContentfulSubItem Build()
         {
@@ -23,7 +25,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Teaser = _teaser,
                 Icon = _icon,
                 SunriseDate = _sunriseDate,
-                SunsetDate = _sunsetDate
+                SunsetDate = _sunsetDate,
+                Image = _image
             };
         }
 

@@ -39,7 +39,8 @@ namespace StockportContentApiTests.Unit.Factories
             _mockTopicBuilder = new Mock<IFactory<Topic>>();
             _mockTopicBuilder.Setup(
               o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-              .Returns(new Topic("main-topic", "Main Topic", "teaser", "summary", "", "", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert>(),DateTime.MinValue, DateTime.MinValue, false, string.Empty));
+              .Returns(new Topic("main-topic", "Main Topic", "teaser", "summary", "", "", "", new List<SubItem>(), new List<SubItem>(), 
+              new List<SubItem>(), new List<Crumb>(), new List<Alert>(),DateTime.MinValue, DateTime.MinValue, false, string.Empty));
 
             _mockAlertListFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
             _mockAlertListFactory.Setup(
@@ -80,6 +81,7 @@ namespace StockportContentApiTests.Unit.Factories
             article.Body.Should().Be("An article made for unit testing body text\n\n{{PROFILE: profile-no-pic}}");
             article.Icon.Should().Be("icon");
             article.BackgroundImage.Should().Be("image.jpg");
+            article.Image.Should().Be("image.jpg");
             article.Profiles.First().Title.Should().Be("Profile with no pic");
             article.Profiles.First().Slug.Should().Be("profile-no-pic");
             article.Sections.Should().HaveCount(1);

@@ -89,6 +89,13 @@
             "id": "5gxy9SLbqEm2c0aKm8oMKO"
           }
         },
+        "image": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "5gxy9SLbqEm2c0aKm8oMKx"
+          }
+        },
         "freeText": "homepage text",
         "featuredTasks": [
           {
@@ -198,6 +205,13 @@
         "fields": {
           "title": "Pay Council Tax",
           "slug": "pay-council-tax",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -233,7 +247,14 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-search"
+          "icon": "si-search",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -262,6 +283,13 @@
         "fields": {
           "title": "Check your bin day",
           "slug": "check-your-bin-day",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
@@ -295,6 +323,13 @@
         "fields": {
           "title": "article without summary/ body",
           "slug": "article-without-summary-body",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -368,7 +403,14 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-page"
+          "icon": "si-page",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -397,6 +439,13 @@
         "fields": {
           "title": "Tell us about a change",
           "slug": "tell-us-about-a-change",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          },
           "sections": [
             {
               "sys": {
@@ -526,7 +575,14 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-stationary"
+          "icon": "si-stationary",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -597,7 +653,14 @@
           "upperBody": "-",
           "formLinkLabel": "-",
           "formLink": "-",
-          "icon": "si-book"
+          "icon": "si-book",
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5gxy9SLbqEm2c0aKm8oMKx"
+            }
+          }
         }
       },
       {
@@ -683,6 +746,39 @@
             }
           },
           "id": "5gxy9SLbqEm2c0aKm8oMKO",
+          "type": "Asset",
+          "createdAt": "2016-08-19T13:33:04.605Z",
+          "updatedAt": "2016-08-19T13:33:04.605Z",
+          "revision": 1,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "image",
+          "description": "image",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 85625,
+              "image": {
+                "width": 960,
+                "height": 720
+              }
+            },
+            "fileName": "image.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5gxy9SLbqEm2c0aKm8oMKx",
           "type": "Asset",
           "createdAt": "2016-08-19T13:33:04.605Z",
           "updatedAt": "2016-08-19T13:33:04.605Z",

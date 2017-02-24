@@ -42,6 +42,13 @@
             "type": "Link",
             "linkType": "Asset",
             "id": "5nghPGu9uowomaQCywW2Ue"
+          },
+          "image": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "5nghPGu9uowomaQCywW2Uex"
+            }
           }
         }
       }

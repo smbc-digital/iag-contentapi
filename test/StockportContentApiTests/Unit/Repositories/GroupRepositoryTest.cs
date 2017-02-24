@@ -45,8 +45,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl");
-            var builder = new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync<ContentfulGroup>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroup });
             _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
 
@@ -61,8 +61,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void Return404WhenGroupWhenItemsDontExist()
         {
             const string slug = "not-found";
-            var builder = new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync<ContentfulGroup>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));

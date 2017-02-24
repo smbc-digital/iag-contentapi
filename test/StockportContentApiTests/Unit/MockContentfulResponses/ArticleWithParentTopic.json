@@ -498,6 +498,14 @@
           ],
           "teaser": "Notify us about your change of address or any other changes in your circumstances.",
           "icon": "si-tickbox",
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            },
           "breadcrumbs": [
             {
               "sys": {
@@ -732,7 +740,15 @@
             }
           ],
           "icon": "si-house",
-          "teaser": "How to pay, discounts"
+          "teaser": "How to pay, discounts",
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }
         }
       },
       {
@@ -902,6 +918,14 @@
           "slug": "benefits-and-support",
           "icon": "si-wallet",
           "teaser": "Benefits & Support",
+          "image": 
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            },
           "alerts": [
             {
               "sys": {
@@ -963,7 +987,15 @@
             }
           ],
           "icon": "si-bin",
-          "teaser": "Collection days, bulky items"
+          "teaser": "Collection days, bulky items",
+          "image":
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }
         }
       },
       {
@@ -1003,6 +1035,14 @@
           ],
           "icon": "fa-gbp",
           "teaser": "This is the sub topic",
+          "image":
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "1Xqxsxse9K8Y6EgGoQi6qk"
+              }
+            }, 
           "breadcrumbs": [
             {
               "sys": {
@@ -1046,6 +1086,39 @@
             },
             "fileName": "image.jpg",
             "contentType": "image/jpg"
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "space"
+            }
+          },
+          "id": "5nghPGu9uowomaQCywW2Ux",
+          "type": "Asset",
+          "createdAt": "2016-06-13T15:15:20.169Z",
+          "updatedAt": "2016-06-13T15:33:33.558Z",
+          "revision": 2,
+          "locale": "en-GB"
+        },
+        "fields": {
+          "title": "runners",
+          "description": "Runners",
+          "file": {
+            "url": "image.jpg",
+            "details": {
+              "size": 426261,
+              "image": {
+                "width": 1920,
+                "height": 1280
+              }
+            },
+            "fileName": "runners.jpg",
+            "contentType": "image/jpeg"
           }
         }
       }

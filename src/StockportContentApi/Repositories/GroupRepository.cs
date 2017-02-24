@@ -26,8 +26,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetGroup(string slug)
         {
-            var builder = new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync<ContentfulGroup>(builder);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null 

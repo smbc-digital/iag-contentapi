@@ -28,7 +28,7 @@ namespace StockportContentApiTests.Unit.Factories
                 .Returns(new List<Alert>());
             _mockSubitemBuilder.Setup(
                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-               .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue) });
+               .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image") });
 
             _breadcrumbFactory = new BreadcrumbFactory();
             _topicBuilder = new TopicFactory(mockAlertListBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory);
@@ -96,6 +96,7 @@ namespace StockportContentApiTests.Unit.Factories
             topic.Summary.Should().Be("This is the summary");
             topic.Icon.Should().Be("si-car");
             topic.BackgroundImage.Should().Be(string.Empty);
+            topic.Image.Should().Be(string.Empty);
             topic.Breadcrumbs.ToList().Count.Should().Be(1);
             topic.Alerts.ToList().Count.Should().Be(1);
             topic.SubItems.Should().HaveCount(1);

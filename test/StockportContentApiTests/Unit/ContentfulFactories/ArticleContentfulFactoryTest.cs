@@ -49,11 +49,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var crumb = new Crumb("title", "slug", "type");
             _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Breadcrumbs.First())).Returns(crumb);
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image",
-                new List<Crumb> {crumb});
+                new List<Crumb> { crumb });
             _profileFactory.Setup(o => o.ToModel(_contentfulArticle.Profiles.First().Fields)).Returns(profile);
             var subItems = new List<SubItem> {
-                new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue) };
-            var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", subItems, subItems, subItems,
+                new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image") };
+            var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },
                 DateTime.MinValue, DateTime.MaxValue, false, "id");
@@ -64,6 +64,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var article = _articleFactory.ToModel(_contentfulArticle);
 
             article.ShouldBeEquivalentTo(_contentfulArticle, o => o.Excluding(e => e.BackgroundImage)
+                .Excluding(e => e.Image)
                 .Excluding(e => e.Documents)
                 .Excluding(e => e.Sections)
                 .Excluding(e => e.Profiles)
@@ -110,7 +111,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulArticle.LiveChat.SystemProperties.Type = "Link";
 
             var article = _articleFactory.ToModel(_contentfulArticle);
-            
+
             article.BackgroundImage.Should().BeEmpty();
 
             article.Sections.Count.Should().Be(0);

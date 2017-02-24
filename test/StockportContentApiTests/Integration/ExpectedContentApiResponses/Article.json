@@ -5,6 +5,7 @@
   "teaser": "An article made for unit testing",
   "icon": "icon",
   "backgroundImage": "image.jpg",
+  "image": "image.jpg",
   "sections": [
     {
       "title": "Change of circumstances",
@@ -53,6 +54,7 @@
     "summary": "Topic Summary",
     "icon": "",
     "backgroundImage": "",
+    "image": "",
     "subItems": [
       {
         "slug": "how-to-pay-council-tax",
@@ -61,7 +63,8 @@
         "icon": "",
         "type": "article",
         "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00"
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "image": "image.jpg"
       }
     ],
     "secondaryItems": [
@@ -72,7 +75,8 @@
         "icon": "si-house",
         "type": "article",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00"
+        "sunsetDate": "0001-01-01T00:00:00+00:00",
+        "image": "image.jpg"
       }
     ],
     "tertiaryItems": [
@@ -83,7 +87,8 @@
         "icon": "si-bin",
         "type": "topic",
         "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00"
+        "sunsetDate": "2017-12-31T23:00:00+00:00",
+        "image": "image.jpg"
       }
     ],
     "breadcrumbs": [],

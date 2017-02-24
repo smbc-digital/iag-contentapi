@@ -8,10 +8,11 @@ namespace StockportContentApi.Model
     {
         public string Body { get; set; }
         public string Slug { get; }
-        public string Title { get;  }
+        public string Title { get; }
         public string Teaser { get; }
         public string Icon { get; }
         public string BackgroundImage { get; }
+        public string Image { get; }
         public List<Section> Sections { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public IEnumerable<Alert> Alerts { get; }
@@ -23,8 +24,8 @@ namespace StockportContentApi.Model
         public bool LiveChatVisible { get; }
         public LiveChat LiveChat { get; }
 
-        public Article(string body, string slug, string title, string teaser, string icon, string backgroundImage, List<Section> sections,
-            IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, IEnumerable<Profile> profiles, Topic parentTopic, List<Document> documents, 
+        public Article(string body, string slug, string title, string teaser, string icon, string backgroundImage, string image, List<Section> sections,
+            IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, IEnumerable<Profile> profiles, Topic parentTopic, List<Document> documents,
             DateTime sunriseDate, DateTime sunsetDate, bool liveChatVisible, LiveChat liveChat)
         {
             Body = body;
@@ -33,6 +34,7 @@ namespace StockportContentApi.Model
             Teaser = teaser;
             Icon = icon;
             BackgroundImage = backgroundImage;
+            Image = image;
             Sections = sections;
             Breadcrumbs = breadcrumbs;
             Alerts = alerts;
@@ -61,7 +63,7 @@ namespace StockportContentApi.Model
     {
         public NullArticle()
         : base(
-            string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(), 
+            string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(),
             new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), false, new NullLiveChat())
         { }
     }

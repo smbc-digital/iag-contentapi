@@ -46,8 +46,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var profile = new Profile("type", "title", "slug", "subtitle",
                 "teaser", "image", "body", "icon", "backgroundImage",
                 new List<Crumb> { new Crumb("title", "slug", "type") });
-            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync<ContentfulProfile>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> { contentfulTopic });
             _profileFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(profile);
 
@@ -63,8 +63,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void Return404WhenProfileWhenItemsDontExist()
         {
             const string slug = "not-found";
-            var builder = new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync<ContentfulProfile>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));

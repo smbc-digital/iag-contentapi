@@ -47,6 +47,7 @@ namespace StockportContentApi.Factories
             var body = MakeEmptyStringIfNull(fields.body);
             var icon = MakeEmptyStringIfNull(fields.icon);
             var backgroundImage = contentfulResponse.GetImageUrl(fields.backgroundImage);
+            var image = contentfulResponse.GetImageUrl(fields.image);
             var sections = _sectionListFactory.BuildFromReferences(fields.sections, contentfulResponse);
             var breadcrumbs = _breadcrumbFactory.BuildFromReferences(fields.breadcrumbs, contentfulResponse);
             var alerts = _alertListFactory.BuildFromReferences(fields.alerts, contentfulResponse);
@@ -62,7 +63,7 @@ namespace StockportContentApi.Factories
             // find the parent topic from the breadcrumbs (the last topic in the list)
             var parentTopicFromTheBreadcrumb = BuildParentTopic(fields.breadcrumbs, contentfulResponse);
 
-            return new Article(body, slug, title, teaser, icon, backgroundImage, sections, breadcrumbs, alerts, 
+            return new Article(body, slug, title, teaser, icon, backgroundImage, image, sections, breadcrumbs, alerts, 
                 profiles, parentTopicFromTheBreadcrumb, documents,sunriseDate, sunsetDate, liveChatVisible, liveChat);
         }
 

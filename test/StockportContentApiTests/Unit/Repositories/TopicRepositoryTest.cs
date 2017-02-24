@@ -35,7 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
-            _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
+            _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
                 new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
@@ -43,11 +43,13 @@ namespace StockportContentApiTests.Unit.Repositories
             var alertInside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
                 new DateTime(2017, 02, 03));
 
-            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside }, DateTime.MinValue, DateTime.MinValue, true, "test-id");
+            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image",
+                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
+                DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
-            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, DateTime.MinValue, DateTime.MinValue, true, "test-id");
+            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", 
+                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, 
+                DateTime.MinValue, DateTime.MinValue, true, "test-id");
 
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
@@ -62,8 +64,8 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             const string slug = "a-slug";
             var contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()), 
+            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()), 
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> { contentfulTopic });
 
             _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topic);
@@ -79,8 +81,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsNotFoundIfTopicDoesNotExist()
         {
             const string slug = "not-found";
-            var builder = new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(It.Is<QueryBuilder>(q => q.Build() == builder.Build()),
+            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));

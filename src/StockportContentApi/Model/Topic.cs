@@ -11,6 +11,7 @@ namespace StockportContentApi.Model
         public string Summary { get;}
         public string Icon { get; }
         public string BackgroundImage { get; }
+        public string Image { get; set; }
         public IEnumerable<SubItem> SubItems { get; }
         public IEnumerable<SubItem> SecondaryItems { get; }
         public IEnumerable<SubItem> TertiaryItems { get; }
@@ -20,9 +21,11 @@ namespace StockportContentApi.Model
         public DateTime SunsetDate { get; }
         public bool EmailAlerts { get; }
         public string EmailAlertsTopicId { get; }
-
-        public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage,
-            IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems, IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, string emailAlertsTopicId)
+        
+        public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage, 
+            string image,IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
+            IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, 
+            bool emailAlerts, string emailAlertsTopicId)
         {
             Slug = slug;
             Name = name;
@@ -30,6 +33,7 @@ namespace StockportContentApi.Model
             Summary = summary;
             Icon = icon;
             BackgroundImage = backgroundImage;
+            Image = image;
             SubItems = subItems;
             SecondaryItems = secondayItems;
             TertiaryItems = tertiaryItems;
@@ -38,7 +42,7 @@ namespace StockportContentApi.Model
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
             EmailAlerts = emailAlerts;
-            EmailAlertsTopicId = emailAlertsTopicId;
+            EmailAlertsTopicId = emailAlertsTopicId;        
         }
     }
 
@@ -48,6 +52,7 @@ namespace StockportContentApi.Model
             string.Empty, 
             string.Empty, 
             string.Empty, 
+            string.Empty,
             string.Empty, 
             string.Empty, 
             string.Empty,

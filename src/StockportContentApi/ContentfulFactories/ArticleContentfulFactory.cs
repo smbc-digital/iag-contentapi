@@ -50,8 +50,11 @@ namespace StockportContentApi.ContentfulFactories
                                 ? entry.LiveChat.Fields : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
+            var image = ContentfulHelpers.EntryIsNotALink(entry.image.SystemProperties)
+                                        ? entry.BackgroundImage.File.Url : string.Empty;
 
-            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, 
+
+            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
                 sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
                 entry.LiveChatVisible, liveChat);
         }
