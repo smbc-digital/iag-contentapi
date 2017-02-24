@@ -48,7 +48,7 @@ namespace StockportContentApiTests.Integration
             });
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
-            {            
+            {
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
                                 It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
