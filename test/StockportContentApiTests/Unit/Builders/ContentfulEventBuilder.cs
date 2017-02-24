@@ -29,7 +29,24 @@ namespace StockportContentApiTests.Unit.Builders
         private string _bookingInformation = "booking information";
         private bool _featured = false;
         public ContentfulEventSys _sys = new ContentfulEventSys();
-        private List<string> _tags = new List<string>{"tag 1", "tag 2"};
+        private List<string> _tags = new List<string>{"tag 1", "tag 2"};        
+        private Entry<ContentfulGroup> _group = new Entry<ContentfulGroup>
+        {
+            Fields = new ContentfulGroup()
+            {
+                Twitter = null,
+                Address = "Test street",
+                Slug = "zumba-fitness",
+                PhoneNumber = "phone",
+                Email = "email",
+                Website = "",
+                Facebook = null,
+                Description = "",
+                Name = "Zumba Fitness",
+                Image = new Asset() {Description = "", File = new File() {ContentType = "", FileName =  "", Details = null, UploadUrl = "", Url = ""}, SystemProperties = new SystemProperties(){Type = "Asset"}, Title = "" },                
+            },
+            SystemProperties = new SystemProperties { Type = "Entry" }           
+        };
 
         public ContentfulEvent Build()
         {
@@ -55,7 +72,8 @@ namespace StockportContentApiTests.Unit.Builders
                 BookingInformation = _bookingInformation,
                 Featured =  _featured,
                 Sys = _sys,
-                Tags = _tags
+                Tags = _tags,
+                Group = _group
             };
         }
 
@@ -110,6 +128,11 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulEventBuilder Tags(List<string> tags )
         {
             _tags = tags;
+            return this;
+        }
+
+        public ContentfulEventBuilder Group(Entry<ContentfulGroup> group)
+        {   _group = group;
             return this;
         }
     }

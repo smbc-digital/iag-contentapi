@@ -35,5 +35,18 @@
   "bookingInformation": "booking information",
   "featured": false,
   "updatedAt": "2016-10-05T00:00:00Z",
-  "tags":["tag 1", "tag 2"]
+  "tags": [ "tag 1", "tag 2" ],
+  "group": {
+    "name": "Zumba Fitness",
+    "slug": "zumba-fitness",
+    "phoneNumber": "phone",
+    "email": "email",
+    "website": "",
+    "twitter": null,
+    "facebook": null,
+    "address": "Test street",
+    "description": "",
+    "imageUrl": "",
+    "thumbnailImageUrl": ""
+  }
 }

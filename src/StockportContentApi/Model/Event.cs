@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
 {
@@ -28,12 +30,13 @@ namespace StockportContentApi.Model
         public bool Featured { get; }
         public DateTime UpdatedAt { get; }
         public List<string> Tags { get; }
+        public Group Group { get; }
 
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime, 
                      int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, 
-                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt, List<string> tags ) 
+                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt, List<string> tags, Group group ) 
             {
                 Title = title;
                 Slug = slug;
@@ -57,7 +60,8 @@ namespace StockportContentApi.Model
                 Featured = featured;
                 UpdatedAt = updatedAt;
                 Tags = tags.Select(s => s.ToLower()).ToList();
-        }
+                Group = group;
+            }
 
         public bool ShouldSerializeFrequency()
         {

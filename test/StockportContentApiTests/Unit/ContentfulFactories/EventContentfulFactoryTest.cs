@@ -15,6 +15,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulEvent _contentfulEvent;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
+        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly EventContentfulFactory _eventContentfulFactory;
 
         public EventContentfulFactoryTest()
@@ -22,7 +23,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulEvent = new ContentfulEventBuilder().Build();
 
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object);
+            _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object);
+            
         }
 
         [Fact]
@@ -35,7 +38,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var mapPosition = new MapPosition() {Lat = 53.5, Lon = -2.5};
 
-            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt));
+            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
             anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
             anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
             anEvent.Documents.Count.Should().Be(1);
@@ -57,6 +60,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             anEvent.Documents.Count.Should().Be(0);
             anEvent.ImageUrl.Should().Be(string.Empty);
             anEvent.ThumbnailImageUrl.Should().Be(string.Empty);
+        }
+
+        [Fact]
+        public void ShouldReturnGroupLinkedToEvent()
+        {
+            _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>()))
+                .Returns(new Group("Test Group", "test-group", null, null, null, null, null, null, null, null, null));
+
+            var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
+
+            anEvent.Group.Name.Should().Be("Test Group");
         }
     }
 }

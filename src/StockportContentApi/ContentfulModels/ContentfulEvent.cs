@@ -31,6 +31,11 @@ namespace StockportContentApi.ContentfulModels
         public bool Featured { get; set; } = false;
         public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
         public List<string> Tags { get; set; } = new List<string>();
+        public Entry<ContentfulGroup> Group { get; set; } = new Entry<ContentfulGroup>
+        {
+            Fields = new ContentfulGroup(),
+            SystemProperties = new SystemProperties {Type = "Entry"}
+        };
     }
 
     public class ContentfulEventSys
