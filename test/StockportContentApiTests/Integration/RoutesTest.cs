@@ -50,34 +50,34 @@ namespace StockportContentApiTests.Integration
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
             {
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
+                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event_item").UpdatedAt(new DateTime(2016,10,5)).EventDate(new DateTime(2016, 12, 30)).Build()
                                 });
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
-                                It.Is<QueryBuilder>(q => q.Build() ==
-                                new QueryBuilder().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() ==
+                                new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(2016,10,5)).Build(),
                                     new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(2016,10,5)).Build()
                                 });
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulGroup>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("group").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> {
                                     new ContentfulGroupBuilder().Slug("group_slug").Build()
                                });
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews> {
                                     new ContentfulNewsBuilder().Slug("news_item").Build()
                                 });
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulTopic>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(1).Build()),
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> {
                                     new ContentfulTopicBuilder().Slug("topic_slug").Build()
                                 });
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulProfile>(
-                                It.Is<QueryBuilder>(q => q.Build() == new QueryBuilder().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> {
                                     new ContentfulProfileBuilder().Slug("profile_slug").Build()
                                 });
