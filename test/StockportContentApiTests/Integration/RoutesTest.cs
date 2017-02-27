@@ -72,7 +72,7 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulNewsBuilder().Slug("news_item").Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(1).Build()),
+                                It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> {
                                     new ContentfulTopicBuilder().Slug("topic_slug").Build()
                                 });
