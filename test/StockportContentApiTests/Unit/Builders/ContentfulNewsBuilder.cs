@@ -49,9 +49,15 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulNewsBuilder SunriseDate(DateTime sunrisedate)
+        public ContentfulNewsBuilder SunriseDate(DateTime sunriseDate)
         {
-            _sunriseDate = sunrisedate;
+            _sunriseDate = sunriseDate;
+            return this;
+        }
+
+        public ContentfulNewsBuilder SunsetDate(DateTime sunsetDate)
+        {
+            _sunsetDate = sunsetDate;
             return this;
         }
     }

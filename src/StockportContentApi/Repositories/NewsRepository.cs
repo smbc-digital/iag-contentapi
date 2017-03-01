@@ -53,6 +53,8 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
+            if (entry != null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate)) entry = null;
+
             return entry == null 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'") 
                 : HttpResponse.Successful(_contentfulFactory.ToModel(entry));

@@ -87,13 +87,14 @@ namespace StockportContentApiTests.Unit.Repositories
       
             newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
         }
-
+        
         [Fact]
         public void GetsANewsItemFromASlug()
         {
             // Arrange
             const string slug = "news-of-the-century";
-            var contentfulNews = new ContentfulNewsBuilder().Slug(slug).Build();
+            _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
+            var contentfulNews = new ContentfulNewsBuilder().Slug(slug).SunriseDate(DateTime.Now.AddDays(-20)).Build();
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -122,6 +123,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             const string slug = "news-of-the-century";
 
+            _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
             _client.Setup(o => o.GetEntriesAsync(
                  It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() ==
                  new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1).Build()),
@@ -449,7 +451,10 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "news-with-sunrise-date-in-future";
-            var newsWithSunriseDateInFuture = new ContentfulNewsBuilder().SunriseDate(DateTime.Now.AddDays(10)).Slug(slug).Build();
+            DateTime nowDateTime = DateTime.Now;
+            DateTime futureSunRiseDate = DateTime.Now.AddDays(10);
+            _mockTimeProvider.Setup(o => o.Now()).Returns(nowDateTime);
+            var newsWithSunriseDateInFuture = new ContentfulNewsBuilder().SunriseDate(futureSunRiseDate).Slug(slug).Build();
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -467,6 +472,39 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public void ShouldReturnSuccessIfNewsArticleSunsetDateIsInThePast()
+        {
+            // Arrange
+            const string slug = "news-with-sunrise-date-in-future";
+            DateTime nowDateTime = DateTime.Now;
+            DateTime pastSunRiseDate = DateTime.Now.AddDays(-20);
+            DateTime pastSunSetDate = DateTime.Now.AddDays(-10);
+            _mockTimeProvider.Setup(o => o.Now()).Returns(nowDateTime);
+            var newsWithSunsetDateInPast = new ContentfulNewsBuilder()
+                .SunsetDate(pastSunSetDate)
+                .SunriseDate(pastSunRiseDate)
+                .Slug(slug)
+                .Build();
+            var simpleNewsQuery =
+                new QueryBuilder<ContentfulNews>()
+                    .ContentTypeIs("news")
+                    .FieldEquals("fields.slug", slug)
+                    .Include(1)
+                    .Build();
+            _client.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulNews> { newsWithSunsetDateInPast });
+            _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunsetDateInPast.Body);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+            
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }

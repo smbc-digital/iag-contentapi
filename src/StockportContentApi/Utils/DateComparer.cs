@@ -19,8 +19,9 @@ namespace StockportContentApi.Utils
                 : ((DateTimeOffset)DateTimeOffset.Parse(date.ToString("u"), CultureInfo.InvariantCulture)).UtcDateTime;
         }
 
-        public bool DateNowIsWithinSunriseAndSunsetDates(DateTime sunriseDate, DateTime?
-            sunsetDate = null)
+        public bool DateNowIsWithinSunriseAndSunsetDates(
+            DateTime sunriseDate, 
+            DateTime? sunsetDate = null)
         {
             sunsetDate = sunsetDate ?? DateTime.MaxValue;
             var sunriseCheck = sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate;
@@ -28,6 +29,11 @@ namespace StockportContentApi.Utils
 
             return sunriseCheck
                    && sunsetCheck;
+        }
+
+        public bool DateNowIsAfterSunriseDate(DateTime sunriseDate)
+        {
+            return sunriseDate < _timeProvider.Now();
         }
 
         public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate)
