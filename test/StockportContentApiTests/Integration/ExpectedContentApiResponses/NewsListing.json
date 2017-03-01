@@ -1,6 +1,6 @@
 ﻿{
   "alerts": [
-    {
+    { 
       "title": "New alert",
       "subHeading": "alert sub heading updated",
       "body": "Alert body",

@@ -35,7 +35,8 @@ namespace StockportContentApiTests.Unit.Model
                 BookingInformation = string.Empty,
                 Featured = false,
                 Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue },
-                Tags = new List<string>()
+                Tags = new List<string>(),
+                Alerts = new List<Alert>(),
             };
             actual.ShouldBeEquivalentTo(expected);
         }

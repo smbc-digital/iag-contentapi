@@ -29,12 +29,15 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _updatedAt = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private List<string> _tags = new List<string>();
         private Group _group = null;
+        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
+                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
 
         public Event Build()
         {
             return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
-                _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs,
-                  _thumbnailImage, _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group);
+                _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs, _thumbnailImage, 
+                _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts);
         }
 
         public EventBuilder Slug(string slug)

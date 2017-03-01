@@ -31,12 +31,13 @@ namespace StockportContentApi.Model
         public DateTime UpdatedAt { get; }
         public List<string> Tags { get; }
         public Group Group { get; }
-
+        public List<Alert> Alerts { get; }
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime, 
                      int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl, 
-                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,string bookingInformation, DateTime updatedAt, List<string> tags, Group group ) 
+                     List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,
+                     string bookingInformation, DateTime updatedAt, List<string> tags, Group group, List<Alert> alerts) 
             {
                 Title = title;
                 Slug = slug;
@@ -61,6 +62,7 @@ namespace StockportContentApi.Model
                 UpdatedAt = updatedAt;
                 Tags = tags.Select(s => s.ToLower()).ToList();
                 Group = group;
+                Alerts = alerts;
             }
 
         public bool ShouldSerializeFrequency()

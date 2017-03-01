@@ -1,5 +1,6 @@
 using System.Linq;
 using Contentful.Core.Models;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -31,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 entry.Breadcrumbs,
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, entry.Alerts);
         }
     }
 }

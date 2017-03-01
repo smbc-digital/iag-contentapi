@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
-        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;      
 
         public EventRepositoryTest()
         {
@@ -49,6 +49,7 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
                 _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object);
+
         }
 
         [Fact]
@@ -78,6 +79,8 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
+            eventItem.Alerts.Count.Should().Be(1);
+            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Title);
             eventItem.Featured.Should().BeFalse();
         }
 

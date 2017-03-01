@@ -29,7 +29,11 @@ namespace StockportContentApiTests.Unit.Builders
         private string _bookingInformation = "booking information";
         private bool _featured = false;
         public ContentfulEventSys _sys = new ContentfulEventSys();
-        private List<string> _tags = new List<string>{"tag 1", "tag 2"};        
+        private List<string> _tags = new List<string>{"tag 1", "tag 2"};
+        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
+                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
+
         private Entry<ContentfulGroup> _group = new Entry<ContentfulGroup>
         {
             Fields = new ContentfulGroup()
@@ -43,7 +47,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Facebook = null,
                 Description = "",
                 Name = "Zumba Fitness",
-                Image = new Asset() {Description = "", File = new File() {ContentType = "", FileName =  "", Details = null, UploadUrl = "", Url = ""}, SystemProperties = new SystemProperties(){Type = "Asset"}, Title = "" },                
+                Image = new Asset() {Description = "", File = new File() {ContentType = "", FileName =  "", Details = null, UploadUrl = "", Url = ""}, SystemProperties = new SystemProperties(){Type = "Asset"}, Title = "" },                                
             },
             SystemProperties = new SystemProperties { Type = "Entry" }           
         };
@@ -73,7 +77,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Featured =  _featured,
                 Sys = _sys,
                 Tags = _tags,
-                Group = _group
+                Group = _group,
+                Alerts = _alerts
             };
         }
 
