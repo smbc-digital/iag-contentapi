@@ -30,9 +30,8 @@ namespace StockportContentApiTests.Unit.Builders
         private bool _featured = false;
         public ContentfulEventSys _sys = new ContentfulEventSys();
         private List<string> _tags = new List<string>{"tag 1", "tag 2"};
-        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
+        private List<Entry<ContentfulAlert>> _alerts = new List<Entry<ContentfulAlert>> {
+            new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().Build()).Build()};
 
         private Entry<ContentfulGroup> _group = new Entry<ContentfulGroup>
         {

@@ -14,6 +14,7 @@ namespace StockportContentApiTests.Unit.Model
         public void ShouldSetDefaultsOnModel()
         {
             var actual = new ContentfulEvent();
+
             var expected = new ContentfulEvent
             {
                 Title = string.Empty,
@@ -36,7 +37,7 @@ namespace StockportContentApiTests.Unit.Model
                 Featured = false,
                 Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue },
                 Tags = new List<string>(),
-                Alerts = new List<Alert>(),
+                Alerts = new List<Entry<ContentfulAlert>>()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

@@ -29,7 +29,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
-        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;      
+        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
 
         public EventRepositoryTest()
         {
@@ -41,9 +42,18 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var documentFactory = new DocumentContentfulFactory();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object);
-            _httpClient = new Mock<IHttpClient>();
+            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulAlert>>())).Returns(new Alert("title", "subHeading", "body",
+                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
+
             _mockTimeProvider = new Mock<ITimeProvider>();
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+
+            var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
+            _httpClient = new Mock<IHttpClient>();
+            
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
@@ -74,13 +84,15 @@ namespace StockportContentApiTests.Unit.Repositories
                         .Excluding(raw => raw.ImageUrl)
                         .Excluding(raw => raw.Documents)
                         .Excluding(e => e.UpdatedAt)
-                        .Excluding(e => e.Group));
+                        .Excluding(e => e.Group)
+                        .Excluding(e => e.Alerts));
+
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
             eventItem.Alerts.Count.Should().Be(1);
-            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Title);
+            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Fields.Title);
             eventItem.Featured.Should().BeFalse();
         }
 
@@ -137,10 +149,22 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Count.Should().Be(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o
+                    .Excluding(e => e.ThumbnailImageUrl)
+                    .Excluding(e => e.ImageUrl)
+                    .Excluding(e => e.Documents)
+                    .Excluding(e => e.UpdatedAt)
+                    .Excluding(e => e.Group)
+                    .Excluding(e => e.Alerts));
+
             eventCalender.Events.Last()
                 .ShouldBeEquivalentTo(anotherEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o.Excluding(e => e.ThumbnailImageUrl)
+                    .Excluding(e => e.ImageUrl)
+                    .Excluding(e => e.Documents)
+                    .Excluding(e => e.UpdatedAt)
+                    .Excluding(e => e.Group)
+                    .Excluding(e => e.Alerts));
         }
 
         [Fact]
@@ -339,7 +363,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
         }
 
         [Fact]
@@ -362,7 +386,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
         }
 
         [Fact]
@@ -384,7 +408,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
         }
 
         [Fact]
@@ -420,7 +444,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(event3,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
         }
 
         public void ShouldGetEventsWithLimitOfTwo()
