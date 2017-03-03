@@ -23,7 +23,8 @@ namespace StockportContentApi.ContentfulFactories
 
         public Topic ToModel(ContentfulTopic entry)
         {
-            var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
+            var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
+                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
                                          .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
             var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
                                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
