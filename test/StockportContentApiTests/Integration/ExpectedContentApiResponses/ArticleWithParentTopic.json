@@ -1,215 +1,169 @@
 ﻿{
-  "body": "Body content",
+  "body": "body",
   "slug": "test-me",
-  "title": "Test Article",
-  "teaser": "Teaser",
-  "icon": "",
-  "backgroundImage": "",
-  "image": "",
+  "title": "title",
+  "teaser": "teaser",
+  "icon": "icon",
+  "backgroundImage": "image-url.jpg",
+  "image": "image-url.jpg",
   "sections": [
     {
-      "title": "Test Video and Profile Section",
-      "slug": "video-profile-section",
-      "body": "This is the body text for section 1\n\n{{PROFILE:sarahs-story}}\n\n{{VIDEO:kQl5D}}",
+      "title": "title",
+      "slug": "slug",
+      "body": "body",
       "profiles": [
         {
-          "type": "Success Story",
-          "title": "Sarah's Story",
-          "slug": "sarahs-story",
-          "subtitle": "Subtitle",
-          "teaser": "Teaser content",
-          "image": "image.jpg",
-          "body": null,
-          "icon": null,
-          "backgroundImage": null,
-          "breadcrumbs": null
+          "type": "type",
+          "title": "title",
+          "slug": "slug",
+          "subtitle": "subtitle",
+          "teaser": "teaser",
+          "image": "image-url.jpg",
+          "body": "body",
+          "icon": "icon",
+          "backgroundImage": "background-image-url.jpg",
+          "breadcrumbs": [
+            {
+              "title": "title",
+              "slug": "slug",
+              "type": "id"
+            }
+          ]
         }
       ],
-      "documents": [],
-      "sunriseDate": "2015-12-31T23:00:00+00:00",
-      "sunsetDate": "2017-12-31T23:00:00+00:00"
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00",
+          "fileName": "fileName"
+        }
+      ],
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00+00:00"
     }
   ],
   "breadcrumbs": [
     {
-      "title": "Main Topic",
-      "slug": "main-topic",
-      "type": "topic"
+      "title": "title",
+      "slug": "slug",
+      "type": "id"
     }
   ],
-  "alerts": [],
-  "profiles": [],
+  "alerts": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z"
+
+    }
+  ],
+  "profiles": [
+    {
+      "type": "type",
+      "title": "title",
+      "slug": "slug",
+      "subtitle": "subtitle",
+      "teaser": "teaser",
+      "image": "image-url.jpg",
+      "body": "body",
+      "icon": "icon",
+      "backgroundImage": "background-image-url.jpg",
+      "breadcrumbs": [
+        {
+          "title": "title",
+          "slug": "slug",
+          "type": "id"
+
+        }
+      ]
+    }
+  ],
   "parentTopic": {
-    "slug": "main-topic",
-    "name": "Main Topic",
-    "teaser": "This is the main topic",
-    "summary": "",
-    "icon": "si-buildings",
-    "backgroundImage": "",
-    "image": "",
+    "slug": "slug",
+    "name": "name",
+    "teaser": "teaser",
+    "summary": "summary",
+    "icon": "icon",
+    "backgroundImage": "background-image-url.jpg",
+    "image": "background-image-url.jpg",
     "subItems": [
       {
-        "slug": "sub-topic",
-        "title": "Sub Topic",
-        "teaser": "This is the sub topic",
-        "icon": "fa-gbp",
-        "type": "topic",
+        "slug": "sub-slug",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
+        "type": "id",
         "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
-      },
-      {
-        "slug": "test-me",
-        "title": "Test Article",
-        "teaser": "Teaser",
-        "icon": "",
-        "type": "article",
-        "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "bins-and-recycling",
-        "title": "Bins & Recycling",
-        "teaser": "Collection days, bulky items",
-        "icon": "si-bin",
-        "type": "topic",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
-      },
-      {
-        "slug": "tell-us-about-a-change",
-        "title": "Tell us about a change",
-        "teaser": "Notify us about your change of address or any other changes in your circumstances.",
-        "icon": "si-tickbox",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
-      },
-      {
-        "slug": "benefits-and-support",
-        "title": "Benefits & Support",
-        "teaser": "Benefits & Support",
-        "icon": "si-wallet",
-        "type": "topic",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
-      },
-      {
-        "slug": "work-and-jobs",
-        "title": "Work & Jobs",
-        "teaser": "Find work, career & training advice",
-        "icon": "si-briefcase",
-        "type": "topic",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "libraries",
-        "title": "Libraries",
-        "teaser": "Reserve or renew, book a computer",
-        "icon": "si-books",
-        "type": "topic",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "council-tax",
-        "title": "Council Tax",
-        "teaser": "How to pay, discounts",
-        "icon": "si-house",
-        "type": "topic",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
-      },
-      {
-        "slug": "article-without-body-379",
-        "title": "Article without body 379",
-        "teaser": "Teaser",
-        "icon": "",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "one-line-article",
-        "title": "one line article",
-        "teaser": "one line article",
-        "icon": "",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "information-about-getting-married",
-        "title": "Information about getting married",
-        "teaser": "If you are planning on getting married, then it is important that you know about what you need to do to go ahead with the ceremony.",
-        "icon": "fa-info",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "article-without-summary-body",
-        "title": "article without summary/ body",
-        "teaser": "Teaser here",
-        "icon": "",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "testing-call-to-action-button",
-        "title": "testing call to action button",
-        "teaser": "CALL TO ACTION",
-        "icon": "fa-form",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
-      },
-      {
-        "slug": "article-no-summary",
-        "title": "Article - No summary",
-        "teaser": "This is an article without summary",
-        "icon": "fa-gbp",
-        "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": ""
+        "sunsetDate": "9999-09-09T00:00:00+00:00",
+        "image": "image"
       }
     ],
-    "secondaryItems": [],
-    "tertiaryItems": [],
+    "secondaryItems": [
+      {
+        "slug": "secondary-slug",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
+        "type": "id",
+        "sunriseDate": "0001-01-01T00:00:00+00:00",
+        "sunsetDate": "9999-09-09T00:00:00+00:00",
+        "image": "image"
+      }
+    ],
+    "tertiaryItems": [
+      {
+        "slug": "tertiary-slug",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
+        "type": "id",
+        "sunriseDate": "0001-01-01T00:00:00+00:00",
+        "sunsetDate": "9999-09-09T00:00:00+00:00",
+        "image": "image"
+      }
+    ],
     "breadcrumbs": [
       {
-        "title": "Sub Topic",
-        "slug": "sub-topic",
-        "type": "topic"
+        "title": "title",
+        "slug": "slug",
+        "type": "id"
       }
     ],
-    "alerts": [],
+    "alerts": [
+      {
+        "title": "title",
+        "subHeading": "subHeading",
+        "body": "body",
+        "severity": "severity",
+        "sunriseDate": "0001-01-01T00:00:00Z",
+        "sunsetDate": "9999-09-09T00:00:00Z"
+
+      }
+    ],
     "sunriseDate": "0001-01-01T00:00:00+00:00",
-    "sunsetDate": "0001-01-01T00:00:00+00:00",
+    "sunsetDate": "9999-09-09T00:00:00+00:00",
     "emailAlerts": false,
-    "emailAlertsTopicId": ""
+    "emailAlertsTopicId": "id"
   },
-  "documents": [],
-  "sunriseDate": "2015-12-31T23:00:00+00:00",
-  "sunsetDate": "2017-12-31T23:00:00+00:00",
-  "liveChatVisible": true,
+  "documents": [
+    {
+      "title": "documentTitle",
+      "size": 674192,
+      "url": "url.pdf",
+      "lastUpdated": "2016-10-05T00:00:00",
+      "fileName": "fileName"
+    }
+  ],
+  "sunriseDate": "0001-01-01T00:00:00+00:00",
+  "sunsetDate": "9999-09-09T00:00:00+00:00",
+  "liveChatVisible": false,
   "liveChat": {
-    "title": "Title",
+    "title": "title",
     "text": "text"
   }
 }

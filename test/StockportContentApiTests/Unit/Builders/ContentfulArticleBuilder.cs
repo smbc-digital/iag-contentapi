@@ -53,5 +53,17 @@ namespace StockportContentApiTests.Unit.Builders
                 SunsetDate = _sunsetDate
             };
         }
+
+        public ContentfulArticleBuilder Slug(string slug)
+        {
+            _slug = slug;
+            return this;
+        }
+
+        public ContentfulArticleBuilder WithOutSection()
+        {
+            _sections = new List<Entry<ContentfulSection>>();
+            return this;
+        }
     }
 }
