@@ -20,7 +20,7 @@ namespace StockportContentApi.ContentfulModels
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }
         };
-        public Asset image { get; set; } = new Asset
+        public Asset Image { get; set; } = new Asset
         {
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }

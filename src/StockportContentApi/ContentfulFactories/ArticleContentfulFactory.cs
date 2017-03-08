@@ -13,6 +13,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
+        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Topic> _parentTopicFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IVideoRepository _videoRepository;
 
@@ -20,6 +21,7 @@ namespace StockportContentApi.ContentfulFactories
             IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
             IContentfulFactory<ContentfulTopic, Topic> topicFactory,
+            IContentfulFactory<Entry<ContentfulCrumb>, Topic> parentTopicFactory,
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository)
         {
@@ -29,6 +31,7 @@ namespace StockportContentApi.ContentfulFactories
             _topicFactory = topicFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
+            _parentTopicFactory = parentTopicFactory;
         }
 
         public Article ToModel(ContentfulArticle entry)
@@ -37,10 +40,18 @@ namespace StockportContentApi.ContentfulFactories
                                          .Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
             var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+
             var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                          .Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
-            var topic = ContentfulHelpers.EntryIsNotALink(entry.ParentTopic.SystemProperties) 
-                                ? _topicFactory.ToModel(entry.ParentTopic.Fields) : new NullTopic();
+
+            var topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.SystemProperties.ContentType.SystemProperties.Id == "topic");
+
+            var topic = topicInBreadcrumb != null
+                ? ContentfulHelpers.EntryIsNotALink(topicInBreadcrumb.SystemProperties)
+                    ? _parentTopicFactory.ToModel(topicInBreadcrumb)
+                    : new NullTopic()
+                : new NullTopic();
+
             var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                            .Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
@@ -50,12 +61,11 @@ namespace StockportContentApi.ContentfulFactories
                                 ? entry.LiveChat.Fields : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
-            var image = ContentfulHelpers.EntryIsNotALink(entry.image.SystemProperties)
-                                        ? entry.BackgroundImage.File.Url : string.Empty;
-
+            var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                                        ? entry.Image.File.Url : string.Empty;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
-                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
+                sections,breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
                 entry.LiveChatVisible, liveChat);
         }
     }

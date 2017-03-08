@@ -23,19 +23,26 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
         private readonly ArticleContentfulFactory _articleFactory;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>> _parentTopicFactory;
 
         public ArticleContentfulFactoryTest()
         {
             _contentfulArticle = new ContentfulArticleBuilder().Build();
+
+            // set to topic for mocking
+            // TODO: Refactor into builder
+            _contentfulArticle.Breadcrumbs[0].SystemProperties.ContentType.SystemProperties.Id = "topic";
+
             _videoRepository = new Mock<IVideoRepository>();
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+            _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>>();
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                                     _topicFactory.Object, _documentFactory.Object, _videoRepository.Object);
+                                     _topicFactory.Object, _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object);
         }
 
         [Fact]
@@ -57,7 +64,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },
                 DateTime.MinValue, DateTime.MaxValue, false, "id");
-            _topicFactory.Setup(o => o.ToModel(_contentfulArticle.ParentTopic.Fields)).Returns(topic);
+            _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()))
+                .Returns(topic);
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
             _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
 
@@ -90,7 +98,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _profileFactory.Verify(o => o.ToModel(_contentfulArticle.Profiles.First().Fields), Times.Once);
             article.Profiles.First().ShouldBeEquivalentTo(profile);
 
-            _topicFactory.Verify(o => o.ToModel(_contentfulArticle.ParentTopic.Fields), Times.Once);
+            _parentTopicFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Once);
             article.ParentTopic.ShouldBeEquivalentTo(topic);
 
             _documentFactory.Verify(o => o.ToModel(_contentfulArticle.Documents.First()), Times.Once);

@@ -25,23 +25,11 @@ using System.Threading;
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class ArticleRepositoryTest
-    {
-        //private readonly FakeHttpClient _httpClient = new FakeHttpClient();
-       // private readonly Mock<IHttpClient> _httpClient;
-        //private readonly ArticleRepository _repository;
-        //private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        //private Mock<IFactory<Article>> _mockArticleBuilder;
-        //private Mock<IVideoRepository> _videoRepository;
-        //private Mock<ITimeProvider> _mockTimeProvider;
-        //private readonly DateTime _sunriseDate = new DateTime(2016, 08, 01);
-        //private readonly DateTime _sunsetDate = new DateTime(2016, 08, 10);
-
-
+    {       
         private readonly ArticleRepository _repository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IHttpClient> _httpClient;       
-        private readonly Mock<IContentfulFactory<ContentfulArticle, Article>> _articleFactory;
+        private readonly Mock<IHttpClient> _httpClient;               
         private Mock<IVideoRepository> _videoRepository;
         private readonly DateTime _sunriseDate = new DateTime(2016, 08, 01);
         private readonly DateTime _sunsetDate = new DateTime(2016, 08, 10);
@@ -49,7 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
         private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
-
+        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>> _parentTopicFactory;
 
         public ArticleRepositoryTest()
         {
@@ -68,13 +56,14 @@ namespace StockportContentApiTests.Unit.Repositories
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
+            _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>>();
 
-                var contentfulFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object, _topicFactory.Object, documentFactory, _videoRepository.Object);
+            var contentfulFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object, _topicFactory.Object, _parentTopicFactory.Object, documentFactory, _videoRepository.Object);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new ArticleRepository(config, _httpClient.Object, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, _videoRepository.Object);
+            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, _videoRepository.Object);
         }
         
         [Fact]
@@ -95,71 +84,63 @@ namespace StockportContentApiTests.Unit.Repositories
 
         [Fact]
         public void GetsNotFoundForAnArticleThatDoesNotExist()
-        {
-            const string slug = "test";
+        {           
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
 
-            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
-
-            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { rawArticle });
-
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle>());
             var response = AsyncTestHelper.Resolve(_repository.GetArticle("blah"));           
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No article found for 'blah'");
         }
 
-        //[Fact]
-        //public void Gets404ForNewsOutsideOfSunriseDate()
-        //{
-        //    _mockArticleBuilder.Setup(
-        //           o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-        //       .Returns(EmptyArticle());
+        [Fact]
+        public void Gets404ForNewsOutsideOfSunriseDate()
+        {
+            const string slug = "unit-test-article";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 01, 01));
 
-        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 12, 01));
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-        //    _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=article&include=2&fields.slug=unit-test-article"))
-        //         .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Article.json")));
-        //    //var test = _repository.GetArticle("unit-test-article");
-        //    HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { rawArticle });
+           
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
-        //    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        //}
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
 
-        //[Fact]
-        //public void Gets404ForNewsOutsideOfSunsetDate()
-        //{
-        //    _mockArticleBuilder.Setup(
-        //           o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-        //       .Returns(EmptyArticle());
+        [Fact]
+        public void Gets404ForNewsOutsideOfSunsetDate()
+        {
+            const string slug = "unit-test-article";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 01));
 
-        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2019, 12, 01));
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-        //    _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=article&include=2&fields.slug=unit-test-article"))
-        //         .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Article.json")));
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { rawArticle });
 
-        //    HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
-        //    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        //}
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
 
-        //[Fact]
-        //public void ReturnsValidSunsetAndSunriseDateWhenDateInRange()
-        //{
-        //    _mockArticleBuilder.Setup(
-        //           o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-        //       .Returns(EmptyArticle());
+        [Fact]
+        public void ReturnsValidSunsetAndSunriseDateWhenDateInRange()
+        {
+            const string slug = "unit-test-article";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 01));
 
-        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-        //    _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=article&include=2&fields.slug=unit-test-article"))
-        //         .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Article.json")));
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { rawArticle });
 
-        //    HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-        //}
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
 
         private static Article EmptyArticle()
         {

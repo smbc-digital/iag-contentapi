@@ -2,16 +2,16 @@
 
 namespace StockportContentApiTests.Unit.Builders
 {
-    public class ContentfulEntryBuilder<I>
+    public class ContentfulEntryBuilder<T>
     {
-        private I _fields = default(I);
+        private T _fields = default(T);
         private string _contentTypeSystemId = "id";
         private string _type = "Entry";
         private string _systemId = "id";
 
-        public Entry<I> Build()
+        public Entry<T> Build()
         {
-            return new Entry<I>
+            return new Entry<T>
             {
                 Fields = _fields,
                 SystemProperties =
@@ -24,15 +24,21 @@ namespace StockportContentApiTests.Unit.Builders
             };
         }
 
-        public ContentfulEntryBuilder<I> Fields(I fields)
+        public ContentfulEntryBuilder<T> Fields(T fields)
         {
             _fields = fields;
             return this;
         }
 
-        public ContentfulEntryBuilder<I> Include(int include)
+        public ContentfulEntryBuilder<T> Include(int include)
         {
             if (include > 0) { _type = "Link"; }
+            return this;
+        }
+
+        public ContentfulEntryBuilder<T> ContentTypeSystemId(string id)
+        {
+            _contentTypeSystemId = id;
             return this;
         }
     }

@@ -48,7 +48,7 @@
     {
       "title": "title",
       "slug": "slug",
-      "type": "id"
+      "type": "topic"
     }
   ],
   "alerts": [
@@ -86,11 +86,11 @@
   "parentTopic": {
     "slug": "slug",
     "name": "name",
-    "teaser": "teaser",
-    "summary": "summary",
-    "icon": "icon",
-    "backgroundImage": "background-image-url.jpg",
-    "image": "background-image-url.jpg",
+    "teaser": null,
+    "summary": null,
+    "icon": null,
+    "backgroundImage": null,
+    "image": null,
     "subItems": [
       {
         "slug": "sub-slug",
@@ -127,28 +127,12 @@
         "image": "image"
       }
     ],
-    "breadcrumbs": [
-      {
-        "title": "title",
-        "slug": "slug",
-        "type": "id"
-      }
-    ],
-    "alerts": [
-      {
-        "title": "title",
-        "subHeading": "subHeading",
-        "body": "body",
-        "severity": "severity",
-        "sunriseDate": "0001-01-01T00:00:00Z",
-        "sunsetDate": "9999-09-09T00:00:00Z"
-
-      }
-    ],
+    "breadcrumbs": null,
+    "alerts": null,
     "sunriseDate": "0001-01-01T00:00:00+00:00",
-    "sunsetDate": "9999-09-09T00:00:00+00:00",
+    "sunsetDate": "0001-01-01T00:00:00+00:00",
     "emailAlerts": false,
-    "emailAlertsTopicId": "id"
+    "emailAlertsTopicId": null
   },
   "documents": [
     {
@@ -159,8 +143,8 @@
       "fileName": "fileName"
     }
   ],
-  "sunriseDate": "0001-01-01T00:00:00+00:00",
-  "sunsetDate": "9999-09-09T00:00:00+00:00",
+  "sunriseDate": "2016-01-10T00:00:00+00:00",
+  "sunsetDate": "2017-01-20T00:00:00+00:00",
   "liveChatVisible": false,
   "liveChat": {
     "title": "title",

@@ -14,18 +14,23 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private Entry<LiveChat> _liveChat = new ContentfulEntryBuilder<LiveChat>().Fields(new LiveChat("title", "text")).Build();
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+        private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private string _body = "body";
-        private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private DateTime _sunriseDate = new DateTime(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
+        private DateTime _sunsetDate = new DateTime(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
+
         private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
-            { new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
+        {
+            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).ContentTypeSystemId("topic").Build()
+        };
+
         private List<Entry<Alert>> _alerts = new List<Entry<Alert>>
             { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
                                                          new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                          new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private bool _liveChatVisible = false;
-        private Entry<ContentfulTopic> _topic = new ContentfulEntryBuilder<ContentfulTopic>().Fields(new ContentfulTopicBuilder().Build()).Build();
+        private Entry<ContentfulTopic> _topic = new ContentfulEntryBuilder<ContentfulTopic>().Fields(new ContentfulParentTopicBuilder().Build()).Build();
         private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
                                     new ContentfulEntryBuilder<ContentfulProfile>().Fields(new ContentfulProfileBuilder().Build()).Build() };
         private List<Entry<ContentfulSection>> _sections = new List<Entry<ContentfulSection>> {
@@ -50,7 +55,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Teaser = _teaser,
                 Sections = _sections,
                 SunriseDate = _sunriseDate,
-                SunsetDate = _sunsetDate
+                SunsetDate = _sunsetDate,
+                Image = _image
             };
         }
 

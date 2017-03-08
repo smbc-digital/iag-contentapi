@@ -19,12 +19,9 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
         private readonly DateComparer _dateComparer;      
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly string _contentfulContentTypesUrl;
-        private readonly IContentfulClient _contentfulClient;
         private readonly IVideoRepository _videoRepository;
 
         public ArticleRepository(ContentfulConfig config,
-            IHttpClient httpClient,
             IContentfulClientManager contentfulClientManager, 
             ITimeProvider timeProvider,
             IContentfulFactory<ContentfulArticle, Article> contentfulFactory, 
@@ -33,15 +30,18 @@ namespace StockportContentApi.Repositories
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
-            _contentfulClient = new ContentfulClient(httpClient);
-            _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
             _videoRepository = videoRepository;
         }
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
-            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", articleSlug).Include(2);
+            var builder = new QueryBuilder<ContentfulArticle>()
+                .ContentTypeIs("article")
+                .FieldEquals("fields.slug", articleSlug)
+                .Include(2);
+
             var entries = await _client.GetEntriesAsync(builder);
+
             var entry = entries.FirstOrDefault();
 
             var articleItem = entry == null
@@ -56,9 +56,12 @@ namespace StockportContentApi.Repositories
                         section.Body = _videoRepository.Process(section.Body);
                 }
 
-                if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(articleItem.SunriseDate, articleItem.SunsetDate)) articleItem = new NullArticle();
-
                 articleItem.Body = _videoRepository.Process(articleItem.Body);
+
+                if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(articleItem.SunriseDate, articleItem.SunsetDate))
+                {
+                    articleItem = null;
+                }         
             }
 
             return articleItem == null
