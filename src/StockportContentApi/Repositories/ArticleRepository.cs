@@ -11,12 +11,13 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Client;
 using Contentful.Core.Search;
 using System.Linq;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.Repositories
 {
     public class ArticleRepository
     {        
-        private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
+        private readonly IContentfulFactory<Entry<ContentfulArticle>, Article> _contentfulFactory;
         private readonly DateComparer _dateComparer;      
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IVideoRepository _videoRepository;
@@ -24,7 +25,7 @@ namespace StockportContentApi.Repositories
         public ArticleRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, 
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulArticle, Article> contentfulFactory, 
+            IContentfulFactory<Entry<ContentfulArticle>, Article> contentfulFactory, 
             IVideoRepository videoRepository)
         {
             _contentfulFactory = contentfulFactory;
@@ -35,7 +36,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
-            var builder = new QueryBuilder<ContentfulArticle>()
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>()
                 .ContentTypeIs("article")
                 .FieldEquals("fields.slug", articleSlug)
                 .Include(2);

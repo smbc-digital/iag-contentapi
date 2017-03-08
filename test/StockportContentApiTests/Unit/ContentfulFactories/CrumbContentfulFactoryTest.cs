@@ -11,13 +11,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class CrumbContentfulFactoryTest
     {
-        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _subItemFactory;
-
-        public CrumbContentfulFactoryTest()
-        {
-            _subItemFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-        }
-
         [Fact]
         public void ShouldCreateACrumbFromAContentfulCrumb()
         {
@@ -27,7 +20,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
                 };
  
-            var crumb = new CrumbContentfulFactory(_subItemFactory.Object).ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
 
             crumb.Slug.Should().Be(contentfulCrumb.Fields.Slug);
             crumb.Title.Should().Be(contentfulCrumb.Fields.Title);
@@ -44,7 +37,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
                };
 
-            var crumb = new CrumbContentfulFactory(_subItemFactory.Object).ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
 
             crumb.Title.Should().Be(contentfulCrumb.Fields.Name);
         }

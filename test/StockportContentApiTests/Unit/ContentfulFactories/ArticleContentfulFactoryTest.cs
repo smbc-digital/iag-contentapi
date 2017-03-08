@@ -15,7 +15,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ArticleContentfulFactoryTest
     {
-        private readonly ContentfulArticle _contentfulArticle;
+        private readonly Entry<ContentfulArticle> _contentfulArticle;
         private readonly Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
@@ -23,55 +23,54 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
         private readonly ArticleContentfulFactory _articleFactory;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>> _parentTopicFactory;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>> _parentTopicFactory;
 
         public ArticleContentfulFactoryTest()
         {
-            _contentfulArticle = new ContentfulArticleBuilder().Build();
+            _contentfulArticle = new ContentfulEntryBuilder<ContentfulArticle>().Fields(new ContentfulArticleBuilder().Build()).Build();
 
             // set to topic for mocking
             // TODO: Refactor into builder
-            _contentfulArticle.Breadcrumbs[0].SystemProperties.ContentType.SystemProperties.Id = "topic";
+            _contentfulArticle.Fields.Breadcrumbs[0].SystemProperties.ContentType.SystemProperties.Id = "topic";
 
             _videoRepository = new Mock<IVideoRepository>();
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-            _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-            _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Topic>>();
+            _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>>();
 
-            _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                                     _topicFactory.Object, _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object);
+            _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object, 
+                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object);
         }
 
         [Fact]
         public void ShouldCreateAnArticleFromAContentfulArticle()
         {
             const string processedBody = "this is processed body";
-            _videoRepository.Setup(o => o.Process(_contentfulArticle.Body)).Returns(processedBody);
+            _videoRepository.Setup(o => o.Process(_contentfulArticle.Fields.Body)).Returns(processedBody);
             var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(),
                 DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime());
-            _sectionFactory.Setup(o => o.ToModel(_contentfulArticle.Sections.First().Fields)).Returns(section);
+            _sectionFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Sections.First().Fields)).Returns(section);
             var crumb = new Crumb("title", "slug", "type");
-            _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Breadcrumbs.First())).Returns(crumb);
+            _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Breadcrumbs.First())).Returns(crumb);
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image",
                 new List<Crumb> { crumb });
-            _profileFactory.Setup(o => o.ToModel(_contentfulArticle.Profiles.First().Fields)).Returns(profile);
+            _profileFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Profiles.First().Fields)).Returns(profile);
             var subItems = new List<SubItem> {
                 new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image") };
             var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },
                 DateTime.MinValue, DateTime.MaxValue, false, "id");
-            _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()))
+            _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulArticle>>()))
                 .Returns(topic);
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
-            _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
+            _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Documents.First())).Returns(document);
 
             var article = _articleFactory.ToModel(_contentfulArticle);
 
-            article.ShouldBeEquivalentTo(_contentfulArticle, o => o.Excluding(e => e.BackgroundImage)
+            article.ShouldBeEquivalentTo(_contentfulArticle.Fields, o => o.Excluding(e => e.BackgroundImage)
                 .Excluding(e => e.Image)
                 .Excluding(e => e.Documents)
                 .Excluding(e => e.Sections)
@@ -82,26 +81,26 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Excluding(e => e.Alerts)
                 .Excluding(e => e.LiveChat));
 
-            article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Alerts.First().Fields);
-            article.LiveChat.ShouldBeEquivalentTo(_contentfulArticle.LiveChat.Fields);
+            article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Fields.Alerts.First().Fields);
+            article.LiveChat.ShouldBeEquivalentTo(_contentfulArticle.Fields.LiveChat.Fields);
 
-            _videoRepository.Verify(o => o.Process(_contentfulArticle.Body), Times.Once());
+            _videoRepository.Verify(o => o.Process(_contentfulArticle.Fields.Body), Times.Once());
             article.Body.Should().Be(processedBody);
-            article.BackgroundImage.Should().Be(_contentfulArticle.BackgroundImage.File.Url);
+            article.BackgroundImage.Should().Be(_contentfulArticle.Fields.BackgroundImage.File.Url);
 
-            _sectionFactory.Verify(o => o.ToModel(_contentfulArticle.Sections.First().Fields), Times.Once);
+            _sectionFactory.Verify(o => o.ToModel(_contentfulArticle.Fields.Sections.First().Fields), Times.Once);
             article.Sections.First().ShouldBeEquivalentTo(section);
 
-            _crumbFactory.Verify(o => o.ToModel(_contentfulArticle.Breadcrumbs.First()), Times.Once);
+            _crumbFactory.Verify(o => o.ToModel(_contentfulArticle.Fields.Breadcrumbs.First()), Times.Once);
             article.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
 
-            _profileFactory.Verify(o => o.ToModel(_contentfulArticle.Profiles.First().Fields), Times.Once);
+            _profileFactory.Verify(o => o.ToModel(_contentfulArticle.Fields.Profiles.First().Fields), Times.Once);
             article.Profiles.First().ShouldBeEquivalentTo(profile);
 
-            _parentTopicFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Once);
+            _parentTopicFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulArticle>>()), Times.Once);
             article.ParentTopic.ShouldBeEquivalentTo(topic);
 
-            _documentFactory.Verify(o => o.ToModel(_contentfulArticle.Documents.First()), Times.Once);
+            _documentFactory.Verify(o => o.ToModel(_contentfulArticle.Fields.Documents.First()), Times.Once);
             article.Documents.Count.Should().Be(1);
             article.Documents.First().Should().Be(document);
         }
@@ -109,14 +108,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks()
         {
-            _contentfulArticle.BackgroundImage.SystemProperties.Type = "Link";
-            _contentfulArticle.Sections.First().SystemProperties.Type = "Link";
-            _contentfulArticle.Breadcrumbs.First().SystemProperties.Type = "Link";
-            _contentfulArticle.Alerts.First().SystemProperties.Type = "Link";
-            _contentfulArticle.Profiles.First().SystemProperties.Type = "Link";
-            _contentfulArticle.ParentTopic.SystemProperties.Type = "Link";
-            _contentfulArticle.Documents.First().SystemProperties.Type = "Link";
-            _contentfulArticle.LiveChat.SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.BackgroundImage.SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.Sections.First().SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.Breadcrumbs.First().SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.Alerts.First().SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.Profiles.First().SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.ParentTopic.SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.Documents.First().SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.LiveChat.SystemProperties.Type = "Link";
 
             var article = _articleFactory.ToModel(_contentfulArticle);
 
@@ -139,7 +138,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             article.Documents.Count.Should().Be(0);
             _crumbFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Never);
-
         }
     }
 }

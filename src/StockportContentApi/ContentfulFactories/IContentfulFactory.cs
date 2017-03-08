@@ -1,7 +1,7 @@
 ﻿namespace StockportContentApi.ContentfulFactories
 {
-    public interface IContentfulFactory<I, O>
+    public interface IContentfulFactory<in T, out TO>
     {
-        O ToModel(I entry);
+        TO ToModel(T entry);
     }
 }

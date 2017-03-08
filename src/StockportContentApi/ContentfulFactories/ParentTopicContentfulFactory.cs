@@ -6,7 +6,7 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class ParentTopicContentfulFactory : IContentfulFactory<Entry<ContentfulCrumb>, Topic>
+    public class ParentTopicContentfulFactory : IContentfulFactory<Entry<ContentfulArticle>, Topic>
     {
         private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subItemFactory;
         private readonly DateComparer _dateComparer;
@@ -19,14 +19,45 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
         }
 
-        public Topic ToModel(Entry<ContentfulCrumb> entry)
-        {
-            var subItems = entry.Fields.SubItems.Where(subItem => subItem.Fields != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
-                                         .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var secondaryItems = entry.Fields.SecondaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var tertiaryItems = entry.Fields.TertiaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+        private Entry<ContentfulArticle> _entry;
 
-            return new Topic(entry.Fields.Name, entry.Fields.Slug, subItems, secondaryItems, tertiaryItems);
+        public Topic ToModel(Entry<ContentfulArticle> entry)
+        {
+            _entry = entry;
+
+            var topicInBreadcrumb = entry.Fields.Breadcrumbs.LastOrDefault(o => o.SystemProperties.ContentType.SystemProperties.Id == "topic");
+
+            if (topicInBreadcrumb == null) return new NullTopic();
+
+            var subItems = topicInBreadcrumb.Fields.SubItems
+                .Select(CheckCurrentArticle)
+                .Where(subItem => subItem.Fields != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
+                .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
+            var secondaryItems = topicInBreadcrumb.Fields.SecondaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+            var tertiaryItems = topicInBreadcrumb.Fields.TertiaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+            return new Topic(topicInBreadcrumb.Fields.Name, topicInBreadcrumb.Fields.Slug, subItems, secondaryItems, tertiaryItems);
+        }
+
+        public Entry<ContentfulSubItem> CheckCurrentArticle(Entry<ContentfulSubItem> item)
+        {
+            if (item.SystemProperties.Id != _entry.SystemProperties.Id) return item;
+
+            // the link is to the current article
+            item.Fields = new ContentfulSubItem
+            {
+                Icon = _entry.Fields.Icon,
+                Title = _entry.Fields.Title,
+                SunriseDate = _entry.Fields.SunriseDate,
+                SunsetDate = _entry.Fields.SunsetDate,
+                Slug = _entry.Fields.Slug,
+                Image = _entry.Fields.Image,
+                Teaser = _entry.Fields.Teaser
+            };
+
+            item.SystemProperties.ContentType = new ContentType() { SystemProperties = new SystemProperties() { Id = "article"} };
+
+            return item;
         }
     }
 }

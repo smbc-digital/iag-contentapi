@@ -7,35 +7,34 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Article>
+    public class ArticleContentfulFactory : IContentfulFactory<Entry<ContentfulArticle>, Article>
     {
         private readonly IContentfulFactory<ContentfulSection, Section> _sectionFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-        private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
-        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Topic> _parentTopicFactory;
+        private readonly IContentfulFactory<Entry<ContentfulArticle>, Topic> _parentTopicFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IVideoRepository _videoRepository;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
             IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
-            IContentfulFactory<ContentfulTopic, Topic> topicFactory,
-            IContentfulFactory<Entry<ContentfulCrumb>, Topic> parentTopicFactory,
+            IContentfulFactory<Entry<ContentfulArticle>, Topic> parentTopicFactory,
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
             _profileFactory = profileFactory;
-            _topicFactory = topicFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
             _parentTopicFactory = parentTopicFactory;
         }
 
-        public Article ToModel(ContentfulArticle entry)
+        public Article ToModel(Entry<ContentfulArticle> entryContentfulArticle)
         {
+            var entry = entryContentfulArticle.Fields;
+
             var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                          .Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
             var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
@@ -44,13 +43,7 @@ namespace StockportContentApi.ContentfulFactories
             var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                          .Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
 
-            var topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.SystemProperties.ContentType.SystemProperties.Id == "topic");
-
-            var topic = topicInBreadcrumb != null
-                ? ContentfulHelpers.EntryIsNotALink(topicInBreadcrumb.SystemProperties)
-                    ? _parentTopicFactory.ToModel(topicInBreadcrumb)
-                    : new NullTopic()
-                : new NullTopic();
+            var topic = _parentTopicFactory.ToModel(entryContentfulArticle) ?? new NullTopic();
 
             var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                            .Select(document => _documentFactory.ToModel(document)).ToList();
