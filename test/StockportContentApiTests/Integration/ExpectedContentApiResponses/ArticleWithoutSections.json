@@ -56,14 +56,14 @@
     "image": null,
     "subItems": [
       {
-        "slug": "sub-slug",
+        "slug": "about-us",
         "title": "title",
         "teaser": "teaser",
         "icon": "icon",
-        "type": "id",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "9999-09-09T00:00:00+00:00",
-        "image": "image"
+        "type": "article",
+        "sunriseDate": "2016-01-10T00:00:00+00:00",
+        "sunsetDate": "2017-01-20T00:00:00+00:00",
+        "image": "image-url.jpg"
       }
     ],
     "secondaryItems": [

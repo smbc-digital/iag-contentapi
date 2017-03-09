@@ -84,15 +84,15 @@ namespace StockportContentApiTests.Integration
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
-                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-article").Include(2).Build()),
+                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-article").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
                                     new ContentfulEntryBuilder<ContentfulArticle>().Fields(
-                                    new ContentfulArticleBuilder().Slug("test-article").WithOutSection().Build()
+                                    new ContentfulArticleBuilder().Slug("test-article").Build()
                                     ).Build()
                                });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
-                                new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "about-us").Include(2).Build()),
+                                new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "about-us").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
                                     new ContentfulEntryBuilder<ContentfulArticle>().Fields(
                                     new ContentfulArticleBuilder().Slug("about-us").WithOutSection().Build()
@@ -100,10 +100,10 @@ namespace StockportContentApiTests.Integration
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
-                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-me").Include(2).Build()),
+                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-me").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
                                     new ContentfulEntryBuilder<ContentfulArticle>().Fields(
-                                    new ContentfulArticleBuilder().Slug("test-me").WithOutSection().Build()
+                                    new ContentfulArticleBuilder().Slug("test-me").Build()
                                     ).Build()
                                });
             });

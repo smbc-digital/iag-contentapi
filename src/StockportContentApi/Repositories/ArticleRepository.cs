@@ -39,7 +39,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<Entry<ContentfulArticle>>()
                 .ContentTypeIs("article")
                 .FieldEquals("fields.slug", articleSlug)
-                .Include(2);
+                .Include(3);
 
             var entries = await _client.GetEntriesAsync(builder);
 

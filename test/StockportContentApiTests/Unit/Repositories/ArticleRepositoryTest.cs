@@ -74,7 +74,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle} });
 
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));           
@@ -134,7 +134,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(2);
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle } });
 
             HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
