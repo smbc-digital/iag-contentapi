@@ -73,11 +73,32 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            paymentItem.ShouldBeEquivalentTo(rawPayment);
-            
+            paymentItem.ShouldBeEquivalentTo(rawPayment);            
         }
 
-        
+        [Fact]
+        public void ShouldReturn404ForNonExistentSlug()
+        {
+            // Arrange
+            const string slug = "invalid-url";
+
+            var rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
+
+            var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulPayment>(
+                It.Is<QueryBuilder<ContentfulPayment>>(
+                     q => q.Build() == builder.Build()),
+                     It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulPayment>());
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+            var paymentItem = response.Get<Payment>();
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
     }
 }
 
