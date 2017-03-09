@@ -41,5 +41,11 @@ namespace StockportContentApiTests.Unit.Builders
             _contentTypeSystemId = id;
             return this;
         }
+
+        public ContentfulEntryBuilder<T> SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
     }
 }

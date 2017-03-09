@@ -34,12 +34,20 @@ namespace StockportContentApi.ContentfulFactories
                 .Where(subItem => subItem.Fields != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            var secondaryItems = topicInBreadcrumb.Fields.SecondaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var tertiaryItems = topicInBreadcrumb.Fields.TertiaryItems.Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+            var secondaryItems = topicInBreadcrumb.Fields.SecondaryItems
+                .Select(CheckCurrentArticle)
+                .Where(subItem => subItem.Fields != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
+                .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
+            var tertiaryItems = topicInBreadcrumb.Fields.TertiaryItems
+                .Select(CheckCurrentArticle)
+                .Where(subItem => subItem.Fields != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
+                .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
             return new Topic(topicInBreadcrumb.Fields.Name, topicInBreadcrumb.Fields.Slug, subItems, secondaryItems, tertiaryItems);
         }
 
-        public Entry<ContentfulSubItem> CheckCurrentArticle(Entry<ContentfulSubItem> item)
+        private Entry<ContentfulSubItem> CheckCurrentArticle(Entry<ContentfulSubItem> item)
         {
             if (item.SystemProperties.Id != _entry.SystemProperties.Id) return item;
 

@@ -40,5 +40,17 @@ namespace StockportContentApiTests.Unit.Builders
             _title = title;
             return this;
         }
+
+        public ContentfulCrumbBuilder Slug(string slug)
+        {
+            _slug = slug;
+            return this;
+        }
+
+        public ContentfulCrumbBuilder SubItems(List<Entry<ContentfulSubItem>> subItems)
+        {
+            _subItems = subItems;
+            return this;
+        }
     }
 }

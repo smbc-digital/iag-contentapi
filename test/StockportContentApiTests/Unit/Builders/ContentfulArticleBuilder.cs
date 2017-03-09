@@ -66,6 +66,18 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public ContentfulArticleBuilder Title(string title)
+        {
+            _title = title;
+            return this;
+        }
+
+        public ContentfulArticleBuilder Breadcrumbs(List<Entry<ContentfulCrumb>> breadcrumbs)
+        {
+            _breadcrumbs = breadcrumbs;
+            return this;
+        }
+
         public ContentfulArticleBuilder WithOutSection()
         {
             _sections = new List<Entry<ContentfulSection>>();
