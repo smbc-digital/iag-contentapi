@@ -123,6 +123,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("RedirectDictionary", "/api/redirects")]
         [InlineData("Footer", "/api/unittest/footer")]
         [InlineData("Group", "/api/unittest/group/group_slug")]
+        [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
