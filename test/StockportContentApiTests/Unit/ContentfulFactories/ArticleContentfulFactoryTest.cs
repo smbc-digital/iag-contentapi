@@ -82,7 +82,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Excluding(e => e.LiveChat));
 
             article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Fields.Alerts.First().Fields);
-            article.LiveChat.ShouldBeEquivalentTo(_contentfulArticle.Fields.LiveChat.Fields);
+            article.LiveChat.ShouldBeEquivalentTo(_contentfulArticle.Fields.LiveChatText.Fields);
 
             _videoRepository.Verify(o => o.Process(_contentfulArticle.Fields.Body), Times.Once());
             article.Body.Should().Be(processedBody);
@@ -115,7 +115,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulArticle.Fields.Profiles.First().SystemProperties.Type = "Link";
             _contentfulArticle.Fields.ParentTopic.SystemProperties.Type = "Link";
             _contentfulArticle.Fields.Documents.First().SystemProperties.Type = "Link";
-            _contentfulArticle.Fields.LiveChat.SystemProperties.Type = "Link";
+            _contentfulArticle.Fields.LiveChatText.SystemProperties.Type = "Link";
 
             var article = _articleFactory.ToModel(_contentfulArticle);
 

@@ -46,7 +46,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Breadcrumbs = _breadcrumbs,
                 Documents = _documents,
                 Icon = _icon,
-                LiveChat = _liveChat,
+                LiveChatText = _liveChat,
                 LiveChatVisible = _liveChatVisible,
                 ParentTopic = _topic,
                 Profiles = _profiles,

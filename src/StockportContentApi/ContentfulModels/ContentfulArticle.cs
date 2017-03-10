@@ -38,7 +38,7 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool LiveChatVisible { get; set; } = false;
-        public Entry<LiveChat> LiveChat { get; set; } = new Entry<LiveChat>
+        public Entry<LiveChat> LiveChatText { get; set; } = new Entry<LiveChat>
         {
             Fields = new NullLiveChat(),
             SystemProperties = new SystemProperties { Type = "Entry" }

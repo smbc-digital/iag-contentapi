@@ -50,8 +50,8 @@ namespace StockportContentApi.ContentfulFactories
             var body = _videoRepository.Process(entry.Body);
             var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                      .Select(alert => alert.Fields);
-            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChat.SystemProperties) 
-                                ? entry.LiveChat.Fields : new NullLiveChat();
+            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.SystemProperties) 
+                                ? entry.LiveChatText.Fields : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
