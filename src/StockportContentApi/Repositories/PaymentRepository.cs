@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Config;
@@ -9,6 +10,7 @@ using StockportContentApi.Model;
 using System.Linq;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
@@ -23,6 +25,7 @@ namespace StockportContentApi.Repositories
         {
             _client = clientManager.GetClient(config);
             _paymentFactory = paymentFactory;
+
         }
 
         public async Task<HttpResponse> GetPayment(string slug)
@@ -34,6 +37,29 @@ namespace StockportContentApi.Repositories
             return entry == null 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No payment found for '{slug}'") 
                 : HttpResponse.Successful(_paymentFactory.ToModel(entry));
+        }
+
+        public async Task<HttpResponse> Get()
+        {
+            var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var entries = await _client.GetEntriesAsync(builder);
+            var contentfulPayments = entries as List<ContentfulPayment> ?? entries.ToList();          
+            
+            var payments = GetAllPayments(contentfulPayments);
+            return entries == null || !contentfulPayments.Any()
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No payments found")
+                : HttpResponse.Successful(payments);
+        }
+
+        private IEnumerable<Payment> GetAllPayments(IEnumerable<ContentfulPayment> entries)
+        {
+            var entriesList = new List<Payment>();
+            foreach (var entry in entries)
+            {
+                var paymentItem = _paymentFactory.ToModel(entry);
+                entriesList.Add(paymentItem);
+            }
+            return entriesList;
         }
     }
 }

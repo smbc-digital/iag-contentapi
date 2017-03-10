@@ -15,6 +15,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
+using StockportContentApiTests.Unit.Repositories;
 
 namespace StockportContentApiTests.Integration
 {
@@ -105,8 +106,13 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEntryBuilder<ContentfulArticle>().Fields(
                                     new ContentfulArticleBuilder().Slug("test-me").Build()
                                     ).Build()
-                               });
-            });
+                               });                              
+            httpClient.Setup(o => o.GetEntriesAsync(                            
+                                It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulPayment> {
+                                    new ContentfulPaymentBuilder().Slug("payment_slug").Build()
+                                });
+        });
         }
 
         [Theory]

@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Model
+﻿using System.Collections.Generic;
+
+namespace StockportContentApi.Model
 {
     public class Payment
     {
@@ -12,13 +14,13 @@
         public string GlCodeCostCentreNumber { get; }
 
         public Payment(string title,
-                       string slug,
-                       string description,
-                       string paymentDetailsText,
-                       string referenceLabel,
-                       string parisReference,
-                       string fund,
-                       string glCodeCostCentreNumber)
+            string slug,
+            string description,
+            string paymentDetailsText,
+            string referenceLabel,
+            string parisReference,
+            string fund,
+            string glCodeCostCentreNumber)
         {
             Title = title;
             Slug = slug;
