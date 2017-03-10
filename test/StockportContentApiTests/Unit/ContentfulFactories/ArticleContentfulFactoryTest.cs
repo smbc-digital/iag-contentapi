@@ -19,8 +19,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
-        private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
-        private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
+        private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;       
         private readonly ArticleContentfulFactory _articleFactory;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>> _parentTopicFactory;
