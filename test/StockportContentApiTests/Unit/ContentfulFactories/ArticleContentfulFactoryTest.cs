@@ -10,6 +10,7 @@ using FluentAssertions;
 using Moq;
 using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
+using StockportContentApi.Utils;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -23,6 +24,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly ArticleContentfulFactory _articleFactory;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>> _parentTopicFactory;
+        private readonly Mock<ITimeProvider> _timeProvider;
 
         public ArticleContentfulFactoryTest()
         {
@@ -39,8 +41,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>>();
 
+            _timeProvider = new Mock<ITimeProvider>();
+
+            _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object, 
-                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object);
+                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object);
         }
 
         [Fact]
@@ -139,5 +145,32 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             article.Documents.Count.Should().Be(0);
             _crumbFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()), Times.Never);
         }
+
+        [Fact]
+        public void ItShouldRemoveAlertsInlineThatArePastSunsetDateOrBeforeSunriseDate()
+        {
+
+            Entry<Alert> _visibleAlert = new Entry<Alert> { Fields = new Alert("title", "SubHeading", "Body", "severity", new DateTime(2016, 12, 01), new DateTime(2017, 02, 01)), SystemProperties = new SystemProperties() };
+            Entry<Alert> _invisibleAlert = new Entry<Alert> { Fields = new Alert("title", "SubHeading", "Body", "severity", new DateTime(2017, 05, 01), new DateTime(2017, 07, 01)), SystemProperties = new SystemProperties() };
+
+            var contentfulArticle = new ContentfulEntryBuilder<ContentfulArticle>().Fields(new ContentfulArticleBuilder().AlertsInline(new List<Entry<Alert>> { _visibleAlert, _invisibleAlert }).Build()).Build();
+
+            var article = _articleFactory.ToModel(contentfulArticle);
+
+            article.AlertsInline.Count().Should().Be(1);
+        }
+        [Fact]
+        public void ItShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate()
+        {
+            Entry<Alert> _visibleAlert = new Entry<Alert> { Fields = new Alert("title", "SubHeading", "Body", "severity", new DateTime(2016, 12, 01), new DateTime(2017, 02, 01)), SystemProperties = new SystemProperties() };
+            Entry<Alert> _invisibleAlert = new Entry<Alert> { Fields = new Alert("title", "SubHeading", "Body", "severity", new DateTime(2017, 05, 01), new DateTime(2017, 07, 01)), SystemProperties = new SystemProperties() };
+
+            var contentfulArticle = new ContentfulEntryBuilder<ContentfulArticle>().Fields(new ContentfulArticleBuilder().Alerts(new List<Entry<Alert>> { _visibleAlert, _invisibleAlert }).Build()).Build();
+
+            var article = _articleFactory.ToModel(contentfulArticle);
+
+            article.Alerts.Count().Should().Be(1);
+        }
+
     }
 }

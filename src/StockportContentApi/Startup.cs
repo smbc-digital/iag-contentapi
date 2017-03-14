@@ -110,7 +110,8 @@ namespace StockportContentApi
                                                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                     p.GetService<IContentfulFactory<Entry<ContentfulArticle>, Topic>>(),
                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
-                                                    p.GetService<IVideoRepository>()));
+                                                    p.GetService<IVideoRepository>(),
+                                                    p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<Entry<ContentfulArticle>, Topic>>(
                 p => new ParentTopicContentfulFactory(

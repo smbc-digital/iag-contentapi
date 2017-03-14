@@ -58,7 +58,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 _profileFactory.Object, 
                 _parentTopicFactory.Object,
                 documentFactory, 
-                _videoRepository.Object);
+                _videoRepository.Object,
+                _mockTimeProvider.Object);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();

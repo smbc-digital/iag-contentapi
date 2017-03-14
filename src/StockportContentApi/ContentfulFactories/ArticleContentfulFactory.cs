@@ -15,13 +15,15 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Entry<ContentfulArticle>, Topic> _parentTopicFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IVideoRepository _videoRepository;
+        private readonly DateComparer _dateComparer;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
             IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
             IContentfulFactory<Entry<ContentfulArticle>, Topic> parentTopicFactory,
             IContentfulFactory<Asset, Document> documentFactory,
-            IVideoRepository videoRepository)
+            IVideoRepository videoRepository,
+            ITimeProvider timeProvider)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
@@ -29,6 +31,7 @@ namespace StockportContentApi.ContentfulFactories
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
             _parentTopicFactory = parentTopicFactory;
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public Article ToModel(Entry<ContentfulArticle> entryContentfulArticle)
@@ -48,10 +51,15 @@ namespace StockportContentApi.ContentfulFactories
             var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                            .Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
-            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+
+            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
+                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
                                      .Select(alert => alert.Fields);
-            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+
+            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
+                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
                                      .Select(alertInline => alertInline.Fields);
+
             var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.SystemProperties) 
                                 ? entry.LiveChatText.Fields : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 

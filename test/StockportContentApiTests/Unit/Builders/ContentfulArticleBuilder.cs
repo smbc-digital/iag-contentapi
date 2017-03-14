@@ -87,5 +87,17 @@ namespace StockportContentApiTests.Unit.Builders
             _sections = new List<Entry<ContentfulSection>>();
             return this;
         }
+
+        public ContentfulArticleBuilder AlertsInline(List<Entry<Alert>> alertsInline)
+        {
+            _alertsInline = alertsInline;
+            return this;
+        }
+
+        public ContentfulArticleBuilder Alerts(List<Entry<Alert>> alerts)
+        {
+            _alerts = alerts;
+            return this;
+        }
     }
 }
