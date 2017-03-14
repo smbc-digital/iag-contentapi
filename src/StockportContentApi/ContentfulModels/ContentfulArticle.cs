@@ -35,6 +35,7 @@ namespace StockportContentApi.ContentfulModels
             SystemProperties = new SystemProperties { Type = "Entry" }
         };
         public List<Asset> Documents { get; set; } = new List<Asset>();
+        public List<Entry<Alert>> AlertsInline { get; set; } = new List<Entry<Alert>>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool LiveChatVisible { get; set; } = false;

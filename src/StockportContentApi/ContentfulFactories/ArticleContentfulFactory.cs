@@ -50,6 +50,8 @@ namespace StockportContentApi.ContentfulFactories
             var body = _videoRepository.Process(entry.Body);
             var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                      .Select(alert => alert.Fields);
+            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                     .Select(alertInline => alertInline.Fields);
             var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.SystemProperties) 
                                 ? entry.LiveChatText.Fields : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
@@ -59,7 +61,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
                 sections,breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                entry.LiveChatVisible, liveChat);
+                entry.LiveChatVisible, liveChat, alertsInline);
         }
     }
 }

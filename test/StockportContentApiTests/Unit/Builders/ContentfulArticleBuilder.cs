@@ -18,6 +18,9 @@ namespace StockportContentApiTests.Unit.Builders
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
+        private List<Entry<Alert>> _alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
+                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
 
         private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
         {
@@ -56,7 +59,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Sections = _sections,
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
-                Image = _image
+                Image = _image,
+                AlertsInline = _alertsInline
             };
         }
 

@@ -142,11 +142,26 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
+        [Fact]
+        public void ReturnsArticleWithInlineAlerts()
+        {            
+            const string slug = "unit-test-article-with-inline-alerts";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
+
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle } });
+            var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
+
+            var article = response.Get<Article>();
+            article.AlertsInline.Should().NotBeNull();
+        }
+
         private static Article EmptyArticle()
         {
             return new Article("", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
                 new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
-                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), false, new NullLiveChat());
+                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), false, new NullLiveChat(), new List<Alert>());
         }
     }
 }

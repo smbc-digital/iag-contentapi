@@ -20,6 +20,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Article", "article", "article")};
         private List<Document> _documents = new List<Document> { new Document("title", 22, DateTime.MinValue, "url", "fileName") };
         private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
+        private List<Alert> _alertsInline = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
         private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>()) };
         private Topic _parentTopic = new Topic("slug", "name", "teaser", "summary", "icon", "background", "image", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), 
                                                 new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id");
@@ -29,7 +30,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             return new Article(_body, _slug, _title, _teaser, _icon, _backgroundImage, _image, _sections, 
                 _breadcrumbs, _alerts, _profiles, _parentTopic, _documents, _sunriseDate, 
-                _sunsetDate, _liveChatVisible, _liveChat);
+                _sunsetDate, _liveChatVisible, _liveChat , _alertsInline);
         }
 
         public ArticleBuilder SunriseDate(DateTime sunriseDate)

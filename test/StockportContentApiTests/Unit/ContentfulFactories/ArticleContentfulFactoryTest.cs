@@ -78,6 +78,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Excluding(e => e.Breadcrumbs)
                 .Excluding(e => e.Body)
                 .Excluding(e => e.Alerts)
+                .Excluding(e => e.AlertsInline)
                 .Excluding(e => e.LiveChat));
 
             article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Fields.Alerts.First().Fields);

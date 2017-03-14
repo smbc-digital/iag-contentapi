@@ -62,6 +62,16 @@
 
     }
   ],
+  "alertsInline": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z"
+    }
+  ],
   "profiles": [
     {
       "type": "type",
