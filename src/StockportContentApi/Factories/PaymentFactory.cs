@@ -20,15 +20,16 @@ namespace StockportContentApi.Factories
 
             string title = fields.title;
             string slug = fields.slug;
+            string teaser = fields.teaser;
             string description = fields.description;
             string paymentDetailsText = fields.paymentDetailsText;
             string referenceLabel = fields.referenceLabel;
             string parisReference = fields.parisReference;
             string fund = fields.fund;
             string glCodeCostCentreNumber = fields.glCodeCostCentreNumber;
+            var breadcrumbs = _breadcrumbFactory.BuildFromReferences(fields.breadcrumbs, contentfulResponse);
 
-
-            return new Payment(title, slug, description, paymentDetailsText, referenceLabel, parisReference, fund, glCodeCostCentreNumber);
+            return new Payment(title, slug, teaser, description, paymentDetailsText, referenceLabel, parisReference, fund, glCodeCostCentreNumber, breadcrumbs);
         }
     }
 }

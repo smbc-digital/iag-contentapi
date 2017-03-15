@@ -1,17 +1,24 @@
-﻿using StockportContentApi.ContentfulModels;
+﻿using Contentful.Core.Models;
+using StockportContentApi.ContentfulModels;
+using StockportContentApiTests.Unit.Builders;
+using System.Collections.Generic;
+using StockportContentApi.Model;
 
-namespace StockportContentApiTests.Unit.Repositories
+namespace StockportContentApiTests.Unit.Builders
 {
     internal class ContentfulPaymentBuilder
     {
         private string _title = "title";
         private string _slug = "slug";
+        private string _teaser = "teaser";
         private string _description = "description";
         private string _paymentDetailsText = "paymentDetailsText";
         private string _referenceLabel = "referenceLabel";
         private string _parisReference = "parisReference";
         private string _fund = "fund";
         private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
+        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
+            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
 
         public ContentfulPayment Build()
         {
@@ -19,12 +26,14 @@ namespace StockportContentApiTests.Unit.Repositories
             {
                 Title = _title,
                 Slug = _slug,
+                Teaser = _teaser,
                 Description = _description,
                 PaymentDetailsText = _paymentDetailsText,
                 ReferenceLabel = _referenceLabel,
                 ParisReference = _parisReference,
                 Fund = _fund,
-                GlCodeCostCentreNumber = _glCodeCostCentreNumber
+                GlCodeCostCentreNumber = _glCodeCostCentreNumber,
+                Breadcrumbs = _breadcrumbs
             };
         }
 
@@ -37,6 +46,12 @@ namespace StockportContentApiTests.Unit.Repositories
         public ContentfulPaymentBuilder Title(string title)
         {
             _title = title;
+            return this;
+        }
+
+        public ContentfulPaymentBuilder Teaser(string teaser)
+        {
+            _teaser = teaser;
             return this;
         }
 
@@ -73,6 +88,13 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _glCodeCostCentreNumber = glCodeCostCentreNumber;
             return this;
+        }
+
+        public ContentfulPaymentBuilder Breadcrumbs(List<Entry<ContentfulCrumb>> breadcrumbs)
+        {
+            _breadcrumbs = breadcrumbs;
+            return this;
+
         }
     }
 }
