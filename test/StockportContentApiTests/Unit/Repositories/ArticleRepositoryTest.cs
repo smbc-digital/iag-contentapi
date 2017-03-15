@@ -146,16 +146,62 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ReturnsArticleWithInlineAlerts()
         {            
+            // Arrange
             const string slug = "unit-test-article-with-inline-alerts";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
-
-            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
+            List<Entry<Alert>> alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
+                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).AlertsInline(alertsInline).Build();
             var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle } });
+            _contentfulClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<Entry<ContentfulArticle>>>(
+                        q => q.Build() == builder.Build()), 
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Entry<ContentfulArticle>> {
+                    new Entry<ContentfulArticle>() { Fields = rawArticle } });
+
+            // Act
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
 
+            // Assert
             var article = response.Get<Article>();
             article.AlertsInline.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void ReturnsArticleWithASectionThatHasAnInlineAlert()
+        {
+            // Arrange
+            const string slug = "unit-test-article-with-section-with-inline-alerts";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
+            var alert = new Alert("title", "subHeading", "body", "severity",
+                        new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                        new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc));
+            var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<Entry<ContentfulArticle>>>(
+                        q => q.Build() == builder.Build()),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Entry<ContentfulArticle>> {
+                    new Entry<ContentfulArticle>() { Fields = rawArticle } });
+            _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
+                "title",
+                "section-with-inline-alerts",
+                "body",
+                new List<Profile>(),
+                new List<Document>(),
+                new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                new List<Alert> { alert }));
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
+
+            // Assert
+            var article = response.Get<Article>();
+            article.Sections[0].AlertsInline.Should().Equal(alert);
         }
 
         private static Article EmptyArticle()

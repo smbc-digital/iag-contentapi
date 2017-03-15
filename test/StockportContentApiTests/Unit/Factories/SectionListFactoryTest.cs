@@ -21,6 +21,7 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory;
         private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, new DateTime(2016, 12, 08), "/thisisaurl", "filename1.pdf"),
                                                                             new Document("Title 2", 3412, new DateTime(2016, 12, 09), "/anotherurl", "filename2.pdf") };
+        private readonly Mock<IBuildContentTypesFromReferences<Alert>> _mockAlertListFactory;
 
         public SectionListFactoryTest()
         {
@@ -29,8 +30,13 @@ namespace StockportContentApiTests.Unit.Factories
                 o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(_documents);
 
+            _mockAlertListFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
+            _mockAlertListFactory.Setup(
+                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
+                .Returns(new List<Alert>());
+
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _sectionListFactory = new SectionListFactory(new ProfileListFactory(), _mockDocumentListFactory.Object,_mockTimeProvider.Object);
+            _sectionListFactory = new SectionListFactory(new ProfileListFactory(), _mockDocumentListFactory.Object,_mockTimeProvider.Object, _mockAlertListFactory.Object);
         }
 
         [Fact]

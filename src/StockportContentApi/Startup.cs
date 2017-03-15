@@ -90,7 +90,8 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                                                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
-                                                                                                                    p.GetService<IVideoRepository>()));
+                                                                                                                    p.GetService<IVideoRepository>(),
+                                                                                                                    p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
                                                                                                                     p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
                                                                                                                     p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),

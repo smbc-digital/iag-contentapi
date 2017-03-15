@@ -11,12 +11,17 @@ namespace StockportContentApi.Factories
         private readonly IBuildContentTypesFromReferences<Profile> _profileListFactory;
         private readonly IBuildContentTypesFromReferences<Document> _documentListFactory;
         private readonly ITimeProvider _timeProvider;
+        private readonly IBuildContentTypesFromReferences<Alert> _alertListFactory;
 
-        public SectionListFactory(IBuildContentTypesFromReferences<Profile> profileListFactory, IBuildContentTypesFromReferences<Document> documentListFactory, ITimeProvider timeProvider)
+        public SectionListFactory(IBuildContentTypesFromReferences<Profile> profileListFactory, 
+                                  IBuildContentTypesFromReferences<Document> documentListFactory, 
+                                  ITimeProvider timeProvider, 
+                                  IBuildContentTypesFromReferences<Alert> alertListFactory)
         {
             _profileListFactory = profileListFactory;
             _documentListFactory = documentListFactory;
             _timeProvider = timeProvider;
+            _alertListFactory = alertListFactory;
         }
 
         public IEnumerable<Section> BuildFromReferences(IEnumerable<dynamic> references, IContentfulIncludes contentfulResponse)
@@ -48,7 +53,9 @@ namespace StockportContentApi.Factories
             DateTime sunriseDate = DateComparer.DateFieldToDate(entry.fields.sunriseDate);
             DateTime sunsetDate = DateComparer.DateFieldToDate(entry.fields.sunsetDate);
 
-            return new Section(title, slug, body, profiles, documents,sunriseDate,sunsetDate);
+            var alertsInline = _alertListFactory.BuildFromReferences(entry.fields.alertsInline, contentfulResponse);
+
+            return new Section(title, slug, body, profiles, documents,sunriseDate,sunsetDate, alertsInline);
         }
 
     }
