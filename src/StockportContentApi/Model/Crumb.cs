@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Model
+﻿using System.Collections.Generic;
+
+namespace StockportContentApi.Model
 {
     public class Crumb
     {     

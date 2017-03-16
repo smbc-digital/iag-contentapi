@@ -6,58 +6,68 @@ using System.Net;
 using System.Threading.Tasks;
 using StockportContentApi.Factories;
 using StockportContentApi.Utils;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.Client;
+using Contentful.Core.Search;
+using System.Linq;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.Repositories
 {
     public class ArticleRepository
-    {
-        private readonly string _contentfulApiUrl;
-        private readonly ContentfulClient _contentfulClient;
-        private readonly IFactory<Article> _articleFactory;
+    {        
+        private readonly IContentfulFactory<Entry<ContentfulArticle>, Article> _contentfulFactory;
+        private readonly DateComparer _dateComparer;      
+        private readonly Contentful.Core.IContentfulClient _client;
         private readonly IVideoRepository _videoRepository;
-        private readonly ITimeProvider _timeProvider;
-        private readonly DateComparer _dateComparer;
 
-        public ArticleRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Article> articleFactory, IVideoRepository videoRepository, ITimeProvider timeProvider)
+        public ArticleRepository(ContentfulConfig config,
+            IContentfulClientManager contentfulClientManager, 
+            ITimeProvider timeProvider,
+            IContentfulFactory<Entry<ContentfulArticle>, Article> contentfulFactory, 
+            IVideoRepository videoRepository)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
-            _articleFactory = articleFactory;
+            _contentfulFactory = contentfulFactory;
+            _dateComparer = new DateComparer(timeProvider);
+            _client = contentfulClientManager.GetClient(config);
             _videoRepository = videoRepository;
-            _timeProvider = timeProvider;
-            _dateComparer = new DateComparer(_timeProvider);
         }
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
-            const int referenceLevelLimit = 2;
-            var contentfulArticle = await _contentfulClient.Get(UrlFor("article", referenceLevelLimit, articleSlug));
+            var builder = new QueryBuilder<Entry<ContentfulArticle>>()
+                .ContentTypeIs("article")
+                .FieldEquals("fields.slug", articleSlug)
+                .Include(3);
 
-            if (!contentfulArticle.HasItems())
-                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+            var entries = await _client.GetEntriesAsync(builder);
 
-            var entry = contentfulArticle.GetFirstItem();
-            var article = _articleFactory.Build(entry, contentfulArticle);
+            var entry = entries.FirstOrDefault();
 
-            foreach (var section in article.Sections)
+            var articleItem = entry == null
+                            ? null
+                            : _contentfulFactory.ToModel(entry);
+
+            if (articleItem != null)
             {
-                section.Body = _videoRepository.Process(section.Body);
+                foreach (var section in articleItem.Sections)
+                {
+                    if (section != null)
+                        section.Body = _videoRepository.Process(section.Body);
+                }
+
+                articleItem.Body = _videoRepository.Process(articleItem.Body);
+
+                if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(articleItem.SunriseDate, articleItem.SunsetDate))
+                {
+                    articleItem = null;
+                }         
             }
-            
-           if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate,article.SunsetDate)) article = new NullArticle();
 
-            article.Body = _videoRepository.Process(article.Body);
-
-            return article.GetType() == typeof(NullArticle)
+            return articleItem == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'")
-                : HttpResponse.Successful(article);
-        }
-
-        private string UrlFor(string type, int referenceLevel, string slug = null)
-        {
-            return slug == null
-                ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
-                : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }      
+                : HttpResponse.Successful(articleItem);          
+        }     
     }
 }

@@ -29,7 +29,9 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var repository = _createRepository(_createConfig(businessId));
-                return repository.GetArticle(articleSlug);
+                var article = repository.GetArticle(articleSlug);
+
+                return article;
             });
         }
     }

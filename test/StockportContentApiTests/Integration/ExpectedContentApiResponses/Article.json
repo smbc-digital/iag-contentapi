@@ -1,117 +1,171 @@
 ﻿{
-  "body": "An article made for unit testing body text\n\n{{PROFILE: profile-no-pic}}",
-  "slug": "unit-test-article",
-  "title": "Unit Test Article",
-  "teaser": "An article made for unit testing",
+  "body": "body",
+  "slug": "test-article",
+  "title": "title",
+  "teaser": "teaser",
   "icon": "icon",
-  "backgroundImage": "image.jpg",
-  "image": "image.jpg",
+  "backgroundImage": "image-url.jpg",
+  "image": "image-url.jpg",
   "sections": [
     {
-      "title": "Change of circumstances",
-      "slug": "change-of-circumstances",
-      "body": "Body content",
-      "profiles": [],
-      "documents": [
+      "title": "title",
+      "slug": "slug",
+      "body": "body",
+      "profiles": [
         {
-          "title": "document",
-          "size": 674192,
-          "url": "document.pdf",
-          "lastUpdated": "2016-10-05T11:09:48",
-          "fileName": "document.pdf"
+          "type": "type",
+          "title": "title",
+          "slug": "slug",
+          "subtitle": "subtitle",
+          "teaser": "teaser",
+          "image": "image-url.jpg",
+          "body": "body",
+          "icon": "icon",
+          "backgroundImage": "background-image-url.jpg",
+          "breadcrumbs": [
+            {
+              "title": "title",
+              "slug": "slug",
+              "type": "id"
+            }
+          ]
         }
       ],
-      "sunriseDate": "2015-12-31T23:00:00+00:00",
-      "sunsetDate": "2017-12-31T23:00:00+00:00"
+      "alertsInline": [
+        {
+          "title": "title",
+          "subHeading": "subHeading",
+          "body": "body",
+          "severity": "severity",
+          "sunriseDate": "0001-01-01T00:00:00Z",
+          "sunsetDate": "9999-09-09T00:00:00Z"
+        }
+      ],
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00Z",
+          "fileName": "fileName"
+        }
+      ],
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z"
     }
   ],
   "breadcrumbs": [
     {
-      "title": "Simple Topic",
-      "slug": "simple-topic",
+      "title": "title",
+      "slug": "slug",
       "type": "topic"
     }
   ],
-  "alerts": [],
+  "alerts": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z"
+    }
+  ],
+  "alertsInline": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z"
+    }
+  ],
   "profiles": [
     {
-      "type": "Success Story",
-      "title": "Profile with no pic",
-      "slug": "profile-no-pic",
-      "subtitle": "all the deets",
-      "teaser": "teasers are fun",
-      "image": "",
-      "body": null,
-      "icon": null,
-      "backgroundImage": null,
-      "breadcrumbs": null
+      "type": "type",
+      "title": "title",
+      "slug": "slug",
+      "subtitle": "subtitle",
+      "teaser": "teaser",
+      "image": "image-url.jpg",
+      "body": "body",
+      "icon": "icon",
+      "backgroundImage": "background-image-url.jpg",
+      "breadcrumbs": [
+        {
+          "title": "title",
+          "slug": "slug",
+          "type": "id"
+        }
+      ]
     }
   ],
   "parentTopic": {
-    "slug": "simple-topic",
-    "name": "Simple Topic",
-    "teaser": "topic for unit test",
-    "summary": "Topic Summary",
-    "icon": "",
-    "backgroundImage": "",
-    "image": "",
+    "slug": "slug",
+    "name": "name",
+    "teaser": null,
+    "summary": null,
+    "icon": null,
+    "backgroundImage": null,
+    "image": null,
     "subItems": [
       {
-        "slug": "how-to-pay-council-tax",
-        "title": "How to pay council tax",
-        "teaser": "ways to pay council tax",
-        "icon": "",
+        "slug": "test-article",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
         "type": "article",
-        "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00",
-        "image": "image.jpg"
+        "sunriseDate": "2016-01-10T00:00:00Z",
+        "sunsetDate": "2017-01-20T00:00:00Z",
+        "image": "image-url.jpg"
       }
     ],
     "secondaryItems": [
       {
-        "slug": "standalone-article",
-        "title": "Standalone article",
-        "teaser": "required",
-        "icon": "si-house",
+        "slug": "test-article",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
         "type": "article",
-        "sunriseDate": "0001-01-01T00:00:00+00:00",
-        "sunsetDate": "0001-01-01T00:00:00+00:00",
-        "image": "image.jpg"
+        "sunriseDate": "2016-01-10T00:00:00Z",
+        "sunsetDate": "2017-01-20T00:00:00Z",
+        "image": "image-url.jpg"
       }
     ],
     "tertiaryItems": [
       {
-        "slug": "bins-and-recycling",
-        "title": "Bins & Recycling",
-        "teaser": "Collection days, bulky items",
-        "icon": "si-bin",
-        "type": "topic",
-        "sunriseDate": "2015-12-31T23:00:00+00:00",
-        "sunsetDate": "2017-12-31T23:00:00+00:00",
-        "image": "image.jpg"
+        "slug": "test-article",
+        "title": "title",
+        "teaser": "teaser",
+        "icon": "icon",
+        "type": "article",
+        "sunriseDate": "2016-01-10T00:00:00Z",
+        "sunsetDate": "2017-01-20T00:00:00Z",
+        "image": "image-url.jpg"
       }
     ],
-    "breadcrumbs": [],
-    "alerts": [],
-    "sunriseDate": "0001-01-01T00:00:00+00:00",
-    "sunsetDate": "0001-01-01T00:00:00+00:00",
+    "breadcrumbs": null,
+    "alerts": null,
+    "sunriseDate": "0001-01-01T00:00:00Z",
+    "sunsetDate": "0001-01-01T00:00:00Z",
     "emailAlerts": false,
-    "emailAlertsTopicId": ""
+    "emailAlertsTopicId": null
   },
   "documents": [
     {
-      "title": "document",
+      "title": "documentTitle",
       "size": 674192,
-      "url": "document.pdf",
-      "lastUpdated": "2016-10-05T11:09:48",
-      "fileName": "document.pdf"
+      "url": "url.pdf",
+      "lastUpdated": "2016-10-05T00:00:00Z",
+      "fileName": "fileName"
     }
   ],
-  "sunriseDate": "2015-12-31T23:00:00+00:00",
-  "sunsetDate": "2017-12-31T23:00:00+00:00",
-  "liveChatVisible": true,
+  "sunriseDate": "2016-01-10T00:00:00Z",
+  "sunsetDate": "2017-01-20T00:00:00Z",
+  "liveChatVisible": false,
   "liveChat": {
-    "title": "Title",
-    "text": "Text"
-  }
-}
+    "title": "title",
+    "text": 
+      "text"
+}}

@@ -21,7 +21,17 @@ namespace StockportContentApi.Model
         public DateTime SunsetDate { get; }
         public bool EmailAlerts { get; }
         public string EmailAlertsTopicId { get; }
-        
+
+        public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
+            IEnumerable<SubItem> tertiaryItems)
+        {
+            Name = title;
+            Slug = slug;
+            SubItems = subItems;
+            SecondaryItems = secondayItems;
+            TertiaryItems = tertiaryItems;
+        }
+
         public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage, 
             string image,IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, 

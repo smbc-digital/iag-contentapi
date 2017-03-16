@@ -20,7 +20,7 @@ namespace StockportContentApi.ContentfulModels
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }
         };
-        public Asset image { get; set; } = new Asset
+        public Asset Image { get; set; } = new Asset
         {
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }
@@ -35,10 +35,11 @@ namespace StockportContentApi.ContentfulModels
             SystemProperties = new SystemProperties { Type = "Entry" }
         };
         public List<Asset> Documents { get; set; } = new List<Asset>();
+        public List<Entry<Alert>> AlertsInline { get; set; } = new List<Entry<Alert>>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool LiveChatVisible { get; set; } = false;
-        public Entry<LiveChat> LiveChat { get; set; } = new Entry<LiveChat>
+        public Entry<LiveChat> LiveChatText { get; set; } = new Entry<LiveChat>
         {
             Fields = new NullLiveChat(),
             SystemProperties = new SystemProperties { Type = "Entry" }

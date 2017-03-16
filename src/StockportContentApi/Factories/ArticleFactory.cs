@@ -63,8 +63,10 @@ namespace StockportContentApi.Factories
             // find the parent topic from the breadcrumbs (the last topic in the list)
             var parentTopicFromTheBreadcrumb = BuildParentTopic(fields.breadcrumbs, contentfulResponse);
 
+            var alertsInline = _alertListFactory.BuildFromReferences(fields.alertsInline, contentfulResponse);
+
             return new Article(body, slug, title, teaser, icon, backgroundImage, image, sections, breadcrumbs, alerts, 
-                profiles, parentTopicFromTheBreadcrumb, documents,sunriseDate, sunsetDate, liveChatVisible, liveChat);
+                profiles, parentTopicFromTheBreadcrumb, documents,sunriseDate, sunsetDate, liveChatVisible, liveChat, alertsInline);
         }
 
         private Topic BuildParentTopic(dynamic references, IContentfulIncludes contentfulResponse)

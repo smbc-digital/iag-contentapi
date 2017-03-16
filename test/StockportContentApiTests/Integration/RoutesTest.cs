@@ -15,6 +15,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
+using StockportContentApiTests.Unit.Repositories;
 
 namespace StockportContentApiTests.Integration
 {
@@ -77,11 +78,41 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulTopicBuilder().Slug("topic_slug").Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
+                                It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == 
+                                new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> {
                                     new ContentfulProfileBuilder().Slug("profile_slug").Build()
                                 });
-            });
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
+                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-article").Include(3).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
+                                    new ContentfulEntryBuilder<ContentfulArticle>().Fields(
+                                    new ContentfulArticleBuilder().Slug("test-article").Build()
+                                    ).Build()
+                               });
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
+                                new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "about-us").Include(3).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
+                                    new ContentfulEntryBuilder<ContentfulArticle>().Fields(
+                                    new ContentfulArticleBuilder().Slug("about-us").WithOutSection().Build()
+                                    ).Build()
+                                });
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() ==
+                               new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", "test-me").Include(3).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> {
+                                    new ContentfulEntryBuilder<ContentfulArticle>().Fields(
+                                    new ContentfulArticleBuilder().Slug("test-me").Build()
+                                    ).Build()
+                               });                              
+            httpClient.Setup(o => o.GetEntriesAsync(                            
+                                It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulPayment> {
+                                    new ContentfulPaymentBuilder().Slug("payment_slug").Build()
+                                });
+        });
         }
 
         [Theory]
@@ -98,6 +129,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("RedirectDictionary", "/api/redirects")]
         [InlineData("Footer", "/api/unittest/footer")]
         [InlineData("Group", "/api/unittest/group/group_slug")]
+        [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

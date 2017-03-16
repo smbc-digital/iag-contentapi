@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -15,6 +16,9 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
             new ContentfulEntryBuilder<ContentfulProfile>().Fields(new ContentfulProfileBuilder().Build()).Build() };
+        private List<Entry<Alert>> _alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
+                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
 
         public ContentfulSection Build()
         {
@@ -26,7 +30,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Profiles = _profiles,
                 Documents = _documents,
                 SunriseDate = _sunriseDate,
-                SunsetDate = _sunsetDate
+                SunsetDate = _sunsetDate,
+                AlertsInline = _alertsInline
             };
         }
     }

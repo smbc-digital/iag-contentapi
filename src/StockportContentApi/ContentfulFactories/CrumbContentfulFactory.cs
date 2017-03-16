@@ -9,6 +9,7 @@ namespace StockportContentApi.ContentfulFactories
         public Crumb ToModel(Entry<ContentfulCrumb> entry)
         {
             var title = !string.IsNullOrEmpty(entry.Fields.Title) ? entry.Fields.Title : entry.Fields.Name;
+
             return new Crumb(title, entry.Fields.Slug, entry.SystemProperties.ContentType.SystemProperties.Id);
         }
     }

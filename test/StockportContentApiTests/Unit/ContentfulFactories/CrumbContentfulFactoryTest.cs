@@ -4,6 +4,8 @@ using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulModels;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulFactories;
+using Moq;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

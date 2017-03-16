@@ -10,6 +10,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using StockportContentApi.Utils;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -20,6 +21,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
         private readonly Mock<IVideoRepository> _videoRepository;
         private readonly SectionContentfulFactory _sectionFactory;
+        private readonly Mock<ITimeProvider> _timeProvider;
 
         public SectionContentfulFactoryTest()
         {
@@ -27,8 +29,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _videoRepository = new Mock<IVideoRepository>();
+            _timeProvider = new Mock<ITimeProvider>();
+
+            _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+
             _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
-                _videoRepository.Object);
+                _videoRepository.Object, _timeProvider.Object);
         }
 
         [Fact]
@@ -45,7 +51,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             section.ShouldBeEquivalentTo(_contentfulSection, o => o.Excluding(e => e.Profiles)
                                                                   .Excluding(e => e.Documents)
-                                                                  .Excluding(e => e.Body));
+                                                                  .Excluding(e => e.Body)
+                                                                  .Excluding(e => e.AlertsInline));
 
             _videoRepository.Verify(o => o.Process(_contentfulSection.Body), Times.Once());
             section.Body.Should().Be(processedBody);
