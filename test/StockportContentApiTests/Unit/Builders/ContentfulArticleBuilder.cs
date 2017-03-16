@@ -99,5 +99,11 @@ namespace StockportContentApiTests.Unit.Builders
             _alerts = alerts;
             return this;
         }
+
+        public ContentfulArticleBuilder Body(string body)
+        {
+            _body = body;
+            return this;
+        }
     }
 }

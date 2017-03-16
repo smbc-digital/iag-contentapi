@@ -50,7 +50,8 @@ namespace StockportContentApi.ContentfulFactories
 
             var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                            .Select(document => _documentFactory.ToModel(document)).ToList();
-            var body = _videoRepository.Process(entry.Body);
+
+            var body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty;
 
             var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))

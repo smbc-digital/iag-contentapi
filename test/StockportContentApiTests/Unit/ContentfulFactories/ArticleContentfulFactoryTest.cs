@@ -172,5 +172,19 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             article.Alerts.Count().Should().Be(1);
         }
 
+        [Fact]
+        public void ShouldParseArticleIfBodyIsNull()
+        {
+            var contentfulArticle = new ContentfulEntryBuilder<ContentfulArticle>()
+                .Fields(new ContentfulArticleBuilder().Title("title").Body(null).Build())
+                .Build();
+
+            var article = _articleFactory.ToModel(contentfulArticle);
+
+            article.Should().BeOfType<Article>();
+            article.Body.Should().Be(string.Empty);
+            article.Title.Should().Be("title");
+        }
+
     }
 }
