@@ -12,14 +12,17 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IVideoRepository _videoRepository;
+        private readonly DateComparer _dateComparer;
 
         public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
                                         IContentfulFactory<Asset, Document> documentFactory,
-                                        IVideoRepository videoRepository)
+                                        IVideoRepository videoRepository,
+                                        ITimeProvider timeProvider)
         {
             _profileFactory = profileFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public Section ToModel(ContentfulSection entry)
@@ -30,8 +33,12 @@ namespace StockportContentApi.ContentfulFactories
                                            .Select(document => _documentFactory.ToModel(document)).ToList();
             var body = _videoRepository.Process(entry.Body);
 
+            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
+                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
+                                     .Select(alertInline => alertInline.Fields);
+
             return new Section(entry.Title, entry.Slug, body, profiles, documents, 
-                               entry.SunriseDate, entry.SunsetDate);
+                               entry.SunriseDate, entry.SunsetDate, alertsInline);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -11,7 +10,6 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -25,11 +23,10 @@ namespace StockportContentApiTests.Unit.Repositories
     public class PaymentRepositoryTest
     {
         private readonly PaymentRepository _repository;
-        private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IHttpClient> _httpClient;
-        private readonly Mock<IContentfulFactory<ContentfulPayment, Payment>> _paymentFactory;
-        
+        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+
         public PaymentRepositoryTest()
         {
             var config = new ContentfulConfig("test")
@@ -38,7 +35,12 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
-            var contentfulFactory = new PaymentContentfulFactory();
+            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+
+            _crumbFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>()))
+                .Returns(new Crumb("title", "slug", "title"));
+
+            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object);
             _httpClient = new Mock<IHttpClient>();
             
             var contentfulClientManager = new Mock<IContentfulClientManager>();
@@ -101,7 +103,13 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            paymentItem.ShouldBeEquivalentTo(rawPayment);            
+            paymentItem.Description.Should().Be(rawPayment.Description);
+            paymentItem.Title.Should().Be(rawPayment.Title);
+            paymentItem.Teaser.Should().Be(rawPayment.Teaser);
+            paymentItem.Slug.Should().Be(rawPayment.Slug);
+            paymentItem.PaymentDetailsText.Should().Be(rawPayment.PaymentDetailsText);
+            paymentItem.ParisReference.Should().Be(rawPayment.ParisReference);
+            paymentItem.Breadcrumbs.First().Title.Should().Be("title");
         }
 
         [Fact]

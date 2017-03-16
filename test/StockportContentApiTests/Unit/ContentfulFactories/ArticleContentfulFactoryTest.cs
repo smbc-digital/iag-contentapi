@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             const string processedBody = "this is processed body";
             _videoRepository.Setup(o => o.Process(_contentfulArticle.Fields.Body)).Returns(processedBody);
             var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(),
-                DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime());
+                DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), new List<Alert>());
             _sectionFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Sections.First().Fields)).Returns(section);
             var crumb = new Crumb("title", "slug", "type");
             _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Fields.Breadcrumbs.First())).Returns(crumb);

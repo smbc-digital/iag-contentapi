@@ -61,7 +61,7 @@ namespace StockportContentApiTests.Unit.Factories
 
 
             _breadcrumbFactory = new BreadcrumbFactory();
-            _sectionListFactory = new SectionListFactory(new ProfileListFactory(), _mockDocumentListFactory.Object, _mockTimeProvider.Object);
+            _sectionListFactory = new SectionListFactory(new ProfileListFactory(), _mockDocumentListFactory.Object, _mockTimeProvider.Object, _mockAlertListFactory.Object);
             _profileListFactory = new ProfileListFactory();
             _articleFactory = new ArticleFactory(_mockTopicBuilder.Object, _mockAlertListFactory.Object, _breadcrumbFactory, _sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object, _liveChatListFactory.Object);
         }
