@@ -38,7 +38,7 @@ namespace StockportContentApi.ContentfulFactories
         {
             var entry = entryContentfulArticle.Fields;
 
-            var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+            var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
                                          .Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
             var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
