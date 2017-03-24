@@ -100,6 +100,8 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
+                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulTopic>, Topic>>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
@@ -124,12 +126,18 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
                 p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<Entry<ContentfulArticle>, Article>>(), p.GetService<IVideoRepository>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
+               p => { return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(), p.GetService<IContentfulClientManager>()); });
+
             services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
                 p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
                 p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroup, Group>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, HomepageRepository>>(
                 p => { return x => new HomepageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<Homepage>>()); });
             services.AddSingleton<Func<ContentfulConfig, StartPageRepository>>(
@@ -156,7 +164,7 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<Topic>, TopicFactory>();
             services.AddSingleton<IFactory<Profile>, ProfileFactory>();
             services.AddSingleton<IFactory<Group>, GroupFactory>();
-            services.AddSingleton<IFactory<Payment>, PaymentFactory>();
+            //services.AddSingleton<IFactory<Payment>, PaymentFactory>();
             services.AddSingleton<IFactory<News>, NewsFactory>();
             services.AddSingleton<IFactory<Newsroom>, NewsroomFactory>();
             services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();

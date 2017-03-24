@@ -13,6 +13,7 @@ using Moq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
 using StockportContentApiTests.Unit.Repositories;
@@ -112,7 +113,13 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulPayment> {
                                     new ContentfulPaymentBuilder().Slug("payment_slug").Build()
                                 });
-        });
+
+            httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulShowcase> {
+                                    new ContentfulShowcaseBuilder().Slug("showcase_slug").Build()
+                                });
+            });
         }
 
         [Theory]
@@ -130,6 +137,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Footer", "/api/unittest/footer")]
         [InlineData("Group", "/api/unittest/group/group_slug")]
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
+        //[InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

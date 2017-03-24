@@ -4,7 +4,7 @@ using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulSubhomepage
+    public class ContentfulShowcase
     {
         public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;

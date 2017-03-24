@@ -7,19 +7,17 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class SubhomepageContentfulFactory : IContentfulFactory<Entry<ContentfulSubhomepage>, Subhomepage>
+    public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
         private readonly IContentfulFactory<Entry<ContentfulTopic>, Topic> _topicFactory;
 
-        public SubhomepageContentfulFactory(IContentfulFactory<Entry<ContentfulTopic>, Topic> topicFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulTopic>, Topic> topicFactory)
         {
             _topicFactory = topicFactory;
         }
 
-        public Subhomepage ToModel(Entry<ContentfulSubhomepage> entryContentfulSubhomepage)
+        public Showcase ToModel(ContentfulShowcase entry)
         {
-            var entry = entryContentfulSubhomepage.Fields;
-
             var title = !string.IsNullOrEmpty(entry.Title)
                 ? entry.Title
                 : "";
@@ -40,11 +38,13 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Subheading
                 : "";
 
+            var test = _topicFactory.ToModel(entry.FeaturedTopic[0]);
+
             var featuredTopic =
                 entry.FeaturedTopic.Where(topic => ContentfulHelpers.EntryIsNotALink(topic.SystemProperties))
                     .Select(topic => _topicFactory.ToModel(topic)).ToList();
 
-            return new Subhomepage(slug, title, featuredTopic, heroImage, subHeading, teaser);
+            return new Showcase(slug, title, featuredTopic, heroImage, subHeading, teaser);
         }
     }
 }

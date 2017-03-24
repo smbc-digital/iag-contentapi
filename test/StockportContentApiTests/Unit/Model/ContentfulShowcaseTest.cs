@@ -10,13 +10,13 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
 {
-    public class ContentfulSubhomepageTest
+    public class ContentfulShowcaseTest
     {
         [Fact]
         public void ShouldSetDefaultsOnModel()
         {
-            var actual = new ContentfulSubhomepage();
-            var expected = new ContentfulSubhomepage
+            var actual = new ContentfulShowcase();
+            var expected = new ContentfulShowcase
             {
                 Title = string.Empty,
                 Slug = string.Empty,
