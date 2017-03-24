@@ -6,7 +6,7 @@ using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
-
+using StockportContentApi.Utils;
 namespace StockportContentApi.Repositories
 {
     public class AtoZRepository
@@ -14,12 +14,14 @@ namespace StockportContentApi.Repositories
         private readonly string _contentfulApiUrl;
         private readonly ContentfulClient _contentfulClient;
         private readonly IFactory<AtoZ> _factory;
+        private readonly UrlBuilder _urlBuilder;
 
         public AtoZRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<AtoZ> factory)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _factory = factory;
+            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
         }
 
         public async Task<HttpResponse> Get(string letter)
@@ -39,7 +41,7 @@ namespace StockportContentApi.Repositories
         private async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
         {
             var atozList = new List<AtoZ>();
-            var contentfulResponse = await _contentfulClient.Get(UrlFor(contentType));
+            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:contentType,displayOnAtoZ:true));
 
             foreach (var item in contentfulResponse.Items)
             {
@@ -50,11 +52,6 @@ namespace StockportContentApi.Repositories
             }
 
             return atozList;
-        }
-
-        private string UrlFor(string type)
-        {
-            return $"{_contentfulApiUrl}&content_type={type}&fields.displayOnAZ=true";
         }
     }
 }

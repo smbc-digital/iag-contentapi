@@ -4,6 +4,7 @@ using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
@@ -12,17 +13,19 @@ namespace StockportContentApi.Repositories
         private readonly IFactory<StartPage> _startPageFactory;
         private readonly string _contentfulApiUrl;
         private readonly ContentfulClient _contentfulClient;
+        private readonly UrlBuilder _urlBuilder;
 
         public StartPageRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<StartPage> startPageFactory)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _startPageFactory = startPageFactory;
+            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
         }
 
         public async Task<HttpResponse> GetStartPage(string startPageSlug)
         {
-            var contentfulResponse = await _contentfulClient.Get(UrlFor("startPage", 1, startPageSlug));
+            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"startPage", referenceLevel:1, slug:startPageSlug));
 
             if (!contentfulResponse.HasItems())
                 return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'");
@@ -34,13 +37,5 @@ namespace StockportContentApi.Repositories
                 HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") : 
                 HttpResponse.Successful(startPage);
         }
-
-        private string UrlFor(string type, int referenceLevel, string slug = null)
-        {
-            return slug == null
-                ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
-                : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
-
     }
 }

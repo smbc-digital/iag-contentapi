@@ -7,7 +7,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
-
+using StockportContentApi.Utils;
 namespace StockportContentApi.Repositories
 {
     public class RedirectsRepository
@@ -17,13 +17,14 @@ namespace StockportContentApi.Repositories
         private readonly IFactory<BusinessIdToRedirects> _factory;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly RedirectBusinessIds _redirectBusinessIds;
-
+        private  UrlBuilder _urlBuilder;
         public RedirectsRepository(IHttpClient httpClient, IFactory<BusinessIdToRedirects> factory, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _factory = factory;
             _createConfig = createConfig;
             _redirectBusinessIds = redirectBusinessIds;
+            
         }
 
         public async Task<HttpResponse> GetRedirects()
@@ -56,17 +57,13 @@ namespace StockportContentApi.Repositories
 
         private async Task<BusinessIdToRedirects> GetRedirectForBusinessId(string businessId)
         {
-            var contentfulResponse = await _contentfulClient.Get(UrlFor(ContentType, businessId));
+            var config = _createConfig(businessId);
+            _urlBuilder = new UrlBuilder(config.ContentfulUrl.ToString());
+            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(ContentType));
 
             return !contentfulResponse.HasItems() 
                 ? new NullBusinessIdToRedirects() 
                 : _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
-        }
-
-        private string UrlFor(string type, string businessId)
-        {
-            var config = _createConfig(businessId);
-            return $"{config.ContentfulUrl}&content_type={type}";
         }
     }
 }
