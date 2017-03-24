@@ -137,7 +137,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Footer", "/api/unittest/footer")]
         [InlineData("Group", "/api/unittest/group/group_slug")]
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
-        //[InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
+        [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

@@ -27,7 +27,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly ShowcaseRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
         private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private readonly Mock<IContentfulFactory<Entry<ContentfulTopic>, Topic>> _topicFactory;
+        private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
 
         public ShowcaseRepositoryTest()
         {
@@ -38,7 +38,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();
-            _topicFactory = new Mock<IContentfulFactory<Entry<ContentfulTopic>, Topic>>();
+            _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
 
             var contentfulFactory = new ShowcaseContentfulFactory(
                 _topicFactory.Object);
@@ -50,9 +50,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object);
         }
 
-        [Fact (Skip = "it doesn't work")]
-
-        
+        [Fact]
         public void ItGetsShowcase()
         {
             // Arrange
@@ -61,8 +59,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
 
             var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulShowcase>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Entry<ContentfulShowcase>> { new Entry<ContentfulShowcase>() { Fields = rawShowcase } });
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetShowcases(slug));

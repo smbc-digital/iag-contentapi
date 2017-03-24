@@ -9,9 +9,9 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
-        private readonly IContentfulFactory<Entry<ContentfulTopic>, Topic> _topicFactory;
+        private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulTopic>, Topic> topicFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulTopic, Topic> topicFactory)
         {
             _topicFactory = topicFactory;
         }
@@ -37,12 +37,10 @@ namespace StockportContentApi.ContentfulFactories
             var subHeading = !string.IsNullOrEmpty(entry.Subheading)
                 ? entry.Subheading
                 : "";
-
-            var test = _topicFactory.ToModel(entry.FeaturedTopic[0]);
-
+            
             var featuredTopic =
                 entry.FeaturedTopic.Where(topic => ContentfulHelpers.EntryIsNotALink(topic.SystemProperties))
-                    .Select(topic => _topicFactory.ToModel(topic)).ToList();
+                    .Select(topic => _topicFactory.ToModel(topic.Fields)).ToList();
 
             return new Showcase(slug, title, featuredTopic, heroImage, subHeading, teaser);
         }

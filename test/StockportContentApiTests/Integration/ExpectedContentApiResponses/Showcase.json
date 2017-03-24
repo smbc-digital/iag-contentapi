@@ -4,55 +4,24 @@
   "teaser": "teaser",
   "subheading": "subheading",
   "heroImage": "image-url.jpg",
-  "featuredTopic": {
-    "slug": "slug",
-    "name": "name",
-    "teaser": null,
-    "summary": null,
-    "icon": null,
-    "backgroundImage": null,
-    "image": null,
-    "subItems": [
-      {
-        "slug": "test-article",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg"
-      }
-    ],
-    "secondaryItems": [
-      {
-        "slug": "test-article",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg"
-      }
-    ],
-    "tertiaryItems": [
-      {
-        "slug": "test-article",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg"
-      }
-    ],
-    "breadcrumbs": null,
-    "alerts": null,
-    "sunriseDate": "0001-01-01T00:00:00Z",
-    "sunsetDate": "0001-01-01T00:00:00Z",
-    "emailAlerts": false,
-    "emailAlertsTopicId": null
-  }
+  "featuredTopic": [
+    {
+      "slug": "Slug",
+      "name": "Topic Test",
+      "teaser": "Teaser",
+      "summary": "Summary",
+      "icon": "",
+      "backgroundImage": "",
+      "image": "",
+      "subItems": [],
+      "secondaryItems": [],
+      "tertiaryItems": [],
+      "breadcrumbs": [],
+      "alerts": [],
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-12-31T23:59:59.9999999Z",
+      "emailAlerts": false,
+      "emailAlertsTopicId": ""
+    }
+  ]
 }
