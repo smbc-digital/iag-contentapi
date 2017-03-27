@@ -42,12 +42,5 @@ namespace StockportContentApi.Repositories
                 HttpResponse.Failure(HttpStatusCode.NotFound, $"No Showcase found") :
                 HttpResponse.Successful(Showcase);
         }
-
-        private string UrlFor(string type, int referenceLevel, string slug = null)
-        {
-            return slug == null
-                ? $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}"
-                : $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}&fields.slug={slug}";
-        }
     }
 }

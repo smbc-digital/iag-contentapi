@@ -107,7 +107,7 @@ namespace StockportContentApi
                                                                                                               p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
-                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()));
+                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
 
             
 
@@ -169,7 +169,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<Topic>, TopicFactory>();
             services.AddSingleton<IFactory<Profile>, ProfileFactory>();
             services.AddSingleton<IFactory<Group>, GroupFactory>();
-            //services.AddSingleton<IFactory<Payment>, PaymentFactory>();
             services.AddSingleton<IFactory<News>, NewsFactory>();
             services.AddSingleton<IFactory<Newsroom>, NewsroomFactory>();
             services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();

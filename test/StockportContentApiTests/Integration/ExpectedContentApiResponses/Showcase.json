@@ -3,8 +3,8 @@
   "slug": "showcase_slug",
   "teaser": "teaser",
   "subheading": "subheading",
-  "heroImage": "image-url.jpg",
-  "featuredTopic": [
+  "heroImageUrl": "image-url.jpg",
+  "featuredItems": [
     {
       "slug": "Slug",
       "name": "Topic Test",
@@ -22,6 +22,13 @@
       "sunsetDate": "9999-12-31T23:59:59.9999999Z",
       "emailAlerts": false,
       "emailAlertsTopicId": ""
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "title": "title",
+      "slug": "slug",
+      "type": "showcase"
     }
   ]
 }

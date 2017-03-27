@@ -11,17 +11,19 @@ namespace StockportContentApi.Model
         public string Slug { get; set; }
         public string Teaser { get; set; }
         public string Subheading { get; set; }
-        public string HeroImage { get; set; }
-        public IEnumerable<Topic> FeaturedTopic { get; set; }
+        public string HeroImageUrl { get; set; }
+        public IEnumerable<Topic> FeaturedItems { get; set; }
+        public IEnumerable<Crumb> Breadcrumbs { get; set; }
         
-        public Showcase(string slug, string title, IEnumerable<Topic> featuredTopic, string heroImage, string subheading, string teaser)
+        public Showcase(string slug, string title, IEnumerable<Topic> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs )
         {
             Title = title;
             Slug = slug;
             Teaser = teaser;
             Subheading = subheading;
-            HeroImage = heroImage;
-            FeaturedTopic = featuredTopic;
+            HeroImageUrl = heroImage;
+            FeaturedItems = featuredItems;
+            Breadcrumbs = breadcrumbs;
         }
     }
 }
