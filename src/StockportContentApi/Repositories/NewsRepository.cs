@@ -29,6 +29,7 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulNews, News> _contentfulFactory;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly UrlBuilder _urlBuilder;
 
         public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, 
             IFactory<Newsroom> newsroomFactory, INewsCategoriesFactory newsCategoriesFactory,
@@ -45,6 +46,7 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
             _newsCategoryFactory = newsCategoriesFactory;
             _client = contentfulClientManager.GetClient(config);
+            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
         }
 
         public async Task<HttpResponse> GetNews(string slug)
@@ -63,7 +65,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
-            var newsroomContentfulResponse = await _contentfulClient.Get(UrlFor("newsroom", ReferenceLevelLimit));
+            var newsroomContentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"newsroom", referenceLevel:ReferenceLevelLimit));
             List<string> categories;
 
             if (newsroomContentfulResponse.HasItems())
@@ -71,7 +73,7 @@ namespace StockportContentApi.Repositories
                 newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
             }
 
-            var newsContentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, tag: tag, limit: ContentfulQueryValues.LIMIT_MAX));
+            var newsContentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"news", referenceLevel:ReferenceLevelLimit, tag: tag, limit: ContentfulQueryValues.LIMIT_MAX));
            
             if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");           
 
@@ -105,7 +107,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)
         {
-            var contentfulResponse = await _contentfulClient.Get(UrlFor("news", ReferenceLevelLimit, limit: ContentfulQueryValues.LIMIT_MAX));
+            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"news", referenceLevel:ReferenceLevelLimit, limit: ContentfulQueryValues.LIMIT_MAX));
 
             if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
             var newsArticles = contentfulResponse.GetAllItems()
@@ -119,21 +121,7 @@ namespace StockportContentApi.Repositories
             return !newsArticles.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No news found")
                 : HttpResponse.Successful(newsArticles);
-        }
-
-        private string UrlFor(string type, int referenceLevel, string slug = null, int limit = -1, string tag = null)
-        {
-            var baseUrl = $"{_contentfulApiUrl}&content_type={type}&include={referenceLevel}";
-
-            if (!string.IsNullOrWhiteSpace(slug)) baseUrl = $"{baseUrl}&fields.slug={slug}";
-
-            if (!string.IsNullOrWhiteSpace(tag))
-                baseUrl = string.Concat(baseUrl, $"&fields.tags[{GetSearchTypeForTag(ref tag)}]={tag}");
-
-            if (limit >= 0) baseUrl = $"{baseUrl}&limit={limit}";
-
-            return baseUrl;
-        }
+        }        
 
         private static string GetSearchTypeForTag(ref string tag)
         {            
