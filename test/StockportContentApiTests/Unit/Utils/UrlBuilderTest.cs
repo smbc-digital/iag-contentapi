@@ -54,5 +54,11 @@ namespace StockportContentApiTests.Unit.Utils
             _urlBuilder.UrlFor(type: "news", referenceLevel: 2, slug: "slug", tag: "tag").Should().Be(ENTRIES_BASE_URL + "&content_type=news&include=2&fields.slug=slug&fields.tags[in]=tag");
             _urlBuilder.UrlFor(type: "news", referenceLevel: 2, slug: "slug", tag: "tag", limit: 100).Should().Be(ENTRIES_BASE_URL + "&content_type=news&include=2&fields.slug=slug&fields.tags[in]=tag&limit=100");
         }
+
+        [Fact]
+        public void ShouldGetUrlForRedirectRepository()
+        {
+            _urlBuilder.UrlFor(type: "redirect").Should().Be(ENTRIES_BASE_URL + "&content_type=redirect");
+        }
     }
 }
