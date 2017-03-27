@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Contentful.Core.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -9,11 +10,13 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
-        private readonly IContentfulFactory<Entry<ContentfulTopic>, Topic> _topicFactory;
+        private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
+        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulTopic>, Topic> topicFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulTopic, Topic> topicFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
         {
             _topicFactory = topicFactory;
+            _crumbFactory = crumbFactory;
         }
 
         public Showcase ToModel(ContentfulShowcase entry)
@@ -37,14 +40,16 @@ namespace StockportContentApi.ContentfulFactories
             var subHeading = !string.IsNullOrEmpty(entry.Subheading)
                 ? entry.Subheading
                 : "";
+            
+            var featuredItems =
+                entry.FeaturedItems.Where(topic => ContentfulHelpers.EntryIsNotALink(topic.SystemProperties))
+                    .Select(topic => _topicFactory.ToModel(topic.Fields)).ToList();
 
-            var test = _topicFactory.ToModel(entry.FeaturedTopic[0]);
+            var breadcrumbs =
+                entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                               .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-            var featuredTopic =
-                entry.FeaturedTopic.Where(topic => ContentfulHelpers.EntryIsNotALink(topic.SystemProperties))
-                    .Select(topic => _topicFactory.ToModel(topic)).ToList();
-
-            return new Showcase(slug, title, featuredTopic, heroImage, subHeading, teaser);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs);
         }
     }
 }

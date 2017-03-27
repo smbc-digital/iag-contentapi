@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.Model
                 Teaser = string.Empty,
                 HeroImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Subheading = string.Empty,
-                FeaturedTopic = new List<Entry<ContentfulTopic>>()
+                FeaturedItems = new List<Entry<ContentfulTopic>>()
             };
             actual.ShouldBeEquivalentTo(expected);
         }
