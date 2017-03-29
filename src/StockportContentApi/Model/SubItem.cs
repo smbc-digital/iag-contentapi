@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Model
 {
@@ -12,9 +13,10 @@ namespace StockportContentApi.Model
         public readonly DateTime SunriseDate;
         public readonly DateTime SunsetDate;
         public readonly string Image;
+        public readonly List<SubItem> SubItems;
 
 
-        public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image)
+        public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems)
         {
             Slug = slug;
             Teaser = teaser;
@@ -24,6 +26,7 @@ namespace StockportContentApi.Model
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
             Image = image;
+            SubItems = subItems;
         }
     }
 }

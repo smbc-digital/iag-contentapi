@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
@@ -22,7 +23,7 @@ namespace StockportContentApi.Factories
             DateTime sunsetDate = DateComparer.DateFieldToDate(fields.sunsetDate);
             var image = contentfulResponse.GetImageUrl(fields.image);
 
-            return new SubItem(slug, title, teaser, icon, contentType, sunriseDate,sunsetDate, image);
+            return new SubItem(slug, title, teaser, icon, contentType, sunriseDate,sunsetDate, image, new List<SubItem>());
         }
 
     }

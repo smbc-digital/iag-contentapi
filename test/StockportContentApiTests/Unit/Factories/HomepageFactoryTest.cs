@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.Factories
             _mockSubitemListFactory = new Mock<IBuildContentTypesFromReferences<SubItem>>();
             _mockSubitemListFactory.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image") });
+                .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image", new List<SubItem>()) });
 
             _homepageFactory = new HomepageFactory(_mockTopicListBuilder.Object, _mockAlertListFactory.Object, _mockCarouselContentListFactory.Object, _mockSubitemListFactory.Object);
         }

@@ -6,22 +6,15 @@
   "heroImageUrl": "image-url.jpg",
   "featuredItems": [
     {
-      "slug": "Slug",
-      "name": "Topic Test",
-      "teaser": "Teaser",
-      "summary": "Summary",
-      "icon": "",
-      "backgroundImage": "",
-      "image": "",
-      "subItems": [],
-      "secondaryItems": [],
-      "tertiaryItems": [],
-      "breadcrumbs": [],
-      "alerts": [],
-      "sunriseDate": "0001-01-01T00:00:00Z",
-      "sunsetDate": "9999-12-31T23:59:59.9999999Z",
-      "emailAlerts": false,
-      "emailAlertsTopicId": ""
+      "slug": "slug",
+      "title": "title",
+      "teaser": "teaser",
+      "icon": "icon",
+      "type": "test",
+      "sunriseDate": "0001-01-01T00:00:00+00:00",
+      "sunsetDate": "9999-09-09T00:00:00Z",
+      "image": "image",
+      "subItems": []
     }
   ],
   "breadcrumbs": [

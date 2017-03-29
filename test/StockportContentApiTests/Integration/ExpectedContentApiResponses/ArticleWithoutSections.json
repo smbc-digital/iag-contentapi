@@ -73,7 +73,8 @@
         "type": "article",
         "sunriseDate": "2016-01-10T00:00:00+00:00",
         "sunsetDate": "2017-01-20T00:00:00+00:00",
-        "image": "image-url.jpg"
+        "image": "image-url.jpg",
+        "subItems": []
       }
     ],
     "secondaryItems": [
@@ -85,7 +86,8 @@
         "type": "article",
         "sunriseDate": "2016-01-10T00:00:00+00:00",
         "sunsetDate": "2017-01-20T00:00:00+00:00",
-        "image": "image-url.jpg"
+        "image": "image-url.jpg",
+        "subItems": []
       }
     ],
     "tertiaryItems": [
@@ -97,7 +99,8 @@
         "type": "article",
         "sunriseDate": "2016-01-10T00:00:00+00:00",
         "sunsetDate": "2017-01-20T00:00:00+00:00",
-        "image": "image-url.jpg"
+        "image": "image-url.jpg",
+        "subItems": []
       }
     ],
     "breadcrumbs": null,

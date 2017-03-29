@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
@@ -18,7 +15,6 @@ using StockportContentApi.Client;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Builders;
-using File = System.IO.File;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -28,8 +24,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly ShowcaseRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _topicFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
 
         public ShowcaseRepositoryTest()
@@ -41,11 +36,10 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();
-            _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
+            _topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(
-                _topicFactory.Object, _crumbFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();

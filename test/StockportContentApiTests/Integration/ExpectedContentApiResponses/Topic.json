@@ -15,7 +15,8 @@
       "type": "id",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "9999-09-09T00:00:00+00:00",
-      "image": "image"
+      "image": "image",
+      "subItems": []
     }
   ],
   "secondaryItems": [
@@ -27,7 +28,8 @@
       "type": "id",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "9999-09-09T00:00:00+00:00",
-      "image": "image"
+      "image": "image",
+      "subItems": []
     }
   ],
   "tertiaryItems": [
@@ -39,7 +41,8 @@
       "type": "id",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "9999-09-09T00:00:00+00:00",
-      "image": "image"
+      "image": "image",
+      "subItems": []
     }
   ],
   "breadcrumbs": [
