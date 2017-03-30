@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
 {
@@ -12,10 +9,10 @@ namespace StockportContentApi.Model
         public string Teaser { get; set; }
         public string Subheading { get; set; }
         public string HeroImageUrl { get; set; }
-        public IEnumerable<Topic> FeaturedItems { get; set; }
+        public IEnumerable<SubItem> FeaturedItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         
-        public Showcase(string slug, string title, IEnumerable<Topic> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs )
+        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs )
         {
             Title = title;
             Slug = slug;

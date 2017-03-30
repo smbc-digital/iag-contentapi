@@ -28,7 +28,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // setup mocks
             _subitemContentfulFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
-                    "image"));
+                    "image", new List<SubItem>()));
             _timeProvider.Setup(o => o.Now())
                 .Returns(new DateTime(2017, 01, 02));
 
@@ -173,7 +173,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             _subitemContentfulFactory.Setup(o => o.ToModel(subItemEntry))
                 .Returns(
-                new SubItem("article-slug", "article-title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty));
+                new SubItem("article-slug", "article-title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
 
             var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 

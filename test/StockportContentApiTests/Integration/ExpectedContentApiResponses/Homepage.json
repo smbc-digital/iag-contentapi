@@ -13,7 +13,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     },
     {
       "slug": "check-your-bin-day",
@@ -23,7 +24,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     },
     {
       "slug": "find-a-planning-application",
@@ -33,7 +35,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     },
     {
       "slug": "find-or-renew-a-book",
@@ -43,7 +46,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     },
     {
       "slug": "school-holiday-and-term-dates",
@@ -53,7 +57,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     },
     {
       "slug": "search-job-vacancies",
@@ -63,7 +68,8 @@
       "type": "start-page",
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "0001-01-01T00:00:00+00:00",
-      "image": "image.jpg"
+      "image": "image.jpg",
+      "subItems": []
     }
   ],
   "featuredTopics": [
@@ -84,7 +90,8 @@
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
-          "image": "image.jpg"
+          "image": "image.jpg",
+          "subItems": []
         }
       ],
       "secondaryItems": [],
@@ -113,7 +120,8 @@
           "type": "article",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "0001-01-01T00:00:00+00:00",
-          "image": "image.jpg"
+          "image": "image.jpg",
+          "subItems": []
         }
       ],
       "secondaryItems": [],

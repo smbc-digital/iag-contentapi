@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 
 namespace StockportContentApiTests.Builders
@@ -14,12 +12,12 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<Entry<ContentfulTopic>> _featuredItems { get; set; } = new List<Entry<ContentfulTopic>>
+        private List<Entry<ContentfulSubItem>> _featuredItems { get; set; } = new List<Entry<ContentfulSubItem>>
         {
-            new Entry<ContentfulTopic>
+            new Entry<ContentfulSubItem>
             {
-                Fields = new ContentfulTopic() { Name = "Topic Test", Teaser = "Teaser", Slug = "Slug", Summary = "Summary" },
-                SystemProperties = new SystemProperties { Type = "Entry" }
+                Fields = new ContentfulSubItemBuilder().Build(),
+                SystemProperties = new SystemProperties { Type = "Entry", ContentType = new ContentType() {SystemProperties = new SystemProperties() { Id = "test" } } }
             }
         };
         private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
@@ -71,7 +69,7 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulShowcaseBuilder FeaturedItems(List<Entry<ContentfulTopic>> featuredItems)
+        public ContentfulShowcaseBuilder FeaturedItems(List<Entry<ContentfulSubItem>> featuredItems)
         {
             _featuredItems = featuredItems;
             return this;

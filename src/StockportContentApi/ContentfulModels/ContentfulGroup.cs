@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Contentful.Core.Configuration;
+﻿using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
 

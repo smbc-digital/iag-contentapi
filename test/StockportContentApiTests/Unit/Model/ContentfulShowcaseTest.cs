@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Contentful.Core.Models;
 using FluentAssertions;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
@@ -23,7 +19,7 @@ namespace StockportContentApiTests.Unit.Model
                 Teaser = string.Empty,
                 HeroImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Subheading = string.Empty,
-                FeaturedItems = new List<Entry<ContentfulTopic>>()
+                FeaturedItems = new List<Entry<ContentfulSubItem>>(),
             };
             actual.ShouldBeEquivalentTo(expected);
         }

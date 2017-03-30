@@ -1,21 +1,19 @@
 ﻿using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
-        private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
+        private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subitemFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulTopic, Topic> topicFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
         {
-            _topicFactory = topicFactory;
+            _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
         }
 
@@ -42,8 +40,8 @@ namespace StockportContentApi.ContentfulFactories
                 : "";
             
             var featuredItems =
-                entry.FeaturedItems.Where(topic => ContentfulHelpers.EntryIsNotALink(topic.SystemProperties))
-                    .Select(topic => _topicFactory.ToModel(topic.Fields)).ToList();
+                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
+                    .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
