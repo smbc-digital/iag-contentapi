@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -14,6 +15,7 @@ using Xunit;
 using StockportContentApi.Client;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 
@@ -26,6 +28,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _topicFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly Mock<ITimeProvider> _timeprovider;
 
         public ShowcaseRepositoryTest()
         {
@@ -38,8 +41,11 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient = new Mock<IHttpClient>();
             _topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _timeprovider = new Mock<ITimeProvider>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object);
+            _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();

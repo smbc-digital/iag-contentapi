@@ -10,13 +10,15 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subitemFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
-
-        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory)
+        private readonly DateComparer _dateComparer;
+        
+        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, ITimeProvider timeProvider)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
+            _dateComparer = new DateComparer(timeProvider);
         }
-
+        
         public Showcase ToModel(ContentfulShowcase entry)
         {
             var title = !string.IsNullOrEmpty(entry.Title)
@@ -40,8 +42,9 @@ namespace StockportContentApi.ContentfulFactories
                 : "";
             
             var featuredItems =
-                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
-                    .Select(item => _subitemFactory.ToModel(item)).ToList();
+                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))    
+                .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
