@@ -12,14 +12,17 @@ namespace StockportContentApi.Controllers
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, GroupRepository> _createRepository;
+        private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
 
         public GroupController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, GroupRepository> createRepository)
+            Func<ContentfulConfig, GroupRepository> createRepository,
+            Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
             _createRepository = createRepository;
+            _groupCategoryRepository = groupCategoryRepository;
         }
 
         [HttpGet]
@@ -30,6 +33,17 @@ namespace StockportContentApi.Controllers
             {
                 var groupRepository = _createRepository(_createConfig(businessId));
                 return groupRepository.GetGroup(groupSlug);
+            });
+        }
+
+        [HttpGet]
+        [Route("api/{businessId}/groupCategories")]
+        public async Task<IActionResult> GetGroupCategories(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var groupRepository = _groupCategoryRepository(_createConfig(businessId));
+                return groupRepository.GetGroupCategories();
             });
         }
     }

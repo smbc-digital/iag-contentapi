@@ -119,6 +119,12 @@ namespace StockportContentApiTests.Integration
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulShowcase> {
                                     new ContentfulShowcaseBuilder().Slug("showcase_slug").Build()
                                 });
+
+            httpClient.Setup(o => o.GetEntriesAsync(
+                            It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Build()),
+                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroupCategory> {
+                                new ContentfulGroupCategoryBuilder().Slug("groupCategory_slug").Build()
+                            });
             });
         }
 
@@ -138,6 +144,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Group", "/api/unittest/group/group_slug")]
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
+        [InlineData("GroupCategory", "/api/unittest/groupCategories")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
