@@ -18,9 +18,9 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulFactory;
         private readonly Contentful.Core.IContentfulClient _client;
 
-        public GroupCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryBuilder, IContentfulClientManager contentfulClientManager)
+        public GroupCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulFactory, IContentfulClientManager contentfulClientManager)
         {
-            _contentfulFactory = groupCategoryBuilder;
+            _contentfulFactory = contentfulFactory;
             _client = contentfulClientManager.GetClient(config);
         }
 
@@ -31,20 +31,9 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
 
-            var groupCategories = GetAllGroupCategories(entries);
+            var groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();
 
             return HttpResponse.Successful(groupCategories);
-        }
-
-        private IEnumerable<GroupCategory> GetAllGroupCategories(IEnumerable<ContentfulGroupCategory> entries)
-        {
-            var entriesList = new List<GroupCategory>();
-            foreach (var entry in entries)
-            {
-                var groupCatogoryItem = _contentfulFactory.ToModel(entry);
-                entriesList.Add(groupCatogoryItem);
-            }
-            return entriesList;
         }
     }
 }
