@@ -11,8 +11,9 @@ namespace StockportContentApi.ContentfulFactories
         public Group ToModel(ContentfulGroup entry)
         {
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            var categoriesReferences = entry.CategoriesReference;
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
-                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl));  
+                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), entry.CategoriesReference.Fields);  
         }
     }
 }

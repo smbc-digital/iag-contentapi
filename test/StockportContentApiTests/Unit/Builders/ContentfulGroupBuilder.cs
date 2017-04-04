@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -16,6 +17,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _address = "_address";
         private string _description = "_description";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+        private List<Entry<GroupCategory>> _categoriesReference = new List<Entry<GroupCategory>>();
 
         public ContentfulGroup Build()
         {
@@ -31,12 +33,19 @@ namespace StockportContentApiTests.Unit.Builders
                 Twitter = _twitter,
                 Website = _website,
                 Image = _image,
+                CategoriesReference = _categoriesReference
             };
         }
 
         public ContentfulGroupBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulGroupBuilder CategoriesReference(List<Entry<GroupCategory>> categoriesReference)
+        {
+            _categoriesReference = categoriesReference;
             return this;
         }
     }

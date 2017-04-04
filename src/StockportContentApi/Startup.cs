@@ -176,7 +176,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<Homepage>, HomepageFactory>();
             services.AddSingleton<IFactory<Topic>, TopicFactory>();
             services.AddSingleton<IFactory<Profile>, ProfileFactory>();
-            services.AddSingleton<IFactory<Group>, GroupFactory>();
             services.AddSingleton<IFactory<News>, NewsFactory>();
             services.AddSingleton<IFactory<Newsroom>, NewsroomFactory>();
             services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();
@@ -188,7 +187,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
             services.AddSingleton<INewsCategoriesFactory, NewsCategoriesFactory>();
             services.AddSingleton<IEventCategoriesFactory, EventCategoriesFactory>();
-
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Alert>, AlertListFactory>();

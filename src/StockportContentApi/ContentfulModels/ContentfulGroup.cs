@@ -1,6 +1,8 @@
-﻿using Contentful.Core.Configuration;
+﻿using System.Collections.Generic;
+using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -17,6 +19,7 @@ namespace StockportContentApi.ContentfulModels
         public string Address { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        public List<Entry<GroupCategory>> CategoriesReference { get; set; } = new List<Entry<GroupCategory>>();
        
     }
 }

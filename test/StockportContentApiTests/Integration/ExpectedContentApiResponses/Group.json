@@ -9,5 +9,6 @@
   "address": "_address",
   "description": "_description",
   "imageUrl": "image-url.jpg",
-  "thumbnailImageUrl": "image-url.jpg?h=250"
+  "thumbnailImageUrl": "image-url.jpg?h=250",
+  "categoriesReference": []
 }

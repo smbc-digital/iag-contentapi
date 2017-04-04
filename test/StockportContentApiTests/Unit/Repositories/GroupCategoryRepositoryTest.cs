@@ -21,13 +21,13 @@ using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
-    public class GroupCategoryTest
+    public class GroupCategoryRepositoryTest
     {
         private readonly Mock<IHttpClient> _httpClient;
         private readonly GroupCategoryRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
 
-        public GroupCategoryTest()
+        public GroupCategoryRepositoryTest()
         {
             var config = new ContentfulConfig("test")
                 .Add("DELIVERY_URL", "https://fake.url")
