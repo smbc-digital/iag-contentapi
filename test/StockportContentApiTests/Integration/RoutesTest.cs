@@ -52,13 +52,13 @@ namespace StockportContentApiTests.Integration
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
             {
                 httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
-                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(1).Build()),
+                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event_item").UpdatedAt(new DateTime(2016,10,5)).EventDate(new DateTime(2016, 12, 30)).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() ==
-                                new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
+                                new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(2016,10,5)).Build(),
                                     new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(2016,10,5)).Build()
@@ -144,7 +144,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Group", "/api/unittest/group/group_slug")]
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
-        [InlineData("GroupCategory", "/api/unittest/groupCategories")]
+        [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

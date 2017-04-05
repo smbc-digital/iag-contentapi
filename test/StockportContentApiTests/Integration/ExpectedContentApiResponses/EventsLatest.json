@@ -49,7 +49,8 @@
         "address": "Test street",
         "description": "",
         "imageUrl": "",
-        "thumbnailImageUrl": ""
+        "thumbnailImageUrl": "",
+        "categoriesReference": []
       },
       "alerts": [
         {

@@ -21,13 +21,14 @@ using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
-    public class GroupCategoryTest
+    public class GroupCategoryRepositoryTest
     {
         private readonly Mock<IHttpClient> _httpClient;
         private readonly GroupCategoryRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
+        private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
 
-        public GroupCategoryTest()
+        public GroupCategoryRepositoryTest()
         {
             var config = new ContentfulConfig("test")
                 .Add("DELIVERY_URL", "https://fake.url")
@@ -35,15 +36,14 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Build();
 
-            _httpClient = new Mock<IHttpClient>();
-
-            var contentfulFactory = new GroupCategoryContentfulFactory();
+            _httpClient = new Mock<IHttpClient>();           
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
+            _contentfulGroupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new GroupCategoryRepository(config, contentfulFactory, contentfulClientManager.Object);
+            _repository = new GroupCategoryRepository(config, _contentfulGroupCategoryFactory.Object, contentfulClientManager.Object);
         }
 
         [Fact]
@@ -63,6 +63,19 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public void ShouldReturnNotFoundIfNoGroupCategoryFound()
+        {
+            var builder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory");
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulGroupCategory>());
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupCategories());
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
 }

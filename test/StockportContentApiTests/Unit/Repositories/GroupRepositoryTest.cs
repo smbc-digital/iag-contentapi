@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
@@ -10,6 +11,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
@@ -44,7 +46,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "group_slug";
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl");
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null);
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroup });
@@ -69,6 +71,22 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No group found for '{slug}'");
+        }
+
+        [Fact]
+        public void ShouldReturnCategoriesForGroup()
+        {
+            const string slug = "group-with-categories";
+            var groupCategory = new GroupCategory("name", "slug", "icon", "image");
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).CategoriesReference(new List<Entry<ContentfulGroupCategory>>() { new Entry<ContentfulGroupCategory>() {Fields = new ContentfulGroupCategoryBuilder().Build(), SystemProperties = new SystemProperties() {Type = "Entry"} }   }).Build();
+
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
+
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }

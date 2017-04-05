@@ -99,7 +99,7 @@ namespace StockportContentApi
                                                                                                                     p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
                                                                                                                     p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
 
@@ -176,7 +176,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<Homepage>, HomepageFactory>();
             services.AddSingleton<IFactory<Topic>, TopicFactory>();
             services.AddSingleton<IFactory<Profile>, ProfileFactory>();
-            services.AddSingleton<IFactory<Group>, GroupFactory>();
             services.AddSingleton<IFactory<News>, NewsFactory>();
             services.AddSingleton<IFactory<Newsroom>, NewsroomFactory>();
             services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();
@@ -188,7 +187,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
             services.AddSingleton<INewsCategoriesFactory, NewsCategoriesFactory>();
             services.AddSingleton<IEventCategoriesFactory, EventCategoriesFactory>();
-
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Alert>, AlertListFactory>();

@@ -37,7 +37,7 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/groupCategories")]
+        [Route("api/{businessId}/groupCategory")]
         public async Task<IActionResult> GetGroupCategories(string businessId)
         {
             return await _handler.Get(() =>
