@@ -19,7 +19,7 @@ namespace StockportContentApi.ContentfulModels
         public string Address { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        public List<Entry<GroupCategory>> CategoriesReference { get; set; } = new List<Entry<GroupCategory>>();
+        public List<Entry<ContentfulGroupCategory>> CategoriesReference { get; set; } = new List<Entry<ContentfulGroupCategory>>();
        
     }
 }

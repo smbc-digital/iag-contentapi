@@ -99,7 +99,7 @@ namespace StockportContentApi
                                                                                                                     p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
                                                                                                                     p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
 

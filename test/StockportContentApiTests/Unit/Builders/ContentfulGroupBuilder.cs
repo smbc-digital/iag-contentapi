@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _address = "_address";
         private string _description = "_description";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-        private List<Entry<GroupCategory>> _categoriesReference = new List<Entry<GroupCategory>>();
+        private List<Entry<ContentfulGroupCategory>> _categoriesReference = new List<Entry<ContentfulGroupCategory>>();
 
         public ContentfulGroup Build()
         {
@@ -43,7 +43,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulGroupBuilder CategoriesReference(List<Entry<GroupCategory>> categoriesReference)
+        public ContentfulGroupBuilder CategoriesReference(List<Entry<ContentfulGroupCategory>> categoriesReference)
         {
             _categoriesReference = categoriesReference;
             return this;

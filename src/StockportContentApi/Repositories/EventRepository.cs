@@ -41,7 +41,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
@@ -67,7 +67,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
