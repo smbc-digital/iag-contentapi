@@ -46,5 +46,16 @@ namespace StockportContentApi.Controllers
                 return groupRepository.GetGroupCategories();
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/groupResults")]
+        public async Task<IActionResult> GetGroupResults(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var groupRepository = _createRepository(_createConfig(businessId));
+                return groupRepository.GetGroupResults();
+            });
+        }
     }
 }

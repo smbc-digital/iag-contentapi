@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Config;
@@ -9,6 +11,7 @@ using StockportContentApi.Model;
 using System.Linq;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
@@ -33,6 +36,30 @@ namespace StockportContentApi.Repositories
             return entry == null 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'") 
                 : HttpResponse.Successful(_groupFactory.ToModel(entry));
+        }
+
+        public async Task<HttpResponse> GetGroupResults()
+        {
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
+
+            var groups = GetAllGroups(entries).ToList();
+
+            var GroupResults = new GroupResults() {Groups = groups};
+            
+            return HttpResponse.Successful(GroupResults);
+        }
+
+        private IEnumerable<Group> GetAllGroups(IEnumerable<ContentfulGroup> contentfulGroups)
+        {
+            var groupList = new List<Group>();
+            foreach (var group in contentfulGroups)
+            {
+                var groupItem = _groupFactory.ToModel(group);
+                groupList.Add(groupItem);
+            }
+            return groupList;
         }
     }
 }
