@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Model
+﻿using System.Collections.Generic;
+
+namespace StockportContentApi.Model
 {
     public class Group
     {
@@ -13,9 +15,11 @@
         public string Description { get; }
         public string ImageUrl { get; }
         public string ThumbnailImageUrl { get; }
+        public List<GroupCategory> CategoriesReference { get; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
-            string twitter, string facebook, string address, string description, string imageUrl, string thumbnailImageUrl)
+            string twitter, string facebook, string address, string description, string imageUrl,
+            string thumbnailImageUrl, List<GroupCategory> categoriesReference)
         {
             Name = name;
             Slug = slug;
@@ -28,6 +32,7 @@
             Description = description;
             ImageUrl = imageUrl;
             ThumbnailImageUrl = thumbnailImageUrl;
+            CategoriesReference = categoriesReference;
         }
     }
 }
