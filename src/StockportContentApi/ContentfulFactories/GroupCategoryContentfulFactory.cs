@@ -8,11 +8,6 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class GroupCategoryContentfulFactory : IContentfulFactory<ContentfulGroupCategory, GroupCategory>
     {
-        
-        public GroupCategoryContentfulFactory()
-        {
-        }
-        
         public GroupCategory ToModel(ContentfulGroupCategory entry)
         {
             var name = !string.IsNullOrEmpty(entry.Name)
