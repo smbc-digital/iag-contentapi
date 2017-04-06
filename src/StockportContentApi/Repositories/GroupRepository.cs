@@ -19,12 +19,18 @@ namespace StockportContentApi.Repositories
     {
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
+        private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
+        private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
 
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
-                                 IContentfulFactory<ContentfulGroup, Group> groupFactory)
+                                 IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                                 IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
+                                 IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory)
         {
             _client = clientManager.GetClient(config);
             _groupFactory = groupFactory;
+            _groupListFactory = groupListFactory;
+            _groupCategoryListFactory = groupCategoryListFactory;
         }
 
         public async Task<HttpResponse> GetGroup(string slug)
@@ -38,28 +44,30 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(_groupFactory.ToModel(entry));
         }
 
-        public async Task<HttpResponse> GetGroupResults()
+        public async Task<HttpResponse> GetGroupResults(string categorySlug)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
-            var groups = GetAllGroups(entries).ToList();
+            var groups = _groupListFactory.ToModel(entries.ToList())
+                .Where(g => g.CategoriesReference.Any(c => c.Slug == categorySlug))
+                .ToList();
 
-            var GroupResults = new GroupResults() {Groups = groups};
+            var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+
+            var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
+            if (groupCategoryEntries == null || !groupCategoryEntries.Any() || !groupCategoryEntries.Any(g => g.Slug == categorySlug))
+                return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
+
+            var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
+                .ToList();
+
+            var groupResults = new GroupResults() {Groups = groups, Categories = groupCategoryResults};
             
-            return HttpResponse.Successful(GroupResults);
-        }
 
-        private IEnumerable<Group> GetAllGroups(IEnumerable<ContentfulGroup> contentfulGroups)
-        {
-            var groupList = new List<Group>();
-            foreach (var group in contentfulGroups)
-            {
-                var groupItem = _groupFactory.ToModel(group);
-                groupList.Add(groupItem);
-            }
-            return groupList;
+            return HttpResponse.Successful(groupResults);
         }
     }
 }

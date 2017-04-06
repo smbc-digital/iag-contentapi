@@ -49,12 +49,12 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/groupResults")]
-        public async Task<IActionResult> GetGroupResults(string businessId)
+        public async Task<IActionResult> GetGroupResults(string businessId, [FromQuery] string category = "")
         {
             return await _handler.Get(() =>
             {
                 var groupRepository = _createRepository(_createConfig(businessId));
-                return groupRepository.GetGroupResults();
+                return groupRepository.GetGroupResults(category);
             });
         }
     }

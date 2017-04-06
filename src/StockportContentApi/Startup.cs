@@ -89,6 +89,9 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
 
+            services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
+            services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
+
             services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                                                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
@@ -143,7 +146,7 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
                 p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
-                p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroup, Group>>()); });
+                p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>()); });
 
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
