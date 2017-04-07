@@ -55,6 +55,7 @@ namespace StockportContentApi.Repositories
 
             var groups = _groupListFactory.ToModel(entries.ToList())
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug == categorySlug))
+                .OrderBy(g => g.Name)
                 .ToList();
 
             groupResults.Groups = groups;
