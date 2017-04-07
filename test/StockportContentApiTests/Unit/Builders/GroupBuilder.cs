@@ -19,11 +19,12 @@ namespace StockportContentApiTests.Unit.Builders
         private string _image = "image-url.jpg";
         private string _thumbnail = "thumbnail.jpg";
         private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
+        private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference);
+                _image, _thumbnail, _categoriesReference, _crumbs);
         }
 
         public GroupBuilder Slug(string slug)
