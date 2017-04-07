@@ -46,26 +46,33 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetGroupResults(string categorySlug)
         {
+            var groupResults = new GroupResults();
+
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groups = _groupListFactory.ToModel(entries.ToList())
-                .Where(g => g.CategoriesReference.Any(c => c.Slug == categorySlug))
+                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug == categorySlug))
                 .ToList();
+
+            groupResults.Groups = groups;
 
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
 
             var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
-            if (groupCategoryEntries == null || !groupCategoryEntries.Any() || !groupCategoryEntries.Any(g => g.Slug == categorySlug))
-                return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
-            var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
+            if (groupCategoryEntries != null || groupCategoryEntries.Any())
+            {
+                if(!string.IsNullOrEmpty(categorySlug) && !groupCategoryEntries.Any(g => g.Slug == categorySlug))
+                    return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
+
+                var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
                 .ToList();
 
-            var groupResults = new GroupResults() {Groups = groups, Categories = groupCategoryResults};
-            
+                groupResults.Categories = groupCategoryResults;
+            }
 
             return HttpResponse.Successful(groupResults);
         }
