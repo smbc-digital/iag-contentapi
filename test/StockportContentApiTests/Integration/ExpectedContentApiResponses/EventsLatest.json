@@ -50,7 +50,14 @@
         "description": "",
         "imageUrl": "",
         "thumbnailImageUrl": "",
-        "categoriesReference": []
+        "categoriesReference": [],
+        "breadcrumbs": [
+          {
+            "title": "Find a local group",
+            "slug": "",
+            "type": "groups"
+          }
+        ]
       },
       "alerts": [
         {
