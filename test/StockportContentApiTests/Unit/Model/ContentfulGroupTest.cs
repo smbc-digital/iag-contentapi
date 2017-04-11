@@ -3,6 +3,7 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using Xunit;
 using FluentAssertions;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Model
 {
@@ -23,7 +24,8 @@ namespace StockportContentApiTests.Unit.Model
                 Facebook = string.Empty,
                 Address = string.Empty,
                 Description = string.Empty,
-                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } }
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
+                MapPosition = new MapPosition()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

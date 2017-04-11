@@ -18,7 +18,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _description = "_description";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private List<Entry<ContentfulGroupCategory>> _categoriesReference = new List<Entry<ContentfulGroupCategory>>();
-
+        private MapPosition _mapPosition = new MapPosition() {Lat=39,Lon= 2};
         public ContentfulGroup Build()
         {
             return new ContentfulGroup
@@ -40,6 +40,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulGroupBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulGroupBuilder MapPosition(MapPosition mapPosition)
+        {
+            _mapPosition = mapPosition;
             return this;
         }
 

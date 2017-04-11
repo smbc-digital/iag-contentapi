@@ -21,5 +21,7 @@ namespace StockportContentApi.ContentfulModels
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public List<Entry<ContentfulGroupCategory>> CategoriesReference { get; set; } = new List<Entry<ContentfulGroupCategory>>();
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") };
+
+        public MapPosition  MapPosition = new MapPosition();
     }
 }

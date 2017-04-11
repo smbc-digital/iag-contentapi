@@ -17,5 +17,9 @@
       "slug": "",
       "type": "groups"
     }
-  ]
+  ],
+  "mapPosition": {
+    "lon": 0.0, 
+    "lat":0.0
+  }
 }

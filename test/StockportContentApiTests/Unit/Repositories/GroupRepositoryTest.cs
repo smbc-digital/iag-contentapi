@@ -52,8 +52,9 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "group_slug";
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null);
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroup });
             _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
@@ -222,6 +223,32 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public void ShouldReturnALocationWhenSelected()
+        {
+            // Arrange
+            const string slug = "unit-test-GroupCategory";
+            MapPosition location = new MapPosition() {Lat = 1, Lon = 1};
+            var contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
+
+            var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location);
+
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroupWithlocation });
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var responseProfile = response.Get<Group>();
+            responseProfile.MapPosition.ShouldBeEquivalentTo(location);
         }
 
         private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)

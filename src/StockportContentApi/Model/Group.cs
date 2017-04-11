@@ -18,9 +18,11 @@ namespace StockportContentApi.Model
         public List<GroupCategory> CategoriesReference { get; }
         public List<Crumb> Breadcrumbs { get; }
 
+        public MapPosition MapPosition { get; }
+
         public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
-            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs)
+            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, MapPosition mapPosition)
         {
             Name = name;
             Slug = slug;
@@ -35,6 +37,7 @@ namespace StockportContentApi.Model
             ThumbnailImageUrl = thumbnailImageUrl;
             CategoriesReference = categoriesReference;
             Breadcrumbs = breadcrumbs;
+            MapPosition = mapPosition;
         }
     }
 }
