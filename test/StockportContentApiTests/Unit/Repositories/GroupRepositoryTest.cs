@@ -11,6 +11,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
@@ -52,7 +53,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "group_slug";
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false);
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -108,7 +109,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> {new GroupCategory("name", testCategorySlug, "icon", "image-url.jpg")};
 
             // Act
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -142,7 +143,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> { new GroupCategory("name", "slug-that-matches-no-groups", "icon", "image-url.jpg") };
 
             // Act
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -178,7 +179,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -234,7 +235,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
 
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false);
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -250,7 +251,31 @@ namespace StockportContentApiTests.Unit.Repositories
             var responseProfile = response.Get<Group>();
             responseProfile.MapPosition.ShouldBeEquivalentTo(location);
         }
+        [Fact]
+        public void ShouldReturnVolunteeringWhenSelected()
+        {
+            // Arrange
+            const string slug = "unit-test-GroupCategory";
+            MapPosition location = new MapPosition() { Lat = 1, Lon = 1 };
+            var contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
+            bool volunteering = true;
+            var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering);
 
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> { contentfulGroupWithlocation });
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var responseProfile = response.Get<Group>();
+            responseProfile.Volunteering.Should().Be(volunteering);
+        }
         private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
         {
             

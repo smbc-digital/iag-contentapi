@@ -48,7 +48,7 @@ namespace StockportContentApi.Repositories
         {
             var groupResults = new GroupResults();
 
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
 
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");

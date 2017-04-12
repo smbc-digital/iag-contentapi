@@ -26,7 +26,7 @@ namespace StockportContentApi.ContentfulFactories
                 : new List<GroupCategory>();
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
-                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, entry.Breadcrumbs, entry.MapPosition);  
+                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, entry.Breadcrumbs, entry.MapPosition, entry.Volunteering);  
         }
     }
 }

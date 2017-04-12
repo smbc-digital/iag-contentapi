@@ -25,7 +25,8 @@ namespace StockportContentApiTests.Unit.Model
                 Address = string.Empty,
                 Description = string.Empty,
                 Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
-                MapPosition = new MapPosition()
+                MapPosition = new MapPosition(),
+                Volunteering = false
             };
             actual.ShouldBeEquivalentTo(expected);
         }
