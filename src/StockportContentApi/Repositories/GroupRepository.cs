@@ -54,7 +54,7 @@ namespace StockportContentApi.Repositories
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groups = _groupListFactory.ToModel(entries.ToList())
-                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug == categorySlug))
+                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug.ToLower() == categorySlug.ToLower()))
                 .OrderBy(g => g.Name)
                 .ToList();
 
@@ -66,7 +66,7 @@ namespace StockportContentApi.Repositories
 
             if (groupCategoryEntries != null || groupCategoryEntries.Any())
             {
-                if(!string.IsNullOrEmpty(categorySlug) && !groupCategoryEntries.Any(g => g.Slug == categorySlug))
+                if(!string.IsNullOrEmpty(categorySlug) && !groupCategoryEntries.Any(g => g.Slug.ToLower() == categorySlug.ToLower()))
                     return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
                 var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
