@@ -44,19 +44,40 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(_groupFactory.ToModel(entry));
         }
 
-        public async Task<HttpResponse> GetGroupResults(string categorySlug)
+        public async Task<HttpResponse> GetGroupResults(string categorySlug, double lat, double lon, string order)
         {
             var groupResults = new GroupResults();
 
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder =
+                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
+                    .Include(1)
+                    .Limit(ContentfulQueryValues.LIMIT_MAX);
+
+            if (lat != 53.40581278523235 && lon != -2.158041000366211)
+            {
+                builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",3.2");
+            }
+            else
+            {
+                builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",10");
+            }
 
             var entries = await _client.GetEntriesAsync(builder);
-            if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
+            if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groups = _groupListFactory.ToModel(entries.ToList())
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug.ToLower() == categorySlug.ToLower()))
-                .OrderBy(g => g.Name)
                 .ToList();
+
+            switch (order.ToLower())
+            {
+                case "name a-z":
+                    groups = groups.OrderBy(g => g.Name).ToList();
+                    break;
+                case "name z-a":
+                    groups = groups.OrderByDescending(g => g.Name).ToList();
+                    break;
+            }
 
             groupResults.Groups = groups;
 

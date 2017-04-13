@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
         private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
         private MapPosition _mapPosition = new MapPosition() {Lat=39.0,Lon = 2.0};
-        private bool _volunteering = false;
+        private bool _volunteering = false;       
 
         public Group Build()
         {
@@ -41,7 +41,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public GroupBuilder Slug(MapPosition mapPosition)
+        public GroupBuilder MapPosition(MapPosition mapPosition)
         {
             _mapPosition = mapPosition;
             return this;
@@ -50,6 +50,12 @@ namespace StockportContentApiTests.Unit.Builders
         public GroupBuilder Volunteering(bool volunteering)
         {
             _volunteering = volunteering;
+            return this;
+        }
+
+        public GroupBuilder Name(string name)
+        {
+            _name = name;
             return this;
         }
     }

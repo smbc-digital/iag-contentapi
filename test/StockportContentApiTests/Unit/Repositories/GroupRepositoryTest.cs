@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Models;
@@ -109,7 +110,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> {new GroupCategory("name", testCategorySlug, "icon", "image-url.jpg")};
 
             // Act
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -122,7 +123,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, 53.40581278523235, -2.158041000366211, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -143,7 +144,11 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> { new GroupCategory("name", "slug-that-matches-no-groups", "icon", "image-url.jpg") };
 
             // Act
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder =
+                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
+                    .Include(1)
+                    .Limit(1000)
+                    .FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -155,7 +160,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", 53.40581278523235, -2.158041000366211, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -179,7 +184,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -187,7 +192,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, 53.40581278523235, -2.158041000366211, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -211,7 +216,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -219,7 +224,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", 53.40581278523235, -2.158041000366211, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -251,6 +256,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var responseProfile = response.Get<Group>();
             responseProfile.MapPosition.ShouldBeEquivalentTo(location);
         }
+
         [Fact]
         public void ShouldReturnVolunteeringWhenSelected()
         {
@@ -276,6 +282,73 @@ namespace StockportContentApiTests.Unit.Repositories
             var responseProfile = response.Get<Group>();
             responseProfile.Volunteering.Should().Be(volunteering);
         }
+
+        [Fact]
+        public void ShouldOrderByAToZAsSpecified()
+        {
+            // Arrange
+            var contentfulGroupcategory = new ContentfulGroupCategoryBuilder().Slug("slug").Build();
+            var groupCategory = new GroupCategory("name", "slug", "icon", "image");
+            var location = new MapPosition() {Lat = 5, Lon = -2};
+            var contentfulGroup = new ContentfulGroupBuilder().Slug("slug").Build();
+            var groupfirst = new GroupBuilder().Name("aGroup").Slug("slug1").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+            var groupsecond = new GroupBuilder().Name("bGroup").Slug("slug2").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+            var groupthird = new GroupBuilder().Name("cGroup").Slug("slug3").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+
+            var categorybuilder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory").Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulGroupCategory> { contentfulGroupcategory });
+
+            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
+
+            _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() { contentfulGroup })).Returns(new List<Group>() { groupsecond, groupfirst , groupthird });
+            _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", 53.40581278523235, -2.158041000366211, "name a-z" ));
+            var filteredGroupResults = response.Get<GroupResults>();
+
+            // Assert
+            filteredGroupResults.Groups.First().Should().Be(groupfirst);
+            filteredGroupResults.Groups[1].Should().Be(groupsecond);
+            filteredGroupResults.Groups[2].Should().Be(groupthird);
+        }
+
+        [Fact]
+        public void ShouldOrderByZToAAsSpecified()
+        {
+            // Arrange
+            var contentfulGroupcategory = new ContentfulGroupCategoryBuilder().Slug("slug").Build();
+            var groupCategory = new GroupCategory("name", "slug", "icon", "image");
+            var location = new MapPosition() { Lat = 5, Lon = -2 };
+            var contentfulGroup = new ContentfulGroupBuilder().Slug("slug").Build();
+            var groupfirst = new GroupBuilder().Name("aGroup").Slug("slug1").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+            var groupsecond = new GroupBuilder().Name("bGroup").Slug("slug2").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+            var groupthird = new GroupBuilder().Name("cGroup").Slug("slug3").MapPosition(location).CategoriesReference(new List<GroupCategory>() { groupCategory }).Build();
+
+            var categorybuilder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory").Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulGroupCategory> { contentfulGroupcategory });
+
+            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
+
+            _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() { contentfulGroup })).Returns(new List<Group>() { groupsecond, groupfirst, groupthird });
+            _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", 53.40581278523235, -2.158041000366211, "name z-a"));
+            var filteredGroupResults = response.Get<GroupResults>();
+
+            // Assert
+            filteredGroupResults.Groups.First().Should().Be(groupthird);
+            filteredGroupResults.Groups[1].Should().Be(groupsecond);
+            filteredGroupResults.Groups[2].Should().Be(groupfirst);
+        }
+
         private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
         {
             
