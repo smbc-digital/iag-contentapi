@@ -53,14 +53,14 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            if (lat != 53.40581278523235 && lon != -2.158041000366211)
-            {
-                builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",3.2");
-            }
-            else
-            {
-                builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",10");
-            }
+            //if (lat != 53.40581278523235 && lon != -2.158041000366211)
+            //{
+            //    builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",3.2");
+            //}
+            //else
+            //{
+            //    builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",10");
+            //}
 
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
@@ -69,13 +69,16 @@ namespace StockportContentApi.Repositories
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug.ToLower() == categorySlug.ToLower()))
                 .ToList();
 
-            switch (order.ToLower())
+            switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
             {
                 case "name a-z":
                     groups = groups.OrderBy(g => g.Name).ToList();
                     break;
                 case "name z-a":
                     groups = groups.OrderByDescending(g => g.Name).ToList();
+                    break;
+                default:
+                    groups = groups.OrderBy(g => g.Name).ToList();
                     break;
             }
 
