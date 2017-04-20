@@ -245,3 +245,5 @@ src/StockportContentApi/app-config/injected/*.secrets.json
 
 src/StockportContentApi/app-config/appsettings.dev-local.json
 
+# Deploy packages
+iag-contentapi.zip
