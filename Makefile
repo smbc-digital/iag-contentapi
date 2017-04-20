@@ -55,6 +55,15 @@ build:
 	echo $(APP_VERSION) > src/$(PROJECT_NAME)/version.txt
 	./docker.sh build $(IMAGE) $(TAG) Dockerfile
 
+.PHONY: win-build
+win-build:
+	cd src/$(PROJECT_NAME)
+	dotnet restore
+
+.PHONY: win-publish
+win-publish: win-build
+	cd src/$(PROJECT_NAME); dotnet publish --configuration Release -o publish;
+
 run: copy-secrets
 	./docker.sh run \
 		$(CONTAINER_NAME) \
