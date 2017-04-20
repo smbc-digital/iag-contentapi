@@ -60,9 +60,11 @@ win-build:
 	cd src/$(PROJECT_NAME)
 	dotnet restore
 
-.PHONY: win-publish
-win-publish: win-build
-	cd src/$(PROJECT_NAME); dotnet publish --configuration Release -o publish;
+.PHONY: win-package
+win-package: win-build
+	cd src/$(PROJECT_NAME); \
+	dotnet publish --configuration Release -o publish
+	python zip.py /src/$(PROJECT_NAME)/publish package.zip
 
 run: copy-secrets
 	./docker.sh run \
