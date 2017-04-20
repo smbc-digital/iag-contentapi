@@ -7,6 +7,8 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using System;
+
 namespace StockportContentApi.Repositories
 {
     public class AtoZRepository
@@ -15,13 +17,15 @@ namespace StockportContentApi.Repositories
         private readonly ContentfulClient _contentfulClient;
         private readonly IFactory<AtoZ> _factory;
         private readonly UrlBuilder _urlBuilder;
+        private readonly DateComparer _dateComparer;
 
-        public AtoZRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<AtoZ> factory)
+        public AtoZRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<AtoZ> factory, ITimeProvider timeProvider)
         {
             _contentfulClient = new ContentfulClient(httpClient);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
             _factory = factory;
             _urlBuilder = new UrlBuilder(_contentfulApiUrl);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public async Task<HttpResponse> Get(string letter)
@@ -45,10 +49,15 @@ namespace StockportContentApi.Repositories
 
             foreach (var item in contentfulResponse.Items)
             {
-                AtoZ buildItem = _factory.Build(item, contentfulResponse);
+                DateTime sunriseDate = DateComparer.DateFieldToDate(item.fields.sunriseDate);
+                DateTime sunsetDate = DateComparer.DateFieldToDate(item.fields.sunsetDate);
+                if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(sunriseDate, sunsetDate))
+                {
+                    AtoZ buildItem = _factory.Build(item, contentfulResponse);
 
-                var matchingItems = buildItem.SetTitleStartingWithLetter(letter);
-                atozList.AddRange(matchingItems);
+                    var matchingItems = buildItem.SetTitleStartingWithLetter(letter);
+                    atozList.AddRange(matchingItems);
+                }
             }
 
             return atozList;

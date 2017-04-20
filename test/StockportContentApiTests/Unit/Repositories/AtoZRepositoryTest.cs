@@ -44,7 +44,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(new AtoZ ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>()));
 
-            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object);
+            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object, null);
 
             var response = AsyncTestHelper.Resolve(repository.Get("v"));
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -63,7 +63,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(new AtoZ("B Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>()));
 
-            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object);
+            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object, null);
 
             var response = AsyncTestHelper.Resolve(repository.Get("b"));
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -82,7 +82,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>() { "Shall you know this started!" }));
 
-            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object);
+            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object, null);
 
             var response = AsyncTestHelper.Resolve(repository.Get("d"));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -99,7 +99,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>() { alternativeTitle }));
 
-            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object);
+            var repository = new AtoZRepository(_config, _httpClient.Object, mockAtoZBuilder.Object, null);
 
             var response = AsyncTestHelper.Resolve(repository.Get("d"));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -123,7 +123,7 @@ namespace StockportContentApiTests.Unit.Repositories
             httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=article&fields.displayOnAZ=true"))
                 .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/AtoZSingleItem.json")));
 
-            var repository = new AtoZRepository(_config, httpClient.Object, mockAtoZBuilder.Object);
+            var repository = new AtoZRepository(_config, httpClient.Object, mockAtoZBuilder.Object, null);
 
             var response = AsyncTestHelper.Resolve(repository.Get("t"));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
