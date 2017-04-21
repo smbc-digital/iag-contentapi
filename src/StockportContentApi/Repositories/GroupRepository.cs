@@ -77,6 +77,8 @@ namespace StockportContentApi.Repositories
                 case "name z-a":
                     groups = groups.OrderByDescending(g => g.Name).ToList();
                     break;
+                case "nearest":
+                   break;
                 default:
                     groups = groups.OrderBy(g => g.Name).ToList();
                     break;
