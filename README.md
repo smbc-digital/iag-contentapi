@@ -27,6 +27,9 @@ The app has three config files which are kept in `src/StockportContentApi/app-co
 make run
 ```
 
+### Package
+make win-package
+
 ## Contentful Integration
 * The Content Api acts as a translation layer between [Contentful](contentful.com) and the webapp.
 
