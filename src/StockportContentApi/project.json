@@ -33,7 +33,8 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
     "Swashbuckle": "6.0.0-beta902",
-    "contentful.csharp": "0.10.3-beta"
+    "contentful.csharp": "0.10.3-beta",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0"
   },
 
   "tools": {
@@ -47,5 +48,16 @@
         "dotnet5.6"
       ]
     }
+  },
+
+  "publishOptions": {
+    "include": [
+      "app-config",
+      "web.config"
+    ]
+  },
+
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
