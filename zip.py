@@ -11,7 +11,7 @@ def zip_file(srcDir, dest):
             for file in files:
                 absname = os.path.abspath(os.path.join(root, file))
                 arcname = absname[len(abs_src) + 1:]
-                print("Zipping '{0}' as '{1}'".format((os.path.join(root, file), arcname)))
+#                print("Zipping '{0}' as '{1}'".format((os.path.join(root, file), arcname)))
                 config_zip.write(absname, arcname)
 
 if __name__ == "__main__":
