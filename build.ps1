@@ -1,5 +1,41 @@
-cd src\StockportContentApi
-dotnet restore
-dotnet publish --configuration Release -o publish
-cd ..\..
-python zip.py src\StockportContentApi\publish package.zip
+function _Build($appName, $projectPath) {
+  _DeleteFile "$appName.zip"
+  cd $projectPath
+  dotnet restore
+  cd ..\..
+}
+
+function _DeleteFile($fileName) {
+    If (Test-Path $fileName) {
+        Write-Host "Deleting '$fileName'"
+  	   Remove-Item $fileName
+    } else {
+      "'$fileName' not found. Nothing deleted"
+    }
+}
+
+function _Publish($projectPath) {
+  cd $projectPath
+  dotnet publish --configuration Release -o publish
+  cd ..\..
+}
+
+function _Package($name) {
+  python zip.py src\StockportContentApi\publish "$name.zip"
+}
+
+function Main {
+  Try {
+    $appName = "contentapi"
+    $projectPath = "src\StockportContentApi"
+
+    _Build $appName $projectPath
+    _Publish $projectPath
+    _Package $appName
+  }
+  Catch {
+    Write-Error $_.Exception
+  }
+}
+
+Main
