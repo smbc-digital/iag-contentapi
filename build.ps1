@@ -31,7 +31,6 @@ function Main {
 
     _Build $appName $projectPath
     _Publish $projectPath
-    _Package $appName
   }
   Catch {
     Write-Error $_.Exception
