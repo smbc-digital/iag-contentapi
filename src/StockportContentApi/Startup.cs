@@ -34,7 +34,7 @@ namespace StockportContentApi
             var configBuilder = new ConfigurationBuilder();
             var configLoader = new ConfigurationLoader(configBuilder, ConfigDir);
 
-            Configuration = configLoader.LoadConfiguration(env.EnvironmentName, _contentRootPath);
+            Configuration = configLoader.LoadConfiguration(env, _contentRootPath);
         }
 
         public IConfigurationRoot Configuration { get; set; }
