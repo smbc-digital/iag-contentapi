@@ -54,8 +54,10 @@
   "publishOptions": {
     "include": [
       "app-config",
-      "web.config", 
-      "NLog.config"
+      "web.config",
+      "NLog.config",
+      "version.txt",
+      "sha.txt"
     ]
   },
 
