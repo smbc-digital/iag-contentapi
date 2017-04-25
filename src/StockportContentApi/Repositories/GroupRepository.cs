@@ -22,7 +22,7 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
 
-        public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
+        public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                                  IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory)
@@ -39,12 +39,12 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
 
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'") 
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'")
                 : HttpResponse.Successful(_groupFactory.ToModel(entry));
         }
 
-        public async Task<HttpResponse> GetGroupResults(string categorySlug, double lat, double lon, string order)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order)
         {
             var groupResults = new GroupResults();
 
@@ -53,16 +53,25 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            if (lon != 0 && lat != 0)
+            if (longitude != 0 && latitude != 0)
             {
-                builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + (lat == 53.40581278523235 && lon == -2.158041000366211 ? ",10" : ",3.2"));
+                builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (latitude == 53.40581278523235 && longitude == -2.158041000366211 ? ",10" : ",3.2"));
             }
+
+            //if (lat != 53.40581278523235 && lon != -2.158041000366211)
+            //{
+            //    builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",3.2");
+            //}
+            //else
+            //{
+            //    builder = builder.FieldEquals("fields.mapPosition[near]", lat + "," + lon + ",10");
+            //}
 
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groups = _groupListFactory.ToModel(entries.ToList())
-                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categorySlug) || c.Slug.ToLower() == categorySlug.ToLower()))
+                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
                 .ToList();
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
@@ -74,7 +83,7 @@ namespace StockportContentApi.Repositories
                     groups = groups.OrderByDescending(g => g.Name).ToList();
                     break;
                 case "nearest":
-                   break;
+                    break;
                 default:
                     groups = groups.OrderBy(g => g.Name).ToList();
                     break;
@@ -88,7 +97,7 @@ namespace StockportContentApi.Repositories
 
             if (groupCategoryEntries != null || groupCategoryEntries.Any())
             {
-                if(!string.IsNullOrEmpty(categorySlug) && !groupCategoryEntries.Any(g => g.Slug.ToLower() == categorySlug.ToLower()))
+                if (!string.IsNullOrEmpty(category) && !groupCategoryEntries.Any(g => g.Slug.ToLower() == category.ToLower()))
                     return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
                 var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
