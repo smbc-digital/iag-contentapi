@@ -22,5 +22,6 @@
     "lon": 0.0,
     "lat": 0.0
   },
-  "volunteering": false
+  "volunteering": false,
+  "events": [] 
 }

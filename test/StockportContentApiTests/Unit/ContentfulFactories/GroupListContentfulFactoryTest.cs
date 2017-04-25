@@ -34,7 +34,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var groupList = _groupListContentfulFactory.ToModel(_contentfulGroupList);
 
             // Assert
-            groupList[0].ShouldBeEquivalentTo(_contentfulGroupList[0], o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl));
+            groupList[0].ShouldBeEquivalentTo(_contentfulGroupList[0], o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Events));
         }
     }
 }
