@@ -24,9 +24,11 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly GroupRepository _repository;
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _listGroupFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>> _listGroupCategoryFactory;
         private readonly Mock<IContentfulClient> _client;
+        private readonly Mock<ITimeProvider> _timeProvider; 
 
         public GroupRepositoryTest()
         {
@@ -37,7 +39,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-
+            _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+            _timeProvider = new Mock<ITimeProvider>();
             _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
             _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
 
@@ -45,7 +48,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _repository = new GroupRepository(config, contentfulClientManager.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object);
+            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventFactory.Object);
         }
 
         [Fact]
@@ -64,8 +67,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var responseProfile = response.Get<Group>();
-            responseProfile.ShouldBeEquivalentTo(group);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(group);
         }
 
         [Fact]
@@ -80,22 +83,6 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No group found for '{slug}'");
-        }
-
-        [Fact]
-        public void ShouldReturnCategoriesForGroup()
-        {
-            const string slug = "group-with-categories";
-            var groupCategory = new GroupCategory("name", "slug", "icon", "image");
-            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).CategoriesReference(new List<Entry<ContentfulGroupCategory>>() { new Entry<ContentfulGroupCategory>() {Fields = new ContentfulGroupCategoryBuilder().Build(), SystemProperties = new SystemProperties() {Type = "Entry"} }   }).Build();
-
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
-
-            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
@@ -349,14 +336,66 @@ namespace StockportContentApiTests.Unit.Repositories
             filteredGroupResults.Groups[2].Should().Be(groupfirst);
         }
 
+        [Fact]
+        public void ShouldReturnNoEventsIfTheGroupIsReferencedByNone()
+        {
+            // Arrange
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulEvent>());
+
+            // Act
+            var events = AsyncTestHelper.Resolve(_repository.GetGroupEvents("slug")); 
+
+            // Assert
+            events.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void ShouldReturnOneEventIfTheGroupIsReferencedByOne()
+        {
+            // Arrange
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Build() });
+
+            _eventFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEvent>())).Returns(new EventBuilder().Slug("event-slug").Build());
+            // Act
+            var events = AsyncTestHelper.Resolve(_repository.GetGroupEvents("slug"));
+
+            // Assert
+            events.Count.Should().Be(1);
+            events[0].Slug.Should().Be("event-slug");
+        }
+
+        [Fact]
+        public void ShouldReturnThreeEventsIfTheGroupIsReferencedByThree()
+        {
+            // Arrange
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Build(), new ContentfulEventBuilder().Build(), new ContentfulEventBuilder().Build() });
+
+            _eventFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEvent>())).Returns(new EventBuilder().Slug("event-slug").Build());
+            // Act
+            var events = AsyncTestHelper.Resolve(_repository.GetGroupEvents("slug"));
+
+            // Assert
+            events.Count.Should().Be(3);
+            events[0].Slug.Should().Be("event-slug");
+        }
+
         private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
         {
             
             var contentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(testCategorySlug).Build();
             var contentfulGroupWithCategory = new ContentfulGroupBuilder().Slug("slug-with-categories").CategoriesReference(
-                new List<Entry<ContentfulGroupCategory>>()
+                new List<Entry<ContentfulGroupCategory>>
                 {
-                    new Entry<ContentfulGroupCategory>()
+                    new Entry<ContentfulGroupCategory>
                     {
                         Fields = contentfulGroupCategory,
                         SystemProperties = new SystemProperties() { Type = "Entry" }

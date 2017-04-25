@@ -234,16 +234,12 @@ FakesAssemblies/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 
-# Paket dependency manager
-.paket/paket.exe
-
-# FAKE - F# Make
-.fake/
-
 src/StockportContentApi/app-config/injected/*.secrets.json
 .vscode/
 
 src/StockportContentApi/app-config/appsettings.dev-local.json
+.idea
+*.zip
 
 # Deploy packages
 iag-contentapi.zip

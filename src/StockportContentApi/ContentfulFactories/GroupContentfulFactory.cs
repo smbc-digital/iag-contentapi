@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -21,8 +20,7 @@ namespace StockportContentApi.ContentfulFactories
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
             var categoriesReferences = entry.CategoriesReference != null
-                ? entry.CategoriesReference.Select(
-                    catogory => _contentfulGroupCategoryFactory.ToModel(catogory.Fields)).ToList()
+                ? entry.CategoriesReference.Where(o => o.Fields != null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory.Fields)).ToList()
                 : new List<GroupCategory>();
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,

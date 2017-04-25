@@ -19,6 +19,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _image = "image-url.jpg";
         private string _thumbnail = "thumbnail.jpg";
         private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
+        private List<Event> _events = new List<Event>();
         private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
         private MapPosition _mapPosition = new MapPosition() {Lat=39.0,Lon = 2.0};
         private bool _volunteering = false;       
@@ -56,6 +57,12 @@ namespace StockportContentApiTests.Unit.Builders
         public GroupBuilder Name(string name)
         {
             _name = name;
+            return this;
+        }
+
+        public GroupBuilder Events(List<Event> events)
+        {
+            _events = events;
             return this;
         }
     }
