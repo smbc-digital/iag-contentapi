@@ -6,6 +6,7 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
+using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -97,7 +98,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> {new GroupCategory("name", testCategorySlug, "icon", "image-url.jpg")};
 
             // Act
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -110,7 +111,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, 53.40581278523235, -2.158041000366211, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -131,11 +132,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var listOfGroupCategories = new List<GroupCategory> { new GroupCategory("name", "slug-that-matches-no-groups", "icon", "image-url.jpg") };
 
             // Act
-            var builder =
-                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
-                    .Include(1)
-                    .Limit(1000)
-                    .FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
@@ -147,7 +144,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", 53.40581278523235, -2.158041000366211, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -171,15 +168,15 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
             _listGroupFactory.Setup(o => o.ToModel(listOfContentfulGroups)).Returns(listOfGroups);
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, 53.40581278523235, -2.158041000366211, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -203,15 +200,15 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
 
             _listGroupFactory.Setup(o => o.ToModel(listOfContentfulGroups)).Returns(listOfGroups);
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", 53.40581278523235, -2.158041000366211, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -286,15 +283,15 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { contentfulGroupcategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
 
             _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() { contentfulGroup })).Returns(new List<Group>() { groupsecond, groupfirst , groupthird });
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", 53.40581278523235, -2.158041000366211, "name a-z" ));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z" ));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -319,15 +316,15 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { contentfulGroupcategory });
 
-            var groupbuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", "53.4058127852323,-2.15804100036621,10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == groupbuilder.Build()),
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup>() { contentfulGroup });
 
             _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() { contentfulGroup })).Returns(new List<Group>() { groupsecond, groupfirst, groupthird });
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", 53.40581278523235, -2.158041000366211, "name z-a"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name z-a"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
