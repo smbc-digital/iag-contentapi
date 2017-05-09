@@ -70,7 +70,7 @@ namespace StockportContentApi.Repositories
             return events;
         }
 
-        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location)
         {
             var groupResults = new GroupResults();
 
@@ -79,7 +79,7 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (latitude == Defaults.Groups.StockportLatitude && longitude == Defaults.Groups.StockportLongitude ? ",10" : ",3.2"));
+            if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
 
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
