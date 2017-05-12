@@ -9,6 +9,7 @@ using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Factories;
+using StockportContentApi.Helpers;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -116,7 +117,21 @@ namespace StockportContentApi.Repositories
                 : _dateComparer.EventDateIsBetweenTodayAndLater(events.EventDate);
         }
 
-     
+     public async Task<List<Event>> GetLinkedEvents<T>(string slug)
+        {
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", TypeHelper.ContentfulTypeFor<T>()).FieldEquals("fields.group.fields.slug", slug).Include(2);
+            var entries = await _client.GetEntriesAsync(builder);
+
+            var events = entries
+                    .Select(e => _contentfulFactory.ToModel(e))
+                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+
+            return events;
+        }
 
         public async Task<List<string>> GetCategories()
         {

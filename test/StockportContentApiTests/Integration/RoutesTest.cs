@@ -11,6 +11,7 @@ using HttpClient = System.Net.Http.HttpClient;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Helpers;
 using StockportContentApi.Http;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
@@ -124,6 +125,12 @@ namespace StockportContentApiTests.Integration
                             It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Build()),
                             It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroupCategory> {
                                 new ContentfulGroupCategoryBuilder().Slug("groupCategory_slug").Build()
+                            });
+
+            httpClient.Setup(o => o.GetEntriesAsync(
+                            It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "group_slug").Include(2).Build()),
+                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
+                                new ContentfulEventBuilder().Slug("event-slug").Build()
                             });
             });
         }

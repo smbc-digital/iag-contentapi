@@ -22,22 +22,24 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
-        private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
+        private readonly EventRepository _eventRepository;
+
 
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                                  ITimeProvider timeProvider,
-
                                  IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
-                                 IContentfulFactory<ContentfulEvent, Event> contentfulFactory)
+                                 EventRepository eventRepository
+
+            )
         {
-            _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = clientManager.GetClient(config);
             _groupFactory = groupFactory;
             _groupListFactory = groupListFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
+            _eventRepository = eventRepository;
         }
 
         public async Task<HttpResponse> GetGroup(string slug)
@@ -49,25 +51,9 @@ namespace StockportContentApi.Repositories
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
 
             var group = _groupFactory.ToModel(entry);
-            group.SetEvents(await GetGroupEvents(slug));
+            group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
 
             return HttpResponse.Successful(group);
-        }
-
-        public async Task<List<Event>> GetGroupEvents(string slug)
-        {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
-
-            var events = entries
-                    .Select(e => _contentfulFactory.ToModel(e))
-                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                    .OrderBy(o => o.EventDate)
-                    .ThenBy(c => c.StartTime)
-                    .ThenBy(t => t.Title)
-                    .ToList();
-
-            return events;
         }
 
         public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order)

@@ -19,6 +19,7 @@ namespace StockportContentApiTests.Unit.Builders
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private List<Entry<ContentfulGroupCategory>> _categoriesReference = new List<Entry<ContentfulGroupCategory>>();
         private MapPosition _mapPosition = new MapPosition() {Lat=39,Lon= 2};
+       
         public ContentfulGroup Build()
         {
             return new ContentfulGroup
@@ -33,7 +34,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Twitter = _twitter,
                 Website = _website,
                 Image = _image,
-                CategoriesReference = _categoriesReference
+                CategoriesReference = _categoriesReference,
+                
             };
         }
 
