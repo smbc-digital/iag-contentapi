@@ -25,10 +25,12 @@ namespace StockportContentApi
     public class Startup
     {
         private readonly string _contentRootPath;
+        private readonly string _appEnvironment;
         private const string ConfigDir = "app-config";
 
         public Startup(IHostingEnvironment env)
         {
+            _appEnvironment = env.EnvironmentName;
             _contentRootPath = env.ContentRootPath;
 
             var configBuilder = new ConfigurationBuilder();
@@ -57,7 +59,7 @@ namespace StockportContentApi
             services.AddSingleton<IHttpClient>(
                 p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
             services.AddTransient(_ => createConfig);
-            services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper()));
+            services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
 
