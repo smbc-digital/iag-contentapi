@@ -32,7 +32,7 @@ namespace StockportContentApiTests.Unit.Services
 
         private HealthcheckService CreateHealthcheckService(string appVersionPath, string shaPath)
         {
-            return new HealthcheckService(appVersionPath, shaPath, _fileWrapperMock.Object);
+            return new HealthcheckService(appVersionPath, shaPath, _fileWrapperMock.Object, "local");
         }
         [Fact]
         public void ShouldContainTheAppVersionInTheResponse()

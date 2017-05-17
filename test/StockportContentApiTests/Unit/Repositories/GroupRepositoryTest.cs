@@ -118,7 +118,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -151,7 +151,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _listGroupCategoryFactory.Setup(o => o.ToModel(listOfContentfulGroupCategories)).Returns(listOfGroupCategories);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -183,7 +183,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -215,8 +215,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z"));
-            var filteredGroupResults = response.Get<GroupResults>();
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -298,7 +297,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z" ));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -331,7 +330,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { contentfulGroupcategory })).Returns(new List<GroupCategory>() { groupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name z-a"));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name z-a", "Stockport"));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert

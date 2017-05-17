@@ -11,6 +11,7 @@ namespace StockportContentApi
                 .UseUrls("http://0.0.0.0:5001")
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 

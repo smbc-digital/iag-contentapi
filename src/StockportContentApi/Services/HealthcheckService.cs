@@ -14,12 +14,14 @@ namespace StockportContentApi.Services
         private readonly string _appVersion;
         private readonly string _sha;
         private readonly IFileWrapper _fileWrapper;
+        private readonly string _environment;
 
-        public HealthcheckService(string appVersionPath, string shaPath, IFileWrapper fileWrapper)
+        public HealthcheckService(string appVersionPath, string shaPath, IFileWrapper fileWrapper, string environment)
         {
             _fileWrapper = fileWrapper;
             _appVersion = GetFirstFileLineOrDefault(appVersionPath, "dev");
             _sha = GetFirstFileLineOrDefault(shaPath, string.Empty);
+            _environment = environment;
         }
 
         private string GetFirstFileLineOrDefault(string filePath, string defaultValue)
@@ -35,7 +37,7 @@ namespace StockportContentApi.Services
 
         public Healthcheck Get()
         {
-            return new Healthcheck(_appVersion, _sha);
+            return new Healthcheck(_appVersion, _sha, _environment);
         }
     }
 }

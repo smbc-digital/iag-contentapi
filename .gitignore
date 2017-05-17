@@ -241,3 +241,5 @@ src/StockportContentApi/app-config/appsettings.dev-local.json
 .idea
 *.zip
 
+# Deploy packages
+iag-contentapi.zip
