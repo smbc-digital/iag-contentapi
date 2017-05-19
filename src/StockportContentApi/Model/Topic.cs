@@ -21,6 +21,7 @@ namespace StockportContentApi.Model
         public DateTime SunsetDate { get; }
         public bool EmailAlerts { get; }
         public string EmailAlertsTopicId { get; }
+        public EventBanner EventBanner { get; }
 
         public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
             IEnumerable<SubItem> tertiaryItems)
@@ -35,7 +36,7 @@ namespace StockportContentApi.Model
         public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage, 
             string image,IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, 
-            bool emailAlerts, string emailAlertsTopicId)
+            bool emailAlerts, string emailAlertsTopicId, EventBanner eventBanner)
         {
             Slug = slug;
             Name = name;
@@ -52,7 +53,8 @@ namespace StockportContentApi.Model
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
             EmailAlerts = emailAlerts;
-            EmailAlertsTopicId = emailAlertsTopicId;        
+            EmailAlertsTopicId = emailAlertsTopicId;
+            EventBanner = eventBanner;
         }
     }
 
@@ -74,6 +76,7 @@ namespace StockportContentApi.Model
             DateTime.MinValue, 
             DateTime.MinValue,
             false,
-            string.Empty) { }
+            string.Empty,
+            new NullEventBanner()) { }
     }
 }

@@ -23,6 +23,8 @@ namespace StockportContentApiTests.Unit.Factories
             _mockTimeProvider = new Mock<ITimeProvider>();
             var mockSubitemBuilder = new Mock<IBuildContentTypesFromReferences<SubItem>>();
             var mockListAlertBuilder = new Mock<IBuildContentTypesFromReferences<Alert>>();
+            var mockEventBannerBuilder = new Mock<IBuildContentTypeFromReference<EventBanner>>();
+
             mockListAlertBuilder.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
 
@@ -31,8 +33,12 @@ namespace StockportContentApiTests.Unit.Factories
                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image", new List<SubItem>()) });
 
+            mockEventBannerBuilder.Setup(
+                    o => o.BuildFromReference(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
+                .Returns(new EventBanner("title", "teaser", "icon", "link"));
+
             var breadcrumbFactory = new BreadcrumbFactory();
-            _topicListFactory = new TopicListFactory(new TopicFactory(mockListAlertBuilder.Object, mockSubitemBuilder.Object, breadcrumbFactory), _mockTimeProvider.Object);
+            _topicListFactory = new TopicListFactory(new TopicFactory(mockListAlertBuilder.Object, mockSubitemBuilder.Object, breadcrumbFactory,mockEventBannerBuilder.Object), _mockTimeProvider.Object);
         }
 
 

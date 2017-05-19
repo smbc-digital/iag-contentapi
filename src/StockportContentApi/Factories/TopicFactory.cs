@@ -9,14 +9,17 @@ namespace StockportContentApi.Factories
         private readonly IBuildContentTypesFromReferences<Alert> _alertListFactory;
         private readonly IBuildContentTypesFromReferences<SubItem> _subitemFactory;
         private readonly IBuildContentTypesFromReferences<Crumb> _breadcrumbFactory;
+        private readonly IBuildContentTypeFromReference<EventBanner> _eventBannerFactory;
 
         public TopicFactory(IBuildContentTypesFromReferences<Alert> alertListFactory, 
                             IBuildContentTypesFromReferences<SubItem> subitemFactory, 
-                            IBuildContentTypesFromReferences<Crumb> breadcrumbFactory)
+                            IBuildContentTypesFromReferences<Crumb> breadcrumbFactory,
+                            IBuildContentTypeFromReference<EventBanner> eventBannerFactory)
         {
             _alertListFactory = alertListFactory;
             _subitemFactory = subitemFactory;
             _breadcrumbFactory = breadcrumbFactory;
+            _eventBannerFactory = eventBannerFactory;
         }
 
         public Topic Build(dynamic entry, IContentfulIncludes contentfulResponse)
@@ -39,9 +42,10 @@ namespace StockportContentApi.Factories
             var emailAlerts = false;
             if (entry.fields.emailAlerts != null) bool.TryParse((string)entry.fields.emailAlerts, out emailAlerts);
             var emailAlertsTopicId = (string)entry.fields.emailAlertsTopicId ?? string.Empty;
+            var eventBanner = _eventBannerFactory.BuildFromReference(fields.eventBanner, contentfulResponse);
 
             return new Topic(slug, name, teaser, summary, icon, backgroundImage, image, subItems, secondaryItems,
-                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId);
+                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner);
         }
     }
 }

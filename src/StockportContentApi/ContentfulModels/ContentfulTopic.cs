@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -24,6 +25,11 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool EmailAlerts { get; set; } = false;
-        public string EmailAlertsTopicId { get; set; } = string.Empty;        
+        public string EmailAlertsTopicId { get; set; } = string.Empty;
+        public Entry<ContentfulEventBanner> EventBanner { get; set; } = new Entry<ContentfulEventBanner>
+        {
+            Fields = new ContentfulEventBanner(),
+            SystemProperties = new SystemProperties { Type = "Entry" }
+        };
     }
 }
