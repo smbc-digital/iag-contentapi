@@ -6,6 +6,7 @@ using System.Threading;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
@@ -58,7 +59,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
+            _repository = new EventRepository(config, contentfulClientManager.Object,
                 _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object);
 
         }
@@ -646,6 +647,29 @@ namespace StockportContentApiTests.Unit.Repositories
             events.Count.Should().Be(3);
             events[0].Slug.Should().Be("event-slug");
         }
+
+        //[Fact]
+        //public void ShouldCallContentfulIfCacheIsEmpty()
+        //{
+        //    // Arrange
+        //    var categories = new List<string> { "cat1", "cat2", "cat3" };
+
+        //    List<string> emptyListReturnedFromCache = new List<string>();
+        //    bool cacheIsEmpty = false;
+
+        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+        //    _contentfulClient.Setup(o => o.Get)
+        //    _cacheWrapper.Setup(x => x.TryGetValue(It.IsAny<string>(), out emptyListReturnedFromCache));
+        //        .Returns(cacheIsEmpty);
+
+        //    // Act
+        //    var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null));
+
+
+        //    // Assert
+        //    _cacheWrapper.Verify(x => x.Set(It.IsAny<string>(), events, It.IsAny<MemoryCacheEntryOptions>()));
+
+        //}
     }
 }
 

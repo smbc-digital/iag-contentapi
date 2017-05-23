@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
@@ -23,10 +24,9 @@ namespace StockportContentApi.Repositories
         private readonly IEventCategoriesFactory _eventCategoriesFactory;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly string _contentfulContentTypesUrl;
-        private readonly IContentfulClient _contentfulClient;
+
 
         public EventRepository(ContentfulConfig config,
-            IHttpClient httpClient,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
             IEventCategoriesFactory eventCategoriesFactory            
@@ -36,7 +36,6 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _eventCategoriesFactory = eventCategoriesFactory;
-            _contentfulClient = new ContentfulClient(httpClient);
             _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
         }
 
@@ -135,10 +134,18 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<string>> GetCategories()
         {
-            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
-            var contentfulData = contentfulResponse.Items;
-            var eventCategories = _eventCategoriesFactory.Build(contentfulData);
-            return eventCategories;
+            try
+            {
+                ContentType contentTypes = await _client.GetContentTypeAsync("events");
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            
+
+            //var eventCategories = _eventCategoriesFactory.Build(contentfulData);
+            return null;
         }
     }
 }
