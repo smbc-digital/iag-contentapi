@@ -8,6 +8,8 @@ using Contentful.Core.Search;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
+using Newtonsoft.Json;
+using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -33,6 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
+        private readonly Mock<ICacheWrapper> _memoryCache;
 
         public EventRepositoryTest()
         {
@@ -56,11 +59,13 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
             _httpClient = new Mock<IHttpClient>();
             
+            _memoryCache = new Mock<ICacheWrapper>();
+
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new EventRepository(config, contentfulClientManager.Object,
-                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object);
+            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
+                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, _memoryCache.Object);
 
         }
 
@@ -648,28 +653,63 @@ namespace StockportContentApiTests.Unit.Repositories
             events[0].Slug.Should().Be("event-slug");
         }
 
-        //[Fact]
-        //public void ShouldCallContentfulIfCacheIsEmpty()
-        //{
-        //    // Arrange
-        //    var categories = new List<string> { "cat1", "cat2", "cat3" };
+        [Fact]
+        public void ShouldCallContentfulIfCacheIsEmpty()
+        {
+            // Arrange
+            var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
+                                                "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
+                                                "Fair","Emergency Services","Bonfire","Remembrence Service" };
+            object emptyListReturnedFromCache = new List<string>();
+            bool cacheIsEmpty = false;
 
-        //    List<string> emptyListReturnedFromCache = new List<string>();
-        //    bool cacheIsEmpty = false;
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
 
-        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-        //    _contentfulClient.Setup(o => o.Get)
-        //    _cacheWrapper.Setup(x => x.TryGetValue(It.IsAny<string>(), out emptyListReturnedFromCache));
-        //        .Returns(cacheIsEmpty);
+            _memoryCache.Setup(x => x.TryGetValue(It.IsAny<object>(), out emptyListReturnedFromCache))
+                .Returns(cacheIsEmpty);
 
-        //    // Act
-        //    var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null));
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Slug("event-slug").Build(), new ContentfulEventBuilder().Build(), new ContentfulEventBuilder().Build() });
 
+            _eventCategoriesFactory.Setup(o => o.Build(It.IsAny<IList<dynamic>>())).Returns(categories);
 
-        //    // Assert
-        //    _cacheWrapper.Verify(x => x.Set(It.IsAny<string>(), events, It.IsAny<MemoryCacheEntryOptions>()));
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null));
 
-        //}
+            // Assert
+            _memoryCache.Verify(x => x.Set(It.IsAny<string>(), categories, It.IsAny<MemoryCacheEntryOptions>()));
+
+        }
+
+        [Fact]
+        public void ShouldNotCallContentfulIfCacheIsFull()
+        {
+            // Arrange
+            var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
+                                                "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
+                                                "Fair","Emergency Services","Bonfire","Remembrence Service" };
+            object emptyListReturnedFromCache = new List<string>();
+            bool cacheIsFull = true;
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+
+            _memoryCache.Setup(x => x.TryGetValue(It.IsAny<object>(), out emptyListReturnedFromCache))
+                .Returns(cacheIsFull);
+
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Slug("event-slug").Build(), new ContentfulEventBuilder().Build(), new ContentfulEventBuilder().Build() });
+
+            _eventCategoriesFactory.Setup(o => o.Build(It.IsAny<IList<dynamic>>())).Returns(categories);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null));
+
+            // Assert
+            _memoryCache.Verify(x => x.Set(It.IsAny<string>(), categories, It.IsAny<MemoryCacheEntryOptions>()), Times.Never);
+
+        }
     }
 }
 

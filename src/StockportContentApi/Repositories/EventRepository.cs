@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
+using Microsoft.Extensions.Caching.Memory;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -24,12 +25,16 @@ namespace StockportContentApi.Repositories
         private readonly IEventCategoriesFactory _eventCategoriesFactory;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly string _contentfulContentTypesUrl;
+        private readonly IContentfulClient _contentfulClient;
+        private readonly ICacheWrapper _cache;
 
 
         public EventRepository(ContentfulConfig config,
+            IHttpClient httpClient,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
-            IEventCategoriesFactory eventCategoriesFactory            
+            IEventCategoriesFactory eventCategoriesFactory,
+            ICacheWrapper cache        
             )
         {
             _contentfulFactory = contentfulFactory;
@@ -37,6 +42,8 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
             _eventCategoriesFactory = eventCategoriesFactory;
             _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
+            _contentfulClient = new ContentfulClient(httpClient);
+            _cache = cache;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -134,18 +141,28 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<string>> GetCategories()
         {
-            try
-            {
-                ContentType contentTypes = await _client.GetContentTypeAsync("events");
-            }
-            catch (Exception ex)
-            {
-                
-            }
-            
+            var cacheKey = "eventCategories";
+            object cacheEntry = new List<string>();
 
-            //var eventCategories = _eventCategoriesFactory.Build(contentfulData);
-            return null;
+            if (!_cache.TryGetValue(cacheKey, out cacheEntry))
+            {
+                var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
+                var contentfulData = contentfulResponse.Items;
+                cacheEntry = _eventCategoriesFactory.Build(contentfulData);
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+
+                // Keep in cache for this time, reset time if accessed. 900 seconds = 15 minutes. For Jon.
+                .SetSlidingExpiration(TimeSpan.FromHours(24));
+
+                // Save data in cache.
+                _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
+            }
+
+
+            return cacheEntry as List<string>;
         }
+
     }
 }

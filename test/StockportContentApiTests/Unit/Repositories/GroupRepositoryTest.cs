@@ -35,6 +35,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly EventRepository _eventRepository;
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
+        private readonly Mock<ICacheWrapper> _cache;
+
         public GroupRepositoryTest()
         {
             var config = new ContentfulConfig("test")
@@ -49,12 +51,13 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient = new Mock<IHttpClient>();
             _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
             _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
+            _cache = new Mock<ICacheWrapper>();
           
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
-            _eventRepository = new EventRepository(config,contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object);
+            _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cache.Object);
             _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository);
 
         }

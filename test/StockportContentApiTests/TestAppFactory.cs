@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -42,6 +44,12 @@ namespace StockportContentApiTests
                 dateTime.Setup(o => o.Now()).Returns(FakeTimeProvider.DateTime);
 
                 services.AddSingleton(dateTime.Object);
+
+                var cache = new Mock<ICacheWrapper>();
+                object emptyListReturnedFromCache = new List<string>();
+                cache.Setup(o => o.TryGetValue("eventCategories", out emptyListReturnedFromCache)).Returns(false);
+                services.AddSingleton(cache.Object);
+
 
                 var contentfulClientManager = new Mock<IContentfulClientManager>();
                 contentfulClientManager.Setup(o => o.GetClient(It.IsAny<ContentfulConfig>())).Returns(FakeContentfulClientFactory.Client.Object);
