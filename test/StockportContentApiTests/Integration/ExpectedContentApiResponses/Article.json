@@ -119,7 +119,7 @@
         "sunriseDate": "2016-01-10T00:00:00Z",
         "sunsetDate": "2017-01-20T00:00:00Z",
         "image": "image-url.jpg",
-        "subItems": [] 
+        "subItems": []
       }
     ],
     "secondaryItems": [
@@ -153,7 +153,8 @@
     "sunriseDate": "0001-01-01T00:00:00Z",
     "sunsetDate": "0001-01-01T00:00:00Z",
     "emailAlerts": false,
-    "emailAlertsTopicId": null
+    "emailAlertsTopicId": null,
+    "eventBanner": null 
   },
   "documents": [
     {

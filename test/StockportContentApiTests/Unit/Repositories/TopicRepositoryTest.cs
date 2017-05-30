@@ -36,7 +36,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id");
+                new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id",new NullEventBanner());
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
                 new DateTime(2017, 01, 02));
@@ -45,11 +45,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image",
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
-                DateTime.MinValue, DateTime.MinValue, true, "test-id");
+                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner());
 
             _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", 
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, 
-                DateTime.MinValue, DateTime.MinValue, true, "test-id");
+                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner());
 
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();

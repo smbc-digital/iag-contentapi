@@ -19,6 +19,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _subItemFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>> _eventBannerFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
 
@@ -28,8 +29,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
             _subItemFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
             _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+            _eventBannerFactory = new Mock<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _timeProvider.Object);
+            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _timeProvider.Object);
         }
 
         [Fact]
@@ -40,9 +42,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             var secondaryItem = new SubItem("slug2", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+            var eventBanner = new EventBanner("Title","Teaser","Icon","Link");
+
             _subItemFactory.Setup(o => o.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
             _subItemFactory.Setup(o => o.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
             _subItemFactory.Setup(o => o.ToModel(_contentfulTopic.TertiaryItems.First())).Returns(tertiaryItem);
+            _eventBannerFactory.Setup(o => o.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
             var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10));
             _alertFactory.Setup(o => o.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
@@ -55,7 +60,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  .Excluding(e => e.TertiaryItems)
                                                                  .Excluding(e => e.BackgroundImage)
                                                                  .Excluding(e => e.Image)
-                                                                 .Excluding(e => e.Alerts));
+                                                                 .Excluding(e => e.Alerts) 
+                                                                 .Excluding(e => e.EventBanner)                                                              
+                                                                 );
 
             _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Once);
             topic.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
@@ -67,6 +74,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             topic.SubItems.First().Should().Be(subItem);
             topic.SecondaryItems.First().Should().Be(secondaryItem);
             topic.TertiaryItems.First().Should().Be(tertiaryItem);
+            topic.EventBanner.Title.Should().Be(eventBanner.Title);
+            topic.EventBanner.Teaser.Should().Be(eventBanner.Teaser);
+            topic.EventBanner.Icon.Should().Be(eventBanner.Icon);
+            topic.EventBanner.Link.Should().Be(eventBanner.Link);
         }
 
         [Fact]

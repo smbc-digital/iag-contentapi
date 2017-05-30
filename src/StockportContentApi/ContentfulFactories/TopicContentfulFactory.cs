@@ -11,14 +11,16 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subItemFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
         private readonly IContentfulFactory<Entry<ContentfulAlert>, Alert> _alertFactory;
+        private readonly IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
 
-        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _eventBannerFactory = eventBannerFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -43,9 +45,13 @@ namespace StockportContentApi.ContentfulFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
+            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.SystemProperties)
+                                ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
+
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner);
         }
     }
 }

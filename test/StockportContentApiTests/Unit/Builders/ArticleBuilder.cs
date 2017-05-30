@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Alert> _alertsInline = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
         private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>()) };
         private Topic _parentTopic = new Topic("slug", "name", "teaser", "summary", "icon", "background", "image", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), 
-                                                new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id");
+                                                new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id", new NullEventBanner());
         private LiveChat _liveChat = new LiveChat("title", "text");
 
         public Article Build()

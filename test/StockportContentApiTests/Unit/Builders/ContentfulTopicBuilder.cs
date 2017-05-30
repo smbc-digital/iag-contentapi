@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -28,8 +29,10 @@ namespace StockportContentApiTests.Unit.Builders
             new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("secondary-slug").Build()).Build() };
         private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
             new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()).Build() };
-            
-        public ContentfulTopic Build()
+        private Entry<ContentfulEventBanner> _eventBanner =
+            new ContentfulEntryBuilder<ContentfulEventBanner>().Fields(new ContentfulEventBannerBuilder().Build()).Build();
+
+    public ContentfulTopic Build()
         {
             return new ContentfulTopic
             {
@@ -48,7 +51,8 @@ namespace StockportContentApiTests.Unit.Builders
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
                 EmailAlerts  = _emailAlerts,
-                EmailAlertsTopicId  = _emailAlertsTopicId
+                EmailAlertsTopicId  = _emailAlertsTopicId,
+                EventBanner = _eventBanner
             };
         }
 

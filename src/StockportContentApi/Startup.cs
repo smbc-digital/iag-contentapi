@@ -21,6 +21,7 @@ using Swashbuckle.Swagger.Model;
 using Contentful.Core.Models;
 using Microsoft.Extensions.Caching.Memory;
 
+
 namespace StockportContentApi
 {
     public class Startup
@@ -90,6 +91,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
 
             services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
+            services.AddSingleton<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(p => new EventBannerContentfulFactory());           
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                                                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
                                                                                                                     p.GetService<IVideoRepository>(),
@@ -106,6 +108,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
+                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
@@ -186,6 +189,7 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
             services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
+            services.AddSingleton<IFactory<EventBanner>, EventBannerFactory>();
             services.AddSingleton<INewsCategoriesFactory, NewsCategoriesFactory>();
             services.AddSingleton<IEventCategoriesFactory, EventCategoriesFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
@@ -197,7 +201,8 @@ namespace StockportContentApi
             services.AddSingleton<IBuildContentTypesFromReferences<Profile>, ProfileListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Document>, DocumentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
-            services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();
+            services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();  
+            services.AddSingleton<IBuildContentTypeFromReference<EventBanner>, EventBannerListFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

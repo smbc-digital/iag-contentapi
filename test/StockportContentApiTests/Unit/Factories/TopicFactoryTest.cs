@@ -17,10 +17,14 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly TopicFactory _topicBuilder;
         private readonly Mock<IBuildContentTypesFromReferences<SubItem>> _mockSubitemBuilder;
         private IBuildContentTypesFromReferences<Crumb> _breadcrumbFactory;
+        private readonly Mock<IBuildContentTypeFromReference<EventBanner>> _eventBannerFactory;
+
+        private readonly EventBanner _eventBanner = new EventBanner("Title", "teaser", "icon", "link");
 
         public TopicFactoryTest()
         {
             _mockSubitemBuilder = new Mock<IBuildContentTypesFromReferences<SubItem>>();
+            _eventBannerFactory =  new Mock<IBuildContentTypeFromReference<EventBanner>>();
             var mockAlertListBuilder = new Mock<IBuildContentTypesFromReferences<Alert>>();
             mockAlertListBuilder.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
@@ -30,8 +34,12 @@ namespace StockportContentApiTests.Unit.Factories
                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                .Returns(new List<SubItem> { new SubItem("slug", "title", "teaser", "ison", string.Empty,DateTime.MinValue, DateTime.MinValue, "image", new List<SubItem>()) });
 
+            _eventBannerFactory.Setup(
+                    o => o.BuildFromReference(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
+                .Returns(_eventBanner);
+
             _breadcrumbFactory = new BreadcrumbFactory();
-            _topicBuilder = new TopicFactory(mockAlertListBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory);
+            _topicBuilder = new TopicFactory(mockAlertListBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object);
         }
 
         [Fact]
@@ -83,7 +91,7 @@ namespace StockportContentApiTests.Unit.Factories
             mockListAlertBuilder.Setup(
                 o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(alerts);
-            var topicBuilder = new TopicFactory(mockListAlertBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory);
+            var topicBuilder = new TopicFactory(mockListAlertBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object);
 
             dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Topic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
