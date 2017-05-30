@@ -60,5 +60,16 @@ namespace StockportContentApi.Controllers
                 return groupRepository.GetGroupResults(category, latitude, longitude, order, location);
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/groups/administrators/{email}")]
+        public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email)
+        {
+            return await _handler.Get(() =>
+            {
+                var groupRepository = _createRepository(_createConfig(businessId));
+                return groupRepository.GetAdministratorsGroups(email);
+            });
+        }
     }
 }

@@ -7,6 +7,19 @@ using StockportContentApi.Model;
 namespace StockportContentApi.ContentfulModels
 {
     [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class GroupAdministrators
+    {
+        public List<GroupAdministratorItems> Items { get; set; } = new List<GroupAdministratorItems>();
+    }
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class GroupAdministratorItems
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Permission { get; set; } = string.Empty;
+    }
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulGroup
     {
         public string Name { get; set; } = string.Empty;
@@ -23,5 +36,6 @@ namespace StockportContentApi.ContentfulModels
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") };
         public MapPosition  MapPosition = new MapPosition();
         public bool Volunteering = false ;
+        public GroupAdministrators GroupsAdministrators { get; set; } = new GroupAdministrators();
     }
 }
