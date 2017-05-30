@@ -9,6 +9,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Utils;
@@ -23,6 +24,7 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
         private readonly EventRepository _eventRepository;
+        private readonly ICacheWrapper _cache;
 
 
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
@@ -30,7 +32,8 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
-                                 EventRepository eventRepository
+                                 EventRepository eventRepository,
+                                 ICacheWrapper cache
 
             )
         {
@@ -40,6 +43,7 @@ namespace StockportContentApi.Repositories
             _groupListFactory = groupListFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
             _eventRepository = eventRepository;
+            _cache = cache;
         }
 
         public async Task<HttpResponse> GetGroup(string slug)
@@ -91,22 +95,34 @@ namespace StockportContentApi.Repositories
 
             groupResults.Groups = groups;
 
-            var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+            List<GroupCategory> groupCategoryResults = await GetGroupCategories();
 
-            var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
+            if (!string.IsNullOrEmpty(category) && !groupCategoryResults.Any(g => g.Slug.ToLower() == category.ToLower()))
+                return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
-            if (groupCategoryEntries != null || groupCategoryEntries.Any())
-            {
-                if (!string.IsNullOrEmpty(category) && !groupCategoryEntries.Any(g => g.Slug.ToLower() == category.ToLower()))
-                    return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
-
-                var groupCategoryResults = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
-                .ToList();
-
-                groupResults.Categories = groupCategoryResults;
-            }
+            groupResults.Categories = groupCategoryResults;
 
             return HttpResponse.Successful(groupResults);
+        }
+
+
+        private async Task<List<GroupCategory>> GetGroupCategories()
+        {
+            var cacheKey = "groupCategories";
+            object cacheEntry = new List<GroupCategory>();
+
+            if (!_cache.TryGetValue(cacheKey, out cacheEntry))
+            {
+                var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+                var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
+                cacheEntry = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Medium);
+
+                _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
+            }
+
+            return cacheEntry as List<GroupCategory>;
         }
     }
 }

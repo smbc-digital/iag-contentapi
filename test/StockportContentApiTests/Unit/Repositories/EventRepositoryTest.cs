@@ -7,6 +7,7 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using StockportContentApi;
@@ -36,6 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<ICacheWrapper> _memoryCache;
+        private readonly Mock<ILogger<EventRepository>> _logger;
 
         public EventRepositoryTest()
         {
@@ -61,11 +63,13 @@ namespace StockportContentApiTests.Unit.Repositories
             
             _memoryCache = new Mock<ICacheWrapper>();
 
+            _logger = new Mock<ILogger<EventRepository>>();
+
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
-                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, _memoryCache.Object);
+                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, _memoryCache.Object, _logger.Object);
 
         }
 

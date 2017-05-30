@@ -7,7 +7,7 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class GroupCategoryListContentfulFactory : IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>
+    public class GroupCategoryListContentfulFactory : IContentfulFactory<IEnumerable<ContentfulGroupCategory>, List<GroupCategory>>
     {
         private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory;
 
@@ -16,7 +16,7 @@ namespace StockportContentApi.ContentfulFactories
             groupCategoryFactory = _groupCategoryFactory;
         }
 
-        public List<GroupCategory> ToModel(List<ContentfulGroupCategory> entries)
+        public List<GroupCategory> ToModel(IEnumerable<ContentfulGroupCategory> entries)
         {
             var groupCategoryList = new List<GroupCategory>();
             foreach (var groupCategory in entries)

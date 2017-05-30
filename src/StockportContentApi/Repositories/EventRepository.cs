@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -27,6 +28,7 @@ namespace StockportContentApi.Repositories
         private readonly string _contentfulContentTypesUrl;
         private readonly IContentfulClient _contentfulClient;
         private readonly ICacheWrapper _cache;
+        private ILogger<EventRepository> _logger;
 
 
         public EventRepository(ContentfulConfig config,
@@ -34,7 +36,8 @@ namespace StockportContentApi.Repositories
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
             IEventCategoriesFactory eventCategoriesFactory,
-            ICacheWrapper cache        
+            ICacheWrapper cache,
+            ILogger<EventRepository> logger
             )
         {
             _contentfulFactory = contentfulFactory;
@@ -44,6 +47,7 @@ namespace StockportContentApi.Repositories
             _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
             _contentfulClient = new ContentfulClient(httpClient);
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -150,17 +154,13 @@ namespace StockportContentApi.Repositories
                 var contentfulData = contentfulResponse.Items;
                 cacheEntry = _eventCategoriesFactory.Build(contentfulData);
 
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                _logger.LogInformation("Made a call to Contentful to get event categories");
 
-                // Keep in cache for this time, reset time if accessed. 900 seconds = 15 minutes. For Jon.
-                .SetSlidingExpiration(TimeSpan.FromHours(24));
-
-                // Save data in cache.
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Medium);
+                
                 _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
             }
-
-
+            
             return cacheEntry as List<string>;
         }
 
