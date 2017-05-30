@@ -156,7 +156,7 @@ namespace StockportContentApi.Repositories
 
                 _logger.LogInformation("Made a call to Contentful to get event categories");
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Medium);
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Short);
                 
                 _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
             }

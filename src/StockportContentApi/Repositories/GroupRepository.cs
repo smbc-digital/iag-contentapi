@@ -117,7 +117,7 @@ namespace StockportContentApi.Repositories
                 var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
                 cacheEntry = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Medium);
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Short);
 
                 _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
             }
