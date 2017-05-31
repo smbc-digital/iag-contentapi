@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
 {
@@ -20,10 +21,11 @@ namespace StockportContentApi.Model
         public MapPosition MapPosition { get; }
         public bool Volunteering { get; }
         public List<Event> Events { get; private set; }
+        public GroupAdministrators GroupAdministrator { get; set; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
-            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, MapPosition mapPosition, bool volunteering)
+            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators)
         {
             Name = name;
             Slug = slug;
@@ -40,6 +42,7 @@ namespace StockportContentApi.Model
             Breadcrumbs = breadcrumbs;
             MapPosition = mapPosition;
             Volunteering = volunteering;
+            GroupAdministrator = groupAdministrators;
         }
 
         public void SetEvents(List<Event> events)

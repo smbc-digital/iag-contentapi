@@ -8,8 +8,15 @@
     }
   },
   "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+      }
+    },
     "web": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "environmentVariables": {}
     }
   }
 }

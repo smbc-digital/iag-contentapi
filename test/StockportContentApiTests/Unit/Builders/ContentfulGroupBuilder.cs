@@ -19,7 +19,8 @@ namespace StockportContentApiTests.Unit.Builders
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private List<Entry<ContentfulGroupCategory>> _categoriesReference = new List<Entry<ContentfulGroupCategory>>();
         private MapPosition _mapPosition = new MapPosition() {Lat=39,Lon= 2};
-       
+        private GroupAdministrators _groupAdministrators = new GroupAdministrators();
+
         public ContentfulGroup Build()
         {
             return new ContentfulGroup
@@ -35,7 +36,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Website = _website,
                 Image = _image,
                 CategoriesReference = _categoriesReference,
-                
+                GroupAdministrators = _groupAdministrators
             };
         }
 
@@ -54,6 +55,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulGroupBuilder CategoriesReference(List<Entry<ContentfulGroupCategory>> categoriesReference)
         {
             _categoriesReference = categoriesReference;
+            return this;
+        }
+
+        public ContentfulGroupBuilder GroupAdministrators(GroupAdministrators groupAdministrators)
+        {
+            _groupAdministrators = groupAdministrators;
             return this;
         }
     }

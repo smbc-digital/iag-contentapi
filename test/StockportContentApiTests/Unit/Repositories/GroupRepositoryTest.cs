@@ -72,7 +72,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "group_slug";
             var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null );
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -237,7 +237,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
 
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false, null);
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -263,7 +263,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
             bool volunteering = true;
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering, null);
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -346,48 +346,6 @@ namespace StockportContentApiTests.Unit.Repositories
             filteredGroupResults.Groups[2].Should().Be(groupfirst);
         }
 
-        private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
-        {
-            
-            var contentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(testCategorySlug).Build();
-            var contentfulGroupWithCategory = new ContentfulGroupBuilder().Slug("slug-with-categories").CategoriesReference(
-                new List<Entry<ContentfulGroupCategory>>
-                {
-                    new Entry<ContentfulGroupCategory>
-                    {
-                        Fields = contentfulGroupCategory,
-                        SystemProperties = new SystemProperties() { Type = "Entry" }
-                    }
-                })
-                .Build();
-            var contentfulGroupWithoutCategory = new ContentfulGroupBuilder().Slug("slug-without-categories").Build();
-            
-            return new List<ContentfulGroup>
-            {
-                contentfulGroupWithCategory,
-                contentfulGroupWithoutCategory
-            };
-        }
-
-        private List<Group> SetupGroups(string testCategorySlug)
-        {
-            var GroupCategory = new GroupCategory("name", testCategorySlug, "icon", "imagueUrl");
-            var GroupWithCategory = new GroupBuilder().Slug("slug-with-categories").CategoriesReference(
-                new List<GroupCategory>()
-                {
-                    GroupCategory
-                })
-                .Build();
-
-            var GroupWithoutCategory = new GroupBuilder().Slug("slug-without-categories").Build();
-
-            return new List<Group>
-            {
-                GroupWithCategory,
-                GroupWithoutCategory
-            };
-        }
-
         [Fact]
         public void ShouldCallContentfulIfCacheIsEmpty()
         {
@@ -459,6 +417,82 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             _cache.Verify(x => x.Set(It.IsAny<string>(), listOfCategories, It.IsAny<MemoryCacheEntryOptions>()), Times.Never);
+        }
+
+        [Fact]
+        public void ShouldReturnListOfGroupsWhereAdministratorMatchesEmailAddress()
+        {
+            // Arrange
+            string emailAddress = "test@test.com";
+            var contentfulGroupsReturned = new List<ContentfulGroup>();
+            var correctContentfulGroup = new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems>() { new GroupAdministratorItems() {Email = emailAddress, Permission = "A"} } }).Build();
+            contentfulGroupsReturned.Add(new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems> { new GroupAdministratorItems() { Email = "bill@yahoo.com", Permission = "E" } } }).Build());
+            contentfulGroupsReturned.Add(correctContentfulGroup);
+            contentfulGroupsReturned.Add(new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems> { new GroupAdministratorItems() { Email = "fred@msn.com", Permission = "A"} } }).Build());
+            contentfulGroupsReturned.Add(new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems> { new GroupAdministratorItems() { Email = "jerry@gmail.com", Permission = "A" } } }).Build());
+
+            var groupsReturned = new List<Group>();
+            groupsReturned.Add(new GroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems>() { new GroupAdministratorItems() { Email = emailAddress, Permission = "A" } } }).Build());
+
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators")
+                            .Include(1)
+                            .Limit(ContentfulQueryValues.LIMIT_MAX);
+            _client.Setup(
+                o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(contentfulGroupsReturned);
+
+            _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() {correctContentfulGroup}))
+                .Returns(groupsReturned);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetAdministratorsGroups(emailAddress));
+            var filteredGroups = response.Get<List<Group>>();
+
+            // Assert
+            filteredGroups.Count().Should().Be(1);
+
+        }
+
+        private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
+        {
+
+            var contentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(testCategorySlug).Build();
+            var contentfulGroupWithCategory = new ContentfulGroupBuilder().Slug("slug-with-categories").CategoriesReference(
+                new List<Entry<ContentfulGroupCategory>>
+                {
+                    new Entry<ContentfulGroupCategory>
+                    {
+                        Fields = contentfulGroupCategory,
+                        SystemProperties = new SystemProperties() { Type = "Entry" }
+                    }
+                })
+                .Build();
+            var contentfulGroupWithoutCategory = new ContentfulGroupBuilder().Slug("slug-without-categories").Build();
+
+            return new List<ContentfulGroup>
+            {
+                contentfulGroupWithCategory,
+                contentfulGroupWithoutCategory
+            };
+        }
+
+        private List<Group> SetupGroups(string testCategorySlug)
+        {
+            var GroupCategory = new GroupCategory("name", testCategorySlug, "icon", "imagueUrl");
+            var GroupWithCategory = new GroupBuilder().Slug("slug-with-categories").CategoriesReference(
+                new List<GroupCategory>()
+                {
+                    GroupCategory
+                })
+                .Build();
+
+            var GroupWithoutCategory = new GroupBuilder().Slug("slug-without-categories").Build();
+
+            return new List<Group>
+            {
+                GroupWithCategory,
+                GroupWithoutCategory
+            };
         }
 
     }

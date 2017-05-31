@@ -107,13 +107,14 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetAdministratorsGroups(string email)
         {
-            // HERE !
             var builder =
-                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals(g => g.GroupsAdministrators.Items, email)
+                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators")
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
             var groups = await _client.GetEntriesAsync(builder);
+
+            groups = groups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email == email));
 
             var result = _groupListFactory.ToModel(groups.ToList());
 
