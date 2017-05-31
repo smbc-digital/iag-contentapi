@@ -21,7 +21,7 @@ namespace StockportContentApi.Model
         public MapPosition MapPosition { get; }
         public bool Volunteering { get; }
         public List<Event> Events { get; private set; }
-        public GroupAdministrators GroupAdministrator { get; set; }
+        public GroupAdministrators GroupAdministrators { get; set; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
@@ -42,7 +42,7 @@ namespace StockportContentApi.Model
             Breadcrumbs = breadcrumbs;
             MapPosition = mapPosition;
             Volunteering = volunteering;
-            GroupAdministrator = groupAdministrators;
+            GroupAdministrators = groupAdministrators;
         }
 
         public void SetEvents(List<Event> events)
