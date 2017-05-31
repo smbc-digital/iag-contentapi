@@ -7,7 +7,6 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulTopic
     {
         public string Slug { get; set; } = string.Empty;

@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulEvent _contentfulEvent;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly EventContentfulFactory _eventContentfulFactory;
@@ -29,13 +29,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulEvent = new ContentfulEventBuilder().Build();
 
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
-            _alertFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulAlert>>())).Returns(new Alert("title", "subHeading", "body",
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 

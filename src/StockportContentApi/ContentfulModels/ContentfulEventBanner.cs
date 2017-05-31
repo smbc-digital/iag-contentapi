@@ -1,9 +1,6 @@
-﻿using Contentful.Core.Configuration;
-using Newtonsoft.Json;
-
+﻿
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulEventBanner
     {
         public string Title { get; set; } = string.Empty;

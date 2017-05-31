@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Model
                 Featured = false,
                 Sys = new ContentfulEventSys() { UpdatedAt = DateTime.MinValue },
                 Tags = new List<string>(),
-                Alerts = new List<Entry<ContentfulAlert>>()
+                Alerts = new List<ContentfulAlert>()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

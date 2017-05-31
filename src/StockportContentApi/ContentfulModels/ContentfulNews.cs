@@ -7,7 +7,6 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulNews
     {
         public string Title { get; set; } = string.Empty;

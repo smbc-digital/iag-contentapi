@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulArticle
     {
         public string Body { get; set; } = string.Empty;

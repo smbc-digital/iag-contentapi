@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Alert
     {
         public string Title { get; }

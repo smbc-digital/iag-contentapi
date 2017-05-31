@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulCrumb
     {
         public string Title { get; set; } = string.Empty;

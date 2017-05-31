@@ -34,7 +34,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<ICacheWrapper> _memoryCache;
         private readonly Mock<ILogger<EventRepository>> _logger;
@@ -49,9 +49,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var documentFactory = new DocumentContentfulFactory();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-            _alertFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulAlert>>())).Returns(new Alert("title", "subHeading", "body",
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 
@@ -103,7 +103,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
             eventItem.Alerts.Count.Should().Be(1);
-            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Fields.Title);
+            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Title);
             eventItem.Featured.Should().BeFalse();
         }
 

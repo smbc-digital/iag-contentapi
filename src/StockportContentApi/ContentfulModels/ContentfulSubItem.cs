@@ -6,7 +6,6 @@ using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulSubItem
     {
         public string Slug { get; set; } = string.Empty;

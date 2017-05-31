@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulEvent
     {      
         public string Title { get; set; } = string.Empty;
@@ -31,7 +28,7 @@ namespace StockportContentApi.ContentfulModels
         public bool Featured { get; set; } = false;
         public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
         public List<string> Tags { get; set; } = new List<string>();
-        public List<Entry<ContentfulAlert>> Alerts { get; set; } = new List<Entry<ContentfulAlert>>();
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
 
         public Entry<ContentfulGroup> Group { get; set; } = new Entry<ContentfulGroup>
         {

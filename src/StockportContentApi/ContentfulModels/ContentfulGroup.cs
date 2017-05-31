@@ -6,7 +6,6 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulGroup
     {
         public string Name { get; set; } = string.Empty;

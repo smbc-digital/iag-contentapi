@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulGroupCategory
     {
         public string Name { get; set; } = string.Empty;

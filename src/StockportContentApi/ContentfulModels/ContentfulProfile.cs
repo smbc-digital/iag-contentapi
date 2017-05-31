@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulProfile
     {
         public string Type { get; set; } = string.Empty;
