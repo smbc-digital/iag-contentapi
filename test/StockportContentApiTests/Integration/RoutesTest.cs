@@ -47,6 +47,7 @@ namespace StockportContentApiTests.Integration
                 fakeHttpClient.For(UrlFor("redirect")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
                 fakeHttpClient.For(UrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
                 fakeHttpClient.For(UrlFor("group", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Group.json"));
+                fakeHttpClient.For(UrlFor("contactUsId", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContactUsId.json"));
                 fakeHttpClient.For(ContentTypesUrlFor()).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
             });
 
@@ -80,7 +81,7 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulTopicBuilder().Slug("topic_slug").Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == 
+                                It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> {
                                     new ContentfulProfileBuilder().Slug("profile_slug").Build()
@@ -108,30 +109,36 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEntryBuilder<ContentfulArticle>().Fields(
                                     new ContentfulArticleBuilder().Slug("test-me").Build()
                                     ).Build()
-                               });                              
-            httpClient.Setup(o => o.GetEntriesAsync(                            
-                                It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),
-                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulPayment> {
+                               });
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                    It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),
+                                    It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulPayment> {
                                     new ContentfulPaymentBuilder().Slug("payment_slug").Build()
+                                    });
+
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", "test-email").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulContactUsId> {
+                                    new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email"}
                                 });
 
-            httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulShowcase> {
                                     new ContentfulShowcaseBuilder().Slug("showcase_slug").Build()
                                 });
 
-            httpClient.Setup(o => o.GetEntriesAsync(
-                            It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Build()),
-                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroupCategory> {
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroupCategory> {
                                 new ContentfulGroupCategoryBuilder().Slug("groupCategory_slug").Build()
-                            });
+                                });
 
-            httpClient.Setup(o => o.GetEntriesAsync(
-                            It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "group_slug").Include(2).Build()),
-                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "group_slug").Include(2).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                 new ContentfulEventBuilder().Slug("event-slug").Build()
-                            });
+                                });
             });
         }
 
@@ -152,6 +159,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
+        [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
