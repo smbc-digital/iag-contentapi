@@ -125,7 +125,7 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulShowcase> {
-                                    new ContentfulShowcaseBuilder().Slug("showcase_slug").Build()
+                                    new ContentfulShowcaseBuilder().Slug("showcase_slug").Consultations(new List<ContentfulConsultation>() { new ContentfulConsultation() { Title = "title", ClosingDate = DateTime.MinValue, Link = "http://link.url" } }).Build()
                                 });
 
                 httpClient.Setup(o => o.GetEntriesAsync(

@@ -10,12 +10,14 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subitemFactory;
         private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
         private readonly DateComparer _dateComparer;
         
-        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, ITimeProvider timeProvider)
+        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
+            _consultationFactory = consultationFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
         
@@ -50,7 +52,11 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs);
+            var consultations =
+                entry.Consultations.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                               .Select(consult => _consultationFactory.ToModel(consult)).ToList();
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations);
         }
     }
 }

@@ -91,6 +91,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
             services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(p => new EventBannerContentfulFactory());           
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
@@ -112,10 +113,10 @@ namespace StockportContentApi
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
-            services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
-                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(), p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(), p.GetService<ITimeProvider>()));
-
-            
+            services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>(p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(), 
+                                                                                                            p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(), 
+                                                                                                            p.GetService<ITimeProvider>(), 
+                                                                                                            p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
                                                                                                            p.GetService<IContentfulFactory<Asset, Document>>()));

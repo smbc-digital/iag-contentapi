@@ -12,5 +12,6 @@ namespace StockportContentApi.ContentfulModels
         public string Subheading { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
+        public List<ContentfulConsultation> Consultations { get; set; } = new List<ContentfulConsultation>();
     }
 }

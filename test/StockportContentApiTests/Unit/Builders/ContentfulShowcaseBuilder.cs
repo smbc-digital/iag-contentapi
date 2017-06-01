@@ -12,6 +12,7 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<Entry<ContentfulSubItem>> _featuredItems { get; set; } = new List<Entry<ContentfulSubItem>>
         {
             new Entry<ContentfulSubItem>
@@ -20,11 +21,12 @@ namespace StockportContentApiTests.Builders
                 SystemProperties = new SystemProperties { Type = "Entry", ContentType = new ContentType() {SystemProperties = new SystemProperties() { Id = "test" } } }
             }
         };
+
         private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
         {
             new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).ContentTypeSystemId("showcase").Build()
         };
-
+        
         public ContentfulShowcase Build()
         {
             return new ContentfulShowcase()
@@ -35,7 +37,8 @@ namespace StockportContentApiTests.Builders
                 Subheading = _subheading,
                 HeroImage = _heroImage,
                 FeaturedItems = _featuredItems,
-                Breadcrumbs = _breadcrumbs
+                Breadcrumbs = _breadcrumbs,
+                Consultations = _consultations
             };
         }
 
@@ -78,6 +81,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder Breadcrumbs(List<Entry<ContentfulCrumb>> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder Consultations(List<ContentfulConsultation> consultations)
+        {
+            _consultations = consultations;
             return this;
         }
     }
