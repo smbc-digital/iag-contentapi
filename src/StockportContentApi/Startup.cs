@@ -92,6 +92,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory());
             services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(p => new EventBannerContentfulFactory());           
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
@@ -115,8 +116,10 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>(p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(), 
                                                                                                             p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(), 
-                                                                                                            p.GetService<ITimeProvider>(), 
-                                                                                                            p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>()));
+                                                                                                            p.GetService<ITimeProvider>(),
+                                                                                                            p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
+                                                                                                            p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()
+                                                                                                            ));
 
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
                                                                                                            p.GetService<IContentfulFactory<Asset, Document>>()));
