@@ -12,6 +12,8 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        private string _eventSubheading { get; set; } = "event-subheading";
+        private string _eventCategory { get; set; } = "event-categpry";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<Entry<ContentfulSubItem>> _featuredItems { get; set; } = new List<Entry<ContentfulSubItem>>
@@ -37,6 +39,8 @@ namespace StockportContentApiTests.Builders
                 Teaser = _teaser,
                 Subheading = _subheading,
                 HeroImage = _heroImage,
+                EventSubheading = _eventSubheading,
+                EventCategory = _eventCategory,
                 FeaturedItems = _featuredItems,
                 Breadcrumbs = _breadcrumbs,
                 Consultations = _consultations,

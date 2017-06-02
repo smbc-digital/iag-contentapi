@@ -9,7 +9,7 @@ namespace StockportContentApi.ContentfulModels
 {
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulEvent
-    {      
+    {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;      

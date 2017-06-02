@@ -45,13 +45,13 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Subheading
                 : "";
 
-            ////var eventSubheading = !string.IsNullOrEmpty(entry.EventSubheading)
-            ////    ? entry.EventSubheading
-            ////    : "";
+            var eventSubheading = !string.IsNullOrEmpty(entry.EventSubheading)
+                ? entry.EventSubheading
+                : "";
 
-            ////var eventCategory = !string.IsNullOrEmpty(entry.EventCategory)
-            ////    ? entry.EventCategory
-            ////    : "";
+            var eventCategory = !string.IsNullOrEmpty(entry.EventCategory)
+                ? entry.EventCategory
+                : "";
 
             var featuredItems =
                 entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
@@ -69,7 +69,7 @@ namespace StockportContentApi.ContentfulFactories
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks); ////, eventSubheading, eventCategory);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory);
         }
     }
 }

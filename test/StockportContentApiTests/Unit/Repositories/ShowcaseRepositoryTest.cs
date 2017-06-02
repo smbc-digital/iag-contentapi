@@ -53,11 +53,13 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
 
+            var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
+
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object);
+            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object);
         }
 
         [Fact]

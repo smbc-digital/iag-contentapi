@@ -4,6 +4,8 @@
   "teaser": "teaser",
   "subheading": "subheading",
   "heroImageUrl": "image-url.jpg",
+  "eventSubheading": "event-subheading",
+  "eventCategory": "event-categpry",
   "featuredItems": [
     {
       "slug": "slug",
@@ -38,5 +40,6 @@
       "url": "http://link.url",
       "icon": "sm-link-icon"
     }
-  ]
+  ],
+  "events": []
 }
