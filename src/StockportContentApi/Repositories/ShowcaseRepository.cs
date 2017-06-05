@@ -21,19 +21,21 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<List<ContentfulEvent>, List<Event>> _eventListFactory;
         private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly EventRepository _eventRepository;
 
         public ShowcaseRepository(ContentfulConfig config,
             IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
             IContentfulClientManager contentfulClientManager,
             IContentfulFactory<List<ContentfulEvent>, List<Event>> eventListBuilder,
             IContentfulFactory<ContentfulNews, News> newsBuilder,
-            ITimeProvider timeProvider)
+            ITimeProvider timeProvider, EventRepository eventRepository)
         {
             _dateComparer = new DateComparer(timeProvider);
             _contentfulFactory = showcaseBuilder;
             _eventListFactory = eventListBuilder;
             _newsFactory = newsBuilder;
             _client = contentfulClientManager.GetClient(config);
+            _eventRepository = eventRepository;
         }
 
         public async Task<HttpResponse> GetShowcases(string slug)
@@ -73,16 +75,14 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
             var eventsEntry = await _client.GetEntriesAsync(eventbuilder);
-
-            var contentfulEvents =
-                eventsEntry.Where(e => e.Categories.Any(c => c.ToLower() == category.ToLower()))
+          
+            var events = _eventRepository.GetAllEventsAndTheirReccurrences(eventsEntry)
+                    .Where(e => e.Categories.Any(c => c.ToLower() == category.ToLower()))
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title).Take(3)
                     .ToList();
-
-            var events = _eventListFactory.ToModel(contentfulEvents);
 
             return events;
         }

@@ -108,7 +108,7 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
-        private IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
+        public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
         {
             var entriesList = new List<Event>();
             foreach (var entry in entries)

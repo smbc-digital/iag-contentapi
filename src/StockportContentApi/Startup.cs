@@ -148,12 +148,22 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
                 p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<Entry<ContentfulArticle>, Article>>(), p.GetService<IVideoRepository>()); });
 
+            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
+                p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICacheWrapper>(), p.GetService<ILogger<EventRepository>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
                p => { return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
                                                             p.GetService<IContentfulClientManager>(),
                                                             p.GetService<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(),
                                                             p.GetService<IContentfulFactory<ContentfulNews, News>>(),
-                                                            p.GetService<ITimeProvider>()
+                                                            p.GetService<ITimeProvider>(),
+                                                            new EventRepository(x, p.GetService<IHttpClient>(),
+                                                                                p.GetService<IContentfulClientManager>(),
+                                                                                p.GetService<ITimeProvider>(),
+                                                                                p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                                                                                p.GetService<IEventCategoriesFactory>(),
+                                                                                p.GetService<ICacheWrapper>(),
+                                                                                p.GetService<ILogger<EventRepository>>())
                                                             ); });
 
             services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
@@ -178,10 +188,20 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
                 p => { return x => new AtoZRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<AtoZ>>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<RedirectsRepository>();
-            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
-                p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICacheWrapper>(), p.GetService<ILogger<EventRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
-              p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(), new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICacheWrapper>(), p.GetService<ILogger<EventRepository>>()), p.GetService<ICacheWrapper>()); });
+              p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), 
+                                                        p.GetService<ITimeProvider>(), 
+                                                        p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), 
+                                                        p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), 
+                                                        p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(), 
+                                                        new EventRepository(x, p.GetService<IHttpClient>(), 
+                                                                                p.GetService<IContentfulClientManager>(), 
+                                                                                p.GetService<ITimeProvider>(), 
+                                                                                p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), 
+                                                                                p.GetService<IEventCategoriesFactory>(), 
+                                                                                p.GetService<ICacheWrapper>(), 
+                                                                                p.GetService<ILogger<EventRepository>>()), 
+                                                        p.GetService<ICacheWrapper>()); });
             services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
         }
