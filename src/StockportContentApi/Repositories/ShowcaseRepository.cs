@@ -126,7 +126,7 @@ namespace StockportContentApi.Repositories
                 var now = DateTime.Now.Date;
                 var article = newsEntry.Where(e => now > e.SunriseDate.Date)
                                         .Where(e => now < e.SunsetDate.Date)
-                                        .OrderBy(n => n.SunriseDate)
+                                        .OrderByDescending(n => n.SunriseDate)
                                         .Take(1)
                                         .FirstOrDefault();
 
