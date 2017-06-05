@@ -13,7 +13,9 @@ namespace StockportContentApiTests.Builders
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         private string _eventSubheading { get; set; } = "event-subheading";
-        private string _eventCategory { get; set; } = "event-categpry";
+        private string _eventCategory { get; set; } = "event-category";
+        private string _newsSubheading { get; set; } = "news subheading";
+        private string _newsCategoryTag { get; set; } = "news-category-tag";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<Entry<ContentfulSubItem>> _featuredItems { get; set; } = new List<Entry<ContentfulSubItem>>
@@ -41,6 +43,8 @@ namespace StockportContentApiTests.Builders
                 HeroImage = _heroImage,
                 EventSubheading = _eventSubheading,
                 EventCategory = _eventCategory,
+                NewsSubheading = _newsSubheading,
+                NewsCategoryTag = _newsCategoryTag,
                 FeaturedItems = _featuredItems,
                 Breadcrumbs = _breadcrumbs,
                 Consultations = _consultations,
@@ -75,6 +79,30 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder Subheading(string subheading)
         {
             _subheading = subheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder EventSubheading(string subheading)
+        {
+            _eventSubheading = subheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder EventCategory(string cat)
+        {
+            _eventCategory = cat;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder NewsSubheading(string newSubheading)
+        {
+            _newsSubheading = newSubheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder NewsCategoryTag(string tag)
+        {
+            _newsCategoryTag = tag;
             return this;
         }
 

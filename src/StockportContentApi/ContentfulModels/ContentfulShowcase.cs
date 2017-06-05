@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using Newtonsoft.Json;
+using Contentful.Core.Configuration;
 
 namespace StockportContentApi.ContentfulModels
 {
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class ContentfulShowcase
     {
         public string Slug { get; set; } = string.Empty;
@@ -13,6 +16,8 @@ namespace StockportContentApi.ContentfulModels
         public string Teaser { get; set; } = string.Empty;
         public string EventSubheading { get; set; } = string.Empty;
         public string EventCategory { get; set; } = string.Empty;
+        public string NewsSubheading { get; set; } = string.Empty;
+        public string NewsCategoryTag { get; set; } = string.Empty;
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
         public List<ContentfulConsultation> Consultations { get; set; } = new List<ContentfulConsultation>();
         public List<ContentfulSocialMediaLink> SocialMediaLinks { get; set; } = new List<ContentfulSocialMediaLink>();

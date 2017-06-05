@@ -5,7 +5,11 @@
   "subheading": "subheading",
   "heroImageUrl": "image-url.jpg",
   "eventSubheading": "event-subheading",
-  "eventCategory": "event-categpry",
+  "eventCategory": "event-category",
+  "newsSubheading": "news subheading",
+  "newsCategoryTag": "news-category-tag",
+  "newsCategoryOrTag": "",
+  "newsArticle": null,
   "featuredItems": [
     {
       "slug": "slug",

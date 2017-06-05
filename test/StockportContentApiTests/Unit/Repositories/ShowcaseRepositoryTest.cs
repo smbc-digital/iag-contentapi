@@ -55,11 +55,13 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
 
+            var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
+
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object);
+            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object);
         }
 
         [Fact]
