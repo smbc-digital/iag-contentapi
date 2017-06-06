@@ -16,6 +16,8 @@ namespace StockportContentApiTests.Builders
         private string _eventCategory { get; set; } = "event-category";
         private string _newsSubheading { get; set; } = "news subheading";
         private string _newsCategoryTag { get; set; } = "news-category-tag";
+        private string _bodySubheading { get; set; } = "body subheading";
+        private string _body { get; set; } = "body";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<Entry<ContentfulSubItem>> _featuredItems { get; set; } = new List<Entry<ContentfulSubItem>>
@@ -48,7 +50,9 @@ namespace StockportContentApiTests.Builders
                 FeaturedItems = _featuredItems,
                 Breadcrumbs = _breadcrumbs,
                 Consultations = _consultations,
-                SocialMediaLinks = _socialMediaLinks
+                SocialMediaLinks = _socialMediaLinks,
+                BodySubheading = _bodySubheading,
+                Body = _body
             };
         }
 
@@ -103,6 +107,18 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder NewsCategoryTag(string tag)
         {
             _newsCategoryTag = tag;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder BodySubheading(string subheading)
+        {
+            _bodySubheading = subheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder Body(string body)
+        {
+            _body = body;
             return this;
         }
 

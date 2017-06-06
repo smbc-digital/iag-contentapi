@@ -61,6 +61,14 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.NewsCategoryTag
                 : "";
 
+            var bodySubheading = !string.IsNullOrEmpty(entry.BodySubheading)
+                ? entry.BodySubheading
+                : "";
+
+            var body = !string.IsNullOrEmpty(entry.Body)
+                ? entry.Body
+                : "";
+
             var featuredItems =
                 entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))    
@@ -77,7 +85,7 @@ namespace StockportContentApi.ContentfulFactories
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body);
         }
     }
 }

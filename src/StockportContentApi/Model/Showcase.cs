@@ -15,13 +15,15 @@ namespace StockportContentApi.Model
         public string NewsCategoryTag { get; set; }
         public string NewsCategoryOrTag { get; set; }
         public News NewsArticle { get; set; }
+        public string BodySubheading { get; set; }
+        public string Body { get; set; }
         public IEnumerable<SubItem> FeaturedItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public IEnumerable<Consultation> Consultations { get; set; }
         public IEnumerable<SocialMediaLink> SocialMediaLinks { get; set; }
         public IEnumerable<Event> Events { get; set; }
 
-        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag)
+        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag, string bodySubheading, string body)
         {
             Title = title;
             Slug = slug;
@@ -36,6 +38,8 @@ namespace StockportContentApi.Model
             EventCategory = eventCategory;
             NewsSubheading = newsSubheading;
             NewsCategoryTag = newsCategoryTag;
+            BodySubheading = bodySubheading;
+            Body = body;
         }
     }
 }

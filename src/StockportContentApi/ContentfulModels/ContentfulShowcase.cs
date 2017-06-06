@@ -18,6 +18,8 @@ namespace StockportContentApi.ContentfulModels
         public string EventCategory { get; set; } = string.Empty;
         public string NewsSubheading { get; set; } = string.Empty;
         public string NewsCategoryTag { get; set; } = string.Empty;
+        public string BodySubheading { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
         public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
         public List<ContentfulConsultation> Consultations { get; set; } = new List<ContentfulConsultation>();
         public List<ContentfulSocialMediaLink> SocialMediaLinks { get; set; } = new List<ContentfulSocialMediaLink>();

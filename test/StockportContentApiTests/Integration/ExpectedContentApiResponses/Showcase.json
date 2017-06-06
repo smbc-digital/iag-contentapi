@@ -10,6 +10,8 @@
   "newsCategoryTag": "news-category-tag",
   "newsCategoryOrTag": "",
   "newsArticle": null,
+  "bodySubheading": "body subheading",
+  "body": "body",
   "featuredItems": [
     {
       "slug": "slug",

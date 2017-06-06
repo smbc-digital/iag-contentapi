@@ -18,6 +18,8 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
+using StockportContentApi.Factories;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -61,7 +63,13 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object);
+            var _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+            var _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
+            var _cache = new Mock<ICacheWrapper>();
+            var _logger = new Mock<ILogger<EventRepository>>();
+            var eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventCategoriesFactory.Object, _cache.Object, _logger.Object);
+
+            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object, eventRepository);
         }
 
         [Fact]
