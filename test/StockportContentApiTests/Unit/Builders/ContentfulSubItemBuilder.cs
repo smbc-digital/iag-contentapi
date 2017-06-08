@@ -15,9 +15,11 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _image = new Asset { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>>();
-        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>>();
-        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>>();
+        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem>();
+        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem>();
+        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem>();
+        private string _systemId = "id";
+        private string _contentTypeSystemId = "id";
 
         public ContentfulSubItem Build()
         {
@@ -33,7 +35,12 @@ namespace StockportContentApiTests.Unit.Builders
                 Image = _image,
                 SubItems = _subItems,
                 SecondaryItems = _secondaryItems,
-                TertiaryItems = _tertiaryItems
+                TertiaryItems = _tertiaryItems,
+                Sys = new SystemProperties
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                    Id = _systemId
+                }
             };
         }
 
@@ -55,21 +62,33 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulSubItemBuilder SubItems(List<Entry<ContentfulSubItem>> subItems)
+        public ContentfulSubItemBuilder SubItems(List<ContentfulSubItem> subItems)
         {
             _subItems = subItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder SecondaryItems(List<Entry<ContentfulSubItem>> secondaryItems)
+        public ContentfulSubItemBuilder SecondaryItems(List<ContentfulSubItem> secondaryItems)
         {
             _secondaryItems = secondaryItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder TertiaryItems(List<Entry<ContentfulSubItem>> tertiaryItems)
+        public ContentfulSubItemBuilder TertiaryItems(List<ContentfulSubItem> tertiaryItems)
         {
             _tertiaryItems = tertiaryItems;
+            return this;
+        }
+
+        public ContentfulSubItemBuilder SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
+
+        public ContentfulSubItemBuilder SystemContentTypeId(string id)
+        {
+            _contentTypeSystemId = id;
             return this;
         }
     }

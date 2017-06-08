@@ -16,6 +16,6 @@ namespace StockportContentApi.ContentfulModels
         public string ParisReference { get; set; } = string.Empty;
         public string Fund { get; set; } = string.Empty;
         public string GlCodeCostCentreNumber { get; set; } = string.Empty;
-        public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
+        public List<ContentfulCrumb> Breadcrumbs { get; set; } = new List<ContentfulCrumb>();
     }
 }

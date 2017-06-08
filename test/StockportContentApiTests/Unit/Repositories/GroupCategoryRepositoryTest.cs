@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory");
+            var builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory> { rawGroupCategory });
 
@@ -68,7 +68,7 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnNotFoundIfNoGroupCategoryFound()
         {
-            var builder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory");
+            var builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulGroupCategory>());
 

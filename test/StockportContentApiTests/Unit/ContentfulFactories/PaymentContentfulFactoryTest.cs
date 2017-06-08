@@ -12,7 +12,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class PaymentContentfulFactoryTest
     {
-        private Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
 
         [Fact]
         public void ShouldCreateAPaymentFromAContentfulPayment()
@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .ReferenceLabel("reference label")
                 .Build();
 
-            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
             var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object);
 
             var payment = contentfulFactory.ToModel(contentfulPayment);

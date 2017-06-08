@@ -29,15 +29,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
                 .Teaser("showcase teaser")
                 .Subheading("subheading")
-                .FeaturedItems(new List<Entry<ContentfulSubItem>>() {new Entry<ContentfulSubItem>() {Fields = new ContentfulSubItemBuilder().Build(), SystemProperties = new SystemProperties() {Type = "Entry"} } })
+                .FeaturedItems(new List<ContentfulSubItem>() {new ContentfulSubItem() { Sys = new SystemProperties() {Type = "Entry"} } })
                 .Build();
 
-            var topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
-            crumbFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>())).Returns(crumb);
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCrumb>())).Returns(crumb);
 
             Mock<ITimeProvider> _timeprovider = new Mock<ITimeProvider>();
 
@@ -63,13 +63,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithAnEmptyFeaturedItems()
         {
-            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(new List<Entry<ContentfulSubItem>>()).Build();
+            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(new List<ContentfulSubItem>()).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
             var _timeprovider = new Mock<ITimeProvider>();
 
@@ -86,40 +86,33 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithoutExpiredSubItems()
         {
-            var subItemThatShouldDisplay = new Entry<ContentfulSubItem>()
+            var subItemThatShouldDisplay = new ContentfulSubItem()
             {
-                Fields = new ContentfulSubItem()
-                {
-                    Title = "Sub1",
-                    SunriseDate = new DateTime(2016, 12, 30),
-                    SunsetDate = new DateTime(2018, 12, 30)
-                },
-                SystemProperties = new SystemProperties() { Type = "Entry"}
-                
+
+                Title = "Sub1",
+                SunriseDate = new DateTime(2016, 12, 30),
+                SunsetDate = new DateTime(2018, 12, 30),
+                Sys = new SystemProperties() { Type = "Entry" }
+
             };
 
-            var subItemThatShouldHaveExpired = new Entry<ContentfulSubItem>()
+            var subItemThatShouldHaveExpired = new ContentfulSubItem()
             {
-                Fields = new ContentfulSubItem()
-                {
-                    Title = "Sub1",
-                    SunriseDate = new DateTime(2016, 12, 30),
-                    SunsetDate = new DateTime(2017, 01, 30)
-                },
-                SystemProperties = new SystemProperties() { Type = "Entry" }
+                Title = "Sub1",
+                SunriseDate = new DateTime(2016, 12, 30),
+                SunsetDate = new DateTime(2017, 01, 30),
+                Sys = new SystemProperties() { Type = "Entry" }
             };
 
-            var subItems = new List<Entry<ContentfulSubItem>>();
-            subItems.Add(subItemThatShouldDisplay);
-            subItems.Add(subItemThatShouldHaveExpired);
+            var subItems = new List<ContentfulSubItem> {subItemThatShouldDisplay, subItemThatShouldHaveExpired};
 
             var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
             var _timeprovider = new Mock<ITimeProvider>();
 
@@ -136,40 +129,33 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithoutSubItemsThatHaveNotArisen()
         {
-            var subItemThatShouldNotYetDisplay = new Entry<ContentfulSubItem>()
+            var subItemThatShouldNotYetDisplay = new ContentfulSubItem()
             {
-                Fields = new ContentfulSubItem()
-                {
-                    Title = "Sub1",
-                    SunriseDate = new DateTime(2018, 12, 30),
-                    SunsetDate = new DateTime(2019, 12, 30)
-                },
-                SystemProperties = new SystemProperties() { Type = "Entry" }
-
+                Title = "Sub1",
+                SunriseDate = new DateTime(2018, 12, 30),
+                SunsetDate = new DateTime(2019, 12, 30),
+                Sys = new SystemProperties() {Type = "Entry"}
             };
 
-            var subItemThatShouldDisplay = new Entry<ContentfulSubItem>()
+            var subItemThatShouldDisplay = new ContentfulSubItem()
             {
-                Fields = new ContentfulSubItem()
-                {
-                    Title = "Sub1",
-                    SunriseDate = new DateTime(2016, 12, 30),
-                    SunsetDate = new DateTime(2018, 01, 30)
-                },
-                SystemProperties = new SystemProperties() { Type = "Entry" }
+                Title = "Sub1",
+                SunriseDate = new DateTime(2016, 12, 30),
+                SunsetDate = new DateTime(2018, 01, 30),
+                Sys = new SystemProperties() { Type = "Entry" }
             };
 
-            var subItems = new List<Entry<ContentfulSubItem>>();
+            var subItems = new List<ContentfulSubItem>();
             subItems.Add(subItemThatShouldNotYetDisplay);
             subItems.Add(subItemThatShouldDisplay);
 
             var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
             var _timeprovider = new Mock<ITimeProvider>();
 

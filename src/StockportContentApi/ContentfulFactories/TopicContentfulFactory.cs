@@ -8,13 +8,13 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     {
-        private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subItemFactory;
-        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
-        private readonly IContentfulFactory<Entry<ContentfulAlert>, Alert> _alertFactory;
-        private readonly IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> _eventBannerFactory;
+        private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subItemFactory;
+        private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
 
-        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulSubItem, SubItem> subItemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
@@ -25,18 +25,18 @@ namespace StockportContentApi.ContentfulFactories
 
         public Topic ToModel(ContentfulTopic entry)
         {
-            var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
-                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))
+            var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                          .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
+            var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
                                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties))
+            var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
                                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-            var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.SystemProperties))
+            var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.SystemProperties)
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.Fields.SunriseDate, alert.Fields.SunsetDate))
+            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                      .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
@@ -45,7 +45,7 @@ namespace StockportContentApi.ContentfulFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
-            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.SystemProperties)
+            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
 

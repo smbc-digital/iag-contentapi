@@ -13,6 +13,6 @@ namespace StockportContentApi.ContentfulModels
         public string Severity { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
-        public SystemProperties Sys { get; set; }
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

@@ -9,12 +9,15 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _title = "title";
         private string _name = "name";
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("secondary-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()).Build() };
+        private string _contentSystemId = "id";
+        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
+            new ContentfulSubItemBuilder().Slug("sub-slug").Build()};
+        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
+            new ContentfulSubItemBuilder().Slug("secondary-slug").Build()};
+        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
+            new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()};
+
+        
 
         public ContentfulCrumb Build()
         {
@@ -25,8 +28,12 @@ namespace StockportContentApiTests.Unit.Builders
                 Slug = _slug,
                 SubItems = _subItems,
                 SecondaryItems = _secondaryItems,
-                TertiaryItems = _tertiaryItems
-            };
+                TertiaryItems = _tertiaryItems,
+                Sys = new SystemProperties
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentSystemId } }
+                }
+        };
         }
 
         public ContentfulCrumbBuilder Name(string name)
@@ -47,9 +54,15 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulCrumbBuilder SubItems(List<Entry<ContentfulSubItem>> subItems)
+        public ContentfulCrumbBuilder SubItems(List<ContentfulSubItem> subItems)
         {
             _subItems = subItems;
+            return this;
+        }
+
+        public ContentfulCrumbBuilder ContentTypeSystemId(string contentTypeSystemId)
+        {
+            _contentSystemId = contentTypeSystemId;
             return this;
         }
     }

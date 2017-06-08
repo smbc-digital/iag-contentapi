@@ -15,18 +15,18 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ParentTopicContentfulFactoryTests
     {
-        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _subitemContentfulFactory;
+        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _subitemContentfulFactory;
         private readonly ParentTopicContentfulFactory _parentTopicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
 
         public ParentTopicContentfulFactoryTests()
         {
             // create mocks
-            _subitemContentfulFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
+            _subitemContentfulFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
             _timeProvider = new Mock<ITimeProvider>();
 
             // setup mocks
-            _subitemContentfulFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()))
+            _subitemContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
                     "image", new List<SubItem>()));
             _timeProvider.Setup(o => o.Now())
@@ -39,32 +39,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldReturnATopicFromAContentfulArticleBasedOnTheBreadcrumbs()
         {
-            var subItemEntry = new List<Entry<ContentfulSubItem>>
+            var subItemEntry = new List<ContentfulSubItem>
             {
-                new ContentfulEntryBuilder<ContentfulSubItem>()
-                .Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build()
+                new ContentfulSubItemBuilder().Slug("sub-slug").Build()
             };
 
             var contentfulCrumbs = new ContentfulCrumbBuilder()
                 .Name("test topic")
                 .Slug("test-topic")
                 .SubItems(subItemEntry)
-                .Build();
-
-            var contentfulCrumbsEntry = new ContentfulEntryBuilder<ContentfulCrumb>()
-                .Fields(contentfulCrumbs)
                 .ContentTypeSystemId("topic")
                 .Build();
 
-            var contentfulArticle = new ContentfulArticleBuilder()
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>()
-                {
-                    contentfulCrumbsEntry
-                })
-                .Build();
-
-            var contentfulArticleEntry = new ContentfulEntryBuilder<ContentfulArticle>()
-                .Fields(contentfulArticle).Build();
+            var contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulCrumb>() { contentfulCrumbs }).Build();
+           
 
             var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 
@@ -76,32 +64,19 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldReturnNullTopicIfBreadcrumbDoesNotHaveTypeOfTopic()
         {
-            var subItemEntry = new List<Entry<ContentfulSubItem>>
+            var subItemEntry = new List<ContentfulSubItem>
             {
-                new ContentfulEntryBuilder<ContentfulSubItem>()
-                .Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build()
+                new ContentfulSubItemBuilder().Slug("sub-slug").Build()
             };
 
             var contentfulCrumbs = new ContentfulCrumbBuilder()
                 .Name("test topic")
                 .Slug("test-topic")
                 .SubItems(subItemEntry)
+                .ContentTypeSystemId("id")
                 .Build();
 
-            var contentfulCrumbsEntry = new ContentfulEntryBuilder<ContentfulCrumb>()
-                .Fields(contentfulCrumbs)
-                .ContentTypeSystemId("article")
-                .Build();
-
-            var contentfulArticle = new ContentfulArticleBuilder()
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>()
-                {
-                    contentfulCrumbsEntry
-                })
-                .Build();
-
-            var contentfulArticleEntry = new ContentfulEntryBuilder<ContentfulArticle>()
-                .Fields(contentfulArticle).Build();
+            var contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulCrumb>() { contentfulCrumbs }).Build();
 
             var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 
@@ -112,13 +87,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldReturnNullTopicIfNoBreadcrumbs()
         {
             var contentfulArticle = new ContentfulArticleBuilder()
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>())
+                .Breadcrumbs(new List<ContentfulCrumb>())
                 .Build();
 
-            var contentfulArticleEntry = new ContentfulEntryBuilder<ContentfulArticle>()
-                .Fields(contentfulArticle).Build();
-
-            var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
+            var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 
             result.Should().BeOfType<NullTopic>();
         }
@@ -126,21 +98,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldReturnTopicWithFirstSubItemOfTheArticle()
         {
-            var subItemEntry = new ContentfulEntryBuilder<ContentfulSubItem>()
+            var subItemEntry = new ContentfulSubItemBuilder()
+                .Slug("sub-slug")
                 .SystemId("same-id-as-article")
-                .Fields(new ContentfulSubItemBuilder()
-                    .Slug("sub-slug")
-                    .Build())
                 .Build();
 
-            var subItemEntryOther = new ContentfulEntryBuilder<ContentfulSubItem>()
+            var subItemEntryOther = new ContentfulSubItemBuilder()
+                .Slug("sub-slug")
                 .SystemId("not-same-id-as-article")
-                .Fields(new ContentfulSubItemBuilder()
-                    .Slug("sub-slug")
-                    .Build())
                 .Build();
 
-            var subItemEntryList = new List<Entry<ContentfulSubItem>>
+            var subItemEntryList = new List<ContentfulSubItem>
             {
                 subItemEntry,
                 subItemEntryOther
@@ -150,32 +118,23 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Name("test topic")
                 .Slug("test-topic")
                 .SubItems(subItemEntryList)
-                .Build();
-
-            var contentfulCrumbsEntry = new ContentfulEntryBuilder<ContentfulCrumb>()
-                .Fields(contentfulCrumbs)
                 .ContentTypeSystemId("topic")
                 .Build();
 
             var contentfulArticle = new ContentfulArticleBuilder()
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>()
+                .Breadcrumbs(new List<ContentfulCrumb>()
                 {
-                    contentfulCrumbsEntry
+                    contentfulCrumbs
                 })
                 .Title("article-title")
                 .Slug("article-slug")
-                .Build();
-
-            var contentfulArticleEntry = new ContentfulEntryBuilder<ContentfulArticle>()
                 .SystemId("same-id-as-article")
-                .Fields(contentfulArticle)
                 .Build();
 
-            _subitemContentfulFactory.Setup(o => o.ToModel(subItemEntry))
-                .Returns(
-                new SubItem("article-slug", "article-title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
+            _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulSubItem>(x => x.Slug == "article-slug")))
+                .Returns(new SubItem("article-slug", "article-title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
 
-            var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
+            var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 
             result.Should().BeOfType<Topic>();
             result.SubItems.Should().HaveCount(2);

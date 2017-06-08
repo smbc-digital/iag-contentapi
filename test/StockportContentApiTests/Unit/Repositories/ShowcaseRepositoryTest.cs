@@ -26,8 +26,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly ShowcaseRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _topicFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _topicFactory;
+        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
         private readonly Mock<ITimeProvider> _timeprovider;
 
         public ShowcaseRepositoryTest()
@@ -39,8 +39,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();
-            _topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
             _timeprovider = new Mock<ITimeProvider>();
 
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
@@ -62,7 +62,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
@@ -80,20 +80,16 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "unit-test-showcase-crumbs";
             var crumb = new Crumb("title", "slug", "type");
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug)
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>()
-                            { new Entry<ContentfulCrumb>()
-                                {
-                                    Fields = new ContentfulCrumb() {Title = crumb.Title, Slug = crumb.Title},
-                                    SystemProperties = new SystemProperties() {Type = "Entry" }
-                                },
+                .Breadcrumbs(new List<ContentfulCrumb>()
+                            { new ContentfulCrumb() {Title = crumb.Title, Slug = crumb.Title, Sys = new SystemProperties() {Type = "Entry" }},
                             })
                 .Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
-            _crumbFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>())).Returns(crumb);
+            _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCrumb>())).Returns(crumb);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetShowcases(slug));

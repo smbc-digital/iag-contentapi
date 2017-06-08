@@ -1,5 +1,6 @@
 ﻿using System;
 using Contentful.Core.Configuration;
+using Contentful.Core.Models;
 using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
@@ -11,8 +12,8 @@ namespace StockportContentApi.Model
         public string Body { get; }
         public string Severity { get; }
         public DateTime SunriseDate { get; }
-        public DateTime SunsetDate { get; }     
-       
+        public DateTime SunsetDate { get; }
+
         public Alert(string title, string subHeading, string body, string severity, DateTime sunriseDate,
             DateTime sunsetDate)
         {

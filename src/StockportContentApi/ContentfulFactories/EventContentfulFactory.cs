@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Contentful.Core.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -25,24 +26,34 @@ namespace StockportContentApi.ContentfulFactories
 
         public Event ToModel(ContentfulEvent entry)
         {
-            var eventDocuments = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                                .Select(document => _documentFactory.ToModel(document)).ToList();
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            try
+            {
+                var eventDocuments =
+                    entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                        .Select(document => _documentFactory.ToModel(document)).ToList();
+                var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                    ? entry.Image.File.Url
+                    : string.Empty;
 
-            var group = ContentfulHelpers.EntryIsNotALink(entry.Group.SystemProperties) ? _groupFactory.ToModel(entry.Group.Fields) : null;
+                var group = _groupFactory.ToModel(entry.Group);
 
-            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
-                                                     &&
-                                                     _dateComparer.DateNowIsWithinSunriseAndSunsetDates(
-                                                         alert.SunriseDate, alert.SunsetDate))
-                                     .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                                         &&
+                                                         _dateComparer.DateNowIsWithinSunriseAndSunsetDates(
+                                                             alert.SunriseDate, alert.SunsetDate))
+                    .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
-                entry.Location,
-                entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
-                entry.Breadcrumbs,
-                ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts);
+                return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
+                   entry.Location,
+                   entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
+                   entry.Breadcrumbs,
+                   ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
+                   entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,16 +26,23 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
         {
-            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            try
+            {
+                var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
+                var entries = await _client.GetEntriesAsync(builder);
 
-            var entry = entries.FirstOrDefault();
+                var entry = entries.FirstOrDefault();
 
-            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
+                if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
 
-            var model = _topicFactory.ToModel(entry);
-            
-            return HttpResponse.Successful(model);
+                var model = _topicFactory.ToModel(entry);
+
+                return HttpResponse.Successful(model);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

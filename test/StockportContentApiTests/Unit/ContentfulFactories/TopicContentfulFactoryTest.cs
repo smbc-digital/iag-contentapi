@@ -16,20 +16,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class TopicContentfulFactoryTest
     {
         private readonly ContentfulTopic _contentfulTopic;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _subItemFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>> _eventBannerFactory;
+        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _subItemFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
 
         public TopicContentfulFactoryTest()
         {
             _contentfulTopic = new ContentfulTopicBuilder().Build();
-            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
-            _subItemFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
-            _eventBannerFactory = new Mock<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            _subItemFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
             _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _timeProvider.Object);
         }
@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             var secondaryItem = new SubItem("slug2", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
-            var eventBanner = new EventBanner("Title","Teaser","Icon","Link");
+            var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
 
             _subItemFactory.Setup(o => o.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
             _subItemFactory.Setup(o => o.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
@@ -60,8 +60,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  .Excluding(e => e.TertiaryItems)
                                                                  .Excluding(e => e.BackgroundImage)
                                                                  .Excluding(e => e.Image)
-                                                                 .Excluding(e => e.Alerts) 
-                                                                 .Excluding(e => e.EventBanner)                                                              
+                                                                 .Excluding(e => e.Alerts)
+                                                                 .Excluding(e => e.EventBanner)
                                                                  );
 
             _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Once);
@@ -83,11 +83,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrTertiaryItemsOrImageOrAlertsIfTheyAreLinks()
         {
-            _contentfulTopic.Breadcrumbs.First().SystemProperties.Type = "Link";
-            _contentfulTopic.SubItems.First().SystemProperties.Type = "Link";
-            _contentfulTopic.SecondaryItems.First().SystemProperties.Type = "Link";
-            _contentfulTopic.TertiaryItems.First().SystemProperties.Type = "Link";
-            _contentfulTopic.Alerts.First().SystemProperties.Type = "Link";
+            _contentfulTopic.Breadcrumbs.First().Sys.Type = "Link";
+            _contentfulTopic.SubItems.First().Sys.Type = "Link";
+            _contentfulTopic.SecondaryItems.First().Sys.Type = "Link";
+            _contentfulTopic.TertiaryItems.First().Sys.Type = "Link";
+            _contentfulTopic.Alerts.First().Sys.Type = "Link";
             _contentfulTopic.BackgroundImage.SystemProperties.Type = "Link";
 
             var topic = _topicContentfulFactory.ToModel(_contentfulTopic);
@@ -97,16 +97,16 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             topic.SubItems.Count().Should().Be(0);
             topic.SecondaryItems.Count().Should().Be(0);
             topic.TertiaryItems.Count().Should().Be(0);
-            _subItemFactory.Verify(o => o.ToModel(It.IsAny<Entry<ContentfulSubItem>>()), Times.Never);
+            _subItemFactory.Verify(o => o.ToModel(It.IsAny<ContentfulSubItem>()), Times.Never);
             topic.BackgroundImage.Should().BeEmpty();
         }
 
         [Fact]
         public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithOneOutsdieOfDates()
         {
-            var alerts = new List<Entry<ContentfulAlert>> {
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build()).Build(),
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 01, 04)).SunriseDate(new DateTime(2017, 01, 01)).Build()).Build()
+            var alerts = new List<ContentfulAlert> {
+                new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 01, 04)).SunriseDate(new DateTime(2017, 01, 01)).Build()
             };
 
             var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
@@ -119,9 +119,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllInsideOfDates()
         {
-            var alerts = new List<Entry<ContentfulAlert>> {
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build()).Build(),
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 02, 03)).SunriseDate(new DateTime(2017, 01, 01)).Build()).Build()
+            var alerts = new List<ContentfulAlert>{
+                new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
+                new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 02, 03)).SunriseDate(new DateTime(2017, 01, 01)).Build() 
             };
 
             var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
@@ -134,9 +134,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllOutsideOfDates()
         {
-            var alerts = new List<Entry<ContentfulAlert>> {
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 03, 01)).Build()).Build(),
-                new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 10, 03)).SunriseDate(new DateTime(2017, 03, 01)).Build()).Build()
+            var alerts = new List<ContentfulAlert> {
+                new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 03, 01)).Build(),
+                new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 10, 03)).SunriseDate(new DateTime(2017, 03, 01)).Build()
             };
 
             var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();

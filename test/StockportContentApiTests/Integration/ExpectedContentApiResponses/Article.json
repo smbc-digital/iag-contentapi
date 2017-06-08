@@ -154,7 +154,7 @@
     "sunsetDate": "0001-01-01T00:00:00Z",
     "emailAlerts": false,
     "emailAlertsTopicId": null,
-    "eventBanner": null 
+    "eventBanner": null
   },
   "documents": [
     {
@@ -170,6 +170,21 @@
   "liveChatVisible": false,
   "liveChat": {
     "title": "title",
-    "text": 
-      "text"
-}}
+    "text": "text",
+    "sys": {
+      "id": null,
+      "linkType": null,
+      "type": "Entry",
+      "revision": null,
+      "version": null,
+      "createdAt": null,
+      "createdBy": null,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedAt": null,
+      "locale": null,
+      "contentType": null,
+      "space": null
+    }
+  }
+}

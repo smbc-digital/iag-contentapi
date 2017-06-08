@@ -31,9 +31,10 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>> _parentTopicFactory;
+        private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
+        private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
 
         public ArticleRepositoryTest()
         {
@@ -48,9 +49,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider = new Mock<ITimeProvider>();
 
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
-            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-            _parentTopicFactory = new Mock<IContentfulFactory<Entry<ContentfulArticle>, Topic>>();
+            _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
             var contentfulFactory = new ArticleContentfulFactory(
                 _sectionFactory.Object, 
@@ -59,7 +61,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 _parentTopicFactory.Object,
                 documentFactory, 
                 _videoRepository.Object,
-                _mockTimeProvider.Object);
+                _mockTimeProvider.Object,
+                _alertFactory.Object
+                );
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
@@ -75,8 +79,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle} });
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { rawArticle });
 
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));           
            
@@ -135,8 +139,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Entry<ContentfulArticle>>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<Entry<ContentfulArticle>> { new Entry<ContentfulArticle>() { Fields = rawArticle } });
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> { {rawArticle } });
 
             HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
@@ -149,17 +153,25 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "unit-test-article-with-inline-alerts";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
-            List<Entry<Alert>> alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
-                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
+            List<ContentfulAlert> alertsInline = new List<ContentfulAlert> { new ContentfulAlert()
+            {
+                Title = "title",
+                SubHeading = "subHeading",
+                Body = "body",
+                Severity = "severity",
+                SunriseDate = new DateTime(2017, 05, 01),
+                SunsetDate = new DateTime(2017, 07, 01),
+                Sys = new SystemProperties() { Type = "Entry" }
+            }
+        };
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).AlertsInline(alertsInline).Build();
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(
-                    It.Is<QueryBuilder<Entry<ContentfulArticle>>>(
+                    It.Is<QueryBuilder<ContentfulArticle>>(
                         q => q.Build() == builder.Build()), 
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Entry<ContentfulArticle>> {
-                    new Entry<ContentfulArticle>() { Fields = rawArticle } });
+                .ReturnsAsync(new List<ContentfulArticle> {
+                    rawArticle });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
@@ -179,13 +191,13 @@ namespace StockportContentApiTests.Unit.Repositories
                         new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                         new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc));
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
-            var builder = new QueryBuilder<Entry<ContentfulArticle>>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(
-                    It.Is<QueryBuilder<Entry<ContentfulArticle>>>(
+                    It.Is<QueryBuilder<ContentfulArticle>>(
                         q => q.Build() == builder.Build()),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Entry<ContentfulArticle>> {
-                    new Entry<ContentfulArticle>() { Fields = rawArticle } });
+                .ReturnsAsync(new List<ContentfulArticle> {
+                    { rawArticle } });
             _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
                 "title",
                 "section-with-inline-alerts",

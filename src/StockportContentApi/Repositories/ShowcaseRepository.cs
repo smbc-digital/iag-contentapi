@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
@@ -24,16 +25,17 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetShowcases(string slug)
         {
-            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+           
+                var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(5);
 
-            var entries = await _client.GetEntriesAsync(builder);
+                var entries = await _client.GetEntriesAsync(builder);
 
-            var entry = entries.FirstOrDefault();
-            var showcase = _contentfulFactory.ToModel(entry);
+                var entry = entries.FirstOrDefault();
+                var showcase = _contentfulFactory.ToModel(entry);
 
-            return showcase.GetType() == typeof(NullHomepage) 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found") 
-                : HttpResponse.Successful(showcase);
+                return showcase.GetType() == typeof(NullHomepage)
+                    ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found")
+                    : HttpResponse.Successful(showcase);
         }
     }
 }

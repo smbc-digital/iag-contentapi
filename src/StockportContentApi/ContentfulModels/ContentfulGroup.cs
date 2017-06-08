@@ -18,9 +18,10 @@ namespace StockportContentApi.ContentfulModels
         public string Address { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        public List<Entry<ContentfulGroupCategory>> CategoriesReference { get; set; } = new List<Entry<ContentfulGroupCategory>>();
+        public List<ContentfulGroupCategory> CategoriesReference { get; set; } = new List<ContentfulGroupCategory>();
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") };
         public MapPosition  MapPosition = new MapPosition();
         public bool Volunteering = false ;
+        public SystemProperties Sys = new SystemProperties();
     }
 }

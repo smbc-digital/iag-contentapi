@@ -125,6 +125,21 @@
   "liveChatVisible": false,
   "liveChat": {
     "title": "title",
-    "text": "text"
+    "text": "text",
+    "sys": {
+      "id": null,
+      "linkType": null,
+      "type": "Entry",
+      "revision": null,
+      "version": null,
+      "createdAt": null,
+      "createdBy": null,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedAt": null,
+      "locale": null,
+      "contentType": null,
+      "space": null
+    }
   }
 }
