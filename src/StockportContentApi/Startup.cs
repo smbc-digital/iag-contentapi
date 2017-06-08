@@ -56,6 +56,8 @@ namespace StockportContentApi
             var redirectBusinessIds = new List<string>();
             Configuration.GetSection("RedirectBusinessIds").Bind(redirectBusinessIds);
 
+            services.AddOptions();
+
             services.AddSingleton(new RedirectBusinessIds(redirectBusinessIds));
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton<IHttpClient>(

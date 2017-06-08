@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly EventRepository _eventRepository;
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
-        private readonly Mock<ICacheWrapper> _cache;
+        private readonly ICacheWrapper _cacheWrapper;
         private readonly Mock<ILogger<EventRepository>> _logger;
 
         public GroupRepositoryTest()
@@ -54,16 +54,16 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient = new Mock<IHttpClient>();
             _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
             _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
-            _cache = new Mock<ICacheWrapper>();
             _logger = new Mock<ILogger<EventRepository>>();
 
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            _cacheWrapper = new CacheWrapper(memoryCache);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
-            _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cache.Object, _logger.Object);
-            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cache.Object);
-
+            _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cacheWrapper, _logger.Object);
+            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper);
         }
 
         [Fact]
@@ -350,73 +350,40 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldCallContentfulIfCacheIsEmpty()
         {
             // Arrange
-            const string slug = "unit-test-GroupCategory";
-            var testCategorySlug = "test-category-slug";
-            var listOfContentfulGroups = SetupContentfulGroups(testCategorySlug);
-            var listOfGroups = SetupGroups(testCategorySlug);
+            var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
+                                                "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
+                                                "Fair","Emergency Services","Bonfire","Remembrence Service" };
 
-            var rawContentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
-            var rawGroupCategory = new GroupCategory("name", slug, "icon", "imageUrl");
-            var listOfCategories = new List<GroupCategory>() { rawGroupCategory };
+            var categorybuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()));
 
-            var categorybuilder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory").Include(1);
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
-
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
-
-            _listGroupFactory.Setup(o => o.ToModel(listOfContentfulGroups)).Returns(listOfGroups);
-            _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(listOfCategories);
-
-            object emptyListReturnedFromCache = new List<ContentfulGroupCategory>();
-            bool cacheIsFull = false;
-
-            _cache.Setup(x => x.TryGetValue(It.IsAny<object>(), out emptyListReturnedFromCache))
-                .Returns(cacheIsFull);
+            _cacheWrapper.RemoveItemFromCache("group-categories");
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
+            var response = _repository.GetGroupCategories();
 
             // Assert
-            _cache.Verify(x => x.Set(It.IsAny<string>(), listOfCategories, It.IsAny<MemoryCacheEntryOptions>()));
+            _client.Verify(x => x.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public void ShouldNotCallContentfulIfCacheIsFull()
         {
             // Arrange
-            const string slug = "unit-test-GroupCategory";
-            var testCategorySlug = "test-category-slug";
-            var listOfContentfulGroups = SetupContentfulGroups(testCategorySlug);
-            var listOfGroups = SetupGroups(testCategorySlug);
+            var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
+                                                "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
+                                                "Fair","Emergency Services","Bonfire","Remembrence Service" };
 
-            var rawContentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
-            var rawGroupCategory = new GroupCategory("name", slug, "icon", "imageUrl");
-            object listOfCategories = new List<GroupCategory>() { rawGroupCategory };
+            var categorybuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()));
 
-            var categorybuilder = new QueryBuilder<Entry<ContentfulGroupCategory>>().ContentTypeIs("groupCategory").Include(1);
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulGroupCategory> { rawContentfulGroupCategory });
-
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(1000).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10");
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(listOfContentfulGroups);
-
-            _listGroupFactory.Setup(o => o.ToModel(listOfContentfulGroups)).Returns(listOfGroups);
-            _listGroupCategoryFactory.Setup(o => o.ToModel(new List<ContentfulGroupCategory> { rawContentfulGroupCategory })).Returns(listOfCategories as List<GroupCategory>);
-
-            bool cacheIsFull = true;
-
-            _cache.Setup(x => x.TryGetValue(It.IsAny<object>(), out listOfCategories))
-                .Returns(cacheIsFull);
+            _cacheWrapper.Set("group-categories", categories, new MemoryCacheEntryOptions());
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport"));
+            var response = _repository.GetGroupCategories();
 
             // Assert
-            _cache.Verify(x => x.Set(It.IsAny<string>(), listOfCategories, It.IsAny<MemoryCacheEntryOptions>()), Times.Never);
+            _client.Verify(x => x.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]

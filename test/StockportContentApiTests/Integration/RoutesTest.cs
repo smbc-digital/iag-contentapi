@@ -62,8 +62,8 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
-                                    new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(2016,10,5)).Build(),
-                                    new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(2016,10,5)).Build()
+                                    new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(9999,9,9)).Build(),
+                                    new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(9999,9,9)).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
