@@ -47,7 +47,7 @@ namespace StockportContentApi.Utils
 
         public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod)
         {
-            return GetFromCacheOrDirectly(cacheKey, fallbackMethod, 12 * 60);
+            return GetFromCacheOrDirectly(cacheKey, fallbackMethod, 60);
         }
 
         public void RemoveItemFromCache(string cacheKey)
