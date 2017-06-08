@@ -11,11 +11,15 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
+        private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulSubItem, SubItem> subitemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, ITimeProvider timeProvider)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulSubItem, SubItem> subitemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
+            _consultationFactory = consultationFactory;
+            _socialMediaFactory = socialMediaFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
         
@@ -40,7 +44,15 @@ namespace StockportContentApi.ContentfulFactories
             var subHeading = !string.IsNullOrEmpty(entry.Subheading)
                 ? entry.Subheading
                 : "";
-            
+
+            var eventSubheading = !string.IsNullOrEmpty(entry.EventSubheading)
+                ? entry.EventSubheading
+                : "";
+
+            var eventCategory = !string.IsNullOrEmpty(entry.EventCategory)
+                ? entry.EventCategory
+                : "";
+
             var featuredItems =
                 entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
@@ -50,7 +62,14 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs);
+            var consultations =
+                entry.Consultations.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                               .Select(consult => _consultationFactory.ToModel(consult)).ToList();
+
+            var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+                                               .Select(media => _socialMediaFactory.ToModel(media)).ToList();
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory);
         }
     }
 }

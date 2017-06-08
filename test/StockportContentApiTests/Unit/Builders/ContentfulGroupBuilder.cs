@@ -23,6 +23,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
+        private GroupAdministrators _groupAdministrators = new GroupAdministrators();
 
         public ContentfulGroup Build()
         {
@@ -40,8 +41,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Image = _image,
                 CategoriesReference = _categoriesReference,
                 MapPosition = _mapPosition,
-                Sys = _sys
-                
+                Sys = _sys,
+                GroupAdministrators = _groupAdministrators
             };
         }
 
@@ -60,6 +61,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulGroupBuilder CategoriesReference(List<ContentfulGroupCategory> categoriesReference)
         {
             _categoriesReference = categoriesReference;
+            return this;
+        }
+
+        public ContentfulGroupBuilder GroupAdministrators(GroupAdministrators groupAdministrators)
+        {
+            _groupAdministrators = groupAdministrators;
             return this;
         }
     }

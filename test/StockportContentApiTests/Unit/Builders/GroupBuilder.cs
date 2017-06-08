@@ -22,12 +22,13 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Event> _events = new List<Event>();
         private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
         private MapPosition _mapPosition = new MapPosition() {Lat=39.0,Lon = 2.0};
-        private bool _volunteering = false;       
+        private bool _volunteering = false;
+        private GroupAdministrators _groupAdministrators = new GroupAdministrators();
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering);
+                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators);
         }
 
         public GroupBuilder Slug(string slug)
@@ -63,6 +64,12 @@ namespace StockportContentApiTests.Unit.Builders
         public GroupBuilder Events(List<Event> events)
         {
             _events = events;
+            return this;
+        }
+
+        public GroupBuilder GroupAdministrators(GroupAdministrators groupAdministrators)
+        {
+            _groupAdministrators = groupAdministrators;
             return this;
         }
     }

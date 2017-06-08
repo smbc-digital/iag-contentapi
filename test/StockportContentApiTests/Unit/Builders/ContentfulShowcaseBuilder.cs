@@ -16,12 +16,15 @@ namespace StockportContentApiTests.Builders
         {
             new ContentfulSubItemBuilder().Build()
         };
-
+        private string _eventSubheading { get; set; } = "event-subheading";
+        private string _eventCategory { get; set; } = "event-categpry";
+        private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
+        private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb>
         {
           new ContentfulCrumbBuilder().Build()
         };
-
+        
         public ContentfulShowcase Build()
         {
             return new ContentfulShowcase()
@@ -31,8 +34,12 @@ namespace StockportContentApiTests.Builders
                 Teaser = _teaser,
                 Subheading = _subheading,
                 HeroImage = _heroImage,
+                EventSubheading = _eventSubheading,
+                EventCategory = _eventCategory,
                 FeaturedItems = _featuredItems,
-                Breadcrumbs = _breadcrumbs
+                Breadcrumbs = _breadcrumbs,
+                Consultations = _consultations,
+                SocialMediaLinks = _socialMediaLinks
             };
         }
 
@@ -75,6 +82,18 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder Breadcrumbs(List<ContentfulCrumb> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder Consultations(List<ContentfulConsultation> consultations)
+        {
+            _consultations = consultations;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder SocialMediaLinks(List<ContentfulSocialMediaLink> socialMediaLinks)
+        {
+            _socialMediaLinks = socialMediaLinks;
             return this;
         }
     }

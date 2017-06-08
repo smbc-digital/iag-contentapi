@@ -39,11 +39,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCrumb>())).Returns(crumb);
 
-            Mock<ITimeProvider> _timeprovider = new Mock<ITimeProvider>();
+            var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
+            consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://www.stockport.gov.uk/link"));
 
-            _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+            var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+            socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, _timeprovider.Object);
+            Mock<ITimeProvider> timeprovider = new Mock<ITimeProvider>();
+
+            timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -71,11 +77,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
-            var _timeprovider = new Mock<ITimeProvider>();
+            var timeprovider = new Mock<ITimeProvider>();
 
-            _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+            timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, _timeprovider.Object);
+            var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
+            consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://www.stockport.gov.uk/link"));
+
+            var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+            socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -114,11 +126,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
-            var _timeprovider = new Mock<ITimeProvider>();
+            var timeprovider = new Mock<ITimeProvider>();
 
-            _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+            timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, _timeprovider.Object);
+            var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
+            consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://www.stockport.gov.uk/link"));
+
+            var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+            socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -157,11 +175,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
 
-            var _timeprovider = new Mock<ITimeProvider>();
+            var timeprovider = new Mock<ITimeProvider>();
 
-            _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+            timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, _timeprovider.Object);
+            var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
+            consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://link.url"));
+
+            var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+            socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 

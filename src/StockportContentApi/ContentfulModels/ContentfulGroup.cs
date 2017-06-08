@@ -23,5 +23,6 @@ namespace StockportContentApi.ContentfulModels
         public MapPosition  MapPosition = new MapPosition();
         public bool Volunteering = false ;
         public SystemProperties Sys = new SystemProperties();
+        public GroupAdministrators GroupAdministrators { get; set; } = new GroupAdministrators();
     }
 }

@@ -105,6 +105,21 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(groupResults);
         }
 
+        public async Task<HttpResponse> GetAdministratorsGroups(string email)
+        {
+            var builder =
+                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators")
+                    .Include(1)
+                    .Limit(ContentfulQueryValues.LIMIT_MAX);
+
+            var groups = await _client.GetEntriesAsync(builder);
+
+            groups = groups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email == email));
+
+            var result = _groupListFactory.ToModel(groups.ToList());
+
+            return HttpResponse.Successful(result);
+        }
 
         private async Task<List<GroupCategory>> GetGroupCategories()
         {

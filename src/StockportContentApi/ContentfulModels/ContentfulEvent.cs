@@ -6,7 +6,7 @@ using StockportContentApi.Model;
 namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulEvent
-    {      
+    {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;      

@@ -9,10 +9,15 @@ namespace StockportContentApi.Model
         public string Teaser { get; set; }
         public string Subheading { get; set; }
         public string HeroImageUrl { get; set; }
+        public string EventSubheading { get; set; }
+        public string EventCategory { get; set; }
         public IEnumerable<SubItem> FeaturedItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
-        
-        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs )
+        public IEnumerable<Consultation> Consultations { get; set; }
+        public IEnumerable<SocialMediaLink> SocialMediaLinks { get; set; }
+        public IEnumerable<Event> Events { get; set; }
+
+        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory)
         {
             Title = title;
             Slug = slug;
@@ -21,6 +26,10 @@ namespace StockportContentApi.Model
             HeroImageUrl = heroImage;
             FeaturedItems = featuredItems;
             Breadcrumbs = breadcrumbs;
+            Consultations = consultations;
+            SocialMediaLinks = socialMediaLinks;
+            EventSubheading = eventSubheading;
+            EventCategory = eventCategory;
         }
     }
 }

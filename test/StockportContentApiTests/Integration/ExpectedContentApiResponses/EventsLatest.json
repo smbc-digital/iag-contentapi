@@ -63,7 +63,10 @@
           "lat": 0.0
         },
         "volunteering": false,
-        "events": null 
+        "events": null,
+        "groupAdministrators": {
+          "items": []
+        }
       },
       "alerts": [
         {
