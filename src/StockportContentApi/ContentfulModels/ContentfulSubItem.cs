@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(ExtensionJsonConverter))]
+    
     public class ContentfulSubItem
     {
         public string Slug { get; set; } = string.Empty;

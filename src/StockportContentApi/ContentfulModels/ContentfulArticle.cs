@@ -7,7 +7,7 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(ExtensionJsonConverter))]
+    
     public class ContentfulArticle
     {
         public string Body { get; set; } = string.Empty;

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(ExtensionJsonConverter))]
+    
     public class ContentfulCrumb
     {
         // READ ME ----------------------------------
