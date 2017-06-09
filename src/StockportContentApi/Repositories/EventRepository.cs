@@ -51,6 +51,21 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+
+            var events = GetAllEventsAndTheirReccurrences(entries);
+
+            var eventItem = events.Where(e => e.Slug == slug).FirstOrDefault();
+
+            eventItem = GetEventFromItsOccurrences(date, eventItem);
+
+            return eventItem == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
+                : HttpResponse.Successful(eventItem);
+        }
+
+        public async Task<HttpResponse> GetEventOld(string slug, DateTime? date)
+        {
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.FirstOrDefault();
@@ -122,6 +137,7 @@ namespace StockportContentApi.Repositories
                 entriesList.Add(eventItem);
                 entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
             }
+
             return entriesList;
         }
 
@@ -132,20 +148,28 @@ namespace StockportContentApi.Repositories
                 : _dateComparer.EventDateIsBetweenTodayAndLater(events.EventDate);
         }
 
-     public async Task<List<Event>> GetLinkedEvents<T>(string slug)
+        public async Task<List<Event>> GetLinkedEvents<T>(string slug)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", TypeHelper.ContentfulTypeFor<T>()).FieldEquals("fields.group.fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
 
-            var events = entries
-                    .Select(e => _contentfulFactory.ToModel(e))
+            var events = GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => e.Group.Slug == slug)
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
 
-            return events;
+            var result = new List<Event>();
+            foreach (var item in events)
+            {
+                if (!result.Any(i => i.Slug == item.Slug))
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
         }
 
         public async Task<List<string>> GetCategories()
