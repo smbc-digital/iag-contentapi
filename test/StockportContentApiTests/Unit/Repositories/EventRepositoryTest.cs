@@ -76,6 +76,24 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
+        public void GetReoccuringEventsNextEventOnly()
+        {
+            // Arrange - mock reoccurring event, starting in the past that passes today
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 07, 01));
+            var rawEvent = new ContentfulEventBuilder().EventCategory(new List<string>() { "category" }).EventDate(new DateTime(2017, 06, 01)).Occurrences(10).Frequency(EventFrequency.Weekly).Build();
+            var events = new List<ContentfulEvent> { rawEvent };
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
+
+            // Act - return events using a method which checks occurances
+            var result = AsyncTestHelper.Resolve(_repository.GetEventsByCategory("category"));
+
+            // Assert - Check event date is first date that occurs in the future
+            result[0].EventDate.Should().Be(new DateTime(2017, 07, 06));
+        }
+
+        [Fact]
         public void GetsASingleEventItemFromASlug()
         {
             const string slug = "event-of-the-century";
