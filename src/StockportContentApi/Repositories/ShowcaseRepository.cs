@@ -50,7 +50,7 @@ namespace StockportContentApi.Repositories
             var entry = entries.FirstOrDefault();
             var showcase = _contentfulFactory.ToModel(entry);
 
-            showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory, 3);
+            showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory);
 
             var news = await PopulateNews(showcase.NewsCategoryTag);
             if (news != null)

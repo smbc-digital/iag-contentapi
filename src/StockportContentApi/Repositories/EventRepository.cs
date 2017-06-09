@@ -104,7 +104,7 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
-        public async Task<List<Event>> GetEventsByCategory(string category, int take = 0)
+        public async Task<List<Event>> GetEventsByCategory(string category)
         {
             var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
 
@@ -116,11 +116,6 @@ namespace StockportContentApi.Repositories
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
-
-            if (take > 0)
-            {
-                events = events.Take(take).ToList();
-            }
 
             return GetNextOccurenceOfEvents(events);
         }
