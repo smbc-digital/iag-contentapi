@@ -64,23 +64,6 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(eventItem);
         }
 
-        public async Task<HttpResponse> GetEventOld(string slug, DateTime? date)
-        {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
-            var entry = entries.FirstOrDefault();
-
-            var eventItem = entry == null 
-                            ? null 
-                            : _contentfulFactory.ToModel(entry);
-
-            eventItem = GetEventFromItsOccurrences(date, eventItem);
-
-            return eventItem == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
-                : HttpResponse.Successful(eventItem);
-        }
-
         private static Event GetEventFromItsOccurrences(DateTime? date, Event eventItem)
         {
             if (eventItem == null || !date.HasValue || eventItem.EventDate == date) return eventItem;
@@ -119,6 +102,36 @@ namespace StockportContentApi.Repositories
             eventCalender.SetEvents(events, eventCategories);
 
             return HttpResponse.Successful(eventCalender);
+        }
+
+        public async Task<List<Event>> GetEventsByCategory(string category)
+        {
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+
+            var events = 
+                    GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
+                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+
+            return GetNextOccurenceOfEvents(events);
+        }
+
+        private List<Event> GetNextOccurenceOfEvents(List<Event> events)
+        {
+            var result = new List<Event>();
+            foreach (var item in events)
+            {
+                if (!result.Any(i => i.Slug == item.Slug))
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
         }
 
         private async Task<IList<ContentfulEvent>> GetAllEvents()
@@ -160,16 +173,7 @@ namespace StockportContentApi.Repositories
                     .ThenBy(t => t.Title)
                     .ToList();
 
-            var result = new List<Event>();
-            foreach (var item in events)
-            {
-                if (!result.Any(i => i.Slug == item.Slug))
-                {
-                    result.Add(item);
-                }
-            }
-
-            return result;
+            return GetNextOccurenceOfEvents(events);
         }
 
         public async Task<List<string>> GetCategories()

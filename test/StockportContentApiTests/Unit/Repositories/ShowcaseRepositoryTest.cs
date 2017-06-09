@@ -20,6 +20,8 @@ using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApi.Factories;
 using Microsoft.Extensions.Logging;
+using StockportContentApiTests.Unit.Builders;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -30,7 +32,9 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _topicFactory;
         private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<ITimeProvider> _timeprovider;
+        private readonly ICacheWrapper _cacheWrapper;
 
         public ShowcaseRepositoryTest()
         {
@@ -63,11 +67,14 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            var _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+            _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
             var _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
-            var _cache = new Mock<ICacheWrapper>();
+
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            _cacheWrapper = new CacheWrapper(memoryCache);
+
             var _logger = new Mock<ILogger<EventRepository>>();
-            var eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventCategoriesFactory.Object, _cache.Object, _logger.Object);
+            var eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventCategoriesFactory.Object, _cacheWrapper, _logger.Object);
 
             _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object, eventRepository);
         }
@@ -78,8 +85,17 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "unit-test-showcase";
 
-            var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
+            var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
+            var events = new List<ContentfulEvent> { rawEvent };
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
 
+            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None,  null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null);
+            _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
+
+            var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
+             
             var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
@@ -112,6 +128,15 @@ namespace StockportContentApiTests.Unit.Repositories
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
             _crumbFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>())).Returns(crumb);
+
+            var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
+            var events = new List<ContentfulEvent> { rawEvent };
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
+
+            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None, null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null);
+            _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetShowcases(slug));

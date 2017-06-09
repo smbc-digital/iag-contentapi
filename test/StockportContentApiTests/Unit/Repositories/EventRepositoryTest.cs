@@ -397,11 +397,9 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"category 2"}).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-
             _contentfulClient.Setup(
                     o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(events);
-
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,  "category 1", 0,null, null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);

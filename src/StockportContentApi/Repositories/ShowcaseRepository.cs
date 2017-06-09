@@ -50,7 +50,8 @@ namespace StockportContentApi.Repositories
             var entry = entries.FirstOrDefault();
             var showcase = _contentfulFactory.ToModel(entry);
 
-            showcase.Events = await PopulateEvents(showcase.EventCategory);
+            showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory);
+
             var news = await PopulateNews(showcase.NewsCategoryTag);
             if (news != null)
             {
@@ -61,30 +62,6 @@ namespace StockportContentApi.Repositories
             return showcase.GetType() == typeof(NullHomepage)
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found")
                 : HttpResponse.Successful(showcase);
-        }
-
-        private async Task<List<Event>> PopulateEvents(string category)
-        {
-            if (string.IsNullOrWhiteSpace(category))
-            {
-                return null;
-            }
-
-            var eventbuilder =
-                new QueryBuilder<ContentfulEvent>().ContentTypeIs("events")
-                    .Include(1)
-                    .Limit(ContentfulQueryValues.LIMIT_MAX);
-            var eventsEntry = await _client.GetEntriesAsync(eventbuilder);
-          
-            var events = _eventRepository.GetAllEventsAndTheirReccurrences(eventsEntry)
-                    .Where(e => e.Categories.Any(c => c.ToLower() == category.ToLower()))
-                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                    .OrderBy(o => o.EventDate)
-                    .ThenBy(c => c.StartTime)
-                    .ThenBy(t => t.Title).Take(3)
-                    .ToList();
-
-            return events;
         }
 
         private async Task<ShowcaseNews> PopulateNews(string tag)
