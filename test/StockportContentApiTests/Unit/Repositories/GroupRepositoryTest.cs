@@ -5,6 +5,7 @@ using System.Threading;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -56,14 +57,14 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
             _logger = new Mock<ILogger<EventRepository>>();
 
-            var memoryCache = new MemoryCache(new MemoryCacheOptions());
-            _cacheWrapper = new CacheWrapper(memoryCache);
+            //var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            //_cacheWrapper = new CacheWrapper(memoryCache);
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
             _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cacheWrapper, _logger.Object);
-            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper);
+            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, null);
         }
 
         [Fact]
@@ -377,7 +378,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var categorybuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == categorybuilder.Build()), It.IsAny<CancellationToken>()));
 
-            _cacheWrapper.Set("group-categories", categories, new MemoryCacheEntryOptions());
+            _cacheWrapper.Set("group-categories", categories, new DistributedCacheEntryOptions());
 
             // Act
             var response = _repository.GetGroupCategories();

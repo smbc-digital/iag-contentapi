@@ -1,5 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using BinaryFormatter;
+using Newtonsoft.Json;
 
 namespace StockportContentApi.Utils
 {
@@ -15,18 +24,19 @@ namespace StockportContentApi.Utils
 
     public interface ICacheWrapper
     {
-        void Set(string cacheKey, object cacheEntry, MemoryCacheEntryOptions cacheEntryOptions);
-        bool TryGetValue(object key, out object value);
+        void Set(string cacheKey, object cacheEntry, DistributedCacheEntryOptions cacheEntryOptions);
+        bool TryGetValue<T>(object key, out T value);
         T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod, long minutes);
         T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod);
         void RemoveItemFromCache(string cacheKey);
+        Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
     }
 
     public class CacheWrapper : ICacheWrapper
     {
-        private IMemoryCache _memoryCache;
+        private IDistributedCache _memoryCache;
 
-        public CacheWrapper(IMemoryCache memoryCache)
+        public CacheWrapper(IDistributedCache memoryCache)
         {
             _memoryCache = memoryCache;
         }
@@ -35,11 +45,38 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (_memoryCache.TryGetValue(cacheKey, out result) == false)
+            if (TryGetValue(cacheKey, out result) == false)
             {
                 result = fallbackMethod();
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
-                _memoryCache.Set(cacheKey, result, cacheEntryOptions);
+
+                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
+
+                var data = JsonConvert.SerializeObject(result);
+
+                _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+            }
+
+            return result;
+        }
+
+        public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod)
+        {
+            T result;
+
+            if (TryGetValue(cacheKey, out result) == false)
+            {
+                result = await fallbackMethod();
+
+                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(12 * TimeSpan.TicksPerMinute));
+
+                var data = JsonConvert.SerializeObject(result);
+
+                //var binFormatter = new BinaryConverter();
+                //var mStream = new MemoryStream();
+                //binFormatter.Serialize(result);
+                //var data = mStream.ToArray();
+
+                _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
             }
 
             return result;
@@ -55,14 +92,26 @@ namespace StockportContentApi.Utils
             _memoryCache.Remove(cacheKey);
         }
 
-        public void Set(string cacheKey, object cacheEntry, MemoryCacheEntryOptions cacheEntryOptions)
+        public void Set(string cacheKey, object cacheEntry, DistributedCacheEntryOptions cacheEntryOptions)
         {
-            _memoryCache.Set(cacheKey, cacheEntry, cacheEntryOptions);
+            var data = JsonConvert.SerializeObject(cacheEntry);
+
+            _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
         }
 
-        public bool TryGetValue(object key, out object value)
+        public bool TryGetValue<T>(object key, out T value)
         {
-            return _memoryCache.TryGetValue(key, out value);
+            bool output = false;
+            value = default(T);
+            var returnData = _memoryCache.GetString(key.ToString());
+
+            if (returnData != null)
+            {
+                value = JsonConvert.DeserializeObject<T>(returnData);
+                output = value != null;
+            }
+            
+            return output;
         }
     }
 }

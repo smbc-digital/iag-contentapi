@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +22,9 @@ using StockportContentApi.Services;
 using StockportContentApi.Utils;
 using Swashbuckle.Swagger.Model;
 using Contentful.Core.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using StockportWebapp.DataProtection;
 
 
 namespace StockportContentApi
@@ -29,6 +34,7 @@ namespace StockportContentApi
         private readonly string _contentRootPath;
         private readonly string _appEnvironment;
         private const string ConfigDir = "app-config";
+        private readonly bool _useRedisSession;
 
         public Startup(IHostingEnvironment env)
         {
@@ -39,6 +45,8 @@ namespace StockportContentApi
 
             Configuration = configLoader.LoadConfiguration(env, _contentRootPath);
             _appEnvironment = configLoader.EnvironmentName(env);
+
+            _useRedisSession = Configuration["UseRedisSessions"] == "true";
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -67,6 +75,17 @@ namespace StockportContentApi
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
 
+            var loggerFactory = new LoggerFactory().AddNLog();
+            ILogger logger = loggerFactory.CreateLogger<Startup>();
+
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = "127.0.0.1:6379";
+                options.InstanceName = "master";
+            });
+
+            ConfigureDataProtection(services, logger);
+
             RegisterBuilders(services);
             RegisterRepos(services);
 
@@ -77,6 +96,8 @@ namespace StockportContentApi
 
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
+
+            
         }
 
         private static void RegisterRepos(IServiceCollection services)
@@ -86,7 +107,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(new ContactUsIdContentfulFactory());
             services.AddSingleton<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(p => new CrumbContentfulFactory());
 
-            services.AddSingleton<ICacheWrapper>(p => new CacheWrapper(p.GetService<IMemoryCache>()));
+            services.AddSingleton<ICacheWrapper>(p => new CacheWrapper(p.GetService<IDistributedCache>()));
 
             services.AddSingleton<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
 
@@ -242,7 +263,7 @@ namespace StockportContentApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
         {
             app.UseSwagger();
             app.UseSwaggerUi();
@@ -253,6 +274,38 @@ namespace StockportContentApi
             app.UseStaticFiles();
 
             app.UseMvc();
+        }
+
+
+
+        private void ConfigureDataProtection(IServiceCollection services, ILogger logger)
+        {
+            if (_useRedisSession)
+            {
+                var redisUrl = Configuration["TokenStoreUrl"];
+                //var redisIp = GetHostEntryForUrl(redisUrl, logger);
+                //logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+                services.AddDataProtection().PersistKeysToRedis(redisUrl);
+            }
+        }
+
+        private static string GetHostEntryForUrl(string host, ILogger logger)
+        {
+
+            var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
+
+            if (!addresses.Any())
+            {
+                logger.LogError($"Could not resolve IP address for redis instance : {host}");
+                throw new Exception($"No redis instance could be found for host {host}");
+            }
+
+            if (addresses.Length > 1)
+            {
+                logger.LogWarning($"Multple IP address for redis instance : {host} attempting to use first");
+            }
+
+            return addresses.First().ToString();
         }
     }
 }

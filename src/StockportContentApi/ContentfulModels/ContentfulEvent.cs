@@ -24,6 +24,7 @@ namespace StockportContentApi.ContentfulModels
         public int Occurences { get; set; } = 0;
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
+        [JsonIgnore]
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public List<string> Categories { get; set; } = new List<string>();
         public MapPosition MapPosition { get; set; } = new MapPosition();

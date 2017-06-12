@@ -77,7 +77,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
         {
-            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 

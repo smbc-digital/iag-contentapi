@@ -7,12 +7,17 @@ namespace StockportContentApi.ContentfulFactories
     {
         public Document ToModel(Asset entry)
         {
+            if (entry.File == null)
+            {
+                entry.File = new File { Url = "" };
+            }
+
             return new Document(
                     entry.Description,
-                    unchecked((int)entry.File.Details.Size),
+                    unchecked((int)entry.File?.Details.Size),
                     entry.SystemProperties.UpdatedAt.Value,
-                    entry.File.Url,
-                    entry.File.FileName);
+                    entry.File?.Url,
+                    entry.File?.FileName);
         }
     }
 }
