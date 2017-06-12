@@ -98,7 +98,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateSubItemWithSubItems()
         {
             var contentfulSubItem = new ContentfulSubItemBuilder()
-                .SubItems(new List<ContentfulSubItem>()
+                .SubItems(new List<IContentfulSubItem>()
                 {
                     new ContentfulSubItem()
                     {
@@ -119,7 +119,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                             }
                     }
                 })
-                .TertiaryItems(new List<ContentfulSubItem>()
+                .TertiaryItems(new List<IContentfulSubItem>()
                 {
                     new ContentfulSubItem()
                     {
@@ -140,7 +140,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                             }
                     }
                 })
-                .SecondaryItems(new List<ContentfulSubItem>()
+                .SecondaryItems(new List<IContentfulSubItem>()
                 {
                     new ContentfulSubItem()
                     {

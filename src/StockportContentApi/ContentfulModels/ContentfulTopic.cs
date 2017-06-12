@@ -7,7 +7,7 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulTopic
+    public class ContentfulTopic : IContentfulSubItem
     {
         public string Slug { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
@@ -17,14 +17,9 @@ namespace StockportContentApi.ContentfulModels
         public Asset BackgroundImage { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset"} };
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public SystemProperties Sys { get; set; }
-
-        [JsonIgnore]
-        public List<ContentfulSubItem> SubItems { get; set; } = new List<ContentfulSubItem>();
-        [JsonIgnore]
-        public List<ContentfulSubItem> SecondaryItems { get; set; } = new List<ContentfulSubItem>();
-        [JsonIgnore]
-        public List<ContentfulSubItem> TertiaryItems { get; set; } = new List<ContentfulSubItem>();
-
+        public List<IContentfulSubItem> SubItems { get; set; } = new List<IContentfulSubItem>();
+        public List<IContentfulSubItem> SecondaryItems { get; set; } = new List<IContentfulSubItem>();
+        public List<IContentfulSubItem> TertiaryItems { get; set; } = new List<IContentfulSubItem>();
         public List<ContentfulCrumb> Breadcrumbs { get; set; } = new List<ContentfulCrumb>();
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
@@ -35,5 +30,6 @@ namespace StockportContentApi.ContentfulModels
         {
             Sys = new SystemProperties { Type = "Entry" }
         };
+       public string Title { get; set; }
     }
 }

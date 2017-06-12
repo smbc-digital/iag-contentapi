@@ -110,14 +110,14 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulCrumb, Crumb>>()));
 
-            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulSubItem, SubItem>>(),
+            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<IContentfulSubItem, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulCrumb, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
-                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulSubItem, SubItem>>(), p.GetService<IContentfulFactory<ContentfulCrumb, Crumb>>(), p.GetService<ITimeProvider>(),
+                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<IContentfulSubItem, SubItem>>(), p.GetService<IContentfulFactory<ContentfulCrumb, Crumb>>(), p.GetService<ITimeProvider>(),
                                                                                                             p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
                                                                                                             p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()));
 
@@ -138,7 +138,7 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(
-                    p.GetService<IContentfulFactory<ContentfulSubItem, SubItem>>()
+                    p.GetService<IContentfulFactory<IContentfulSubItem, SubItem>>()
                     ,p.GetService<ITimeProvider>())
                     );
 

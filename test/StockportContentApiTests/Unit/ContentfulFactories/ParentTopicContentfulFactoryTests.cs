@@ -15,14 +15,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ParentTopicContentfulFactoryTests
     {
-        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _subitemContentfulFactory;
+        private readonly Mock<IContentfulFactory<IContentfulSubItem, SubItem>> _subitemContentfulFactory;
         private readonly ParentTopicContentfulFactory _parentTopicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
 
         public ParentTopicContentfulFactoryTests()
         {
             // create mocks
-            _subitemContentfulFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            _subitemContentfulFactory = new Mock<IContentfulFactory<IContentfulSubItem, SubItem>>();
             _timeProvider = new Mock<ITimeProvider>();
 
             // setup mocks
@@ -39,7 +39,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldReturnATopicFromAContentfulArticleBasedOnTheBreadcrumbs()
         {
-            var subItemEntry = new List<ContentfulSubItem>
+            var subItemEntry = new List<IContentfulSubItem>
             {
                 new ContentfulSubItemBuilder().Slug("sub-slug").Build()
             };
@@ -64,7 +64,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldReturnNullTopicIfBreadcrumbDoesNotHaveTypeOfTopic()
         {
-            var subItemEntry = new List<ContentfulSubItem>
+            var subItemEntry = new List<IContentfulSubItem>
             {
                 new ContentfulSubItemBuilder().Slug("sub-slug").Build()
             };
@@ -108,7 +108,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .SystemId("not-same-id-as-article")
                 .Build();
 
-            var subItemEntryList = new List<ContentfulSubItem>
+            var subItemEntryList = new List<IContentfulSubItem>
             {
                 subItemEntry,
                 subItemEntryOther

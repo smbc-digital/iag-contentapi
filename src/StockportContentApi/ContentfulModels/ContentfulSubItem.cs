@@ -6,8 +6,24 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    
-    public class ContentfulSubItem
+
+    public interface IContentfulSubItem
+    {
+        string Icon { get; set; }
+        Asset Image { get; set; }
+        string Name { get; set; }
+        List<IContentfulSubItem> SecondaryItems { get; set; }
+        string Slug { get; set; }
+        List<IContentfulSubItem> SubItems { get; set; }
+        DateTime SunriseDate { get; set; }
+        DateTime SunsetDate { get; set; }
+        SystemProperties Sys { get; set; }
+        string Teaser { get; set; }
+        List<IContentfulSubItem> TertiaryItems { get; set; }
+        string Title { get; set; }
+    }
+
+    public class ContentfulSubItem : IContentfulSubItem
     {
         public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
@@ -17,9 +33,9 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        public List<ContentfulSubItem> SubItems { get; set; } = new List<ContentfulSubItem>();
-        public List<ContentfulSubItem> SecondaryItems { get; set; } = new List<ContentfulSubItem>();
-        public List<ContentfulSubItem> TertiaryItems { get; set; } = new List<ContentfulSubItem>();
+        public List<IContentfulSubItem> SubItems { get; set; }
+        public List<IContentfulSubItem> SecondaryItems { get; set; }
+        public List<IContentfulSubItem> TertiaryItems { get; set; }
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

@@ -8,13 +8,13 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
-        private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subitemFactory;
+        private readonly IContentfulFactory<IContentfulSubItem, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulSubItem, SubItem> subitemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<IContentfulSubItem, SubItem> subitemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;

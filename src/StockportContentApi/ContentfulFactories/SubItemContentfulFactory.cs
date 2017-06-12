@@ -7,7 +7,7 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class SubItemContentfulFactory : IContentfulFactory<ContentfulSubItem, SubItem>
+    public class SubItemContentfulFactory : IContentfulFactory<IContentfulSubItem, SubItem>
     {
 
         private readonly DateComparer _dateComparer;
@@ -17,7 +17,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
         }
 
-        public SubItem ToModel(ContentfulSubItem entry)
+        public SubItem ToModel(IContentfulSubItem entry)
         {
             var type = entry.Sys.ContentType.SystemProperties.Id == "startPage" 
                 ? "start-page" 

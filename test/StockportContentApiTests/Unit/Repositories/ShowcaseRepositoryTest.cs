@@ -26,7 +26,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly ShowcaseRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _topicFactory;
+        private readonly Mock<IContentfulFactory<IContentfulSubItem, SubItem>> _topicFactory;
         private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
         private readonly Mock<ITimeProvider> _timeprovider;
 
@@ -39,7 +39,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();
-            _topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            _topicFactory = new Mock<IContentfulFactory<IContentfulSubItem, SubItem>>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
             _timeprovider = new Mock<ITimeProvider>();
 

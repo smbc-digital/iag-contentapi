@@ -12,7 +12,7 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<ContentfulSubItem> _featuredItems { get; set; } = new List<ContentfulSubItem>
+        private List<IContentfulSubItem> _featuredItems { get; set; } = new List<IContentfulSubItem>
         {
             new ContentfulSubItemBuilder().Build()
         };
@@ -73,7 +73,7 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulShowcaseBuilder FeaturedItems(List<ContentfulSubItem> featuredItems)
+        public ContentfulShowcaseBuilder FeaturedItems(List<IContentfulSubItem> featuredItems)
         {
             _featuredItems = featuredItems;
             return this;

@@ -8,11 +8,11 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulParentTopicBuilder
     {
         private string _name = "name";       
-        private readonly List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
+        private readonly List<IContentfulSubItem> _subItems = new List<IContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("sub-slug").Build() };
-        private readonly List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
+        private readonly List<IContentfulSubItem> _secondaryItems = new List<IContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("secondary-slug").Build() };
-        private readonly List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
+        private readonly List<IContentfulSubItem> _tertiaryItems = new List<IContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()};
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";

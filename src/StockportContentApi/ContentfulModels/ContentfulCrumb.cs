@@ -14,8 +14,8 @@ namespace StockportContentApi.ContentfulModels
         public string Name { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public SystemProperties Sys { get; set; } = new SystemProperties();
-        public List<ContentfulSubItem> SubItems { get; set; } = new List<ContentfulSubItem>();
-        public List<ContentfulSubItem> SecondaryItems { get; set; } = new List<ContentfulSubItem>();
-        public List<ContentfulSubItem> TertiaryItems { get; set; } = new List<ContentfulSubItem>();
+        public List<IContentfulSubItem> SubItems { get; set; } = new List<IContentfulSubItem>();
+        public List<IContentfulSubItem> SecondaryItems { get; set; } = new List<IContentfulSubItem>();
+        public List<IContentfulSubItem> TertiaryItems { get; set; } = new List<IContentfulSubItem>();
     }
 }

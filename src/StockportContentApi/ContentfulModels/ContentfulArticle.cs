@@ -8,7 +8,7 @@ using StockportContentApi.Model;
 namespace StockportContentApi.ContentfulModels
 {
     
-    public class ContentfulArticle
+    public class ContentfulArticle : IContentfulSubItem
     {
         public string Body { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
@@ -43,5 +43,10 @@ namespace StockportContentApi.ContentfulModels
         {
             Sys = new SystemProperties {Type = "Entry"}
         };
+
+        public string Name { get; set; }
+        public List<IContentfulSubItem> SecondaryItems { get; set; }
+        public List<IContentfulSubItem> SubItems { get; set; }
+        public List<IContentfulSubItem> TertiaryItems { get; set; }
     }
 }
