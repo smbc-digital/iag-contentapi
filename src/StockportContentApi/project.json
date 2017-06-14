@@ -33,7 +33,7 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
     "Swashbuckle": "6.0.0-beta902",
-    "contentful.csharp": "0.13.8-beta",
+    "contentful.csharp": "0.13.9-beta",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0"
   },
 

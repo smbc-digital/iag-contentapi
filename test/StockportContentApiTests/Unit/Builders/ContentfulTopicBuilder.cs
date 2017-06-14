@@ -23,11 +23,11 @@ namespace StockportContentApiTests.Unit.Builders
         private string _emailAlertsTopicId = "id";
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};
-        private List<IContentfulSubItem> _subItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("sub-slug").Build() };
-        private List<IContentfulSubItem> _secondaryItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("secondary-slug").Build() };
-        private List<IContentfulSubItem> _tertiaryItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
            new ContentfulSubItemBuilder().Slug("tertiary-slug").Build() };
         private ContentfulEventBanner _eventBanner =
            new ContentfulEventBannerBuilder().Build();

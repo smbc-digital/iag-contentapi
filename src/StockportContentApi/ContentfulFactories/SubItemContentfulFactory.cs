@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class SubItemContentfulFactory : IContentfulFactory<IContentfulSubItem, SubItem>
+    public class SubItemContentfulFactory : IContentfulFactory<ContentfulSubItem, SubItem>
     {
 
         private readonly DateComparer _dateComparer;
@@ -17,7 +16,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
         }
 
-        public SubItem ToModel(IContentfulSubItem entry)
+        public SubItem ToModel(ContentfulSubItem entry)
         {
             var type = entry.Sys.ContentType.SystemProperties.Id == "startPage" 
                 ? "start-page" 

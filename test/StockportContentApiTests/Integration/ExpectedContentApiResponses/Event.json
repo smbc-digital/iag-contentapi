@@ -1,6 +1,6 @@
 ﻿{
   "title": "title",
-  "slug": "event_item",
+  "slug": "event1",
   "teaser": "teaser",
   "imageUrl": "image-url.jpg",
   "thumbnailImageUrl": "image-url.jpg?h=250",
@@ -8,7 +8,7 @@
   "fee": "fee",
   "location": "location",
   "submittedBy": "submittedBy",
-  "eventDate": "2016-12-30T00:00:00Z",
+  "eventDate": "9999-09-09T00:00:00Z",
   "startTime": "10:00",
   "endTime": "17:00",
   "breadcrumbs": [

@@ -1,5 +1,4 @@
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -8,13 +7,13 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     {
-        private readonly IContentfulFactory<IContentfulSubItem, SubItem> _subItemFactory;
+        private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subItemFactory;
         private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
 
-        public TopicContentfulFactory(IContentfulFactory<IContentfulSubItem, SubItem> subItemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulSubItem, SubItem> subItemFactory, IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
@@ -28,10 +27,13 @@ namespace StockportContentApi.ContentfulFactories
             var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                          && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                          .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
             var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
                                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
             var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
                                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+
             var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
@@ -47,7 +49,6 @@ namespace StockportContentApi.ContentfulFactories
 
             var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
-
 
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 

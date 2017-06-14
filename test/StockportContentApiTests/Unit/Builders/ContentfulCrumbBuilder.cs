@@ -10,11 +10,11 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _name = "name";
         private string _contentSystemId = "id";
-        private List<IContentfulSubItem> _subItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("sub-slug").Build()};
-        private List<IContentfulSubItem> _secondaryItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("secondary-slug").Build()};
-        private List<IContentfulSubItem> _tertiaryItems = new List<IContentfulSubItem> {
+        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
             new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()};
 
         
@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulCrumbBuilder SubItems(List<IContentfulSubItem> subItems)
+        public ContentfulCrumbBuilder SubItems(List<ContentfulSubItem> subItems)
         {
             _subItems = subItems;
             return this;

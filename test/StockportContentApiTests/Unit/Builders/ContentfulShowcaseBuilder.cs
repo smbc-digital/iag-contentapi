@@ -12,12 +12,16 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<IContentfulSubItem> _featuredItems { get; set; } = new List<IContentfulSubItem>
+        private List<ContentfulSubItem> _featuredItems { get; set; } = new List<ContentfulSubItem>
         {
             new ContentfulSubItemBuilder().Build()
         };
         private string _eventSubheading { get; set; } = "event-subheading";
-        private string _eventCategory { get; set; } = "event-categpry";
+        private string _eventCategory { get; set; } = "event-category";
+        private string _newsSubheading { get; set; } = "news subheading";
+        private string _newsCategoryTag { get; set; } = "news-category-tag";
+        private string _bodySubheading { get; set; } = "body subheading";
+        private string _body { get; set; } = "body";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb>
@@ -36,10 +40,14 @@ namespace StockportContentApiTests.Builders
                 HeroImage = _heroImage,
                 EventSubheading = _eventSubheading,
                 EventCategory = _eventCategory,
+                NewsSubheading = _newsSubheading,
+                NewsCategoryTag = _newsCategoryTag,
                 FeaturedItems = _featuredItems,
                 Breadcrumbs = _breadcrumbs,
                 Consultations = _consultations,
-                SocialMediaLinks = _socialMediaLinks
+                SocialMediaLinks = _socialMediaLinks,
+                BodySubheading = _bodySubheading,
+                Body = _body
             };
         }
 
@@ -73,7 +81,43 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulShowcaseBuilder FeaturedItems(List<IContentfulSubItem> featuredItems)
+        public ContentfulShowcaseBuilder EventSubheading(string subheading)
+        {
+            _eventSubheading = subheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder EventCategory(string cat)
+        {
+            _eventCategory = cat;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder NewsSubheading(string newSubheading)
+        {
+            _newsSubheading = newSubheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder NewsCategoryTag(string tag)
+        {
+            _newsCategoryTag = tag;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder BodySubheading(string subheading)
+        {
+            _bodySubheading = subheading;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder Body(string body)
+        {
+            _body = body;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder FeaturedItems(List<ContentfulSubItem> featuredItems)
         {
             _featuredItems = featuredItems;
             return this;

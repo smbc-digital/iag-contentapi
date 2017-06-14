@@ -30,7 +30,6 @@ namespace StockportContentApi.Repositories
         private readonly ICacheWrapper _cache;
         private ILogger<EventRepository> _logger;
 
-
         public EventRepository(ContentfulConfig config,
             IHttpClient httpClient,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
@@ -52,18 +51,16 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
-            var entry = entries.FirstOrDefault();
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
 
-            var eventItem = entry == null 
-                            ? null 
-                            : _contentfulFactory.ToModel(entry);
+            var events = GetAllEventsAndTheirReccurrences(entries);
+
+            var eventItem = events.Where(e => e.Slug == slug).FirstOrDefault();
 
             eventItem = GetEventFromItsOccurrences(date, eventItem);
 
             return eventItem == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'") 
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
                 : HttpResponse.Successful(eventItem);
         }
 
@@ -78,8 +75,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
             var events =
@@ -99,7 +96,6 @@ namespace StockportContentApi.Repositories
 
             if (limit > 0) events = events.Take(limit).ToList();
            
-
             var eventCategories = await GetCategories();
 
             var eventCalender = new EventCalender();
@@ -108,7 +104,44 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
-        private IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
+        public async Task<List<Event>> GetEventsByCategory(string category)
+        {
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+
+            var events = 
+                    GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
+                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+
+            return GetNextOccurenceOfEvents(events);
+        }
+
+        private List<Event> GetNextOccurenceOfEvents(List<Event> events)
+        {
+            var result = new List<Event>();
+            foreach (var item in events)
+            {
+                if (!result.Any(i => i.Slug == item.Slug))
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<IList<ContentfulEvent>> GetAllEvents()
+        {
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var entries = await _client.GetEntriesAsync(builder);
+            return entries.ToList();
+        }
+
+        public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
         {
             var entriesList = new List<Event>();
             foreach (var entry in entries)
@@ -117,6 +150,7 @@ namespace StockportContentApi.Repositories
                 entriesList.Add(eventItem);
                 entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
             }
+
             return entriesList;
         }
 
@@ -127,42 +161,32 @@ namespace StockportContentApi.Repositories
                 : _dateComparer.EventDateIsBetweenTodayAndLater(events.EventDate);
         }
 
-     public async Task<List<Event>> GetLinkedEvents<T>(string slug)
+        public async Task<List<Event>> GetLinkedEvents<T>(string slug)
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", TypeHelper.ContentfulTypeFor<T>()).FieldEquals("fields.group.fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
 
-            var events = entries
-                    .Select(e => _contentfulFactory.ToModel(e))
+            var events = GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => e.Group.Slug == slug)
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
 
-            return events;
+            return GetNextOccurenceOfEvents(events);
         }
 
         public async Task<List<string>> GetCategories()
         {
-            var cacheKey = "eventCategories";
-            object cacheEntry = new List<string>();
-
-            if (!_cache.TryGetValue(cacheKey, out cacheEntry))
-            {
-                var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
-                var contentfulData = contentfulResponse.Items;
-                cacheEntry = _eventCategoriesFactory.Build(contentfulData);
-
-                _logger.LogInformation("Made a call to Contentful to get event categories");
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Short);
-                
-                _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
-            }
-            
-            return cacheEntry as List<string>;
+            return await _cache.GetFromCacheOrDirectly("event-categories", GetCategoriesDirect);
         }
 
+        private async Task<List<string>> GetCategoriesDirect()
+        {
+            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
+            var contentfulData = contentfulResponse.Items;
+            var result = _eventCategoriesFactory.Build(contentfulData);
+            return result;
+        }
     }
 }

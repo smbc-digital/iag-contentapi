@@ -15,9 +15,9 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _image = new Asset { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<IContentfulSubItem> _subItems = new List<IContentfulSubItem>();
-        private List<IContentfulSubItem> _secondaryItems = new List<IContentfulSubItem>();
-        private List<IContentfulSubItem> _tertiaryItems = new List<IContentfulSubItem>();
+        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem>();
+        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem>();
+        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem>();
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";
 
@@ -62,19 +62,19 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulSubItemBuilder SubItems(List<IContentfulSubItem> subItems)
+        public ContentfulSubItemBuilder SubItems(List<ContentfulSubItem> subItems)
         {
             _subItems = subItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder SecondaryItems(List<IContentfulSubItem> secondaryItems)
+        public ContentfulSubItemBuilder SecondaryItems(List<ContentfulSubItem> secondaryItems)
         {
             _secondaryItems = secondaryItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder TertiaryItems(List<IContentfulSubItem> tertiaryItems)
+        public ContentfulSubItemBuilder TertiaryItems(List<ContentfulSubItem> tertiaryItems)
         {
             _tertiaryItems = tertiaryItems;
             return this;

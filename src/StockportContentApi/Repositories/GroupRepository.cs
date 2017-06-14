@@ -121,23 +121,16 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(result);
         }
 
-        private async Task<List<GroupCategory>> GetGroupCategories()
+        public async Task<List<GroupCategory>> GetGroupCategories()
         {
-            var cacheKey = "groupCategories";
-            object cacheEntry = new List<GroupCategory>();
+            return await _cache.GetFromCacheOrDirectly("group-categories", GetGroupCategoriesDirect);
+        }
 
-            if (!_cache.TryGetValue(cacheKey, out cacheEntry))
-            {
-                var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
-                var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
-                cacheEntry = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(Cache.Short);
-
-                _cache.Set(cacheKey, cacheEntry, cacheEntryOptions);
-            }
-
-            return cacheEntry as List<GroupCategory>;
+        private async Task<List<GroupCategory>> GetGroupCategoriesDirect()
+        {
+            var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+            var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
+            return _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
         }
     }
 }

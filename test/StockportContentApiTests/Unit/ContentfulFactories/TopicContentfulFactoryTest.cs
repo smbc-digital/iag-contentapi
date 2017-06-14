@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulTopic _contentfulTopic;
         private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
-        private readonly Mock<IContentfulFactory<IContentfulSubItem, SubItem>> _subItemFactory;
+        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _subItemFactory;
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
@@ -27,7 +27,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             _contentfulTopic = new ContentfulTopicBuilder().Build();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
-            _subItemFactory = new Mock<IContentfulFactory<IContentfulSubItem, SubItem>>();
+            _subItemFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));

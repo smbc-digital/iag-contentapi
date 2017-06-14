@@ -8,11 +8,11 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle, Topic>
     {
-        private readonly IContentfulFactory<IContentfulSubItem, SubItem> _subItemFactory;
+        private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subItemFactory;
         private readonly DateComparer _dateComparer;
 
         public ParentTopicContentfulFactory(
-            IContentfulFactory<IContentfulSubItem, SubItem> subItemFactory, 
+            IContentfulFactory<ContentfulSubItem, SubItem> subItemFactory, 
             ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
@@ -47,7 +47,7 @@ namespace StockportContentApi.ContentfulFactories
             return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems);
         }
 
-        private IContentfulSubItem CheckCurrentArticle(IContentfulSubItem item)
+        private ContentfulSubItem CheckCurrentArticle(ContentfulSubItem item)
         {
             if (item.Sys.Id != _entry.Sys.Id) return item;
 
