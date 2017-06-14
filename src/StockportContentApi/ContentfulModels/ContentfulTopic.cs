@@ -26,6 +26,8 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public bool EmailAlerts { get; set; } = false;
         public string EmailAlertsTopicId { get; set; } = string.Empty;
+        public string ExpandingLinkTitle { get; set; } = string.Empty;
+        public List<Entry<ContentfulExpandingLinkBox>> ExpandingLinkBoxes { get; set; } = new List<Entry<ContentfulExpandingLinkBox>>();
         public Entry<ContentfulEventBanner> EventBanner { get; set; } = new Entry<ContentfulEventBanner>
         {
             Fields = new ContentfulEventBanner(),

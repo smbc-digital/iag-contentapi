@@ -89,6 +89,7 @@ namespace StockportContentApi
             services.AddSingleton<ICacheWrapper>(p => new CacheWrapper(p.GetService<IMemoryCache>()));
 
             services.AddSingleton<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>()));
 
             services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
@@ -117,6 +118,7 @@ namespace StockportContentApi
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
                                                                                                               p.GetService<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(),
+                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>(p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(), 

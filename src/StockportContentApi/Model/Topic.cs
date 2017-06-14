@@ -22,6 +22,8 @@ namespace StockportContentApi.Model
         public bool EmailAlerts { get; }
         public string EmailAlertsTopicId { get; }
         public EventBanner EventBanner { get; }
+        public string ExpandingLinkTitle { get; }
+        public IEnumerable<ExpandingLinkBox> ExpandingLinkBoxes { get; }
 
         public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
             IEnumerable<SubItem> tertiaryItems)
@@ -33,10 +35,10 @@ namespace StockportContentApi.Model
             TertiaryItems = tertiaryItems;
         }
 
-        public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage, 
-            string image,IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
-            IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, 
-            bool emailAlerts, string emailAlertsTopicId, EventBanner eventBanner)
+        public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage,
+            string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
+            IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, 
+            string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null)
         {
             Slug = slug;
             Name = name;
@@ -55,6 +57,8 @@ namespace StockportContentApi.Model
             EmailAlerts = emailAlerts;
             EmailAlertsTopicId = emailAlertsTopicId;
             EventBanner = eventBanner;
+            ExpandingLinkTitle = expandingLinkTitle;
+            ExpandingLinkBoxes = expandingLinkBoxes;
         }
     }
 
@@ -77,6 +81,8 @@ namespace StockportContentApi.Model
             DateTime.MinValue,
             false,
             string.Empty,
-            new NullEventBanner()) { }
+            new NullEventBanner(),
+            string.Empty,
+            new List<ExpandingLinkBox>()) { }
     }
 }

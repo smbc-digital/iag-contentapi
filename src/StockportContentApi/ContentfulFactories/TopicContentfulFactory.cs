@@ -13,14 +13,16 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Entry<ContentfulAlert>, Alert> _alertFactory;
         private readonly IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox> _expandingLinkBoxFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subItemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner> eventBannerFactory, IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
+            _expandingLinkBoxFactory = expandingLinkBoxFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -48,10 +50,13 @@ namespace StockportContentApi.ContentfulFactories
             var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.SystemProperties)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
+            var expandingLinkBoxes =
+                entry.ExpandingLinkBoxes.Where(e => ContentfulHelpers.EntryIsNotALink(e.SystemProperties))
+                    .Select(e => _expandingLinkBoxFactory.ToModel(e)).ToList();
 
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes);
         }
     }
 }
