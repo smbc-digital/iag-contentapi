@@ -16,8 +16,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class TopicContentfulFactoryTest
     {
         private readonly ContentfulTopic _contentfulTopic;
-        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
-        private readonly Mock<IContentfulFactory<ContentfulSubItem, SubItem>> _subItemFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
@@ -26,8 +26,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public TopicContentfulFactoryTest()
         {
             _contentfulTopic = new ContentfulTopicBuilder().Build();
-            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
-            _subItemFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+            _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
@@ -97,7 +97,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             topic.SubItems.Count().Should().Be(0);
             topic.SecondaryItems.Count().Should().Be(0);
             topic.TertiaryItems.Count().Should().Be(0);
-            _subItemFactory.Verify(o => o.ToModel(It.IsAny<ContentfulSubItem>()), Times.Never);
+            _subItemFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
             topic.BackgroundImage.Should().BeEmpty();
         }
 

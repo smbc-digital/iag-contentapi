@@ -5,13 +5,13 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
 {
-    public class ContentfulSubItemTest
+    public class ContentfulReferenceTest
     {
         [Fact]
         public void ShouldSetDefaultsOnModel()
         {
-            var actual = new ContentfulSubItem();
-            var expected = new ContentfulSubItem
+            var actual = new ContentfulReference();
+            var expected = new ContentfulReference
             {
                Slug = string.Empty,
                Title = string.Empty,

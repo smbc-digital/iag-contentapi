@@ -1,11 +1,8 @@
-﻿using Contentful.Core.Configuration;
-using Contentful.Core.Models;
-using Newtonsoft.Json;
-using System;
+﻿using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulSocialMediaLink
+    public class ContentfulSocialMediaLink : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;

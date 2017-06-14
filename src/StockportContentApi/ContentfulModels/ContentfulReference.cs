@@ -4,7 +4,10 @@ using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulSubItem
+    /// <summary>
+    /// Contentful reference base class, used for anything that is generically referenced
+    /// </summary>
+    public class ContentfulReference : IContentfulModel
     {
         public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
@@ -14,9 +17,9 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        public List<ContentfulSubItem> SubItems { get; set; }
-        public List<ContentfulSubItem> SecondaryItems { get; set; }
-        public List<ContentfulSubItem> TertiaryItems { get; set; }
+        public List<ContentfulReference> SubItems { get; set; } = new List<ContentfulReference>();
+        public List<ContentfulReference> SecondaryItems { get; set; } = new List<ContentfulReference>();
+        public List<ContentfulReference> TertiaryItems { get; set; } = new List<ContentfulReference>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

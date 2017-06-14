@@ -10,7 +10,7 @@ namespace StockportContentApi.ContentfulFactories
     public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Article>
     {
         private readonly IContentfulFactory<ContentfulSection, Section> _sectionFactory;
-        private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<ContentfulArticle, Topic> _parentTopicFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
@@ -19,7 +19,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
-            IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
             IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
             IContentfulFactory<Asset, Document> documentFactory,

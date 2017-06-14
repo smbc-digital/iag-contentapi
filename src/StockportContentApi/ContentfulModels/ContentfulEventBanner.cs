@@ -1,9 +1,8 @@
-﻿
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulEventBanner
+    public class ContentfulEventBanner : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;

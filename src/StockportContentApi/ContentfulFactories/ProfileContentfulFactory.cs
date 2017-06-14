@@ -8,9 +8,9 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Profile>
     {
-        private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
 
-        public ProfileContentfulFactory(IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory)
+        public ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
         {
             _crumbFactory = crumbFactory;
         }

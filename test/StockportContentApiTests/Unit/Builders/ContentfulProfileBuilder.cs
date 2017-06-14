@@ -15,8 +15,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _type = "type";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb>
-        { new ContentfulCrumbBuilder().Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+        { new ContentfulReferenceBuilder().Build() };
         private SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }

@@ -19,7 +19,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly ContentfulArticle _contentfulArticle;
         private readonly Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
-        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
         private readonly ArticleContentfulFactory _articleFactory;
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             _videoRepository = new Mock<IVideoRepository>();
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
-            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
@@ -124,7 +124,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulArticle.Breadcrumbs.First().Sys.Type = "Link";
             _contentfulArticle.Alerts.First().Sys.Type = "Link";
             _contentfulArticle.Profiles.First().Sys.Type = "Link";
-            _contentfulArticle.ParentTopic.Sys.Type = "Link";
             _contentfulArticle.Documents.First().SystemProperties.Type = "Link";
             _contentfulArticle.LiveChatText.Sys.Type = "Link";
 
@@ -136,19 +135,19 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _sectionFactory.Verify(o => o.ToModel(It.IsAny<ContentfulSection>()), Times.Never);
 
             article.Breadcrumbs.Count().Should().Be(0);
-            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulCrumb>()), Times.Never);
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
 
             article.Alerts.Count().Should().Be(0);
-            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulCrumb>()), Times.Never);
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
 
             article.Profiles.Count().Should().Be(0);
-            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulCrumb>()), Times.Never);
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
             article.LiveChat.ShouldBeEquivalentTo(new NullLiveChat());
 
             article.ParentTopic.ShouldBeEquivalentTo(new NullTopic());
 
             article.Documents.Count.Should().Be(0);
-            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulCrumb>()), Times.Never);
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
         }
 
         [Fact]

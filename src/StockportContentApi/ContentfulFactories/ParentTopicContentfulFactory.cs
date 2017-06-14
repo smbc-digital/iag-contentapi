@@ -8,11 +8,11 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle, Topic>
     {
-        private readonly IContentfulFactory<ContentfulSubItem, SubItem> _subItemFactory;
+        private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
         private readonly DateComparer _dateComparer;
 
         public ParentTopicContentfulFactory(
-            IContentfulFactory<ContentfulSubItem, SubItem> subItemFactory, 
+            IContentfulFactory<ContentfulReference, SubItem> subItemFactory, 
             ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
@@ -47,12 +47,12 @@ namespace StockportContentApi.ContentfulFactories
             return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems);
         }
 
-        private ContentfulSubItem CheckCurrentArticle(ContentfulSubItem item)
+        private ContentfulReference CheckCurrentArticle(ContentfulReference item)
         {
             if (item.Sys.Id != _entry.Sys.Id) return item;
 
             // the link is to the current article
-            item = new ContentfulSubItem
+            return new ContentfulReference
             {
                 Icon = _entry.Icon,
                 Title = _entry.Title,
@@ -63,9 +63,6 @@ namespace StockportContentApi.ContentfulFactories
                 Teaser = _entry.Teaser,
                 Sys = {ContentType = new ContentType() {SystemProperties = new SystemProperties() {Id = "article"}}}
             };
-
-
-            return item;
         }
     }
 }

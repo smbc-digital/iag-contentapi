@@ -10,9 +10,9 @@ namespace StockportContentApi.ContentfulFactories
     public class PaymentContentfulFactory : IContentfulFactory<ContentfulPayment, Payment>
     {
 
-        private readonly IContentfulFactory<ContentfulCrumb, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
 
-        public PaymentContentfulFactory(IContentfulFactory<ContentfulCrumb, Crumb> crumbFactory)
+        public PaymentContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
         {
             _crumbFactory = crumbFactory;
         }

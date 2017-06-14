@@ -28,7 +28,7 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         private string _bookingInformation = "booking information";
         private bool _featured = false;
-        public ContentfulEventSys _sys = new ContentfulEventSys();
+        public SystemProperties _sys = new SystemProperties();
         private List<string> _tags = new List<string>{"tag 1", "tag 2"};
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};

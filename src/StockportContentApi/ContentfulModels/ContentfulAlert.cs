@@ -1,11 +1,9 @@
 ﻿using System;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulAlert
+    public class ContentfulAlert : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string SubHeading { get; set; } = string.Empty;

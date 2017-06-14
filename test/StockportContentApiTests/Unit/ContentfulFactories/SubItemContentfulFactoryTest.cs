@@ -25,36 +25,36 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ShouldCreateASubItemFromAContentfulSubItem()
+        public void ShouldCreateASubItemFromAContentfulReference()
         {
-            var contentfulSubItem =
-                new ContentfulSubItem
+            var ContentfulReference =
+                new ContentfulReference
                 {
                     Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
                 };
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
-            subItem.Slug.Should().Be(contentfulSubItem.Slug);
-            subItem.Title.Should().Be(contentfulSubItem.Title);
-            subItem.Icon.Should().Be(contentfulSubItem.Icon);
-            subItem.Teaser.Should().Be(contentfulSubItem.Teaser);
-            subItem.SunriseDate.Should().Be(contentfulSubItem.SunriseDate);
-            subItem.SunsetDate.Should().Be(contentfulSubItem.SunsetDate);
-            subItem.Type.Should().Be(contentfulSubItem.Sys.ContentType.SystemProperties.Id);
+            subItem.Slug.Should().Be(ContentfulReference.Slug);
+            subItem.Title.Should().Be(ContentfulReference.Title);
+            subItem.Icon.Should().Be(ContentfulReference.Icon);
+            subItem.Teaser.Should().Be(ContentfulReference.Teaser);
+            subItem.SunriseDate.Should().Be(ContentfulReference.SunriseDate);
+            subItem.SunsetDate.Should().Be(ContentfulReference.SunsetDate);
+            subItem.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
         }
 
         // TODO: remove start page inconsistency
         [Fact]
         public void ShouldSetStartPageToADifferentIdThanProvided()
         {
-            var contentfulSubItem =
-                new ContentfulSubItem
+            var ContentfulReference =
+                new ContentfulReference
                 {
                     Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
                 };
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
             subItem.Type.Should().Be("start-page");
         }
@@ -62,22 +62,22 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateSubItemWithNameForTitleWhenNoTitleProvided()
         {
-            var contentfulSubItem =
-                new ContentfulSubItem
+            var ContentfulReference =
+                new ContentfulReference
                 {
                     Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
                 };
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
-            subItem.Title.Should().Be(contentfulSubItem.Name);
+            subItem.Title.Should().Be(ContentfulReference.Name);
 
         }
 
         [Fact]
         public void ShouldCreateSubItemWithoutSubItems()
         {
-            var contentfulSubItem = new ContentfulSubItemBuilder()
+            var ContentfulReference = new ContentfulReferenceBuilder()
                 .Name("custom name")
                 .Title(string.Empty)
                 .SubItems(null)
@@ -86,7 +86,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .SystemContentTypeId("topic")
                 .Build();
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
             subItem.Should().NotBeNull();
             subItem.Should().BeOfType<SubItem>();
@@ -97,10 +97,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateSubItemWithSubItems()
         {
-            var contentfulSubItem = new ContentfulSubItemBuilder()
-                .SubItems(new List<ContentfulSubItem>()
+            var ContentfulReference = new ContentfulReferenceBuilder()
+                .SubItems(new List<ContentfulReference>()
                 {
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -109,7 +109,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                 ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
                     },
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -119,9 +119,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                             }
                     }
                 })
-                .TertiaryItems(new List<ContentfulSubItem>()
+                .TertiaryItems(new List<ContentfulReference>()
                 {
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -130,7 +130,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                 ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
                     },
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -140,9 +140,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                             }
                     }
                 })
-                .SecondaryItems(new List<ContentfulSubItem>()
+                .SecondaryItems(new List<ContentfulReference>()
                 {
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -151,7 +151,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                 ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
                     },
-                    new ContentfulSubItem()
+                    new ContentfulReference()
                     {
                         Sys =
                             new SystemProperties()
@@ -163,7 +163,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 })
                 .Build();
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
             subItem.SubItems.Should().HaveCount(6);
         }

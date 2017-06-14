@@ -12,9 +12,9 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<ContentfulSubItem> _featuredItems { get; set; } = new List<ContentfulSubItem>
+        private List<ContentfulReference> _featuredItems { get; set; } = new List<ContentfulReference>
         {
-            new ContentfulSubItemBuilder().Build()
+            new ContentfulReferenceBuilder().Build()
         };
         private string _eventSubheading { get; set; } = "event-subheading";
         private string _eventCategory { get; set; } = "event-category";
@@ -24,9 +24,9 @@ namespace StockportContentApiTests.Builders
         private string _body { get; set; } = "body";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
-        private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb>
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         {
-          new ContentfulCrumbBuilder().Build()
+          new ContentfulReferenceBuilder().Build()
         };
         
         public ContentfulShowcase Build()
@@ -117,13 +117,13 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulShowcaseBuilder FeaturedItems(List<ContentfulSubItem> featuredItems)
+        public ContentfulShowcaseBuilder FeaturedItems(List<ContentfulReference> featuredItems)
         {
             _featuredItems = featuredItems;
             return this;
         }
 
-        public ContentfulShowcaseBuilder Breadcrumbs(List<ContentfulCrumb> breadcrumbs)
+        public ContentfulShowcaseBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
             return this;

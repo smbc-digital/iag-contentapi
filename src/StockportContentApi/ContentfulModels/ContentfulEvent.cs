@@ -5,7 +5,7 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulEvent
+    public class ContentfulEvent : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
@@ -26,14 +26,9 @@ namespace StockportContentApi.ContentfulModels
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public string BookingInformation { get; set; } = string.Empty;
         public bool Featured { get; set; } = false;
-        public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
         public List<string> Tags { get; set; } = new List<string>();
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public ContentfulGroup  Group { get; set; } = new ContentfulGroup();
-    }
-
-    public class ContentfulEventSys
-    {
-        public DateTime UpdatedAt { get; set; } = DateTime.MinValue.ToUniversalTime();
     }
 }

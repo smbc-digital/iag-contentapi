@@ -13,13 +13,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class ProfileContentfulFactoryTest
     {
         private readonly ContentfulProfile _contentfulProfile;
-        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly ProfileContentfulFactory _profileContentfulFactory;
 
         public ProfileContentfulFactoryTest()
         {
             _contentfulProfile = new ContentfulProfileBuilder().Build();
-            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object);
         }
 
@@ -48,7 +48,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
-            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulCrumb>()), Times.Never);
+            _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
             profile.Breadcrumbs.Count().Should().Be(0);
             profile.BackgroundImage.Should().BeEmpty();
             profile.Image.Should().BeEmpty();

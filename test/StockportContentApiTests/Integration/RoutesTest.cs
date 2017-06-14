@@ -78,7 +78,7 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulTopic> {
-                                    new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulCrumb> { new ContentfulCrumbBuilder().ContentTypeSystemId("id").Build()}).Build()
+                                    new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("id").Build()}).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() ==
@@ -90,19 +90,19 @@ namespace StockportContentApiTests.Integration
                                It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "test-article").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> {
-                                    new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulCrumb> { new ContentfulCrumbBuilder().ContentTypeSystemId("topic").Build()}).Slug("test-article").Build()
+                                    new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Slug("test-article").Build()
                                });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "about-us").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> {
-                                    new ContentfulArticleBuilder().Slug("about-us").WithOutSection().Breadcrumbs(new List<ContentfulCrumb> { new ContentfulCrumbBuilder().ContentTypeSystemId("topic").Build()}).Build()
+                                    new ContentfulArticleBuilder().Slug("about-us").WithOutSection().Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "test-me").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulArticle> {
-                                    new ContentfulArticleBuilder().Slug("test-me").Breadcrumbs(new List<ContentfulCrumb> { new ContentfulCrumbBuilder().ContentTypeSystemId("topic").Build()}).Build()
+                                    new ContentfulArticleBuilder().Slug("test-me").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Build()
                                });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                     It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),

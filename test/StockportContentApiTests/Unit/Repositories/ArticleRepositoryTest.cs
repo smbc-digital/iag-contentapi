@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
-        private readonly Mock<IContentfulFactory<ContentfulCrumb, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
@@ -49,7 +49,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider = new Mock<ITimeProvider>();
 
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
-            _crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();

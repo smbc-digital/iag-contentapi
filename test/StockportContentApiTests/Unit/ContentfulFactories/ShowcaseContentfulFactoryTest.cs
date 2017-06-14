@@ -29,15 +29,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
                 .Teaser("showcase teaser")
                 .Subheading("subheading")
-                .FeaturedItems(new List<ContentfulSubItem>() {new ContentfulSubItem() { Sys = new SystemProperties() {Type = "Entry"} } })
+                .FeaturedItems(new List<ContentfulReference>() {new ContentfulReference() { Sys = new SystemProperties() {Type = "Entry"} } })
                 .Build();
 
-            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
-            crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCrumb>())).Returns(crumb);
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+            crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
             var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
             consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://www.stockport.gov.uk/link"));
@@ -69,13 +69,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithAnEmptyFeaturedItems()
         {
-            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(new List<ContentfulSubItem>()).Build();
+            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(new List<ContentfulReference>()).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
             var timeprovider = new Mock<ITimeProvider>();
 
@@ -98,7 +98,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithoutExpiredSubItems()
         {
-            var subItemThatShouldDisplay = new ContentfulSubItem()
+            var subItemThatShouldDisplay = new ContentfulReference()
             {
 
                 Title = "Sub1",
@@ -108,7 +108,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             };
 
-            var subItemThatShouldHaveExpired = new ContentfulSubItem()
+            var subItemThatShouldHaveExpired = new ContentfulReference()
             {
                 Title = "Sub1",
                 SunriseDate = new DateTime(2016, 12, 30),
@@ -116,15 +116,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 Sys = new SystemProperties() { Type = "Entry" }
             };
 
-            var subItems = new List<ContentfulSubItem> {subItemThatShouldDisplay, subItemThatShouldHaveExpired};
+            var subItems = new List<ContentfulReference> {subItemThatShouldDisplay, subItemThatShouldHaveExpired};
 
             var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
             var timeprovider = new Mock<ITimeProvider>();
 
@@ -147,7 +147,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAShowcaseWithoutSubItemsThatHaveNotArisen()
         {
-            var subItemThatShouldNotYetDisplay = new ContentfulSubItem()
+            var subItemThatShouldNotYetDisplay = new ContentfulReference()
             {
                 Title = "Sub1",
                 SunriseDate = new DateTime(2018, 12, 30),
@@ -155,7 +155,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 Sys = new SystemProperties() {Type = "Entry"}
             };
 
-            var subItemThatShouldDisplay = new ContentfulSubItem()
+            var subItemThatShouldDisplay = new ContentfulReference()
             {
                 Title = "Sub1",
                 SunriseDate = new DateTime(2016, 12, 30),
@@ -163,17 +163,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 Sys = new SystemProperties() { Type = "Entry" }
             };
 
-            var subItems = new List<ContentfulSubItem>();
+            var subItems = new List<ContentfulReference>();
             subItems.Add(subItemThatShouldNotYetDisplay);
             subItems.Add(subItemThatShouldDisplay);
 
             var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
 
-            var topicFactory = new Mock<IContentfulFactory<ContentfulSubItem, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSubItem>()))
+            var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
-            var crumbFactory = new Mock<IContentfulFactory<ContentfulCrumb, Crumb>>();
+            var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
             var timeprovider = new Mock<ITimeProvider>();
 

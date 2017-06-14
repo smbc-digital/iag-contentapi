@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
-using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulSection
+    public class ContentfulSection : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
@@ -17,6 +14,6 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
-        public SystemProperties Sys { get; set; }
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

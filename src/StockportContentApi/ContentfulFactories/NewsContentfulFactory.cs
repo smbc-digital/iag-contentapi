@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
@@ -25,7 +26,7 @@ namespace StockportContentApi.ContentfulFactories
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
             return new News(entry.Title, entry.Slug, entry.Teaser, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
-                _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, entry.Breadcrumbs, 
+                _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, new List<Crumb> { new Crumb("News", string.Empty, "news") }, 
                 entry.Alerts, entry.Tags, documents, entry.Categories);
         }
     }

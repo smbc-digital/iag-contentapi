@@ -17,18 +17,18 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
         private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb> {
-            new ContentfulCrumbBuilder().ContentTypeSystemId("topic").Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
         private bool _emailAlerts = false;
         private string _emailAlertsTopicId = "id";
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};
-        private List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
-            new ContentfulSubItemBuilder().Slug("sub-slug").Build() };
-        private List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
-            new ContentfulSubItemBuilder().Slug("secondary-slug").Build() };
-        private List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
-           new ContentfulSubItemBuilder().Slug("tertiary-slug").Build() };
+        private List<ContentfulReference> _subItems = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+        private List<ContentfulReference> _secondaryItems = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
+        private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> {
+           new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
         private ContentfulEventBanner _eventBanner =
            new ContentfulEventBannerBuilder().Build();
         private string _systemId = "id";
@@ -87,7 +87,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulTopicBuilder Breadcrumbs(List<ContentfulCrumb> crumb)
+        public ContentfulTopicBuilder Breadcrumbs(List<ContentfulReference> crumb)
         {
             _breadcrumbs = crumb;
             return this;

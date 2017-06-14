@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
-using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using StockportContentApiTests.Unit.Builders;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -12,7 +9,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulContactUsId _contentfulContactUsId;
         private readonly ContactUsIdContentfulFactory _contactUsIdContentfulFactory;
-        private readonly Mock<IContentfulFactory<ContentfulContactUsId, ContactUsId>> _contentfulContactUsIdFactory;
 
         public ContactUsIdContentfulFactoryTest()
         {

@@ -33,9 +33,9 @@ namespace StockportContentApiTests.Unit.Builders
             }
         };
 
-        private List<ContentfulCrumb> _breadcrumbs = new List<ContentfulCrumb>
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         {
-            new ContentfulCrumbBuilder().Build()
+            new ContentfulReferenceBuilder().Build()
         };
 
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
@@ -74,7 +74,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Icon = _icon,
                 LiveChatText = _liveChat,
                 LiveChatVisible = _liveChatVisible,
-                ParentTopic = _topic,
                 Profiles = _profiles,
                 Slug = _slug,
                 Title = _title,
@@ -105,7 +104,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulArticleBuilder Breadcrumbs(List<ContentfulCrumb> breadcrumbs)
+        public ContentfulArticleBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
             return this;

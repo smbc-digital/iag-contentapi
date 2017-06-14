@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
@@ -8,12 +7,9 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulParentTopicBuilder
     {
         private string _name = "name";       
-        private readonly List<ContentfulSubItem> _subItems = new List<ContentfulSubItem> {
-            new ContentfulSubItemBuilder().Slug("sub-slug").Build() };
-        private readonly List<ContentfulSubItem> _secondaryItems = new List<ContentfulSubItem> {
-            new ContentfulSubItemBuilder().Slug("secondary-slug").Build() };
-        private readonly List<ContentfulSubItem> _tertiaryItems = new List<ContentfulSubItem> {
-            new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()};
+        private readonly List<ContentfulReference> _subItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+        private readonly List<ContentfulReference> _secondaryItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
+        private readonly List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("tertiary-slug").Build()};
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";
 

@@ -12,27 +12,27 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class CrumbContentfulFactoryTest
     {
         [Fact]
-        public void ShouldCreateACrumbFromAContentfulCrumb()
+        public void ShouldCreateACrumbFromAContentfulReference()
         {
-            var contentfulCrumb =
-                new ContentfulCrumbBuilder().Build();                    
+            var ContentfulReference =
+                new ContentfulReferenceBuilder().Build();                    
  
-            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Slug.Should().Be(contentfulCrumb.Slug);
-            crumb.Title.Should().Be(contentfulCrumb.Title);
-            crumb.Type.Should().Be(contentfulCrumb.Sys.ContentType.SystemProperties.Id);
+            crumb.Slug.Should().Be(ContentfulReference.Slug);
+            crumb.Title.Should().Be(ContentfulReference.Title);
+            crumb.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
         }
 
         [Fact]
         public void ShouldCreateACrumbWithNameIfSet()
         {
-            var contentfulCrumb =
-                new ContentfulCrumbBuilder().Name("name").Title(string.Empty).Build();
+            var ContentfulReference =
+                new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
 
-            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Title.Should().Be(contentfulCrumb.Name);
+            crumb.Title.Should().Be(ContentfulReference.Name);
         }
     }
 }

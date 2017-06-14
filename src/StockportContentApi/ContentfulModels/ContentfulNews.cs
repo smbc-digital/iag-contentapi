@@ -7,7 +7,7 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulNews
+    public class ContentfulNews : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
@@ -16,10 +16,10 @@ namespace StockportContentApi.ContentfulModels
         public string Body { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
-        public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("News", string.Empty, "news") };
         public List<string> Tags { get; set; } = new List<string>();
         public List<Alert> Alerts { get; set; } = new List<Alert>();
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public List<string> Categories { get; set; } = new List<string>();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

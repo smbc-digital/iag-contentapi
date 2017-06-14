@@ -3,15 +3,12 @@ using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulShowcase
+    public class ContentfulShowcase : ContentfulReference
     {
-        public string Slug { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public List<ContentfulSubItem> FeaturedItems { get; set; } = new List<ContentfulSubItem>();
+        public List<ContentfulReference> FeaturedItems { get; set; } = new List<ContentfulReference>();
         public Asset HeroImage { get; set; } = new Asset{File = new File {Url = string.Empty}, SystemProperties = new SystemProperties {Type = "Asset"}};
         public string Subheading { get; set; } = string.Empty;
-        public string Teaser { get; set; } = string.Empty;
-        public List<ContentfulCrumb> Breadcrumbs { get; set; } = new List<ContentfulCrumb>();
+        public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
         public string EventSubheading { get; set; } = string.Empty;
         public string EventCategory { get; set; } = string.Empty;
         public string NewsSubheading { get; set; } = string.Empty;

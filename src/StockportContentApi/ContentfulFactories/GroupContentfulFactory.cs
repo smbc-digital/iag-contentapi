@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
@@ -18,7 +17,6 @@ namespace StockportContentApi.ContentfulFactories
 
         public Group ToModel(ContentfulGroup entry)
         {
-
             var imageUrl = entry.Image != null 
                 ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
                     ? entry.Image.File.Url 
@@ -30,7 +28,7 @@ namespace StockportContentApi.ContentfulFactories
                 : new List<GroupCategory>();
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
-                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, entry.Breadcrumbs, entry.MapPosition, entry.Volunteering, entry.GroupAdministrators);  
+                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, entry.GroupAdministrators);  
         }
     }
 }
