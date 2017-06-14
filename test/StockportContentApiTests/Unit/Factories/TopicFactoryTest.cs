@@ -18,13 +18,16 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly Mock<IBuildContentTypesFromReferences<SubItem>> _mockSubitemBuilder;
         private IBuildContentTypesFromReferences<Crumb> _breadcrumbFactory;
         private readonly Mock<IBuildContentTypeFromReference<EventBanner>> _eventBannerFactory;
+        private readonly Mock<IBuildContentTypesFromReferences<ExpandingLinkBox>> _expandingLinkBoxFactory;
 
         private readonly EventBanner _eventBanner = new EventBanner("Title", "teaser", "icon", "link");
+        private readonly ExpandingLinkBox _expandingLinkBox = new ExpandingLinkBox("Title", null);
 
         public TopicFactoryTest()
         {
             _mockSubitemBuilder = new Mock<IBuildContentTypesFromReferences<SubItem>>();
             _eventBannerFactory =  new Mock<IBuildContentTypeFromReference<EventBanner>>();
+            _expandingLinkBoxFactory = new Mock<IBuildContentTypesFromReferences<ExpandingLinkBox>>();
             var mockAlertListBuilder = new Mock<IBuildContentTypesFromReferences<Alert>>();
             mockAlertListBuilder.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
@@ -38,8 +41,12 @@ namespace StockportContentApiTests.Unit.Factories
                     o => o.BuildFromReference(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
                 .Returns(_eventBanner);
 
+            _expandingLinkBoxFactory.Setup(
+                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
+               .Returns(new List<ExpandingLinkBox> {_expandingLinkBox});
+
             _breadcrumbFactory = new BreadcrumbFactory();
-            _topicBuilder = new TopicFactory(mockAlertListBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object);
+            _topicBuilder = new TopicFactory(mockAlertListBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object);
         }
 
         [Fact]
@@ -91,7 +98,7 @@ namespace StockportContentApiTests.Unit.Factories
             mockListAlertBuilder.Setup(
                 o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(alerts);
-            var topicBuilder = new TopicFactory(mockListAlertBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object);
+            var topicBuilder = new TopicFactory(mockListAlertBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object);
 
             dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Topic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);

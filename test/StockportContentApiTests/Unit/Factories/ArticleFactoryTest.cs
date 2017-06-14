@@ -25,13 +25,14 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory;
         private readonly Mock<IBuildContentTypeFromReference<LiveChat>> _liveChatListFactory;
         private readonly Mock<IBuildContentTypeFromReference<EventBanner>> _eventBannerFactory;
+        private readonly Mock<IBuildContentTypesFromReferences<ExpandingLinkBox>> _expandingLinkBoxFactory;
 
         private readonly List<Document> _documents = new List<Document>() { new Document("Title", 1212, new DateTime(2016, 12, 08), "/thisisaurl", "filename1.pdf"),
                                                                             new Document("Title 2", 3412, new DateTime(2016, 12, 09), "/anotherurl", "filename2.pdf") };
 
         private readonly LiveChat _liveChat = new LiveChat("Title", "Text");
         private List<LiveChat> _liveChats = new List<LiveChat>();
-
+        private readonly ExpandingLinkBox _expandingLinkBox = new ExpandingLinkBox("Title", null);
         private readonly EventBanner _eventBanner = new EventBanner("Title", "teaser", "icon", "link");
         
 
@@ -41,12 +42,13 @@ namespace StockportContentApiTests.Unit.Factories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 01));
 
             _eventBannerFactory = new Mock<IBuildContentTypeFromReference<EventBanner>>();
+            _expandingLinkBoxFactory = new Mock<IBuildContentTypesFromReferences<ExpandingLinkBox>>();
 
             _mockTopicBuilder = new Mock<IFactory<Topic>>();
             _mockTopicBuilder.Setup(
               o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
               .Returns(new Topic("main-topic", "Main Topic", "teaser", "summary", "", "", "", new List<SubItem>(), new List<SubItem>(),
-              new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, false, string.Empty, new NullEventBanner()));
+              new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, false, string.Empty, new NullEventBanner(), "expandingLinkTitle", new List<ExpandingLinkBox>()));
 
             _mockAlertListFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
             _mockAlertListFactory.Setup(
@@ -57,6 +59,10 @@ namespace StockportContentApiTests.Unit.Factories
             _mockDocumentListFactory.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(_documents);
+
+            _expandingLinkBoxFactory.Setup(
+                    o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
+              .Returns(new List<ExpandingLinkBox> { _expandingLinkBox });
 
             _liveChatListFactory = new Mock<IBuildContentTypeFromReference<LiveChat>>();
 
@@ -263,7 +269,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void ParentTopicsSubItemsShouldIncludeCurrentArticleAsChild()
         {
             var realTopicFactory = new TopicFactory(_mockAlertListFactory.Object, new SubItemListFactory(new SubItemFactory(), _mockTimeProvider.Object),
-                _breadcrumbFactory, _eventBannerFactory.Object);
+                _breadcrumbFactory, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object);
             var articleFactory = new ArticleFactory(realTopicFactory, _mockAlertListFactory.Object, _breadcrumbFactory, _sectionListFactory, _profileListFactory, _mockDocumentListFactory.Object, _liveChatListFactory.Object);
 
             dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));

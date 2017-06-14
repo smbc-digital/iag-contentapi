@@ -67,7 +67,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },
-                DateTime.MinValue, DateTime.MaxValue, false, "id", new NullEventBanner());
+                DateTime.MinValue, DateTime.MaxValue, false, "id", new NullEventBanner(), "expandingLinkTitle", new List<ExpandingLinkBox>());
             _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulArticle>>()))
                 .Returns(topic);
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");

@@ -13,6 +13,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _summary = "summary";
         private string _teaser = "teaser";
+        private string _expandingLinkTitle = "expandingLinkTitle";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
@@ -31,8 +32,10 @@ namespace StockportContentApiTests.Unit.Builders
             new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()).Build() };
         private Entry<ContentfulEventBanner> _eventBanner =
             new ContentfulEntryBuilder<ContentfulEventBanner>().Fields(new ContentfulEventBannerBuilder().Build()).Build();
+        private List<Entry<ContentfulExpandingLinkBox>> _expandingLinkBox = new List<Entry<ContentfulExpandingLinkBox>> {
+            new ContentfulEntryBuilder<ContentfulExpandingLinkBox>().Fields(new ContentfulExpandingLinkBoxBuilder().Title("title").Build()).Build() };
 
-    public ContentfulTopic Build()
+        public ContentfulTopic Build()
         {
             return new ContentfulTopic
             {
@@ -52,7 +55,9 @@ namespace StockportContentApiTests.Unit.Builders
                 SunsetDate = _sunsetDate,
                 EmailAlerts  = _emailAlerts,
                 EmailAlertsTopicId  = _emailAlertsTopicId,
-                EventBanner = _eventBanner
+                EventBanner = _eventBanner,
+                ExpandingLinkTitle = _expandingLinkTitle,
+                ExpandingLinkBoxes = _expandingLinkBox
             };
         }
 

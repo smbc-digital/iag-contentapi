@@ -17,6 +17,7 @@ namespace StockportContentApiTests.Unit.Factories
     {
         private readonly TopicListFactory _topicListFactory;
         private Mock<ITimeProvider> _mockTimeProvider;
+        private readonly ExpandingLinkBox _expandingLinkBox = new ExpandingLinkBox("Title", null);
 
         public TopicListFactoryTest()
         {
@@ -24,8 +25,9 @@ namespace StockportContentApiTests.Unit.Factories
             var mockSubitemBuilder = new Mock<IBuildContentTypesFromReferences<SubItem>>();
             var mockListAlertBuilder = new Mock<IBuildContentTypesFromReferences<Alert>>();
             var mockEventBannerBuilder = new Mock<IBuildContentTypeFromReference<EventBanner>>();
+            var mockExpandingLinkBoxBuilder = new Mock<IBuildContentTypesFromReferences<ExpandingLinkBox>>();            
 
-            mockListAlertBuilder.Setup(
+        mockListAlertBuilder.Setup(
                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
 
                 .Returns(new List<Alert>());
@@ -37,8 +39,12 @@ namespace StockportContentApiTests.Unit.Factories
                     o => o.BuildFromReference(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
                 .Returns(new EventBanner("title", "teaser", "icon", "link"));
 
+            mockExpandingLinkBoxBuilder.Setup(
+                     o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
+               .Returns(new List<ExpandingLinkBox> { _expandingLinkBox });
+
             var breadcrumbFactory = new BreadcrumbFactory();
-            _topicListFactory = new TopicListFactory(new TopicFactory(mockListAlertBuilder.Object, mockSubitemBuilder.Object, breadcrumbFactory,mockEventBannerBuilder.Object), _mockTimeProvider.Object);
+            _topicListFactory = new TopicListFactory(new TopicFactory(mockListAlertBuilder.Object, mockSubitemBuilder.Object, breadcrumbFactory,mockEventBannerBuilder.Object, mockExpandingLinkBoxBuilder.Object), _mockTimeProvider.Object);
         }
 
 
