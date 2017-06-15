@@ -73,7 +73,7 @@ namespace StockportContentApi.Utils
             {
                 result = await fallbackMethod();
 
-                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(12 * TimeSpan.TicksPerMinute));
+                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
                 var data = JsonConvert.SerializeObject(result);
 
