@@ -8,13 +8,13 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
     {
-        private readonly IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subitemFactory;
-        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
+        private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
+        private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-        private readonly DateComparer _dateComparer;
         
-        public ShowcaseContentfulFactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory, IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -70,12 +70,12 @@ namespace StockportContentApi.ContentfulFactories
                 : "";
 
             var featuredItems =
-                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.SystemProperties)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.Fields.SunriseDate, subItem.Fields.SunsetDate))    
+                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
-                entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
             var consultations =

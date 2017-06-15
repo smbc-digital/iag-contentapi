@@ -109,45 +109,9 @@
     "icon": null,
     "backgroundImage": null,
     "image": null,
-    "subItems": [
-      {
-        "slug": "test-me",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg",
-        "subItems": []
-      }
-    ],
-    "secondaryItems": [
-      {
-        "slug": "test-me",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg",
-        "subItems": []
-      }
-    ],
-    "tertiaryItems": [
-      {
-        "slug": "test-me",
-        "title": "title",
-        "teaser": "teaser",
-        "icon": "icon",
-        "type": "article",
-        "sunriseDate": "2016-01-10T00:00:00Z",
-        "sunsetDate": "2017-01-20T00:00:00Z",
-        "image": "image-url.jpg",
-        "subItems": []
-      }
-    ],
+    "subItems": [],
+    "secondaryItems": [],
+    "tertiaryItems": [],
     "breadcrumbs": null,
     "alerts": null,
     "sunriseDate": "0001-01-01T00:00:00Z",
@@ -172,6 +136,21 @@
   "liveChatVisible": false,
   "liveChat": {
     "title": "title",
-    "text": "text"
+    "text": "text",
+    "sys": {
+      "id": null,
+      "linkType": null,
+      "type": "Entry",
+      "revision": null,
+      "version": null,
+      "createdAt": null,
+      "createdBy": null,
+      "updatedAt": null,
+      "updatedBy": null,
+      "deletedAt": null,
+      "locale": null,
+      "contentType": null,
+      "space": null
+    }
   }
 }

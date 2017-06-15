@@ -1,11 +1,9 @@
 ﻿using System;
-using Contentful.Core.Configuration;
-using Newtonsoft.Json;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class ContentfulAlert
+    public class ContentfulAlert : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string SubHeading { get; set; } = string.Empty;
@@ -13,5 +11,6 @@ namespace StockportContentApi.ContentfulModels
         public string Severity { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

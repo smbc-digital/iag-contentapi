@@ -18,22 +18,27 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
         private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
-            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
         private bool _emailAlerts = false;
         private string _emailAlertsTopicId = "id";
-        private List<Entry<ContentfulAlert>> _alerts = new List<Entry<ContentfulAlert>> {
-            new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().Build()).Build()};
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("secondary-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()).Build() };
-        private Entry<ContentfulEventBanner> _eventBanner =
-            new ContentfulEntryBuilder<ContentfulEventBanner>().Fields(new ContentfulEventBannerBuilder().Build()).Build();
-        private List<Entry<ContentfulExpandingLinkBox>> _expandingLinkBox = new List<Entry<ContentfulExpandingLinkBox>> {
-            new ContentfulEntryBuilder<ContentfulExpandingLinkBox>().Fields(new ContentfulExpandingLinkBoxBuilder().Title("title").Build()).Build() };
+
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
+            new ContentfulAlertBuilder().Build()};
+        private List<ContentfulReference> _subItems = new List<ContentfulReference> {
+           new ContentfulReferenceBuilder().Slug("sub-slug").Build()};
+        private List<ContentfulReference> _secondaryItems = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
+        private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
+        private ContentfulEventBanner _eventBanner =
+           new ContentfulEventBannerBuilder().Build();
+        private List<ContentfulExpandingLinkBox> _expandingLinkBox = new List<ContentfulExpandingLinkBox> {
+            new ContentfulExpandingLinkBoxBuilder().Title("title").Build() };
+        private string _systemId = "id";
+        private string _contentTypeSystemId = "id";
+
+
 
         public ContentfulTopic Build()
         {
@@ -57,7 +62,12 @@ namespace StockportContentApiTests.Unit.Builders
                 EmailAlertsTopicId  = _emailAlertsTopicId,
                 EventBanner = _eventBanner,
                 ExpandingLinkTitle = _expandingLinkTitle,
-                ExpandingLinkBoxes = _expandingLinkBox
+                ExpandingLinkBoxes = _expandingLinkBox,
+                Sys = new SystemProperties()
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                    Id = _systemId
+                }
             };
         }
 
@@ -67,9 +77,27 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulTopicBuilder Alerts(List<Entry<ContentfulAlert>> alerts)
+        public ContentfulTopicBuilder Alerts(List<ContentfulAlert> alerts)
         {
             _alerts = alerts;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SystemContentTypeId(string id)
+        {
+            _contentTypeSystemId = id;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Breadcrumbs(List<ContentfulReference> crumb)
+        {
+            _breadcrumbs = crumb;
             return this;
         }
     }

@@ -35,7 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<ILogger<EventRepository>> _logger;
         private readonly ICacheWrapper _cacheWrapper;
@@ -50,9 +50,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var documentFactory = new DocumentContentfulFactory();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-            _alertFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulAlert>>())).Returns(new Alert("title", "subHeading", "body",
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 
@@ -126,7 +126,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
             eventItem.Alerts.Count.Should().Be(1);
-            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Fields.Title);
+            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Title);
             eventItem.Featured.Should().BeFalse();
         }
 
@@ -642,11 +642,11 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "kersal-rugby";
+            anEvent.Group.Slug = "kersal-rugby";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            anotherEvent.Group.Slug = "kersal-rugby";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            aThirdEvent.Group.Slug = "kersal-rugby";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _contentfulClient.Setup(
@@ -674,11 +674,11 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "zumba-fitness";
+            anEvent.Group.Slug = "zumba-fitness";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            anotherEvent.Group.Slug = "kersal-rugby";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            aThirdEvent.Group.Slug = "kersal-rugby";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _contentfulClient.Setup(
@@ -707,11 +707,11 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "zumba-fitness";
+            anEvent.Group.Slug = "zumba-fitness";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "zumba-fitness";
+            anotherEvent.Group.Slug = "zumba-fitness";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "zumba-fitness";
+            aThirdEvent.Group.Slug = "zumba-fitness";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _contentfulClient.Setup(

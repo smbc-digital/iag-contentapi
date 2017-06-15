@@ -26,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateAGroupFromAContentfulGroup()
         {
             var group = _groupContentfulFactory.ToModel(_contentfulGroup);
-            group.ShouldBeEquivalentTo(_contentfulGroup, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Events));
+            group.ShouldBeEquivalentTo(_contentfulGroup, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Events).Excluding(e => e.Breadcrumbs));
         }
     }
 }

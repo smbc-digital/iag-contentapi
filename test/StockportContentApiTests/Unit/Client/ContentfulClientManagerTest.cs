@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Client
 
             var contenfulClient = manager.GetClient(config);
 
-            contenfulClient.ShouldBeEquivalentTo(new Contentful.Core.ContentfulClient(httpClient, config.AccessKey, config.SpaceKey));
+            contenfulClient.ShouldBeEquivalentTo(new Contentful.Core.ContentfulClient(httpClient, config.AccessKey, config.SpaceKey) { ResolveEntriesSelectively = true });
         }
     }
 }

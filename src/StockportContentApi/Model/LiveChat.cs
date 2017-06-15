@@ -1,13 +1,14 @@
 ﻿using Contentful.Core.Configuration;
+using Contentful.Core.Models;
 using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class LiveChat
     {
         public string Title { get; }
-        public string Text { get; }      
+        public string Text { get; }
+        public SystemProperties Sys { get; set; }
 
         public LiveChat(string title, string text)
         {

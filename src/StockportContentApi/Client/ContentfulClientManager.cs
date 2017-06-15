@@ -18,7 +18,11 @@ namespace StockportContentApi.Client
 
         public Contentful.Core.IContentfulClient GetClient(ContentfulConfig config)
         {
-            return new Contentful.Core.ContentfulClient(_httpClient, config.AccessKey, config.SpaceKey);
+            var client = new Contentful.Core.ContentfulClient(_httpClient, config.AccessKey, config.SpaceKey)
+            {
+                ResolveEntriesSelectively = true
+            };
+            return client;
         }
     }
 }

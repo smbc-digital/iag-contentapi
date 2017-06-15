@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class ContentfulExpandingLinkBox
+    public class ContentfulExpandingLinkBox : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
-        public List<Entry<ContentfulSubItem>> Links { get; set; } = new List<Entry<ContentfulSubItem>> ();
+        public List<ContentfulReference> Links { get; set; } = new List<ContentfulReference> ();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

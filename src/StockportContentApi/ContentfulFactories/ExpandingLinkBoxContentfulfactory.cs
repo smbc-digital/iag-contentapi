@@ -8,19 +8,19 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class ExpandingLinkBoxContentfulfactory : IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox>
+    public class ExpandingLinkBoxContentfulfactory : IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>
     {
-        private IContentfulFactory<Entry<ContentfulSubItem>, SubItem> _subitemFactory;
+        private IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
 
-        public ExpandingLinkBoxContentfulfactory(IContentfulFactory<Entry<ContentfulSubItem>, SubItem> subitemFactory)
+        public ExpandingLinkBoxContentfulfactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory)
         {
             _subitemFactory = subitemFactory;
         }
 
-        public ExpandingLinkBox ToModel(Entry<ContentfulExpandingLinkBox> entry)
+        public ExpandingLinkBox ToModel(ContentfulExpandingLinkBox entry)
         {
-            return new ExpandingLinkBox(entry.Fields.Title,
-                entry.Fields.Links.Select(e => _subitemFactory.ToModel(e)).ToList());
+            return new ExpandingLinkBox(entry.Title,
+                entry.Links.Select(e => _subitemFactory.ToModel(e)).ToList());
         }
     }
 }

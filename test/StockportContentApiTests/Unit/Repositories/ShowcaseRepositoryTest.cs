@@ -30,9 +30,10 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly ShowcaseRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>> _topicFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>> _crumbFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _topicFactory;
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
+
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly ICacheWrapper _cacheWrapper;
 
@@ -45,8 +46,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();
-            _topicFactory = new Mock<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>();
-            _crumbFactory = new Mock<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>();
+            _topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _timeprovider = new Mock<ITimeProvider>();
 
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
@@ -95,8 +96,9 @@ namespace StockportContentApiTests.Unit.Repositories
             _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
-             
-            var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
@@ -114,20 +116,16 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "unit-test-showcase-crumbs";
             var crumb = new Crumb("title", "slug", "type");
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug)
-                .Breadcrumbs(new List<Entry<ContentfulCrumb>>()
-                            { new Entry<ContentfulCrumb>()
-                                {
-                                    Fields = new ContentfulCrumb() {Title = crumb.Title, Slug = crumb.Title},
-                                    SystemProperties = new SystemProperties() {Type = "Entry" }
-                                },
+                .Breadcrumbs(new List<ContentfulReference>()
+                            { new ContentfulReference() {Title = crumb.Title, Slug = crumb.Title, Sys = new SystemProperties() {Type = "Entry" }},
                             })
                 .Build();
 
-            var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
 
-            _crumbFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulCrumb>>())).Returns(crumb);
+            _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
             var events = new List<ContentfulEvent> { rawEvent };

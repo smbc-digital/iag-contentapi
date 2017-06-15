@@ -15,8 +15,12 @@ namespace StockportContentApiTests.Unit.Builders
         private string _type = "type";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
-        { new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+        { new ContentfulReferenceBuilder().Build() };
+        private SystemProperties _sys = new SystemProperties
+        {
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+        };
 
         public ContentfulProfile Build()
         {
@@ -31,7 +35,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Body = _body,
                 Icon = _icon,
                 BackgroundImage = _backgroundImage,
-                Breadcrumbs = _breadcrumbs
+                Breadcrumbs = _breadcrumbs,
+                Sys = _sys
             };
         }
 

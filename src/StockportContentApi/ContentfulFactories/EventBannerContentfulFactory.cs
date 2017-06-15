@@ -4,11 +4,11 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class EventBannerContentfulFactory : IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>
+    public class EventBannerContentfulFactory : IContentfulFactory<ContentfulEventBanner, EventBanner>
     {
-        public EventBanner ToModel(Entry<ContentfulEventBanner> entry)
+        public EventBanner ToModel(ContentfulEventBanner entry)
         {
-            return new EventBanner(entry.Fields.Title, entry.Fields.Teaser, entry.Fields.Icon, entry.Fields.Link);
+            return new EventBanner(entry.Title, entry.Teaser, entry.Icon, entry.Link);
         }
     }
 }

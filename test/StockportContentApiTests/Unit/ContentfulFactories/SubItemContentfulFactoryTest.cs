@@ -25,37 +25,36 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ShouldCreateASubItemFromAContentfulSubItem()
+        public void ShouldCreateASubItemFromAContentfulReference()
         {
-            var contentfulSubItem = 
-                new Entry<ContentfulSubItem> {
-                    Fields = new ContentfulSubItemBuilder().Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
+            var ContentfulReference =
+                new ContentfulReference
+                {
+                    Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
                 };
- 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
 
-            subItem.Slug.Should().Be(contentfulSubItem.Fields.Slug);
-            subItem.Title.Should().Be(contentfulSubItem.Fields.Title);
-            subItem.Icon.Should().Be(contentfulSubItem.Fields.Icon);
-            subItem.Teaser.Should().Be(contentfulSubItem.Fields.Teaser);
-            subItem.SunriseDate.Should().Be(contentfulSubItem.Fields.SunriseDate);
-            subItem.SunsetDate.Should().Be(contentfulSubItem.Fields.SunsetDate);
-            subItem.Type.Should().Be(contentfulSubItem.SystemProperties.ContentType.SystemProperties.Id);           
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+
+            subItem.Slug.Should().Be(ContentfulReference.Slug);
+            subItem.Title.Should().Be(ContentfulReference.Title);
+            subItem.Icon.Should().Be(ContentfulReference.Icon);
+            subItem.Teaser.Should().Be(ContentfulReference.Teaser);
+            subItem.SunriseDate.Should().Be(ContentfulReference.SunriseDate);
+            subItem.SunsetDate.Should().Be(ContentfulReference.SunsetDate);
+            subItem.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
         }
 
         // TODO: remove start page inconsistency
         [Fact]
         public void ShouldSetStartPageToADifferentIdThanProvided()
         {
-            var contentfulSubItem =
-                new Entry<ContentfulSubItem>
+            var ContentfulReference =
+                new ContentfulReference
                 {
-                    Fields = new ContentfulSubItemBuilder().Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+                    Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
                 };
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
             subItem.Type.Should().Be("start-page");
         }
@@ -63,30 +62,31 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateSubItemWithNameForTitleWhenNoTitleProvided()
         {
-            var contentfulSubItem =
-                new Entry<ContentfulSubItem>
+            var ContentfulReference =
+                new ContentfulReference
                 {
-                    Fields = new ContentfulSubItemBuilder().Title(string.Empty).Name("name").Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+                    Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
                 };
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
-            subItem.Title.Should().Be(contentfulSubItem.Fields.Name);
+            subItem.Title.Should().Be(ContentfulReference.Name);
 
         }
 
         [Fact]
         public void ShouldCreateSubItemWithoutSubItems()
         {
-            var contentfulSubItem =
-                new Entry<ContentfulSubItem>
-                {
-                    Fields = new ContentfulSubItemBuilder().Name("custom name").Title(string.Empty).SubItems(null).TertiaryItems(null).SecondaryItems(null).Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } } }
-                };
+            var ContentfulReference = new ContentfulReferenceBuilder()
+                .Name("custom name")
+                .Title(string.Empty)
+                .SubItems(null)
+                .TertiaryItems(null)
+                .SecondaryItems(null)
+                .SystemContentTypeId("topic")
+                .Build();
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
             subItem.Should().NotBeNull();
             subItem.Should().BeOfType<SubItem>();
@@ -97,54 +97,74 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateSubItemWithSubItems()
         {
-            var contentfulSubItem =
-                new Entry<ContentfulSubItem>
+            var ContentfulReference = new ContentfulReferenceBuilder()
+                .SubItems(new List<ContentfulReference>()
                 {
-                    Fields = new ContentfulSubItemBuilder()
-                        .SubItems(new List<Entry<ContentfulSubItem>>()
-                        {
-                            new Entry<ContentfulSubItem>()
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
                             {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() {Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
-                            },
-                            new Entry<ContentfulSubItem>()
-                            {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() { Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
-                        })
-                        .TertiaryItems(new List<Entry<ContentfulSubItem>>()
-                        {
-                            new Entry<ContentfulSubItem>()
+                    },
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
                             {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() {Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
-                            },
-                            new Entry<ContentfulSubItem>()
-                            {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() { Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
-                        })
-                        .SecondaryItems(new List<Entry<ContentfulSubItem>>()
-                        {
-                            new Entry<ContentfulSubItem>()
+                    }
+                })
+                .TertiaryItems(new List<ContentfulReference>()
+                {
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
                             {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() {Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
-                            },
-                            new Entry<ContentfulSubItem>()
-                            {
-                                Fields = new ContentfulSubItemBuilder().Build(),
-                                SystemProperties = new SystemProperties() { Type = "Entry", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } }}
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
                             }
-                        })
-                        .Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } } }
-                };
+                    },
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
+                            {
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
+                            }
+                    }
+                })
+                .SecondaryItems(new List<ContentfulReference>()
+                {
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
+                            {
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
+                            }
+                    },
+                    new ContentfulReference()
+                    {
+                        Sys =
+                            new SystemProperties()
+                            {
+                                Type = "Entry",
+                                ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "topic"}}
+                            }
+                    }
+                })
+                .Build();
 
-            var subItem = _subItemContentfulFactory.ToModel(contentfulSubItem);
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+
             subItem.SubItems.Should().HaveCount(6);
         }
     }

@@ -10,6 +10,10 @@ namespace StockportContentApiTests.Unit.Builders
         private string _teaser = "teaser";
         private string _icon = "icon";
         private string _link = "link";
+        private SystemProperties _sys = new SystemProperties
+        {
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+        };
 
         public  ContentfulEventBanner Build()
         {
@@ -18,7 +22,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Title = _title,
                 Teaser = _teaser,
                 Icon = _icon,
-                Link = _link
+                Link = _link,
+                Sys = _sys
             };
         }
 

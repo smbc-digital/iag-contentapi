@@ -17,14 +17,18 @@ namespace StockportContentApi.ContentfulFactories
 
         public Group ToModel(ContentfulGroup entry)
         {
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            var imageUrl = entry.Image != null 
+                ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
+                    ? entry.Image.File.Url 
+                    : string.Empty
+                : string.Empty;
 
             var categoriesReferences = entry.CategoriesReference != null
-                ? entry.CategoriesReference.Where(o => o.Fields != null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory.Fields)).ToList()
+                ? entry.CategoriesReference.Where(o => o != null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory)).ToList()
                 : new List<GroupCategory>();
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
-                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, entry.Breadcrumbs, entry.MapPosition, entry.Volunteering, entry.GroupAdministrators);  
+                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), categoriesReferences, new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, entry.GroupAdministrators);  
         }
     }
 }

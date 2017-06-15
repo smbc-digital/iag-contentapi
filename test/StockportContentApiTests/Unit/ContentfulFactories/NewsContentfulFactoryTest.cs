@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             
             var news = _newsContentfulFactory.ToModel(_contentfulNews);
 
-            news.ShouldBeEquivalentTo(_contentfulNews, o => o.Excluding(e => e.Image).Excluding(e => e.ThumbnailImage).Excluding(e => e.Documents).Excluding(e => e.Body));
+            news.ShouldBeEquivalentTo(_contentfulNews, o => o.Excluding(e => e.Image).Excluding(e => e.ThumbnailImage).Excluding(e => e.Documents).Excluding(e => e.Body).Excluding(e => e.Breadcrumbs));
             news.Body.Should().Be(processedBody);
             news.Image.Should().Be(_contentfulNews.Image.File.Url);
             news.ThumbnailImage.Should().Be(_contentfulNews.Image.File.Url + "?h=250");            

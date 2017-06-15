@@ -3,8 +3,7 @@ using Newtonsoft.Json;
 
 namespace StockportContentApi.Model
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class EventBanner
+   public class EventBanner
     {
         public string Title { get; }
         public string Teaser { get; }

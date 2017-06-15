@@ -63,7 +63,8 @@ namespace StockportContentApi
             services.AddSingleton<IHttpClient>(
                 p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
             services.AddTransient(_ => createConfig);
-            services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
+            services.AddTransient<IHealthcheckService>(
+                p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
 
@@ -84,73 +85,73 @@ namespace StockportContentApi
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<IContentfulFactory<Asset, Document>>(new DocumentContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(new ContactUsIdContentfulFactory());
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(p => new CrumbContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory());
 
             services.AddSingleton<ICacheWrapper>(p => new CacheWrapper(p.GetService<IMemoryCache>()));
 
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>()));
+
+            services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
+
 
             services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory());           
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory());
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(p => new AlertContentfulFactory());
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(p => new EventBannerContentfulFactory());           
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                                                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
                                                                                                                     p.GetService<IVideoRepository>(),
-                                                                                                                    p.GetService<ITimeProvider>()));
+                                                                                                                    p.GetService<ITimeProvider>(),
+                                                                                                                    p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
             services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
                                                                                                                     p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                                                                                                                    p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
+                                                                                                                    p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                                                                                                                     p.GetService<ITimeProvider>()));
-
+            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(p => new EventListContentfulFactory(p.GetService<IContentfulFactory<ContentfulEvent, Event>>()));
-
-            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
-                (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>()));
+                (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
 
-            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(),
-                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
-                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulAlert>, Alert>>(),
-                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulEventBanner>, EventBanner>>(),
-                                                                                                              p.GetService<IContentfulFactory<Entry<ContentfulExpandingLinkBox>, ExpandingLinkBox>>(),
+   services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+                                                                                                              p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
+                                                                                                              p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
+                                                                                                              p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
+                                                                                                              p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
-            services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>(p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>(), 
-                                                                                                            p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(), 
-                                                                                                            p.GetService<ITimeProvider>(),
+            services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
+                (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                                                                                                             p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
-                                                                                                            p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()
-                                                                                                            ));
+                                                                                                            p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
                                                                                                            p.GetService<IContentfulFactory<Asset, Document>>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(p => new GroupCategoryContentfulFactory());
 
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulArticle>, Article>>
+            services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>>
                 (p => new ArticleContentfulFactory(p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
-                                                    p.GetService<IContentfulFactory<Entry<ContentfulCrumb>, Crumb>>(),
+                                                    p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
                                                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-                                                    p.GetService<IContentfulFactory<Entry<ContentfulArticle>, Topic>>(),
+                                                    p.GetService<IContentfulFactory<ContentfulArticle, Topic>>(),
                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
                                                     p.GetService<IVideoRepository>(),
-                                                    p.GetService<ITimeProvider>()));
+                                                    p.GetService<ITimeProvider>(),
+                                                    p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
-            services.AddSingleton<IContentfulFactory<Entry<ContentfulArticle>, Topic>>(
+            services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(
-                    p.GetService<IContentfulFactory<Entry<ContentfulSubItem>, SubItem>>()
+                    p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
                     ,p.GetService<ITimeProvider>())
                     );
 
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
-                p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<Entry<ContentfulArticle>, Article>>(), p.GetService<IVideoRepository>()); });
+                p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IVideoRepository>()); });
 
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
                 p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICacheWrapper>(), p.GetService<ILogger<EventRepository>>()); });
