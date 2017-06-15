@@ -47,7 +47,7 @@ namespace StockportContentApi.Factories
             var emailAlertsTopicId = (string)entry.fields.emailAlertsTopicId ?? string.Empty;
             var eventBanner = _eventBannerFactory.BuildFromReference(fields.eventBanner, contentfulResponse);
             var expandingLinkTitle = (string)fields.expandingLinkTitle ?? string.Empty;
-            var expandingLinkBoxes = _expandingLinkBoxFactory.BuildFromReferences(fields.expandingLinkBoxes,contentfulResponse);
+            var expandingLinkBoxes = _expandingLinkBoxFactory.BuildFromReferences(fields.expandingLinkBoxes, contentfulResponse);
 
             return new Topic(slug, name, teaser, summary, icon, backgroundImage, image, subItems, secondaryItems,
                 tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner, expandingLinkTitle, expandingLinkBoxes);

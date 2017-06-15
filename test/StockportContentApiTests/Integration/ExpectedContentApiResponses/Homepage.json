@@ -107,7 +107,9 @@
         "teaser": "",
         "icon": "",
         "link": ""
-      }
+      },
+       "expandingLinkTitle": "",
+      "expandingLinkBoxes": []
     },
     {
       "slug": "bins-and-recycling",
@@ -143,8 +145,10 @@
         "teaser": "",
         "icon": "",
         "link": ""
-        }
-      }
+      },
+      "expandingLinkTitle": "",
+      "expandingLinkBoxes": []
+    }
   ],
   "alerts": [
     {

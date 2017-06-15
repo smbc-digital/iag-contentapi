@@ -241,6 +241,7 @@ namespace StockportContentApi
             services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
             services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();  
             services.AddSingleton<IBuildContentTypeFromReference<EventBanner>, EventBannerListFactory>();
+            services.AddSingleton<IBuildContentTypesFromReferences<ExpandingLinkBox>, ExpandingLinkBoxFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
