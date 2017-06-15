@@ -66,9 +66,9 @@ namespace StockportContentApiTests.Integration
                                     new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(9999,9,9)).Build()
                                 });
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", "group_slug").Include(1).Build()),
+                                It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", "zumba-fitness").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulGroup> {
-                                    new ContentfulGroupBuilder().Slug("group_slug").Build()
+                                    new ContentfulGroupBuilder().Slug("zumba-fitness").Build()
                                });
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
@@ -138,7 +138,7 @@ namespace StockportContentApiTests.Integration
                                 });
 
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "group_slug").Include(2).Build()),
+                                It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {
                                 new ContentfulEventBuilder().Slug("event-slug").Build()
                                 });
@@ -158,7 +158,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("AtoZArticleAndTopic", "/api/unittest/atoz/c")]
         [InlineData("RedirectDictionary", "/api/redirects")]
         [InlineData("Footer", "/api/unittest/footer")]
-        [InlineData("Group", "/api/unittest/group/group_slug")]
+        [InlineData("Group", "/api/unittest/group/zumba-fitness")]
         [InlineData("Payment", "/api/unittest/payment/payment_slug")]
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
@@ -184,7 +184,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
         [InlineData("NewsListingFilteredByDate", "/api/unittest/news?dateFrom=2016-08-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
-        [InlineData("Event", "/api/unittest/events/event_item?date=2016-12-30", "2016-12-10T01:00:00+01:00")]
+        [InlineData("Event", "/api/unittest/events/event1?date=9999-09-09", "2016-12-10T01:00:00+01:00")]
         [InlineData("EventsCalendar", "/api/unittest/events", "2016-12-10T01:00:00+01:00")]
         [InlineData("EventsLatest", "/api/unittest/events/latest/1", "2016-12-10T01:00:00+01:00")]
         public async Task EndToEnd_ReturnsPageForASlug_WithTimeframeCheck(string file, string path, string stringDate)

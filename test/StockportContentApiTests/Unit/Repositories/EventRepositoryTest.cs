@@ -77,6 +77,24 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
+        public void GetReoccuringEventsNextEventOnly()
+        {
+            // Arrange - mock reoccurring event, starting in the past that passes today
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 07, 01));
+            var rawEvent = new ContentfulEventBuilder().EventCategory(new List<string>() { "category" }).EventDate(new DateTime(2017, 06, 01)).Occurrences(10).Frequency(EventFrequency.Weekly).Build();
+            var events = new List<ContentfulEvent> { rawEvent };
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
+
+            // Act - return events using a method which checks occurances
+            var result = AsyncTestHelper.Resolve(_repository.GetEventsByCategory("category"));
+
+            // Assert - Check event date is first date that occurs in the future
+            result[0].EventDate.Should().Be(new DateTime(2017, 07, 06));
+        }
+
+        [Fact]
         public void GetsASingleEventItemFromASlug()
         {
             const string slug = "event-of-the-century";
@@ -84,8 +102,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
 
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> {rawEvent});
+            var events = new List<ContentfulEvent> { rawEvent };
+
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
 
@@ -119,10 +140,17 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 02));
 
             var anEvent =
-                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01))
+                new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Slug(slug)
                     .Frequency(frequency)
                     .Occurrences(occurences)
                     .Build();
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
+
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
 
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()),                                                                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
@@ -388,11 +416,9 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"category 2"}).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-
             _contentfulClient.Setup(
                     o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(events);
-
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,  "category 1", 0,null, null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -589,19 +615,23 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldGetLinkEventsForAGroup()
         {
-            var anEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            var anotherEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 10, 10)).Build();
-            var aThirdEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent, aThirdEvent};
-
-
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
 
             _contentfulClient.Setup(
                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("slug"));
+            var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            _groupFactory.Setup(g => g.ToModel(It.IsAny<ContentfulGroup>())).Returns(group);
+
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+
+            var response = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("zumba-fitness"));
 
             response[0].Title.Should().Be("title");
             response[1].Description.Should().Be("description");
@@ -612,52 +642,98 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnNoEventsIfTheGroupIsReferencedByNone()
         {
             // Arrange
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+            var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anEvent.Group.Fields.Slug = "kersal-rugby";
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulEvent>());
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
+
+            var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);
 
             // Act
-            var events = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("slug"));
+            var processedEvents = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("zumba-fitness"));
 
             // Assert
-            events.Should().BeEmpty();
+            processedEvents.Should().BeEmpty();
         }
 
         [Fact]
         public void ShouldReturnOneEventIfTheGroupIsReferencedByOne()
         {
             // Arrange
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+            var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anEvent.Group.Fields.Slug = "zumba-fitness";
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Build() });
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
 
-            _eventFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEvent>())).Returns(new EventBuilder().Slug("slug").Build());
+            var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);
+
             // Act
-            var events = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("slug"));
+            var processedEvents = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("zumba-fitness"));
 
             // Assert
-            events.Count.Should().Be(1);
-            events[0].Slug.Should().Be("slug");
+            processedEvents.Count.Should().Be(1);
+            processedEvents[0].Slug.Should().Be("slug-1");
         }
 
         [Fact]
         public void ShouldReturnThreeEventsIfTheGroupIsReferencedByThree()
         {
             // Arrange
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "slug").Include(2);
+            var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anEvent.Group.Fields.Slug = "zumba-fitness";
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anotherEvent.Group.Fields.Slug = "zumba-fitness";
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            aThirdEvent.Group.Fields.Slug = "zumba-fitness";
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulEvent> { new ContentfulEventBuilder().Slug("event-slug").Build(), new ContentfulEventBuilder().Build(), new ContentfulEventBuilder().Build() });
+            _contentfulClient.Setup(
+                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(events);
 
-            _eventFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEvent>())).Returns(new EventBuilder().Slug("event-slug").Build());
+            var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
+
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
+            _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);
+
             // Act
-            var events = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("slug"));
+            var processedEvents = AsyncTestHelper.Resolve(_repository.GetLinkedEvents<Group>("zumba-fitness"));
 
             // Assert
-            events.Count.Should().Be(3);
-            events[0].Slug.Should().Be("event-slug");
+            processedEvents.Count.Should().Be(3);
+            processedEvents[0].Slug.Should().Be("slug-1");
         }
 
         //[Fact]
