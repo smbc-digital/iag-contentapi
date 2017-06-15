@@ -12,32 +12,55 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _teaser = "teaser";
         private string _icon = "icon";
-        private Entry<LiveChat> _liveChat = new ContentfulEntryBuilder<LiveChat>().Fields(new LiveChat("title", "text")).Build();
+        private LiveChat _liveChat = new LiveChat("title", "text") {Sys = new SystemProperties() { Type = "Entry" } };
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
-        private List<Entry<Alert>> _alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
-                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
 
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>>
+        private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
         {
-            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).ContentTypeSystemId("topic").Build()
+            new ContentfulAlert()
+            {
+                Title = "title",
+                SubHeading = "subHeading",
+                Body = "body",
+                Severity = "severity",
+                SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            }
         };
 
-        private List<Entry<Alert>> _alerts = new List<Entry<Alert>>
-            { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
-                                                         new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                         new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+        {
+            new ContentfulReferenceBuilder().Build()
+        };
+
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+        {
+            new ContentfulAlert()
+            {
+                Title = "title",
+                SubHeading = "subHeading",
+                Body = "body",
+                Severity = "severity",
+                SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            }
+        };
+
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         private bool _liveChatVisible = false;
-        private Entry<ContentfulTopic> _topic = new ContentfulEntryBuilder<ContentfulTopic>().Fields(new ContentfulParentTopicBuilder().Build()).Build();
-        private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
-                                    new ContentfulEntryBuilder<ContentfulProfile>().Fields(new ContentfulProfileBuilder().Build()).Build() };
-        private List<Entry<ContentfulSection>> _sections = new List<Entry<ContentfulSection>> {
-                                    new ContentfulEntryBuilder<ContentfulSection>().Fields(new ContentfulSectionBuilder().Build()).Build() };
+        private ContentfulTopic _topic = new ContentfulParentTopicBuilder().SystemId("topic").SystemContentTypeId("topic").Build();
+        private List<ContentfulProfile> _profiles = new List<ContentfulProfile> {
+                                    new ContentfulProfileBuilder().Build() };
+        private List<ContentfulSection> _sections = new List<ContentfulSection>{
+                                   (new ContentfulSectionBuilder().Build()) };
+        private string _systemId = "id";
+        private string _contentTypeSystemId = "id";
 
         public ContentfulArticle Build()
         {
@@ -51,7 +74,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Icon = _icon,
                 LiveChatText = _liveChat,
                 LiveChatVisible = _liveChatVisible,
-                ParentTopic = _topic,
                 Profiles = _profiles,
                 Slug = _slug,
                 Title = _title,
@@ -60,8 +82,14 @@ namespace StockportContentApiTests.Unit.Builders
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
                 Image = _image,
-                AlertsInline = _alertsInline
-            };
+                AlertsInline = _alertsInline,
+                Sys = new SystemProperties
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                    Id = _systemId
+
+                }
+        };
         }
 
         public ContentfulArticleBuilder Slug(string slug)
@@ -76,7 +104,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulArticleBuilder Breadcrumbs(List<Entry<ContentfulCrumb>> breadcrumbs)
+        public ContentfulArticleBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
             return this;
@@ -84,17 +112,17 @@ namespace StockportContentApiTests.Unit.Builders
 
         public ContentfulArticleBuilder WithOutSection()
         {
-            _sections = new List<Entry<ContentfulSection>>();
+            _sections = new List<ContentfulSection>();
             return this;
         }
 
-        public ContentfulArticleBuilder AlertsInline(List<Entry<Alert>> alertsInline)
+        public ContentfulArticleBuilder AlertsInline(List<ContentfulAlert> alertsInline)
         {
             _alertsInline = alertsInline;
             return this;
         }
 
-        public ContentfulArticleBuilder Alerts(List<Entry<Alert>> alerts)
+        public ContentfulArticleBuilder Alerts(List<ContentfulAlert> alerts)
         {
             _alerts = alerts;
             return this;
@@ -103,6 +131,18 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulArticleBuilder Body(string body)
         {
             _body = body;
+            return this;
+        }
+
+        public ContentfulArticleBuilder SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
+
+        public ContentfulArticleBuilder SystemContentTypeId(string id)
+        {
+            _contentTypeSystemId = id;
             return this;
         }
     }

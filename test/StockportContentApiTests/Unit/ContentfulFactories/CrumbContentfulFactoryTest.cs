@@ -12,34 +12,27 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class CrumbContentfulFactoryTest
     {
         [Fact]
-        public void ShouldCreateACrumbFromAContentfulCrumb()
+        public void ShouldCreateACrumbFromAContentfulReference()
         {
-            var contentfulCrumb = 
-                new Entry<ContentfulCrumb> {
-                    Fields = new ContentfulCrumbBuilder().Build(),
-                    SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
-                };
+            var ContentfulReference =
+                new ContentfulReferenceBuilder().Build();                    
  
-            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Slug.Should().Be(contentfulCrumb.Fields.Slug);
-            crumb.Title.Should().Be(contentfulCrumb.Fields.Title);
-            crumb.Type.Should().Be(contentfulCrumb.SystemProperties.ContentType.SystemProperties.Id);
+            crumb.Slug.Should().Be(ContentfulReference.Slug);
+            crumb.Title.Should().Be(ContentfulReference.Title);
+            crumb.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
         }
 
         [Fact]
         public void ShouldCreateACrumbWithNameIfSet()
         {
-            var contentfulCrumb =
-               new Entry<ContentfulCrumb>
-               {
-                   Fields = new ContentfulCrumbBuilder().Name("name").Title(string.Empty).Build(),
-                   SystemProperties = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
-               };
+            var ContentfulReference =
+                new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
 
-            var crumb = new CrumbContentfulFactory().ToModel(contentfulCrumb);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Title.Should().Be(contentfulCrumb.Fields.Name);
+            crumb.Title.Should().Be(ContentfulReference.Name);
         }
     }
 }

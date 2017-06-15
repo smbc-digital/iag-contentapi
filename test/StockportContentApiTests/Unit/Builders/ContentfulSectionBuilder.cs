@@ -14,11 +14,25 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-        private List<Entry<ContentfulProfile>> _profiles = new List<Entry<ContentfulProfile>> {
-            new ContentfulEntryBuilder<ContentfulProfile>().Fields(new ContentfulProfileBuilder().Build()).Build() };
-        private List<Entry<Alert>> _alertsInline = new List<Entry<Alert>> { new ContentfulEntryBuilder<Alert>().Fields(new Alert("title", "subHeading", "body", "severity",
-                                                                                                                       new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                                                                       new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc))).Build() };
+        private List<ContentfulProfile> _profiles = new List<ContentfulProfile> {
+            new ContentfulProfileBuilder().Build() };
+        private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
+        {
+            new ContentfulAlert()
+            {
+                Title = "title",
+                SubHeading = "subHeading",
+                Body = "body",
+                Severity = "severity",
+                SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            }
+        };
+        private SystemProperties _sys = new SystemProperties
+        {
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+        };
 
         public ContentfulSection Build()
         {
@@ -31,7 +45,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Documents = _documents,
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
-                AlertsInline = _alertsInline
+                AlertsInline = _alertsInline,
+                Sys = _sys
             };
         }
     }

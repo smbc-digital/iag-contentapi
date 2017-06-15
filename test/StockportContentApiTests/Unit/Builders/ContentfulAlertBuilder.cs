@@ -1,4 +1,5 @@
 ﻿using System;
+using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -11,6 +12,10 @@ namespace StockportContentApiTests.Unit.Builders
         private string _subHeading = "subHeading";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private SystemProperties _sys = new SystemProperties
+        {
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+        };
 
         public ContentfulAlert Build()
         {
@@ -21,7 +26,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Severity = _severity,
                 SubHeading = _subHeading,
                 SunriseDate = _sunriseDate,
-                SunsetDate = _sunsetDate
+                SunsetDate = _sunsetDate,
+                Sys = _sys
             };
         }
 

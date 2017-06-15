@@ -33,11 +33,9 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
     "Swashbuckle": "6.0.0-beta902",
-    "contentful.csharp": "0.10.3-beta",
+    "contentful.csharp": "0.13.10-beta",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    //"StackExchange.Redis": "1.1.608",
-    "Microsoft.Extensions.Caching.Redis": "1.1.2",
-    "BinaryFormatter": "1.0.1"
+    "Microsoft.Extensions.Caching.Redis": "1.1.2"
   },
 
   "tools": {

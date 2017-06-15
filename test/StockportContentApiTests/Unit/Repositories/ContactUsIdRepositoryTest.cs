@@ -56,7 +56,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawContactUsId = new ContentfulContactUsId();
 
-            var builder = new QueryBuilder<Entry<ContentfulShowcase>>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ContentfulContactUsId> { rawContactUsId });
@@ -73,19 +73,19 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "test-slug";
-            var rawContactUsId = new ContentfulContactUsId() {Slug = slug};
+            var rawContactUs = new ContentfulContactUsId() {Slug = slug};
             
             // Act
-            var builder = new QueryBuilder<Entry<ContentfulContactUsId>>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
+            var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulContactUsId> { rawContactUsId });
+                .ReturnsAsync(new List<ContentfulContactUsId> { rawContactUs });
 
             var response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug));
-            var contactUsId = response.Get<ContactUsId>();
-            
+            var model = response.Get<ContactUsId>();
+
             // Assert
-            rawContactUsId.ShouldBeEquivalentTo(contactUsId);
+            model.Slug.Should().Be(rawContactUs.Slug);
         }
     }
 }

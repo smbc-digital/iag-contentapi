@@ -4,13 +4,13 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class CrumbContentfulFactory : IContentfulFactory<Entry<ContentfulCrumb>, Crumb>
+    public class CrumbContentfulFactory : IContentfulFactory<ContentfulReference, Crumb>
     {
-        public Crumb ToModel(Entry<ContentfulCrumb> entry)
+        public Crumb ToModel(ContentfulReference entry)
         {
-            var title = !string.IsNullOrEmpty(entry.Fields.Title) ? entry.Fields.Title : entry.Fields.Name;
+            var title = !string.IsNullOrEmpty(entry.Title) ? entry.Title : entry.Name;
 
-            return new Crumb(title, entry.Fields.Slug, entry.SystemProperties.ContentType.SystemProperties.Id);
+            return new Crumb(title, entry.Slug, entry.Sys.ContentType.SystemProperties.Id);
         }
     }
 }

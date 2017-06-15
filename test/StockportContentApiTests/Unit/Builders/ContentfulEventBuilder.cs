@@ -28,27 +28,30 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
         private string _bookingInformation = "booking information";
         private bool _featured = false;
-        public ContentfulEventSys _sys = new ContentfulEventSys();
+        public SystemProperties _sys = new SystemProperties();
         private List<string> _tags = new List<string>{"tag 1", "tag 2"};
-        private List<Entry<ContentfulAlert>> _alerts = new List<Entry<ContentfulAlert>> {
-            new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().Build()).Build()};
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
+            new ContentfulAlertBuilder().Build()};
 
-        private Entry<ContentfulGroup> _group = new Entry<ContentfulGroup>
+        private ContentfulGroup _group = new ContentfulGroup()
         {
-            Fields = new ContentfulGroup()
-            {
-                Twitter = null,
-                Address = "Test street",
-                Slug = "zumba-fitness",
-                PhoneNumber = "phone",
-                Email = "email",
-                Website = "",
-                Facebook = null,
-                Description = "",
-                Name = "Zumba Fitness",
-                Image = new Asset() {Description = "", File = new File() {ContentType = "", FileName =  "", Details = null, UploadUrl = "", Url = ""}, SystemProperties = new SystemProperties(){Type = "Asset"}, Title = "" },                                
-            },
-            SystemProperties = new SystemProperties { Type = "Entry" }           
+            Twitter = null,
+            Address = "Test street",
+            Slug = "zumba-fitness",
+            PhoneNumber = "phone",
+            Email = "email",
+            Website = "",
+            Facebook = null,
+            Description = "",
+            Name = "Zumba Fitness",
+            Image =
+                new Asset()
+                {
+                    Description = "",
+                    File = new File() {ContentType = "", FileName = "", Details = null, UploadUrl = "", Url = ""},
+                    SystemProperties = new SystemProperties() {Type = "Asset"},
+                    Title = ""
+                },
         };
 
         public ContentfulEvent Build()
@@ -77,7 +80,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Sys = _sys,
                 Tags = _tags,
                 Group = _group,
-                Alerts = _alerts
+                Alerts = _alerts,
+                
             };
         }
 
@@ -135,7 +139,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulEventBuilder Group(Entry<ContentfulGroup> group)
+        public ContentfulEventBuilder Group(ContentfulGroup group)
         {   _group = group;
             return this;
         }

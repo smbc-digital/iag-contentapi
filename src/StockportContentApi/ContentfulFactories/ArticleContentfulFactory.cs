@@ -7,23 +7,25 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class ArticleContentfulFactory : IContentfulFactory<Entry<ContentfulArticle>, Article>
+    public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Article>
     {
         private readonly IContentfulFactory<ContentfulSection, Section> _sectionFactory;
-        private readonly IContentfulFactory<Entry<ContentfulCrumb>, Crumb> _crumbFactory;
+        private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-        private readonly IContentfulFactory<Entry<ContentfulArticle>, Topic> _parentTopicFactory;
+        private readonly IContentfulFactory<ContentfulArticle, Topic> _parentTopicFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
-            IContentfulFactory<Entry<ContentfulCrumb>, Crumb> crumbFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
-            IContentfulFactory<Entry<ContentfulArticle>, Topic> parentTopicFactory,
+            IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
-            ITimeProvider timeProvider)
+            ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
@@ -32,19 +34,20 @@ namespace StockportContentApi.ContentfulFactories
             _videoRepository = videoRepository;
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _alertFactory = alertFactory;
         }
 
-        public Article ToModel(Entry<ContentfulArticle> entryContentfulArticle)
+        public Article ToModel(ContentfulArticle entryContentfulArticle)
         {
-            var entry = entryContentfulArticle.Fields;
+            var entry = entryContentfulArticle;
 
-            var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
-                                         .Select(section => _sectionFactory.ToModel(section.Fields)).ToList();
-            var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+            var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                         .Select(section => _sectionFactory.ToModel(section)).ToList();
+            var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-            var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
-                                         .Select(profile => _profileFactory.ToModel(profile.Fields)).ToList();
+            var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                         .Select(profile => _profileFactory.ToModel(profile)).ToList();
 
             var topic = _parentTopicFactory.ToModel(entryContentfulArticle) ?? new NullTopic();
 
@@ -53,16 +56,16 @@ namespace StockportContentApi.ContentfulFactories
 
             var body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty;
 
-            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
-                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
-                                     .Select(alert => alert.Fields);
+            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                     .Select(alert => _alertFactory.ToModel(alert));
 
-            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties)
-                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.Fields.SunriseDate, section.Fields.SunsetDate))
-                                     .Select(alertInline => alertInline.Fields);
+            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                     .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.SystemProperties) 
-                                ? entry.LiveChatText.Fields : new NullLiveChat();
+            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.Sys) 
+                                ? entry.LiveChatText : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)

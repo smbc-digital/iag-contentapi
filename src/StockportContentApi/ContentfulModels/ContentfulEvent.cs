@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 using StockportContentApi.Model;
+using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class ContentfulEvent
+    public class ContentfulEvent : IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
@@ -24,25 +22,14 @@ namespace StockportContentApi.ContentfulModels
         public int Occurences { get; set; } = 0;
         public EventFrequency Frequency { get; set; } = EventFrequency.None;
         public List<Crumb> Breadcrumbs { get; set; } = new List<Crumb> { new Crumb("Events", string.Empty, "events") };
-        [JsonIgnore]
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public List<string> Categories { get; set; } = new List<string>();
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public string BookingInformation { get; set; } = string.Empty;
         public bool Featured { get; set; } = false;
-        public ContentfulEventSys Sys { get; set; } = new ContentfulEventSys();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
         public List<string> Tags { get; set; } = new List<string>();
-        public List<Entry<ContentfulAlert>> Alerts { get; set; } = new List<Entry<ContentfulAlert>>();
-
-        public Entry<ContentfulGroup> Group { get; set; } = new Entry<ContentfulGroup>
-        {
-            Fields = new ContentfulGroup(),
-            SystemProperties = new SystemProperties {Type = "Entry"}
-        };
-    }
-
-    public class ContentfulEventSys
-    {
-        public DateTime UpdatedAt { get; set; } = DateTime.MinValue.ToUniversalTime();
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+        public ContentfulGroup  Group { get; set; } = new ContentfulGroup();
     }
 }

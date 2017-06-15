@@ -27,7 +27,7 @@ namespace StockportContentApi.Repositories
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly string _contentfulContentTypesUrl;
         private readonly IContentfulClient _contentfulClient;
-        private readonly ICacheWrapper _cache;
+        private readonly ICache _cache;
         private ILogger<EventRepository> _logger;
 
         public EventRepository(ContentfulConfig config,
@@ -35,7 +35,7 @@ namespace StockportContentApi.Repositories
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
             IEventCategoriesFactory eventCategoriesFactory,
-            ICacheWrapper cache,
+            ICache cache,
             ILogger<EventRepository> logger
             )
         {
@@ -51,7 +51,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
-            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
             var events = GetAllEventsAndTheirReccurrences(entries);
 
@@ -106,7 +106,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Event>> GetEventsByCategory(string category)
         {
-            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
             var events = 
                     GetAllEventsAndTheirReccurrences(entries)
@@ -163,7 +163,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Event>> GetLinkedEvents<T>(string slug)
         {
-            var entries = await _cache.GetFromCacheOrDirectly("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
             var events = GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => e.Group.Slug == slug)
@@ -178,7 +178,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<string>> GetCategories()
         {
-            return await _cache.GetFromCacheOrDirectly("event-categories", GetCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("event-categories", GetCategoriesDirect);
         }
 
         private async Task<List<string>> GetCategoriesDirect()

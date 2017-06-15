@@ -11,7 +11,10 @@ namespace StockportContentApiTests.Builders
         private string _slug { get; set; } = "slug";
         private string _icon { get; set; } = "icon";
         private Asset _image { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        
+        private SystemProperties _sys = new SystemProperties
+        {
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+        };
 
         public ContentfulGroupCategory Build()
         {
@@ -20,7 +23,8 @@ namespace StockportContentApiTests.Builders
                 Name = _name,
                 Slug = _slug,
                 Icon = _icon,
-                Image = _image
+                Image = _image,
+                Sys = _sys
             };
         }
 

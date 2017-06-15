@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Contentful.Core.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -13,10 +14,10 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
 
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
-        private readonly IContentfulFactory<Entry<ContentfulAlert>, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly DateComparer _dateComparer;
 
-        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<Entry<ContentfulAlert>, Alert> alertFactory, ITimeProvider timeProvider)
+        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
         {
             _documentFactory = documentFactory;
             _groupFactory = groupFactory;
@@ -26,15 +27,21 @@ namespace StockportContentApi.ContentfulFactories
 
         public Event ToModel(ContentfulEvent entry)
         {
-            var eventDocuments = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                                .Select(document => _documentFactory.ToModel(document)).ToList();
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            var eventDocuments =
+                entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                    .Select(document => _documentFactory.ToModel(document)).ToList();
 
-            var group = ContentfulHelpers.EntryIsNotALink(entry.Group.SystemProperties) ? _groupFactory.ToModel(entry.Group.Fields) : null;
+            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                ? entry.Image.File.Url
+                : string.Empty;
 
-            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.SystemProperties)
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.Fields.SunriseDate, alert.Fields.SunsetDate))
-                                     .Select(alert => _alertFactory.ToModel(alert)).ToList();
+            var group = _groupFactory.ToModel(entry.Group);
+
+            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                                        &&
+                                                        _dateComparer.DateNowIsWithinSunriseAndSunsetDates(
+                                                            alert.SunriseDate, alert.SunsetDate))
+                .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
             return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
                 entry.Location,

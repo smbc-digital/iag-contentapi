@@ -36,10 +36,10 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IHttpClient> _httpClient;
         private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-        private readonly Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>> _alertFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<ILogger<EventRepository>> _logger;
-        private readonly ICacheWrapper _cacheWrapper;
+        private readonly Mock<ICache> _cacheWrapper;
 
         public EventRepositoryTest()
         {
@@ -51,9 +51,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var documentFactory = new DocumentContentfulFactory();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            _alertFactory = new Mock<IContentfulFactory<Entry<ContentfulAlert>, Alert>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-            _alertFactory.Setup(o => o.ToModel(It.IsAny<Entry<ContentfulAlert>>())).Returns(new Alert("title", "subHeading", "body",
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 
@@ -69,11 +69,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            //var memoryCache = new MemoryDistributedCache(new DistributedCacheEntryOptions());
-            //_cacheWrapper = new CacheWrapper(memoryCache);
+            _cacheWrapper = new Mock<ICache>();
 
             _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
-                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, null, _logger.Object);
+                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, _cacheWrapper.Object, _logger.Object);
         }
 
         [Fact]
@@ -83,9 +82,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 07, 01));
             var rawEvent = new ContentfulEventBuilder().EventCategory(new List<string>() { "category" }).EventDate(new DateTime(2017, 06, 01)).Occurrences(10).Frequency(EventFrequency.Weekly).Build();
             var events = new List<ContentfulEvent> { rawEvent };
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             // Act - return events using a method which checks occurances
             var result = AsyncTestHelper.Resolve(_repository.GetEventsByCategory("category"));
@@ -104,9 +101,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var events = new List<ContentfulEvent> { rawEvent };
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
 
@@ -127,7 +122,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
             eventItem.BookingInformation.Should().Be(rawEvent.BookingInformation);
             eventItem.Alerts.Count.Should().Be(1);
-            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Fields.Title);
+            eventItem.Alerts[0].Title.Should().Be(rawEvent.Alerts[0].Title);
             eventItem.Featured.Should().BeFalse();
         }
 
@@ -148,9 +143,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(2);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()),                                                                            It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent> { anEvent });
@@ -166,7 +159,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulEvent>());
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
 
             var response = AsyncTestHelper.Resolve(_repository.GetEvent("event-not-found", new DateTime(2017, 4, 1)));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -182,7 +175,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
             var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null));
 
@@ -235,9 +228,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Occurrences(occurences)
                     .Build();
             var events = new List<ContentfulEvent> {anEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null));
 
@@ -261,7 +252,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Build();
 
             var events = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>())).ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null));
 
@@ -286,9 +278,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Occurrences(occurences)
                     .Build();
             var events = new List<ContentfulEvent> {anEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response =
                 AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16), null,  0,null, null));
@@ -313,9 +304,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Occurrences(occurences)
                     .Build();
             var events = new List<ContentfulEvent> {anEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0,null, null));
 
@@ -340,9 +330,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Occurrences(occurences)
                     .Build();
             var events = new List<ContentfulEvent> {anEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null));
 
@@ -368,9 +357,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Occurrences(occurences)
                     .Build();
             var events = new List<ContentfulEvent> {anEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0,null, null));
 
@@ -393,9 +381,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 04, 01)).Build();
 
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, null, 0,null, null));
 
@@ -416,9 +402,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"category 2"}).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,  "category 1", 0,null, null));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -437,9 +421,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var anotherEvent = new ContentfulEventBuilder().EventCategory(new List<string> {"category 2"}).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
 
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "category 2", 0,null, null));
@@ -472,10 +454,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .EventDate(new DateTime(2016, 08, 01))
                     .Build();
             var events = new List<ContentfulEvent> {event1, event2, event3};
-
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, "category 1", 0, null, null));
 
@@ -554,9 +534,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null));
 
@@ -576,9 +554,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null));
 
@@ -598,9 +575,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-            _contentfulClient.Setup(
-                    o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null));
 
@@ -620,9 +595,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
             var events = new List<ContentfulEvent> {anEvent, anotherEvent, aThirdEvent};
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
@@ -643,16 +616,14 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "kersal-rugby";
+            anEvent.Group.Slug = "kersal-rugby";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            anotherEvent.Group.Slug = "kersal-rugby";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            aThirdEvent.Group.Slug = "kersal-rugby";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
@@ -675,16 +646,14 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "zumba-fitness";
+            anEvent.Group.Slug = "zumba-fitness";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "kersal-rugby";
+            anotherEvent.Group.Slug = "kersal-rugby";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "kersal-rugby";
+            aThirdEvent.Group.Slug = "kersal-rugby";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
@@ -708,16 +677,14 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anEvent.Group.Fields.Slug = "zumba-fitness";
+            anEvent.Group.Slug = "zumba-fitness";
             var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
-            anotherEvent.Group.Fields.Slug = "zumba-fitness";
+            anotherEvent.Group.Slug = "zumba-fitness";
             var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
-            aThirdEvent.Group.Fields.Slug = "zumba-fitness";
+            aThirdEvent.Group.Slug = "zumba-fitness";
             var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
 
-            _contentfulClient.Setup(
-                   o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
                 "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null);
@@ -746,7 +713,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
         //    _eventCategoriesFactory.Setup(o => o.Build(It.IsAny<IList<dynamic>>())).Returns(categories);
 
-        //    _cacheWrapper.RemoveItemFromCache("event-categories");
+        //    //_cacheWrapper.RemoveItemFromCache("event-categories");
 
         //    // Act
         //    var response = _repository.GetCategories();

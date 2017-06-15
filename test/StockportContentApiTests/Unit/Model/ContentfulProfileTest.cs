@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.Model
                 Body = string.Empty,
                 Icon = string.Empty,
                 BackgroundImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
-                Breadcrumbs = new List<Entry<ContentfulCrumb>>()
+                Breadcrumbs = new List<ContentfulReference>()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

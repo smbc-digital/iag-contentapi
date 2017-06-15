@@ -17,8 +17,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _parisReference = "parisReference";
         private string _fund = "fund";
         private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
-            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };
+        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
+            new ContentfulReferenceBuilder().Build() };
 
         public ContentfulPayment Build()
         {
@@ -90,7 +90,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulPaymentBuilder Breadcrumbs(List<Entry<ContentfulCrumb>> breadcrumbs)
+        public ContentfulPaymentBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
             return this;

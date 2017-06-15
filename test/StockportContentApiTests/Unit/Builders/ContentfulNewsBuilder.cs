@@ -15,7 +15,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("News", string.Empty, "news") };
         private List<string> _tags = new List<string> { "tag" };
         private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", 
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
@@ -35,7 +34,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Body = _body,
                 SunriseDate  = _sunriseDate,
                 SunsetDate  = _sunsetDate,
-                Breadcrumbs  = _breadcrumbs,
                 Tags = _tags,
                 Alerts  = _alerts,
                 Documents  = _documents,

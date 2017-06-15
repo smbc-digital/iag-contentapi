@@ -24,7 +24,7 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
         private readonly EventRepository _eventRepository;
-        private readonly ICacheWrapper _cache;
+        private readonly ICache _cache;
 
 
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
@@ -33,7 +33,7 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
                                  EventRepository eventRepository,
-                                 ICacheWrapper cache
+                                 ICache cache
 
             )
         {
@@ -123,7 +123,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<GroupCategory>> GetGroupCategories()
         {
-            return await _cache.GetFromCacheOrDirectly("group-categories", GetGroupCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("group-categories", GetGroupCategoriesDirect);
         }
 
         private async Task<List<GroupCategory>> GetGroupCategoriesDirect()

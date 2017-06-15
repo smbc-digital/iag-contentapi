@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
@@ -10,7 +11,6 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using System.Collections.Generic;
-using System;
 
 namespace StockportContentApi.Repositories
 {
@@ -40,10 +40,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetShowcases(string slug)
         {
-            var builder =
-                new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase")
-                    .FieldEquals("fields.slug", slug)
-                    .Include(3);
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+
 
             var entries = await _client.GetEntriesAsync(builder);
 

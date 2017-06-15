@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -13,10 +12,11 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Fakes;
-using Contentful.Core.Search;
 using StockportContentApi.ContentfulModels;
 using System.Threading.Tasks;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.Extensions.Caching.Distributed;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests
 {
@@ -49,16 +49,18 @@ namespace StockportContentApiTests
 
                 services.AddSingleton(dateTime.Object);
 
-                var cache = new Mock<ICacheWrapper>();
-                var anEvent = new ContentfulEventBuilder().Slug("event1").EventDate(new DateTime(9999, 09, 09)).UpdatedAt(new DateTime(2016, 10, 05)).Build();
-                var anotherEvent = new ContentfulEventBuilder().Slug("event2").EventDate(new DateTime(9999, 09, 09)).UpdatedAt(new DateTime(2016, 10, 05)).Build();
-                var eventList = new List<ContentfulEvent> { anEvent, anotherEvent };               
-                cache.Setup(o => o.GetFromCacheOrDirectly("event-all", It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(eventList);
+                var cache = new Mock<ICache>();
 
                 var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
                                                 "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
                                                 "Fair","Emergency Services","Bonfire","Remembrence Service" };
-                cache.Setup(o => o.GetFromCacheOrDirectly("event-categories", It.IsAny<Func<Task<List<string>>>>())).ReturnsAsync(categories);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync("event-categories", It.IsAny<Func<Task<List<string>>>>())).ReturnsAsync(categories);
+
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>())).ReturnsAsync(new List<GroupCategory> { new GroupCategory("name", "slug", "icon", "image-url.jpg") });
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent> {
+                                    new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(2016,10,5)).Build(),
+                                    new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(2016,10,5)).Build()
+                                });
 
                 services.AddSingleton(cache.Object);
 

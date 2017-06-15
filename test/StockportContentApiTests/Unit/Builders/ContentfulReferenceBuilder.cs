@@ -5,7 +5,7 @@ using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Builders
 {
-    public class ContentfulSubItemBuilder
+    public class ContentfulReferenceBuilder
     {
         private string _slug = "slug";
         private string _title = "title";
@@ -15,13 +15,15 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _image = new Asset { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>>();
-        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>>();
-        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>>();
+        private List<ContentfulReference> _subItems = new List<ContentfulReference>();
+        private List<ContentfulReference> _secondaryItems = new List<ContentfulReference>();
+        private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference>();
+        private string _systemId = "id";
+        private string _contentTypeSystemId = "id";
 
-        public ContentfulSubItem Build()
+        public ContentfulReference Build()
         {
-            return new ContentfulSubItem
+            return new ContentfulReference
             {
                 Slug = _slug,
                 Title = _title,
@@ -33,43 +35,60 @@ namespace StockportContentApiTests.Unit.Builders
                 Image = _image,
                 SubItems = _subItems,
                 SecondaryItems = _secondaryItems,
-                TertiaryItems = _tertiaryItems
+                TertiaryItems = _tertiaryItems,
+                Sys = new SystemProperties
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                    Id = _systemId
+                }
             };
         }
 
-        public ContentfulSubItemBuilder Slug(string slug)
+        public ContentfulReferenceBuilder Slug(string slug)
         {
             _slug = slug;
             return this;
         }
 
-        public ContentfulSubItemBuilder Title(string title)
+        public ContentfulReferenceBuilder Title(string title)
         {
             _title = title;
             return this;
         }
 
-        public ContentfulSubItemBuilder Name(string name)
+        public ContentfulReferenceBuilder Name(string name)
         {
             _name = name;
             return this;
         }
 
-        public ContentfulSubItemBuilder SubItems(List<Entry<ContentfulSubItem>> subItems)
+        public ContentfulReferenceBuilder SubItems(List<ContentfulReference> subItems)
         {
             _subItems = subItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder SecondaryItems(List<Entry<ContentfulSubItem>> secondaryItems)
+        public ContentfulReferenceBuilder SecondaryItems(List<ContentfulReference> secondaryItems)
         {
             _secondaryItems = secondaryItems;
             return this;
         }
 
-        public ContentfulSubItemBuilder TertiaryItems(List<Entry<ContentfulSubItem>> tertiaryItems)
+        public ContentfulReferenceBuilder TertiaryItems(List<ContentfulReference> tertiaryItems)
         {
             _tertiaryItems = tertiaryItems;
+            return this;
+        }
+
+        public ContentfulReferenceBuilder SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
+
+        public ContentfulReferenceBuilder SystemContentTypeId(string id)
+        {
+            _contentTypeSystemId = id;
             return this;
         }
     }

@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using Contentful.Core.Configuration;
 using Contentful.Core.Models;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class ContentfulProfile
+    public class ContentfulProfile : IContentfulModel
     {
         public string Type { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
@@ -17,6 +14,7 @@ namespace StockportContentApi.ContentfulModels
         public string Body { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public Asset BackgroundImage { get; set; } = new Asset {File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        public List<Entry<ContentfulCrumb>> Breadcrumbs { get; set; } = new List<Entry<ContentfulCrumb>>();
+        public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
+        public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

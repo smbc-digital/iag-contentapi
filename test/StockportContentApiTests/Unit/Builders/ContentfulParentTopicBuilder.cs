@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
@@ -8,21 +7,12 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulParentTopicBuilder
     {
         private string _name = "name";       
-        private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-        private List<Entry<ContentfulCrumb>> _breadcrumbs = new List<Entry<ContentfulCrumb>> {
-            new ContentfulEntryBuilder<ContentfulCrumb>().Fields(new ContentfulCrumbBuilder().Build()).Build() };        
-        private List<Entry<ContentfulAlert>> _alerts = new List<Entry<ContentfulAlert>> {
-            new ContentfulEntryBuilder<ContentfulAlert>().Fields(new ContentfulAlertBuilder().Build()).Build()};
-        private List<Entry<ContentfulSubItem>> _subItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("sub-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _secondaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("secondary-slug").Build()).Build() };
-        private List<Entry<ContentfulSubItem>> _tertiaryItems = new List<Entry<ContentfulSubItem>> {
-            new ContentfulEntryBuilder<ContentfulSubItem>().Fields(new ContentfulSubItemBuilder().Slug("tertiary-slug").Build()).Build() };
-            
+        private readonly List<ContentfulReference> _subItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+        private readonly List<ContentfulReference> _secondaryItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
+        private readonly List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("tertiary-slug").Build()};
+        private string _systemId = "id";
+        private string _contentTypeSystemId = "id";
+
         public ContentfulTopic Build()
         {
             return new ContentfulTopic
@@ -30,8 +20,25 @@ namespace StockportContentApiTests.Unit.Builders
                 Name = _name,               
                 SubItems = _subItems,
                 SecondaryItems = _secondaryItems,
-                TertiaryItems  = _tertiaryItems,              
+                TertiaryItems  = _tertiaryItems,
+                Sys = new SystemProperties
+                {
+                    ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                    Id = _systemId
+                }
             };
+        }
+
+        public ContentfulParentTopicBuilder SystemId(string id)
+        {
+            _systemId = id;
+            return this;
+        }
+
+        public ContentfulParentTopicBuilder SystemContentTypeId(string id)
+        {
+            _contentTypeSystemId = id;
+            return this;
         }
     }
 }

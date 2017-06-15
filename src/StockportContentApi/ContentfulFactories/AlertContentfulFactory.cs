@@ -4,11 +4,11 @@ using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class AlertContentfulFactory : IContentfulFactory<Entry<ContentfulAlert>, Alert>
+    public class AlertContentfulFactory : IContentfulFactory<ContentfulAlert, Alert>
     {
-        public Alert ToModel(Entry<ContentfulAlert> entry)
+        public Alert ToModel(ContentfulAlert entry)
         {
-            return new Alert(entry.Fields.Title, entry.Fields.SubHeading, entry.Fields.Body, entry.Fields.Severity, entry.Fields.SunriseDate, entry.Fields.SunsetDate);
+            return new Alert(entry.Title, entry.SubHeading, entry.Body, entry.Severity, entry.SunriseDate, entry.SunsetDate);
         }
     }
 }
