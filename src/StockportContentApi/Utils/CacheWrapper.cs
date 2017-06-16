@@ -73,11 +73,14 @@ namespace StockportContentApi.Utils
             {
                 result = await fallbackMethod();
 
-                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
+                if (_memoryCache != null)
+                {
+                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
-                var data = JsonConvert.SerializeObject(result);
+                    var data = JsonConvert.SerializeObject(result);
 
-                _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                    _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                }
             }
 
             return result;
@@ -99,6 +102,12 @@ namespace StockportContentApi.Utils
         {
             bool output = false;
             value = default(T);
+
+            if (_memoryCache == null)
+            {
+                return false;
+            }
+
             var returnData = _memoryCache.GetString(key.ToString());
 
             if (returnData != null)
