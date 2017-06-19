@@ -12,14 +12,17 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
+
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
+            _expandingLinkBoxFactory = expandingLinkBoxFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -50,9 +53,13 @@ namespace StockportContentApi.ContentfulFactories
             var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
+            var expandingLinkBoxes =
+                entry.ExpandingLinkBoxes.Where(e => ContentfulHelpers.EntryIsNotALink(e.Sys))
+                    .Select(e => _expandingLinkBoxFactory.ToModel(e)).ToList();
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes);
         }
     }
 }

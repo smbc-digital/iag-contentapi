@@ -16,10 +16,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class TopicContentfulFactoryTest
     {
         private readonly ContentfulTopic _contentfulTopic;
+
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
+        private readonly Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>> _expandingLinkBoxFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
 
@@ -30,8 +32,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
+            _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
+
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _timeProvider.Object);
+            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object);
         }
 
         [Fact]
@@ -60,8 +64,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  .Excluding(e => e.TertiaryItems)
                                                                  .Excluding(e => e.BackgroundImage)
                                                                  .Excluding(e => e.Image)
-                                                                 .Excluding(e => e.Alerts)
+                                                                 .Excluding(e => e.Alerts) 
                                                                  .Excluding(e => e.EventBanner)
+                                                                 .Excluding(e => e.ExpandingLinkBoxes)                                                              
+                                                                 .Excluding(e => e.ExpandingLinkTitle)
                                                                  );
 
             _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Once);

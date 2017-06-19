@@ -10,16 +10,19 @@ namespace StockportContentApi.Factories
         private readonly IBuildContentTypesFromReferences<SubItem> _subitemFactory;
         private readonly IBuildContentTypesFromReferences<Crumb> _breadcrumbFactory;
         private readonly IBuildContentTypeFromReference<EventBanner> _eventBannerFactory;
+        private readonly IBuildContentTypesFromReferences<ExpandingLinkBox> _expandingLinkBoxFactory;
 
         public TopicFactory(IBuildContentTypesFromReferences<Alert> alertListFactory, 
                             IBuildContentTypesFromReferences<SubItem> subitemFactory, 
                             IBuildContentTypesFromReferences<Crumb> breadcrumbFactory,
-                            IBuildContentTypeFromReference<EventBanner> eventBannerFactory)
+                            IBuildContentTypeFromReference<EventBanner> eventBannerFactory,
+                            IBuildContentTypesFromReferences<ExpandingLinkBox> expandingLinkBoxFactory)
         {
             _alertListFactory = alertListFactory;
             _subitemFactory = subitemFactory;
             _breadcrumbFactory = breadcrumbFactory;
             _eventBannerFactory = eventBannerFactory;
+            _expandingLinkBoxFactory = expandingLinkBoxFactory;
         }
 
         public Topic Build(dynamic entry, IContentfulIncludes contentfulResponse)
@@ -43,9 +46,11 @@ namespace StockportContentApi.Factories
             if (entry.fields.emailAlerts != null) bool.TryParse((string)entry.fields.emailAlerts, out emailAlerts);
             var emailAlertsTopicId = (string)entry.fields.emailAlertsTopicId ?? string.Empty;
             var eventBanner = _eventBannerFactory.BuildFromReference(fields.eventBanner, contentfulResponse);
+            var expandingLinkTitle = (string)fields.expandingLinkTitle ?? string.Empty;
+            var expandingLinkBoxes = _expandingLinkBoxFactory.BuildFromReferences(fields.expandingLinkBoxes, contentfulResponse);
 
             return new Topic(slug, name, teaser, summary, icon, backgroundImage, image, subItems, secondaryItems,
-                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner);
+                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner, expandingLinkTitle, expandingLinkBoxes);
         }
     }
 }

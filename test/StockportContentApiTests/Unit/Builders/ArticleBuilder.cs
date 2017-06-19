@@ -21,9 +21,10 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Document> _documents = new List<Document> { new Document("title", 22, DateTime.MinValue, "url", "fileName") };
         private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
         private List<Alert> _alertsInline = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
-        private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>()) };
+        private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>()) };       
+
         private Topic _parentTopic = new Topic("slug", "name", "teaser", "summary", "icon", "background", "image", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), 
-                                                new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id", new NullEventBanner());
+                                                new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id", new NullEventBanner(), "expandingLinkTitle", new List<ExpandingLinkBox>());
         private LiveChat _liveChat = new LiveChat("title", "text");
 
         public Article Build()

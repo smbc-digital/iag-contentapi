@@ -110,11 +110,10 @@ namespace StockportContentApi
 
             services.AddSingleton<ICache>(p => new Utils.Cache(p.GetService<IDistributedCacheWrapper>()));
 
-            services.AddScoped<
-                IContentfulFactory<ContentfulReference, SubItem>>(
-                p => new SubItemContentfulFactory(
-                    p.GetService<ITimeProvider>()
-                    ));
+
+            services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
+
 
             services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
@@ -138,10 +137,11 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
 
-            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+   services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
+                                                                                                              p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
                                                                                                               p.GetService<ITimeProvider>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
@@ -263,6 +263,7 @@ namespace StockportContentApi
             services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
             services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();  
             services.AddSingleton<IBuildContentTypeFromReference<EventBanner>, EventBannerListFactory>();
+            services.AddSingleton<IBuildContentTypesFromReferences<ExpandingLinkBox>, ExpandingLinkBoxFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

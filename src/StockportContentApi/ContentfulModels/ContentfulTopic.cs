@@ -11,7 +11,10 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public bool EmailAlerts { get; set; } = false;
         public string EmailAlertsTopicId { get; set; } = string.Empty;
+        public string ExpandingLinkTitle { get; set; } = string.Empty;
+        public List<ContentfulExpandingLinkBox> ExpandingLinkBoxes { get; set; } = new List<ContentfulExpandingLinkBox>();
         public ContentfulEventBanner EventBanner { get; set; } = new ContentfulEventBanner
+
         {
             Sys = new SystemProperties { Type = "Entry" }
         };

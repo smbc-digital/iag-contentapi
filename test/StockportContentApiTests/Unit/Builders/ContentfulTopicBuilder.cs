@@ -13,6 +13,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _summary = "summary";
         private string _teaser = "teaser";
+        private string _expandingLinkTitle = "expandingLinkTitle";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
@@ -21,18 +22,23 @@ namespace StockportContentApiTests.Unit.Builders
             new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
         private bool _emailAlerts = false;
         private string _emailAlertsTopicId = "id";
+
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};
         private List<ContentfulReference> _subItems = new List<ContentfulReference> {
-            new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+           new ContentfulReferenceBuilder().Slug("sub-slug").Build()};
         private List<ContentfulReference> _secondaryItems = new List<ContentfulReference> {
             new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
         private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> {
-           new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
+            new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
         private ContentfulEventBanner _eventBanner =
            new ContentfulEventBannerBuilder().Build();
+        private List<ContentfulExpandingLinkBox> _expandingLinkBox = new List<ContentfulExpandingLinkBox> {
+            new ContentfulExpandingLinkBoxBuilder().Title("title").Build() };
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";
+
+
 
         public ContentfulTopic Build()
         {
@@ -55,7 +61,9 @@ namespace StockportContentApiTests.Unit.Builders
                 EmailAlerts  = _emailAlerts,
                 EmailAlertsTopicId  = _emailAlertsTopicId,
                 EventBanner = _eventBanner,
-                Sys = new SystemProperties
+                ExpandingLinkTitle = _expandingLinkTitle,
+                ExpandingLinkBoxes = _expandingLinkBox,
+                Sys = new SystemProperties()
                 {
                     ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
                     Id = _systemId
