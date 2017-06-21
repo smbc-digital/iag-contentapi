@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Utils
 {
@@ -31,10 +33,12 @@ namespace StockportContentApi.Utils
     public class Cache : ICache
     {
         private IDistributedCacheWrapper _memoryCache;
+        private ILogger<ICache> _logger;
 
-        public Cache(IDistributedCacheWrapper memoryCache)
+        public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger)
         {
             _memoryCache = memoryCache;
+            _logger = logger;
         }
 
         public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod)
@@ -105,6 +109,7 @@ namespace StockportContentApi.Utils
 
             if (_memoryCache == null)
             {
+                _logger.LogInformation("Cache is missing");
                 return false;
             }
 
