@@ -16,26 +16,26 @@
   },
 
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.0",
-      "type": "platform"
-    },
+    "contentful.csharp": "0.14.0-beta",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
-    "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.1",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Microsoft.Extensions.Caching.Redis": "1.1.2",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.1",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging": "1.1.1",
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0",
+      "type": "platform"
+    },
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
-    "Swashbuckle": "6.0.0-beta902",
-    "contentful.csharp": "0.13.10-beta",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.Extensions.Caching.Redis": "1.1.2"
+    "Swashbuckle": "6.0.0-beta902"
   },
 
   "tools": {

@@ -112,9 +112,9 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            var groups = await _client.GetEntriesAsync(builder);
+            var contentfulGroups = await _client.GetEntriesAsync(builder);
 
-            groups = groups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email == email));
+            var groups = contentfulGroups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email == email));
 
             var result = _groupListFactory.ToModel(groups.ToList());
 

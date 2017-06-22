@@ -43,7 +43,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync(builder);
-            var contentfulPayments = entries as List<ContentfulPayment> ?? entries.ToList();          
+            var contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();          
             
             var payments = GetAllPayments(contentfulPayments);
             return entries == null || !contentfulPayments.Any()
