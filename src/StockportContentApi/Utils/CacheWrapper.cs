@@ -83,7 +83,14 @@ namespace StockportContentApi.Utils
 
                     var data = JsonConvert.SerializeObject(result);
 
-                    _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                    try
+                    {
+                        _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogCritical(new EventId(), ex, "An error occurred trying to write to Redis");
+                    }
                 }
             }
 
@@ -113,7 +120,17 @@ namespace StockportContentApi.Utils
                 return false;
             }
 
-            var returnData = _memoryCache.GetString(key.ToString());
+            var returnData = string.Empty;
+            
+            try
+            {
+                returnData = _memoryCache.GetString(key.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(new EventId(), ex, "An error occurred trying to read from Redis");
+                return false;
+            }
 
             if (returnData != null)
             {
