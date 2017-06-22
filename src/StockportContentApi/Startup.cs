@@ -79,12 +79,6 @@ namespace StockportContentApi
             var loggerFactory = new LoggerFactory().AddNLog();
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
-            services.AddDistributedRedisCache(options =>
-            {
-                options.Configuration = "127.0.0.1:6379";
-                options.InstanceName = "master";
-            });
-
             ConfigureDataProtection(services, logger);
 
             RegisterBuilders(services);
@@ -97,8 +91,6 @@ namespace StockportContentApi
 
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
-
-            
         }
 
         private static void RegisterRepos(IServiceCollection services)
@@ -291,6 +283,12 @@ namespace StockportContentApi
                 var redisIp = GetHostEntryForUrl(redisUrl, logger);
                 logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
                 services.AddDataProtection().PersistKeysToRedis(redisIp);
+
+                services.AddDistributedRedisCache(options =>
+                {
+                    options.Configuration = redisIp;
+                    options.InstanceName = "master";
+                });
             }
             else
             {
@@ -301,6 +299,7 @@ namespace StockportContentApi
 
         private static string GetHostEntryForUrl(string host, ILogger logger)
         {
+
             var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
 
             if (!addresses.Any())
