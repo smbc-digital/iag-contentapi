@@ -283,20 +283,24 @@ namespace StockportContentApi
             app.UseMvc();
         }
 
-
-
         private void ConfigureDataProtection(IServiceCollection services, ILogger logger)
         {
             if (_useRedisSession)
             {
                 var redisUrl = Configuration["TokenStoreUrl"];
-                services.AddDataProtection().PersistKeysToRedis(redisUrl);
+                var redisIp = GetHostEntryForUrl(redisUrl, logger);
+                logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+                services.AddDataProtection().PersistKeysToRedis(redisIp);
+            }
+            else
+            {
+                services.AddAntiforgery();
+                logger.LogInformation("Not using redis for session management!");
             }
         }
 
         private static string GetHostEntryForUrl(string host, ILogger logger)
         {
-
             var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
 
             if (!addresses.Any())
