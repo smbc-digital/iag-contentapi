@@ -16,7 +16,7 @@ namespace StockportContentApiTests.Unit.Utils
         public CacheTest()
         {
             _distributedCacheWrapper = new Mock<IDistributedCacheWrapper>();
-            _cacheWrapper = new Cache(_distributedCacheWrapper.Object);
+            _cacheWrapper = new Cache(_distributedCacheWrapper.Object, null);
             
 
         }
