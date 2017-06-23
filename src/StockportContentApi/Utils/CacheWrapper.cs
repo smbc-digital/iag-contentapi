@@ -54,7 +54,7 @@ namespace StockportContentApi.Utils
             {
                 result = fallbackMethod();
 
-                var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
+                var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
                 var data = JsonConvert.SerializeObject(result);
 
@@ -79,7 +79,7 @@ namespace StockportContentApi.Utils
 
                 if (_memoryCache != null)
                 {
-                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
+                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
                     var data = JsonConvert.SerializeObject(result);
 
