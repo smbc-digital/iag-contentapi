@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var contentfulExpandingLinkBox = new ContentfulExpandingLinkBoxBuilder().Build();
             var subItemFactory = new SubItemContentfulFactory(_timeProvider.Object);
-            var factory = new ExpandingLinkBoxContentfulfactory(subItemFactory);
+            var factory = new ExpandingLinkBoxContentfulfactory(subItemFactory, _timeProvider.Object);
            
             var expandingLinkBox = factory.ToModel(contentfulExpandingLinkBox);
           
