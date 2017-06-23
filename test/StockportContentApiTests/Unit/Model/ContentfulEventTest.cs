@@ -30,7 +30,6 @@ namespace StockportContentApiTests.Unit.Model
                 EndTime = string.Empty,
                 Occurences = 0,
                 Frequency = EventFrequency.None,
-                Breadcrumbs = new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 Documents = new List<Asset>(),
                 MapPosition = new MapPosition(),
                 BookingInformation = string.Empty,
