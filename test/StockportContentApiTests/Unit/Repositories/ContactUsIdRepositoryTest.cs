@@ -55,11 +55,11 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "unit-test-showcase";
 
             var rawContactUsId = new ContentfulContactUsId();
+            var collection = new ContentfulCollection<ContentfulContactUsId>();
+            collection.Items = new List<ContentfulContactUsId> { rawContactUsId };
 
-            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
-
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulContactUsId> { rawContactUsId });
+            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulContactUsId>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug));
@@ -74,12 +74,14 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "test-slug";
             var rawContactUs = new ContentfulContactUsId() {Slug = slug};
-            
+            var collection = new ContentfulCollection<ContentfulContactUsId>();
+            collection.Items = new List<ContentfulContactUsId> { rawContactUs };
+
             // Act
             var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulContactUsId> { rawContactUs });
+                .ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug));
             var model = response.Get<ContactUsId>();

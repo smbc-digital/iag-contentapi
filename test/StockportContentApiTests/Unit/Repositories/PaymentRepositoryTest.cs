@@ -62,13 +62,15 @@ namespace StockportContentApiTests.Unit.Repositories
             rawPayments.Add(new ContentfulPaymentBuilder().Slug("firstPayment").Build());
             rawPayments.Add(new ContentfulPaymentBuilder().Slug("secondPayment").Build());
             rawPayments.Add(new ContentfulPaymentBuilder().Slug("thirdPayment").Build());
+            var collection = new ContentfulCollection<ContentfulPayment>();
+            collection.Items = rawPayments;
 
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _contentfulClient.Setup(o => o.GetEntriesAsync(
                 It.Is<QueryBuilder<ContentfulPayment>>(
                      q => q.Build() == builder.Build()),
                      It.IsAny<CancellationToken>()))
-                .ReturnsAsync(rawPayments);
+                .ReturnsAsync(collection);
 
             // Act
              var response = AsyncTestHelper.Resolve(_repository.Get());
@@ -89,13 +91,15 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "any-payment";
             
             var rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
+            var collection = new ContentfulCollection<ContentfulPayment>();
+            collection.Items = new List<ContentfulPayment> { rawPayment };
 
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync(
                 It.Is<QueryBuilder<ContentfulPayment>>(
                      q => q.Build() == builder.Build()),     
                      It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulPayment> {rawPayment});
+                .ReturnsAsync(collection);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));           
@@ -117,13 +121,15 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "invalid-url";
-            
+
+            var collection = new ContentfulCollection<ContentfulPayment>();
+            collection.Items = new List<ContentfulPayment>();
+
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntriesAsync(
-                It.Is<QueryBuilder<ContentfulPayment>>(
-                     q => q.Build() == builder.Build()),
+                It.IsAny<QueryBuilder<ContentfulPayment>>(),
                      It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulPayment>());
+                .ReturnsAsync(collection);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));

@@ -92,12 +92,14 @@ namespace StockportContentApiTests.Unit.Repositories
             var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None,  null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null);
             _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
+            var collection = new ContentfulCollection<ContentfulShowcase>();
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug).Build();
+            collection.Items = new List<ContentfulShowcase> { rawShowcase };
 
             var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
 
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
+                .ReturnsAsync(collection);
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
@@ -114,15 +116,17 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "unit-test-showcase-crumbs";
             var crumb = new Crumb("title", "slug", "type");
+            var collection = new ContentfulCollection<ContentfulShowcase>();
             var rawShowcase = new ContentfulShowcaseBuilder().Slug(slug)
                 .Breadcrumbs(new List<ContentfulReference>()
                             { new ContentfulReference() {Title = crumb.Title, Slug = crumb.Title, Sys = new SystemProperties() {Type = "Entry" }},
                             })
                 .Build();
+            collection.Items = new List<ContentfulShowcase> { rawShowcase };
 
             var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulShowcase> { rawShowcase });
+                .ReturnsAsync(collection);
 
             _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 

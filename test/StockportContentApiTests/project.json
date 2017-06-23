@@ -13,7 +13,7 @@
     "Microsoft.AspNetCore.TestHost": "1.0.0-*",
     "Moq": "4.6.25-alpha",
     "System.Diagnostics.TraceSource": "4.0.0",
-    "contentful.csharp": "0.13.10-beta"
+    "contentful.csharp": "0.14.0-beta"
   },
 
   "frameworks": {

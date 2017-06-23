@@ -23,6 +23,7 @@ using Xunit;
 using File = System.IO.File;
 using HttpResponse = StockportContentApi.Http.HttpResponse;
 using IContentfulClient = Contentful.Core.IContentfulClient;
+using System.Collections;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -95,6 +96,8 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "news-of-the-century";
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
             var contentfulNews = new ContentfulNewsBuilder().Slug(slug).SunriseDate(DateTime.Now.AddDays(-20)).Build();
+            var collection = new ContentfulCollection<ContentfulNews>();
+            collection.Items = new List<ContentfulNews> { contentfulNews };
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -104,7 +107,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulNews> { contentfulNews });
+                .ReturnsAsync(collection);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
 
             // Act
@@ -122,12 +125,13 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ShouldReturnNotFoundIfNoNewsForSlugFound()
         {
             const string slug = "news-of-the-century";
+            var collection = new ContentfulCollection<ContentfulNews>();
+            collection.Items = new List<ContentfulNews>();
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
             _client.Setup(o => o.GetEntriesAsync(
-                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() ==
-                 new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1).Build()),
-                 It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulNews>());
+                 It.IsAny<QueryBuilder<ContentfulNews>>(),
+                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
@@ -455,6 +459,9 @@ namespace StockportContentApiTests.Unit.Repositories
             DateTime futureSunRiseDate = DateTime.Now.AddDays(10);
             _mockTimeProvider.Setup(o => o.Now()).Returns(nowDateTime);
             var newsWithSunriseDateInFuture = new ContentfulNewsBuilder().SunriseDate(futureSunRiseDate).Slug(slug).Build();
+            var collection = new ContentfulCollection<ContentfulNews>();
+            collection.Items = new List<ContentfulNews> { newsWithSunriseDateInFuture };
+
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -464,7 +471,8 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulNews> { newsWithSunriseDateInFuture });
+                .ReturnsAsync(collection);
+
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunriseDateInFuture.Body);
 
             // Act
@@ -488,6 +496,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .SunriseDate(pastSunRiseDate)
                 .Slug(slug)
                 .Build();
+            var collection = new ContentfulCollection<ContentfulNews>();
+            collection.Items = new List<ContentfulNews> { newsWithSunsetDateInPast };
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -497,7 +507,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentfulNews> { newsWithSunsetDateInPast });
+                .ReturnsAsync(collection);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunsetDateInPast.Body);
 
             // Act

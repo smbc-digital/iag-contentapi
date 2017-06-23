@@ -13,6 +13,7 @@ using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
+using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -43,12 +44,17 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             const string slug = "a-slug";
             var contentfulTopic = new ContentfulProfileBuilder().Slug(slug).Build();
+            var collection = new ContentfulCollection<ContentfulProfile>();
+            collection.Items = new List<ContentfulProfile> { contentfulTopic };
+
             var profile = new Profile("type", "title", "slug", "subtitle",
                 "teaser", "image", "body", "icon", "backgroundImage",
                 new List<Crumb> { new Crumb("title", "slug", "type") });
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+
+
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile> { contentfulTopic });
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
             _profileFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(profile);
 
             var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
@@ -63,9 +69,13 @@ namespace StockportContentApiTests.Unit.Repositories
         public void Return404WhenProfileWhenItemsDontExist()
         {
             const string slug = "not-found";
+
+            var collection = new ContentfulCollection<ContentfulProfile>();
+            collection.Items = new List<ContentfulProfile>();
+
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(new List<ContentfulProfile>());
+            _client.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulProfile>>(),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
 
