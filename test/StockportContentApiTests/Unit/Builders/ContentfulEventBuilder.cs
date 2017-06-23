@@ -71,7 +71,6 @@ namespace StockportContentApiTests.Unit.Builders
                 EndTime = _endTime,
                 Occurences = _occurences,
                 Frequency = _eventFrequency,
-                Breadcrumbs = _breadcrumbs,
                 Documents = _documents,
                 Categories = _categories,
                 MapPosition = _mapPosition,

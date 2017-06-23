@@ -115,7 +115,8 @@ namespace StockportContentApiTests.Unit.Repositories
                         .Excluding(raw => raw.Documents)
                         .Excluding(e => e.UpdatedAt)
                         .Excluding(e => e.Group)
-                        .Excluding(e => e.Alerts));
+                        .Excluding(e => e.Alerts)
+                        .Excluding(e => e.Breadcrumbs));
 
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
@@ -195,7 +196,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.Documents)
                     .Excluding(e => e.UpdatedAt)
                     .Excluding(e => e.Group)
-                    .Excluding(e => e.Alerts));
+                    .Excluding(e => e.Alerts)
+                    .Excluding(e => e.Breadcrumbs));
 
             eventCalender.Events.Last()
                 .ShouldBeEquivalentTo(anotherEvent,
@@ -204,7 +206,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.Documents)
                     .Excluding(e => e.UpdatedAt)
                     .Excluding(e => e.Group)
-                    .Excluding(e => e.Alerts));
+                    .Excluding(e => e.Alerts)
+                    .Excluding(e => e.Breadcrumbs));
         }
 
         [Fact]
@@ -396,7 +399,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs));
         }
 
         [Fact]
@@ -415,7 +418,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs));
         }
 
         [Fact]
@@ -435,7 +438,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.Breadcrumbs));
         }
 
         [Fact]
@@ -469,7 +472,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(event3,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs));
         }
 
        
