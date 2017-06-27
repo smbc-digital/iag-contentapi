@@ -46,11 +46,23 @@ namespace StockportContentApi.Repositories
             _cache = cache;
         }
 
-        public async Task<HttpResponse> GetGroup(string slug)
+        public async Task<HttpResponse> GetGroup(string slug, bool onlyActive)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
             var entries = await _client.GetEntriesAsync(builder);
-            var entry = entries.FirstOrDefault();
+            ContentfulGroup entry;
+
+            var now = DateTime.Now.Date;
+
+            if (onlyActive)
+            {
+                entry = entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo));
+            }
+            else
+            {
+                entry = entries.FirstOrDefault();
+            }
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
 
@@ -71,11 +83,14 @@ namespace StockportContentApi.Repositories
 
             if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
 
+            var now = DateTime.Now.Date;
             var entries = await _client.GetEntriesAsync(builder);
+
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groups = _groupListFactory.ToModel(entries.ToList())
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
+                .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
                 .ToList();
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")

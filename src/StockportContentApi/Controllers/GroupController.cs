@@ -30,12 +30,12 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/group/{groupSlug}")]
-        public async Task<IActionResult> GetGroup(string groupSlug, string businessId)
+        public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true)
         { 
             return await _handler.Get(() =>
             {
                 var groupRepository = _createRepository(_createConfig(businessId));
-                return groupRepository.GetGroup(groupSlug);
+                return groupRepository.GetGroup(groupSlug, onlyActive);
             });
         }
 

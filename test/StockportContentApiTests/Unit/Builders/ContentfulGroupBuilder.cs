@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -24,6 +25,8 @@ namespace StockportContentApiTests.Unit.Builders
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
         private GroupAdministrators _groupAdministrators = new GroupAdministrators();
+        private DateTime _dateHiddenFrom = new DateTime(0001, 01, 01, 00, 00, 00);
+        private DateTime _dateHiddenTo = new DateTime(0001, 01, 01, 00, 00, 00);
 
         public ContentfulGroup Build()
         {
@@ -42,7 +45,9 @@ namespace StockportContentApiTests.Unit.Builders
                 CategoriesReference = _categoriesReference,
                 MapPosition = _mapPosition,
                 Sys = _sys,
-                GroupAdministrators = _groupAdministrators
+                GroupAdministrators = _groupAdministrators,
+                DateHiddenFrom = _dateHiddenFrom,
+                DateHiddenTo = _dateHiddenTo
             };
         }
 
@@ -67,6 +72,18 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulGroupBuilder GroupAdministrators(GroupAdministrators groupAdministrators)
         {
             _groupAdministrators = groupAdministrators;
+            return this;
+        }
+
+        public ContentfulGroupBuilder DateHiddenFrom(DateTime dateHiddenFrom)
+        {
+            _dateHiddenFrom = dateHiddenFrom;
+            return this;
+        }
+
+        public ContentfulGroupBuilder DateHiddenTo(DateTime dateHiddenTo)
+        {
+            _dateHiddenTo = dateHiddenTo;
             return this;
         }
     }

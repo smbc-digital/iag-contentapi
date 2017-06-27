@@ -88,7 +88,9 @@
         },
         "volunteering": false,
         "events": null,
-        "groupAdministrators": { "items": [] }
+        "groupAdministrators": { "items": [] },
+        "dateHiddenFrom": null,
+        "dateHiddenTo": null
       },
       "alerts": [
         {
@@ -166,7 +168,9 @@
         },
         "volunteering": false,
         "events": null,
-        "groupAdministrators": { "items": [] }
+        "groupAdministrators": { "items": [] },
+        "dateHiddenFrom": null,
+        "dateHiddenTo": null
       },
       "alerts": [
         {
@@ -175,11 +179,12 @@
           "body": "body",
           "severity": "severity",
           "sunriseDate": "0001-01-01T00:00:00Z",
-
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
       ]
     }
   ],
-  "groupAdministrators": { "items": [] }
+  "groupAdministrators": { "items": [] },
+  "dateHiddenFrom": "0001-01-01T00:00:00Z",
+  "dateHiddenTo": "0001-01-01T00:00:00Z"
 }

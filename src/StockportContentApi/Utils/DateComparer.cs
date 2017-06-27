@@ -36,6 +36,12 @@ namespace StockportContentApi.Utils
             return sunriseDate < _timeProvider.Now();
         }
 
+        public bool DateNowIsNotBetweenHiddenRange(DateTime? hiddenFrom, DateTime? hiddenTo)
+        {
+            var now = DateTime.Now.Date;
+            return hiddenFrom > now || (hiddenTo < now && hiddenTo != DateTime.MinValue) || (hiddenFrom == DateTime.MinValue && hiddenTo == DateTime.MinValue) || (hiddenFrom == null && hiddenTo == null);
+        }
+
         public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate)
         {
             return sunriseDate.Date >= startDate.Date && sunriseDate.Date <= endDate.Date && sunriseDate <= _timeProvider.Now();

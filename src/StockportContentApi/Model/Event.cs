@@ -30,7 +30,7 @@ namespace StockportContentApi.Model
         public bool Featured { get; }
         public DateTime? UpdatedAt { get; }
         public List<string> Tags { get; }
-        public Group Group { get; }
+        public Group Group { get; set; }
         public List<Alert> Alerts { get; }
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee, 

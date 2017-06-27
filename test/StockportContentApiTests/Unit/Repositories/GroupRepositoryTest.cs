@@ -78,7 +78,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null );
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -88,11 +88,156 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, false));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseGroup = response.Get<Group>();
             responseGroup.ShouldBeEquivalentTo(group);
+        }
+
+        [Fact]
+        public void GetsGroupWhenHiddenDatesAreInThePast()
+        {
+            // Arrange
+            const string slug = "group_slug";
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(-1)).Build();
+            var collection = new ContentfulCollection<ContentfulGroup>();
+            collection.Items = new List<ContentfulGroup> { contentfulGroup };
+
+            var group = new Group("name", "group_slug", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(-1));
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, true));
+            
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(group);
+        }
+
+        [Fact]
+        public void GetsGroupWhenHiddenDatesAreInTheFuture()
+        {
+            // Arrange
+            const string slug = "group_slug";
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(1)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
+            var collection = new ContentfulCollection<ContentfulGroup>();
+            collection.Items = new List<ContentfulGroup> { contentfulGroup };
+
+            var group = new Group("name", "group_slug", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3));
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, true));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(group);
+        }
+
+        [Fact]
+        public void DoesntGetGroupWhenHiddenDatesAreNow()
+        {
+            // Arrange
+            const string slug = "group_slug";
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
+            var collection = new ContentfulCollection<ContentfulGroup>();
+            collection.Items = new List<ContentfulGroup> { contentfulGroup };
+
+            var group = new Group("name", "group_slug", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(3));
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, true));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(null);
+        }
+
+        [Fact]
+        public void DoesntGetGroupWhenHiddenDateFromIsInThePastAndHiddenDateToIsNull()
+        {
+            // Arrange
+            const string slug = "group_slug";
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).Build();
+            var collection = new ContentfulCollection<ContentfulGroup>();
+            collection.Items = new List<ContentfulGroup> { contentfulGroup };
+
+            var group = new Group("name", "group_slug", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), null);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, true));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(null);
+        }
+
+        [Fact]
+        public void DoesntGetGroupWhenHiddenDateToIsInTheFutureAndHiddenDateFromIsNull()
+        {
+            // Arrange
+            const string slug = "group_slug";
+            var contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
+            var collection = new ContentfulCollection<ContentfulGroup>();
+            collection.Items = new List<ContentfulGroup> { contentfulGroup };
+
+            var group = new Group("name", "group_slug", "phoneNumber", "email",
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, null, DateTime.Now.AddDays(3));
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
+
+            _groupFactory.Setup(o => o.ToModel(contentfulGroup)).Returns(group);
+
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, true));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var responseGroup = response.Get<Group>();
+            responseGroup.ShouldBeEquivalentTo(null);
         }
 
         [Fact]
@@ -105,7 +250,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulGroup>>(),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, false));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No group found for '{slug}'");
@@ -244,7 +389,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroupWithlocation };
 
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false, null);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false, null, DateTime.MinValue, DateTime.MaxValue);
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -254,7 +399,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent>());
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, false));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -274,7 +419,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             bool volunteering = true;
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering, null);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering, null, DateTime.MinValue, DateTime.MaxValue);
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -284,7 +429,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroup(slug, false));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

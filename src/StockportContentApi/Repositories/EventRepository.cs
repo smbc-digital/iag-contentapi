@@ -58,6 +58,10 @@ namespace StockportContentApi.Repositories
             var eventItem = events.Where(e => e.Slug == slug).FirstOrDefault();
 
             eventItem = GetEventFromItsOccurrences(date, eventItem);
+            if (eventItem != null && !string.IsNullOrEmpty(eventItem.Group?.Slug) && !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
+            {
+                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null);
+            }
 
             return eventItem == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")

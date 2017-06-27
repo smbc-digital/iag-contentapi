@@ -2,6 +2,7 @@
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using System;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -18,6 +19,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _description = "_description";
         private string _image = "image-url.jpg";
         private string _thumbnail = "thumbnail.jpg";
+        private DateTime? _dateHiddenFrom = null;
+        private DateTime? _dateHiddenTo = null;
         private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
         private List<Event> _events = new List<Event>();
         private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
@@ -28,7 +31,7 @@ namespace StockportContentApiTests.Unit.Builders
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators);
+                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo);
         }
 
         public GroupBuilder Slug(string slug)
@@ -42,6 +45,7 @@ namespace StockportContentApiTests.Unit.Builders
             _categoriesReference = categoriesReference;
             return this;
         }
+
 
         public GroupBuilder MapPosition(MapPosition mapPosition)
         {
@@ -70,6 +74,18 @@ namespace StockportContentApiTests.Unit.Builders
         public GroupBuilder GroupAdministrators(GroupAdministrators groupAdministrators)
         {
             _groupAdministrators = groupAdministrators;
+            return this;
+        }
+
+        public GroupBuilder DateHiddenFrom(DateTime dateHiddenFrom)
+        {
+            _dateHiddenFrom = dateHiddenFrom;
+            return this;
+        }
+
+        public GroupBuilder DateHiddenTo(DateTime dateHiddenTo)
+        {
+            _dateHiddenTo = dateHiddenTo;
             return this;
         }
     }

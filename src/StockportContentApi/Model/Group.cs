@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
@@ -22,10 +23,13 @@ namespace StockportContentApi.Model
         public bool Volunteering { get; }
         public List<Event> Events { get; private set; }
         public GroupAdministrators GroupAdministrators { get; set; }
+        public DateTime? DateHiddenFrom { get; set; }
+        public DateTime? DateHiddenTo { get; set; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
-            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators)
+            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, 
+            MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, DateTime? dateHiddenFrom, DateTime? dateHiddenTo)
         {
             Name = name;
             Slug = slug;
@@ -43,6 +47,8 @@ namespace StockportContentApi.Model
             MapPosition = mapPosition;
             Volunteering = volunteering;
             GroupAdministrators = groupAdministrators;
+            DateHiddenFrom = dateHiddenFrom;
+            DateHiddenTo = dateHiddenTo;
         }
 
         public void SetEvents(List<Event> events)

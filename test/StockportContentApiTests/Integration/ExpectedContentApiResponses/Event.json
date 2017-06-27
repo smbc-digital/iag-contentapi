@@ -62,7 +62,9 @@
     },
     "volunteering": false,
     "events": null,
-    "groupAdministrators": { "items": [] }
+    "groupAdministrators": { "items": [] },
+    "dateHiddenFrom": null,
+    "dateHiddenTo": null
   },
   "alerts": [
     {

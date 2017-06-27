@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.Model;
 
@@ -21,5 +22,7 @@ namespace StockportContentApi.ContentfulModels
         public bool Volunteering { get; set; } = false;
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public GroupAdministrators GroupAdministrators { get; set; } = new GroupAdministrators();
+        public DateTime? DateHiddenFrom { get; set; }
+        public DateTime? DateHiddenTo { get; set; }
     }
 }
