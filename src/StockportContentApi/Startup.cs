@@ -25,7 +25,8 @@ using Contentful.Core.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using StockportWebapp.DataProtection;
-
+using AutoMapper;
+using Profile = StockportContentApi.Model.Profile;
 
 namespace StockportContentApi
 {
@@ -91,6 +92,13 @@ namespace StockportContentApi
 
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperConfig());
+            });
+
+            services.AddSingleton<IMapper>(p => config.CreateMapper());
         }
 
         private static void RegisterRepos(IServiceCollection services)
@@ -132,7 +140,7 @@ namespace StockportContentApi
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>
                 (p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
 
-   services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+            services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                                                                                                               p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
@@ -225,6 +233,9 @@ namespace StockportContentApi
                                                         p.GetService<ICache>()); });
             services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
+                p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)

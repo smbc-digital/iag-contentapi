@@ -1,8 +1,12 @@
 ﻿using StockportContentApi.Repositories;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
+using AutoMapper;
 
 namespace StockportContentApi.Controllers
 {
@@ -13,20 +17,25 @@ namespace StockportContentApi.Controllers
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, GroupRepository> _createRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
-      
+        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
+        private readonly IMapper _mapper;
+
 
         public GroupController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, GroupRepository> createRepository,
-            Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository
+            Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
+            Func<ContentfulConfig, ManagementRepository> managementRepository,
+            IMapper mapper
             )
         {
             _handler = handler;
             _createConfig = createConfig;
             _createRepository = createRepository;
             _groupCategoryRepository = groupCategoryRepository;
-         
-    }
+            _managementRepository = managementRepository;
+            _mapper = mapper;
+        }
 
         [HttpGet]
         [Route("api/{businessId}/group/{groupSlug}")]
@@ -69,6 +78,88 @@ namespace StockportContentApi.Controllers
             {
                 var groupRepository = _createRepository(_createConfig(businessId));
                 return groupRepository.GetAdministratorsGroups(email);
+            });
+        }
+        [HttpPost]
+        [Route("api/{businessId}/groups/add")]
+        public async Task<IActionResult> AddGroup(string businessId, [FromBody] Group group)
+        {
+            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
+
+            return await _handler.Get(() =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                return managementRepository.CreateOrUpdate(contentfulGroup);
+            });
+        }
+
+        [HttpPut]
+        [Route("api/{businessId}/groups/update")]
+        public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
+        {
+            var repository = _groupRepository(_createConfig(businessId));
+            var existingGroup = await repository.GetContentfulGroup(group.Slug);
+
+            var existingCategories = await repository.GetContentfulGroupCategories();
+            var referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
+
+            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
+            contentfulGroup.CategoriesReference = referencedCategories;
+            contentfulGroup.Image = existingGroup.Image;
+            ManagementGroup managementGroup = new ManagementGroup();
+            _mapper.Map(contentfulGroup, managementGroup);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                existingGroup.Sys.Version = version;
+                return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+            });
+        }
+
+        [HttpDelete]
+        [Route("api/{businessId}/groups/{slug}/administrators/delete/{emailAddress}")]
+        public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
+        {
+            var repository = _groupRepository(_createConfig(businessId));
+
+            var existingGroup = await repository.GetContentfulGroup(slug);
+
+            existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
+
+            ManagementGroup managementGroup = new ManagementGroup();
+            _mapper.Map(existingGroup, managementGroup);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                existingGroup.Sys.Version = version;
+                return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+            });
+        }
+
+        [HttpPut]
+        [Route("api/{businessId}/groups/{slug}/administrators/update/{emailAddress}")]
+        public async Task<IActionResult> AddAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        {
+            var repository = _groupRepository(_createConfig(businessId));
+
+            var existingGroup = await repository.GetContentfulGroup(slug);
+
+            existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
+            existingGroup.GroupAdministrators.Items.Add(new GroupAdministratorItems { Email = emailAddress, Permission = permission });
+
+            ManagementGroup managementGroup = new ManagementGroup();
+            _mapper.Map(existingGroup, managementGroup);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                existingGroup.Sys.Version = version;
+                return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
             });
         }
     }
