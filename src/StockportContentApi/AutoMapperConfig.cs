@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Contentful.Core.Models;
-using Contentful.Core.Models.Management;
-using StackExchange.Redis;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.ManagementModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi
 {
@@ -30,7 +26,7 @@ namespace StockportContentApi
                 .ForMember(dest => dest.Type,
                     opts => opts.Ignore());
 
-            CreateMap<SystemProperties, ManagementModels.ManagementAsset>()
+            CreateMap<SystemProperties, ManagementAsset>()
                 .ForMember(dest => dest.Id,
                     opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LinkType,
@@ -62,7 +58,7 @@ namespace StockportContentApi
             destination.Email = new Dictionary<string, string> { { "en-GB", source.Email } };
             destination.Facebook = new Dictionary<string, string> { { "en-GB", source.Facebook } };
             destination.GroupAdministrators = new Dictionary<string, GroupAdministrators> { { "en-GB", source.GroupAdministrators } };
-            destination.Image = new Dictionary<string, ManagementModels.LinkReference> { { "en-GB", new ManagementModels.LinkReference() { Sys = new ManagementModels.ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
+            destination.Image = new Dictionary<string, LinkReference> { { "en-GB", new LinkReference() { Sys = new ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
             destination.Name = new Dictionary<string, string> { { "en-GB", source.Name } };
             destination.PhoneNumber = new Dictionary<string, string> { { "en-GB", source.PhoneNumber } };
             destination.Slug = new Dictionary<string, string> { { "en-GB", source.Slug } };

@@ -9,6 +9,7 @@ namespace StockportContentApi.Config
         private readonly Dictionary<string, string> _config = new Dictionary<string, string>();
         public string SpaceKey;
         public string AccessKey;
+        public string ManagementKey;
 
         public ContentfulConfig(string businessId)
         {
@@ -29,6 +30,7 @@ namespace StockportContentApi.Config
         {
             SpaceKey = GetConfigValue($"{BusinessId.ToUpper()}_SPACE");
             AccessKey = GetConfigValue($"{BusinessId.ToUpper()}_ACCESS_KEY");
+            ManagementKey = GetConfigValue($"{BusinessId.ToUpper()}_MANAGEMENT_KEY");
 
             ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
                                     $"spaces/{SpaceKey}/" +

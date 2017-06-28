@@ -1,5 +1,6 @@
 ﻿using StockportContentApi.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using StockportContentApi.Config;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using AutoMapper;
+using StockportContentApi.ManagementModels;
 
 namespace StockportContentApi.Controllers
 {
@@ -15,15 +17,14 @@ namespace StockportContentApi.Controllers
 
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, GroupRepository> _createRepository;
+        private readonly Func<ContentfulConfig, GroupRepository> _groupRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
         private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
         private readonly IMapper _mapper;
 
-
         public GroupController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, GroupRepository> createRepository,
+            Func<ContentfulConfig, GroupRepository> groupRepository,
             Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
             Func<ContentfulConfig, ManagementRepository> managementRepository,
             IMapper mapper
@@ -31,7 +32,7 @@ namespace StockportContentApi.Controllers
         {
             _handler = handler;
             _createConfig = createConfig;
-            _createRepository = createRepository;
+            _groupRepository = groupRepository;
             _groupCategoryRepository = groupCategoryRepository;
             _managementRepository = managementRepository;
             _mapper = mapper;
@@ -43,7 +44,7 @@ namespace StockportContentApi.Controllers
         { 
             return await _handler.Get(() =>
             {
-                var groupRepository = _createRepository(_createConfig(businessId));
+                var groupRepository = _groupRepository(_createConfig(businessId));
                 return groupRepository.GetGroup(groupSlug, onlyActive);
             });
         }
@@ -65,7 +66,7 @@ namespace StockportContentApi.Controllers
         {
             return await _handler.Get(() =>
             {
-                var groupRepository = _createRepository(_createConfig(businessId));
+                var groupRepository = _groupRepository(_createConfig(businessId));
                 return groupRepository.GetGroupResults(category, latitude, longitude, order, location);
             });
         }
@@ -76,7 +77,7 @@ namespace StockportContentApi.Controllers
         {
             return await _handler.Get(() =>
             {
-                var groupRepository = _createRepository(_createConfig(businessId));
+                var groupRepository = _groupRepository(_createConfig(businessId));
                 return groupRepository.GetAdministratorsGroups(email);
             });
         }
@@ -103,11 +104,7 @@ namespace StockportContentApi.Controllers
             var existingCategories = await repository.GetContentfulGroupCategories();
             var referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
 
-            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
-            contentfulGroup.CategoriesReference = referencedCategories;
-            contentfulGroup.Image = existingGroup.Image;
-            ManagementGroup managementGroup = new ManagementGroup();
-            _mapper.Map(contentfulGroup, managementGroup);
+            var managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
 
             return await _handler.Get(async () =>
             {
@@ -142,7 +139,19 @@ namespace StockportContentApi.Controllers
 
         [HttpPut]
         [Route("api/{businessId}/groups/{slug}/administrators/update/{emailAddress}")]
+        public async Task<IActionResult> UpdateAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        {
+            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+        }
+
+        [HttpPost]
+        [Route("api/{businessId}/groups/{slug}/administrators/add/{emailAddress}")]
         public async Task<IActionResult> AddAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        {
+            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+        }
+
+        private async Task<IActionResult> AddOrUpdateAdministrator(string permission, string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
 
@@ -161,6 +170,16 @@ namespace StockportContentApi.Controllers
                 existingGroup.Sys.Version = version;
                 return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
             });
+        }
+
+        private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories, ContentfulGroup existingGroup)
+        {
+            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
+            contentfulGroup.CategoriesReference = referencedCategories;
+            contentfulGroup.Image = existingGroup.Image;
+            var managementGroup = new ManagementGroup();
+            _mapper.Map(contentfulGroup, managementGroup);
+            return managementGroup;
         }
     }
 }

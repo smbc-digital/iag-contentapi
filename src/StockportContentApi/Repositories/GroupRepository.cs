@@ -9,9 +9,8 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
-using Microsoft.Extensions.Caching.Memory;
+using Contentful.Core.Models;
 using StockportContentApi.Client;
-using StockportContentApi.Factories;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -46,23 +45,24 @@ namespace StockportContentApi.Repositories
             _cache = cache;
         }
 
+        public async Task<ContentfulGroup> GetContentfulGroup(string slug)
+        {
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.FirstOrDefault();
+
+            return entry;
+        }
+
         public async Task<HttpResponse> GetGroup(string slug, bool onlyActive)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             var entries = await _client.GetEntriesAsync(builder);
-            ContentfulGroup entry;
 
-            var now = DateTime.Now.Date;
-
-            if (onlyActive)
-            {
-                entry = entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo));
-            }
-            else
-            {
-                entry = entries.FirstOrDefault();
-            }
+            var entry = onlyActive 
+                ? entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo)) 
+                : entries.FirstOrDefault();
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
 
@@ -83,7 +83,6 @@ namespace StockportContentApi.Repositories
 
             if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
 
-            var now = DateTime.Now.Date;
             var entries = await _client.GetEntriesAsync(builder);
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
@@ -110,9 +109,9 @@ namespace StockportContentApi.Repositories
 
             groupResults.Groups = groups;
 
-            List<GroupCategory> groupCategoryResults = await GetGroupCategories();
+            var groupCategoryResults = await GetGroupCategories();
 
-            if (!string.IsNullOrEmpty(category) && !groupCategoryResults.Any(g => g.Slug.ToLower() == category.ToLower()))
+            if (!string.IsNullOrEmpty(category) && groupCategoryResults.All(g => !string.Equals(g.Slug, category, StringComparison.CurrentCultureIgnoreCase)))
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
             groupResults.Categories = groupCategoryResults;
@@ -141,11 +140,22 @@ namespace StockportContentApi.Repositories
             return await _cache.GetFromCacheOrDirectlyAsync("group-categories", GetGroupCategoriesDirect);
         }
 
+        public async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories()
+        {
+            return await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect);
+        }
+
         private async Task<List<GroupCategory>> GetGroupCategoriesDirect()
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
             var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
             return _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
+        }
+
+        private async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategoriesDirect()
+        {
+            var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+            return await _client.GetEntriesAsync(groupCategoryBuilder);
         }
     }
 }

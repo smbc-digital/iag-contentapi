@@ -60,6 +60,7 @@ namespace StockportContentApi
                         .Add("DELIVERY_URL", Configuration["Contentful:DeliveryUrl"])
                         .Add($"{businessId.ToUpper()}_SPACE", Configuration[$"{businessId}:Space"])
                         .Add($"{businessId.ToUpper()}_ACCESS_KEY", Configuration[$"{businessId}:AccessKey"])
+                        .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", Configuration[$"{businessId}:ManagementKey"])
                         .Build();
 
             var redirectBusinessIds = new List<string>();
