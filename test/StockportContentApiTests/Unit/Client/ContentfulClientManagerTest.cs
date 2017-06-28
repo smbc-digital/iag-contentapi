@@ -17,6 +17,7 @@ namespace StockportContentApiTests.Unit.Client
                .Add("DELIVERY_URL", "https://test.url")
                .Add("TEST_SPACE", "SPACE")
                .Add("TEST_ACCESS_KEY", "KEY")
+                .Add("TEST_MANAGEMENT_KEY", "KEY")
                .Build();
 
             var contenfulClient = manager.GetClient(config);

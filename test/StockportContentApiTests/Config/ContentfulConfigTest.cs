@@ -16,6 +16,7 @@ namespace StockportContentApiTests.Config
             var config = new ContentfulConfig("testid")
                 .Add("DELIVERY_URL", "https://fake.url")
                 .Add("TESTID_ACCESS_KEY", key)
+                .Add("TESTID_MANAGEMENT_KEY", "KEY")
                 .Add("TESTID_SPACE", space)
                 .Build();
 
@@ -32,6 +33,7 @@ namespace StockportContentApiTests.Config
         {
             Exception exception = Assert.Throws<ArgumentException>(() => new ContentfulConfig("testid")
                 .Add("TESTID_ACCESS_KEY", "KEY")
+                .Add("TESTID_MANAGEMENT_KEY", "KEY")
                 .Add("TESTID_SPACE", "SPACE")
                 .Build());
 

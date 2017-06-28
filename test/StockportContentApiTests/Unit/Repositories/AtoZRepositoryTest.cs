@@ -26,6 +26,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("DELIVERY_URL", "https://fake.url")
                 .Add("TEST_SPACE", "SPACE")
                 .Add("TEST_ACCESS_KEY", "KEY")
+                .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
             _httpClient = new Mock<IHttpClient>();

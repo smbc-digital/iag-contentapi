@@ -25,6 +25,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("DELIVERY_URL", "https://fake.url")
                 .Add("UNITTEST_SPACE", "SPACE")
                 .Add("UNITTEST_ACCESS_KEY", "KEY")
+                .Add("UNITTEST_MANAGEMENT_KEY", "KEY")
                 .Build();
         }
 
