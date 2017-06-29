@@ -168,6 +168,9 @@ namespace StockportContentApi
                                                     p.GetService<ITimeProvider>(),
                                                     p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
+                (p => new ArticleSiteMapContentfulFactory());
+
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(
                     p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
@@ -176,7 +179,7 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(
-                p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IVideoRepository>()); });
+                p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>()); });
 
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
                 p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });

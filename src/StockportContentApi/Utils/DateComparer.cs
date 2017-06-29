@@ -38,7 +38,7 @@ namespace StockportContentApi.Utils
 
         public bool DateNowIsNotBetweenHiddenRange(DateTime? hiddenFrom, DateTime? hiddenTo)
         {
-            var now = DateTime.Now.Date;
+            var now = DateTime.Now;
             return hiddenFrom > now || (hiddenTo < now && hiddenTo != DateTime.MinValue) || (hiddenFrom == DateTime.MinValue && hiddenTo == DateTime.MinValue) || (hiddenFrom == null && hiddenTo == null);
         }
 
