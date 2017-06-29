@@ -12,12 +12,14 @@ using StockportContentApi.Client;
 using Contentful.Core.Search;
 using System.Linq;
 using Contentful.Core.Models;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Repositories
 {
     public class ArticleRepository
     {        
         private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
+        private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
         private readonly DateComparer _dateComparer;      
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IVideoRepository _videoRepository;
@@ -25,13 +27,27 @@ namespace StockportContentApi.Repositories
         public ArticleRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, 
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulArticle, Article> contentfulFactory, 
+            IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
+            IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
             IVideoRepository videoRepository)
         {
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _videoRepository = videoRepository;
+            _contentfulFactoryArticle = contentfulFactoryArticle;
+        }
+
+        public async Task<HttpResponse> Get()
+        {
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var entries = await _client.GetEntriesAsync(builder);
+            var contentfulArticles = entries as IEnumerable<ContentfulArticleForSiteMap> ?? entries.ToList();
+
+            var articles = GetAllArticles(contentfulArticles);
+            return entries == null || !contentfulArticles.Any()
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Articles found")
+                : HttpResponse.Successful(articles);
         }
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
@@ -68,6 +84,17 @@ namespace StockportContentApi.Repositories
             return articleItem == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'")
                 : HttpResponse.Successful(articleItem);          
-        }     
+        }
+
+        private IEnumerable<ArticleSiteMap> GetAllArticles(IEnumerable<ContentfulArticleForSiteMap> entries)
+        {
+            var entriesList = new List<ArticleSiteMap>();
+            foreach (var entry in entries)
+            {
+                var articleItem = _contentfulFactoryArticle.ToModel(entry);
+                entriesList.Add(articleItem);
+            }
+            return entriesList;
+        }
     }
 }

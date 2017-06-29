@@ -34,5 +34,16 @@ namespace StockportContentApi.Controllers
                 return article;
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/article")]
+        public async Task<IActionResult> Index(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _createRepository(_createConfig(businessId));
+                return repository.Get();
+            });
+        }
     }
 }
