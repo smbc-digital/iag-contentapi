@@ -9,6 +9,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
+using Contentful.Core;
 using Contentful.Core.Models;
 using StockportContentApi.Client;
 using StockportContentApi.Utils;
@@ -33,7 +34,6 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
                                  EventRepository eventRepository,
                                  ICache cache
-
             )
         {
             _dateComparer = new DateComparer(timeProvider);

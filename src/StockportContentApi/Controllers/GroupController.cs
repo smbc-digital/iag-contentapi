@@ -72,7 +72,7 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/groups/administrators/{email}")]
+        [Route("api/{businessId}/group/administrators/{email}")]
         public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email)
         {
             return await _handler.Get(() =>
@@ -81,21 +81,9 @@ namespace StockportContentApi.Controllers
                 return groupRepository.GetAdministratorsGroups(email);
             });
         }
-        [HttpPost]
-        [Route("api/{businessId}/groups/add")]
-        public async Task<IActionResult> AddGroup(string businessId, [FromBody] Group group)
-        {
-            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
-
-            return await _handler.Get(() =>
-            {
-                var managementRepository = _managementRepository(_createConfig(businessId));
-                return managementRepository.CreateOrUpdate(contentfulGroup);
-            });
-        }
 
         [HttpPut]
-        [Route("api/{businessId}/groups/update")]
+        [Route("api/{businessId}/group/{slug}")]
         public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -116,7 +104,7 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpDelete]
-        [Route("api/{businessId}/groups/{slug}/administrators/delete/{emailAddress}")]
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -138,14 +126,14 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpPut]
-        [Route("api/{businessId}/groups/{slug}/administrators/update/{emailAddress}")]
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> UpdateAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
         {
             return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
         }
 
         [HttpPost]
-        [Route("api/{businessId}/groups/{slug}/administrators/add/{emailAddress}")]
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> AddAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
         {
             return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);

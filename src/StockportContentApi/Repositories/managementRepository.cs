@@ -26,15 +26,13 @@ namespace StockportContentApi.Repositories
             _client = client.GetManagementClient(config);
         }
 
-        public async Task<HttpResponse> CreateOrUpdate(dynamic content, SystemProperties systemProperties = null)
+        public async Task<HttpResponse> CreateOrUpdate(dynamic content, SystemProperties systemProperties)
         {
             var entry = new Entry<dynamic>
             {
                 Fields = content,
                 SystemProperties = systemProperties
             };
-
-            if (systemProperties == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "Not found System Properties");
 
             var group = await _client.CreateOrUpdateEntryAsync(entry, null, null, systemProperties.Version);
 
@@ -47,9 +45,7 @@ namespace StockportContentApi.Repositories
         public async Task<int> GetVersion(string entryId)
         {
             var managementGroup = await _client.GetEntryAsync(entryId);
-            if (managementGroup.SystemProperties.Version != null) return managementGroup.SystemProperties.Version.Value;
-
-            return 0;
+            return managementGroup.SystemProperties.Version ?? 0;
         }
     }
 }
