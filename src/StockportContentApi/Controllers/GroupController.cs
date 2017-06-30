@@ -104,6 +104,22 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpDelete]
+        [Route("api/{businessId}/group/{slug}")]
+        public async Task<IActionResult> DeleteGroup(string slug, string businessId)
+        {
+            var repository = _groupRepository(_createConfig(businessId));
+            var existingGroup = await repository.GetContentfulGroup(slug);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                existingGroup.Sys.Version = version;
+                return await managementRepository.Delete(existingGroup.Sys);
+            });
+        }
+
+        [HttpDelete]
         [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
         {

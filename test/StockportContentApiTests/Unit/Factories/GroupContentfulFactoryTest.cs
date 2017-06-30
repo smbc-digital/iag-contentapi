@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Moq;
@@ -9,6 +10,7 @@ using Xunit;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApiTests.Unit.Factories
 {
@@ -19,11 +21,16 @@ namespace StockportContentApiTests.Unit.Factories
         private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>
             _contentfulGroupCategoryFactory;
 
+        private readonly Mock<ITimeProvider> _timeProvider;
+
 
         public GroupContentfulFactoryTest()
         {
+            _timeProvider = new Mock<ITimeProvider>();
+
+            _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
             _contentfulGroupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulGroupCategoryFactory.Object);           
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulGroupCategoryFactory.Object, _timeProvider.Object);           
         }
 
         [Fact]

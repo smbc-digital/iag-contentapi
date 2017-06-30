@@ -92,6 +92,7 @@
         "dateHiddenFrom": null,
         "dateHiddenTo": null
       },
+      "status": "Published",
       "alerts": [
         {
           "title": "title",
@@ -172,6 +173,7 @@
         "dateHiddenFrom": null,
         "dateHiddenTo": null
       },
+      "status": "Published",
       "alerts": [
         {
           "title": "title",

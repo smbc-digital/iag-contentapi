@@ -42,6 +42,15 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(group);
         }
 
+        public async Task<HttpResponse> Delete(SystemProperties systemProperties)
+        {
+            await _client.UnpublishEntryAsync(systemProperties.Id, systemProperties.Version.Value);
+
+            await _client.DeleteEntryAsync(systemProperties.Id, systemProperties.Version.Value);
+
+            return HttpResponse.Successful("Successfully Deleted Entry: " + systemProperties.Id);
+        }
+
         public async Task<int> GetVersion(string entryId)
         {
             var managementGroup = await _client.GetEntryAsync(entryId);
