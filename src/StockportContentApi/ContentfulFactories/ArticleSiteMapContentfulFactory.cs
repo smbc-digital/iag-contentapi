@@ -9,13 +9,9 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class ArticleSiteMapContentfulFactory : IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>
     {
-        public ArticleSiteMapContentfulFactory()
+       public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
         {
-        }
-
-        public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
-        {
-            return new ArticleSiteMap(entry.Slug);
+            return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate);
         }
     }
 }
