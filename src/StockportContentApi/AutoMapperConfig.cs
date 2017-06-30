@@ -67,7 +67,7 @@ namespace StockportContentApi
             destination.Volunteering = new Dictionary<string, bool> { { "en-GB", source.Volunteering } };
             destination.Website = new Dictionary<string, string> { { "en-GB", source.Website } };
             destination.DateHiddenFrom = new Dictionary<string, string> { { "en-GB", source.DateHiddenFrom != null ? source.DateHiddenFrom.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MinValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
-            destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB",source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MinValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
+            destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB",source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
 
             destination.CategoriesReference = new Dictionary<string, List<ManagementGroupCategory>>()
             {
