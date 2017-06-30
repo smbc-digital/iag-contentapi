@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
             var entry = new Entry<dynamic>
             {
                 Fields = content,
-                SystemProperties = systemProperties
+                SystemProperties = systemProperties 
             };
 
             var group = await _client.CreateOrUpdateEntryAsync(entry, null, null, systemProperties.Version);
