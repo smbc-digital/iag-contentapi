@@ -90,10 +90,10 @@
         "events": null,
         "groupAdministrators": { "items": [] },
         "dateHiddenFrom": null,
-        "dateHiddenTo": null
+        "dateHiddenTo": null,
+        "status": "Published"
       },
-      "status": "Published",
-      "alerts": [
+     "alerts": [
         {
           "title": "title",
           "subHeading": "subHeading",
@@ -171,9 +171,9 @@
         "events": null,
         "groupAdministrators": { "items": [] },
         "dateHiddenFrom": null,
-        "dateHiddenTo": null
+        "dateHiddenTo": null,
+        "status": "Published"
       },
-      "status": "Published",
       "alerts": [
         {
           "title": "title",
@@ -188,5 +188,6 @@
   ],
   "groupAdministrators": { "items": [] },
   "dateHiddenFrom": "0001-01-01T00:00:00Z",
-  "dateHiddenTo": "0001-01-01T00:00:00Z"
+  "dateHiddenTo": "0001-01-01T00:00:00Z",
+  "status": "Published"
 }

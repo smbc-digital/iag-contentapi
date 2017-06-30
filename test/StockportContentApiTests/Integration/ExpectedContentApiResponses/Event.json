@@ -64,7 +64,8 @@
     "events": null,
     "groupAdministrators": { "items": [] },
     "dateHiddenFrom": null,
-    "dateHiddenTo": null
+    "dateHiddenTo": null,
+    "status": "Published"
   },
   "alerts": [
     {
