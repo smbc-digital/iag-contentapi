@@ -44,7 +44,8 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
             var contentfulArticles = entries as IEnumerable<ContentfulArticleForSiteMap> ?? entries.ToList();
 
-            var articles = GetAllArticles(contentfulArticles);
+            var articles = GetAllArticles(contentfulArticles.ToList())
+                .Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
             return entries == null || !contentfulArticles.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Articles found")
                 : HttpResponse.Successful(articles);
@@ -86,7 +87,7 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(articleItem);          
         }
 
-        private IEnumerable<ArticleSiteMap> GetAllArticles(IEnumerable<ContentfulArticleForSiteMap> entries)
+        private IEnumerable<ArticleSiteMap> GetAllArticles(List<ContentfulArticleForSiteMap> entries)
         {
             var entriesList = new List<ArticleSiteMap>();
             foreach (var entry in entries)

@@ -95,14 +95,14 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetAllArticleSlugForSitemap()
         {
             var collection = new ContentfulCollection<ContentfulArticleForSiteMap>();
-            collection.Items = new List<ContentfulArticleForSiteMap> {new ContentfulArticleForSiteMap() {Slug = "slug1"}, new ContentfulArticleForSiteMap() { Slug = "slug2" }, new ContentfulArticleForSiteMap() { Slug = "slug3" } };
+            collection.Items = new List<ContentfulArticleForSiteMap> {new ContentfulArticleForSiteMap() {Slug = "slug1", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue }, new ContentfulArticleForSiteMap() { Slug = "slug2", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue}, new ContentfulArticleForSiteMap() { Slug = "slug3", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue } };
             var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulArticleForSiteMap>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.Get());
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var responseArticle = response.Get<List<ArticleSiteMap>>();
-            responseArticle.Count.Should().Be(collection.Items.Count());
+            var responseArticle = response.Get<IEnumerable<ArticleSiteMap>>();
+            responseArticle.ToList().Count.Should().Be(collection.Items.Count());
         }
 
         [Fact]
