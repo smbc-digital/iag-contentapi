@@ -239,7 +239,7 @@ namespace StockportContentApi
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
 
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
-                p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>()); });
+                p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
         }
 
         private static void RegisterBuilders(IServiceCollection services)
