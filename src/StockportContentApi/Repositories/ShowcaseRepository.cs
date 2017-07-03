@@ -37,6 +37,17 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
             _eventRepository = eventRepository;
         }
+        public async Task<HttpResponse> Get()
+        {
+            var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
+
+            var entries = await _client.GetEntriesAsync(builder);
+            var showcases = entries.Select(e => _contentfulFactory.ToModel(e));
+
+            return showcases.GetType() == typeof(NullHomepage)
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcases found")
+                : HttpResponse.Successful(showcases);
+        }
 
         public async Task<HttpResponse> GetShowcases(string slug)
         {

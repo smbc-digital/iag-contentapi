@@ -34,5 +34,18 @@ namespace StockportContentApi.Controllers
                 return article;
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/showcase/")]
+        public async Task<IActionResult> Get(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _createRepository(_createConfig(businessId));
+                var article = repository.Get();
+
+                return article;
+            });
+        }
     }
 }

@@ -45,6 +45,23 @@ namespace StockportContentApi.Repositories
             _cache = cache;
         }
 
+        public async Task<HttpResponse> Get()
+        {
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var entries = await _client.GetEntriesAsync(builder);
+            var contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
+
+            contentfulGroups =
+                contentfulGroups.Where(
+                    group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
+
+            var groupList = _groupListFactory.ToModel(contentfulGroups.ToList());
+
+            return entries == null || !groupList.Any()
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Groups found")
+                : HttpResponse.Successful(groupList);
+        }
+
         public async Task<ContentfulGroup> GetContentfulGroup(string slug)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
