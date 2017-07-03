@@ -59,7 +59,7 @@ namespace StockportContentApi
             destination.Email = new Dictionary<string, string> { { "en-GB", source.Email } };
             destination.Facebook = new Dictionary<string, string> { { "en-GB", source.Facebook } };
             destination.GroupAdministrators = new Dictionary<string, GroupAdministrators> { { "en-GB", source.GroupAdministrators } };
-            destination.Image = new Dictionary<string, LinkReference> { { "en-GB", new LinkReference() { Sys = new ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
+            destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id) ? null : new Dictionary<string, LinkReference> { { "en-GB", new LinkReference() { Sys = new ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
             destination.Name = new Dictionary<string, string> { { "en-GB", source.Name } };
             destination.PhoneNumber = new Dictionary<string, string> { { "en-GB", source.PhoneNumber } };
             destination.Slug = new Dictionary<string, string> { { "en-GB", source.Slug } };
