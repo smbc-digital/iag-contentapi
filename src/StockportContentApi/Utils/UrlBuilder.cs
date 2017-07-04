@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace StockportContentApi.Utils
             _contentfulApiUrl = contentfulApiUrl;
         }
 
-        public string UrlFor(string type, int referenceLevel = -1,bool displayOnAtoZ =false, string slug = null, int limit = -1, string tag =null)
+        public string UrlFor(string type, int referenceLevel = -1, bool displayOnAtoZ = false, string slug = null, int limit = -1, string tag = null)
         {
             var baseUrl =$"{_contentfulApiUrl}&content_type={type}";
             if (displayOnAtoZ)
@@ -31,7 +32,7 @@ namespace StockportContentApi.Utils
             if(!string.IsNullOrWhiteSpace(slug))
                 baseUrl = $"{baseUrl}&fields.slug={slug}";
             if (!string.IsNullOrWhiteSpace(tag))
-                baseUrl = string.Concat(baseUrl, $"&fields.tags[{GetSearchTypeForTag(ref tag)}]={tag}");
+                baseUrl = string.Concat(baseUrl, $"&fields.tags[{GetSearchTypeForTag(ref tag)}]={ WebUtility.UrlEncode(tag)}");
              if (limit >= 0)
                 baseUrl = $"{baseUrl}&limit={limit}";
 
