@@ -182,7 +182,7 @@ namespace StockportContentApi
                 p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>()); });
 
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(
-                p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
+                p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
 
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
                p => { return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
@@ -190,11 +190,10 @@ namespace StockportContentApi
                                                             p.GetService<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(),
                                                             p.GetService<IContentfulFactory<ContentfulNews, News>>(),
                                                             p.GetService<ITimeProvider>(),
-                                                            new EventRepository(x, p.GetService<IHttpClient>(),
+                                                            new EventRepository(x, 
                                                                                 p.GetService<IContentfulClientManager>(),
                                                                                 p.GetService<ITimeProvider>(),
                                                                                 p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
-                                                                                p.GetService<IEventCategoriesFactory>(),
                                                                                 p.GetService<ICache>(),
                                                                                 p.GetService<ILogger<EventRepository>>())
                                                             ); });
@@ -227,11 +226,9 @@ namespace StockportContentApi
                                                         p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), 
                                                         p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), 
                                                         p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(), 
-                                                        new EventRepository(x, p.GetService<IHttpClient>(), 
-                                                                                p.GetService<IContentfulClientManager>(), 
+                                                        new EventRepository(x, p.GetService<IContentfulClientManager>(), 
                                                                                 p.GetService<ITimeProvider>(), 
                                                                                 p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), 
-                                                                                p.GetService<IEventCategoriesFactory>(), 
                                                                                 p.GetService<ICache>(), 
                                                                                 p.GetService<ILogger<EventRepository>>()), 
                                                         p.GetService<ICache>()); });
@@ -261,7 +258,6 @@ namespace StockportContentApi
             services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
             services.AddSingleton<IFactory<EventBanner>, EventBannerFactory>();
             services.AddSingleton<INewsCategoriesFactory, NewsCategoriesFactory>();
-            services.AddSingleton<IEventCategoriesFactory, EventCategoriesFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();
             services.AddSingleton<IBuildContentTypesFromReferences<Alert>, AlertListFactory>();

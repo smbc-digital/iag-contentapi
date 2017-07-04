@@ -39,7 +39,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly EventRepository _eventRepository;
         private readonly Mock<IHttpClient> _httpClient;
-        private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<ILogger<EventRepository>> _logger;
 
@@ -66,7 +65,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cacheWrapper.Object, _logger.Object);
+            _eventRepository = new EventRepository(config, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object, _cacheWrapper.Object, _logger.Object);
             _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper.Object);
         }
 
