@@ -143,26 +143,26 @@ namespace StockportContentApi.Controllers
 
         [HttpPut]
         [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
-        public async Task<IActionResult> UpdateAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        public async Task<IActionResult> UpdateAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
-            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+            return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
         }
 
         [HttpPost]
         [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
-        public async Task<IActionResult> AddAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        public async Task<IActionResult> AddAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
-            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+            return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
         }
 
-        private async Task<IActionResult> AddOrUpdateAdministrator(string permission, string slug, string emailAddress, string businessId)
+        private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
 
             var existingGroup = await repository.GetContentfulGroup(slug);
 
             existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
-            existingGroup.GroupAdministrators.Items.Add(new GroupAdministratorItems { Email = emailAddress, Permission = permission });
+            existingGroup.GroupAdministrators.Items.Add(user);
 
             ManagementGroup managementGroup = new ManagementGroup();
             _mapper.Map(existingGroup, managementGroup);
