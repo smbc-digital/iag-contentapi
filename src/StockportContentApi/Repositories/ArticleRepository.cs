@@ -40,7 +40,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get()
         {
-            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntriesAsync(builder);
             var contentfulArticles = entries as IEnumerable<ContentfulArticleForSiteMap> ?? entries.ToList();
 
@@ -95,6 +95,7 @@ namespace StockportContentApi.Repositories
                 var articleItem = _contentfulFactoryArticle.ToModel(entry);
                 entriesList.Add(articleItem);
             }
+
             return entriesList;
         }
     }

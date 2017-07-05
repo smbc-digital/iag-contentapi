@@ -31,5 +31,16 @@ namespace StockportContentApi.Controllers
                 return startPageRepository.GetStartPage(slug);
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/start-page/")]
+        public async Task<IActionResult> Get(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var startRepository = _createRepository(_createConfig(businessId));
+                return startRepository.Get();
+            });
+        }
     }
 }

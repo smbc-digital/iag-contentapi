@@ -185,19 +185,28 @@ namespace StockportContentApi
                 p => { return x => new EventRepository(x, p.GetService<IHttpClient>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IEventCategoriesFactory>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
 
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
-               p => { return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
-                                                            p.GetService<IContentfulClientManager>(),
-                                                            p.GetService<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(),
-                                                            p.GetService<IContentfulFactory<ContentfulNews, News>>(),
-                                                            p.GetService<ITimeProvider>(),
-                                                            new EventRepository(x, p.GetService<IHttpClient>(),
-                                                                                p.GetService<IContentfulClientManager>(),
-                                                                                p.GetService<ITimeProvider>(),
-                                                                                p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
-                                                                                p.GetService<IEventCategoriesFactory>(),
-                                                                                p.GetService<ICache>(),
-                                                                                p.GetService<ILogger<EventRepository>>())
-                                                            ); });
+               p => {
+                   return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
+                                                         p.GetService<IContentfulClientManager>(),
+                                                         p.GetService<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(),
+                                                         p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                                                         p.GetService<ITimeProvider>(),
+                                                         new EventRepository(x, p.GetService<IHttpClient>(),
+                                                                             p.GetService<IContentfulClientManager>(),
+                                                                             p.GetService<ITimeProvider>(),
+                                                                             p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                                                                             p.GetService<IEventCategoriesFactory>(),
+                                                                             p.GetService<ICache>(),
+                                                                             p.GetService<ILogger<EventRepository>>())
+                                                         );
+               });
+
+            services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
+               p => {
+                   return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
+                                                         p.GetService<IContentfulClientManager>(),
+                                                         p.GetService<ITimeProvider>());
+               });
 
             services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
                 p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
