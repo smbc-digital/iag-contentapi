@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Contentful.Core.Search;
+using Microsoft.AspNetCore.Http.Extensions;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
@@ -13,34 +17,24 @@ namespace StockportContentApi.Repositories
 {
     public class FooterRepository
     {
-        private readonly string _contentfulApiUrl;
+        private readonly Contentful.Core.IContentfulClient _client;
         private readonly string _contentType = "footer";
-        private readonly string _businessId;
-        private readonly IFactory<Footer> _factory;
-        private readonly ContentfulClient _contentfulClient;
-        private readonly UrlBuilder _urlBuilder;
 
-        public FooterRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Footer> factory)
+        public FooterRepository(ContentfulConfig config, IContentfulClientManager clientManager)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _factory = factory;
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
-            _businessId = config.BusinessId;
-            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
+            _client = clientManager.GetClient(config);
         }
 
         public async Task<HttpResponse> GetFooter() {
-            var referenceLevelLimit = 1;
-            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:_contentType, referenceLevel:referenceLevelLimit));
 
-            if (!contentfulResponse.HasItems())
-                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No footer found for '{_businessId}'");
+            var builder = new QueryBuilder<Footer>().ContentTypeIs("footer").Include(1);
 
-            var footer = _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.FirstOrDefault();
 
-            return footer == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No footer found for '{_businessId}'")
-                : HttpResponse.Successful(footer);
-        }       
+            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No footer found");
+
+            return HttpResponse.Successful(entry);
+        }
     }
 }
