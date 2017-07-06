@@ -6,16 +6,16 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class ProfileController
+    public class SectionController
     {
         
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, ProfileRepository> _createRepository;
+        private readonly Func<ContentfulConfig, SectionRepository> _createRepository;
 
-        public ProfileController(ResponseHandler handler,
+        public SectionController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, ProfileRepository> createRepository)
+            Func<ContentfulConfig, SectionRepository> createRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
@@ -23,24 +23,28 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/profile/{profileSlug}")]
-        public async Task<IActionResult> GetProfile(string profileSlug, string  businessId)
+        [Route("api/{businessId}/section/{sectionSlug}")]
+        public async Task<IActionResult> GetSection(string sectionSlug, string  businessId)
         {
             return await _handler.Get(() =>
             {
-                var profileRepository = _createRepository(_createConfig(businessId));
-                return profileRepository.GetProfile(profileSlug);
+                var repository = _createRepository(_createConfig(businessId));
+                var section = repository.GetSections(sectionSlug);
+
+                return section;
             });
         }
 
         [HttpGet]
-        [Route("api/{businessId}/profile/")]
+        [Route("api/{businessId}/sectionsitemap")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>
             {
-                var profilerRepository = _createRepository(_createConfig(businessId));
-                return profilerRepository.Get();
+                var repository = _createRepository(_createConfig(businessId));
+                var section = repository.Get();
+
+                return section;
             });
         }
     }

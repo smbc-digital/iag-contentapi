@@ -5,6 +5,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Contentful.Core.Search;
 
 namespace StockportContentApi.Repositories
 {
@@ -36,6 +37,19 @@ namespace StockportContentApi.Repositories
             return startPage.GetType() == typeof(NullStartPage) ?
                 HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") : 
                 HttpResponse.Successful(startPage);
+        }
+
+        public async Task<HttpResponse> Get()
+        {
+            //var builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").Include(2);
+            //var entries = await _client.GetEntriesAsync(builder);
+
+            //if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topics found");
+
+            //var models = entries.Select(e => _topicFactory.ToModel(e));
+
+            //return HttpResponse.Successful(models);
+            return null;
         }
     }
 }

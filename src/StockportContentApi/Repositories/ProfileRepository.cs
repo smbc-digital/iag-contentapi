@@ -33,5 +33,17 @@ namespace StockportContentApi.Repositories
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'") 
                 : HttpResponse.Successful(_profileFactory.ToModel(entry));
         }
+
+        public async Task<HttpResponse> Get()
+        {
+            var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+
+            if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
+
+            var models = entries.Select(e => _profileFactory.ToModel(e));
+
+            return HttpResponse.Successful(models);
+        }
     }
 }
