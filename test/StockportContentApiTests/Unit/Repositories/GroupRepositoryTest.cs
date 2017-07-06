@@ -39,7 +39,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly EventRepository _eventRepository;
         private readonly Mock<IHttpClient> _httpClient;
-        private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<ILogger<EventRepository>> _logger;
 
@@ -66,7 +65,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _eventRepository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object,_eventCategoriesFactory.Object, _cacheWrapper.Object, _logger.Object);
+            _eventRepository = new EventRepository(config, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object, _cacheWrapper.Object, _logger.Object);
             _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper.Object);
         }
 
@@ -79,7 +78,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -106,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(-1));
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(-1), "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -135,7 +134,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3));
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3), "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -164,7 +163,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(3));
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(3), "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -193,7 +192,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), null);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.Now.AddDays(-3), null, "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -222,7 +221,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroup };
 
             var group = new Group("name", "group_slug", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, null, DateTime.Now.AddDays(3));
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, null, DateTime.Now.AddDays(3), "published");
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -390,7 +389,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulGroup> { contentfulGroupWithlocation };
 
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
@@ -420,7 +419,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             bool volunteering = true;
             var groupWithLocation = new Group("name", slug, "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, location, volunteering, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),

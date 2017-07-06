@@ -34,7 +34,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IHttpClient> _httpClient;
-        private readonly Mock<IEventCategoriesFactory> _eventCategoriesFactory = new Mock<IEventCategoriesFactory>();
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
@@ -72,8 +71,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper = new Mock<ICache>();
 
-            _repository = new EventRepository(config, _httpClient.Object, contentfulClientManager.Object,
-                _mockTimeProvider.Object, contentfulFactory, _eventCategoriesFactory.Object, _cacheWrapper.Object, _logger.Object);
+            _repository = new EventRepository(config, contentfulClientManager.Object,
+                _mockTimeProvider.Object, contentfulFactory, _cacheWrapper.Object, _logger.Object);
         }
 
         [Fact]
@@ -614,7 +613,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             _groupFactory.Setup(g => g.ToModel(It.IsAny<ContentfulGroup>())).Returns(group);
 
@@ -642,10 +641,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);
@@ -672,10 +671,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);
@@ -703,10 +702,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var group = new Group("name", "zumba-fitness", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             var othergroup = new Group("name", "kersal-rugby", "phoneNumber", "email",
-                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue);
+                "website", "twitter", "facebook", "address", "description", "imageUrl", "thumbnailImageUrl", null, null, null, false, null, DateTime.MinValue, DateTime.MaxValue, "published");
 
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug == "zumba-fitness"))).Returns(group);
             _groupFactory.Setup(g => g.ToModel(It.Is<ContentfulGroup>(o => o.Slug != "zumba-fitness"))).Returns(othergroup);

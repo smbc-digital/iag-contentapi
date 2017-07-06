@@ -9,6 +9,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
+using Contentful.Core;
 using Contentful.Core.Models;
 using StockportContentApi.Client;
 using StockportContentApi.Utils;
@@ -33,7 +34,6 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
                                  EventRepository eventRepository,
                                  ICache cache
-
             )
         {
             _dateComparer = new DateComparer(timeProvider);
@@ -145,7 +145,7 @@ namespace StockportContentApi.Repositories
 
             var contentfulGroups = await _client.GetEntriesAsync(builder);
 
-            var groups = contentfulGroups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email == email));
+            var groups = contentfulGroups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email.ToUpper() == email.ToUpper()));
 
             var result = _groupListFactory.ToModel(groups.ToList());
 

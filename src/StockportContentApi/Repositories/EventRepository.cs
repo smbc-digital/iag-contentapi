@@ -23,18 +23,13 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IEventCategoriesFactory _eventCategoriesFactory;
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly string _contentfulContentTypesUrl;
-        private readonly IContentfulClient _contentfulClient;
         private readonly ICache _cache;
         private ILogger<EventRepository> _logger;
 
         public EventRepository(ContentfulConfig config,
-            IHttpClient httpClient,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
-            IEventCategoriesFactory eventCategoriesFactory,
             ICache cache,
             ILogger<EventRepository> logger
             )
@@ -42,9 +37,6 @@ namespace StockportContentApi.Repositories
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
-            _eventCategoriesFactory = eventCategoriesFactory;
-            _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
-            _contentfulClient = new ContentfulClient(httpClient);
             _cache = cache;
             _logger = logger;
         }
@@ -60,7 +52,7 @@ namespace StockportContentApi.Repositories
             eventItem = GetEventFromItsOccurrences(date, eventItem);
             if (eventItem != null && !string.IsNullOrEmpty(eventItem.Group?.Slug) && !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             {
-                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null);
+                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null, "published");
             }
 
             return eventItem == null
@@ -187,10 +179,9 @@ namespace StockportContentApi.Repositories
 
         private async Task<List<string>> GetCategoriesDirect()
         {
-            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
-            var contentfulData = contentfulResponse.Items;
-            var result = _eventCategoriesFactory.Build(contentfulData);
-            return result;
+            var eventType = await _client.GetContentTypeAsync("events");
+            var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
+            return validation.RequiredValues;
         }
     }
 }
