@@ -18,6 +18,7 @@ using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
 using StockportContentApiTests.Unit.Repositories;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Integration
 {
@@ -169,6 +170,14 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(showcaseCollection);
+
+
+                var footerCollection = new ContentfulCollection<Footer>();
+                footerCollection.Items = new List<Footer> { new Footer("Footer", "a-slug", "© 2016 A Council Name", null, null) };
+
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<Footer>>(q => q.Build() == new QueryBuilder<Footer>().ContentTypeIs("footer").Include(1).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
                 var catGroupCollection = new ContentfulCollection<ContentfulGroupCategory>();
                 catGroupCollection.Items = new List<ContentfulGroupCategory>
