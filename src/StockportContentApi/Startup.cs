@@ -163,6 +163,7 @@ namespace StockportContentApi
                                                     p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
                                                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                                                     p.GetService<IContentfulFactory<ContentfulArticle, Topic>>(),
+                                                    p.GetService<IContentfulFactory<ContentfulLiveChat, LiveChat>>(),
                                                     p.GetService<IContentfulFactory<Asset, Document>>(),
                                                     p.GetService<IVideoRepository>(),
                                                     p.GetService<ITimeProvider>(),
@@ -170,6 +171,10 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
                 (p => new ArticleSiteMapContentfulFactory());
+
+            services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
+                (p => new LiveChatContentfulFactory());
+
 
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(

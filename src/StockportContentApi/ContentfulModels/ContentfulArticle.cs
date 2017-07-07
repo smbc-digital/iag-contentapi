@@ -21,11 +21,8 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
       
         public bool LiveChatVisible { get; set; } = false;
-        public LiveChat LiveChatText { get; set; } = new LiveChat("","")
-        {
-            Sys = new SystemProperties {Type = "Entry"}
-        };
-
+        public ContentfulLiveChat LiveChatText { get; set; } = new ContentfulLiveChat();
+       
         // references
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
     }

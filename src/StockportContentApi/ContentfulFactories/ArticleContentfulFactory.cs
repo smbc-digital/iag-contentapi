@@ -13,6 +13,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<ContentfulArticle, Topic> _parentTopicFactory;
+        private readonly IContentfulFactory<ContentfulLiveChat, LiveChat> _liveChatFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
@@ -22,7 +23,8 @@ namespace StockportContentApi.ContentfulFactories
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
             IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
-            IContentfulFactory<Asset, Document> documentFactory,
+            IContentfulFactory<ContentfulLiveChat, LiveChat> liveChatFactory,
+        IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
             IContentfulFactory<ContentfulAlert, Alert> alertFactory)
@@ -35,6 +37,7 @@ namespace StockportContentApi.ContentfulFactories
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
+            _liveChatFactory = liveChatFactory;
         }
 
         public Article ToModel(ContentfulArticle entryContentfulArticle)
@@ -64,8 +67,7 @@ namespace StockportContentApi.ContentfulFactories
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.Sys) 
-                                ? entry.LiveChatText : new NullLiveChat();
+            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.Sys) ? _liveChatFactory.ToModel(entry.LiveChatText) : new NullLiveChat();
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                                         ? entry.BackgroundImage.File.Url : string.Empty;
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
