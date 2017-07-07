@@ -29,14 +29,16 @@ namespace StockportContentApi.Model
 
             if (Title.ToLower().StartsWith(letterToLower)) matchingItems.Add(this);
 
-            foreach (var atozAlternativeTitle in AlternativeTitles)
+            if(AlternativeTitles != null)
             {
-                if (atozAlternativeTitle.ToLower().StartsWith(letterToLower))
+                foreach (var atozAlternativeTitle in AlternativeTitles)
                 {
-                    matchingItems.Add(new AtoZ(atozAlternativeTitle, Slug, Teaser, Type, AlternativeTitles));                    
+                    if (atozAlternativeTitle.ToLower().StartsWith(letterToLower))
+                    {
+                        matchingItems.Add(new AtoZ(atozAlternativeTitle, Slug, Teaser, Type, AlternativeTitles));
+                    }
                 }
             }
-
             return matchingItems;
         }
     }

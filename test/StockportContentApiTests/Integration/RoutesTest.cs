@@ -187,8 +187,20 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
-                
-            });
+
+                var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+                aToZcollection.Items = new List<ContentfulAtoZ>
+                {
+                    new ContentfulAToZBuilder().Title("Vintage Village turns 6 years old").Build(),
+                    new ContentfulAToZBuilder().Title("C Letter Article").Slug("c-letter-article").Teaser("A C letter article").Sys("article").Build(),
+                    new ContentfulAToZBuilder().Title("C Letter Topic").Slug("d-letter-topic").Teaser("This is a d letter topic").Sys("topic").Build(),
+                    new ContentfulAToZBuilder().Title("Benefits & Support").Slug("benefits-and-support").Teaser("Benefits & Support").Sys("topic").Build(),
+                    new ContentfulAToZBuilder().Title("Bins & Recycling").Slug("bins-and-recycling").Teaser("Collection days, bulky items").Sys("topic").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+               });
         }
 
         [Theory]

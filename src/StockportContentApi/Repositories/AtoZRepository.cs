@@ -8,29 +8,38 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using System;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.ContentfulFactories;
 
 namespace StockportContentApi.Repositories
 {
     public class AtoZRepository
     {
         private readonly string _contentfulApiUrl;
-        private readonly ContentfulClient _contentfulClient;
-        private readonly IFactory<AtoZ> _factory;
-        private readonly UrlBuilder _urlBuilder;
         private readonly DateComparer _dateComparer;
+        private readonly Contentful.Core.IContentfulClient _client;
+        private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
 
-        public AtoZRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<AtoZ> factory, ITimeProvider timeProvider)
+        public AtoZRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
+            IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
+            ITimeProvider timeProvider)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
+            _client = clientManager.GetClient(config);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
-            _factory = factory;
-            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
-            _dateComparer = new DateComparer(timeProvider);
+            _contentfulAtoZFactory = contentfulAtoZFactory;
+           _dateComparer = new DateComparer(timeProvider);
         }
 
         public async Task<HttpResponse> Get(string letter)
         {
             var atozItems = new List<AtoZ>();
+
+            //var atozArticles = await GetAtoZItemFromContentType("article", letter);
+            //if (atozArticles != null) atozItems.AddRange(atozArticles);
+            //var atoztopics = await GetAtoZItemFromContentType("topic", letter);
+            //if (atoztopics != null) atozItems.AddRange(atoztopics);
 
             atozItems.AddRange(await GetAtoZItemFromContentType("article", letter));
             atozItems.AddRange(await GetAtoZItemFromContentType("topic", letter));
@@ -44,22 +53,26 @@ namespace StockportContentApi.Repositories
 
         private async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
         {
-            var atozList = new List<AtoZ>();
-            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:contentType,displayOnAtoZ:true));
+            var atozList = new List<AtoZ>();           
+            var builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(2);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entriesWithDisplayOn = entries != null ? entries.Where(x => x.DisplayOnAZ == "True") : null;
 
-            foreach (var item in contentfulResponse.Items)
+            if (entriesWithDisplayOn != null)
             {
-                DateTime sunriseDate = DateComparer.DateFieldToDate(item.fields.sunriseDate);
-                DateTime sunsetDate = DateComparer.DateFieldToDate(item.fields.sunsetDate);
-                if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(sunriseDate, sunsetDate))
+                foreach (var item in entriesWithDisplayOn)
                 {
-                    AtoZ buildItem = _factory.Build(item, contentfulResponse);
-
-                    var matchingItems = buildItem.SetTitleStartingWithLetter(letter);
-                    atozList.AddRange(matchingItems);
+                    DateTime sunriseDate = DateComparer.DateFieldToDate(item.SunriseDate);
+                    DateTime sunsetDate = DateComparer.DateFieldToDate(item.SunsetDate);
+                    if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(sunriseDate, sunsetDate))
+                    {
+                        AtoZ buildItem = _contentfulAtoZFactory.ToModel(item);
+                        var matchingItems = buildItem.SetTitleStartingWithLetter(letter);
+                        atozList.AddRange(matchingItems);
+                    }
                 }
             }
-
+            
             return atozList;
         }
     }
