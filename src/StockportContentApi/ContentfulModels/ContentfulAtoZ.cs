@@ -7,6 +7,7 @@ namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulAtoZ : IContentfulModel
     {
+        public string Name { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;

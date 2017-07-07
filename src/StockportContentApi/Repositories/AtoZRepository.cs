@@ -35,12 +35,6 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get(string letter)
         {
             var atozItems = new List<AtoZ>();
-
-            //var atozArticles = await GetAtoZItemFromContentType("article", letter);
-            //if (atozArticles != null) atozItems.AddRange(atozArticles);
-            //var atoztopics = await GetAtoZItemFromContentType("topic", letter);
-            //if (atoztopics != null) atozItems.AddRange(atoztopics);
-
             atozItems.AddRange(await GetAtoZItemFromContentType("article", letter));
             atozItems.AddRange(await GetAtoZItemFromContentType("topic", letter));
 

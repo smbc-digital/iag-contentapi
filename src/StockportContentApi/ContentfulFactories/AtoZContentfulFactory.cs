@@ -12,8 +12,9 @@ namespace StockportContentApi.ContentfulFactories
     {       
         public AtoZ ToModel(ContentfulAtoZ entry)
         {
+            var title = string.IsNullOrEmpty(entry.Title) ? (string) entry.Name : (string) entry.Title;
             var type = entry.Sys.ContentType.SystemProperties.Id ?? string.Empty;
-            return new AtoZ(entry.Title, entry.Slug, entry.Teaser, type, entry.AlternativeTitles);
+            return new AtoZ(title, entry.Slug, entry.Teaser, type, entry.AlternativeTitles);
         }
     }
 }
