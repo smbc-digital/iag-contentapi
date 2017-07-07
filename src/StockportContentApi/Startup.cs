@@ -171,11 +171,10 @@ namespace StockportContentApi
 
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
                 (p => new ArticleSiteMapContentfulFactory());
-
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
                 (p => new LiveChatContentfulFactory());
-
-
+            services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
+                (p => new AtoZContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(
                     p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
@@ -223,7 +222,7 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(), p.GetService<INewsCategoriesFactory>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
-                p => { return x => new AtoZRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<AtoZ>>(), p.GetService<ITimeProvider>()); });
+                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
               p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), 

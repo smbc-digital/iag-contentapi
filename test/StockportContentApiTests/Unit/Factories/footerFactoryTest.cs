@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Unit.Factories
 
             footer.Title.Should().Be("Footer");
             footer.Slug.Should().Be("a-slug");
-            footer.Copyright.Should().Be("© 2016 A Council Name");
+            footer.CopyrightSection.Should().Be("© 2016 A Council Name");
         }
 
         [Fact]
