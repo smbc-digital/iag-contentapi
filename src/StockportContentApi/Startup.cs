@@ -153,6 +153,9 @@ namespace StockportContentApi
                                                                                                             p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
                                                                                                             p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
+              (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>()));
+
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
                                                                                                            p.GetService<IContentfulFactory<Asset, Document>>()));
 
@@ -218,7 +221,7 @@ namespace StockportContentApi
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
                 p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()); });
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
-                p => { return x => new FooterRepository(x, p.GetService<IContentfulClientManager>()); });
+                p => { return x => new FooterRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulFooter, Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<News>>(), p.GetService<IFactory<Newsroom>>(), p.GetService<INewsCategoriesFactory>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(

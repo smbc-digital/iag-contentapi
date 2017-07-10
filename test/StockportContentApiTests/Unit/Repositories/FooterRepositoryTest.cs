@@ -15,6 +15,9 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
+using StockportContentApiTests.Unit.Builders;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -23,6 +26,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly ContentfulConfig _config;
         private readonly Mock<IContentfulClient> _client;
         private readonly FooterRepository _repository;
+        private readonly Mock<IContentfulFactory<ContentfulFooter, Footer>> _contentfulFactory;
 
         public FooterRepositoryTest()
         {
@@ -36,31 +40,34 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulClientManager = new Mock<IContentfulClientManager>();
 
             _client = new Mock<IContentfulClient>();
+            _contentfulFactory = new Mock<IContentfulFactory<ContentfulFooter, Footer>>();
 
             contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
 
-            _repository = new FooterRepository(_config, contentfulClientManager.Object);
+            _repository = new FooterRepository(_config, contentfulClientManager.Object, _contentfulFactory.Object);
         }
 
         [Fact]
         public void ShouldReturnAFooter()
         {
-            var builderFooter = new Footer("Title", "a-slug", "Copyright", new List<SubItem>(),
-                new List<SocialMediaLink>());
+           var mockFooter = new Footer("Title", "a-slug", "Copyright", new List<SubItem>(), new List<SocialMediaLink>());
 
-            var mockFooter = new Footer("test", "test", "test", null, null);
+            var footerCollection = new ContentfulCollection<ContentfulFooter>();
+            footerCollection.Items = new List<ContentfulFooter>
+                {
+                   new ContentfulFooterBuilder().Build()
+                };
 
-            var builder = new QueryBuilder<Footer>().ContentTypeIs("footer").Include(1);
-            var collection = new ContentfulCollection<Footer>();
-            collection.Items = new List<Footer> { mockFooter };
+            _client.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Footer>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-
+            _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulFooter>()))
+                .Returns(new Footer("Title", "a-slug", "Copyright", new List<SubItem>(), 
+                    new List<SocialMediaLink>()));
             var footer = AsyncTestHelper.Resolve(_repository.GetFooter());
-
-            footer.Get<Footer>().Should().Be(mockFooter);
+            footer.Get<Footer>().Title.Should().Be(mockFooter.Title);
+            footer.Get<Footer>().Slug.Should().Be(mockFooter.Slug);
             footer.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
