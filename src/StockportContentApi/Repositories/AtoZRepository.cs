@@ -37,6 +37,7 @@ namespace StockportContentApi.Repositories
             var atozItems = new List<AtoZ>();
             atozItems.AddRange(await GetAtoZItemFromContentType("article", letter));
             atozItems.AddRange(await GetAtoZItemFromContentType("topic", letter));
+            atozItems.AddRange(await GetAtoZItemFromContentType("showcase", letter));
 
             atozItems = atozItems.OrderBy(o => o.Title).ToList();
 
