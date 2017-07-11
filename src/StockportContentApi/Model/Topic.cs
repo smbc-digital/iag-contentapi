@@ -68,24 +68,27 @@ namespace StockportContentApi.Model
     public class NullTopic : Topic
     {
         public NullTopic() : base(
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
             string.Empty,
-            string.Empty, 
-            string.Empty, 
             string.Empty,
-            new List<SubItem>(), 
-            new List<SubItem>(), 
-            new List<SubItem>(), 
-            new List<Crumb>(), 
-            new List<Alert>(), 
-            DateTime.MinValue, 
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            new List<SubItem>(),
+            new List<SubItem>(),
+            new List<SubItem>(),
+            new List<Crumb>(),
+            new List<Alert>(),
+            DateTime.MinValue,
             DateTime.MinValue,
             false,
             string.Empty,
             new NullEventBanner(),
             string.Empty,
-            new List<ExpandingLinkBox>()) { }
+            new List<ExpandingLinkBox>(),
+            string.Empty)
+        {
+        }
     }
 }

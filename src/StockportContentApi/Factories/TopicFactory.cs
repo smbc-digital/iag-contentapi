@@ -48,9 +48,10 @@ namespace StockportContentApi.Factories
             var eventBanner = _eventBannerFactory.BuildFromReference(fields.eventBanner, contentfulResponse);
             var expandingLinkTitle = (string)fields.expandingLinkTitle ?? string.Empty;
             var expandingLinkBoxes = _expandingLinkBoxFactory.BuildFromReferences(fields.expandingLinkBoxes, contentfulResponse);
+            var primaryItemTitle = (string)fields.primaryItemTitle ?? string.Empty;
 
             return new Topic(slug, name, teaser, summary, icon, backgroundImage, image, subItems, secondaryItems,
-                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner, expandingLinkTitle, expandingLinkBoxes);
+                tertiaryItems, breadcrumbs, alerts, sunriseDate, sunsetDate, emailAlerts, emailAlertsTopicId, eventBanner, expandingLinkTitle, expandingLinkBoxes, primaryItemTitle);
         }
     }
 }
