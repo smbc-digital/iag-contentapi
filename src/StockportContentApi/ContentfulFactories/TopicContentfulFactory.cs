@@ -57,9 +57,11 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ExpandingLinkBoxes.Where(e => ContentfulHelpers.EntryIsNotALink(e.Sys))
                     .Select(e => _expandingLinkBoxFactory.ToModel(e)).ToList();
 
+            var primaryItemTitle = entry.PrimaryItemTitle;
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes, primaryItemTitle);
         }
     }
 }

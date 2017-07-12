@@ -120,7 +120,8 @@
     "emailAlertsTopicId": null,
     "eventBanner": null,
     "expandingLinkTitle": null,
-    "expandingLinkBoxes": null
+    "expandingLinkBoxes": null,
+    "primaryItemTitle": null
   },
   "documents": [
     {
