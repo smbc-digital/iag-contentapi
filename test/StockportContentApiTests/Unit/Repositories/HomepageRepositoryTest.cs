@@ -10,15 +10,29 @@ using StockportContentApi.Repositories;
 using Xunit;
 using Moq;
 using StockportContentApi;
+using StockportContentApi.Client;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.Utils;
+using Microsoft.Extensions.Logging;
+using IContentfulClient = Contentful.Core.IContentfulClient;
+using Contentful.Core.Search;
+using System.Threading;
+using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class HomepageRepositoryTest
     {
-        private readonly Mock<IHttpClient> _httpClient;
         private readonly HomepageRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private readonly Mock<IFactory<Homepage>> _mockHomepageBuilder;
+        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+        private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory;
+        private readonly Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _listGroupFactory;
+        private readonly Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>> _listGroupCategoryFactory;
+        private readonly Mock<IContentfulClient> _client;
+        private readonly Mock<ITimeProvider> _timeProvider;
+        private readonly Mock<ICache> _cacheWrapper;
+        private readonly Mock<ILogger<HomepageRepository>> _logger;
 
         public HomepageRepositoryTest()
         {
@@ -29,20 +43,34 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            _httpClient = new Mock<IHttpClient>();
-            _mockHomepageBuilder = new Mock<IFactory<Homepage>>();
-            _repository = new HomepageRepository(config, _httpClient.Object, _mockHomepageBuilder.Object);
+            _homepageFactory = new Mock<IContentfulFactory<ContentfulHomepage, Homepage>>();
+            _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
+            _timeProvider = new Mock<ITimeProvider>();
+            _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
+            _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
+            _logger = new Mock<ILogger<HomepageRepository>>();
+            _cacheWrapper = new Mock<ICache>();
+
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
+            _client = new Mock<IContentfulClient>();
+            contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
+
+            _repository = new HomepageRepository(config, contentfulClientManager.Object, _homepageFactory.Object);
         }
 
         [Fact]
         public void ItGetsHomepage()
         {
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=homepage&include=2"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Homepage.json")));
+            var contentfulHomepage = new ContentfulHomepage();
+            var collection = new ContentfulCollection<ContentfulHomepage>();
+            collection.Items = new List<ContentfulHomepage> { contentfulHomepage };
 
-            _mockHomepageBuilder.Setup(
-                    o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<Topic>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty));
+            var builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _homepageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulHomepage>()))
+                .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, null));
 
             var response = AsyncTestHelper.Resolve(_repository.Get());
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

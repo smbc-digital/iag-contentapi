@@ -199,6 +199,17 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
 
+                var homepageCollection = new ContentfulCollection<ContentfulHomepage>();
+                homepageCollection.Items = new List<ContentfulHomepage>
+                {
+                    new ContentfulHomepageBuilder().Build()
+                };
+
+                var homepageBuilder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
+
                 var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
                 aToZcollection.Items = new List<ContentfulAtoZ>
                 {

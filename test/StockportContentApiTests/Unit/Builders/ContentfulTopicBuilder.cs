@@ -77,9 +77,111 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public ContentfulTopicBuilder Name(string name)
+        {
+            _name = name;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Teaser(string teaser)
+        {
+            _teaser = teaser;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Summary(string summary)
+        {
+            _summary = summary;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Icon(string icon)
+        {
+            _icon = icon;
+            return this;
+        }
+
+        public ContentfulTopicBuilder BackgroundImage(Asset image)
+        {
+            _backgroundImage = image;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Image(Asset image)
+        {
+            _image = image;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SubItems(List<ContentfulReference> subItems)
+        {
+            _subItems = subItems;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SecondaryItems(List<ContentfulReference> items)
+        {
+            _secondaryItems = items;
+            return this;
+        }
+
+        public ContentfulTopicBuilder TertiaryItems(List<ContentfulReference> items)
+        {
+            _tertiaryItems = items;
+            return this;
+        }
+
+        public ContentfulTopicBuilder Breadcrumbs(List<ContentfulReference> crumb)
+        {
+            _breadcrumbs = crumb;
+            return this;
+        }
+
         public ContentfulTopicBuilder Alerts(List<ContentfulAlert> alerts)
         {
             _alerts = alerts;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SunriseDate(DateTime date)
+        {
+            _sunriseDate = date;
+            return this;
+        }
+
+        public ContentfulTopicBuilder SunsetDate(DateTime date)
+        {
+            _sunsetDate = date;
+            return this;
+        }
+
+        public ContentfulTopicBuilder EmailAlerts(bool emailAlerts)
+        {
+            _emailAlerts = emailAlerts;
+            return this;
+        }
+
+        public ContentfulTopicBuilder EmailAlertsTopicId(string topicId)
+        {
+            _emailAlertsTopicId = topicId;
+            return this;
+        }
+
+        public ContentfulTopicBuilder EventBanner(ContentfulEventBanner banner)
+        {
+            _eventBanner = banner;
+            return this;
+        }
+
+        public ContentfulTopicBuilder ExpandingLinkTitle(string title)
+        {
+            _expandingLinkTitle = title;
+            return this;
+        }
+
+        public ContentfulTopicBuilder ExpandingLinkBoxes(List<ContentfulExpandingLinkBox> boxes)
+        {
+            _expandingLinkBox = boxes;
             return this;
         }
 
@@ -92,12 +194,6 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulTopicBuilder SystemContentTypeId(string id)
         {
             _contentTypeSystemId = id;
-            return this;
-        }
-
-        public ContentfulTopicBuilder Breadcrumbs(List<ContentfulReference> crumb)
-        {
-            _breadcrumbs = crumb;
             return this;
         }
     }
