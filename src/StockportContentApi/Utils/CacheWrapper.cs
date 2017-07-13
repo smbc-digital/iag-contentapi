@@ -32,13 +32,15 @@ namespace StockportContentApi.Utils
 
     public class Cache : ICache
     {
-        private IDistributedCacheWrapper _memoryCache;
-        private ILogger<ICache> _logger;
+        private readonly IDistributedCacheWrapper _memoryCache;
+        private readonly ILogger<ICache> _logger;
+        private readonly bool _useRedisCache;
 
-        public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger)
+        public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache)
         {
             _memoryCache = memoryCache;
             _logger = logger;
+            _useRedisCache = useRedisCache;
         }
 
         public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod)
@@ -50,15 +52,18 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
             {
                 result = fallbackMethod();
 
-                var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
+                if (_useRedisCache)
+                {
+                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
-                var data = JsonConvert.SerializeObject(result);
+                    var data = JsonConvert.SerializeObject(result);
 
-                _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                    _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                }
             }
 
             return result;
@@ -73,11 +78,11 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
             {
                 result = await fallbackMethod();
 
-                if (_memoryCache != null)
+                if (_useRedisCache && _memoryCache != null)
                 {
                     var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 

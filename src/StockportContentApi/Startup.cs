@@ -82,9 +82,8 @@ namespace StockportContentApi
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             ConfigureDataProtection(services, logger);
-
             RegisterBuilders(services);
-            RegisterRepos(services);
+            RegisterRepos(services, _useRedisSession);
 
             services.AddSwaggerGen(c =>
             {
@@ -102,7 +101,7 @@ namespace StockportContentApi
             services.AddSingleton<IMapper>(p => config.CreateMapper());
         }
 
-        private static void RegisterRepos(IServiceCollection services)
+        private static void RegisterRepos(IServiceCollection services, bool useRedisSession)
         {
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<IContentfulFactory<Asset, Document>>(new DocumentContentfulFactory());
@@ -113,8 +112,7 @@ namespace StockportContentApi
             services.AddSingleton<IDistributedCacheWrapper>(
                 p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
 
-            services.AddSingleton<ICache>(p => new Utils.Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>()));
-
+            services.AddSingleton<ICache>(p => new Utils.Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
 
             services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
 
