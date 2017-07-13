@@ -91,9 +91,12 @@
         "groupAdministrators": { "items": [] },
         "dateHiddenFrom": null,
         "dateHiddenTo": null,
-        "status": "Published"
+        "status": "Published",
+        "cost": "",
+        "costText": "",
+        "abilityLevel": ""
       },
-     "alerts": [
+      "alerts": [
         {
           "title": "title",
           "subHeading": "subHeading",
@@ -172,7 +175,10 @@
         "groupAdministrators": { "items": [] },
         "dateHiddenFrom": null,
         "dateHiddenTo": null,
-        "status": "Published"
+        "status": "Published",
+        "cost": "",
+        "costText": "",
+        "abilityLevel": ""
       },
       "alerts": [
         {
@@ -189,5 +195,8 @@
   "groupAdministrators": { "items": [] },
   "dateHiddenFrom": "0001-01-01T00:00:00Z",
   "dateHiddenTo": "0001-01-01T00:00:00Z",
-  "status": "Published"
+  "status": "Published",
+  "cost": "",
+  "costText": "",
+  "abilityLevel": ""
 }

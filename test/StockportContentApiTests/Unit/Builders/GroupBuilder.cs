@@ -27,11 +27,14 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() {Lat=39.0,Lon = 2.0};
         private bool _volunteering = false;
         private GroupAdministrators _groupAdministrators = new GroupAdministrators();
+        private List<string> _cost = new List<string> { "_cost" };
+        private string _costText = "_costText";
+        private string _abilityLevel = "_abilityLevel";
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published");
+                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", string.Empty, string.Empty, string.Empty);
         }
 
         public GroupBuilder Slug(string slug)
@@ -88,5 +91,24 @@ namespace StockportContentApiTests.Unit.Builders
             _dateHiddenTo = dateHiddenTo;
             return this;
         }
+
+        public GroupBuilder Cost(List<string> cost)
+        {
+            _cost = cost;
+            return this;
+        }
+
+        public GroupBuilder CostText(string costText)
+        {
+            _costText = costText;
+            return this;
+        }
+
+        public GroupBuilder AbilityLevel(string abilityLevel)
+        {
+            _abilityLevel = abilityLevel;
+            return this;
+        }
+
     }
 }
