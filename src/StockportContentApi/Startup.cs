@@ -47,7 +47,7 @@ namespace StockportContentApi
             Configuration = configLoader.LoadConfiguration(env, _contentRootPath);
             _appEnvironment = configLoader.EnvironmentName(env);
 
-            _useRedisSession = Configuration["UseRedisSessions"] == "true";
+            _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
         }
 
         public IConfigurationRoot Configuration { get; set; }
