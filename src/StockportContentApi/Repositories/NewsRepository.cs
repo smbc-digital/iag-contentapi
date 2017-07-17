@@ -18,35 +18,21 @@ namespace StockportContentApi.Repositories
 {
     public class NewsRepository
     {
-        private readonly IFactory<News> _newsFactory;
-        private readonly IFactory<Newsroom> _newsroomFactory;
         private readonly ITimeProvider _timeProvider;
-        private readonly INewsCategoriesFactory _newsCategoryFactory;
-        private readonly string _contentfulApiUrl;
-        private readonly string _contentfulContentTypesUrl;
-        private readonly ContentfulClient _contentfulClient;
         private const int ReferenceLevelLimit = 1;
-        private readonly IContentfulFactory<ContentfulNews, News> _contentfulFactory;
+        private readonly IContentfulFactory<ContentfulNews, News> _newsContentfulFactory;
+        private readonly IContentfulFactory<ContentfulNewsRoom, Newsroom> _newsRoomContentfulFactory;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly UrlBuilder _urlBuilder;
-
-        public NewsRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<News> newsFactory, 
-            IFactory<Newsroom> newsroomFactory, INewsCategoriesFactory newsCategoriesFactory,
-            ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
-            IContentfulFactory<ContentfulNews, News> contentfulFactory)
+        
+        public NewsRepository(ContentfulConfig config, ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
+            IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
-            _contentfulContentTypesUrl = config.ContentfulContentTypesUrl.ToString();
-            _newsFactory = newsFactory;
-            _newsroomFactory = newsroomFactory;
             _timeProvider = timeProvider;
-            _contentfulFactory = contentfulFactory;
+            _newsContentfulFactory = newsContentfulFactory;
+            _newsRoomContentfulFactory = newsRoomContentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _newsCategoryFactory = newsCategoriesFactory;
             _client = contentfulClientManager.GetClient(config);
-            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
         }
 
         public async Task<HttpResponse> GetNews(string slug)
@@ -59,29 +45,31 @@ namespace StockportContentApi.Repositories
 
             return entry == null 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'") 
-                : HttpResponse.Successful(_contentfulFactory.ToModel(entry));
+                : HttpResponse.Successful(_newsContentfulFactory.ToModel(entry));
         }
 
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
-            var newsroomContentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"newsroom", referenceLevel:ReferenceLevelLimit));
+            var newsRoomBuilder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
+            var newsRoomEntries = await _client.GetEntriesAsync(newsRoomBuilder);
+
             List<string> categories;
 
-            if (newsroomContentfulResponse.HasItems())
+            if (newsRoomEntries.Any())
             {
-                newsroom = _newsroomFactory.Build(newsroomContentfulResponse.GetFirstItem(), newsroomContentfulResponse);
+                newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntries.FirstOrDefault());
             }
 
-            var newsContentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"news", referenceLevel:ReferenceLevelLimit, tag: tag, limit: ContentfulQueryValues.LIMIT_MAX));
-           
-            if (!newsContentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");           
+            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var newsEntries = await _client.GetEntriesAsync(newsBuilder);
 
-            List<DateTime> dates;            
+            if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-            var newsArticles = newsContentfulResponse.GetAllItems()
-                .Select(item => _newsFactory.Build(item, newsContentfulResponse))
-                .Cast<News>()
+            List<DateTime> dates;
+
+            var newsArticles = newsEntries
+                .Select(item => _newsContentfulFactory.ToModel(item))
                 .GetNewsDates(out dates, _timeProvider)
                 .Where(news => CheckDates(startDate, endDate, news))
                 .GetTheCategories(out categories)
@@ -90,7 +78,7 @@ namespace StockportContentApi.Repositories
                 .ToList();
 
             categories = await GetCategories();
-         
+
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories);
             newsroom.SetDates(dates.Distinct().ToList());
@@ -107,12 +95,12 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)
         {
-            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"news", referenceLevel:ReferenceLevelLimit, limit: ContentfulQueryValues.LIMIT_MAX));
+            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var newsEntries = await _client.GetEntriesAsync(newsBuilder);
 
-            if (!contentfulResponse.HasItems()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
-            var newsArticles = contentfulResponse.GetAllItems()
-                .Select(item => _newsFactory.Build(item, contentfulResponse))
-                .Cast<News>()
+            if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+            var newsArticles = newsEntries
+                .Select(item => _newsContentfulFactory.ToModel(item))
                 .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                 .OrderByDescending(o => o.SunriseDate)
                 .Take(limit)
@@ -131,12 +119,11 @@ namespace StockportContentApi.Repositories
             return "match";
         }
 
-        public async Task <List<string>>GetCategories()
-        {           
-            var contentfulResponse = await _contentfulClient.Get(_contentfulContentTypesUrl);
-            var contentfulData = contentfulResponse.Items;
-            var newsCategories = _newsCategoryFactory.Build(contentfulData);
-            return newsCategories;
+        public async Task<List<string>> GetCategories()
+        {
+            var eventType = await _client.GetContentTypeAsync("news");
+            var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
+            return validation?.RequiredValues;
         }
     }
 }

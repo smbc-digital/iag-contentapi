@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
 using Xunit;
@@ -86,13 +88,58 @@ namespace StockportContentApiTests.Integration
                 var newsCollection = new ContentfulCollection<ContentfulNews>();
                 newsCollection.Items = new List<ContentfulNews>
                 {
-                    new ContentfulNewsBuilder().Slug("news_item").Build()
+                    new ContentfulNewsBuilder().Slug("news_item").Build(),
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(newsCollection);
 
-                var topicCollection = new ContentfulCollection<ContentfulTopic>();
+                var newsListCollection = new ContentfulCollection<ContentfulNews>();
+                newsListCollection.Items = new List<ContentfulNews>
+                {
+                    new ContentfulNewsBuilder().Slug("news_item").Build(),
+                    new ContentfulNewsBuilder().Slug("news-slug1").Build(),
+                    new ContentfulNewsBuilder().Slug("news-slug2").Build(),
+                    new ContentfulNewsBuilder().Slug("news-slug2").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+                var newsContent = new ContentType()
+                {
+                    Fields = new List<Field>()
+                    {
+                        new Field()
+                        {
+                            Name = "Categories",
+                            Items = new Contentful.Core.Models.Schema()
+                            {
+                                Validations = new List<IFieldValidator>()
+                                {
+                                    new InValuesValidator {RequiredValues = new List<string>() { "A category", "B category", "C category" } }
+                                }
+                            }
+                        }
+                    }
+                };
+               
+                httpClient.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(newsContent);
+
+
+                var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
+                newsroomCollection.Items = new List<ContentfulNewsRoom>
+                {
+                    new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
+                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
+                                                                 new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test", Sys = null, Title = "title"}
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+
+               var topicCollection = new ContentfulCollection<ContentfulTopic>();
                 topicCollection.Items = new List<ContentfulTopic>
                 {
                     new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("id").Build()}).Build()
@@ -198,7 +245,7 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
-
+                
                 var homepageCollection = new ContentfulCollection<ContentfulHomepage>();
                 homepageCollection.Items = new List<ContentfulHomepage>
                 {
