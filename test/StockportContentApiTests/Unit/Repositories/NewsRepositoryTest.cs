@@ -24,6 +24,7 @@ using File = System.IO.File;
 using HttpResponse = StockportContentApi.Http.HttpResponse;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System.Collections;
+using Contentful.Core.Models.Management;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -81,14 +82,16 @@ namespace StockportContentApiTests.Unit.Repositories
                   "Business",
                   "Council leader",
                  });
-            _contentfulManager = new Mock<IContentfulClientManager>();
+            _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
-            _contentfulManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
+            _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
             _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory());
 
-            _contentfulClientManager = new Mock<IContentfulClientManager>();
-            _contentfulClient = new Mock<IContentfulClient>();
-            _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);
+            _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
+            _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
+            //_contentfulClientManager = new Mock<IContentfulClientManager>();
+            //_contentfulClient = new Mock<IContentfulClient>();
+            //_contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);
 
             _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object);
 
@@ -153,12 +156,71 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsAllNewsItems()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
+            //_httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
+            //    .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
+            // _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
+            //    .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            //_httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
+            //    .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
+
+            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
+            newsroomCollection.Items = new List<ContentfulNewsRoom>
+            {
+                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
+                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+            };
+
+            var alert = new List<Alert>
+            {
+                new Alert("title", "subHeading", "body",
+                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
+            };
+
+            var newsRoom = new Newsroom(alert, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);          
+                
+            _client.Setup(o => o.GetEntriesAsync(
+            It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
+            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+          
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            var newsContent = new ContentType()
+            {
+                Fields = new List<Field>()
+                {
+                    new Field()
+                    {
+                        Name = "Categories",
+                        Items = new Contentful.Core.Models.Schema()
+                        {
+                            Validations = new List<IFieldValidator>()
+                            {
+                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" } }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newsContent);
+
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,null,null));

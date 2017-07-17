@@ -11,17 +11,17 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _slug = "slug";
         private string _teaser = "teaser";
-        private string _imageUrl = "image-url.jpg";
-        private string _body = "body";
-        private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<string> _tags = new List<string> { "tag" };
-        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", 
-                                                                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
-        private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
+        private string _imageUrl = "image.jpg";
+        private string _body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+        private DateTime _sunriseDate = new DateTime(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
+        private DateTime _sunsetDate = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
+        private List<string> _tags = new List<string> { "Bramall Hall", "Events" };
+        private List<Alert> _alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
+                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
+                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc)) };
+        private List<Asset> _documents = new List<Asset>();
 
-        private List<string> _categories = new List<string> { "category" };
+        private List<string> _categories = new List<string> { "A category" };
 
         public ContentfulNews Build()
         {
@@ -41,9 +41,21 @@ namespace StockportContentApiTests.Unit.Builders
             };
         }
 
+        public ContentfulNewsBuilder Title(string title)
+        {
+            _title = title;
+            return this;
+        }
+
         public ContentfulNewsBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulNewsBuilder Teaser(string teaser)
+        {
+            _teaser = teaser;
             return this;
         }
 
@@ -56,6 +68,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulNewsBuilder SunsetDate(DateTime sunsetDate)
         {
             _sunsetDate = sunsetDate;
+            return this;
+        }
+
+        public ContentfulNewsBuilder Document()
+        {
+            _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
             return this;
         }
     }

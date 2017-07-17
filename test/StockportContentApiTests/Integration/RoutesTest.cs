@@ -88,7 +88,7 @@ namespace StockportContentApiTests.Integration
                 var newsCollection = new ContentfulCollection<ContentfulNews>();
                 newsCollection.Items = new List<ContentfulNews>
                 {
-                    new ContentfulNewsBuilder().Slug("news_item").Build(),
+                    new ContentfulNewsBuilder().Slug("news_item").SunriseDate(DateTime.MinValue).SunsetDate(new DateTime(9999, 09, 09, 0, 0, 0, DateTimeKind.Utc)).Document().Build(),
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
@@ -97,10 +97,8 @@ namespace StockportContentApiTests.Integration
                 var newsListCollection = new ContentfulCollection<ContentfulNews>();
                 newsListCollection.Items = new List<ContentfulNews>
                 {
-                    new ContentfulNewsBuilder().Slug("news_item").Build(),
-                    new ContentfulNewsBuilder().Slug("news-slug1").Build(),
-                    new ContentfulNewsBuilder().Slug("news-slug2").Build(),
-                    new ContentfulNewsBuilder().Slug("news-slug2").Build()
+                    new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                    new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
@@ -117,7 +115,7 @@ namespace StockportContentApiTests.Integration
                             {
                                 Validations = new List<IFieldValidator>()
                                 {
-                                    new InValuesValidator {RequiredValues = new List<string>() { "A category", "B category", "C category" } }
+                                    new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" } }
                                 }
                             }
                         }
@@ -133,7 +131,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
                                                                  "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test", Sys = null, Title = "title"}
+                                                                 new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
