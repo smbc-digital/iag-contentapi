@@ -60,7 +60,7 @@ namespace StockportContentApi.Repositories
             {
                 newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntries.FirstOrDefault());
             }
-
+           
             var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
             var newsEntries = await _client.GetEntriesAsync(newsBuilder);
 
@@ -74,16 +74,28 @@ namespace StockportContentApi.Repositories
                 .Where(news => CheckDates(startDate, endDate, news))
                 .GetTheCategories(out categories)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
+                .Where(news => string.IsNullOrWhiteSpace(tag) || FilterNewsByTag(tag, news))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
 
-            categories = await GetCategories();
+        categories = await GetCategories();
 
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories);
             newsroom.SetDates(dates.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
+        }
+
+        private bool FilterNewsByTag(string tag, News news)
+        {
+            if (tag.StartsWith("#"))
+            {
+                tag = tag.Remove(0, 1);
+            }
+
+            var result = news.Tags.Contains(tag);
+            return result;
         }
 
         private bool CheckDates(DateTime? startDate, DateTime? endDate, News news)

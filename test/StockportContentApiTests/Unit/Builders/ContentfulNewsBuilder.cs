@@ -71,6 +71,12 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public ContentfulNewsBuilder Body(string body)
+        {
+            _body = body;
+            return this;
+        }
+
         public ContentfulNewsBuilder Document()
         {
             _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
