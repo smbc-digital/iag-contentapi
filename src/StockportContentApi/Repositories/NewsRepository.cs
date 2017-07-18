@@ -70,11 +70,11 @@ namespace StockportContentApi.Repositories
 
             var newsArticles = newsEntries
                 .Select(item => _newsContentfulFactory.ToModel(item))
+                .Where(news => string.IsNullOrWhiteSpace(tag) || FilterNewsByTag(tag, news))
                 .GetNewsDates(out dates, _timeProvider)
                 .Where(news => CheckDates(startDate, endDate, news))
                 .GetTheCategories(out categories)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
-                .Where(news => string.IsNullOrWhiteSpace(tag) || FilterNewsByTag(tag, news))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
 

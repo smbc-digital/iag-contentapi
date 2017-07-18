@@ -30,10 +30,7 @@ namespace StockportContentApiTests.Unit.Repositories
 {
     public class NewsRepositoryTest
     {
-        private readonly Mock<IHttpClient> _httpClient;
         private readonly NewsRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private const string MockContentfulContentTypesApiUrl = "https://fake.url/spaces/SPACE/content_types?access_token=KEY";
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IVideoRepository> _videoRepository;
         private const string Title = "This is the news";
@@ -56,24 +53,20 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
-        private Mock<IBuildContentTypesFromReferences<Alert>> _mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-        private Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
-        private Mock<IFactory<Newsroom>> _newsroomFactory = new Mock<IFactory<Newsroom>>();
         private Mock<INewsCategoriesFactory> _newsCategoriesFactory = new Mock<INewsCategoriesFactory>();
         private readonly Mock<IContentfulClient> _client;
         private readonly Mock<IContentfulClientManager> _contentfulManager;
         private readonly NewsContentfulFactory _contentfulFactory;
         private readonly Mock<IContentfulClientManager> _contentfulClientManager;
+        private readonly ContentType _newsContentType;
 
         public NewsRepositoryTest()
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _httpClient = new Mock<IHttpClient>();
-            _videoRepository = new Mock<IVideoRepository>();
+           _videoRepository = new Mock<IVideoRepository>();
             var newsFactory = new Mock<IFactory<News>>();
             var newsroomFactory = new Mock<IFactory<Newsroom>>();
 
@@ -82,6 +75,24 @@ namespace StockportContentApiTests.Unit.Repositories
                   "Business",
                   "Council leader",
                  });
+
+            _newsContentType = new ContentType()
+            {
+                Fields = new List<Field>()
+                {
+                    new Field()
+                    {
+                        Name = "Categories",
+                        Items = new Contentful.Core.Models.Schema()
+                        {
+                            Validations = new List<IFieldValidator>()
+                            {
+                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
+                            }
+                        }
+                    }
+                }
+            };
             _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
@@ -164,19 +175,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
@@ -198,26 +200,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
@@ -266,13 +250,6 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsRoom() {Alerts = new List<Alert> { }, EmailAlerts = true, EmailAlertsTopicId = "", Sys = null, Title = ""}
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
             var newsRoom = new Newsroom(new List<Alert> { }, true, "");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -295,26 +272,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
             _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+                .ReturnsAsync(_newsContentType);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
@@ -348,19 +307,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
@@ -382,26 +332,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -424,19 +356,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
@@ -458,26 +381,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
@@ -501,19 +406,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
@@ -535,26 +431,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
             _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+                .ReturnsAsync(_newsContentType);
            
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
@@ -578,19 +456,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
@@ -612,26 +481,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
@@ -648,19 +499,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
@@ -682,26 +524,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+          _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2017, 08, 01), endDate: new DateTime(2017, 08, 31)));
             var newsroom = response.Get<Newsroom>();
@@ -717,19 +541,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
@@ -751,26 +566,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
@@ -788,19 +585,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() {"tag1", "tag2" }, new List<Document>(), _newsCategories);
@@ -822,26 +610,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
             _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+                .ReturnsAsync(_newsContentType);
             var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null,null));
             var newsroom = response.Get<Newsroom>();
 
@@ -857,19 +627,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "testTag" }, new List<Document>(), _newsCategories);
@@ -891,26 +652,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
             _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+                .ReturnsAsync(_newsContentType);
             // Act
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
@@ -930,19 +673,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { expectedTagQueryValue }, new List<Document>(), _newsCategories);
@@ -964,26 +698,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
@@ -1003,19 +719,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
             newsroomCollection.Items = new List<ContentfulNewsRoom>
             {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                new ContentfulNewsRoomBuilder().Build()
             };
 
-            var alert = new List<Alert>
-            {
-                new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc))
-            };
-
-            var newsRoom = new Newsroom(alert, true, "test-id");
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
             var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
@@ -1038,26 +745,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
-            var newsContent = new ContentType()
-            {
-                Fields = new List<Field>()
-                {
-                    new Field()
-                    {
-                        Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
-                        {
-                            Validations = new List<IFieldValidator>()
-                            {
-                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
-                            }
-                        }
-                    }
-                }
-            };
-
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newsContent);
+           _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_newsContentType);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
             var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(2));
