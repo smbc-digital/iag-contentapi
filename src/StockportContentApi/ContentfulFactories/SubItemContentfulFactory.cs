@@ -24,22 +24,31 @@ namespace StockportContentApi.ContentfulFactories
             // build all of the sub items (only avaliable for topics)
             var subItems = new List<SubItem>();
 
-            foreach (var item in entry.SubItems.Where(subItem => EntryIsValid(subItem)))
+            if (entry.SubItems != null)
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
-                subItems.Add(newItem);
+                foreach (var item in entry.SubItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
             }
 
-            foreach (var item in entry.SecondaryItems.Where(subItem => EntryIsValid(subItem)))
+            if (entry.SecondaryItems != null)
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
-                subItems.Add(newItem);
+                foreach (var item in entry.SecondaryItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
             }
 
-            foreach (var item in entry.TertiaryItems.Where(subItem => EntryIsValid(subItem)))
+            if (entry.TertiaryItems != null)
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
-                subItems.Add(newItem);
+                foreach (var item in entry.TertiaryItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
             }
 
             return new SubItem(entry.Slug, title, entry.Teaser, 
