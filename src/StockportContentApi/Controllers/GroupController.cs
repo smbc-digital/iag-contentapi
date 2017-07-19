@@ -83,7 +83,7 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/groups/administrators/{email}")]
+        [Route("api/{businessId}/group/administrators/{email}")]
         public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email)
         {
             return await _handler.Get(() =>
@@ -92,21 +92,9 @@ namespace StockportContentApi.Controllers
                 return groupRepository.GetAdministratorsGroups(email);
             });
         }
-        [HttpPost]
-        [Route("api/{businessId}/groups/add")]
-        public async Task<IActionResult> AddGroup(string businessId, [FromBody] Group group)
-        {
-            var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
-
-            return await _handler.Get(() =>
-            {
-                var managementRepository = _managementRepository(_createConfig(businessId));
-                return managementRepository.CreateOrUpdate(contentfulGroup);
-            });
-        }
 
         [HttpPut]
-        [Route("api/{businessId}/groups/update")]
+        [Route("api/{businessId}/group/{slug}")]
         public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -127,7 +115,23 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpDelete]
-        [Route("api/{businessId}/groups/{slug}/administrators/delete/{emailAddress}")]
+        [Route("api/{businessId}/group/{slug}")]
+        public async Task<IActionResult> DeleteGroup(string slug, string businessId)
+        {
+            var repository = _groupRepository(_createConfig(businessId));
+            var existingGroup = await repository.GetContentfulGroup(slug);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                existingGroup.Sys.Version = version;
+                return await managementRepository.Delete(existingGroup.Sys);
+            });
+        }
+
+        [HttpDelete]
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -149,27 +153,27 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpPut]
-        [Route("api/{businessId}/groups/{slug}/administrators/update/{emailAddress}")]
-        public async Task<IActionResult> UpdateAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
+        public async Task<IActionResult> UpdateAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
-            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+            return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
         }
 
         [HttpPost]
-        [Route("api/{businessId}/groups/{slug}/administrators/add/{emailAddress}")]
-        public async Task<IActionResult> AddAdministrator([FromBody] string permission, string slug, string emailAddress, string businessId)
+        [Route("api/{businessId}/group/{slug}/administrators/{emailAddress}")]
+        public async Task<IActionResult> AddAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
-            return await AddOrUpdateAdministrator(permission, slug, emailAddress, businessId);
+            return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
         }
 
-        private async Task<IActionResult> AddOrUpdateAdministrator(string permission, string slug, string emailAddress, string businessId)
+        private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
 
             var existingGroup = await repository.GetContentfulGroup(slug);
 
             existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
-            existingGroup.GroupAdministrators.Items.Add(new GroupAdministratorItems { Email = emailAddress, Permission = permission });
+            existingGroup.GroupAdministrators.Items.Add(user);
 
             ManagementGroup managementGroup = new ManagementGroup();
             _mapper.Map(existingGroup, managementGroup);

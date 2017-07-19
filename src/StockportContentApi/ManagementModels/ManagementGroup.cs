@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ManagementModels
@@ -19,5 +20,7 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, MapPosition> MapPosition { get; set; }
         public Dictionary<string, bool> Volunteering { get; set; }
         public Dictionary<string, GroupAdministrators> GroupAdministrators { get; set; }
+        public Dictionary<string, string> DateHiddenFrom { get; set; }
+        public Dictionary<string, string> DateHiddenTo { get; set; }
     }
 }
