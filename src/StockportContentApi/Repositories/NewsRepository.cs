@@ -78,7 +78,7 @@ namespace StockportContentApi.Repositories
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
 
-        categories = await GetCategories();
+            categories = await GetCategories();
 
             newsroom.SetNews(newsArticles);
             newsroom.SetCategories(categories);

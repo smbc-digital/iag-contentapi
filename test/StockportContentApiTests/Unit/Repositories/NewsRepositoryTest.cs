@@ -62,6 +62,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly NewsContentfulFactory _contentfulFactory;
         private readonly Mock<IContentfulClientManager> _contentfulClientManager;
         private readonly ContentType _newsContentType;
+        private readonly ContentfulCollection<ContentfulNewsRoom> _newsroomContentfulCollection;
 
         public NewsRepositoryTest()
         {
@@ -92,6 +93,12 @@ namespace StockportContentApiTests.Unit.Repositories
                         }
                     }
                 }
+            };
+
+            _newsroomContentfulCollection = new ContentfulCollection<ContentfulNewsRoom>();
+            _newsroomContentfulCollection.Items = new List<ContentfulNewsRoom>
+            {
+                new ContentfulNewsRoomBuilder().Build()
             };
             _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
@@ -172,12 +179,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
           
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -187,8 +188,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
-          
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
@@ -244,12 +244,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoom() {Alerts = new List<Alert> { }, EmailAlerts = true, EmailAlertsTopicId = "", Sys = null, Title = ""}
-            };
-
             var newsRoom = new Newsroom(new List<Alert> { }, true, "");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -259,7 +253,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -304,12 +298,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -319,7 +307,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -353,12 +341,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -368,7 +350,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -403,12 +385,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -418,7 +394,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -453,12 +429,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -468,7 +438,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -496,12 +466,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -511,7 +475,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -538,12 +502,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -553,7 +511,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -582,12 +540,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -597,7 +549,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -624,12 +576,6 @@ namespace StockportContentApiTests.Unit.Repositories
             const string tag = "testTag";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -639,7 +585,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -670,12 +616,6 @@ namespace StockportContentApiTests.Unit.Repositories
             const string expectedTagQueryValue = "testTag";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
-
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -685,7 +625,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
@@ -706,7 +646,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroom = response.Get<Newsroom>();
 
             // Assert
-            newsroom.News.Count.Should().Be(2);            
+            newsroom.News.Count.Should().Be(2);
 
             newsroom.News[1].Tags.Any(t => t == expectedTagQueryValue).Should().BeTrue();
         }
@@ -715,12 +655,6 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsTheTopTwoNewsItems()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-
-            var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
-            newsroomCollection.Items = new List<ContentfulNewsRoom>
-            {
-                new ContentfulNewsRoomBuilder().Build()
-            };
 
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
@@ -731,7 +665,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
 
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
