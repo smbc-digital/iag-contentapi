@@ -26,11 +26,15 @@ namespace StockportContentApi.Model
         public DateTime? DateHiddenFrom { get; set; }
         public DateTime? DateHiddenTo { get; set; }
         public string Status { get; set; }
+        public string Cost { get; set; }
+        public string CostText { get; set; }
+        public string AbilityLevel { get; set; }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, 
-            MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status)
+            MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
+            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel)
         {
             Name = name;
             Slug = slug;
@@ -51,6 +55,9 @@ namespace StockportContentApi.Model
             DateHiddenFrom = dateHiddenFrom;
             DateHiddenTo = dateHiddenTo;
             Status = status;
+            Cost = cost;
+            CostText = costText;
+            AbilityLevel = abilityLevel;
         }
 
         public void SetEvents(List<Event> events)

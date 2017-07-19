@@ -31,11 +31,13 @@ namespace StockportContentApi.ContentfulFactories
                                          && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                          .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
-                                                     .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+            var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                         .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys))
-                                                   .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+            var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                         .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
             var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -57,9 +59,11 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ExpandingLinkBoxes.Where(e => ContentfulHelpers.EntryIsNotALink(e.Sys))
                     .Select(e => _expandingLinkBoxFactory.ToModel(e)).ToList();
 
+            var primaryItemTitle = entry.PrimaryItemTitle;
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes, primaryItemTitle);
         }
     }
 }

@@ -35,10 +35,12 @@ namespace StockportContentApi.ContentfulFactories
                 status = "Archived";
             }
 
+            var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost[0] : string.Empty;
+
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
-                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status);  
+                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel);  
         }
     }
 }

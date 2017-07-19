@@ -16,35 +16,11 @@
       "title": "This is the news",
       "slug": "news-of-the-century",
       "teaser": "Read more for the news",
-      "image": "",
-      "thumbnailImage": "",
-      "body": "The news",
-      "sunriseDate": "2016-08-24T12:30:00+00:00",
-      "sunsetDate": "2016-08-29T22:00:00+00:00",
-      "breadcrumbs": [
-        {
-          "title": "News",
-          "slug": "",
-          "type": "news"
-        }
-      ],
-      "tags": [],
-      "alerts": [],
-      "documents": [],
-      "categories": [
-        "Another category",
-        "A category"
-      ]
-    },
-    {
-      "title": "Another news article",
-      "slug": "another-news-article",
-      "teaser": "This is another news article",
       "image": "image.jpg",
       "thumbnailImage": "image.jpg?h=250",
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "sunriseDate": "2016-08-01T00:00:00+00:00",
-      "sunsetDate": "2017-01-30T23:00:00+00:00",
+      "sunriseDate": "2016-08-24T23:30:00+00:00",
+      "sunsetDate": "2016-08-23T23:00:00+00:00",
       "breadcrumbs": [
         {
           "title": "News",
@@ -53,7 +29,16 @@
         }
       ],
       "tags": [ "Bramall Hall", "Events" ],
-      "alerts": [],
+      "alerts": [
+        {
+          "title": "New alert",
+          "subHeading": "alert sub heading updated",
+          "body": "Alert body",
+          "severity": "Error",
+          "sunriseDate": "2016-07-01T00:00:00+01:00",
+          "sunsetDate": "2017-11-22T23:00:00+01:00"
+        }
+      ],
       "documents": [],
       "categories": [
         "A category"
@@ -82,6 +67,7 @@
     "Test Category"
   ],
   "dates": [
+    "2016-06-01T00:00:00",
     "2016-08-01T00:00:00"
   ]
 }

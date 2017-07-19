@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
         public NewsContentfulFactoryTest()
         {
-            _contentfulNews = new ContentfulNewsBuilder().Build();
+            _contentfulNews = new ContentfulNewsBuilder().Document().Build();
             _videoRepository = new Mock<IVideoRepository>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object);

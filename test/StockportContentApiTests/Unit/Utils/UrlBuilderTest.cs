@@ -29,12 +29,6 @@ namespace StockportContentApiTests.Unit.Utils
         }
 
         [Fact]
-        public void ShouldGetUrlForFooterRepository()
-        {
-            _urlBuilder.UrlFor(type: "footer", referenceLevel: 2).Should().Be(ENTRIES_BASE_URL + "&content_type=footer" + "&include=2");
-        }
-
-        [Fact]
         public void ShouldGetUrlForHomeRepository()
         {
             _urlBuilder.UrlFor(type:"home", referenceLevel:2, slug:"slug").Should().Be(ENTRIES_BASE_URL + "&content_type=home&include=2&fields.slug=slug");

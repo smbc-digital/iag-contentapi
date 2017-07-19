@@ -2,9 +2,9 @@
   "title": "title",
   "slug": "news_item",
   "teaser": "teaser",
-  "image": "image-url.jpg",
-  "thumbnailImage": "image-url.jpg?h=250",
-  "body": "body",
+  "image": "image.jpg",
+  "thumbnailImage": "image.jpg?h=250",
+  "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   "sunriseDate": "0001-01-01T00:00:00+00:00",
   "sunsetDate": "9999-09-09T00:00:00+00:00",
   "breadcrumbs": [
@@ -14,15 +14,15 @@
       "type": "news"
     }
   ],
-  "tags": [ "tag" ],
+  "tags": [ "Bramall Hall", "Events" ],
   "alerts": [
     {
-      "title": "title",
-      "subHeading": "subHeading",
-      "body": "body",
-      "severity": "severity",
-      "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "9999-09-09T00:00:00+00:00"
+      "title": "New alert",
+      "subHeading": "alert sub heading updated",
+      "body": "Alert body",
+      "severity": "Error",
+      "sunriseDate": "2016-07-01T00:00:00+01:00",
+      "sunsetDate": "2017-11-22T23:00:00+01:00"
     }
   ],
   "documents": [
@@ -34,5 +34,5 @@
       "fileName": "fileName"
     }
   ],
-  "categories":["category"]
+  "categories": [ "A category" ]
 }

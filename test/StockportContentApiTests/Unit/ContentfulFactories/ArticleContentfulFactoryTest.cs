@@ -26,6 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+        private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
 
         public ArticleContentfulFactoryTest()
         {
@@ -39,6 +40,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+            _LiveChatFactory = new Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
@@ -48,7 +50,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
+                _parentTopicFactory.Object, _LiveChatFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
         }
 
         [Fact]
@@ -59,6 +61,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(),
                 DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), new List<Alert>());
             _sectionFactory.Setup(o => o.ToModel(_contentfulArticle.Sections.First())).Returns(section);
+            _LiveChatFactory.Setup(o => o.ToModel(It.IsAny<ContentfulLiveChat>())).Returns(new LiveChat("title", "text"));
             var crumb = new Crumb("title", "slug", "type");
             _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Breadcrumbs.First())).Returns(crumb);
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image",
@@ -94,7 +97,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Excluding(e => e.LiveChat));
 
             article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Alerts.First());
-            article.LiveChat.ShouldBeEquivalentTo(_contentfulArticle.LiveChatText);
+            article.LiveChat.Title.ShouldBeEquivalentTo(_contentfulArticle.LiveChatText.Title);
+            article.LiveChat.Text.ShouldBeEquivalentTo(_contentfulArticle.LiveChatText.Text);
 
             _videoRepository.Verify(o => o.Process(_contentfulArticle.Body), Times.Once());
             article.Body.Should().Be(processedBody);

@@ -18,6 +18,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _body = "body";
         private DateTime _sunriseDate = new DateTime(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
+        private ContentfulLiveChat _contentfulLiveChat = new ContentfulLiveChatBuilder().Build();
 
         private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
         {
@@ -72,7 +73,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Breadcrumbs = _breadcrumbs,
                 Documents = _documents,
                 Icon = _icon,
-                LiveChatText = _liveChat,
+                LiveChatText = _contentfulLiveChat,
                 LiveChatVisible = _liveChatVisible,
                 Profiles = _profiles,
                 Slug = _slug,

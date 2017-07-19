@@ -65,7 +65,10 @@
     "groupAdministrators": { "items": [] },
     "dateHiddenFrom": null,
     "dateHiddenTo": null,
-    "status": "Published"
+    "status": "Published",
+    "cost": "",
+    "costText": "",
+    "abilityLevel": ""
   },
   "alerts": [
     {

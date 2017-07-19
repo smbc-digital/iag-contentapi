@@ -17,61 +17,62 @@ namespace StockportContentApi.ContentfulFactories
 
         public SubItem ToModel(ContentfulReference entry)
         {
-            var type = entry.Sys.ContentType.SystemProperties.Id == "startPage" 
-                ? "start-page" 
-                : entry.Sys.ContentType.SystemProperties.Id;
-            var title = !string.IsNullOrEmpty(entry.Title) ? entry.Title : entry.Name;
-
-            var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                                       ? entry.Image.File.Url : string.Empty;
+            var type = GetEntryType(entry);
+            var image = GetEntryImage(entry);
+            var title = GetEntryTitle(entry);
 
             // build all of the sub items (only avaliable for topics)
-            var subItems = entry.SubItems != null
-                ? entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item =>
-                    {
-                        // to stop reccursion, mark the subitems.. subitems as empty
-                        item.SubItems = new List<ContentfulReference>();
-                        item.SecondaryItems = new List<ContentfulReference>();
-                        item.TertiaryItems = new List<ContentfulReference>();
-                        return ToModel(item);
-                    }).ToList()
-                : new List<SubItem>();
+            var subItems = new List<SubItem>();
 
-            var secondaryItems = entry.SecondaryItems != null
-                ? entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item => 
-                    {
-                        // to stop reccursion, mark the subitems.. subitems as empty
-                        item.SubItems = new List<ContentfulReference>();
-                        item.SecondaryItems = new List<ContentfulReference>();
-                        item.TertiaryItems = new List<ContentfulReference>();
-                        return ToModel(item);
-                    }).ToList()
-                : new List<SubItem>();
+            if (entry.SubItems != null)
+            {
+                foreach (var item in entry.SubItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
+            }
 
-            var tertiaryItems = entry.TertiaryItems != null
-                ? entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item => 
-                    {
-                        // to stop reccursion, mark the subitems.. subitems as empty
-                        item.SubItems = new List<ContentfulReference>();
-                        item.SecondaryItems = new List<ContentfulReference>();
-                        item.TertiaryItems = new List<ContentfulReference>();
-                        return ToModel(item);
-                    }).ToList()
-                : new List<SubItem>();
+            if (entry.SecondaryItems != null)
+            {
+                foreach (var item in entry.SecondaryItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
+            }
 
-            var allSubItems = new List<SubItem>();
-            allSubItems.AddRange(subItems);
-            allSubItems.AddRange(secondaryItems);
-            allSubItems.AddRange(tertiaryItems);
+            if (entry.TertiaryItems != null)
+            {
+                foreach (var item in entry.TertiaryItems.Where(subItem => EntryIsValid(subItem)))
+                {
+                    var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                    subItems.Add(newItem);
+                }
+            }
 
             return new SubItem(entry.Slug, title, entry.Teaser, 
-                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, allSubItems);
+                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
+        }
+
+        private string GetEntryType(ContentfulReference entry)
+        {
+            return entry.Sys.ContentType.SystemProperties.Id == "startPage" ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
+        }
+
+        private string GetEntryImage(ContentfulReference entry)
+        {
+            return ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+        }
+
+        private string GetEntryTitle(ContentfulReference entry)
+        {
+            return !string.IsNullOrEmpty(entry.Title) ? entry.Title : entry.Name;
+        }
+
+        private bool EntryIsValid(ContentfulReference entry)
+        {
+            return ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
         }
     }
 }

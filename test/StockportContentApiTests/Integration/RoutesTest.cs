@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
 using Xunit;
@@ -18,6 +20,7 @@ using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
 using File = System.IO.File;
 using StockportContentApiTests.Unit.Repositories;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Integration
 {
@@ -85,13 +88,59 @@ namespace StockportContentApiTests.Integration
                 var newsCollection = new ContentfulCollection<ContentfulNews>();
                 newsCollection.Items = new List<ContentfulNews>
                 {
-                    new ContentfulNewsBuilder().Slug("news_item").Build()
+                    new ContentfulNewsBuilder().Slug("news_item").SunriseDate(DateTime.MinValue).SunsetDate(new DateTime(9999, 09, 09, 0, 0, 0, DateTimeKind.Utc)).Document().Build(),
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(newsCollection);
 
-                var topicCollection = new ContentfulCollection<ContentfulTopic>();
+                var newsListCollection = new ContentfulCollection<ContentfulNews>();
+                newsListCollection.Items = new List<ContentfulNews>
+                {
+                    new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                    new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "Events").Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+                var newsContent = new ContentType()
+                {
+                    Fields = new List<Field>()
+                    {
+                        new Field()
+                        {
+                            Name = "Categories",
+                            Items = new Contentful.Core.Models.Schema()
+                            {
+                                Validations = new List<IFieldValidator>()
+                                {
+                                    new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" } }
+                                }
+                            }
+                        }
+                    }
+                };
+               
+                httpClient.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(newsContent);
+
+
+                var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
+                newsroomCollection.Items = new List<ContentfulNewsRoom>
+                {
+                    new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
+                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
+                                                                 new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)) }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
+
+               var topicCollection = new ContentfulCollection<ContentfulTopic>();
                 topicCollection.Items = new List<ContentfulTopic>
                 {
                     new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("id").Build()}).Build()
@@ -170,6 +219,16 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(showcaseCollection);
 
+                var footerCollection = new ContentfulCollection<ContentfulFooter>();
+                footerCollection.Items = new List<ContentfulFooter>
+                {
+                   new ContentfulFooterBuilder().Build()
+                };
+
+               httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
+
                 var catGroupCollection = new ContentfulCollection<ContentfulGroupCategory>();
                 catGroupCollection.Items = new List<ContentfulGroupCategory>
                 {
@@ -188,7 +247,30 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
                 
-            });
+                var homepageCollection = new ContentfulCollection<ContentfulHomepage>();
+                homepageCollection.Items = new List<ContentfulHomepage>
+                {
+                    new ContentfulHomepageBuilder().Build()
+                };
+
+                var homepageBuilder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+                httpClient.Setup(o => o.GetEntriesAsync(
+                                It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
+                                It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
+
+                var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+                aToZcollection.Items = new List<ContentfulAtoZ>
+                {
+                    new ContentfulAToZBuilder().Title("Vintage Village turns 6 years old").Build(),
+                    new ContentfulAToZBuilder().Title("C Letter Article").Slug("c-letter-article").Teaser("A C letter article").Sys("article").Build(),
+                    new ContentfulAToZBuilder().Title("C Letter Topic").Slug("d-letter-topic").Teaser("This is a d letter topic").Sys("topic").Build(),
+                    new ContentfulAToZBuilder().Title("Benefits & Support").Slug("benefits-and-support").Teaser("Benefits & Support").Sys("topic").Build(),
+                    new ContentfulAToZBuilder().Title("Bins & Recycling").Slug("bins-and-recycling").Teaser("Collection days, bulky items").Sys("topic").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+               });
         }
 
         [Theory]

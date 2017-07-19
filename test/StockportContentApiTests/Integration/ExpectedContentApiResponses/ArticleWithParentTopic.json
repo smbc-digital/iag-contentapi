@@ -120,7 +120,8 @@
     "emailAlertsTopicId": null,
     "eventBanner": null,
     "expandingLinkTitle": null,
-    "expandingLinkBoxes": null
+    "expandingLinkBoxes": null,
+    "primaryItemTitle": null
   },
   "documents": [
     {
@@ -137,20 +138,6 @@
   "liveChat": {
     "title": "title",
     "text": "text",
-    "sys": {
-      "id": null,
-      "linkType": null,
-      "type": "Entry",
-      "revision": null,
-      "version": null,
-      "createdAt": null,
-      "createdBy": null,
-      "updatedAt": null,
-      "updatedBy": null,
-      "deletedAt": null,
-      "locale": null,
-      "contentType": null,
-      "space": null
-    }
+    "sys": null
   }
 }

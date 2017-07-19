@@ -52,6 +52,9 @@ namespace StockportContentApiTests.Unit.Builders
                     SystemProperties = new SystemProperties() {Type = "Asset"},
                     Title = ""
                 },
+            Cost = new List<string> { string.Empty },
+            CostText = "",
+            AbilityLevel = ""
         };
 
         public ContentfulEvent Build()

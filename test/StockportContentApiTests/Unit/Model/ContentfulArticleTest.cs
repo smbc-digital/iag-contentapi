@@ -30,7 +30,7 @@ namespace StockportContentApiTests.Unit.Model
                 SunriseDate = DateTime.MinValue,
                 SunsetDate = DateTime.MaxValue,
                 LiveChatVisible = false,
-                LiveChatText = new LiveChat("", "") {  Sys = new SystemProperties { Type = "Entry" } }
+                LiveChatText = new ContentfulLiveChat()
             };
             actual.ShouldBeEquivalentTo(expected);
         }

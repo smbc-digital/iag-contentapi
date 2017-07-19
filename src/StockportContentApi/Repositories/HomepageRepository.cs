@@ -1,38 +1,37 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
+using Contentful.Core.Search;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.Client;
+using StockportContentApi.ContentfulFactories;
+using System.Linq;
 
 namespace StockportContentApi.Repositories
 {
     public class HomepageRepository
     {
-        private readonly IFactory<Homepage> _homepageFactory;
-        private readonly string _contentfulApiUrl;
-        private readonly ContentfulClient _contentfulClient;
-        private readonly UrlBuilder _urlBuilder;
+        private readonly Contentful.Core.IContentfulClient _client;
+        private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory;
 
-        public HomepageRepository(ContentfulConfig config, IHttpClient httpClient, IFactory<Homepage> homepageFactory)
+
+        public HomepageRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
+            _client = clientManager.GetClient(config);
             _homepageFactory = homepageFactory;
-            _urlBuilder = new UrlBuilder(_contentfulApiUrl);
         }
 
         public async Task<HttpResponse> Get()
         {
-            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type:"homepage", referenceLevel:2));
+            var builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.FirstOrDefault();
 
-            var homepageEntry = contentfulResponse.GetFirstItem();
-            var homepage = _homepageFactory.Build(homepageEntry, contentfulResponse);
-
-            return homepage.GetType() == typeof(NullHomepage) ?
-                HttpResponse.Failure(HttpStatusCode.NotFound, $"No homepage found") :
-                HttpResponse.Successful(homepage);
-        }      
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No homepage found")
+                : HttpResponse.Successful(_homepageFactory.ToModel(entry));
+        }
     }
 }

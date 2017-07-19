@@ -30,7 +30,7 @@ namespace StockportContentApi.Factories
         public ExpandingLinkBox BuildExpandingLinkBox(dynamic entry, IContentfulIncludes contentfulResponse)
         {
             string title = entry.fields.title ?? "";
-            var links = _subitemFactory.Build(entry, contentfulResponse);
+            var links = new List<SubItem> {_subitemFactory.Build(entry, contentfulResponse)};
 
             return new ExpandingLinkBox(title, links);
         }

@@ -24,15 +24,13 @@ using File = System.IO.File;
 using HttpResponse = StockportContentApi.Http.HttpResponse;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System.Collections;
+using Contentful.Core.Models.Management;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class NewsRepositoryTest
     {
-        private readonly Mock<IHttpClient> _httpClient;
         private readonly NewsRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private const string MockContentfulContentTypesApiUrl = "https://fake.url/spaces/SPACE/content_types?access_token=KEY";
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IVideoRepository> _videoRepository;
         private const string Title = "This is the news";
@@ -55,19 +53,21 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-        private Mock<IBuildContentTypesFromReferences<Alert>> _mockAlertlistFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-        private Mock<IBuildContentTypesFromReferences<Document>> _mockDocumentListFactory = new Mock<IBuildContentTypesFromReferences<Document>>();
-        private Mock<IFactory<Newsroom>> _newsroomFactory = new Mock<IFactory<Newsroom>>();
+        private readonly Mock<IContentfulClient> _contentfulClient;
+        private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
+        private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
         private Mock<INewsCategoriesFactory> _newsCategoriesFactory = new Mock<INewsCategoriesFactory>();
         private readonly Mock<IContentfulClient> _client;
         private readonly Mock<IContentfulClientManager> _contentfulManager;
         private readonly NewsContentfulFactory _contentfulFactory;
+        private readonly Mock<IContentfulClientManager> _contentfulClientManager;
+        private readonly ContentType _newsContentType;
+        private readonly ContentfulCollection<ContentfulNewsRoom> _newsroomContentfulCollection;
 
         public NewsRepositoryTest()
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _httpClient = new Mock<IHttpClient>();
-            _videoRepository = new Mock<IVideoRepository>();
+           _videoRepository = new Mock<IVideoRepository>();
             var newsFactory = new Mock<IFactory<News>>();
             var newsroomFactory = new Mock<IFactory<Newsroom>>();
 
@@ -76,12 +76,46 @@ namespace StockportContentApiTests.Unit.Repositories
                   "Business",
                   "Council leader",
                  });
-            _contentfulManager = new Mock<IContentfulClientManager>();
+
+            _newsContentType = new ContentType()
+            {
+                Fields = new List<Field>()
+                {
+                    new Field()
+                    {
+                        Name = "Categories",
+                        Items = new Contentful.Core.Models.Schema()
+                        {
+                            Validations = new List<IFieldValidator>()
+                            {
+                                new InValuesValidator {RequiredValues = new List<string>() { "Benefits","Business","Council leader" } }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            _newsroomContentfulCollection = new ContentfulCollection<ContentfulNewsRoom>();
+            _newsroomContentfulCollection.Items = new List<ContentfulNewsRoom>
+            {
+                new ContentfulNewsRoomBuilder().Build()
+            };
+            _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
-            _contentfulManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
+            _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
             _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory());
-            _repository = new NewsRepository(_config, _httpClient.Object, newsFactory.Object, newsroomFactory.Object, _newsCategoriesFactory.Object, 
-                                            _mockTimeProvider.Object, _contentfulManager.Object, _contentfulFactory);
+
+            _client.Setup(o => o.GetEntriesAsync(
+            It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
+            It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
+
+            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+               .ReturnsAsync(_newsContentType);
+
+            _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
+            _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
+           
+            _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object);
 
             newsFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
                 new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, 
@@ -95,8 +129,11 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "news-of-the-century";
-            _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
-            var contentfulNews = new ContentfulNewsBuilder().Slug(slug).SunriseDate(DateTime.Now.AddDays(-20)).Build();
+            List<Alert> alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
+                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
+                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc)) };
+        _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
+            var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();
             var collection = new ContentfulCollection<ContentfulNews>();
             collection.Items = new List<ContentfulNews> { contentfulNews };
             var simpleNewsQuery =
@@ -111,13 +148,17 @@ namespace StockportContentApiTests.Unit.Repositories
                 .ReturnsAsync(collection);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
 
+            var newsItem = new News(Title, Slug, Teaser, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" });
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(newsItem);
+
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var news = response.Get<News>();        
-            news.ShouldBeEquivalentTo(contentfulNews, o => o.Excluding(e => e.Image).Excluding(e => e.ThumbnailImage).Excluding(e => e.Documents).Excluding(e => e.Breadcrumbs));
+            news.ShouldBeEquivalentTo(contentfulNews, o => o.Excluding(e => e.Image).Excluding(e => e.ThumbnailImage).Excluding(e => e.Documents).Excluding(e => e.Breadcrumbs).Excluding(e=>e.Tags));
             news.Image.Should().Be(contentfulNews.Image.File.Url);
             news.ThumbnailImage.Should().Be(contentfulNews.Image.File.Url + "?h=250");
         }
@@ -144,12 +185,24 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsAllNewsItems()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-             _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
+          
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);          
+                
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null,null,null));
@@ -158,8 +211,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsroom = response.Get<Newsroom>();
 
             newsroom.Alerts.Count.Should().Be(1);
-            newsroom.Alerts.Should().BeEquivalentTo(_alerts);
-
+            newsroom.Alerts[0].Title.Should().BeEquivalentTo(_alerts[0].Title);
             newsroom.EmailAlerts.Should().Be(true);
             newsroom.EmailAlertsTopicId.Should().Be("test-id");
             newsroom.Categories.Count.Should().Be(3);
@@ -192,12 +244,22 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(new List<Alert> { }, true, "");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
@@ -228,12 +290,22 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "Events").Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
@@ -254,13 +326,23 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+            
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -280,13 +362,23 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&fields.tags[in]=Events&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=newsroom&include=1"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "Events").Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+           
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -304,48 +396,86 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnListOfNewsForDateRange()
         {
-            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object); 
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object,
-                                                _newsCategoriesFactory.Object, _mockTimeProvider.Object, _contentfulManager.Object,
-                                                _contentfulFactory);
-
-            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
-            
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+            var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("This is within the date Range").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is within the date Range").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
-            newsroom.News.Count.Should().Be(1);
+            newsroom.News.Count.Should().Be(2);
             newsroom.News.First().Title.Should().Be("This is within the date Range");
+        }
+
+        [Fact]
+        public void ShouldReturnNoListOfNewsForDateRange()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
+
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("This is within the date Range").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is within the date Range").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2017, 08, 01), endDate: new DateTime(2017, 08, 31)));
+            var newsroom = response.Get<Newsroom>();
+
+            newsroom.News.Count.Should().Be(0);
         }
 
         [Fact]
         public void ShouldReturnListOfFilterDatesForAllNewsThatIsCurrentOrPast()
         {
-            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, 
-                                                _newsCategoriesFactory.Object,_mockTimeProvider.Object, _contentfulManager.Object,
-                                                _contentfulFactory);
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 7));
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingDateTest.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: null, category: null, startDate: null, endDate: null));
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
-            newsroom.Dates.Count.Should().Be(2);
+            newsroom.Dates.Count.Should().Be(1);
             newsroom.Dates.First().Date.Should().Be(new DateTime(2016, 08, 01));
         }
 
@@ -353,72 +483,94 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnNotFoundForTagAndCategory()
         {
-            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound",null,null));
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
+
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() {"tag1", "tag2" }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "NotFound").Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null,null));
             var newsroom = response.Get<Newsroom>();
 
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            newsroom.Should().BeNull();
+            newsroom.News.Should().BeEmpty();
         }
 
         [Fact]
         public void ShouldReturnNewsItemsWithExactMatchingesForTagsWithoutHash()
         {
-            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, _newsCategoriesFactory.Object, 
-                                                _mockTimeProvider.Object, _contentfulManager.Object, _contentfulFactory);
-            
-            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
+            const string tag = "testTag";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var tag = "testTag";
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "testTag" }, new List<Document>(), _newsCategories);
 
-            var queryString = $"&content_type=news&include=1&fields.tags[in]={tag}&limit={ContentfulQueryValues.LIMIT_MAX}";
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
-            _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithoutHashTagTest.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "testTag").Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
             // Act
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
             // Assert
-            _httpClient.Verify(client => client.Get($"{MockContentfulApiUrl}{queryString}"), Times.Once());
-            newsroom.News.Count.Should().Be(1);
+            newsroom.News.Count.Should().Be(2);
             newsroom.News.First().Tags.Any(t => t == tag).Should().BeTrue(); ;
         }
 
         [Fact]
         public void ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
-        {            
-            var newsfactory = new NewsFactory(_mockAlertlistFactory.Object, _mockDocumentListFactory.Object);
-            var repository = new NewsRepository(_config, _httpClient.Object, newsfactory, _newsroomFactory.Object, 
-                                                _newsCategoriesFactory.Object, _mockTimeProvider.Object, _contentfulManager.Object,
-                                                _contentfulFactory);
-
-            _newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
-
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 09, 5));
-
+        {
             const string tag = "#testTag";
             const string expectedTagQueryValue = "testTag";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            var queryString = $"&content_type=news&include=1&fields.tags[match]={expectedTagQueryValue}&limit={ContentfulQueryValues.LIMIT_MAX}";
-            
-            _httpClient.Setup(client => client.Get($"{MockContentfulApiUrl}{queryString}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListingWithHashTagTest.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { expectedTagQueryValue }, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[match]", "testTag").Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
             // Act
-            var response = AsyncTestHelper.Resolve(repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
             var newsroom = response.Get<Newsroom>();
 
             // Assert
-            _httpClient.Verify(client => client.Get($"{MockContentfulApiUrl}{queryString}"), Times.Once());
-            newsroom.News.Count.Should().Be(2);            
-
-            newsroom.News[1].Tags.Any(t => t == tag).Should().BeTrue();
+            newsroom.News.Count.Should().Be(2);
+            newsroom.News[1].Tags.Any(t => t == expectedTagQueryValue).Should().BeTrue();
         }
 
         [Fact]
@@ -426,29 +578,42 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
 
-            _httpClient.Setup(o => o.Get($"{MockContentfulApiUrl}&content_type=news&include=1&limit={ContentfulQueryValues.LIMIT_MAX}"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/NewsListing.json")));
-            _httpClient.Setup(o => o.Get($"{MockContentfulContentTypesApiUrl}"))
-            .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentTypes.json")));
+            var newsRoom = new Newsroom(_alerts, true, "test-id");
+            _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+
+            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
+            var newsListCollection = new ContentfulCollection<ContentfulNews>();
+            newsListCollection.Items = new List<ContentfulNews>
+            {
+                new ContentfulNewsBuilder().Title("This is the first news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build()
+            };
+            _client.Setup(o => o.GetEntriesAsync(
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
             var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(2));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var news = response.Get<List<News>>();
+            var newsList = response.Get<List<News>>();
 
-            news.Count.Should().Be(2);
-            news.First().Title.Should().Be(Title);
-            news.First().Body.Should().Be(Body);
-            news.First().Slug.Should().Be(Slug);
-            news.First().Teaser.Should().Be(Teaser);
-            news.First().SunriseDate.Should().Be(_sunriseDate);
-            news.First().SunsetDate.Should().Be(_sunsetDate);
-            news.First().Image.Should().Be(Image);
-            news.First().ThumbnailImage.Should().Be(ThumbnailImage);
-            news.First().Breadcrumbs.Should().BeEquivalentTo(_crumbs);
-            news.First().Alerts.Should().BeEquivalentTo(_alerts);
+            newsList.Count.Should().Be(2);
+            newsList.First().Title.Should().Be(Title);
+            newsList.First().Body.Should().Be(Body);
+            newsList.First().Slug.Should().Be(Slug);
+            newsList.First().Teaser.Should().Be(Teaser);
+            newsList.First().SunriseDate.Should().Be(_sunriseDate);
+            newsList.First().SunsetDate.Should().Be(_sunsetDate);
+            newsList.First().Image.Should().Be(Image);
+            newsList.First().ThumbnailImage.Should().Be(ThumbnailImage);
+            newsList.First().Breadcrumbs.Should().BeEquivalentTo(_crumbs);
+            newsList.First().Alerts.Should().BeEquivalentTo(_alerts);
         }
 
         [Fact]
