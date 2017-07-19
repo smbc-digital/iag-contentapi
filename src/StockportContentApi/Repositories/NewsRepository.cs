@@ -62,6 +62,11 @@ namespace StockportContentApi.Repositories
             }
            
             var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                newsBuilder.FieldEquals($"fields.tags[{GetSearchTypeForTag(ref tag)}]", WebUtility.UrlEncode(tag));
+            }
             var newsEntries = await _client.GetEntriesAsync(newsBuilder);
 
             if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
@@ -70,7 +75,6 @@ namespace StockportContentApi.Repositories
 
             var newsArticles = newsEntries
                 .Select(item => _newsContentfulFactory.ToModel(item))
-                .Where(news => string.IsNullOrWhiteSpace(tag) || FilterNewsByTag(tag, news))
                 .GetNewsDates(out dates, _timeProvider)
                 .Where(news => CheckDates(startDate, endDate, news))
                 .GetTheCategories(out categories)
@@ -85,17 +89,6 @@ namespace StockportContentApi.Repositories
             newsroom.SetDates(dates.Distinct().ToList());
 
             return HttpResponse.Successful(newsroom);
-        }
-
-        private bool FilterNewsByTag(string tag, News news)
-        {
-            if (tag.StartsWith("#"))
-            {
-                tag = tag.Remove(0, 1);
-            }
-
-            var result = news.Tags.Contains(tag);
-            return result;
         }
 
         private bool CheckDates(DateTime? startDate, DateTime? endDate, News news)
