@@ -129,7 +129,7 @@ namespace StockportContentApi.Repositories
 
         private async Task<IList<ContentfulEvent>> GetAllEvents()
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
             var entries = await GetAllEntriesAsync(_client, builder);
             return entries.ToList();
         }

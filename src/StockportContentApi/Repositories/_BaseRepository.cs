@@ -20,7 +20,7 @@ namespace StockportContentApi.Repositories
 
             builder.Skip(999);
             var builderString = builder.Build();
-            builderString.Replace($"skip=999", "skip=xxx");
+            builderString = builderString.Replace("skip=999", "skip=xxx");
             var totalItems = 0;
             var skip = 0;
             do
@@ -38,7 +38,7 @@ namespace StockportContentApi.Repositories
 
         private bool BuilderHasProperty<T>(QueryBuilder<T> builder, string property)
         {
-            return builder.ToString().Contains(property);
+            return builder.Build().Contains(property);
         }
     }
 }

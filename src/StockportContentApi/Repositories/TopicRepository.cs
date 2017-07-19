@@ -40,14 +40,14 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get()
         {
-            var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").Include(2);
+            var builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
             var entries = await _client.GetEntriesAsync(builder);
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topics found");
 
-            var models = entries.Select(e => _topicFactory.ToModel(e));
+          //  var models = entries.Select(e => _topicFactory.ToModel(e));
 
-            return HttpResponse.Successful(models);
+            return HttpResponse.Successful(null);
         }
     }
 }

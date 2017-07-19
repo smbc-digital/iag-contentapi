@@ -16,7 +16,7 @@ using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
-    public class NewsRepository
+    public class NewsRepository : BaseRepository
     {
         private readonly ITimeProvider _timeProvider;
         private const int ReferenceLevelLimit = 1;
@@ -61,13 +61,13 @@ namespace StockportContentApi.Repositories
                 newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntries.FirstOrDefault());
             }
            
-            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
+            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit);
 
             if (!string.IsNullOrEmpty(tag))
             {
                 newsBuilder.FieldEquals($"fields.tags[{GetSearchTypeForTag(ref tag)}]", WebUtility.UrlEncode(tag));
             }
-            var newsEntries = await _client.GetEntriesAsync(newsBuilder);
+            var newsEntries = await GetAllEntriesAsync(_client, newsBuilder);
 
             if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
