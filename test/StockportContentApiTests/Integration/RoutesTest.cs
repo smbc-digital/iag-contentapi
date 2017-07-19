@@ -103,6 +103,9 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+                httpClient.Setup(o => o.GetEntriesAsync(
+                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "Events").Build()),
+                               It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
                 var newsContent = new ContentType()
                 {
