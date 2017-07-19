@@ -551,7 +551,6 @@ namespace StockportContentApiTests.Unit.Repositories
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
             It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
-
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
@@ -626,8 +625,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
             It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
-
-
+            
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
@@ -647,7 +645,6 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             newsroom.News.Count.Should().Be(2);
-
             newsroom.News[1].Tags.Any(t => t == expectedTagQueryValue).Should().BeTrue();
         }
 
@@ -666,8 +663,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
             It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
-
-
+            
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
