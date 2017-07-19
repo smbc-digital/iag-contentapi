@@ -3,23 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Contentful.Core.Models;
 using Contentful.Core.Search;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Factories;
-using StockportContentApi.Helpers;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
-    public class EventRepository
+    public class EventRepository : BaseRepository
     {
         private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
         private readonly DateComparer _dateComparer;
@@ -141,7 +138,7 @@ namespace StockportContentApi.Repositories
         private async Task<IList<ContentfulEvent>> GetAllEvents()
         {
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await GetAllEntriesAsync(_client, builder);
             return entries.ToList();
         }
 

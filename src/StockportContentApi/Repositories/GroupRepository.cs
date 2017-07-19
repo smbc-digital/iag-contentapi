@@ -15,7 +15,7 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
-    public class GroupRepository
+    public class GroupRepository : BaseRepository
     {
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly DateComparer _dateComparer;
@@ -47,8 +47,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get()
         {
-            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var entries = await _client.GetEntriesAsync(builder);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var entries = await GetAllEntriesAsync(_client, builder);
             var contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
 
             contentfulGroups =
@@ -93,14 +93,11 @@ namespace StockportContentApi.Repositories
         {
             var groupResults = new GroupResults();
 
-            var builder =
-                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
-                    .Include(1)
-                    .Limit(ContentfulQueryValues.LIMIT_MAX);
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await GetAllEntriesAsync(_client, builder);
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 

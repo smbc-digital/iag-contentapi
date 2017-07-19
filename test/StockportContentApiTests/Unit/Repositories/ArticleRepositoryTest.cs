@@ -96,8 +96,8 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             var collection = new ContentfulCollection<ContentfulArticleForSiteMap>();
             collection.Items = new List<ContentfulArticleForSiteMap> {new ContentfulArticleForSiteMap() {Slug = "slug1", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue }, new ContentfulArticleForSiteMap() { Slug = "slug2", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue}, new ContentfulArticleForSiteMap() { Slug = "slug3", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue } };
-            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulArticleForSiteMap>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Build();
+            _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticleForSiteMap>(It.Is<string>(q => q.Contains(builder)), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.Get());
             response.StatusCode.Should().Be(HttpStatusCode.OK);
