@@ -178,8 +178,10 @@ namespace StockportContentApi
                                                     p.GetService<ITimeProvider>(),
                                                     p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
+                (p => new TopicSiteMapContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
-                (p => new ArticleSiteMapContentfulFactory());
+               (p => new ArticleSiteMapContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
                 (p => new LiveChatContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
@@ -239,7 +241,7 @@ namespace StockportContentApi
                 p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
 
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
-                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()); });
+                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()); });
 
             services.AddSingleton<RedirectsRepository>();
 

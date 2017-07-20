@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
@@ -6,6 +8,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using Contentful.Core.Search;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Repositories
 {
@@ -41,15 +44,28 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get()
         {
-            //var builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").Include(2);
-            //var entries = await _client.GetEntriesAsync(builder);
+            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(type: "startPage", referenceLevel: 1));
 
-            //if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topics found");
+            if (!contentfulResponse.HasItems())
+                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-            //var models = entries.Select(e => _topicFactory.ToModel(e));
+            var startpage = GetAllStartPages(contentfulResponse);
+          
+            return startpage == null || !contentfulResponse.Items.Any()
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
+                : HttpResponse.Successful(startpage);
+        }
 
-            //return HttpResponse.Successful(models);
-            return null;
+        private IEnumerable<StartPage> GetAllStartPages(ContentfulResponse entries)
+        {
+            var entriesList = new List<StartPage>();
+            foreach (var entry in entries.Items)
+            {                
+                var startPageItem = _startPageFactory.Build(entry, entries);
+                entriesList.Add(startPageItem);
+            }
+
+            return entriesList;
         }
     }
 }
