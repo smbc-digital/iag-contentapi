@@ -184,6 +184,8 @@ namespace StockportContentApi
                (p => new ArticleSiteMapContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
                 (p => new LiveChatContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>
+                (p => new SmartAnswerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
                 (p => new AtoZContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
@@ -259,6 +261,8 @@ namespace StockportContentApi
                                                         p.GetService<ICache>()); });
             services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
+            services.AddSingleton<Func<ContentfulConfig, SmartAnswersRepository>>(
+                p => { return x=> new SmartAnswersRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>()); });
 
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
                 p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
