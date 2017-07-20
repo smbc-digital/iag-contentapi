@@ -1,22 +1,19 @@
-﻿using System;
-using StockportContentApi.Config;
+﻿using StockportContentApi.Config;
 using StockportContentApi.Model;
 using StockportContentApi.Http;
 using System.Net;
 using System.Threading.Tasks;
-using StockportContentApi.Factories;
 using StockportContentApi.Utils;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Client;
 using Contentful.Core.Search;
 using System.Linq;
-using Contentful.Core.Models;
 using System.Collections.Generic;
 
 namespace StockportContentApi.Repositories
 {
-    public class ArticleRepository
+    public class ArticleRepository : BaseRepository
     {        
         private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
         private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
@@ -40,11 +37,12 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get()
         {
-            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var entries = await _client.GetEntriesAsync(builder);
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
+            var entries = await GetAllEntriesAsync(_client, builder);
             var contentfulArticles = entries as IEnumerable<ContentfulArticleForSiteMap> ?? entries.ToList();
 
-            var articles = GetAllArticles(contentfulArticles);
+            var articles = GetAllArticles(contentfulArticles.ToList())
+                .Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
             return entries == null || !contentfulArticles.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Articles found")
                 : HttpResponse.Successful(articles);
@@ -86,7 +84,7 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(articleItem);          
         }
 
-        private IEnumerable<ArticleSiteMap> GetAllArticles(IEnumerable<ContentfulArticleForSiteMap> entries)
+        private IEnumerable<ArticleSiteMap> GetAllArticles(List<ContentfulArticleForSiteMap> entries)
         {
             var entriesList = new List<ArticleSiteMap>();
             foreach (var entry in entries)
@@ -94,6 +92,7 @@ namespace StockportContentApi.Repositories
                 var articleItem = _contentfulFactoryArticle.ToModel(entry);
                 entriesList.Add(articleItem);
             }
+
             return entriesList;
         }
     }

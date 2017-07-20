@@ -178,10 +178,14 @@ namespace StockportContentApi
                                                     p.GetService<ITimeProvider>(),
                                                     p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
+            services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
+                (p => new TopicSiteMapContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
-                (p => new ArticleSiteMapContentfulFactory());
+               (p => new ArticleSiteMapContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
                 (p => new LiveChatContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>
+                (p => new SmartAnswerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
                 (p => new AtoZContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
@@ -222,19 +226,27 @@ namespace StockportContentApi
 
             services.AddSingleton<Func<ContentfulConfig, HomepageRepository>>(
                 p => { return x => new HomepageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, StartPageRepository>>(
                 p => { return x => new StartPageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<StartPage>>()); });
-            services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
-                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
                 p => { return x => new FooterRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulFooter, Footer>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
-              p => {
-                  return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>());
-              });
+              p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>()); });
+
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
                 p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
+                p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
+                p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()); });
+
             services.AddSingleton<RedirectsRepository>();
+
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
               p => { return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(), 
                                                         p.GetService<ITimeProvider>(), 
@@ -249,6 +261,8 @@ namespace StockportContentApi
                                                         p.GetService<ICache>()); });
             services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
+            services.AddSingleton<Func<ContentfulConfig, SmartAnswersRepository>>(
+                p => { return x=> new SmartAnswersRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>()); });
 
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
                 p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });

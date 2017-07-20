@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulArticleForSiteMap : IContentfulModel
+    public class ContentfulTopicForSiteMap : IContentfulModel
     {
         public string Slug { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();

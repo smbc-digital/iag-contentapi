@@ -6,16 +6,15 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class ArticleController
+    public class SectionController
     {
-        
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, ArticleRepository> _createRepository;
+        private readonly Func<ContentfulConfig, SectionRepository> _createRepository;
 
-        public ArticleController(ResponseHandler handler,
+        public SectionController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, ArticleRepository> createRepository)
+            Func<ContentfulConfig, SectionRepository> createRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
@@ -23,26 +22,28 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/article/{articleSlug}")]
-        public async Task<IActionResult> GetArticle(string articleSlug,string  businessId)
+        [Route("api/{businessId}/section/{sectionSlug}")]
+        public async Task<IActionResult> GetSection(string sectionSlug, string  businessId)
         {
             return await _handler.Get(() =>
             {
                 var repository = _createRepository(_createConfig(businessId));
-                var article = repository.GetArticle(articleSlug);
+                var section = repository.GetSections(sectionSlug);
 
-                return article;
+                return section;
             });
         }
 
         [HttpGet]
-        [Route("api/{businessId}/articleSiteMap")]
-        public async Task<IActionResult> Index(string businessId)
+        [Route("api/{businessId}/sectionsitemap")]
+        public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>
             {
                 var repository = _createRepository(_createConfig(businessId));
-                return repository.Get();
+                var section = repository.Get();
+
+                return section;
             });
         }
     }

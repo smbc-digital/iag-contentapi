@@ -100,11 +100,8 @@ namespace StockportContentApiTests.Integration
                     new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                     new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
-                               It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
-                httpClient.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).FieldEquals("fields.tags[in]", "Events").Build()),
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+                                It.Is<string>(q => !q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build())),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
                 var newsContent = new ContentType()
@@ -270,7 +267,18 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
-               });
+
+                var smartAnswer = new ContentfulCollection<ContentfulSmartAnswers>();
+                smartAnswer.Items = new List<ContentfulSmartAnswers>()
+                {
+                    new ContentfulSmartAnswerBuilder().Slug("smartAnswer_slug").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulSmartAnswers>>(
+                        q => q.Build() == new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers")
+                                 .FieldEquals("fields.slug", "smartAnswer_slug").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(smartAnswer);
+            });
         }
 
         [Theory]
@@ -291,6 +299,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
+        [InlineData("SmartAnswers", "/api/unittest/SmartAnswers/smartAnswer_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

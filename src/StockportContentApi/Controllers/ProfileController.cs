@@ -32,5 +32,16 @@ namespace StockportContentApi.Controllers
                 return profileRepository.GetProfile(profileSlug);
             });
         }
+
+        [HttpGet]
+        [Route("api/{businessId}/profile/")]
+        public async Task<IActionResult> Get(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var profilerRepository = _createRepository(_createConfig(businessId));
+                return profilerRepository.Get();
+            });
+        }
     }
 }

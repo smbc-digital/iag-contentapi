@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace StockportContentApi.Model
 {
-    public class ArticleSiteMap
+    public class TopicSiteMap
     {
         public string Slug { get; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
 
-        public ArticleSiteMap(string slug, DateTime sunriseDate, DateTime sunsetDate)
+        public TopicSiteMap(string slug, DateTime sunriseDate, DateTime sunsetDate)
         {
             Slug = slug;
             SunriseDate = sunriseDate;
