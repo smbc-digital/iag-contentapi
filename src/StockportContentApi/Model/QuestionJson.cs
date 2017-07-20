@@ -54,6 +54,7 @@ namespace StockportContentApi.Model
     {
         Redirect,
         RedirectToAction,
+        RedirectToActionController,
         GoToPage
     }
 }
