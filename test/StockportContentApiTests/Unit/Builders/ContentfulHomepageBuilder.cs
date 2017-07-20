@@ -8,16 +8,19 @@ namespace StockportContentApiTests.Unit.Builders
 {
     public class ContentfulHomepageBuilder
     {
-        private List<string> _popularSearchTerms = new List<string> { "popular search term" };
-        private string _featuredTasksHeading = "Featured tasks heading";
-        private string _featuredTasksSummary = "Featured tasks summary";
-        private Asset _backgroundImage = new Asset { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private string _freeText = "homepage text";
-        private ContentfulGroup _featuredGroup = null;
-
-        private List<ContentfulCarouselContent> _carouselContents = new List<ContentfulCarouselContent>
+        private readonly List<string> _popularSearchTerms = new List<string> { "popular search term" };
+        private readonly string _featuredTasksHeading = "Featured tasks heading";
+        private readonly string _featuredTasksSummary = "Featured tasks summary";
+        private readonly Asset _backgroundImage = new Asset { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        private readonly string _freeText = "homepage text";
+        private IEnumerable<ContentfulGroup> _featuredGroups = new List<ContentfulGroup>
         {
-            new ContentfulCarouselContent()
+            new ContentfulGroupBuilder().Build()
+        };
+
+        private readonly List<ContentfulCarouselContent> _carouselContents = new List<ContentfulCarouselContent>
+        {
+            new ContentfulCarouselContent
             {
                 Title = "Red Rock is opening this Autumn",
                 Slug = "red-rock-opening",
@@ -26,11 +29,11 @@ namespace StockportContentApiTests.Unit.Builders
                 SunriseDate = new DateTime(2016, 9, 1, 0, 0, 0, DateTimeKind.Utc),
                 SunsetDate = new DateTime(2016, 9, 30, 0, 0, 0, DateTimeKind.Utc),
                 Url = "http://fake.url",
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties {Type = "Entry"}
             }
         };
 
-        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+        private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
         {
             new ContentfulAlert()
             {
@@ -64,7 +67,7 @@ namespace StockportContentApiTests.Unit.Builders
             }
         };
 
-        private List<ContentfulReference> _featuredTasks = new List<ContentfulReference>
+        private readonly List<ContentfulReference> _featuredTasks = new List<ContentfulReference>
         {
             //new ContentfulReferenceBuilder().Slug("pay-council-tax").Title("Pay Council Tax").SubItems(new List<ContentfulReference>()).Build(),
             //new ContentfulReferenceBuilder().Slug("check-your-bin-day").Title("Check your bin day").SubItems(new List<ContentfulReference>()).Build(),
@@ -74,7 +77,7 @@ namespace StockportContentApiTests.Unit.Builders
             //new ContentfulReferenceBuilder().Slug("search-job-vacancies").Title("Search job vacancies").SubItems(new List<ContentfulReference>()).Build()
         };
 
-        private List<ContentfulReference> _featuredTopics = new List<ContentfulReference>
+        private readonly List<ContentfulReference> _featuredTopics = new List<ContentfulReference>
         {
             new ContentfulTopicBuilder().Slug("council-tax").Name("Council Tax")
                                         .Teaser("How to pay, discounts")
@@ -97,7 +100,7 @@ namespace StockportContentApiTests.Unit.Builders
                                         .Build()
         };
 
-        private SystemProperties _sys = new SystemProperties
+        private readonly SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
@@ -115,9 +118,15 @@ namespace StockportContentApiTests.Unit.Builders
                 CarouselContents = _carouselContents,
                 BackgroundImage = _backgroundImage,
                 FreeText = _freeText,
-                FeaturedGroup = _featuredGroup,
+                FeaturedGroups = _featuredGroups,
                 Sys = _sys
             };
+        }
+
+        public ContentfulHomepageBuilder FeaturedGroups(List<ContentfulGroup> featuredGroups)
+        {
+            _featuredGroups = featuredGroups;
+            return this;
         }
     }
 }

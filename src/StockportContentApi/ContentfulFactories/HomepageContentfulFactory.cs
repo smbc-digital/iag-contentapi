@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using Contentful.Core.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using System.Collections.Generic;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -52,7 +51,10 @@ namespace StockportContentApi.ContentfulFactories
                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                     .Select(item => _carouselFactory.ToModel(item)).ToList();
 
-            var featuredGroup = entry.FeaturedGroup != null ? _groupFactory.ToModel(entry.FeaturedGroup) : null;
+            var featuredGroup = entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
+                                                                    && _dateComparer.DateNowIsNotBetweenHiddenRange(
+                                                                        group.DateHiddenFrom, group.DateHiddenTo))
+                .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
             return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup);
         }

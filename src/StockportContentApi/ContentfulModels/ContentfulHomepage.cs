@@ -1,5 +1,4 @@
 ﻿using Contentful.Core.Models;
-using StockportContentApi.Model;
 using System.Collections.Generic;
 
 namespace StockportContentApi.ContentfulModels
@@ -15,7 +14,7 @@ namespace StockportContentApi.ContentfulModels
         public IEnumerable<ContentfulCarouselContent> CarouselContents { get; set; } = new List<ContentfulCarouselContent>();
         public Asset BackgroundImage { get; set; } = new Asset();
         public string FreeText { get; set; } = string.Empty;
-        public ContentfulGroup FeaturedGroup { get; set; } = null;
+        public IEnumerable<ContentfulGroup> FeaturedGroups { get; set; } = new List<ContentfulGroup>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }
