@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -11,7 +12,8 @@ namespace StockportContentApi.ContentfulFactories
     {
         public SmartAnswer ToModel(ContentfulSmartAnswers entry)
         {
-            return new SmartAnswer(entry.Slug, entry.QuestionJson);
+            var stringQuestionJson = JsonConvert.SerializeObject(entry.QuestionJson);
+            return new SmartAnswer(entry.Slug, stringQuestionJson);
         }
     }
 }
