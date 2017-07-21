@@ -23,6 +23,7 @@ namespace StockportContentApi.Repositories
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly ICache _cache;
         private ILogger<EventRepository> _logger;
+        private ITimeProvider _timeProvider;
 
         public EventRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
@@ -36,6 +37,7 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
             _cache = cache;
             _logger = logger;
+            _timeProvider = timeProvider;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -75,22 +77,24 @@ namespace StockportContentApi.Repositories
             var searchdateFrom = dateFrom;
             var searchdateTo = dateTo;
 
+            var now = _timeProvider.Now().Date;
+
             if (!dateFrom.HasValue && !dateTo.HasValue)
             {
-                searchdateFrom = DateTime.Now.Date;
+                searchdateFrom = now;
                 searchdateTo = DateTime.MaxValue;
             }
             else if (dateFrom.HasValue && !dateTo.HasValue)
             {
                 searchdateTo = DateTime.MaxValue;
             }
-            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < DateTime.Now.Date)
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < now)
             {
                 searchdateFrom = DateTime.MinValue;
             }
-            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= DateTime.Now.Date)
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= now)
             {
-                searchdateFrom = DateTime.Now.Date;
+                searchdateFrom = now;
             }
 
             var events =
