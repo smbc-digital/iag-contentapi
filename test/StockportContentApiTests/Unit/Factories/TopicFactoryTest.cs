@@ -12,7 +12,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class TopicFactoryTest
+    public class TopicFactoryTest : TestingBaseClass
     {
         private readonly TopicFactory _topicBuilder;
         private readonly Mock<IBuildContentTypesFromReferences<SubItem>> _mockSubitemBuilder;
@@ -52,7 +52,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildTopicWithBreadcrumbs()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ListOfArticlesForTopic.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ListOfArticlesForTopic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             Topic topic = _topicBuilder.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -65,7 +65,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildTopicBySlugThatIncludesPrimarySecondaryAndTertiaryItems()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItems.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.TopicWithPrimarySecondaryAndTertiaryItems.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             Topic topic = _topicBuilder.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -81,7 +81,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildTopicWithoutSummaryOrBackgroundImage()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/TopicWithoutSummary.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.TopicWithoutSummary.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             Topic topic = _topicBuilder.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -100,7 +100,7 @@ namespace StockportContentApiTests.Unit.Factories
                 .Returns(alerts);
             var topicBuilder = new TopicFactory(mockListAlertBuilder.Object, _mockSubitemBuilder.Object, _breadcrumbFactory, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object);
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Topic.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Topic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             Topic topic = topicBuilder.Build(contentfulResponse.GetFirstItem(), contentfulResponse);

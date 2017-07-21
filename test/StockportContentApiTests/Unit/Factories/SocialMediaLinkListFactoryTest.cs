@@ -11,7 +11,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class SocialMediaLinkListFactoryTest
+    public class SocialMediaLinkListFactoryTest : TestingBaseClass
     {
         private readonly SocialMediaLinkListFactory _factory;
         private readonly ContentfulResponse _contentfulResponse;
@@ -19,7 +19,7 @@ namespace StockportContentApiTests.Unit.Factories
         public SocialMediaLinkListFactoryTest()
         {
             _factory = new SocialMediaLinkListFactory(new SocialMediaLinkFactory());
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/FooterSocialMediaLinks.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.FooterSocialMediaLinks.json"));
             _contentfulResponse = new ContentfulResponse(mockContentfulData);
         }
 

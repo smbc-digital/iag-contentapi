@@ -8,7 +8,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class SubItemFactoryTest
+    public class SubItemFactoryTest : TestingBaseClass
     {
         private readonly IFactory<SubItem> _factory;
 
@@ -20,7 +20,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ItBuildsASubItemFromEntryOfContentTypeTopic()
         {
-            dynamic data = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Entry/SubItemEntryOfTypeTopic.json"));
+            dynamic data = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Entry.SubItemEntryOfTypeTopic.json"));
 
             SubItem subItem = _factory.Build(data, new NullContentfulResponse());
 
@@ -34,7 +34,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ItBuildsASubItemFromEntryOfContentTypeArticle()
         {
-            dynamic data = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Entry/SubItemEntryOfTypeArticle.json"));
+            dynamic data = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Entry.SubItemEntryOfTypeArticle.json"));
 
             SubItem subItem = _factory.Build(data, new NullContentfulResponse());
 
@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ItBuildsASubItemFromEntryOfContentTypeStartPage()
         {
-            dynamic data = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Entry/SubItemEntryOfTypeStartPage.json"));
+            dynamic data = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Entry.SubItemEntryOfTypeStartPage.json"));
 
             SubItem subItem = _factory.Build(data, new NullContentfulResponse());
 
@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ItBuildsASubItemFromEntryWithoutIcon()
         {
-            dynamic data = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Entry/SubItemEntryWithoutIcon.json"));
+            dynamic data = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Entry.SubItemEntryWithoutIcon.json"));
 
             SubItem subItem = _factory.Build(data, new NullContentfulResponse());
 

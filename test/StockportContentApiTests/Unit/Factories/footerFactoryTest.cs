@@ -11,7 +11,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class FooterFactoryTest
+    public class FooterFactoryTest : TestingBaseClass
     {
         private readonly IFactory<Footer> _factory;
 
@@ -35,7 +35,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ItGetsTheFooter()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Footer.json"));   
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Footer.json"));   
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
             
             var footer = (Footer) _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -48,7 +48,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsFooterThatIncludesSubItems()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Footer.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Footer.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var footer = (Footer)_factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -59,7 +59,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsFooterThatIncludesSocialMedia()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Footer.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Footer.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var footer = (Footer)_factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);

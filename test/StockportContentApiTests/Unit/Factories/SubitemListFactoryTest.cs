@@ -14,7 +14,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class SubItemListFactoryTest
+    public class SubItemListFactoryTest : TestingBaseClass
     {
         private readonly SubItemListFactory _factory;
         private dynamic _topicItem;
@@ -25,7 +25,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
             _factory = new SubItemListFactory(new SubItemFactory(), _mockTimeProvider.Object);
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItems.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.TopicWithPrimarySecondaryAndTertiaryItems.json"));
             _topicContentfulResponse = new ContentfulResponse(mockContentfulData);
             _topicItem = _topicContentfulResponse.GetFirstItem();
         }
@@ -76,7 +76,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ReturnsCorectSizeSubItemListForSunriseSunsetDate()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/TopicWithPrimarySecondaryAndTertiaryItemsWithDate.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.TopicWithPrimarySecondaryAndTertiaryItemsWithDate.json"));
             _topicContentfulResponse = new ContentfulResponse(mockContentfulData);
             _topicItem = _topicContentfulResponse.GetFirstItem();
 

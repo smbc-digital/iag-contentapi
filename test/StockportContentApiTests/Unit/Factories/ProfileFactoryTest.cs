@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class ProfileFactoryTest
+    public class ProfileFactoryTest : TestingBaseClass
     {
         private readonly IFactory<Profile> _profileFactory;
 
@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsProfileFromContentfulResponseData()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Profile.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Profile.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var profile = (Profile)_profileFactory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -38,7 +38,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsProfileWithoutBackgroundImageFromContentfulResponseData()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ProfileWithoutBackgroundImage.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ProfileWithoutBackgroundImage.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var profile = (Profile)_profileFactory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildProfileWithBreadcrumbs()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ProfileWithBreadcrumbs.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ProfileWithBreadcrumbs.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var profile = (Profile)_profileFactory.Build(contentfulResponse.GetFirstItem(),contentfulResponse);

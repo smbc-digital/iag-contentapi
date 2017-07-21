@@ -14,7 +14,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class SectionListFactoryTest
+    public class SectionListFactoryTest : TestingBaseClass
     {
         private readonly SectionListFactory _sectionListFactory;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
@@ -44,7 +44,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -65,7 +65,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -90,7 +90,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -108,7 +108,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2014, 11, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -123,7 +123,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2018, 01, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -138,7 +138,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 01));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithSectionsAndSectionProfilesWithBlankDate.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithSectionsAndSectionProfilesWithBlankDate.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();

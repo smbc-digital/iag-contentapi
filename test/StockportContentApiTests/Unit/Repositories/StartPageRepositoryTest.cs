@@ -15,7 +15,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
-    public class StartPageRepositoryTest
+    public class StartPageRepositoryTest : TestingBaseClass
     {
         private readonly FakeHttpClient _httpClient = new FakeHttpClient();
         private readonly StartPageRepository _repository;
@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GivenThereIsItemInTheContentResponse_ItReturnsOKResponseWithTheContentOfStartPage()
         {
             _httpClient.For($"{MockContentfulApiUrl}&content_type=startPage&include=1&fields.slug=start-page")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/StartPage.json")));
+                .Return(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.StartPage.json")));
 
             var startPageSlug = "start-page";
             var response = AsyncTestHelper.Resolve(_repository.GetStartPage(startPageSlug));
@@ -70,7 +70,7 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GivenNoItemsInTheContentResponse_ItReturnsNotFoundResponse()
         {
             _httpClient.For($"{MockContentfulApiUrl}&content_type=startPage&include=1&fields.slug=new-start-page")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+                .Return(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentNotFound.json")));
 
             var response = AsyncTestHelper.Resolve(_repository.GetStartPage("new-start-page"));
 

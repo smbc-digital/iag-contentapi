@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class AtoZFactoryTest
+    public class AtoZFactoryTest : TestingBaseClass
     {
         private readonly IFactory<AtoZ> _factory;
 
@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void BuildAtoZFromAnArticle()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/AtoZ.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.AtoZ.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             AtoZ atoz = _factory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -40,7 +40,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void BuildAtoZFromATopic()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/AtoZTopic.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.AtoZTopic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             AtoZ atoz = _factory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -57,7 +57,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void ShouldSetAlternativeTitlesToAnEmptyListIfNonProvided()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/AtoZTopic.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.AtoZTopic.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             AtoZ atoz = _factory.Build(contentfulResponse.Items[1], contentfulResponse);

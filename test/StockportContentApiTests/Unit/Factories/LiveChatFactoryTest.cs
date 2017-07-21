@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class LiveChatFactoryTest
+    public class LiveChatFactoryTest : TestingBaseClass
     {
         private readonly IFactory<LiveChat> _liveChatFactory;
 
@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsALiveChat()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/LiveChat/LiveChat.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.LiveChat.LiveChat.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();
@@ -34,7 +34,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildAnEmptyLiveChatIfNoContent()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentNotFound.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();

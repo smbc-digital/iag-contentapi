@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulClient
 {
-    public class ContentfulClientTest
+    public class ContentfulClientTest : TestingBaseClass
     {
         private readonly Mock<IHttpClient> _httpClient;
         private readonly StockportContentApi.ContentfulClient _contentfulClient;
@@ -34,7 +34,7 @@ namespace StockportContentApiTests.Unit.ContentfulClient
         [Fact]
         public void ShouldReturnContentfulResponseWithItemsForOkHttpResponse()
         {
-            _httpClient.Setup(o => o.Get("good-url")).ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/Article.json")));
+            _httpClient.Setup(o => o.Get("good-url")).ReturnsAsync(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.json"));
 
             var response = AsyncTestHelper.Resolve(_contentfulClient.Get("good-url"));
 

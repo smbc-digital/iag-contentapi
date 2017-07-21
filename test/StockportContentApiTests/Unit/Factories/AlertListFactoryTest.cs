@@ -13,7 +13,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class AlertListFactoryTest
+    public class AlertListFactoryTest : TestingBaseClass
     {
         private readonly AlertListFactory _alertListFactory;
 
@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Alert/ArticleWithOnlyAlerts.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Alert.ArticleWithOnlyAlerts.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Alert/ArticleWithOnlyAlerts.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Alert.ArticleWithOnlyAlerts.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var alert = _alertListFactory.BuildFromReferences(null, contentfulResponse);
@@ -60,7 +60,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Alert/ArticleWithListOfPastCurrentAndFutureAlerts.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Alert.ArticleWithListOfPastCurrentAndFutureAlerts.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();

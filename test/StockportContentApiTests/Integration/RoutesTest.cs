@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
@@ -24,7 +28,7 @@ using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Integration
 {
-    public class RoutesTest
+    public class RoutesTest : TestingBaseClass
     {
         private HttpClient _client;
         private readonly DateTime DEFAULT_DATE = new DateTime(2016, 09, 01);
@@ -35,23 +39,23 @@ namespace StockportContentApiTests.Integration
         {
             TestAppFactory.FakeHttpClientFactory.MakeFakeHttpClientWithConfiguration(fakeHttpClient =>
             {
-                fakeHttpClient.For(UrlFor("article", 2, "test-article")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
-                fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
-                fakeHttpClient.For("https://buto-host.tv/video/kQl5D").Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
-                fakeHttpClient.For(UrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
-                fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
-                fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("news", 1, category: "A category", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));
-                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));
-                fakeHttpClient.For(UrlFor("redirect")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
-                fakeHttpClient.For(UrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
-                fakeHttpClient.For(UrlFor("group", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Group.json"));
-                fakeHttpClient.For(UrlFor("contactUsId", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContactUsId.json"));
-                fakeHttpClient.For(ContentTypesUrlFor()).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "test-article")).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ArticleWithoutSections.json"));
+                fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ArticleWithParentTopic.json"));
+                fakeHttpClient.For("https://buto-host.tv/video/kQl5D").Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.json"));
+                fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.StartPage.json")));
+                fakeHttpClient.For(UrlFor("homepage", 2)).Return((GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.json")));
+                fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.NewsListing.json"));
+                fakeHttpClient.For(UrlFor("newsroom", 1)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Newsroom.json"));
+                fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.NewsListing.json"));
+                fakeHttpClient.For(UrlFor("news", 1, category: "A category", limit: ContentfulQueryValues.LIMIT_MAX)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.NewsListing.json"));
+                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.AtoZ.json"));
+                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.AtoZTopic.json"));
+                fakeHttpClient.For(UrlFor("redirect")).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Redirects.json"));
+                fakeHttpClient.For(UrlFor("footer", 1)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Footer.json"));
+                fakeHttpClient.For(UrlFor("group", 1)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Group.json"));
+                fakeHttpClient.For(UrlFor("contactUsId", 1)).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContactUsId.json"));
+                fakeHttpClient.For(ContentTypesUrlFor()).Return(GetResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentTypes.json"));
             });
 
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
@@ -304,7 +308,7 @@ namespace StockportContentApiTests.Integration
         {
             StartServer(DEFAULT_DATE);
 
-            var expectedResponse = File.ReadAllText(GetFilePath(file));
+            var expectedResponse = GetStringResponseFromFile($"StockportContentApiTests.Integration.ExpectedContentApiResponses.{file}.json");
             var contentResponse = JsonNormalize(expectedResponse);
 
             var response = await _client.GetAsync(path);
@@ -329,7 +333,7 @@ namespace StockportContentApiTests.Integration
             var date = DateTime.Parse(stringDate);
             StartServer(date);
 
-            var expectedResponse = File.ReadAllText(GetFilePath(file));
+            var expectedResponse = GetStringResponseFromFile($"StockportContentApiTests.Integration.ExpectedContentApiResponses.{file}.json");
             var contentResponse = JsonNormalize(expectedResponse);
 
             var response = await _client.GetAsync(path);
@@ -376,17 +380,6 @@ namespace StockportContentApiTests.Integration
             if (limit >= 0) url = $"{url}&limit={limit}";
 
             return url;
-        }
-
-        private static string GetFilePath(string file)
-        {
-            return $"Integration/ExpectedContentApiResponses/{file}.json";
-        }
-
-        private static HttpResponse CreateHttpResponse(string responseFile)
-        {
-            var jsonResponse = File.ReadAllText(responseFile);
-            return HttpResponse.Successful(jsonResponse);
         }
 
         public void StartServer(DateTime date)

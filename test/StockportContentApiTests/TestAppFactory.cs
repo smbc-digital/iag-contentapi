@@ -25,7 +25,6 @@ namespace StockportContentApiTests
         public static TestServer MakeFakeApp()
         {
             var hostBuilder = new WebHostBuilder()
-             
              .UseStartup<FakeStartup>()
              .UseUrls("http://localhost:5001")
              .UseKestrel()
@@ -37,7 +36,14 @@ namespace StockportContentApiTests
 
         public class FakeStartup : Startup
         {
-            public FakeStartup(IHostingEnvironment env) : base(env) {}
+            public FakeStartup(IHostingEnvironment env) : base(env)
+            {
+            }
+
+            public override string GetContentRoot(IHostingEnvironment environment)
+            {
+                return "C:\\Code\\iag-contentapi\\test\\StockportContentApiTests";
+            }
 
             public override void ConfigureServices(IServiceCollection services)
             {

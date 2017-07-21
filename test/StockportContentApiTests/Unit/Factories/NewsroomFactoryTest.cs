@@ -12,7 +12,7 @@ using FluentAssertions;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class NewsroomFactoryTest
+    public class NewsroomFactoryTest : TestingBaseClass
     {
         private readonly IFactory<Newsroom> _newsroomFactory;
 
@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void BuildsNewsroom()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Newsroom.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Newsroom.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             Newsroom newsroom = _newsroomFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);

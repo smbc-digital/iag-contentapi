@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class CarouselFactoryTest
+    public class CarouselFactoryTest : TestingBaseClass
     {
         private readonly CarouselContentFactory _carouselContentFactory;
 
@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ShouldBuildCarouselContent()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/CarouselContent.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.CarouselContent.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var carouselContent = (CarouselContent) _carouselContentFactory.Build(contentfulResponse.GetFirstItem(),

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit
 {
-    public class ContentfulResponseTest
+    public class ContentfulResponseTest : TestingBaseClass
     {
         [Fact]
         public void CreatesContentfulResponseWhenAllFieldsArePresent()
@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit
         public void RetrievesAListOfEntriesFromAListOfReferences()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ReferenceListOfTopics.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ReferenceListOfTopics.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var references =
@@ -68,7 +68,7 @@ namespace StockportContentApiTests.Unit
         public void RetrievesAListOfAssetsFromAListOfReferences()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithDocuments.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithDocuments.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var references =

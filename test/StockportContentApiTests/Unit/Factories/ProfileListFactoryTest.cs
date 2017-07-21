@@ -10,7 +10,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class ProfileListFactoryTest
+    public class ProfileListFactoryTest : TestingBaseClass
     {
         private readonly IBuildContentTypesFromReferences<Profile> _profileListFactory;
 
@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsSubsetOfProfileDataWhenBuildingProfileListFromReferences()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithMultipleProfiles.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithMultipleProfiles.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();

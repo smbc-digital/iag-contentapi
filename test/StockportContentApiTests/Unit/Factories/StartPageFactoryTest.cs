@@ -11,7 +11,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class StartPageFactoryTest
+    public class StartPageFactoryTest : TestingBaseClass
     {
         private readonly IFactory<StartPage> _startPageFactory;
         private readonly Mock<IBuildContentTypesFromReferences<Alert>> _mockAlertListFactory;
@@ -30,7 +30,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void BuildStartPage()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/StartPage.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.StartPage.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();
@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void ReturnNullStartPageIfItemListIsEmpty()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentNotFound.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();

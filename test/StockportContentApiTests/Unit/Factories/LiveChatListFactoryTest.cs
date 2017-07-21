@@ -13,7 +13,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class LiveChatListFactoryTest
+    public class LiveChatListFactoryTest : TestingBaseClass
     {
         private readonly LiveChatListFactory _liveChatListFactory;
 
@@ -27,7 +27,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/LiveChat/ArticleWithOnlyLiveChat.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.LiveChat.ArticleWithOnlyLiveChat.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();

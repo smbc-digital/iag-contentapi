@@ -10,7 +10,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
-    public class VideoRepositoryTest
+    public class VideoRepositoryTest : TestingBaseClass
     {
         private readonly VideoRepository _videoRepository;
         private readonly Mock<ILogger<VideoRepository>> _videoLogger;
@@ -32,10 +32,10 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId1"))
                 .ReturnsAsync(HttpResponse.Successful(
-                    File.ReadAllText("Unit/MockButoResponses/VideoExists.json")));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
 
             _fakeHttpClient.Setup(o=>o.Get($"{MockButoApiUrl}video/VideoId2"))
-                .ReturnsAsync(HttpResponse.Successful(File.ReadAllText("Unit/MockButoResponses/VideoExists.json")));
+                .ReturnsAsync(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
 
             var content = "Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text";
             var response = _videoRepository.Process(content);

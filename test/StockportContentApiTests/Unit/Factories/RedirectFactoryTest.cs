@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class RedirectFactoryTest
+    public class RedirectFactoryTest : TestingBaseClass
     {
         private readonly IFactory<BusinessIdToRedirects> _redirectFactory;
 
@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void BuildAllRedirects()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Redirects.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Redirects.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             BusinessIdToRedirects redirects = _redirectFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void TestRedirectHasCorrectKeysAndValues()
         {
             dynamic mockContentfulData =
-               JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Redirects.json"));
+               JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Redirects.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             BusinessIdToRedirects redirects = _redirectFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void TestHasNoRedirect()
         {
             dynamic mockContentfulData =
-               JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Redirects.json"));
+               JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Redirects.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             BusinessIdToRedirects redirects = _redirectFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -73,7 +73,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void TestNoContent()
         {
             dynamic mockContentfulData =
-               JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json"));
+               JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentNotFound.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             BusinessIdToRedirects redirects = _redirectFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);

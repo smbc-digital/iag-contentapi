@@ -13,7 +13,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class CarouselContentListFactoryTest
+    public class CarouselContentListFactoryTest : TestingBaseClass
     {
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private CarouselContentListFactory _carouselContentListFactory;
@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void ShouldBuildListOfCarouselContent()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyCarouselContent.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyCarouselContent.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var homepage = contentfulResponse.GetFirstItem();
@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.Factories
             _carouselContentListFactory = new CarouselContentListFactory(_mockTimeProvider.Object, new CarouselContentFactory());
 
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyCarouselContent.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyCarouselContent.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var homepage = contentfulResponse.GetFirstItem();
@@ -61,7 +61,7 @@ namespace StockportContentApiTests.Unit.Factories
         public void ShouldReturnEmptyListIfReferencesFieldIsEmpty()
         {
             dynamic mockContentfulData =
-                JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyCarouselContent.json"));
+                JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyCarouselContent.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             IEnumerable<CarouselContent> listOfcarouselContent = _carouselContentListFactory.BuildFromReferences(null, contentfulResponse);

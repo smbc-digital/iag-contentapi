@@ -10,7 +10,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class BreadcrumbFactoryTest
+    public class BreadcrumbFactoryTest : TestingBaseClass
     {
         private readonly BreadcrumbFactory _breadcrumbFactory;
 
@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithBreadcrumbs.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithBreadcrumbs.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();
@@ -43,7 +43,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleNoBreadcrumbs.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleNoBreadcrumbs.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             IEnumerable<Crumb> breadcrumbs = _breadcrumbFactory.BuildFromReferences(null, contentfulResponse);

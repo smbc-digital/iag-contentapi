@@ -9,7 +9,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class AlertFactoryTest
+    public class AlertFactoryTest : TestingBaseClass
     {
         private readonly IFactory<Alert> _alertFactory;
 
@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsAnAlert()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Alert/Alert.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Alert.Alert.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();
@@ -38,7 +38,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildAnEmptyAlertIfNoContent()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.ContentNotFound.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var entry = contentfulResponse.GetFirstItem();

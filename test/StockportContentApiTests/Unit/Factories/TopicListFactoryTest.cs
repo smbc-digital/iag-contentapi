@@ -13,7 +13,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class TopicListFactoryTest
+    public class TopicListFactoryTest : TestingBaseClass
     {
         private readonly TopicListFactory _topicListFactory;
         private Mock<ITimeProvider> _mockTimeProvider;
@@ -51,7 +51,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildTopicListFromReferences()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyFeaturedTopics.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyFeaturedTopics.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
             var homepage = contentfulResponse.GetFirstItem();
 
@@ -65,7 +65,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildEmptyTopicListWhenEntryIsEmpty()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyFeaturedTopics.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyFeaturedTopics.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             List<Topic> topics = _topicListFactory.BuildFromReferences(null, contentfulResponse).ToList();
@@ -78,7 +78,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2018, 01, 15));
 
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/Homepage/HomepageWithOnlyFeaturedTopicsWithDate.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Homepage.HomepageWithOnlyFeaturedTopicsWithDate.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
             var homepage = contentfulResponse.GetFirstItem();
 

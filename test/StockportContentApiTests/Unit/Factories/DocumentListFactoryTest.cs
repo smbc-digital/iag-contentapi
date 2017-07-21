@@ -11,7 +11,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class DocumentListFactoryTest
+    public class DocumentListFactoryTest : TestingBaseClass
     {
         private readonly DocumentListFactory _documentListFactory;
 
@@ -25,7 +25,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/Article/ArticleWithDocuments.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.Article.ArticleWithDocuments.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             var article = contentfulResponse.GetFirstItem();

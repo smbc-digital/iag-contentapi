@@ -13,7 +13,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class NewsCategoriesFactoryTest
+    public class NewsCategoriesFactoryTest : TestingBaseClass
     {
         private readonly NewsCategoriesFactory _newsCategoriesFactory;
 
@@ -25,7 +25,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ShouldGenerateListOfCategoriesFromContentfulApiCAll()
         {
-            var contentfulResponse = CreateResponse("Unit/MockContentfulResponses/ContentTypes.json");
+            var contentfulResponse = CreateResponse("StockportContentApiTests.Unit.MockContentfulResponses.ContentTypes.json");
 
             List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
 
@@ -37,16 +37,16 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void ShouldGenerateEmptyListIfNewsHasNoCategories()
         {
-            var contentfulResponse = CreateResponse("Unit/MockContentfulResponses/ContentTypesWithNoNewsCategories.json");
+            var contentfulResponse = CreateResponse("StockportContentApiTests.Unit.MockContentfulResponses.ContentTypesWithNoNewsCategories.json");
 
             List<string> newsCategories = _newsCategoriesFactory.Build(contentfulResponse.Items);
 
             newsCategories.Count().Should().Be(0);
         }
 
-        private static ContentfulResponse CreateResponse(string stubbedContentfulJsonFile)
+        private ContentfulResponse CreateResponse(string stubbedContentfulJsonFile)
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText(stubbedContentfulJsonFile));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile(stubbedContentfulJsonFile));
             ContentfulResponse contentfulResponse = new ContentfulResponse(mockContentfulData);
             return contentfulResponse;
         }

@@ -12,7 +12,7 @@ using Xunit;
 
 namespace StockportContentApiTests.Unit.Factories
 {
-    public class NewsFactoryTest
+    public class NewsFactoryTest : TestingBaseClass
     {
         private readonly IFactory<News> _newsFactory;
         private const string ThumbnailImageExtension = "?h=250";
@@ -43,7 +43,7 @@ namespace StockportContentApiTests.Unit.Factories
         [Fact]
         public void BuildsNews()
         {
-            dynamic mockContentfulData = JsonConvert.DeserializeObject(File.ReadAllText("Unit/MockContentfulResponses/News.json"));
+            dynamic mockContentfulData = JsonConvert.DeserializeObject(GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.News.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             News news = _newsFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);
@@ -89,7 +89,7 @@ namespace StockportContentApiTests.Unit.Factories
         {
             dynamic mockContentfulData =
                 JsonConvert.DeserializeObject(
-                    File.ReadAllText("Unit/MockContentfulResponses/NewsWithoutBackgrounds.json"));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockContentfulResponses.NewsWithoutBackgrounds.json"));
             var contentfulResponse = new ContentfulResponse(mockContentfulData);
 
             News news = _newsFactory.Build(contentfulResponse.Items.FirstOrDefault(), contentfulResponse);

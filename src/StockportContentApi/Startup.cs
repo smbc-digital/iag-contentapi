@@ -20,10 +20,11 @@ namespace StockportContentApi
         private readonly string _appEnvironment;
         private const string ConfigDir = "app-config";
         private readonly bool _useRedisSession;
+        public IConfigurationRoot Configuration { get; set; }
 
         public Startup(IHostingEnvironment env)
         {
-            _contentRootPath = env.ContentRootPath;
+            _contentRootPath = GetContentRoot(env);
 
             var configBuilder = new ConfigurationBuilder();
             var configLoader = new ConfigurationLoader(configBuilder, ConfigDir);
@@ -34,8 +35,11 @@ namespace StockportContentApi
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
         }
 
-        public IConfigurationRoot Configuration { get; set; }
-
+        public virtual string GetContentRoot(IHostingEnvironment env)
+        {
+            return env.ContentRootPath;;
+        }
+       
         // This method gets called by the runtime. Use this method to add services to the container
         public virtual void ConfigureServices(IServiceCollection services)
         {
