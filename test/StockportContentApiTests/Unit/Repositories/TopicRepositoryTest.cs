@@ -27,6 +27,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Topic _topicWithAlertsInsideSunsetDate;
         private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
         private readonly Mock<Contentful.Core.IContentfulClient> _contentfulClient;
+        private readonly Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>> _topicSiteMapFactory;
 
         public TopicRepositoryTest()
         {
@@ -54,11 +55,12 @@ namespace StockportContentApiTests.Unit.Repositories
                 DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new List<ExpandingLinkBox>());
 
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
+            _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<Contentful.Core.IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object);
+            _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object, _topicSiteMapFactory.Object);
         }
 
         [Fact]

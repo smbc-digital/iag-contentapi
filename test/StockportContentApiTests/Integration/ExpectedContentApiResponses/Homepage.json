@@ -1,77 +1,8 @@
 ﻿{
-  "popularSearchTerms": [
-    "popular search term"
-  ],
+  "popularSearchTerms": [ "popular search term" ],
   "featuredTasksHeading": "Featured tasks heading",
   "featuredTasksSummary": "Featured tasks summary",
-  "featuredTasks": [
-    //{
-    //  "slug": "pay-council-tax",
-    //  "title": "Pay Council Tax",
-    //  "teaser": "",
-    //  "icon": "fa fa-home",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //},
-    //{
-    //  "slug": "check-your-bin-day",
-    //  "title": "Check your bin day",
-    //  "teaser": "",
-    //  "icon": "si-house",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //},
-    //{
-    //  "slug": "find-a-planning-application",
-    //  "title": "Find a planning application",
-    //  "teaser": "",
-    //  "icon": "si-page",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //},
-    //{
-    //  "slug": "find-or-renew-a-book",
-    //  "title": "Find or renew a book",
-    //  "teaser": "",
-    //  "icon": "si-book",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //},
-    //{
-    //  "slug": "school-holiday-and-term-dates",
-    //  "title": "School holiday & term dates",
-    //  "teaser": "",
-    //  "icon": "si-stationary",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //},
-    //{
-    //  "slug": "search-job-vacancies",
-    //  "title": "Search job vacancies",
-    //  "teaser": "",
-    //  "icon": "si-search",
-    //  "type": "start-page",
-    //  "sunriseDate": "0001-01-01T00:00:00+00:00",
-    //  "sunsetDate": "0001-01-01T00:00:00+00:00",
-    //  "image": "image.jpg",
-    //  "subItems": []
-    //}
-  ],
+  "featuredTasks": [],
   "featuredTopics": [
     {
       "slug": "council-tax",
@@ -79,8 +10,8 @@
       "teaser": "How to pay, discounts",
       "icon": "si-house",
       "type": "id",
-      "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "0001-01-01T00:00:00+00:00",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "0001-01-01T00:00:00Z",
       "image": "",
       "subItems": []
     }
@@ -91,24 +22,24 @@
       "subHeading": "This is a warning alert.",
       "body": "This is a warning alert.",
       "severity": "Warning",
-      "sunriseDate": "2016-06-30T23:00:00+00:00",
-      "sunsetDate": "2018-08-01T00:00:00+00:00"
+      "sunriseDate": "2016-06-30T23:00:00Z",
+      "sunsetDate": "2018-08-01T00:00:00Z"
     },
     {
       "title": "Information alert",
       "subHeading": "test",
       "body": "This is an information alert.",
       "severity": "Information",
-      "sunriseDate": "2016-06-30T23:00:00+00:00",
-      "sunsetDate": "2116-08-30T23:00:00+00:00"
+      "sunriseDate": "2016-06-30T23:00:00Z",
+      "sunsetDate": "2116-08-30T23:00:00Z"
     },
     {
       "title": "Error alert",
       "subHeading": "",
       "body": "This is an error alert.",
       "severity": "Error",
-      "sunriseDate": "2016-07-31T23:00:00+00:00",
-      "sunsetDate": "2116-08-30T23:00:00+00:00"
+      "sunriseDate": "2016-07-31T23:00:00Z",
+      "sunsetDate": "2116-08-30T23:00:00Z"
     }
   ],
   "carouselContents": [
@@ -117,12 +48,45 @@
       "slug": "red-rock-opening",
       "teaser": "The long awaited cinema complex is due to open late Oct 2016. Come and take a look.",
       "image": "image.jpg",
-      "sunriseDate": "2016-09-01T00:00:00+00:00",
-      "sunsetDate": "2016-09-30T00:00:00+00:00",
+      "sunriseDate": "2016-09-01T00:00:00Z",
+      "sunsetDate": "2016-09-30T00:00:00Z",
       "url": "http://fake.url"
     }
   ],
   "backgroundImage": "image.jpg",
   "freeText": "homepage text",
-  "featuredGroup": null
+  "featuredGroup": {
+    "name": "_name",
+    "slug": "_slug",
+    "phoneNumber": "_phoneNumber",
+    "email": "_email",
+    "website": "_website",
+    "twitter": "_twitter",
+    "facebook": "_facebook",
+    "address": "_address",
+    "description": "_description",
+    "imageUrl": "image-url.jpg",
+    "thumbnailImageUrl": "image-url.jpg?h=250",
+    "categoriesReference": [],
+    "breadcrumbs": [
+      {
+        "title": "Find a local group",
+        "slug": "",
+        "type": "groups"
+      }
+    ],
+    "mapPosition": {
+      "lon": 2.0,
+      "lat": 39.0
+    },
+    "volunteering": false,
+    "events": null,
+    "groupAdministrators": { "items": [] },
+    "dateHiddenFrom": "0001-01-01T00:00:00Z",
+    "dateHiddenTo": "0001-01-01T00:00:00Z",
+    "status": "Published",
+    "cost": "",
+    "costText": "",
+    "abilityLevel": ""
+  }
 }
