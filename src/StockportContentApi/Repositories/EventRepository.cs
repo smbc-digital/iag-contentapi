@@ -72,9 +72,30 @@ namespace StockportContentApi.Repositories
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
+            var searchdateFrom = dateFrom;
+            var searchdateTo = dateTo;
+
+            if (!dateFrom.HasValue && !dateTo.HasValue)
+            {
+                searchdateFrom = DateTime.Now.Date;
+                searchdateTo = DateTime.MaxValue;
+            }
+            else if (dateFrom.HasValue && !dateTo.HasValue)
+            {
+                searchdateTo = DateTime.MaxValue;
+            }
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < DateTime.Now.Date)
+            {
+                searchdateFrom = DateTime.MinValue;
+            }
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= DateTime.Now.Date)
+            {
+                searchdateFrom = DateTime.Now.Date;
+            }
+
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
-                    .Where(e => CheckDates(dateFrom, dateTo, e))
+                    .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                     .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
                     .OrderBy(o => o.EventDate)
