@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
     {
+        private readonly DateComparer _dateComparer;
+
+        public EventHomepageContentfulFactory(ITimeProvider timeProvider)
+        {
+            _dateComparer = new DateComparer(timeProvider);
+        }
+
         public EventHomepage ToModel(ContentfulEventHomepage entry)
         {
             var tags = new List<string>();
@@ -24,7 +30,25 @@ namespace StockportContentApi.ContentfulFactories
             tags.Add(entry.Tag9);
             tags.Add(entry.Tag10);
 
-            return new EventHomepage(tags);
+            var rows = new List<EventHomepageRow>();
+            rows.Add(new EventHomepageRow
+            {
+                IsLatest = true,
+                Tag = string.Empty,
+                Events = null
+            });
+
+            foreach (var tag in tags)
+            {
+                rows.Add(new EventHomepageRow
+                {
+                    IsLatest = false,
+                    Tag = tag,
+                    Events = null
+                });
+            }
+
+            return new EventHomepage(rows);
         }
     }
 }

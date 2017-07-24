@@ -48,10 +48,30 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.ToList().First();
-
+            
             return entry == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
-                : HttpResponse.Successful(_contentfulEventHomepageFactory.ToModel(entry));
+                : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry)));
+        }
+
+        private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
+        {
+            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var liveEvents = GetAllEventsAndTheirReccurrences(events).Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate)).OrderBy(e => e.EventDate);
+
+            foreach (var row in homepage.Rows)
+            {
+                if (row.IsLatest)
+                {
+                    row.Events = liveEvents.Take(4);
+                }
+                else
+                {
+                    row.Events = liveEvents.Where(e => e.Tags.Contains(row.Tag.ToLower())).Take(4);
+                }
+            }
+
+            return homepage;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)

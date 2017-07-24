@@ -61,6 +61,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
+            var eventHomepageFactory = new EventHomepageContentfulFactory(_mockTimeProvider.Object);
             _httpClient = new Mock<IHttpClient>();
             
             _logger = new Mock<ILogger<EventRepository>>();
@@ -72,7 +73,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper = new Mock<ICache>();
 
             _repository = new EventRepository(config, contentfulClientManager.Object,
-                _mockTimeProvider.Object, contentfulFactory, _cacheWrapper.Object, _logger.Object);
+                _mockTimeProvider.Object, contentfulFactory, eventHomepageFactory, _cacheWrapper.Object, _logger.Object);
         }
 
         [Fact]

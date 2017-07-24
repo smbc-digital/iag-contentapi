@@ -34,6 +34,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _topicFactory;
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
 
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
@@ -51,6 +52,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _timeprovider = new Mock<ITimeProvider>();
+            _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
 
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
@@ -74,7 +76,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper = new Mock<ICache>();
 
             var _logger = new Mock<ILogger<EventRepository>>();
-            var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _cacheWrapper.Object, _logger.Object);
+            var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object);
 
             _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object, eventRepository);
         }

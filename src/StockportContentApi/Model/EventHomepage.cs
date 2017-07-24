@@ -2,13 +2,20 @@
 
 namespace StockportContentApi.Model
 {
+    public class EventHomepageRow
+    {
+        public bool IsLatest { get; set; }
+        public string Tag { get; set; }
+        public IEnumerable<Event> Events { get; set; }
+    }
+
     public class EventHomepage
     {
-        public List<string> Tags { get; }
+        public IEnumerable<EventHomepageRow> Rows { get; }
 
-        public EventHomepage(List<string> tags)
+        public EventHomepage(IEnumerable<EventHomepageRow> rows)
         {
-            Tags = tags;
+            Rows = rows;
         }
     }
 }

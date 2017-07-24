@@ -33,6 +33,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly GroupRepository _repository;
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _listGroupFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>> _listGroupCategoryFactory;
         private readonly Mock<IContentfulClient> _client;
@@ -53,6 +54,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
             _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+            _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
+
             _timeProvider = new Mock<ITimeProvider>();
             _httpClient = new Mock<IHttpClient>();
             _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
@@ -65,7 +68,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _eventRepository = new EventRepository(config, contentfulClientManager.Object,_timeProvider.Object,_eventFactory.Object, _cacheWrapper.Object, _logger.Object);
+            _eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeProvider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object);
             _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper.Object);
         }
 
