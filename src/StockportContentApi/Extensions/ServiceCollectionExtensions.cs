@@ -46,6 +46,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory());
@@ -143,7 +144,8 @@ namespace StockportContentApi.Extensions
         {
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>()); });
-            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
+            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
+            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
                 p => {
                     return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
@@ -155,6 +157,7 @@ namespace StockportContentApi.Extensions
                             p.GetService<IContentfulClientManager>(),
                             p.GetService<ITimeProvider>(),
                             p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                            p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
                             p.GetService<ILogger<EventRepository>>())
                     );
@@ -190,6 +193,7 @@ namespace StockportContentApi.Extensions
                         new EventRepository(x, p.GetService<IContentfulClientManager>(),
                             p.GetService<ITimeProvider>(),
                             p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                            p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
                             p.GetService<ILogger<EventRepository>>()),
                         p.GetService<ICache>());

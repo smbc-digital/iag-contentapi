@@ -19,6 +19,7 @@ namespace StockportContentApi.Repositories
     public class EventRepository : BaseRepository
     {
         private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
+        private readonly IContentfulFactory<ContentfulEventHomepage, EventHomepage> _contentfulEventHomepageFactory;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly ICache _cache;
@@ -28,16 +29,29 @@ namespace StockportContentApi.Repositories
         public EventRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
+            IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
             ICache cache,
             ILogger<EventRepository> logger
             )
         {
             _contentfulFactory = contentfulFactory;
+            _contentfulEventHomepageFactory = contentfulEventHomepageFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _cache = cache;
             _logger = logger;
             _timeProvider = timeProvider;
+        }
+
+        public async Task<HttpResponse> GetEventHomepage()
+        {
+            var builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.ToList().First();
+
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
+                : HttpResponse.Successful(_contentfulEventHomepageFactory.ToModel(entry));
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
