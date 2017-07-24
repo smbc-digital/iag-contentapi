@@ -53,7 +53,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 {
                     new ContentfulSmartAnswerBuilder().Build()
                 };
-            var smartAnswersModel = new SmartAnswer("smartAnswers", "questionJson1");
+            var smartAnswersModel = new SmartAnswer("title", "smartAnswers", "questionJson1");
 
             _contentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulSmartAnswers>())).Returns(smartAnswersModel);
             var builder = new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers").FieldEquals("fields.slug", slug).Include(1);
