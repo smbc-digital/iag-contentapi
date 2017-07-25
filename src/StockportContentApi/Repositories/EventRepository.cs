@@ -240,5 +240,14 @@ namespace StockportContentApi.Repositories
             var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
             return validation.RequiredValues;
         }
+
+        public async Task<ContentfulEvent> GetContentfulEvent(string slug)
+        {
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.FirstOrDefault();
+
+            return entry;
+        }
     }
 }

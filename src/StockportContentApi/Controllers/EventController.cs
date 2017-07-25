@@ -12,15 +12,18 @@ namespace StockportContentApi.Controllers
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
+        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
 
         public EventController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, EventRepository> eventRepository,
-            Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository)
+            Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
+            Func<ContentfulConfig, ManagementRepository> managementRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
             _eventRepository = eventRepository;
+            _managementRepository = managementRepository;
             _eventCategoryRepository = eventCategoryRepository;
         }
 
@@ -76,5 +79,20 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [HttpDelete]
+        [Route("api/{businessId}/events/{slug}")]
+        public async Task<IActionResult> DeleteEvent(string slug, string businessId)
+        {
+            var repository = _eventRepository(_createConfig(businessId));
+            var existingEvent = await repository.GetContentfulEvent(slug);
+
+            return await _handler.Get(async () =>
+            {
+                var managementRepository = _managementRepository(_createConfig(businessId));
+                var version = await managementRepository.GetVersion(existingEvent.Sys.Id);
+                existingEvent.Sys.Version = version;
+                return await managementRepository.Delete(existingEvent.Sys);
+            });
+        }
     }
 }
