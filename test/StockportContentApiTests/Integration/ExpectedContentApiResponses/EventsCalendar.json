@@ -81,7 +81,8 @@
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "9999-09-09T00:00:00+00:00"
         }
-      ]
+      ],
+      "eventCategories": []
     },
     {
       "title": "title",
@@ -164,7 +165,8 @@
           "sunriseDate": "0001-01-01T00:00:00+00:00",
           "sunsetDate": "9999-09-09T00:00:00+00:00"
         }
-      ]
+      ],
+      "eventCategories": []
     }
   ],
   "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]

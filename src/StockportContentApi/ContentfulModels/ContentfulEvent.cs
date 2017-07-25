@@ -30,5 +30,6 @@ namespace StockportContentApi.ContentfulModels
         public List<string> Tags { get; set; } = new List<string>();
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public ContentfulGroup  Group { get; set; } = new ContentfulGroup();
+        public List<ContentfulEventCategory> EventCategories { get; set; } = new List<ContentfulEventCategory>();
     }
 }
