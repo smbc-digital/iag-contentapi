@@ -16,6 +16,7 @@ using StockportContentApi.ContentfulModels;
 using System.Threading.Tasks;
 using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.PlatformAbstractions;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests
@@ -29,7 +30,8 @@ namespace StockportContentApiTests
              .UseUrls("http://localhost:5001")
              .UseKestrel()
              .UseEnvironment("test")
-             .UseContentRoot(Directory.GetCurrentDirectory());
+                .UseContentRoot(Path.GetFullPath(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                    "..", "..", "..")));
 
             return new TestServer(hostBuilder);
         }
@@ -38,11 +40,6 @@ namespace StockportContentApiTests
         {
             public FakeStartup(IHostingEnvironment env) : base(env)
             {
-            }
-
-            public override string GetContentRoot(IHostingEnvironment environment)
-            {
-                return "C:\\Code\\iag-contentapi\\test\\StockportContentApiTests";
             }
 
             public override void ConfigureServices(IServiceCollection services)
