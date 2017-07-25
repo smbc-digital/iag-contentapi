@@ -16,7 +16,7 @@ namespace StockportContentApi
             _logger = logger;
         }
 
-        //TODO: Possibly not the most elegant way of doing this.
+        // TODO: Possibly not the most elegant way of doing this.
         public async Task<IActionResult> Get(Func<Task<HttpResponse>> doGet)
         {
             HttpResponse response;

@@ -135,7 +135,7 @@ namespace StockportContentApi.Repositories
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)

@@ -11,14 +11,28 @@ namespace StockportContentApi.Controllers
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
+        private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
 
         public EventController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, EventRepository> eventRepository)
+            Func<ContentfulConfig, EventRepository> eventRepository,
+            Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
             _eventRepository = eventRepository;
+            _eventCategoryRepository = eventCategoryRepository;
+        }
+
+        [HttpGet]
+        [Route("api/{businessId}/eventCategory")]
+        public async Task<IActionResult> GetEventCategories(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var eventRepository = _eventCategoryRepository(_createConfig(businessId));
+                return eventRepository.GetEventCategories();
+            });
         }
 
         [HttpGet]
@@ -51,14 +65,14 @@ namespace StockportContentApi.Controllers
             int limit = 0,
             [FromQuery] DateTime? dateFrom = null,
             [FromQuery] DateTime? dateTo = null,
-            [FromQuery] string category = null,                 
+            [FromQuery] string category = null,
             [FromQuery] bool? featured = null,
             [FromQuery] string tag = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom, dateTo, category,limit, featured, tag);
+                return repository.Get(dateFrom, dateTo, category, limit, featured, tag);
             });
         }
 

@@ -106,7 +106,8 @@
 
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
-      ]
+      ],
+      "eventCategories": []
     },
     {
       "title": "title",
@@ -189,7 +190,8 @@
           "sunriseDate": "0001-01-01T00:00:00Z",
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
-      ]
+      ],
+      "eventCategories": []
     }
   ],
   "groupAdministrators": { "items": [] },
