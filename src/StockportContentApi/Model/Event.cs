@@ -17,8 +17,8 @@ namespace StockportContentApi.Model
         public DateTime EventDate { get; }
         public string StartTime { get; }
         public string EndTime { get; }
-        public int Occurences { get; }
-        public EventFrequency Frequency { get; }
+        public int Occurences { get; } 
+        public EventFrequency EventFrequency { get; }
         public List<Crumb> Breadcrumbs { get; }
         public List<Document> Documents { get; }
         public List<string> Categories { get; }
@@ -48,7 +48,7 @@ namespace StockportContentApi.Model
                 StartTime = startTime;
                 EndTime = endTime;
                 Occurences = occurences;
-                Frequency = frequency;
+                EventFrequency = frequency;
                 Breadcrumbs = breadcrumbs;
                 ThumbnailImageUrl = thumbnailImageUrl;
                 ImageUrl = imageUrl;

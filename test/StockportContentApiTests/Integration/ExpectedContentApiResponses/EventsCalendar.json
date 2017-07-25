@@ -13,6 +13,7 @@
       "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
+      "eventFrequency": "None",
       "breadcrumbs": [
         {
           "title": "Events",
@@ -97,6 +98,7 @@
       "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
+      "eventFrequency": "None",
       "breadcrumbs": [
         {
           "title": "Events",
