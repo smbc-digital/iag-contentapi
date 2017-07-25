@@ -12,6 +12,7 @@ namespace StockportContentApi.Model
     public class EventHomepage
     {
         public IEnumerable<EventHomepageRow> Rows { get; }
+        public IEnumerable<EventCategory> Categories { get; set; }
 
         public EventHomepage(IEnumerable<EventHomepageRow> rows)
         {

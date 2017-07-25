@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
-
 namespace StockportContentApi.Model
 {
     public class Event
@@ -20,7 +17,7 @@ namespace StockportContentApi.Model
         public DateTime EventDate { get; }
         public string StartTime { get; }
         public string EndTime { get; }
-        public int Occurences { get; } 
+        public int Occurences { get; }
         public EventFrequency Frequency { get; }
         public List<Crumb> Breadcrumbs { get; }
         public List<Document> Documents { get; }

@@ -64,11 +64,11 @@ namespace StockportContentApi.Repositories
             {
                 if (row.IsLatest)
                 {
-                    row.Events = liveEvents.Take(4);
+                    row.Events = liveEvents.Take(3);
                 }
                 else
                 {
-                    row.Events = liveEvents.Where(e => e.Tags.Contains(row.Tag.ToLower())).Take(4);
+                    row.Events = liveEvents.Where(e => e.Tags.Contains(row.Tag.ToLower())).Take(3);
                 }
             }
 

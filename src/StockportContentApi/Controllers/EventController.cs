@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
+using StockportContentApi.Model;
+using System.Collections.Generic;
+using StockportContentApi.Http;
 
 namespace StockportContentApi.Controllers
 {
@@ -42,11 +45,16 @@ namespace StockportContentApi.Controllers
         [Route("/api/{businessId}/eventhomepage")]
         public async Task<IActionResult> Homepage(string businessId)
         {
-            return await _handler.Get(() =>
-            {
-                var repository = _eventRepository(_createConfig(businessId));
-                return repository.GetEventHomepage();
-            });
+            var categoryRepository = _eventCategoryRepository(_createConfig(businessId));
+            var categoriesresponse = await categoryRepository.GetEventCategories();
+            var categories = categoriesresponse.Get<List<EventCategory>>();
+
+            var repository = _eventRepository(_createConfig(businessId));
+            var response = await repository.GetEventHomepage();
+            var homepage = response.Get<EventHomepage>();
+
+            homepage.Categories = categories;
+            return Ok(homepage);
         }
 
         [HttpGet]

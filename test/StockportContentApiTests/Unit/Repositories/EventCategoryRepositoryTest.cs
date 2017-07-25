@@ -18,6 +18,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
+using System.Threading.Tasks;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -27,6 +28,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly EventCategoryRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _contentfulEventCategoryFactory;
+        private readonly Mock<ICache> _cacheWrapper;
 
         public EventCategoryRepositoryTest()
         {
@@ -43,8 +45,9 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             _contentfulEventCategoryFactory = new Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+            _cacheWrapper = new Mock<ICache>();
 
-            _repository = new EventCategoryRepository(config, _contentfulEventCategoryFactory.Object, contentfulClientManager.Object);
+            _repository = new EventCategoryRepository(config, _contentfulEventCategoryFactory.Object, contentfulClientManager.Object, _cacheWrapper.Object);
         }
 
         [Fact]
@@ -74,8 +77,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulEventCategory>();
             collection.Items = new List<ContentfulEventCategory>();
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulEventCategory>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>())).ReturnsAsync(new List<EventCategory>());
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetEventCategories());
