@@ -9,6 +9,7 @@ namespace StockportContentApiTests.Unit.Builders
 {
     public class ContentfulSmartAnswerBuilder
     {
+        public string _title = "smartAnswer_title";
         public string _slug = "smartAnswers";
         public List<QuestionJson> _questionJson = new List<QuestionJson>() {
             new QuestionJson() {pageId = 1, buttonText = "Next", ShouldCache = true, description = "Question 1 description",
@@ -19,6 +20,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             return new ContentfulSmartAnswers()
             {
+                Title = _title,
                 Slug = _slug,
                 QuestionJson = _questionJson
             };
