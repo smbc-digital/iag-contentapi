@@ -53,11 +53,17 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Delete(SystemProperties systemProperties)
         {
-            await _client.UnpublishEntryAsync(systemProperties.Id, systemProperties.Version.Value);
-
-            await _client.DeleteEntryAsync(systemProperties.Id, systemProperties.Version.Value);
-
-            return HttpResponse.Successful("Successfully Deleted Entry: " + systemProperties.Id);
+            try
+            {
+                await _client.UnpublishEntryAsync(systemProperties.Id, systemProperties.Version.Value);
+                await _client.DeleteEntryAsync(systemProperties.Id, systemProperties.Version.Value);
+                return HttpResponse.Successful("Successfully Deleted Entry: " + systemProperties.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(0), ex, "An unexpected error occured while performing the get operation");
+                return HttpResponse.Failure(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         public async Task<int> GetVersion(string entryId)
