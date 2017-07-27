@@ -299,7 +299,6 @@ namespace StockportContentApiTests.Integration
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
-        [InlineData("Smart", "/api/unittest/smart/smartAnswer_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
