@@ -50,9 +50,9 @@ namespace StockportContentApi.ContentfulFactories
             return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
                 entry.Location,
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
-                new List<Crumb> { new Crumb("Events", string.Empty, "events") }, 
+                new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid);
         }
     }
 }

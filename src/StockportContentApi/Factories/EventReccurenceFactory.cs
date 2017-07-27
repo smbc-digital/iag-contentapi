@@ -33,9 +33,9 @@ namespace StockportContentApi.Factories
         public static Event GetReccuringEvent(Event entry, DateTime newDate)
         {
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
-                             entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences, 
-                             entry.EventFrequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories, 
-                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts, entry.EventCategories);
+                             entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences,
+                             entry.EventFrequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories,
+                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts, entry.EventCategories, entry.Free, entry.Paid);
         }
 
         private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

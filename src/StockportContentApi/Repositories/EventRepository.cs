@@ -103,7 +103,7 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag, string price)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
@@ -137,6 +137,7 @@ namespace StockportContentApi.Repositories
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                     .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower() == "paid,free" || price.ToLower() == "free,paid" || (price.ToLower() == "free" && (e.Free ?? false)) || (price.ToLower() == "paid" && (e.Paid ?? false)))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
