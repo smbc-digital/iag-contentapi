@@ -41,6 +41,7 @@ namespace StockportContentApi.Model
     {
         public string questionId { get; set; }
         public string equalTo { get; set; }
+        public string between { get; set; }
     }
 
     public class Behaviour
