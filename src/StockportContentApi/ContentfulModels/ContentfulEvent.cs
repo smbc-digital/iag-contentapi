@@ -31,5 +31,7 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public ContentfulGroup  Group { get; set; } = new ContentfulGroup();
         public List<ContentfulEventCategory> EventCategories { get; set; } = new List<ContentfulEventCategory>();
+        public bool? Free { get; set; } = null;
+        public bool? Paid { get; set; } = null;
     }
 }

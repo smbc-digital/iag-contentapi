@@ -81,5 +81,7 @@
       "sunsetDate": "9999-09-09T00:00:00+00:00"
     }
   ],
-  "eventCategories": []
+  "eventCategories": [],
+  "free": null,
+  "paid": null
 }
