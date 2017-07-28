@@ -278,6 +278,16 @@ namespace StockportContentApiTests.Integration
                         q => q.Build() == new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers")
                                  .FieldEquals("fields.slug", "smartAnswer_slug").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(smartAnswer);
+
+                var Redirects = new ContentfulCollection<ContentfulRedirect>();
+                Redirects.Items = new List<ContentfulRedirect>()
+                {
+                    new ContentfulRedirectBuilder().BuildForRouteTest()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulRedirect>>(
+                        q => q.Build() == new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(Redirects);
             });
         }
 
