@@ -57,7 +57,13 @@ namespace StockportContentApi.Repositories
         private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
         {
             var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
-            var liveEvents = GetAllEventsAndTheirReccurrences(events).Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate)).OrderBy(e => e.EventDate).ToList();
+            var liveEvents = GetAllEventsAndTheirReccurrences(events)
+                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                .OrderBy(e => e.EventDate)
+                .ThenBy(c => c.StartTime)
+                .ThenBy(t => t.Title)
+                .ToList();
+
             liveEvents = GetNextOccurenceOfEvents(liveEvents);
 
             foreach (var row in homepage.Rows)
