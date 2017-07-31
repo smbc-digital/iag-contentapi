@@ -11,6 +11,7 @@
   "eventDate": "9999-09-09T00:00:00Z",
   "startTime": "10:00",
   "endTime": "17:00",
+  "eventFrequency": "None",
   "breadcrumbs": [
     {
       "title": "Events",
@@ -79,5 +80,8 @@
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "9999-09-09T00:00:00+00:00"
     }
-  ]
+  ],
+  "eventCategories": [],
+  "free": null,
+  "paid": null
 }

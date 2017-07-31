@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core.Models;
@@ -17,13 +12,9 @@ using HttpClient = System.Net.Http.HttpClient;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Helpers;
-using StockportContentApi.Http;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
-using File = System.IO.File;
-using StockportContentApiTests.Unit.Repositories;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Integration
@@ -282,6 +273,16 @@ namespace StockportContentApiTests.Integration
                         q => q.Build() == new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers")
                                  .FieldEquals("fields.slug", "smartAnswer_slug").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(smartAnswer);
+
+                var Redirects = new ContentfulCollection<ContentfulRedirect>();
+                Redirects.Items = new List<ContentfulRedirect>()
+                {
+                    new ContentfulRedirectBuilder().BuildForRouteTest()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulRedirect>>(
+                        q => q.Build() == new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(Redirects);
             });
         }
 
@@ -303,7 +304,6 @@ namespace StockportContentApiTests.Integration
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
-        [InlineData("SmartAnswers", "/api/unittest/SmartAnswers/smartAnswer_slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.Http
 {

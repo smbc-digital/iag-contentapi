@@ -1,4 +1,0 @@
-﻿{
-  "slug": "smartAnswer_slug",
-  "questionJson": "[{\"pageId\":1,\"buttonText\":\"Next\",\"ShouldCache\":true,\"questions\":[{\"questionId\":\"2\",\"secondaryInfo\":null,\"questionType\":null,\"label\":\"questionLabel\",\"options\":[{\"label\":\"optionLabel\",\"value\":\"Label\"}],\"validatorData\":null}],\"behaviours\":[{\"behaviourType\":3,\"conditions\":[{\"questionId\":\"2\",\"equalTo\":\"test\"}],\"value\":null}],\"description\":\"Question 1 description\"}]"
-}

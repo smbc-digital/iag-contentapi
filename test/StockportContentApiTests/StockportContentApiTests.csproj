@@ -130,7 +130,6 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Profile.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Showcase.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\SmartAnswers.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\StartPage.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
     <EmbeddedResource Include="Unit\MockButoResponses\VideoExists.json" />

@@ -8,6 +8,7 @@ using Contentful.Core;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
@@ -15,6 +16,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 
@@ -26,6 +28,9 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClientManager> _clientManager = new Mock<IContentfulClientManager>();
         private readonly Mock<IContentfulClient> _client = new Mock<IContentfulClient>();
         private readonly Mock<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>> _contentfulFactory;
+        private readonly Mock<ILogger<SmartAnswersRepository>> _logger = new Mock<ILogger<SmartAnswersRepository>>();
+        private readonly Mock<ICache> _cache = new Mock<ICache>();
+
         public SmartAnswersRepositoryTests()
         {
             var config = new ContentfulConfig("test")
@@ -39,7 +44,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulFactory = new Mock<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>();
 
-            _repository = new SmartAnswersRepository(config, _clientManager.Object, _contentfulFactory.Object);
+            _repository = new SmartAnswersRepository(config, _clientManager.Object, _contentfulFactory.Object, _cache.Object, _logger.Object);
         }
 
         [Fact]
@@ -47,26 +52,20 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             //Setup
             var slug = "smartAnswers";
-            var collection = new ContentfulCollection<ContentfulSmartAnswers>();
-            collection.Items =
-                new List<ContentfulSmartAnswers>
-                {
-                    new ContentfulSmartAnswerBuilder().Build()
-                };
-            var smartAnswersModel = new SmartAnswer("smartAnswers", "questionJson1");
+            var smartAnswer = new ContentfulSmartAnswerBuilder().Build();
+
+            var smartAnswersModel = new SmartAnswer("title", "smartAnswers", "questionJson1");
 
             _contentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulSmartAnswers>())).Returns(smartAnswersModel);
-            var builder = new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers").FieldEquals("fields.slug", slug).Include(1);
-          
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulSmartAnswers>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>())).ReturnsAsync(smartAnswer);
 
             //
             var response = _repository.Get(slug);
             var responseSmartAnswer = response.Result.Get<SmartAnswer>();
 
             //
-            _client.Verify(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulSmartAnswers>>(), It.IsAny<CancellationToken>()), Times.Once);
+            _cache.Verify(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>()), Times.Once);
             response.Result.StatusCode.Should().Be(HttpStatusCode.OK);
             responseSmartAnswer.ShouldBeEquivalentTo(smartAnswersModel);
        }
@@ -77,17 +76,14 @@ namespace StockportContentApiTests.Unit.Repositories
             //Setup
             var slug = "smartAnswers";
 
-            var builder = new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers").FieldEquals("fields.slug", slug).Include(1);
-
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulSmartAnswers>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(null);
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>())).ReturnsAsync(null);
 
             //
             var response = _repository.Get(slug);
             var responseSmartAnswer = response.Result.Get<SmartAnswer>();
 
             //
-            _client.Verify(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulSmartAnswers>>(), It.IsAny<CancellationToken>()), Times.Once);
+            _cache.Verify(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>()), Times.Once);
             response.Result.StatusCode.Should().Be(HttpStatusCode.NotFound);
             responseSmartAnswer.ShouldBeEquivalentTo(null);
         }

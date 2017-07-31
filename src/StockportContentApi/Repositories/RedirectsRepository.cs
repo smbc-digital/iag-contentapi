@@ -3,28 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 namespace StockportContentApi.Repositories
 {
-    public class RedirectsRepository
+    public class RedirectsRepository : BaseRepository
     {
-        private readonly ContentfulClient _contentfulClient;
+        public IContentfulClientManager ClientManager;
         private const string ContentType = "redirect";
-        private readonly IFactory<BusinessIdToRedirects> _factory;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly RedirectBusinessIds _redirectBusinessIds;
-        private  UrlBuilder _urlBuilder;
-        public RedirectsRepository(IHttpClient httpClient, IFactory<BusinessIdToRedirects> factory, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds)
+        private Contentful.Core.IContentfulClient _client;
+        private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory;
+
+        public RedirectsRepository(IContentfulClientManager clientManager, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds, IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> contenfulFactory)
         {
-            _contentfulClient = new ContentfulClient(httpClient);
-            _factory = factory;
             _createConfig = createConfig;
             _redirectBusinessIds = redirectBusinessIds;
-            
+            ClientManager = clientManager;
+            _contenfulFactory = contenfulFactory;
         }
 
         public async Task<HttpResponse> GetRedirects()
@@ -36,8 +40,8 @@ namespace StockportContentApi.Repositories
                 redirectPerBusinessId.Add(businessId, await GetRedirectForBusinessId(businessId));
             }
 
-            return !redirectPerBusinessId.Any() 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found") 
+            return !redirectPerBusinessId.Any()
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found")
                 : HttpResponse.Successful(GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId));
         }
 
@@ -53,17 +57,19 @@ namespace StockportContentApi.Repositories
             }
 
             return new Redirects(shortUrlRedirects, legacyUrlRedirects);
-        } 
+        }
 
         private async Task<BusinessIdToRedirects> GetRedirectForBusinessId(string businessId)
         {
             var config = _createConfig(businessId);
-            _urlBuilder = new UrlBuilder(config.ContentfulUrl.ToString());
-            var contentfulResponse = await _contentfulClient.Get(_urlBuilder.UrlFor(ContentType));
 
-            return !contentfulResponse.HasItems() 
-                ? new NullBusinessIdToRedirects() 
-                : _factory.Build(contentfulResponse.GetFirstItem(), contentfulResponse);
+            _client = ClientManager.GetClient(config);
+            var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+
+            return !entries.Any() 
+                ? new NullBusinessIdToRedirects()
+                : _contenfulFactory.ToModel(entries.FirstOrDefault());
         }
     }
 }

@@ -24,7 +24,7 @@ namespace StockportContentApi.Factories
             var reoccuredEventsByFrequency = new List<Event>();
             for (var i = 1; i < eventItem.Occurences; i++)
             {
-                var recurringEvent = _reccurenceDictionary[eventItem.Frequency].Invoke(eventItem, i);
+                var recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
                 if (recurringEvent != null) reoccuredEventsByFrequency.Add(recurringEvent);
             }
             return reoccuredEventsByFrequency;
@@ -33,9 +33,9 @@ namespace StockportContentApi.Factories
         public static Event GetReccuringEvent(Event entry, DateTime newDate)
         {
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
-                             entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences, 
-                             entry.Frequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories, 
-                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts);
+                             entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences,
+                             entry.EventFrequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories,
+                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts, entry.EventCategories, entry.Free, entry.Paid);
         }
 
         private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

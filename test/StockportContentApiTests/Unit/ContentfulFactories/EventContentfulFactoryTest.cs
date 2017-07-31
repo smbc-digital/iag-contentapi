@@ -20,6 +20,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+        private readonly Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>> _eventCategoryListFactory;
         private readonly EventContentfulFactory _eventContentfulFactory;
         private readonly List<Alert> _alerts = new List<Alert>() {
                 new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9)) };
@@ -31,6 +32,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
+            _eventCategoryListFactory = new Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>();
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
@@ -39,7 +41,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 
-            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _alertFactory.Object, _timeProvider.Object);
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _timeProvider.Object);
             
         }
 
@@ -53,7 +55,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var mapPosition = new MapPosition() {Lat = 53.5, Lon = -2.5};
 
-            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs));
+            anEvent.ShouldBeEquivalentTo(_contentfulEvent, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventCategories).Excluding(e => e.EventFrequency));
             anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
             anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
             anEvent.Documents.Count.Should().Be(1);

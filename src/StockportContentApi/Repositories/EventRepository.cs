@@ -19,6 +19,7 @@ namespace StockportContentApi.Repositories
     public class EventRepository : BaseRepository
     {
         private readonly IContentfulFactory<ContentfulEvent, Event> _contentfulFactory;
+        private readonly IContentfulFactory<ContentfulEventHomepage, EventHomepage> _contentfulEventHomepageFactory;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly ICache _cache;
@@ -28,16 +29,50 @@ namespace StockportContentApi.Repositories
         public EventRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
+            IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
             ICache cache,
             ILogger<EventRepository> logger
             )
         {
             _contentfulFactory = contentfulFactory;
+            _contentfulEventHomepageFactory = contentfulEventHomepageFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _cache = cache;
             _logger = logger;
             _timeProvider = timeProvider;
+        }
+
+        public async Task<HttpResponse> GetEventHomepage()
+        {
+            var builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.ToList().First();
+            
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
+                : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry)));
+        }
+
+        private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
+        {
+            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var liveEvents = GetAllEventsAndTheirReccurrences(events).Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate)).OrderBy(e => e.EventDate).ToList();
+            liveEvents = GetNextOccurenceOfEvents(liveEvents);
+
+            foreach (var row in homepage.Rows)
+            {
+                if (row.IsLatest)
+                {
+                    row.Events = liveEvents.Take(3);
+                }
+                else
+                {
+                    row.Events = liveEvents.Where(e => e.Tags.Contains(row.Tag.ToLower())).Take(3);
+                }
+            }
+
+            return homepage;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -68,7 +103,7 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag, string price)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
@@ -100,8 +135,9 @@ namespace StockportContentApi.Repositories
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower() == "paid,free" || price.ToLower() == "free,paid" || (price.ToLower() == "free" && (e.Free ?? false)) || (price.ToLower() == "paid" && (e.Paid ?? false)))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
@@ -204,6 +240,15 @@ namespace StockportContentApi.Repositories
             var eventType = await _client.GetContentTypeAsync("events");
             var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
             return validation.RequiredValues;
+        }
+
+        public async Task<ContentfulEvent> GetContentfulEvent(string slug)
+        {
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.FirstOrDefault();
+
+            return entry;
         }
     }
 }

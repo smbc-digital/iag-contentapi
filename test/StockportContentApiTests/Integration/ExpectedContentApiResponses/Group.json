@@ -37,6 +37,7 @@
       "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
+      "eventFrequency": "None",
       "breadcrumbs": [
         {
           "title": "Events",
@@ -106,7 +107,10 @@
 
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
-      ]
+      ],
+      "eventCategories": [],
+      "free": null,
+      "paid": null
     },
     {
       "title": "title",
@@ -121,6 +125,7 @@
       "eventDate": "9999-09-09T00:00:00Z",
       "startTime": "10:00",
       "endTime": "17:00",
+      "eventFrequency": "None",
       "breadcrumbs": [
         {
           "title": "Events",
@@ -189,7 +194,10 @@
           "sunriseDate": "0001-01-01T00:00:00Z",
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
-      ]
+      ],
+      "eventCategories": [],
+      "free": null,
+      "paid": null
     }
   ],
   "groupAdministrators": { "items": [] },
