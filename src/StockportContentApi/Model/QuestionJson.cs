@@ -20,6 +20,7 @@ namespace StockportContentApi.Model
     {
         public string label { get; set; }
         public string value { get; set; }
+        public string tertiaryInformation { get; set; }
     }
 
     public class ValidatorData
