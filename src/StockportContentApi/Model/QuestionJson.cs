@@ -10,6 +10,7 @@ namespace StockportContentApi.Model
         public int pageId { get; set; }
         public string buttonText { get; set; }
         public bool ShouldCache { get; set; }
+        public bool IsLastPage { get; set; }
         public List<Question> questions { get; set; }
         public List<Behaviour> behaviours { get; set; }
         public string description { get; set; }
@@ -56,6 +57,7 @@ namespace StockportContentApi.Model
         Redirect,
         RedirectToAction,
         RedirectToActionController,
-        GoToPage
+        GoToPage,
+        GoToSummary
     }
 }
