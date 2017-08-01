@@ -16,6 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Unit\MockContentfulResponses\**" />
+    <EmbeddedResource Remove="Unit\MockContentfulResponses\**" />
+    <None Remove="Unit\MockContentfulResponses\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Integration\ExpectedContentApiResponses\Article.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ArticleWithParentTopic.json" />
@@ -42,69 +48,6 @@
     <None Remove="Integration\ExpectedContentApiResponses\StartPage.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
     <None Remove="Unit\MockButoResponses\VideoExists.json" />
-    <None Remove="Unit\MockContentfulResponses\Alert\Alert.json" />
-    <None Remove="Unit\MockContentfulResponses\Alert\ArticleWithListOfPastCurrentAndFutureAlerts.json" />
-    <None Remove="Unit\MockContentfulResponses\Alert\ArticleWithOnlyAlerts.json" />
-    <None Remove="Unit\MockContentfulResponses\Article.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithBreadcrumbsButNoParentTopic.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithEmptySunsetAndSunriseDate.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithNullBody.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithNullEverything.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithNullIcon.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithoutBackgroundImage.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithoutSections.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithParentTopic.json" />
-    <None Remove="Unit\MockContentfulResponses\ArticleWithSingleSection.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleNoBreadcrumbs.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithAlerts.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithBreadcrumbs.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithDocuments.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithMultipleProfiles.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithoutSections.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithSectionsAndSectionProfiles.json" />
-    <None Remove="Unit\MockContentfulResponses\Article\ArticleWithSectionsAndSectionProfilesWithBlankDate.json" />
-    <None Remove="Unit\MockContentfulResponses\AtoZ.json" />
-    <None Remove="Unit\MockContentfulResponses\AtoZSingleItem.json" />
-    <None Remove="Unit\MockContentfulResponses\AtoZTopic.json" />
-    <None Remove="Unit\MockContentfulResponses\CarouselContent.json" />
-    <None Remove="Unit\MockContentfulResponses\ContactUsId.json" />
-    <None Remove="Unit\MockContentfulResponses\ContentNotFound.json" />
-    <None Remove="Unit\MockContentfulResponses\ContentTypes.json" />
-    <None Remove="Unit\MockContentfulResponses\ContentTypesWithNoNewsCategories.json" />
-    <None Remove="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeArticle.json" />
-    <None Remove="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeStartPage.json" />
-    <None Remove="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeTopic.json" />
-    <None Remove="Unit\MockContentfulResponses\Entry\SubItemEntryWithoutIcon.json" />
-    <None Remove="Unit\MockContentfulResponses\Footer.json" />
-    <None Remove="Unit\MockContentfulResponses\FooterSocialMediaLinks.json" />
-    <None Remove="Unit\MockContentfulResponses\Group.json" />
-    <None Remove="Unit\MockContentfulResponses\Homepage.json" />
-    <None Remove="Unit\MockContentfulResponses\HomepageWithMultipleAlerts.json" />
-    <None Remove="Unit\MockContentfulResponses\HomepageWithNoTopicsAndTasks.json" />
-    <None Remove="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyCarouselContent.json" />
-    <None Remove="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyFeaturedTopics.json" />
-    <None Remove="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyFeaturedTopicsWithDate.json" />
-    <None Remove="Unit\MockContentfulResponses\ListOfArticlesForTopic.json" />
-    <None Remove="Unit\MockContentfulResponses\ListOfArticlesForTopicWithAlerts.json" />
-    <None Remove="Unit\MockContentfulResponses\LiveChat\ArticleWithOnlyLiveChat.json" />
-    <None Remove="Unit\MockContentfulResponses\LiveChat\LiveChat.json" />
-    <None Remove="Unit\MockContentfulResponses\News.json" />
-    <None Remove="Unit\MockContentfulResponses\NewsListing.json" />
-    <None Remove="Unit\MockContentfulResponses\NewsListingDateTest.json" />
-    <None Remove="Unit\MockContentfulResponses\NewsListingWithHashTagTest.json" />
-    <None Remove="Unit\MockContentfulResponses\NewsListingWithoutHashTagTest.json" />
-    <None Remove="Unit\MockContentfulResponses\Newsroom.json" />
-    <None Remove="Unit\MockContentfulResponses\NewsWithoutBackgrounds.json" />
-    <None Remove="Unit\MockContentfulResponses\Profile.json" />
-    <None Remove="Unit\MockContentfulResponses\ProfileWithBreadcrumbs.json" />
-    <None Remove="Unit\MockContentfulResponses\ProfileWithoutBackgroundImage.json" />
-    <None Remove="Unit\MockContentfulResponses\Redirects.json" />
-    <None Remove="Unit\MockContentfulResponses\ReferenceListOfTopics.json" />
-    <None Remove="Unit\MockContentfulResponses\StartPage.json" />
-    <None Remove="Unit\MockContentfulResponses\Topic.json" />
-    <None Remove="Unit\MockContentfulResponses\TopicWithoutSummary.json" />
-    <None Remove="Unit\MockContentfulResponses\TopicWithPrimarySecondaryAndTertiaryItems.json" />
-    <None Remove="Unit\MockContentfulResponses\TopicWithPrimarySecondaryAndTertiaryItemsWithDate.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -133,69 +76,6 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\StartPage.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
     <EmbeddedResource Include="Unit\MockButoResponses\VideoExists.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Alert\Alert.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Alert\ArticleWithListOfPastCurrentAndFutureAlerts.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Alert\ArticleWithOnlyAlerts.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithBreadcrumbsButNoParentTopic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithEmptySunsetAndSunriseDate.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithNullBody.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithNullEverything.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithNullIcon.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithoutBackgroundImage.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithoutSections.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithParentTopic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ArticleWithSingleSection.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleNoBreadcrumbs.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithAlerts.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithBreadcrumbs.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithDocuments.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithMultipleProfiles.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithoutSections.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithSectionsAndSectionProfiles.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Article\ArticleWithSectionsAndSectionProfilesWithBlankDate.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\AtoZ.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\AtoZSingleItem.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\AtoZTopic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\CarouselContent.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ContactUsId.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ContentNotFound.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ContentTypes.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ContentTypesWithNoNewsCategories.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeArticle.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeStartPage.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Entry\SubItemEntryOfTypeTopic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Entry\SubItemEntryWithoutIcon.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Footer.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\FooterSocialMediaLinks.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Group.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Homepage.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\HomepageWithMultipleAlerts.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\HomepageWithNoTopicsAndTasks.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyCarouselContent.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyFeaturedTopics.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Homepage\HomepageWithOnlyFeaturedTopicsWithDate.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ListOfArticlesForTopic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ListOfArticlesForTopicWithAlerts.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\LiveChat\ArticleWithOnlyLiveChat.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\LiveChat\LiveChat.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\News.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\NewsListing.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\NewsListingDateTest.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\NewsListingWithHashTagTest.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\NewsListingWithoutHashTagTest.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Newsroom.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\NewsWithoutBackgrounds.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Profile.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ProfileWithBreadcrumbs.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ProfileWithoutBackgroundImage.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Redirects.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\ReferenceListOfTopics.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\StartPage.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\Topic.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\TopicWithoutSummary.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\TopicWithPrimarySecondaryAndTertiaryItems.json" />
-    <EmbeddedResource Include="Unit\MockContentfulResponses\TopicWithPrimarySecondaryAndTertiaryItemsWithDate.json" />
   </ItemGroup>
 
   <ItemGroup>

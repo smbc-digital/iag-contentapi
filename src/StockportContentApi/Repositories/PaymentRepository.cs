@@ -9,7 +9,6 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
 using StockportContentApi.Client;
-using StockportContentApi.Factories;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories

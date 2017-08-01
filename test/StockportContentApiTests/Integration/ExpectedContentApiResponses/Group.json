@@ -110,7 +110,17 @@
       ],
       "eventCategories": [],
       "free": null,
-      "paid": null
+      "paid": null,
+      "coord": {
+        "latitude": 53.5,
+        "longitude": -2.5,
+        "horizontalAccuracy": "NaN",
+        "verticalAccuracy": "NaN",
+        "speed": "NaN",
+        "course": "NaN",
+        "isUnknown": false,
+        "altitude": "NaN"
+      }
     },
     {
       "title": "title",
@@ -197,7 +207,17 @@
       ],
       "eventCategories": [],
       "free": null,
-      "paid": null
+      "paid": null,
+      "coord": {
+        "latitude": 53.5,
+        "longitude": -2.5,
+        "horizontalAccuracy": "NaN",
+        "verticalAccuracy": "NaN",
+        "speed": "NaN",
+        "course": "NaN",
+        "isUnknown": false,
+        "altitude": "NaN"
+      }
     }
   ],
   "groupAdministrators": { "items": [] },

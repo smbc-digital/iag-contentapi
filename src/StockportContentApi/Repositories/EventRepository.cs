@@ -13,6 +13,7 @@ using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using GeoCoordinatePortable;
 
 namespace StockportContentApi.Repositories
 {
@@ -57,7 +58,13 @@ namespace StockportContentApi.Repositories
         private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
         {
             var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
-            var liveEvents = GetAllEventsAndTheirReccurrences(events).Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate)).OrderBy(e => e.EventDate).ToList();
+            var liveEvents = GetAllEventsAndTheirReccurrences(events)
+                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                .OrderBy(e => e.EventDate)
+                .ThenBy(c => c.StartTime)
+                .ThenBy(t => t.Title)
+                .ToList();
+
             liveEvents = GetNextOccurenceOfEvents(liveEvents);
 
             foreach (var row in homepage.Rows)
@@ -103,7 +110,7 @@ namespace StockportContentApi.Repositories
                 .SingleOrDefault(x => x.EventDate == date);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag, string price)
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag, string price, double latitude, double longitude)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
@@ -132,12 +139,15 @@ namespace StockportContentApi.Repositories
                 searchdateFrom = now;
             }
 
+            var searchCoord = new GeoCoordinate(latitude, longitude);
+
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                     .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower() == "paid,free" || price.ToLower() == "free,paid" || (price.ToLower() == "free" && (e.Free ?? false)) || (price.ToLower() == "paid" && (e.Paid ?? false)))
+                    .Where(e => (latitude == 0 && longitude == 0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
