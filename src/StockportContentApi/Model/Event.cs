@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeoCoordinatePortable;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace StockportContentApi.Model
@@ -32,6 +33,7 @@ namespace StockportContentApi.Model
         public List<EventCategory> EventCategories { get; }
         public bool? Free { get; }
         public bool? Paid { get; }
+        public GeoCoordinate Coord { get; }
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee,
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime,
@@ -66,6 +68,7 @@ namespace StockportContentApi.Model
             EventCategories = eventCategories;
             Paid = paid;
             Free = free;
+            Coord = MapPosition == null ? null : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
         }
 
         public bool ShouldSerializeFrequency()

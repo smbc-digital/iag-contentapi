@@ -36,7 +36,8 @@
     "contentful.csharp": "0.14.0-beta",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.Extensions.Caching.Redis": "1.1.2",
-    "AutoMapper": "6.1.1"
+    "AutoMapper": "6.1.1",
+    "GeoCoordinate.NetCore": "1.0.0.1"
   },
 
   "tools": {

@@ -79,12 +79,12 @@ namespace StockportContentApi.Controllers
             [FromQuery] string category = null,
             [FromQuery] bool? featured = null,
             [FromQuery] string tag = null,
-            [FromQuery] string price = null)
+            [FromQuery] string price = null, [FromQuery] double latitude = 0, [FromQuery] double longitude = 0)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom, dateTo, category, limit, featured, tag, price);
+                return repository.Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude);
             });
         }
 
