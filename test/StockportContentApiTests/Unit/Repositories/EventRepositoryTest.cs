@@ -120,6 +120,7 @@ namespace StockportContentApiTests.Unit.Repositories
                         .Excluding(raw => raw.Documents)
                         .Excluding(e => e.UpdatedAt)
                         .Excluding(e => e.Group)
+                        .Excluding(e => e.Coord)
                         .Excluding(e => e.Alerts)
                         .Excluding(e => e.EventCategories)
                         .Excluding(e => e.Breadcrumbs)
@@ -190,7 +191,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
@@ -202,6 +203,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.ImageUrl)
                     .Excluding(e => e.Documents)
                     .Excluding(e => e.UpdatedAt)
+                    .Excluding(e => e.Coord)
                     .Excluding(e => e.Group)
                     .Excluding(e => e.EventCategories)
                     .Excluding(e => e.Alerts)
@@ -214,6 +216,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.ImageUrl)
                     .Excluding(e => e.Documents)
                     .Excluding(e => e.UpdatedAt)
+                    .Excluding(e => e.Coord)
                     .Excluding(e => e.Group)
                     .Excluding(e => e.EventCategories)
                     .Excluding(e => e.Alerts)
@@ -228,7 +231,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<Event>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<Event>());
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No events found");
@@ -249,7 +252,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> {anEvent};
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null, 0, 0));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
@@ -274,7 +277,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null, 0, 0));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(occurences);
@@ -301,7 +304,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
             var response =
-                AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16), null,  0,null, null, null));
+                AsyncTestHelper.Resolve(_repository.Get(new DateTime(2017, 04, 01), new DateTime(2017, 04, 16), null,  0, null, null, null, 0, 0));
 
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(3);
@@ -326,7 +329,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0, null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0, null, null, null, 0, 0));
 
 
             var eventCalender = response.Get<EventCalender>();
@@ -352,7 +355,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0,null, null, null, 0, 0));
 
 
             var eventCalender = response.Get<EventCalender>();
@@ -379,7 +382,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  0, null, null, null, 0, 0));
 
 
             var eventCalender = response.Get<EventCalender>();
@@ -402,7 +405,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var events = new List<ContentfulEvent> {anEvent, anotherEvent};
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, null, 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, null, 0, null, null, null, 0, 0));
 
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -410,7 +413,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency).Excluding(e => e.EventFrequency));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency).Excluding(e => e.EventFrequency));
         }
 
         [Fact]
@@ -423,13 +426,13 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null,  "category 1", 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null,  "category 1", 0, null, null, null, 0, 0));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
         }
 
         [Fact]
@@ -443,13 +446,13 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "category 2", 0,null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "category 2", 0, null, null, null, 0, 0));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(2);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
         }
 
         [Fact]
@@ -476,14 +479,14 @@ namespace StockportContentApiTests.Unit.Repositories
             
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, "category 1", 0, null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(dateFrom, dateTo, "category 1", 0, null, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
                 .ShouldBeEquivalentTo(event3,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
         }
 
        
@@ -502,7 +505,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     o => o.GetEntriesAsync<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, null, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, null, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventsCalendar = response.Get<EventCalender>();
@@ -562,7 +565,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventsCalendar = response.Get<EventCalender>();
@@ -583,7 +586,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventsCalendar = response.Get<EventCalender>();
@@ -603,7 +606,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null, null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null,  2, true, null, null, 0, 0));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventsCalendar = response.Get<EventCalender>();
