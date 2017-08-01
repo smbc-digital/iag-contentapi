@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;

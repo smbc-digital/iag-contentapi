@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
+using System.Threading;
+using Contentful.Core;
+using Contentful.Core.Models;
+using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using StockportContentApi;
+using StockportContentApi.Client;
 using StockportContentApi.Factories;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Fakes;
 using Xunit;
+using File = System.IO.File;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class StartPageRepositoryTest
     {
-        private readonly FakeHttpClient _httpClient = new FakeHttpClient();
+        private readonly Mock<IContentfulFactory<ContentfulStartPage, StartPage>> _startPageFactory;
+        private readonly Mock<IContentfulClient> _client;
         private readonly StartPageRepository _repository;
-        private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
-        private readonly List<Alert> _alerts = new List<Alert>() { new Alert("title", "subHeading", "body", "severity", new DateTime(), new DateTime()) };
 
         public StartPageRepositoryTest()
         {
@@ -31,31 +38,49 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            var mockBreadcrumbFactory = new Mock<IBuildContentTypesFromReferences<Crumb>>();
-            var mockalertFactory = new Mock<IBuildContentTypesFromReferences<Alert>>();
-            mockalertFactory.Setup(o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-                .Returns(_alerts);
-            mockBreadcrumbFactory.Setup( o => o.BuildFromReferences(It.IsAny<IEnumerable<dynamic>>(), It.IsAny<ContentfulResponse>()))
-                .Returns(new List<Crumb>() {new NullCrumb()});
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
+            _client = new Mock<IContentfulClient>();
+            contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _repository = new StartPageRepository(config, _httpClient, new StartPageFactory(mockBreadcrumbFactory.Object, mockalertFactory.Object));
+            _startPageFactory = new Mock<IContentfulFactory<ContentfulStartPage, StartPage>>();
+
+            _repository = new StartPageRepository(config, contentfulClientManager.Object, _startPageFactory.Object);
         }
 
         [Fact]
         public void GivenThereIsItemInTheContentResponse_ItReturnsOKResponseWithTheContentOfStartPage()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=startPage&include=1&fields.slug=start-page")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/StartPage.json")));
+            // Arrange
+            string slug = "startpage_slug";
+            var ContentfulStartPage = new ContentfulStartPageBuilder().Slug(slug).Build();
+            var collection = new ContentfulCollection<ContentfulStartPage>();
+            collection.Items = new List<ContentfulStartPage> { ContentfulStartPage };
 
-            var startPageSlug = "start-page";
-            var response = AsyncTestHelper.Resolve(_repository.GetStartPage(startPageSlug));
+            List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
+                "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)) };
+
+            var startPageItem = new StartPage("Start Page", "startPageSlug", "this is a teaser", "This is a summary", "An upper body", "Start now", "http://start.com", "Lower body", "image.jpg","icon", new List<Crumb> { new Crumb("title", "slug", "type") }, _alerts);
+
+            var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _startPageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulStartPage>())).Returns(startPageItem);
+
+            var response = AsyncTestHelper.Resolve(_repository.GetStartPage(slug));
+
             var startPage = response.Get<StartPage>();
 
+            // Act
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             startPage.Title.Should().Be("Start Page");
-            startPage.Slug.Should().Be(startPageSlug);
+            startPage.Slug.Should().Be("startPageSlug");
             startPage.Teaser.Should().Be("this is a teaser");
-            startPage.Summary.Should().Be("This is a summary ");
+            startPage.Summary.Should().Be("This is a summary");
             startPage.UpperBody.Should().Be("An upper body");
             startPage.FormLink.Should().Be("http://start.com");
             startPage.FormLinkLabel.Should().Be("Start now");
@@ -69,11 +94,21 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void GivenNoItemsInTheContentResponse_ItReturnsNotFoundResponse()
         {
-            _httpClient.For($"{MockContentfulApiUrl}&content_type=startPage&include=1&fields.slug=new-start-page")
-                .Return(HttpResponse.Successful(File.ReadAllText("Unit/MockContentfulResponses/ContentNotFound.json")));
+            // Arrange
+            string slug = "startpage_slug";
+           
+            var collection = new ContentfulCollection<ContentfulStartPage>();
+            collection.Items = new List<ContentfulStartPage>();
 
-            var response = AsyncTestHelper.Resolve(_repository.GetStartPage("new-start-page"));
+            var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
 
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+            
+            // Act
+            var response = AsyncTestHelper.Resolve(_repository.GetStartPage(slug));
+
+            //Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

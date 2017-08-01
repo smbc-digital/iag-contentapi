@@ -11,7 +11,6 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Factories;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -106,8 +105,9 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
                 p => new ParentTopicContentfulFactory(
                     p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
-                    , p.GetService<ITimeProvider>())
-            );
+                    , p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>>
+                (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
 
             return services;
         }
@@ -177,7 +177,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, HomepageRepository>>(
                 p => { return x => new HomepageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>()); });
             services.AddSingleton<Func<ContentfulConfig, StartPageRepository>>(
-                p => { return x => new StartPageRepository(x, p.GetService<IHttpClient>(), p.GetService<IFactory<StartPage>>()); });
+                p => { return x => new StartPageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulStartPage, StartPage>>()); });
             services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
                 p => { return x => new FooterRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulFooter, Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
@@ -211,45 +211,6 @@ namespace StockportContentApi.Extensions
 
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
                 p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
-
-            return services;
-        }
-
-        /// <summary>
-        /// Add the old factories (depreciated)
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddOldFactories(this IServiceCollection services)
-        {
-            services.AddSingleton<IFactory<Article>, ArticleFactory>();
-            services.AddSingleton<IFactory<Alert>, AlertFactory>();
-            services.AddSingleton<IFactory<CarouselContent>, CarouselContentFactory>();
-            services.AddSingleton<IFactory<Topic>, TopicFactory>();
-            services.AddSingleton<IFactory<Profile>, ProfileFactory>();
-            services.AddSingleton<IFactory<News>, NewsFactory>();
-            services.AddSingleton<IFactory<Newsroom>, NewsroomFactory>();
-            services.AddSingleton<IFactory<AtoZ>, AtoZFactory>();
-            services.AddSingleton<IFactory<StartPage>, StartPageFactory>();
-            services.AddSingleton<IFactory<SubItem>, SubItemFactory>();
-            services.AddSingleton<IFactory<Footer>, FooterFactory>();
-            services.AddSingleton<IFactory<SocialMediaLink>, SocialMediaLinkFactory>();
-            services.AddSingleton<IFactory<BusinessIdToRedirects>, RedirectsFactory>();
-            services.AddSingleton<IFactory<LiveChat>, LiveChatFactory>();
-            services.AddSingleton<IFactory<EventBanner>, EventBannerFactory>();
-            services.AddSingleton<INewsCategoriesFactory, NewsCategoriesFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<CarouselContent>, CarouselContentListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<SubItem>, SubItemListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Alert>, AlertListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Crumb>, BreadcrumbFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Topic>, TopicListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Section>, SectionListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Profile>, ProfileListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<Document>, DocumentListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<SocialMediaLink>, SocialMediaLinkListFactory>();
-            services.AddSingleton<IBuildContentTypeFromReference<LiveChat>, LiveChatListFactory>();
-            services.AddSingleton<IBuildContentTypeFromReference<EventBanner>, EventBannerListFactory>();
-            services.AddSingleton<IBuildContentTypesFromReferences<ExpandingLinkBox>, ExpandingLinkBoxFactory>();
 
             return services;
         }

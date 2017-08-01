@@ -54,7 +54,7 @@ namespace StockportContentApi
             services.AddContentfulClients();
             services.AddContentfulFactories();
             services.AddCache(_useRedisSession);
-            services.AddOldFactories();
+            //services.AddOldFactories();
             services.AddRepositories();
             services.AddSwaggerGen(c => { c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" }); });
             services.AddApplicationInsightsTelemetry(Configuration);

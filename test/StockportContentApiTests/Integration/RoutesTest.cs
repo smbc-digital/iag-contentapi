@@ -33,27 +33,6 @@ namespace StockportContentApiTests.Integration
 
         public RoutesTest()
         {
-            TestAppFactory.FakeHttpClientFactory.MakeFakeHttpClientWithConfiguration(fakeHttpClient =>
-            {
-                fakeHttpClient.For(UrlFor("article", 2, "test-article")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(UrlFor("article", 2, "about-us")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithoutSections.json"));
-                fakeHttpClient.For(UrlFor("article", 2, "test-me")).Return(CreateHttpResponse("Unit/MockContentfulResponses/ArticleWithParentTopic.json"));
-                fakeHttpClient.For("https://buto-host.tv/video/kQl5D").Return(CreateHttpResponse("Unit/MockContentfulResponses/Article.json"));
-                fakeHttpClient.For(UrlFor("startPage", 1, "new-start-page")).Return((CreateHttpResponse("Unit/MockContentfulResponses/StartPage.json")));
-                fakeHttpClient.For(UrlFor("homepage", 2)).Return((CreateHttpResponse("Unit/MockContentfulResponses/Homepage.json")));
-                fakeHttpClient.For(UrlFor("news", 1, limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("newsroom", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Newsroom.json"));
-                fakeHttpClient.For(UrlFor("news", 1, tag: "Events", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("news", 1, category: "A category", limit: ContentfulQueryValues.LIMIT_MAX)).Return(CreateHttpResponse("Unit/MockContentfulResponses/NewsListing.json"));
-                fakeHttpClient.For(UrlFor("article", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZ.json"));
-                fakeHttpClient.For(UrlFor("topic", displayOnAz: true)).Return(CreateHttpResponse("Unit/MockContentfulResponses/AtoZTopic.json"));
-                fakeHttpClient.For(UrlFor("redirect")).Return(CreateHttpResponse("Unit/MockContentfulResponses/Redirects.json"));
-                fakeHttpClient.For(UrlFor("footer", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Footer.json"));
-                fakeHttpClient.For(UrlFor("group", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/Group.json"));
-                fakeHttpClient.For(UrlFor("contactUsId", 1)).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContactUsId.json"));
-                fakeHttpClient.For(ContentTypesUrlFor()).Return(CreateHttpResponse("Unit/MockContentfulResponses/ContentTypes.json"));
-            });
-
             TestAppFactory.FakeContentfulClientFactory.MakeContentfulClientWithConfiguration(httpClient =>
             {
                 var eventCollection = new ContentfulCollection<ContentfulEvent>();
@@ -288,6 +267,16 @@ namespace StockportContentApiTests.Integration
                     It.Is<QueryBuilder<ContentfulRedirect>>(
                         q => q.Build() == new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(Redirects);
+
+                var startPages = new ContentfulCollection<ContentfulStartPage>();
+                startPages.Items = new List<ContentfulStartPage>()
+                {
+                    new ContentfulStartPageBuilder().Slug("new-start-page").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulStartPage>>(
+                        q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", "new-start-page").Include(3).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(startPages);
             });
         }
 

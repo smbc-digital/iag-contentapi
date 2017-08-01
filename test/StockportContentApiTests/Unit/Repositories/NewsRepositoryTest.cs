@@ -56,7 +56,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
-        private Mock<INewsCategoriesFactory> _newsCategoriesFactory = new Mock<INewsCategoriesFactory>();
         private readonly Mock<IContentfulClient> _client;
         private readonly Mock<IContentfulClientManager> _contentfulManager;
         private readonly NewsContentfulFactory _contentfulFactory;
@@ -68,14 +67,6 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
            _videoRepository = new Mock<IVideoRepository>();
-            var newsFactory = new Mock<IFactory<News>>();
-            var newsroomFactory = new Mock<IFactory<Newsroom>>();
-
-            _newsCategoriesFactory.Setup(o => o.Build(It.IsAny<List<dynamic>>())).Returns(new List<String>()
-                 { "Benefits",
-                  "Business",
-                  "Council leader",
-                 });
 
             _newsContentType = new ContentType()
             {
@@ -116,12 +107,6 @@ namespace StockportContentApiTests.Unit.Repositories
             _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
            
             _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object);
-
-            newsFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(
-                new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, 
-                new List<string>{ "Bramall Hall" }, new List<Document>(), _newsCategories));
-      
-            newsroomFactory.Setup(o => o.Build(It.IsAny<object>(), It.IsAny<ContentfulResponse>())).Returns(new Newsroom(_alerts, true, "test-id"));
         }
         
         [Fact]

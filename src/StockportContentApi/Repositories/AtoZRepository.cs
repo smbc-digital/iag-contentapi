@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
