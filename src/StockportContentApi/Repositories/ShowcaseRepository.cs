@@ -61,6 +61,16 @@ namespace StockportContentApi.Repositories
 
             showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory);
 
+            if (!showcase.Events.Any())
+            {
+                var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory);
+                if (eventArticles.Any())
+                {
+                    showcase.Events = eventArticles;
+                    showcase.EventsCategoryOrTag = "T";
+                }
+            }
+
             var news = await PopulateNews(showcase.NewsCategoryTag);
             if (news != null)
             {

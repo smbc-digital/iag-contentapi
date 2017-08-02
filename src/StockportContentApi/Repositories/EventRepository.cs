@@ -184,6 +184,22 @@ namespace StockportContentApi.Repositories
             return GetNextOccurenceOfEvents(events);
         }
 
+        public async Task<List<Event>> GetEventsByTag(string tag)
+        {
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+
+            var events =
+                    GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
+                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+
+            return GetNextOccurenceOfEvents(events);
+        }
+
         private List<Event> GetNextOccurenceOfEvents(List<Event> events)
         {
             var result = new List<Event>();

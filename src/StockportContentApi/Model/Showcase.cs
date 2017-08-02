@@ -11,6 +11,7 @@ namespace StockportContentApi.Model
         public string HeroImageUrl { get; set; }
         public string EventSubheading { get; set; }
         public string EventCategory { get; set; }
+        public string EventsCategoryOrTag { get; set; }
         public string NewsSubheading { get; set; }
         public string NewsCategoryTag { get; set; }
         public string NewsCategoryOrTag { get; set; }

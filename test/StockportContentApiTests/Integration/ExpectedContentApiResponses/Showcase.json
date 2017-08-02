@@ -6,6 +6,7 @@
   "heroImageUrl": "image-url.jpg",
   "eventSubheading": "event-subheading",
   "eventCategory": "event-category",
+  "eventsCategoryOrTag": null,
   "newsSubheading": "news subheading",
   "newsCategoryTag": "news-category-tag",
   "newsCategoryOrTag": "",
