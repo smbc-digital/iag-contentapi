@@ -51,8 +51,6 @@ function Main {
   Try {
     # clean dotnet-restore dotnet-test version publish-app package-app
     _Clean
-    _DotnetRestore
-    _DotnetTest
     _Version
     _Publish
   }
