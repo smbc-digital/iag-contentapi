@@ -22,6 +22,8 @@ namespace StockportContentApiTests.Builders
         private string _newsCategoryTag { get; set; } = "news-category-tag";
         private string _bodySubheading { get; set; } = "body subheading";
         private string _body { get; set; } = "body";
+        private string _emailAlertsTopicId { get; set; } = "alertId";
+        private string _emailAlertsText { get; set; } = "alertText";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -47,7 +49,9 @@ namespace StockportContentApiTests.Builders
                 Consultations = _consultations,
                 SocialMediaLinks = _socialMediaLinks,
                 BodySubheading = _bodySubheading,
-                Body = _body
+                Body = _body,
+                EmailAlertsText = _emailAlertsText,
+                EmailAlertsTopicId = _emailAlertsTopicId
             };
         }
 
