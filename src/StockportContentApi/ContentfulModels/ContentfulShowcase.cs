@@ -17,5 +17,7 @@ namespace StockportContentApi.ContentfulModels
         public string Body { get; set; } = string.Empty;
         public List<ContentfulConsultation> Consultations { get; set; } = new List<ContentfulConsultation>();
         public List<ContentfulSocialMediaLink> SocialMediaLinks { get; set; } = new List<ContentfulSocialMediaLink>();
+        public string EmailAlertsTopicId { get; set; } = string.Empty;
+        public string EmailAlertsText { get; set; } = string.Empty;
     }
 }
