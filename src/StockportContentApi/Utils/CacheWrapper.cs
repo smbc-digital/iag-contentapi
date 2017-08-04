@@ -80,17 +80,16 @@ namespace StockportContentApi.Utils
 
             if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
             {
-                //_logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
+                _logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
                 result = await fallbackMethod();
 
                 if (_useRedisCache && _memoryCache != null)
                 {
                     var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
 
-                    var data = JsonConvert.SerializeObject(result);
-
                     try
                     {
+                        var data = JsonConvert.SerializeObject(result, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                         _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
                     }
                     catch (Exception ex)

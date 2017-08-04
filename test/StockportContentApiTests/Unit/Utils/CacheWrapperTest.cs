@@ -1,9 +1,7 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.Utils;
 using Xunit;
-using Microsoft.Extensions.Caching.Distributed;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -11,13 +9,14 @@ namespace StockportContentApiTests.Unit.Utils
 {
     public class CacheTest
     {
-        private readonly Cache _cacheWrapper;
-        private readonly Mock<IDistributedCacheWrapper> _distributedCacheWrapper;
+        readonly Cache _cacheWrapper;
+        readonly Mock<IDistributedCacheWrapper> _distributedCacheWrapper;
+        readonly Mock<ILogger<ICache>> _logger = new Mock<ILogger<ICache>>();
 
         public CacheTest()
         {
             _distributedCacheWrapper = new Mock<IDistributedCacheWrapper>();
-            _cacheWrapper = new Cache(_distributedCacheWrapper.Object, null, true);
+            _cacheWrapper = new Cache(_distributedCacheWrapper.Object, _logger.Object, true);
         }
 
         [Fact]
@@ -62,6 +61,7 @@ namespace StockportContentApiTests.Unit.Utils
 
             // Assert
             valueFromCall.Should().Be("Contentful Data");
+            LogTesting.Assert(_logger, LogLevel.Information, "Key not found in cache:test-key of type:System.String");
         }
 
         [Fact]
