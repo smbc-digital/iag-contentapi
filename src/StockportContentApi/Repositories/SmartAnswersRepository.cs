@@ -42,8 +42,6 @@ namespace StockportContentApi.Repositories
 
         private async Task<ContentfulSmartAnswers> GetSmartEntry(string slug)
         {
-            _logger.LogInformation($"Called from contentful for smart answers. Slug is: {slug}");
-
             var builder = new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers").FieldEquals("fields.slug", slug).Include(1);
             var entires = await _client.GetEntriesAsync(builder);
 

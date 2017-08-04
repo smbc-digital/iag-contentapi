@@ -5,6 +5,7 @@ using StockportContentApi.Utils;
 using Xunit;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApiTests.Unit.Utils
 {
@@ -17,8 +18,6 @@ namespace StockportContentApiTests.Unit.Utils
         {
             _distributedCacheWrapper = new Mock<IDistributedCacheWrapper>();
             _cacheWrapper = new Cache(_distributedCacheWrapper.Object, null, true);
-            
-
         }
 
         [Fact]

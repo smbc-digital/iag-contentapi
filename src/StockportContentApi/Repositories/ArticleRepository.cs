@@ -17,7 +17,8 @@ namespace StockportContentApi.Repositories
     {        
         private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
         private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
-        private readonly DateComparer _dateComparer;      
+        private readonly DateComparer _dateComparer;
+        private readonly ICache _cache;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IVideoRepository _videoRepository;
 
@@ -26,13 +27,15 @@ namespace StockportContentApi.Repositories
             ITimeProvider timeProvider,
             IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
             IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
-            IVideoRepository videoRepository)
+            IVideoRepository videoRepository,
+            ICache cache)
         {
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _videoRepository = videoRepository;
             _contentfulFactoryArticle = contentfulFactoryArticle;
+            _cache = cache;
         }
 
         public async Task<HttpResponse> Get()
@@ -50,15 +53,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
-            var builder = new QueryBuilder<ContentfulArticle>()
-                .ContentTypeIs("article")
-                .FieldEquals("fields.slug", articleSlug)
-                .Include(3);
-
-            var entries = await _client.GetEntriesAsync(builder);
-
-            var entry = entries.FirstOrDefault();
-
+            var entry = await _cache.GetFromCacheOrDirectlyAsync("article-" + articleSlug, () => GetArticleEntry(articleSlug));
+            
             var articleItem = entry == null
                             ? null
                             : _contentfulFactory.ToModel(entry);
@@ -95,5 +91,19 @@ namespace StockportContentApi.Repositories
 
             return entriesList;
         }
+
+        private async Task<ContentfulArticle> GetArticleEntry(string articleSlug)
+        {
+            var builder = new QueryBuilder<ContentfulArticle>()
+                .ContentTypeIs("article")
+                .FieldEquals("fields.slug", articleSlug)
+                .Include(3);
+
+            var entries = await _client.GetEntriesAsync(builder);
+
+            var entry = entries.FirstOrDefault();
+            return entry;
+        }
     }
+   
 }

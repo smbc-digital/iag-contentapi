@@ -80,6 +80,7 @@ namespace StockportContentApi.Utils
 
             if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
             {
+                //_logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
                 result = await fallbackMethod();
 
                 if (_useRedisCache && _memoryCache != null)
@@ -140,6 +141,7 @@ namespace StockportContentApi.Utils
             if (returnData != null)
             {
                 value = JsonConvert.DeserializeObject<T>(returnData);
+                //_logger.LogInformation("Key found in cache:" + key + " of type:" + typeof(T));
                 output = value != null;
             }
             
