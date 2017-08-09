@@ -15,7 +15,7 @@ using StockportContentApiTests.Unit.Builders;
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ShowcaseContentfulFactoryTest
-    {
+    {           
         [Fact]
         public void ShouldCreateAShowcaseFromAContentfulShowcase()
         {
@@ -36,6 +36,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
+            var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
+
             var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
@@ -49,7 +52,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -63,7 +66,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             showcase.FeaturedItems.First().Icon.Should().Be(subItems.First().Icon);
             showcase.FeaturedItems.First().Slug.Should().Be(subItems.First().Slug);
             showcase.FeaturedItems.Should().HaveCount(1);
-
+            showcase.Alerts.Count().Should().Be(3);
         }
 
         [Fact]
@@ -87,7 +90,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
+            var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -136,7 +142,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
+            var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -185,7 +194,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
+            var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 

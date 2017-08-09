@@ -35,6 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
 
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
@@ -53,6 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _timeprovider = new Mock<ITimeProvider>();
             _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
@@ -62,7 +64,9 @@ namespace StockportContentApiTests.Unit.Repositories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object);
+            _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
 
             var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
 

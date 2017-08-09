@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Unit.Builders;
+using System;
 
 namespace StockportContentApiTests.Builders
 {
@@ -30,7 +31,41 @@ namespace StockportContentApiTests.Builders
         {
           new ContentfulReferenceBuilder().Build()
         };
-        
+
+        private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+        {
+            new ContentfulAlert()
+            {
+                Title = "Warning alert",
+                SubHeading = "This is a warning alert.",
+                Body = "This is a warning alert.",
+                Severity = "Warning",
+                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(2018, 8, 1, 0, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            },
+            new ContentfulAlert()
+            {
+                Title = "Information alert",
+                SubHeading = "test",
+                Body = "This is an information alert.",
+                Severity = "Information",
+                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            },
+            new ContentfulAlert()
+            {
+                Title = "Error alert",
+                SubHeading = string.Empty,
+                Body = "This is an error alert.",
+                Severity = "Error",
+                SunriseDate = new DateTime(2016, 7, 31, 23, 0, 0, DateTimeKind.Utc),
+                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
+                Sys = new SystemProperties() {Type = "Entry"}
+            }
+        };
+
         public ContentfulShowcase Build()
         {
             return new ContentfulShowcase()
@@ -51,7 +86,8 @@ namespace StockportContentApiTests.Builders
                 BodySubheading = _bodySubheading,
                 Body = _body,
                 EmailAlertsText = _emailAlertsText,
-                EmailAlertsTopicId = _emailAlertsTopicId
+                EmailAlertsTopicId = _emailAlertsTopicId,
+                Alerts = _alerts
             };
         }
 
