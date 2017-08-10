@@ -58,7 +58,9 @@ namespace StockportContentApi.Repositories
         private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
         {
             var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
-            var liveEvents = GetAllEventsAndTheirReccurrences(events)
+
+            var publishedEvents = events.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
+            var liveEvents = GetAllEventsAndTheirReccurrences(publishedEvents)
                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                 .OrderBy(e => e.EventDate)
                 .ThenBy(c => c.StartTime)
@@ -80,13 +82,15 @@ namespace StockportContentApi.Repositories
             }
 
             return homepage;
-        }
+        }       
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
-            var events = GetAllEventsAndTheirReccurrences(entries);
+            var publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
+
+            var events = GetAllEventsAndTheirReccurrences(publishedEvents);
 
             var eventItem = events.Where(e => e.Slug == slug).FirstOrDefault();
 
@@ -141,8 +145,10 @@ namespace StockportContentApi.Repositories
 
             var searchCoord = new GeoCoordinate(latitude, longitude);
 
+            var publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
+
             var events =
-                    GetAllEventsAndTheirReccurrences(entries)
+                    GetAllEventsAndTheirReccurrences(publishedEvents)
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                     .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
@@ -216,7 +222,7 @@ namespace StockportContentApi.Repositories
 
         private async Task<IList<ContentfulEvent>> GetAllEvents()
         {
-            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
+            var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(3);
             var entries = await GetAllEntriesAsync(_client, builder);
             return entries.ToList();
         }
