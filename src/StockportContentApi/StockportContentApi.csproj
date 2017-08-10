@@ -8,6 +8,7 @@
     <PackageId>StockportContentApi</PackageId>
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6</PackageTargetFallback>
+    <DefaultItemExcludes>$(DefaultItemExcludes);publish/**/*</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
