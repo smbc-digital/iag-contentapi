@@ -82,31 +82,5 @@ namespace StockportContentApiTests.Unit.Extensions
 
             result.Should().BeEquivalentTo(news);
         }
-
-        [Fact]
-        public void ShouldReturnNewsCategories()
-        {
-            var newsCategories = new List<string>()
-            {
-                "test",
-                "business"
-            };
-
-            var news = new List<News>
-            {
-                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), newsCategories),
-                new News("title", "slug", "teaser", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>())
-            };
-
-            List<string> categories;
-
-            var result = news.GetTheCategories(out categories);
-
-            categories.Should().HaveCount(2);
-            categories[0].Should().Be("test");
-            categories[1].Should().Be("business");
-
-            result.Should().BeEquivalentTo(news);
-        }
     }
 }

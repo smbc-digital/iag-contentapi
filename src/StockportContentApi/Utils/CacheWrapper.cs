@@ -140,7 +140,7 @@ namespace StockportContentApi.Utils
             if (returnData != null)
             {
                 value = JsonConvert.DeserializeObject<T>(returnData);
-                //_logger.LogInformation("Key found in cache:" + key + " of type:" + typeof(T));
+                _logger.LogInformation("Key found in cache:" + key + " of type:" + typeof(T));
                 output = value != null;
             }
             

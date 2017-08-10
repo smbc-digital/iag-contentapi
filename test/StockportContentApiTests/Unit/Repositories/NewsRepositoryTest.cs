@@ -25,6 +25,7 @@ using HttpResponse = StockportContentApi.Http.HttpResponse;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System.Collections;
 using Contentful.Core.Models.Management;
+using System.Threading.Tasks;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -62,11 +63,13 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClientManager> _contentfulClientManager;
         private readonly ContentType _newsContentType;
         private readonly ContentfulCollection<ContentfulNewsRoom> _newsroomContentfulCollection;
+        private readonly Mock<ICache> _cacheWrapper;
 
         public NewsRepositoryTest()
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
-           _videoRepository = new Mock<IVideoRepository>();
+            _videoRepository = new Mock<IVideoRepository>();
+            _cacheWrapper = new Mock<ICache>();
 
             _newsContentType = new ContentType()
             {
@@ -106,7 +109,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
             _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
            
-            _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object);
+            _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object, _cacheWrapper.Object);
         }
         
         [Fact]
@@ -117,10 +120,12 @@ namespace StockportContentApiTests.Unit.Repositories
             List<Alert> alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
                                                                  "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
                                                                   new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc)) };
-        _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
+            _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
+           
             var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();
             var collection = new ContentfulCollection<ContentfulNews>();
             collection.Items = new List<ContentfulNews> { contentfulNews };
+            var newsCollection = new List<ContentfulNews> { contentfulNews };
             var simpleNewsQuery =
                 new QueryBuilder<ContentfulNews>()
                     .ContentTypeIs("news")
@@ -132,6 +137,9 @@ namespace StockportContentApiTests.Unit.Repositories
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsCollection);
+            //_cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync<ContentfulNewsRoom>(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(newsroom);
+
 
             var newsItem = new News(Title, Slug, Teaser, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" });
 
@@ -156,11 +164,11 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulNews>();
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
-            _client.Setup(o => o.GetEntriesAsync(
-                 It.IsAny<QueryBuilder<ContentfulNews>>(),
-                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(collection.Items.ToList());
 
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+
+
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -170,7 +178,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void GetsAllNewsItems()
         {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
-          
+
+            var contentfulNewsRoom = new ContentfulNewsRoom { Title = "test" };
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
@@ -187,6 +196,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(contentfulNewsRoom);
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>())).ReturnsAsync(new List<string> { "Benefits", "foo", "Council leader" });
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
@@ -248,6 +261,10 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
+
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -292,6 +309,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "Events").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -327,7 +347,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
-            
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",startDate:null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -363,7 +386,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "Events").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
-           
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
@@ -400,6 +426,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
@@ -429,6 +458,10 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
+
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2017, 08, 01), endDate: new DateTime(2017, 08, 31)));
             var newsroom = response.Get<Newsroom>();
 
@@ -456,6 +489,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
+
 
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
@@ -483,14 +520,13 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "NotFound").Build())),
-                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
             var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null,null));
-            var newsroom = response.Get<Newsroom>();
 
-            newsroom.News.Should().BeEmpty();
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -509,12 +545,12 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
-                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
-                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Tags(new List<string> { "testTag", "foo" }).Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Tags(new List<string> { "testTag", "bar" }).Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
-                It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "testTag").Build())),
-                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
@@ -542,12 +578,15 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
-                new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
-                new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Tags(new List<string> { "#testTag", "foo" }).Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
+                new ContentfulNewsBuilder().Tags(new List<string> { "#testTag", "foo" }).Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
             _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[match]", "testTag").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
@@ -582,6 +621,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(newsListCollection.Items.ToList());
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>())).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
 
             var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(2));
 
@@ -619,13 +661,11 @@ namespace StockportContentApiTests.Unit.Repositories
                     .FieldEquals("fields.slug", slug)
                     .Include(1)
                     .Build();
-            _client.Setup(o => o.GetEntriesAsync(
-                    It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunriseDateInFuture.Body);
 
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(collection.Items.ToList());
+            
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
@@ -655,11 +695,8 @@ namespace StockportContentApiTests.Unit.Repositories
                     .FieldEquals("fields.slug", slug)
                     .Include(1)
                     .Build();
-            _client.Setup(o => o.GetEntriesAsync(
-                    It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunsetDateInPast.Body);
+            _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(collection.Items.ToList());
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));

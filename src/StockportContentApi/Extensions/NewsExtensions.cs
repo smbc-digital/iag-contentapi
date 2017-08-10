@@ -8,16 +8,6 @@ namespace StockportContentApi.Extensions
 {
     public static class NewsExtensions
     {
-        public static IEnumerable<News> GetTheCategories(this IEnumerable<News> news, out List<string> categories)
-        {
-            var categoriesList = new List<string>();
-
-            news.ToList().ForEach(n => categoriesList.AddRange(n.Categories));
-
-            categories = categoriesList;
-            return news;
-        }
-
         public static IEnumerable<News> GetNewsDates(this IEnumerable<News> news, out List<DateTime> dates, ITimeProvider timeProvider)
         {
             var datesList = new List<DateTime>();

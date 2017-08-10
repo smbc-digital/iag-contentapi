@@ -82,5 +82,11 @@ namespace StockportContentApiTests.Unit.Builders
             _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
             return this;
         }
+
+        public ContentfulNewsBuilder Tags(List<string> tags)
+        {
+            _tags = tags;
+            return this;
+        }
     }
 }

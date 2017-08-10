@@ -12,15 +12,15 @@
   "emailAlerts": true,
   "emailAlertsTopicId": "test-id",
   "news": [
-   {
-      "title": "Another news article",
-      "slug": "another-news-article",
-      "teaser": "This is another news article",
+    {
+      "title": "title",
+      "slug": "news_item",
+      "teaser": "teaser",
       "image": "image.jpg",
       "thumbnailImage": "image.jpg?h=250",
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "sunriseDate": "2016-06-30T23:00:00+00:00",
-      "sunsetDate": "2017-11-22T23:00:00+00:00",
+      "sunriseDate": "2016-06-20T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z",
       "breadcrumbs": [
         {
           "title": "News",
@@ -35,11 +35,19 @@
           "subHeading": "alert sub heading updated",
           "body": "Alert body",
           "severity": "Error",
-          "sunriseDate": "2016-07-01T00:00:00+01:00",
-          "sunsetDate": "2017-11-22T23:00:00+01:00"
+          "sunriseDate": "2016-06-30T23:00:00Z",
+          "sunsetDate": "2017-11-22T22:00:00Z"
         }
       ],
-      "documents": [],
+      "documents": [
+        {
+          "title": "documentTitle",
+          "size": 674192,
+          "url": "url.pdf",
+          "lastUpdated": "2016-10-05T00:00:00Z",
+          "fileName": "fileName"
+        }
+        ],
       "categories": [ "A category" ]
     }
   ],
@@ -65,6 +73,6 @@
     "Test Category"
   ],
   "dates": [
-    "2016-06-01T00:00:00"
+    "2016-06-01T00:00:00Z"
   ]
 }

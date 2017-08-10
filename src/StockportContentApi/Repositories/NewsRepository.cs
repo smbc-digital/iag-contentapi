@@ -22,23 +22,46 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulNews, News> _newsContentfulFactory;
         private readonly IContentfulFactory<ContentfulNewsRoom, Newsroom> _newsRoomContentfulFactory;
         private readonly DateComparer _dateComparer;
+        private readonly ICache _cache;
         private readonly Contentful.Core.IContentfulClient _client;
         
         public NewsRepository(ContentfulConfig config, ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
-            IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory)
+            IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory, ICache cache)
         {
             _timeProvider = timeProvider;
             _newsContentfulFactory = newsContentfulFactory;
             _newsRoomContentfulFactory = newsRoomContentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
+            _cache = cache;
+        }
+
+        private async Task<IList<ContentfulNews>> GetAllNews()
+        {
+            var builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1);
+            var entries = await GetAllEntriesAsync(_client, builder);
+            return entries.ToList();
+        }
+
+        private async Task<ContentfulNewsRoom> GetNewsRoom()
+        {
+            var builder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            return entries.FirstOrDefault();
+        }
+
+        private async Task<List<string>> GetNewsCategories()
+        {
+            var eventType = await _client.GetContentTypeAsync("news");
+            var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
+            return validation?.RequiredValues;
         }
 
         public async Task<HttpResponse> GetNews(string slug)
         {
-            var builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
-            var entry = entries.FirstOrDefault();
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
+
+            var entry = entries.Where(e => e.Slug == slug).FirstOrDefault();
 
             if (entry != null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate)) entry = null;
 
@@ -50,33 +73,27 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
-            var newsRoomBuilder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
-            var newsRoomEntries = await _client.GetEntriesAsync(newsRoomBuilder);
+
+            var newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom);
 
             List<string> categories;
 
-            if (newsRoomEntries.Any())
+            if (newsRoomEntry != null)
             {
-                newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntries.FirstOrDefault());
+                newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
             }
            
-            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit);
+            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
+            var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => t == tag));
 
-            if (!string.IsNullOrEmpty(tag))
-            {
-                newsBuilder.FieldEquals($"fields.tags[{GetSearchTypeForTag(ref tag)}]", WebUtility.UrlEncode(tag));
-            }
-            var newsEntries = await GetAllEntriesAsync(_client, newsBuilder);
-
-            if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+            if (!filteredEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
             List<DateTime> dates;
 
-            var newsArticles = newsEntries
+            var newsArticles = filteredEntries
                 .Select(item => _newsContentfulFactory.ToModel(item))
                 .GetNewsDates(out dates, _timeProvider)
                 .Where(news => CheckDates(startDate, endDate, news))
-                .GetTheCategories(out categories)
                 .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
                 .OrderByDescending(o => o.SunriseDate)
                 .ToList();
@@ -99,8 +116,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)
         {
-            var newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(ReferenceLevelLimit).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var newsEntries = await _client.GetEntriesAsync(newsBuilder);
+            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
 
             if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
             var newsArticles = newsEntries
@@ -125,9 +141,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<string>> GetCategories()
         {
-            var eventType = await _client.GetContentTypeAsync("news");
-            var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
-            return validation?.RequiredValues;
+            return await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories);
         }
     }
 }

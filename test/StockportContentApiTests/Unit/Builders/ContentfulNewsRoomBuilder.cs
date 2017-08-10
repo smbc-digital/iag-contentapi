@@ -9,9 +9,9 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulNewsRoomBuilder
     {
         private string _title = "title";
-        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
-                    "severity", new DateTime(2016, 08, 05, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(2016, 08, 11, 0, 0, 0, DateTimeKind.Utc)) };
+        private List<Alert> _alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
+                    "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)) };
 
         private bool _emailAlerts = true;
         private string _emailAlertsTopicId = "test-id";
