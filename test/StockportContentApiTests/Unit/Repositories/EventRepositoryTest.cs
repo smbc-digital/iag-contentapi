@@ -224,52 +224,52 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.EventFrequency));
         }
 
-        [Fact]
-        public void ShouldGetAllEventsIfTheirGroupIsNotAchieved()
-        {
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 09, 08)).Build();
-            var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
-            var archivedGroupEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
-            archivedGroupEvent.Group.DateHiddenFrom = DateTime.Now.AddDays(-2);
-            archivedGroupEvent.Group.DateHiddenTo = DateTime.Now.AddDays(2);
-            var events = new List<ContentfulEvent> { anEvent, anotherEvent, archivedGroupEvent };
+        //[Fact]
+        //public void ShouldGetAllEventsIfTheirGroupIsNotAchieved()
+        //{
+        //    _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+        //    var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 09, 08)).Build();
+        //    var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
+        //    var archivedGroupEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
+        //    archivedGroupEvent.Group.DateHiddenFrom = DateTime.Now.AddDays(-2);
+        //    archivedGroupEvent.Group.DateHiddenTo = DateTime.Now.AddDays(2);
+        //    var events = new List<ContentfulEvent> { anEvent, anotherEvent, archivedGroupEvent };
 
-            var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
+        //    var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+        //    _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
+        //    var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var eventCalender = response.Get<EventCalender>();
-            eventCalender.Events.Count.Should().Be(2);
-            eventCalender.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o
-                    .Excluding(e => e.ThumbnailImageUrl)
-                    .Excluding(e => e.ImageUrl)
-                    .Excluding(e => e.Documents)
-                    .Excluding(e => e.UpdatedAt)
-                    .Excluding(e => e.Coord)
-                    .Excluding(e => e.Group)
-                    .Excluding(e => e.EventCategories)
-                    .Excluding(e => e.Alerts)
-                    .Excluding(e => e.Breadcrumbs)
-                    .Excluding(e => e.EventFrequency));
+        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+        //    var eventCalender = response.Get<EventCalender>();
+        //    eventCalender.Events.Count.Should().Be(2);
+        //    eventCalender.Events.First()
+        //        .ShouldBeEquivalentTo(anEvent,
+        //            o => o
+        //            .Excluding(e => e.ThumbnailImageUrl)
+        //            .Excluding(e => e.ImageUrl)
+        //            .Excluding(e => e.Documents)
+        //            .Excluding(e => e.UpdatedAt)
+        //            .Excluding(e => e.Coord)
+        //            .Excluding(e => e.Group)
+        //            .Excluding(e => e.EventCategories)
+        //            .Excluding(e => e.Alerts)
+        //            .Excluding(e => e.Breadcrumbs)
+        //            .Excluding(e => e.EventFrequency));
 
-            eventCalender.Events.Last()
-                .ShouldBeEquivalentTo(anotherEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl)
-                    .Excluding(e => e.ImageUrl)
-                    .Excluding(e => e.Documents)
-                    .Excluding(e => e.UpdatedAt)
-                    .Excluding(e => e.Coord)
-                    .Excluding(e => e.Group)
-                    .Excluding(e => e.EventCategories)
-                    .Excluding(e => e.Alerts)
-                    .Excluding(e => e.Breadcrumbs)
-                    .Excluding(e => e.EventFrequency));
-        }
+        //    eventCalender.Events.Last()
+        //        .ShouldBeEquivalentTo(anotherEvent,
+        //            o => o.Excluding(e => e.ThumbnailImageUrl)
+        //            .Excluding(e => e.ImageUrl)
+        //            .Excluding(e => e.Documents)
+        //            .Excluding(e => e.UpdatedAt)
+        //            .Excluding(e => e.Coord)
+        //            .Excluding(e => e.Group)
+        //            .Excluding(e => e.EventCategories)
+        //            .Excluding(e => e.Alerts)
+        //            .Excluding(e => e.Breadcrumbs)
+        //            .Excluding(e => e.EventFrequency));
+        //}
 
         [Fact]
         public void ShouldGet404IfContentNotFound()
