@@ -6,21 +6,21 @@ namespace StockportContentApi.Model
 {
     public class Group
     {
-        public string Name { get; }
-        public string Slug { get; }
-        public string PhoneNumber { get; }
-        public string Email { get; }
-        public string Website { get; }
-        public string Twitter { get; }
-        public string Facebook { get; }
-        public string Address { get; }
-        public string Description { get; }
-        public string ImageUrl { get; }
-        public string ThumbnailImageUrl { get; }
-        public List<GroupCategory> CategoriesReference { get; }
-        public List<Crumb> Breadcrumbs { get; }
-        public MapPosition MapPosition { get; }
-        public bool Volunteering { get; }
+        public string Name { get; set; }
+        public string Slug { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string Website { get; set; }
+        public string Twitter { get; set; }
+        public string Facebook { get; set; }
+        public string Address { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        public string ThumbnailImageUrl { get; set; }
+        public List<GroupCategory> CategoriesReference { get; set; }
+        public List<Crumb> Breadcrumbs { get; set; }
+        public MapPosition MapPosition { get; set; }
+        public bool Volunteering { get; set; }
         public List<Event> Events { get; private set; }
         public GroupAdministrators GroupAdministrators { get; set; }
         public DateTime? DateHiddenFrom { get; set; }
