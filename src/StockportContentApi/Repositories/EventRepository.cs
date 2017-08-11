@@ -55,6 +55,13 @@ namespace StockportContentApi.Repositories
                 : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry)));
         }
 
+        public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
+        {
+            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var groupEvents = events.Where(e => e.Group.Slug == groupSlug);
+            return groupEvents;
+        }
+
         private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
         {
             var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);

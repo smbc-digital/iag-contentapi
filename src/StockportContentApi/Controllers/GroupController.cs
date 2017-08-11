@@ -14,10 +14,10 @@ namespace StockportContentApi.Controllers
 {
     public class GroupController
     {
-
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, GroupRepository> _groupRepository;
+        private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
         private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
         private readonly IMapper _mapper;
@@ -25,6 +25,7 @@ namespace StockportContentApi.Controllers
         public GroupController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, GroupRepository> groupRepository,
+            Func<ContentfulConfig, EventRepository> eventRepository,
             Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
             Func<ContentfulConfig, ManagementRepository> managementRepository,
             IMapper mapper
@@ -33,6 +34,7 @@ namespace StockportContentApi.Controllers
             _handler = handler;
             _createConfig = createConfig;
             _groupRepository = groupRepository;
+            _eventRepository = eventRepository;
             _groupCategoryRepository = groupCategoryRepository;
             _managementRepository = managementRepository;
             _mapper = mapper;
@@ -119,11 +121,24 @@ namespace StockportContentApi.Controllers
         public async Task<IActionResult> DeleteGroup(string slug, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
+            var eventRepository = _eventRepository(_createConfig(businessId));
             var existingGroup = await repository.GetContentfulGroup(slug);
+            var groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
 
             return await _handler.Get(async () =>
             {
                 var managementRepository = _managementRepository(_createConfig(businessId));
+
+                foreach (var groupEvent in groupEvents)
+                {
+                    var eventVersion = await managementRepository.GetVersion(groupEvent.Sys.Id);
+                    groupEvent.Sys.Version = eventVersion;
+                    var result = await managementRepository.Delete(groupEvent.Sys);
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK) {
+                        return result;
+                    }
+                }
+
                 var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 return await managementRepository.Delete(existingGroup.Sys);

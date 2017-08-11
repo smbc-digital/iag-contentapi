@@ -779,6 +779,28 @@ namespace StockportContentApiTests.Unit.Repositories
             processedEvents[0].Slug.Should().Be("slug-1");
         }
 
+        [Theory]
+        [InlineData("zumba-fitness", 2)]
+        [InlineData("zumba", 1)]
+        [InlineData("no-groups", 0)]
+        public void GetAllEventsForAGroup_ShouldReturnListOfEventsForAGroup(string slug, int count)
+        {
+            // Arrange
+            var anEvent = new ContentfulEventBuilder().Slug("slug-1").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anEvent.Group.Slug = "zumba";
+            var anotherEvent = new ContentfulEventBuilder().Slug("slug-2").Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+            anotherEvent.Group.Slug = "zumba-fitness";
+            var aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
+            aThirdEvent.Group.Slug = "zumba-fitness";
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, aThirdEvent };
+
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
+
+            var processedEvents = AsyncTestHelper.Resolve(_repository.GetAllEventsForAGroup(slug));
+
+            processedEvents.ToList().Count.Should().Be(count);
+        }
+
         //[Fact]
         //public void ShouldCallContentfulIfCacheIsEmpty()
         //{
