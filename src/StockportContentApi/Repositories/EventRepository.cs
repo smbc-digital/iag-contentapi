@@ -225,7 +225,8 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
             var entries = await GetAllEntriesAsync(_client, builder);
-            return entries.ToList();
+            var publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
+            return publishedEvents.ToList();
         }
 
         public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
