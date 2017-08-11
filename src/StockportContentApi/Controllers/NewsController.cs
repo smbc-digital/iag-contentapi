@@ -59,5 +59,15 @@ namespace StockportContentApi.Controllers
         }
 
 
+        [HttpGet]
+        [Route("api/{businessId}/clearcache/{cacheKey}")]
+        public async Task<IActionResult> cacheKey(string businessId, string cacheKey)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _newsRepository(_createConfig(businessId));
+                return repository.ClearCache(cacheKey);
+            });
+        }
     }
 }
