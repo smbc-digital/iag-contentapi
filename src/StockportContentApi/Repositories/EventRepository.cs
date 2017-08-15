@@ -226,6 +226,7 @@ namespace StockportContentApi.Repositories
             {
                 if (!result.Any(i => i.Slug == item.Slug))
                 {
+
                     result.Add(item);
                 }
             }
@@ -233,7 +234,7 @@ namespace StockportContentApi.Repositories
             return result;
         }
 
-        private async Task<IList<ContentfulEvent>> GetAllEvents()
+        public async Task<IList<ContentfulEvent>> GetAllEvents()
         {
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
             var entries = await GetAllEntriesAsync(_client, builder);

@@ -222,7 +222,42 @@ namespace StockportContentApiTests.Unit.Repositories
                     .Excluding(e => e.Alerts)
                     .Excluding(e => e.Breadcrumbs)
                     .Excluding(e => e.EventFrequency));
-        }        
+        }
+
+        [Fact]
+        public void ShouldGetEventsIfContainingGroupIsNotArchived()
+        {
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 08));
+            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 09, 08)).Build();
+            var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
+            var archivedvents = new ContentfulEventBuilder().EventDate(new DateTime(2016, 10, 08)).Build();
+            archivedvents.Group.DateHiddenFrom = DateTime.Now.AddDays(-2);
+            archivedvents.Group.DateHiddenTo = DateTime.Now.AddDays(2);
+            var events = new List<ContentfulEvent> { anEvent, anotherEvent, archivedvents };
+
+            var newsListCollection = new ContentfulCollection<ContentfulEvent>();
+            newsListCollection.Items = new List<ContentfulEvent>
+            {
+                anEvent,
+                anotherEvent,
+                archivedvents
+            };
+
+            var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+
+           _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
+                It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Build())),
+                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);           
+
+            var contentfulEvents = AsyncTestHelper.Resolve(_repository.GetAllEvents());
+
+            contentfulEvents.Count.Should().Be(2);
+            contentfulEvents.First()
+                .ShouldBeEquivalentTo(anEvent);
+
+            contentfulEvents.Last()
+                .ShouldBeEquivalentTo(anotherEvent);
+        }
 
         [Fact]
         public void ShouldGet404IfContentNotFound()
