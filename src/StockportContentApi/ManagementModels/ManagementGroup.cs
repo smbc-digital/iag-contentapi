@@ -22,5 +22,9 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, GroupAdministrators> GroupAdministrators { get; set; }
         public Dictionary<string, string> DateHiddenFrom { get; set; }
         public Dictionary<string, string> DateHiddenTo { get; set; }
+        public Dictionary<string, List<string>> Cost { get; set; }
+        public Dictionary<string, string> CostText { get; set; }
+        public Dictionary<string, string> AbilityLevel { get; set; }
+        public ManagementSystemProperties Sys { get; set; }
     }
 }

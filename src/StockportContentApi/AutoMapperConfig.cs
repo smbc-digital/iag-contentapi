@@ -19,6 +19,13 @@ namespace StockportContentApi
                 .ForMember(dest => dest.Image,
                     opts => opts.Ignore());
 
+            CreateMap<EventCategory, ContentfulEventCategory>();
+
+            CreateMap<Event, ContentfulEvent>()
+                .ForMember(dest => dest.Frequency, opts => opts.MapFrom(src => src.EventFrequency))
+                .ForMember(dest => dest.Image, opts => opts.Ignore())
+                .ForMember(dest => dest.Documents, opts => opts.Ignore());
+
             CreateMap<SystemProperties, ManagementSystemProperties>()
                 .ForMember(dest => dest.Id,
                     opts => opts.MapFrom(src => src.Id))
@@ -35,7 +42,15 @@ namespace StockportContentApi
                 .ForMember(dest => dest.Type,
                     opts => opts.Ignore());
 
+            CreateMap<ContentfulAlert, ManagementAlert>()
+                .ForMember(dest => dest.Sys,
+                    opts => opts.Ignore());
+
             CreateMap<ContentfulGroupCategory, ManagementGroupCategory>()
+                .ForMember(d => d.Sys,
+                    opts => opts.MapFrom(src => src.Sys));
+
+            CreateMap<ContentfulEventCategory, ManagementEventCategory>()
                 .ForMember(d => d.Sys,
                     opts => opts.MapFrom(src => src.Sys));
 
@@ -43,8 +58,14 @@ namespace StockportContentApi
                 .ForMember(dest => dest.Sys,
                     opts => opts.Ignore());
 
+            CreateMap<Asset, LinkReference>()
+                .ForMember(dest => dest.Sys, opts => opts.MapFrom(src => new ManagementAsset() { Id = src.SystemProperties.Id }));
+
             CreateMap<ContentfulGroup, ManagementGroup>()
                 .ConvertUsing<GroupConverter>();
+
+            CreateMap<ContentfulEvent, ManagementEvent>()
+                .ConvertUsing<EventConverter>();
         }
     }
 
@@ -52,6 +73,10 @@ namespace StockportContentApi
     {
         public ManagementGroup Convert(ContentfulGroup source, ManagementGroup destination, ResolutionContext context)
         {
+            if (destination == null)
+            {
+                destination = new ManagementGroup();
+            }
 
             destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
             destination.Address = new Dictionary<string, string> { { "en-GB", source.Address } };
@@ -67,7 +92,16 @@ namespace StockportContentApi
             destination.Volunteering = new Dictionary<string, bool> { { "en-GB", source.Volunteering } };
             destination.Website = new Dictionary<string, string> { { "en-GB", source.Website } };
             destination.DateHiddenFrom = new Dictionary<string, string> { { "en-GB", source.DateHiddenFrom != null ? source.DateHiddenFrom.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
-            destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB",source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
+            destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB", source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
+            destination.Cost = new Dictionary<string, List<string>>()
+            {
+                {
+                    "en-GB",
+                    source.Cost.Select(o => o).ToList()
+                }
+            };
+            destination.CostText = new Dictionary<string, string> { { "en-GB", source.CostText } };
+            destination.AbilityLevel = new Dictionary<string, string> { { "en-GB", source.AbilityLevel } };
 
             destination.CategoriesReference = new Dictionary<string, List<ManagementGroupCategory>>()
             {
@@ -79,6 +113,49 @@ namespace StockportContentApi
 
             return destination;
 
+        }
+    }
+
+    public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
+    {
+        public ManagementEvent Convert(ContentfulEvent source, ManagementEvent destination, ResolutionContext context)
+        {
+
+            destination.Alerts = new Dictionary<string, List<ManagementAlert>> { { "en-GB", source.Alerts.Select(o => context.Mapper.Map<ContentfulAlert, ManagementAlert>(o)).ToList() } };
+            destination.BookingInformation = new Dictionary<string, string> { { "en-GB", source.BookingInformation } };
+            destination.Categories = new Dictionary<string, List<string>> { { "en-GB", source.Categories } };
+            destination.Description = new Dictionary<string, string> { { "en-GB", source.Description } };
+            destination.Documents = new Dictionary<string, List<LinkReference>> { { "en-GB", source.Documents.Select(o => context.Mapper.Map<Asset, LinkReference>(o)).ToList() } };
+            destination.EndTime = new Dictionary<string, string> { { "en-GB", source.EndTime } };
+            destination.EventCategories = new Dictionary<string, List<ManagementEventCategory>>()
+            {
+                {
+                    "en-GB",
+                    source.EventCategories.Select(o => context.Mapper.Map<ContentfulEventCategory, ManagementEventCategory>(o)).ToList()
+                }
+            };
+            destination.EventDate = new Dictionary<string, DateTime> { { "en-GB", source.EventDate } };
+            destination.Featured = new Dictionary<string, bool> { { "en-GB", source.Featured } };
+            destination.Fee = new Dictionary<string, string> { { "en-GB", source.Fee } };
+            destination.Free = new Dictionary<string, bool?> { { "en-GB", source.Free } };
+            if (source.Frequency != EventFrequency.None)
+            {
+                destination.Frequency = new Dictionary<string, EventFrequency> { { "en-GB", source.Frequency } };
+                destination.Occurences = new Dictionary<string, int> { { "en-GB", source.Occurences } };
+            }
+            destination.Group = new Dictionary<string, ManagementGroup> { { "en-GB", new ManagementGroup { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Group.Sys) } } };
+            destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id) ? null : new Dictionary<string, LinkReference> { { "en-GB", new LinkReference() { Sys = new ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
+            destination.Location = new Dictionary<string, string> { { "en-GB", source.Location } };
+            destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
+            destination.Paid = new Dictionary<string, bool?> { { "en-GB", source.Paid } };
+            destination.Slug = new Dictionary<string, string>(){{"en-GB",source.Slug } };
+            destination.StartTime = new Dictionary<string, string> { { "en-GB", source.StartTime } };
+            destination.SubmittedBy = new Dictionary<string, string> { { "en-GB", source.SubmittedBy } };
+            destination.Tags = new Dictionary<string, List<string>> { { "en-GB", source.Tags } };
+            destination.Teaser = new Dictionary<string, string> { { "en-GB", source.Teaser } };
+            destination.Title = new Dictionary<string, string> { { "en-GB", source.Title } };
+
+            return destination;
         }
     }
 }

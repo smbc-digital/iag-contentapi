@@ -19,7 +19,7 @@ namespace StockportContentApi.Model
         public string StartTime { get; }
         public string EndTime { get; }
         public int Occurences { get; }
-        public EventFrequency EventFrequency { get; }
+        public EventFrequency EventFrequency { get; set; }
         public List<Crumb> Breadcrumbs { get; }
         public List<Document> Documents { get; }
         public List<string> Categories { get; }
@@ -57,7 +57,7 @@ namespace StockportContentApi.Model
             ThumbnailImageUrl = thumbnailImageUrl;
             ImageUrl = imageUrl;
             Documents = documents;
-            Categories = categories.Select(s => s.ToLower()).ToList();
+            Categories = categories.Select(s => s).ToList();
             MapPosition = mapPosition;
             BookingInformation = bookingInformation;
             Featured = featured;

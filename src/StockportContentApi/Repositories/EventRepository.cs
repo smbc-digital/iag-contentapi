@@ -14,6 +14,7 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using GeoCoordinatePortable;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.Repositories
 {
@@ -28,7 +29,7 @@ namespace StockportContentApi.Repositories
         private ITimeProvider _timeProvider;
 
         public EventRepository(ContentfulConfig config,
-            IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider, 
+            IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider,
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
             IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
             ICache cache,
@@ -49,7 +50,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
             var entries = await _client.GetEntriesAsync(builder);
             var entry = entries.ToList().First();
-            
+
             return entry == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
                 : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry)));
@@ -87,6 +88,17 @@ namespace StockportContentApi.Repositories
             }
 
             return homepage;
+        }
+
+        public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories()
+        {
+            return await _cache.GetFromCacheOrDirectlyAsync("contentful-event-categories", GetContentfulEventCategoriesDirect);
+        }
+
+        private async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategoriesDirect()
+        {
+            var eventCategoryBuilder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory").Include(1);
+            return await _client.GetEntriesAsync(eventCategoryBuilder);
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
@@ -166,7 +178,7 @@ namespace StockportContentApi.Repositories
             }
 
             if (limit > 0) events = events.Take(limit).ToList();
-           
+
             var eventCategories = await GetCategories();
 
             var eventCalender = new EventCalender();
@@ -179,7 +191,7 @@ namespace StockportContentApi.Repositories
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
 
-            var events = 
+            var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()))
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
@@ -264,11 +276,13 @@ namespace StockportContentApi.Repositories
             return GetNextOccurenceOfEvents(events);
         }
 
+        [Obsolete]
         public async Task<List<string>> GetCategories()
         {
             return await _cache.GetFromCacheOrDirectlyAsync("event-categories", GetCategoriesDirect);
         }
 
+        [Obsolete]
         private async Task<List<string>> GetCategoriesDirect()
         {
             var eventType = await _client.GetContentTypeAsync("events");
