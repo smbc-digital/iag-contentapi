@@ -75,10 +75,5 @@ namespace StockportContentApi.Model
         {
             return false;
         }
-
-        public bool ShouldSerializeOccurences()
-        {
-            return false;
-        }
     }
 }
