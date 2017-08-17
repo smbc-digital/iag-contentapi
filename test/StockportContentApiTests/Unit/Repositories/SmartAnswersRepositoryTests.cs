@@ -76,7 +76,9 @@ namespace StockportContentApiTests.Unit.Repositories
             //Setup
             var slug = "smartAnswers";
 
-            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>())).ReturnsAsync(null);
+            ContentfulSmartAnswers cs = null;
+
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>())).ReturnsAsync(cs);
 
             //
             var response = _repository.Get(slug);
