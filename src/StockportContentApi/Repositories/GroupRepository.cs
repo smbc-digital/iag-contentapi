@@ -89,13 +89,19 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(group);
         }
 
-        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs)
         {
             var groupResults = new GroupResults();
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
+
+            if (!string.IsNullOrEmpty(slugs))
+            {
+                var slugsList = slugs.Split(',');
+                builder = builder.FieldIncludes("fields.slug", slugsList);
+            }
 
             var entries = await GetAllEntriesAsync(_client, builder);
 
