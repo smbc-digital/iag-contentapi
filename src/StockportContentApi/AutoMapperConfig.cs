@@ -143,7 +143,7 @@ namespace StockportContentApi
                 destination.Frequency = new Dictionary<string, EventFrequency> { { "en-GB", source.Frequency } };
                 destination.Occurences = new Dictionary<string, int> { { "en-GB", source.Occurences } };
             }
-            destination.Group = new Dictionary<string, ManagementGroup> { { "en-GB", new ManagementGroup { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Group.Sys) } } };
+            destination.Group = new Dictionary<string, ManagementReference> { { "en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Group.Sys) } } };
             destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id) ? null : new Dictionary<string, LinkReference> { { "en-GB", new LinkReference() { Sys = new ManagementAsset() { Id = source.Image.SystemProperties.Id } } } };
             destination.Location = new Dictionary<string, string> { { "en-GB", source.Location } };
             destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };

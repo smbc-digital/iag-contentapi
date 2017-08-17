@@ -30,7 +30,7 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, bool> Featured { get; set; }
         public Dictionary<string, List<string>> Tags { get; set; }
         public Dictionary<string, List<ManagementAlert>> Alerts { get; set; }
-        public Dictionary<string, ManagementGroup> Group { get; set; }
+        public Dictionary<string, ManagementReference> Group { get; set; }
         public Dictionary<string, List<ManagementEventCategory>> EventCategories { get; set; }
         public Dictionary<string, bool?> Free { get; set; }
         public Dictionary<string, bool?> Paid { get; set; }
