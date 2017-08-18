@@ -97,7 +97,7 @@ namespace StockportContentApi
             {
                 {
                     "en-GB",
-                    source.Cost.Select(o => o).ToList()
+                    source.Cost?.Select(o => o).ToList()
                 }
             };
             destination.CostText = new Dictionary<string, string> { { "en-GB", source.CostText } };
