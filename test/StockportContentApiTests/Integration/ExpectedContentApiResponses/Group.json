@@ -96,7 +96,8 @@
         "status": "Published",
         "cost": "",
         "costText": "",
-        "abilityLevel": ""
+        "abilityLevel": "",
+        "volunteeringText": null
       },
       "alerts": [
         {
@@ -195,7 +196,8 @@
         "status": "Published",
         "cost": "",
         "costText": "",
-        "abilityLevel": ""
+        "abilityLevel": "",
+        "volunteeringText": null
       },
       "alerts": [
         {
@@ -228,5 +230,6 @@
   "status": "Published",
   "cost": "",
   "costText": "",
-  "abilityLevel": ""
+  "abilityLevel": "",
+  "volunteeringText": null
 }

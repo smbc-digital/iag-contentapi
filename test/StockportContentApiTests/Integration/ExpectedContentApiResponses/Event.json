@@ -70,7 +70,8 @@
     "status": "Published",
     "cost": "",
     "costText": "",
-    "abilityLevel": ""
+    "abilityLevel": "",
+    "volunteeringText": null
   },
   "alerts": [
     {

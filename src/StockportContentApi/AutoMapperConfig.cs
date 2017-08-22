@@ -111,6 +111,8 @@ namespace StockportContentApi
                 }
             };
 
+            destination.VolunteeringText = new Dictionary<string, string> { { "en-GB", source.VolunteeringText } };
+
             return destination;
 
         }

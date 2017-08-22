@@ -25,5 +25,6 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, List<string>> Cost { get; set; }
         public Dictionary<string, string> CostText { get; set; }
         public Dictionary<string, string> AbilityLevel { get; set; }
+        public Dictionary<string, string> VolunteeringText { get; set; }
     }
 }
