@@ -29,6 +29,7 @@ namespace StockportContentApi.Model
         public string Cost { get; set; }
         public string CostText { get; set; }
         public string AbilityLevel { get; set; }
+        public string VolunteeringText { get; set; }
 
         public Group() { }
 
@@ -36,7 +37,7 @@ namespace StockportContentApi.Model
             string twitter, string facebook, string address, string description, string imageUrl,
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
-            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel)
+            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel, string volunteeringText)
         {
             Name = name;
             Slug = slug;
@@ -60,6 +61,7 @@ namespace StockportContentApi.Model
             Cost = cost;
             CostText = costText;
             AbilityLevel = abilityLevel;
+            VolunteeringText = volunteeringText;
         }
 
         public void SetEvents(List<Event> events)

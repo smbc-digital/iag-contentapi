@@ -40,7 +40,7 @@ namespace StockportContentApi.ContentfulFactories
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, new List<Crumb> { new Crumb("Find a local group", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
-                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel);  
+                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText);  
         }
     }
 }
