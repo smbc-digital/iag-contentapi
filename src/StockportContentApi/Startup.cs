@@ -54,7 +54,6 @@ namespace StockportContentApi
             services.AddContentfulFactories();
             services.AddCache(_useRedisSession);
             services.AddRepositories();
-            services.AddSwaggerGen(c => { c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" }); });
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
             services.AddAutoMapper();
@@ -62,8 +61,6 @@ namespace StockportContentApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
         {
-            app.UseSwagger();
-            app.UseSwaggerUi();
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();
