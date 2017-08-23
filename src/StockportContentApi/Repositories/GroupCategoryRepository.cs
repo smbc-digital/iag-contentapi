@@ -30,7 +30,9 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
 
-            var groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).OrderBy(c => c.Name).ToList();
+            var groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();
+
+            groupCategories = groupCategories.OrderBy(c => c.Name).ToList();
 
             return HttpResponse.Successful(groupCategories);
         }
