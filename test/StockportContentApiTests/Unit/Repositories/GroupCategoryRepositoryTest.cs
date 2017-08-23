@@ -53,13 +53,16 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "unit-test-GroupCategory";
 
-            var rawGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
+            var rawGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Name("name").Build();
             var collection = new ContentfulCollection<ContentfulGroupCategory>();
             collection.Items = new List<ContentfulGroupCategory> { rawGroupCategory };
 
             var builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
+
+            _contentfulGroupCategoryFactory.Setup(_ => _.ToModel(rawGroupCategory))
+                .Returns(new GroupCategory("name", "slug", "icon", "imageUrl"));
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetGroupCategories());

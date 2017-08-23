@@ -54,15 +54,8 @@ namespace StockportContentApiTests.Unit.Repositories
         public void ItGetsEventCategories()
         {
             // Arrange
-            const string slug = "unit-test-EventCategory";
-
-            var rawEventCategory = new ContentfulEventCategoryBuilder().Slug(slug).Build();
-            var collection = new ContentfulCollection<ContentfulEventCategory>();
-            collection.Items = new List<ContentfulEventCategory> { rawEventCategory };
-
-            var builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulEventCategory>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
+            var rawEventCategory = new EventCategory("name", "slug", "icon");
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>())).ReturnsAsync(new List<EventCategory> { rawEventCategory });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetEventCategories());
