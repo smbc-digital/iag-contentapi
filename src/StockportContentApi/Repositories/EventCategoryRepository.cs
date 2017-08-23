@@ -35,6 +35,7 @@ namespace StockportContentApi.Repositories
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
             }
 
+            categories = categories.OrderBy(c => c.Name).ToList();
             return HttpResponse.Successful(categories);
         }
 

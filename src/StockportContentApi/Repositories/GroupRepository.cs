@@ -169,7 +169,7 @@ namespace StockportContentApi.Repositories
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
             var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
-            return _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).ToList();
+            return _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).OrderBy(c => c.Name).ToList();
         }
 
         private async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategoriesDirect()
