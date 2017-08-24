@@ -6,7 +6,7 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class PaymentController
+    public class PaymentController : Controller
     {
         
         private readonly ResponseHandler _handler;

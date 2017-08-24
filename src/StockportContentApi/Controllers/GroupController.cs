@@ -12,7 +12,7 @@ using StockportContentApi.ManagementModels;
 
 namespace StockportContentApi.Controllers
 {
-    public class GroupController
+    public class GroupController : Controller
     {
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;

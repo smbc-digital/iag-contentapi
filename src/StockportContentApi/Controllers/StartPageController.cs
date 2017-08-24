@@ -6,7 +6,7 @@ using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
-    public class StartPageController
+    public class StartPageController : Controller
     {
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;

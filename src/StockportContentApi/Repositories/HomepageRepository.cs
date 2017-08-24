@@ -30,7 +30,7 @@ namespace StockportContentApi.Repositories
             var entry = entries.FirstOrDefault();
 
             return entry == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No homepage found")
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No homepage found")
                 : HttpResponse.Successful(_homepageFactory.ToModel(entry));
         }
     }

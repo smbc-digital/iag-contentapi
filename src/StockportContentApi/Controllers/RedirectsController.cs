@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace StockportContentApi.Controllers
 {
-    public class RedirectsController
+    public class RedirectsController : Controller
     {     
         private readonly ResponseHandler _handler;
         private readonly RedirectsRepository _repository;

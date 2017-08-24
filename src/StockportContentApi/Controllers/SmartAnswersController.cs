@@ -7,7 +7,7 @@ using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
-    public class SmartAnswersController
+    public class SmartAnswersController : Controller
     {
         private ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;

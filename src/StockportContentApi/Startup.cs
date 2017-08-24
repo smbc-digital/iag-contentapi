@@ -8,9 +8,9 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
-using Swashbuckle.Swagger.Model;
 using Microsoft.Extensions.Caching.Distributed;
 using StockportContentApi.Extensions;
+using StockportContentApi.Middleware;
 
 namespace StockportContentApi
 {
@@ -44,6 +44,7 @@ namespace StockportContentApi
             services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
+            services.AddSingleton<IConfiguration>(Configuration);
 
             // add service extensions
             services.AddRedis(Configuration, _useRedisSession);
@@ -59,8 +60,10 @@ namespace StockportContentApi
             services.AddAutoMapper();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
         {
+            app.UseMiddleware<AuthenticationMiddleware>();
+
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();

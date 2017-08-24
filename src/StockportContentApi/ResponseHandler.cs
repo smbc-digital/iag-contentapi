@@ -20,6 +20,7 @@ namespace StockportContentApi
         public async Task<IActionResult> Get(Func<Task<HttpResponse>> doGet)
         {
             HttpResponse response;
+
             try
             {
                 response = await doGet();

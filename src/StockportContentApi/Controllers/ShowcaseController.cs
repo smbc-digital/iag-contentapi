@@ -6,7 +6,7 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class ShowcaseController
+    public class ShowcaseController : Controller
     {
         
         private readonly ResponseHandler _handler;

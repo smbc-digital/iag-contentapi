@@ -6,7 +6,7 @@ using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
-    public class TopicController
+    public class TopicController : Controller
     {
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;

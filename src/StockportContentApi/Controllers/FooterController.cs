@@ -6,7 +6,7 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class FooterController
+    public class FooterController : Controller
     {
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;

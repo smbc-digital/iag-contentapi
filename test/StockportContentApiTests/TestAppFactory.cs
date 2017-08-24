@@ -14,9 +14,12 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Fakes;
 using StockportContentApi.ContentfulModels;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.PlatformAbstractions;
+using NLog.Extensions.Logging;
+using StockportContentApi.Middleware;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests
@@ -80,6 +83,17 @@ namespace StockportContentApiTests
                 var contentfulClientManager = new Mock<IContentfulClientManager>();
                 contentfulClientManager.Setup(o => o.GetClient(It.IsAny<ContentfulConfig>())).Returns(FakeContentfulClientFactory.Client.Object);
                 services.AddSingleton(contentfulClientManager.Object);                
+            }
+
+            // used for removing middleware authentication
+            public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
+            {
+                app.UseApplicationInsightsRequestTelemetry();
+                app.UseApplicationInsightsExceptionTelemetry();
+                app.UseStaticFiles();
+                app.UseMvc();
+
+                loggerFactory.AddNLog();
             }
 
             public LoggingHttpClient GetHttpClient(ILoggerFactory loggingFactory)

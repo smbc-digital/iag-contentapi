@@ -6,7 +6,7 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
-    public class ProfileController
+    public class ProfileController : Controller
     {
         
         private readonly ResponseHandler _handler;
