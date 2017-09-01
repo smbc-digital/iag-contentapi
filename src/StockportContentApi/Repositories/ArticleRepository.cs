@@ -10,6 +10,7 @@ using StockportContentApi.Client;
 using Contentful.Core.Search;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApi.Repositories
 {
@@ -21,6 +22,8 @@ namespace StockportContentApi.Repositories
         private readonly ICache _cache;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IVideoRepository _videoRepository;
+        private IConfiguration _configuration;
+        private readonly int _articleTimeout;
 
         public ArticleRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, 
@@ -28,7 +31,8 @@ namespace StockportContentApi.Repositories
             IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
             IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
             IVideoRepository videoRepository,
-            ICache cache)
+            ICache cache,
+            IConfiguration configuration)
         {
             _contentfulFactory = contentfulFactory;
             _dateComparer = new DateComparer(timeProvider);
@@ -36,6 +40,8 @@ namespace StockportContentApi.Repositories
             _videoRepository = videoRepository;
             _contentfulFactoryArticle = contentfulFactoryArticle;
             _cache = cache;
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:Articles"], out _articleTimeout);
         }
 
         public async Task<HttpResponse> Get()
@@ -53,7 +59,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
-            var entry = await _cache.GetFromCacheOrDirectlyAsync("article-" + articleSlug, () => GetArticleEntry(articleSlug));
+            var entry = await _cache.GetFromCacheOrDirectlyAsync("article-" + articleSlug, () => GetArticleEntry(articleSlug), _articleTimeout);
             
             var articleItem = entry == null
                             ? null

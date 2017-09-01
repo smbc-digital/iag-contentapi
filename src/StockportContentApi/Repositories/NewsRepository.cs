@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
+using Microsoft.Extensions.Configuration;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -24,9 +25,11 @@ namespace StockportContentApi.Repositories
         private readonly DateComparer _dateComparer;
         private readonly ICache _cache;
         private readonly Contentful.Core.IContentfulClient _client;
-        
+        private IConfiguration _configuration;
+        private readonly int _newsTimeout;
+
         public NewsRepository(ContentfulConfig config, ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
-            IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory, ICache cache)
+            IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory, ICache cache, IConfiguration configuration)
         {
             _timeProvider = timeProvider;
             _newsContentfulFactory = newsContentfulFactory;
@@ -34,13 +37,15 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
             _client = contentfulClientManager.GetClient(config);
             _cache = cache;
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:News"], out _newsTimeout);
         }
 
         private async Task<IList<ContentfulNews>> GetAllNews()
         {
             var builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1);
             var entries = await GetAllEntriesAsync(_client, builder);
-            return entries.ToList();
+            return !entries.Any() ? null : entries.ToList();
         }
 
         private async Task<ContentfulNewsRoom> GetNewsRoom()
@@ -59,7 +64,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNews(string slug)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
             var entry = entries.Where(e => e.Slug == slug).FirstOrDefault();
 
@@ -74,7 +79,7 @@ namespace StockportContentApi.Repositories
         {
             var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
 
-            var newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom);
+            var newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom, _newsTimeout);
 
             List<string> categories;
 
@@ -83,7 +88,7 @@ namespace StockportContentApi.Repositories
                 newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
             }
            
-            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
+            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
             var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => t == tag));
 
             if (!filteredEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
@@ -116,7 +121,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetNewsByLimit(int limit)
         {
-            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews);
+            var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
             if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
             var newsArticles = newsEntries
@@ -141,7 +146,8 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<string>> GetCategories()
         {
-            return await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories);
+            var result = await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
+            return result;
         }
 
         public async Task<HttpResponse> ClearCache(string cacheKey)

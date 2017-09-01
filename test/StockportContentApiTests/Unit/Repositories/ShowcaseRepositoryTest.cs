@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -39,6 +40,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
+        private readonly Mock<IConfiguration> _configuration;
 
         public ShowcaseRepositoryTest()
         {
@@ -80,7 +82,12 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper = new Mock<ICache>();
 
             var _logger = new Mock<ILogger<EventRepository>>();
-            var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object);
+            _configuration = new Mock<IConfiguration>();
+            _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
+
+            var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
+
+            
 
             _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object, eventRepository);
         }
@@ -106,7 +113,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
-            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetShowcases(slug));
@@ -137,7 +144,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
             var events = new List<ContentfulEvent> { rawEvent };
-            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(events);
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
             var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None, null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null, null, null, null);
             _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 

@@ -39,21 +39,30 @@ namespace StockportContentApi
         public virtual void ConfigureServices(IServiceCollection services)
         {
             // add other services
+            services.AddCache(_useRedisSession);
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
-            services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
+            services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
             services.AddSingleton<IConfiguration>(Configuration);
 
             // add service extensions
-            services.AddRedis(Configuration, _useRedisSession);
+
+            if (_appEnvironment == "local")
+            {
+                services.AddRedisLocal(Configuration, _useRedisSession);
+            }
+            else
+            {
+                services.AddRedis(Configuration, _useRedisSession);
+            }
+            
             services.AddRedirects(Configuration);
             services.AddContentfulConfig(Configuration);
             services.AddOptions();
             services.AddContentfulClients();
             services.AddContentfulFactories();
-            services.AddCache(_useRedisSession);
             services.AddRepositories();
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();

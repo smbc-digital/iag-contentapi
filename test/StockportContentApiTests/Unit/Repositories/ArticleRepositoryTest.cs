@@ -23,6 +23,7 @@ using IContentfulClient = Contentful.Core.IContentfulClient;
 using Contentful.Core.Search;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -39,6 +40,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
         private Mock<ICache> _cache;
+        private readonly Mock<IConfiguration> _configuration;
 
         public ArticleRepositoryTest()
         {
@@ -75,7 +77,9 @@ namespace StockportContentApiTests.Unit.Repositories
            var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object);
+            _configuration = new Mock<IConfiguration>();
+            _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
+            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
         }
         
         [Fact]
@@ -86,7 +90,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>())).ReturnsAsync(rawArticle);
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));           
            
@@ -164,7 +168,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>())).ReturnsAsync(rawArticle);
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
             HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
@@ -189,7 +193,7 @@ namespace StockportContentApiTests.Unit.Repositories
             }
         };
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).AlertsInline(alertsInline).Build();
-            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>())).ReturnsAsync(rawArticle);
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
@@ -211,7 +215,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulArticle>();
             var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
             collection.Items = new List<ContentfulArticle> { rawArticle };
-            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>())).ReturnsAsync(rawArticle);
+            _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
             _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
                 "title",
                 "section-with-inline-alerts",

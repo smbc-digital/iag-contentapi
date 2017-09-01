@@ -9,6 +9,8 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -18,17 +20,21 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _contentfulFactory;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly ICache _cache;
+        private IConfiguration _configuration;
+        private readonly int _eventsCategoryTimeout;
 
-        public EventCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory, IContentfulClientManager contentfulClientManager, ICache cache)
+        public EventCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory, IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
         {
             _contentfulFactory = contentfulFactory;
             _client = contentfulClientManager.GetClient(config);
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:Events"], out _eventsCategoryTimeout);
             _cache = cache;
         }
 
         public async Task<HttpResponse> GetEventCategories()
         {
-            var categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect);
+            var categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect, _eventsCategoryTimeout);
 
             if(categories != null && !categories.Any())
             {
@@ -48,7 +54,7 @@ namespace StockportContentApi.Repositories
 
             var eventCategories = entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
 
-            return eventCategories;
+            return !eventCategories.Any() ? null : eventCategories;
         }
     }
 }

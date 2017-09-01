@@ -57,26 +57,36 @@ namespace StockportContentApiTests
 
                 var cache = new Mock<ICache>();
 
+                cache.Setup(_ => _.GetKeys()).Returns(new List<RedisValueData>()
+                {
+                    new RedisValueData()
+                    {
+                        Expiry = "expiry",
+                        Key = "Key",
+                        NumberOfItems = 4
+                    }
+                });
+
                 var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
                                                 "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
                                                 "Fair","Emergency Services","Bonfire","Remembrence Service" };
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync("event-categories", It.IsAny<Func<Task<List<string>>>>())).ReturnsAsync(categories);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync("event-categories", It.IsAny<Func<Task<List<string>>>>(), It.IsAny<int>())).ReturnsAsync(categories);
 
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>())).ReturnsAsync(new List<GroupCategory> { new GroupCategory("name", "slug", "icon", "image-url.jpg") });
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>())).ReturnsAsync(new List<ContentfulEvent> {
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.IsAny<int>())).ReturnsAsync(new List<GroupCategory> { new GroupCategory("name", "slug", "icon", "image-url.jpg") });
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>())).ReturnsAsync(new List<ContentfulEvent> {
                                     new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(2016,10,5)).Build(),
                                     new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(2016,10,5)).Build()
                                 });
 
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>())).ReturnsAsync(new List<ContentfulNews> {
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.IsAny<int>())).ReturnsAsync(new List<ContentfulNews> {
                                     new ContentfulNewsBuilder().Slug("news_item").SunriseDate(new DateTime(2016, 6, 20)).SunsetDate(new DateTime(9999, 9, 9)).Document().Build()
                                 });
 
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>()))
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.IsAny<int>()))
                     .ReturnsAsync(new ContentfulNewsRoomBuilder().Build());
 
                 var newsCategories = new List<string> { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" };
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>())).ReturnsAsync(newsCategories);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>(), It.IsAny<int>())).ReturnsAsync(newsCategories);
 
                 services.AddSingleton(cache.Object);
 

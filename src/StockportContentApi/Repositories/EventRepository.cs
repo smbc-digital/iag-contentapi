@@ -15,6 +15,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using GeoCoordinatePortable;
 using Contentful.Core.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApi.Repositories
 {
@@ -27,14 +28,15 @@ namespace StockportContentApi.Repositories
         private readonly ICache _cache;
         private ILogger<EventRepository> _logger;
         private ITimeProvider _timeProvider;
+        private IConfiguration _configuration;
+        private readonly int _eventsTimeout;
 
         public EventRepository(ContentfulConfig config,
             IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider,
             IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
             IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
             ICache cache,
-            ILogger<EventRepository> logger
-            )
+            ILogger<EventRepository> logger, IConfiguration configuration)
         {
             _contentfulFactory = contentfulFactory;
             _contentfulEventHomepageFactory = contentfulEventHomepageFactory;
@@ -42,7 +44,10 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
             _cache = cache;
             _logger = logger;
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:Events"], out _eventsTimeout);
             _timeProvider = timeProvider;
+
         }
 
         public async Task<HttpResponse> GetEventHomepage()
@@ -58,14 +63,14 @@ namespace StockportContentApi.Repositories
 
         public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
         {
-            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
             var groupEvents = events.Where(e => e.Group.Slug == groupSlug);
             return groupEvents;
         }
 
         private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
         {
-            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
             var liveEvents = GetAllEventsAndTheirReccurrences(events)
                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                 .OrderBy(e => e.EventDate)
@@ -92,18 +97,19 @@ namespace StockportContentApi.Repositories
 
         public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories()
         {
-            return await _cache.GetFromCacheOrDirectlyAsync("contentful-event-categories", GetContentfulEventCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("contentful-event-categories", GetContentfulEventCategoriesDirect, _eventsTimeout);
         }
 
         private async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategoriesDirect()
         {
             var eventCategoryBuilder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory").Include(1);
-            return await _client.GetEntriesAsync(eventCategoryBuilder);
+            var result = await _client.GetEntriesAsync(eventCategoryBuilder);
+            return !result.Any() ? null : result;
         }
 
         public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             var events = GetAllEventsAndTheirReccurrences(entries);
 
@@ -131,7 +137,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit, bool? displayFeatured, string tag, string price, double latitude, double longitude)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
@@ -189,7 +195,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Event>> GetEventsByCategory(string category)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
@@ -205,7 +211,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Event>> GetEventsByTag(string tag)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
@@ -239,7 +245,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
             var entries = await GetAllEntriesAsync(_client, builder);
             var publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
-            return publishedEvents.ToList();
+            return !publishedEvents.Any() ? null : publishedEvents.ToList();
         }
 
         public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
@@ -264,7 +270,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Event>> GetLinkedEvents<T>(string slug)
         {
-            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents);
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             var events = GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => e.Group.Slug == slug)
@@ -280,7 +286,7 @@ namespace StockportContentApi.Repositories
         [Obsolete]
         public async Task<List<string>> GetCategories()
         {
-            return await _cache.GetFromCacheOrDirectlyAsync("event-categories", GetCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("event-categories", GetCategoriesDirect, _eventsTimeout);
         }
 
         [Obsolete]
@@ -288,7 +294,7 @@ namespace StockportContentApi.Repositories
         {
             var eventType = await _client.GetContentTypeAsync("events");
             var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
-            return validation.RequiredValues;
+            return !validation.RequiredValues.Any() ? null : validation.RequiredValues;
         }
 
         public async Task<ContentfulEvent> GetContentfulEvent(string slug)
