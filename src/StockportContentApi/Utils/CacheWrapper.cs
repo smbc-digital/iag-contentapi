@@ -51,11 +51,11 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
             {
                 result = fallbackMethod();
 
-                if (_useRedisCache && _memoryCache != null && result != null)
+                if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
                 {
                     Set(cacheKey, result, minutes);
                 }
@@ -73,12 +73,12 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
             {
                 _logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
                 result = await fallbackMethod();
 
-                if (_useRedisCache && _memoryCache != null && result != null)
+                if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
                 {
                     Set(cacheKey, result, minutes);
                 }
