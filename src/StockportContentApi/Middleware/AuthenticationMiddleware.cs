@@ -33,7 +33,15 @@ namespace StockportContentApi.Middleware
 
             var authenticationKey = context.Request.Headers["AuthenticationKey"];
 
-            if (string.IsNullOrEmpty(authenticationKey) || !key.Equals(authenticationKey))
+            if(string.IsNullOrEmpty(authenticationKey))
+            {
+                _logger.LogError("API Authentication Key is either missing or wrong");
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync("API Authentication Key is either missing or wrong");
+                return;
+            }
+
+            if (!key.Equals(authenticationKey))
             {
                 _logger.LogError("API Authentication Key is either missing or wrong");
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

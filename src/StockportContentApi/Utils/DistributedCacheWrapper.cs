@@ -32,7 +32,7 @@ namespace StockportContentApi.Utils
 
         public string GetString(string key)
         {
-            return db.StringGet(key);
+            return db.HashGet(key, "ContentApiData");
         }
 
         public void Remove(string key)
@@ -42,7 +42,7 @@ namespace StockportContentApi.Utils
 
         public void SetString(string key, string value, int minutes)
         {
-            db.StringAppend(key, value);
+            db.HashSet(key, "ContentApiData", value);
             db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
         }
 
