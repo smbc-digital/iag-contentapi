@@ -32,7 +32,7 @@ namespace StockportContentApi.Utils
 
         public string GetString(string key)
         {
-            return db.HashGet(key, "ContentApiData");
+            return db.StringGet(key);
         }
 
         public void Remove(string key)
@@ -42,7 +42,7 @@ namespace StockportContentApi.Utils
 
         public void SetString(string key, string value, int minutes)
         {
-            db.HashSet(key, "ContentApiData", value);
+            db.StringAppend(key, value);
             db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
         }
 
@@ -51,7 +51,7 @@ namespace StockportContentApi.Utils
             var keys = server.Keys();
 
             var redisValueData = new List<RedisValueData>();
-            keys.ToList().ForEach(k =>
+            keys.Where(k => db.KeyType(k) == RedisType.String).ToList().ForEach(k =>
             {
                 var valueWithExpiry = db.StringGetWithExpiry(k);
 
@@ -64,7 +64,7 @@ namespace StockportContentApi.Utils
 
                 var jsonData = JsonConvert.DeserializeObject(valueWithExpiry.Value.ToString()) as JArray;
 
-                if(jsonData != null) data.NumberOfItems = jsonData.Count;
+                if (jsonData != null) data.NumberOfItems = jsonData.Count;
 
                 redisValueData.Add(data);
             });
