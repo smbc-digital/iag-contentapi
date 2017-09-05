@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
@@ -18,36 +19,44 @@ namespace StockportContentApi.Utils
 
     public class DistributedCacheWrapper : IDistributedCacheWrapper
     {
-        private readonly ConnectionMultiplexer _cache;
-        private readonly IServer server;
-        private readonly IDatabase db;
+        private string _redisIP;
+        private readonly ILogger<IDistributedCacheWrapper> _logger;
 
-
-        public DistributedCacheWrapper(ConnectionMultiplexer cache)
+        public DistributedCacheWrapper(string redisIP, ILogger<IDistributedCacheWrapper> logger)
         {
-            _cache = cache;
-            server = _cache.GetServer(_cache.Configuration);
-            db = _cache.GetDatabase();
+            _redisIP = redisIP;
+            _logger = logger;
         }
 
         public string GetString(string key)
         {
+            var cache = GetRedisCache();
+            _logger.LogInformation($"Total Outstanding[GET]: {cache.GetCounters().TotalOutstanding}");
+            var db = cache.GetDatabase();
             return db.StringGet(key);
         }
 
         public void Remove(string key)
         {
+            var db = GetRedisCache().GetDatabase();
             db.KeyDelete(key);
         }
 
         public void SetString(string key, string value, int minutes)
         {
+            var cache = GetRedisCache();
+            _logger.LogInformation($"Total Outstanding[SET]: {cache.GetCounters().TotalOutstanding}");
+            var db = cache.GetDatabase();
             db.StringAppend(key, value);
             db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
         }
 
         public List<RedisValueData> GetKeys()
         {
+            var cache = GetRedisCache();
+            _logger.LogInformation($"Total Outstanding[KEYS]: {cache.GetCounters().TotalOutstanding}");
+            var db = cache.GetDatabase();
+            var server = cache.GetServer(cache.Configuration);
             var keys = server.Keys();
 
             var redisValueData = new List<RedisValueData>();
@@ -69,6 +78,12 @@ namespace StockportContentApi.Utils
                 redisValueData.Add(data);
             });
             return redisValueData;
+        }
+
+        private ConnectionMultiplexer GetRedisCache()
+        {
+            return ConnectionMultiplexer.Connect(_redisIP);
+
         }
     }
 }
