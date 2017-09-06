@@ -26,7 +26,7 @@ namespace StockportContentApi.Utils
         Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
         Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
         void RemoveItemFromCache(string cacheKey);
-        List<RedisValueData> GetKeys();
+        Task<List<RedisValueData>> GetKeys();
     }
 
     public class Cache : ICache
@@ -132,9 +132,9 @@ namespace StockportContentApi.Utils
             return output;
         }
 
-        public List<RedisValueData> GetKeys()
+        public async Task<List<RedisValueData>> GetKeys()
         {
-            return _memoryCache != null ? _memoryCache.GetKeys() : new List<RedisValueData>();
+            return _memoryCache != null ? await _memoryCache.GetKeys() : new List<RedisValueData>();
         }
     }
 }

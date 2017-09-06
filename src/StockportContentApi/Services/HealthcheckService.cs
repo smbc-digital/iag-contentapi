@@ -1,12 +1,13 @@
 ﻿using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace StockportContentApi.Services
 {
     public interface IHealthcheckService
     {
-        Healthcheck Get();
+        Task<Healthcheck> Get();
     }
 
     public class HealthcheckService : IHealthcheckService
@@ -37,9 +38,9 @@ namespace StockportContentApi.Services
             return defaultValue;
         }
 
-        public Healthcheck Get()
+        public async Task<Healthcheck> Get()
         {
-            var keys = _cacheWrapper.GetKeys();
+            var keys = await _cacheWrapper.GetKeys();
             return new Healthcheck(_appVersion, _sha, _environment, keys);
         }
     }

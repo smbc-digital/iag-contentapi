@@ -17,7 +17,7 @@ namespace StockportContentApi.Controllers
         [Route("/_healthcheck")]
         public async Task<IActionResult> Index(string articleSlug, string businessId)
         {
-            return await Task.Run( () =>Json(_healthcheckService.Get()));
+            return await Task.Run(async () =>Json(await _healthcheckService.Get()));
         }
     }
 }

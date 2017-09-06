@@ -15,7 +15,7 @@ namespace StockportContentApi.Utils
         void Remove(string key);
         void SetString(string key, string value, int minutes);
         Task<string> GetString(string key);
-        List<RedisValueData> GetKeys();
+        Task<List<RedisValueData>> GetKeys();
     }
 
     public class DistributedCacheWrapper : IDistributedCacheWrapper
@@ -37,6 +37,7 @@ namespace StockportContentApi.Utils
 
         public async Task<string> GetString(string key)
         {
+            _logger.LogInformation($"[GET] key: {key}");
             var db = GetLeastUsedConnection().GetDatabase();
             return await db.StringGetAsync(key);
         }
@@ -47,24 +48,41 @@ namespace StockportContentApi.Utils
             db.KeyDeleteAsync(key);
         }
         
-        public void SetString(string key, string value, int minutes)
+        public void Set(string key, string value, int minutes)
         {
+            _logger.LogInformation($"[SET] key: {key}");
             var db = GetLeastUsedConnection().GetDatabase();
-            db.StringSetAsync(key, value);
-            db.KeyExpireAsync(key, DateTime.Now.AddMinutes(minutes));
+            db.StringSet(key, value);
+            db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
         }
 
-        public List<RedisValueData> GetKeys()
+        public async Task<List<RedisValueData>> GetKeys()
         {
             var cache = GetLeastUsedConnection();
             var db = cache.GetDatabase();
             var server = cache.GetServer(_redisIp, 6379);
             var keys = server.Keys();
 
+            _logger.LogInformation($"[GETKEYS]Total Keys: {keys.Count()}");
+            _logger.LogInformation($"[GETKEYS]Cache Config: {cache.Configuration}");
+            _logger.LogInformation($"[GETKEYS]Redis ip: {_redisIp}");
+
+            var result = await GetRedisDataValueFromKey(keys, db);
+            return result;
+        }
+
+        private async Task<List<RedisValueData>> GetRedisDataValueFromKey(IEnumerable<RedisKey> keys, IDatabase db)
+        {
             var redisValueData = new List<RedisValueData>();
-            keys.Where(k => db.KeyTypeAsync(k).Result == RedisType.String).ToList().ForEach(async k =>
+
+            foreach (var k in keys)
             {
+                var keyType = await db.KeyTypeAsync(k);
+
+                if (keyType != RedisType.String) continue;
+
                 var valueWithExpiry = await db.StringGetWithExpiryAsync(k);
+                _logger.LogInformation($"[GETKEYS] Key: {k} | Expiry:  {valueWithExpiry.Expiry}");
 
                 var data = new RedisValueData
                 {
@@ -78,10 +96,10 @@ namespace StockportContentApi.Utils
                 if (jsonData != null) data.NumberOfItems = jsonData.Count;
 
                 redisValueData.Add(data);
-            });
+            }
+
             return redisValueData;
         }
-
         private ConnectionMultiplexer GetLeastUsedConnection()
         {
             var cache = _cachePool.OrderBy(c => c.GetCounters().TotalOutstanding).First();

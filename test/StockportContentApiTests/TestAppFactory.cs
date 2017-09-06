@@ -57,7 +57,7 @@ namespace StockportContentApiTests
 
                 var cache = new Mock<ICache>();
 
-                cache.Setup(_ => _.GetKeys()).Returns(new List<RedisValueData>()
+                cache.Setup(_ => _.GetKeys()).ReturnsAsync(new List<RedisValueData>()
                 {
                     new RedisValueData()
                     {
