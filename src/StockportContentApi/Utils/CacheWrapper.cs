@@ -134,7 +134,7 @@ namespace StockportContentApi.Utils
 
         public List<RedisValueData> GetKeys()
         {
-            return _memoryCache == null ? _memoryCache.GetKeys() : new List<RedisValueData>();
+            return _memoryCache != null ? _memoryCache.GetKeys() : new List<RedisValueData>();
         }
     }
 }
