@@ -48,7 +48,7 @@ namespace StockportContentApi.Utils
             db.KeyDeleteAsync(key);
         }
         
-        public void Set(string key, string value, int minutes)
+        public void SetString(string key, string value, int minutes)
         {
             _logger.LogInformation($"[SET] key: {key}");
             var db = GetLeastUsedConnection().GetDatabase();
