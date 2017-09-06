@@ -23,7 +23,7 @@ namespace StockportContentApiTests.Unit.Utils
         public void ShouldCallContentfulIfCacheIsEmpty()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).Returns("");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("");
 
             // Act
             var valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -36,7 +36,7 @@ namespace StockportContentApiTests.Unit.Utils
         public void ShouldNotCallContentfulIfCacheIsFull()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).Returns("\"Cache Data\"");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("\"Cache Data\"");
 
             // Act
             var valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Utils
         public async void ShouldCallContentfulIfCacheIsEmptyAsync()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).Returns("");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("");
 
             // Act
             var valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);
@@ -68,7 +68,7 @@ namespace StockportContentApiTests.Unit.Utils
         public async void ShouldNotCallContentfulIfCacheIsFullAsync()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).Returns("\"Cache Data\"");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("\"Cache Data\"");
 
             // Act
             var valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);
