@@ -37,7 +37,6 @@ namespace StockportContentApi.Utils
 
         public async Task<string> GetString(string key)
         {
-            _logger.LogInformation($"[GET] key: {key}");
             var db = GetLeastUsedConnection().GetDatabase();
             return await db.StringGetAsync(key);
         }
@@ -50,7 +49,6 @@ namespace StockportContentApi.Utils
         
         public void SetString(string key, string value, int minutes)
         {
-            _logger.LogInformation($"[SET] key: {key}");
             var db = GetLeastUsedConnection().GetDatabase();
             db.StringSet(key, value);
             db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
@@ -62,10 +60,6 @@ namespace StockportContentApi.Utils
             var db = cache.GetDatabase();
             var server = cache.GetServer(_redisIp, 6379);
             var keys = server.Keys();
-
-            _logger.LogInformation($"[GETKEYS]Total Keys: {keys.Count()}");
-            _logger.LogInformation($"[GETKEYS]Cache Config: {cache.Configuration}");
-            _logger.LogInformation($"[GETKEYS]Redis ip: {_redisIp}");
 
             var result = await GetRedisDataValueFromKey(keys, db);
             return result;
@@ -82,7 +76,6 @@ namespace StockportContentApi.Utils
                 if (keyType != RedisType.String) continue;
 
                 var valueWithExpiry = await db.StringGetWithExpiryAsync(k);
-                _logger.LogInformation($"[GETKEYS] Key: {k} | Expiry:  {valueWithExpiry.Expiry}");
 
                 var data = new RedisValueData
                 {
