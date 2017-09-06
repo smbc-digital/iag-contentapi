@@ -58,7 +58,7 @@ namespace StockportContentApi.Utils
         {
             var cache = GetLeastUsedConnection();
             var db = cache.GetDatabase();
-            var server = cache.GetServer(_redisIp);
+            var server = cache.GetServer(_redisIp, 6379);
             var keys = server.Keys();
 
             var redisValueData = new List<RedisValueData>();
