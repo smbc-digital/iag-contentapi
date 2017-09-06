@@ -289,7 +289,7 @@ namespace StockportContentApi.Extensions
                 logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
                 services.AddDataProtection().PersistKeysToRedis(redisIp);
 
-                services.AddTransient<IDistributedCacheWrapper>(
+                services.AddSingleton<IDistributedCacheWrapper>(
                     p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
             }
             else
@@ -309,7 +309,7 @@ namespace StockportContentApi.Extensions
             {
                 var redisIp = configuration["TokenStoreUrl"];
 
-                services.AddTransient<IDistributedCacheWrapper>(
+                services.AddSingleton<IDistributedCacheWrapper>(
                     p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
             }
             else

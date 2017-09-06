@@ -114,7 +114,7 @@ namespace StockportContentApi.Utils
             
             try
             {
-                returnData = _memoryCache.GetString(key.ToString());
+                returnData = _memoryCache.GetString(key.ToString()).Result;
             }
             catch (Exception ex)
             {

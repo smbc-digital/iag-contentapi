@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,56 +14,57 @@ namespace StockportContentApi.Utils
     {
         void Remove(string key);
         void SetString(string key, string value, int minutes);
-        string GetString(string key);
+        Task<string> GetString(string key);
         List<RedisValueData> GetKeys();
     }
 
     public class DistributedCacheWrapper : IDistributedCacheWrapper
     {
-        private string _redisIP;
+        private readonly string _redisIp;
         private readonly ILogger<IDistributedCacheWrapper> _logger;
+        private readonly List<ConnectionMultiplexer> _cachePool;
 
-        public DistributedCacheWrapper(string redisIP, ILogger<IDistributedCacheWrapper> logger)
+        public DistributedCacheWrapper(string redisIp, ILogger<IDistributedCacheWrapper> logger)
         {
-            _redisIP = redisIP;
+            _redisIp = redisIp;
             _logger = logger;
+            _cachePool = new List<ConnectionMultiplexer>();
+            for (var i = 0; i < 5; i++)
+            {
+                _cachePool.Add(ConnectionMultiplexer.Connect(redisIp + ",abortConnect=false"));
+            }
         }
 
-        public string GetString(string key)
+        public async Task<string> GetString(string key)
         {
-            var cache = GetRedisCache();
-            _logger.LogInformation($"Total Outstanding[GET]: {cache.GetCounters().TotalOutstanding}");
-            var db = cache.GetDatabase();
-            return db.StringGet(key);
+            var db = GetLeastUsedConnection().GetDatabase();
+            return await db.StringGetAsync(key);
         }
 
         public void Remove(string key)
         {
-            var db = GetRedisCache().GetDatabase();
-            db.KeyDelete(key);
+            var db = GetLeastUsedConnection().GetDatabase();
+            db.KeyDeleteAsync(key);
         }
-
+        
         public void SetString(string key, string value, int minutes)
         {
-            var cache = GetRedisCache();
-            _logger.LogInformation($"Total Outstanding[SET]: {cache.GetCounters().TotalOutstanding}");
-            var db = cache.GetDatabase();
-            db.StringAppend(key, value);
-            db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
+            var db = GetLeastUsedConnection().GetDatabase();
+            db.StringSetAsync(key, value);
+            db.KeyExpireAsync(key, DateTime.Now.AddMinutes(minutes));
         }
 
         public List<RedisValueData> GetKeys()
         {
-            var cache = GetRedisCache();
-            _logger.LogInformation($"Total Outstanding[KEYS]: {cache.GetCounters().TotalOutstanding}");
+            var cache = GetLeastUsedConnection();
             var db = cache.GetDatabase();
-            var server = cache.GetServer(cache.Configuration);
+            var server = cache.GetServer(_redisIp);
             var keys = server.Keys();
 
             var redisValueData = new List<RedisValueData>();
-            keys.Where(k => db.KeyType(k) == RedisType.String).ToList().ForEach(k =>
+            keys.Where(k => db.KeyTypeAsync(k).Result == RedisType.String).ToList().ForEach(async k =>
             {
-                var valueWithExpiry = db.StringGetWithExpiry(k);
+                var valueWithExpiry = await db.StringGetWithExpiryAsync(k);
 
                 var data = new RedisValueData
                 {
@@ -80,10 +82,10 @@ namespace StockportContentApi.Utils
             return redisValueData;
         }
 
-        private ConnectionMultiplexer GetRedisCache()
+        private ConnectionMultiplexer GetLeastUsedConnection()
         {
-            return ConnectionMultiplexer.Connect(_redisIP);
-
+            var cache = _cachePool.OrderBy(c => c.GetCounters().TotalOutstanding).First();
+            return cache;
         }
     }
 }
