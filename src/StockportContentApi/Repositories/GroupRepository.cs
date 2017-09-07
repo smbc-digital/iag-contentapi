@@ -89,7 +89,7 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(group);
         }
 
-        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering)
         {
             var groupResults = new GroupResults();
 
@@ -110,6 +110,7 @@ namespace StockportContentApi.Repositories
             var groups = _groupListFactory.ToModel(entries.ToList())
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
                 .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
+                .Where(g => (g.Volunteering && volunteering == "yes") || volunteering == string.Empty)
                 .ToList();
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
