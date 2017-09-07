@@ -11,6 +11,7 @@ using StockportContentApi.Model;
 using System.Linq;
 using Contentful.Core;
 using Contentful.Core.Models;
+using Microsoft.Extensions.Configuration;
 using StockportContentApi.Client;
 using StockportContentApi.Utils;
 
@@ -25,7 +26,8 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
         private readonly EventRepository _eventRepository;
         private readonly ICache _cache;
-
+        private IConfiguration _configuration;
+        private readonly int _groupsTimeout;
 
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                                  ITimeProvider timeProvider,
@@ -33,7 +35,8 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
                                  EventRepository eventRepository,
-                                 ICache cache
+                                 ICache cache,
+                                 IConfiguration configuration
             )
         {
             _dateComparer = new DateComparer(timeProvider);
@@ -43,6 +46,8 @@ namespace StockportContentApi.Repositories
             _groupCategoryListFactory = groupCategoryListFactory;
             _eventRepository = eventRepository;
             _cache = cache;
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:Groups"], out _groupsTimeout);
         }
 
         public async Task<HttpResponse> Get()
@@ -158,25 +163,31 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<GroupCategory>> GetGroupCategories()
         {
-            return await _cache.GetFromCacheOrDirectlyAsync("group-categories", GetGroupCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("group-categories", GetGroupCategoriesDirect, _groupsTimeout);
         }
 
         public async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories()
         {
-            return await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect);
+            return await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect, _groupsTimeout);
         }
 
         private async Task<List<GroupCategory>> GetGroupCategoriesDirect()
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
             var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
-            return _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList()).OrderBy(c => c.Name).ToList();
+
+            var groupCategoryList = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
+                .OrderBy(c => c.Name).ToList();
+
+            return !groupCategoryList.Any() ? null : groupCategoryList;
         }
 
         private async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategoriesDirect()
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
-            return await _client.GetEntriesAsync(groupCategoryBuilder);
+            var result = await _client.GetEntriesAsync(groupCategoryBuilder);
+
+            return !result.Any() ? null : result;
         }
     }
 }

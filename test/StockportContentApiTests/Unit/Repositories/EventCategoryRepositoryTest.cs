@@ -19,6 +19,7 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -29,7 +30,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _contentfulEventCategoryFactory;
         private readonly Mock<ICache> _cacheWrapper;
-
+        private readonly Mock<IConfiguration> _configuration;
         public EventCategoryRepositoryTest()
         {
             var config = new ContentfulConfig("test")
@@ -46,8 +47,9 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulEventCategoryFactory = new Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _cacheWrapper = new Mock<ICache>();
-
-            _repository = new EventCategoryRepository(config, _contentfulEventCategoryFactory.Object, contentfulClientManager.Object, _cacheWrapper.Object);
+            _configuration = new Mock<IConfiguration>();
+            _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
+            _repository = new EventCategoryRepository(config, _contentfulEventCategoryFactory.Object, contentfulClientManager.Object, _cacheWrapper.Object, _configuration.Object);
         }
 
         [Fact]
@@ -55,7 +57,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             var rawEventCategory = new EventCategory("name", "slug", "icon");
-            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>())).ReturnsAsync(new List<EventCategory> { rawEventCategory });
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<EventCategory> { rawEventCategory });
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetEventCategories());
@@ -70,7 +72,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulEventCategory>();
             collection.Items = new List<ContentfulEventCategory>();
 
-            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>())).ReturnsAsync(new List<EventCategory>());
+            _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-categories-content-type"), It.IsAny<Func<Task<List<EventCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<EventCategory>());
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetEventCategories());

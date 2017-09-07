@@ -9,6 +9,7 @@ using StockportContentApi.Http;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Model;
 using System.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Utils;
 
@@ -20,18 +21,22 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulSmartAnswers, SmartAnswer> _contentfulFactory;
         private readonly ICache _cache;
         private readonly ILogger<SmartAnswersRepository> _logger;
+        private IConfiguration _configuration;
+        private readonly int _smartAnswersTimeout;
 
-        public SmartAnswersRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulSmartAnswers, SmartAnswer> contentfulFactory, ICache cache, ILogger<SmartAnswersRepository> logger)
+        public SmartAnswersRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulSmartAnswers, SmartAnswer> contentfulFactory, ICache cache, ILogger<SmartAnswersRepository> logger, IConfiguration configuration)
         {
             _client = contentfulClientManager.GetClient(config);
             _contentfulFactory = contentfulFactory;
             _cache = cache;
             _logger = logger;
+            _configuration = configuration;
+            int.TryParse(_configuration["redisExpiryTimes:SmartAnswers"], out _smartAnswersTimeout);
         }
 
         public async Task<HttpResponse> Get(string slug)
         {
-            var entry = await _cache.GetFromCacheOrDirectlyAsync("smart-" + slug, () => GetSmartEntry(slug));
+            var entry = await _cache.GetFromCacheOrDirectlyAsync("smart-" + slug, () => GetSmartEntry(slug), _smartAnswersTimeout);
 
             if(entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "Smart not found");
 

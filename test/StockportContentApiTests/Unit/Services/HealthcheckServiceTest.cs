@@ -1,8 +1,11 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using Moq;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
 using Xunit;
 using FluentAssertions;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Services
 {
@@ -12,6 +15,10 @@ namespace StockportContentApiTests.Unit.Services
         private readonly string _shaPath;
         private readonly string _appVersionPath;
         private readonly Mock<IFileWrapper> _fileWrapperMock;
+        private readonly Mock<ICache> _cacheWrapper;
+        private const string ExpiryTime = "Expiry";
+        private const string Key = "Key";
+        private const int NumberOfItems = 4;
 
         public HealthcheckServiceTest()
         {
@@ -19,6 +26,17 @@ namespace StockportContentApiTests.Unit.Services
             _shaPath = "./Unit/sha.txt";
             _fileWrapperMock = new Mock<IFileWrapper>();
             SetUpFakeFileSystem();
+            _cacheWrapper = new Mock<ICache>();
+            _cacheWrapper.Setup(_ => _.GetKeys()).ReturnsAsync(new List<RedisValueData>
+            {
+                new RedisValueData
+                {
+                    Expiry = ExpiryTime,
+                    Key = Key,
+                    NumberOfItems = NumberOfItems
+                }
+            });
+
             _healthcheckService = CreateHealthcheckService(_appVersionPath, _shaPath);
         }
 
@@ -32,72 +50,89 @@ namespace StockportContentApiTests.Unit.Services
 
         private HealthcheckService CreateHealthcheckService(string appVersionPath, string shaPath)
         {
-            return new HealthcheckService(appVersionPath, shaPath, _fileWrapperMock.Object, "local");
+            return new HealthcheckService(appVersionPath, shaPath, _fileWrapperMock.Object, "local", _cacheWrapper.Object);
         }
         [Fact]
-        public void ShouldContainTheAppVersionInTheResponse()
+        public async void ShouldContainTheAppVersionInTheResponse()
         {
-            var check = _healthcheckService.Get();
+            var check = await _healthcheckService.Get();
 
             check.AppVersion.Should().Be("0.0.3");
         }
 
         [Fact]
-        public void ShouldContainTheGitShaInTheResponse()
+        public async void ShouldContainTheGitShaInTheResponse()
         {
-            var check = _healthcheckService.Get();
+            var check = await _healthcheckService.Get();
 
             check.SHA.Should().Be("sha");
         }
 
         [Fact]
-        public void ShouldSetAppVersionToDevIfFileNotFound()
+        public async void ShouldSetAppVersionToDevIfFileNotFound()
         {
             var notFoundVersionPath = "notfound";
             _fileWrapperMock.Setup(x => x.Exists(notFoundVersionPath)).Returns(false);
 
             var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(notFoundVersionPath, _shaPath);
-            var check = healthCheckServiceWithNotFoundVersion.Get();
+            var check = await healthCheckServiceWithNotFoundVersion.Get();
 
             check.AppVersion.Should().Be("dev");
         }
 
         [Fact]
-        public void ShouldSetShaToEmptyIfFileNotFound()
+        public async void ShouldSetShaToEmptyIfFileNotFound()
         {
             var notFoundShaPath = "notfound";
             _fileWrapperMock.Setup(x => x.Exists(notFoundShaPath)).Returns(false);
 
             var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(_appVersionPath, notFoundShaPath);
-            var check = healthCheckServiceWithNotFoundVersion.Get();
+            var check = await healthCheckServiceWithNotFoundVersion.Get();
 
             check.SHA.Should().Be("");
         }
 
         [Fact]
-        public void ShouldSetAppVersionToDevIfFileEmpty()
+        public async void ShouldSetAppVersionToDevIfFileEmpty()
         {
             string newFile = "newFile";
             _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
             _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new string[] { });
 
             var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
-            var check = healthCheckServiceWithNotFoundVersion.Get();
+            var check = await healthCheckServiceWithNotFoundVersion.Get();
 
             check.AppVersion.Should().Be("dev");
         }
 
         [Fact]
-        public void ShouldSetAppVersionToDevIfFileHasAnEmptyAString()
+        public async void ShouldSetAppVersionToDevIfFileHasAnEmptyAString()
         {
             string newFile = "newFile";
             _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
             _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new [] { "" });
 
             var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
-            var check = healthCheckServiceWithNotFoundVersion.Get();
+            var check = await healthCheckServiceWithNotFoundVersion.Get();
 
             check.AppVersion.Should().Be("dev");
         }
+
+        [Fact]
+        public async void ShouldReturnRedisKeys()
+        {
+            string newFile = "newFile";
+            _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
+            _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new[] { "" });
+
+            var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
+            var check = await healthCheckServiceWithNotFoundVersion.Get();
+
+            var redisData = check.RedisValueData;
+            redisData[0].Key.Should().Be(Key);
+            redisData[0].Expiry.Should().Be(ExpiryTime);
+            redisData[0].NumberOfItems.Should().Be(NumberOfItems);
+        }
+
     }
 }

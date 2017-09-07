@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using StockportContentApi.Repositories;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.Utils
 {
@@ -21,13 +19,14 @@ namespace StockportContentApi.Utils
 
     public interface ICache
     {
-        void Set(string cacheKey, object cacheEntry, DistributedCacheEntryOptions cacheEntryOptions);
+        void Set(string cacheKey, object cacheEntry, int minutes);
         bool TryGetValue<T>(object key, out T value);
         T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod, int minutes);
         T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod);
         Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
         Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
         void RemoveItemFromCache(string cacheKey);
+        Task<List<RedisValueData>> GetKeys();
     }
 
     public class Cache : ICache
@@ -52,17 +51,13 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
             {
                 result = fallbackMethod();
 
-                if (_useRedisCache)
+                if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
                 {
-                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
-
-                    var data = JsonConvert.SerializeObject(result);
-
-                    _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+                    Set(cacheKey, result, minutes);
                 }
             }
 
@@ -78,24 +73,14 @@ namespace StockportContentApi.Utils
         {
             T result;
 
-            if (!_useRedisCache || TryGetValue(cacheKey, out result) == false)
+            if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
             {
                 _logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
                 result = await fallbackMethod();
 
-                if (_useRedisCache && _memoryCache != null)
+                if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
                 {
-                    var cacheEntryOptions = new DistributedCacheEntryOptions().SetAbsoluteExpiration(new TimeSpan(minutes * TimeSpan.TicksPerMinute));
-
-                    try
-                    {
-                        var data = JsonConvert.SerializeObject(result, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                        _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogCritical(new EventId(), ex, "An error occurred trying to write to Redis");
-                    }
+                    Set(cacheKey, result, minutes);
                 }
             }
 
@@ -107,11 +92,11 @@ namespace StockportContentApi.Utils
             _memoryCache.Remove(cacheKey);
         }
 
-        public void Set(string cacheKey, object cacheEntry, DistributedCacheEntryOptions cacheEntryOptions)
+        public void Set(string cacheKey, object cacheEntry, int minutes)
         {
-            var data = JsonConvert.SerializeObject(cacheEntry);
+            var data = JsonConvert.SerializeObject(cacheEntry, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
 
-            _memoryCache.SetString(cacheKey, data, cacheEntryOptions);
+            _memoryCache.SetString(cacheKey, data, minutes);
         }
 
         public bool TryGetValue<T>(object key, out T value)
@@ -129,7 +114,7 @@ namespace StockportContentApi.Utils
             
             try
             {
-                returnData = _memoryCache.GetString(key.ToString());
+                returnData = _memoryCache.GetString(key.ToString()).Result;
             }
             catch (Exception ex)
             {
@@ -145,6 +130,11 @@ namespace StockportContentApi.Utils
             }
             
             return output;
+        }
+
+        public async Task<List<RedisValueData>> GetKeys()
+        {
+            return _memoryCache != null ? await _memoryCache.GetKeys() : new List<RedisValueData>();
         }
     }
 }
