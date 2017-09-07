@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-            _contentfulGroupFactory = new GroupContentfulFactory(new GroupCategoryContentfulFactory(), new GroupSubCategoryContentfulFactory(), _timeProvider.Object);
+            _contentfulGroupFactory = new GroupContentfulFactory(new OrganisationContentfulFactory(), new GroupCategoryContentfulFactory(), new GroupSubCategoryContentfulFactory(), _timeProvider.Object);
             _contentfulGroupList = new List<ContentfulGroup> { new ContentfulGroupBuilder().Build() };
 
             _groupListContentfulFactory = new GroupListContentfulFactory(_contentfulGroupFactory);
@@ -41,7 +41,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             // Assert
             groupList[0].ShouldBeEquivalentTo(_contentfulGroupList[0], o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl)
-            .Excluding(e => e.Events).Excluding(e => e.Breadcrumbs).Excluding(e => e.Status).Excluding(e => e.Cost));
+            .Excluding(e => e.Events).Excluding(e => e.Breadcrumbs).Excluding(e => e.Status).Excluding(e => e.Cost).Excluding(e => e.Organisation));
         }
     }
 }

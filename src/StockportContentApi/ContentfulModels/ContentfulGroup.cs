@@ -29,5 +29,6 @@ namespace StockportContentApi.ContentfulModels
         public string CostText { get; set; }
         public string AbilityLevel { get; set; }
         public string VolunteeringText { get; set; }
+        public ContentfulOrganisation Organisation { get; set; }
     }
 }

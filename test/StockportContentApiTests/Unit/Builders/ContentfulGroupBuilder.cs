@@ -30,6 +30,7 @@ namespace StockportContentApiTests.Unit.Builders
         private GroupAdministrators _groupAdministrators = new GroupAdministrators();
         private DateTime _dateHiddenFrom = new DateTime(0001, 01, 01, 00, 00, 00);
         private DateTime _dateHiddenTo = new DateTime(0001, 01, 01, 00, 00, 00);
+        private ContentfulOrganisation _organisation = new ContentfulOrganisation();
 
         public ContentfulGroup Build()
         {
@@ -53,7 +54,8 @@ namespace StockportContentApiTests.Unit.Builders
                 DateHiddenTo = _dateHiddenTo,
                 Cost = _cost,
                 CostText = _costText,
-                AbilityLevel = _abilityLevel
+                AbilityLevel = _abilityLevel,
+                Organisation = _organisation
             };
         }
 

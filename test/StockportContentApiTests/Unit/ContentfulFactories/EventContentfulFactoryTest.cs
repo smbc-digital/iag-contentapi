@@ -90,7 +90,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldReturnGroupLinkedToEvent()
         {
             _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>()))
-                .Returns(new Group("Test Group", "test-group", null, null, null, null, null, null, null, null, null, null, null, null,null, false, null, DateTime.MinValue, DateTime.MaxValue, "published", string.Empty, string.Empty, string.Empty, string.Empty));
+                .Returns(new Group("Test Group", "test-group", null, null, null, null, null, null, null, null, null, null, null, null,null, false, null, DateTime.MinValue, DateTime.MaxValue, "published", string.Empty, string.Empty, string.Empty, string.Empty, null));
 
             var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
