@@ -24,7 +24,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-            _contentfulGroupFactory = new GroupContentfulFactory(new GroupCategoryContentfulFactory(), _timeProvider.Object);
+            _contentfulGroupFactory = new GroupContentfulFactory(new GroupCategoryContentfulFactory(), new GroupSubCategoryContentfulFactory(), _timeProvider.Object);
             _contentfulGroupList = new List<ContentfulGroup> { new ContentfulGroupBuilder().Build() };
 
             _groupListContentfulFactory = new GroupListContentfulFactory(_contentfulGroupFactory);

@@ -18,6 +18,7 @@ namespace StockportContentApi.ContentfulModels
         public string Description { get; set; } = string.Empty;
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public List<ContentfulGroupCategory> CategoriesReference { get; set; } = new List<ContentfulGroupCategory>();
+        public List<ContentfulGroupSubCategory> SubCategories { get; set; } = new List<ContentfulGroupSubCategory>();
         public MapPosition  MapPosition { get; set; } = new MapPosition();
         public bool Volunteering { get; set; } = false;
         public SystemProperties Sys { get; set; } = new SystemProperties();

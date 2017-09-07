@@ -68,6 +68,7 @@
     "imageUrl": "image-url.jpg",
     "thumbnailImageUrl": "image-url.jpg?h=250",
     "categoriesReference": [],
+    "subCategories": [],
     "breadcrumbs": [
       {
         "title": "Our Stockport Local",

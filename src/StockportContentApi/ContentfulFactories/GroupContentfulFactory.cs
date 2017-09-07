@@ -9,11 +9,13 @@ namespace StockportContentApi.ContentfulFactories
     public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
     {
         private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulGroupCategoryFactory;
+        private readonly IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _contentfulGroupSubCategoryFactory;
         private readonly DateComparer _dateComparer;
 
-        public GroupContentfulFactory(IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, ITimeProvider timeProvider)
+        public GroupContentfulFactory(IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider)
         {
             _contentfulGroupCategoryFactory = contentfulGroupCategoryFactory;
+            _contentfulGroupSubCategoryFactory = contentfulGroupSubCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
 
@@ -29,6 +31,10 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.CategoriesReference.Where(o => o != null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory)).ToList()
                 : new List<GroupCategory>();
 
+            var subCategories = entry.SubCategories != null
+                ? entry.SubCategories.Where(o => o != null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
+                : new List<GroupSubCategory>();
+
             var status = "Published";
             if (!_dateComparer.DateNowIsNotBetweenHiddenRange(entry.DateHiddenFrom, entry.DateHiddenTo))
             {
@@ -39,7 +45,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
-                categoriesReferences, new List<Crumb> { new Crumb("Our Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
+                categoriesReferences, subCategories, new List <Crumb> { new Crumb("Our Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
                 entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText);  
         }
     }

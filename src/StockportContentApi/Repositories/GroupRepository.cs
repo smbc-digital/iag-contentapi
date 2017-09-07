@@ -94,13 +94,17 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(group);
         }
 
-        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories)
         {
             var groupResults = new GroupResults();
+            
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             if (longitude != 0 && latitude != 0) builder = builder.FieldEquals("fields.mapPosition[near]", latitude + "," + longitude + (location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
+
+            var subCategoriesArray = subCategories.Split(',');
+            var subCategoriesList = subCategoriesArray.Where(c => !string.IsNullOrWhiteSpace(c));
 
             if (!string.IsNullOrEmpty(slugs))
             {
@@ -115,7 +119,8 @@ namespace StockportContentApi.Repositories
             var groups = _groupListFactory.ToModel(entries.ToList())
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
                 .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
-                .Where(g => (g.Volunteering && volunteering == "yes") || volunteering == string.Empty)
+                .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
+                .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
                 .ToList();
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")

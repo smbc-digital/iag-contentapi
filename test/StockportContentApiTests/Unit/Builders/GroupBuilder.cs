@@ -22,6 +22,7 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime? _dateHiddenFrom = null;
         private DateTime? _dateHiddenTo = null;
         private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
+        private List<GroupSubCategory> _subCategories = new List<GroupSubCategory>();
         private List<Event> _events = new List<Event>();
         private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type")};
         private MapPosition _mapPosition = new MapPosition() {Lat=39.0,Lon = 2.0};
@@ -34,7 +35,7 @@ namespace StockportContentApiTests.Unit.Builders
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _crumbs,_mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", string.Empty, string.Empty, string.Empty, string.Empty);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
         public GroupBuilder Slug(string slug)

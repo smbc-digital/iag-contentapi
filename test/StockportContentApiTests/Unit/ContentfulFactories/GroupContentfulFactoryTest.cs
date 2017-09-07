@@ -15,6 +15,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly ContentfulGroup _contentfulGroup;
         private readonly GroupContentfulFactory _groupContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
+        private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
         private Mock<ITimeProvider> _timeProvider;
 
         public GroupContentfulFactoryTest()
@@ -23,9 +24,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
             _contentfulGroupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
+            _contentfulGroupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroup = new ContentfulGroupBuilder().Build();
          
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulGroupCategoryFactory.Object , _timeProvider.Object);
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object);
         }
 
         [Fact]
