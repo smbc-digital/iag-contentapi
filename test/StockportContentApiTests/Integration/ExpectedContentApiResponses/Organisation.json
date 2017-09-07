@@ -1,0 +1,10 @@
+﻿{
+  "title": "title",
+  "slug": "slug",
+  "imageUrl": "",
+  "aboutUs": "about us",
+  "phone": "phone",
+  "email": "email",
+  "volunteering": true,
+  "volunteeringText": "help wanted"
+}

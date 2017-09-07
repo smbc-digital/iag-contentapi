@@ -34,11 +34,10 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntriesAsync(builder);
 
             var entry = entries.FirstOrDefault();
-            var organisation = _contentfulFactory.ToModel(entry);
 
-            return organisation == null
+            return entry == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found")
-                : HttpResponse.Successful(organisation);
+                : HttpResponse.Successful(_contentfulFactory.ToModel(entry));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace StockportContentApi.ContentfulFactories
                     : string.Empty
                 : string.Empty;
 
-            return new Organisation(entry.Title, entry.Slug, imageUrl, entry.Phone, entry.Email, entry.AboutUs,
+            return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
                 entry.Volunteering, entry.VolunteeringText);  
         }
     }

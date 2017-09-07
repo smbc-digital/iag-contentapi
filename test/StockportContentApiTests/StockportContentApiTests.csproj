@@ -58,6 +58,7 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZArticleAndTopic.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ContactUsId.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Organisation.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Event.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\EventsLatest.json" />
