@@ -37,7 +37,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.SubCategories.Where(o => o != null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
                 : new List<GroupSubCategory>();
 
-            var organisation = _contentfulOrganisationFactory.ToModel(entry.Organisation);
+            var organisation = entry.Organisation != null ?  _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
 
             var status = "Published";
             if (!_dateComparer.DateNowIsNotBetweenHiddenRange(entry.DateHiddenFrom, entry.DateHiddenTo))

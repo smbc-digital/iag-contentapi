@@ -9,7 +9,7 @@
         public string Phone { get; set; }
         public string Email { get; set; }
         public bool Volunteering { get; set; }
-        public string VolunteeringText { get; set; }
+        public string VolunteeringText { get; set; } = "";
 
         public Organisation() { }
 
