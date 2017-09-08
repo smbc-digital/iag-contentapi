@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -24,7 +25,7 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly OrganisationRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IHttpClient> _httpClient;
+        private readonly Mock<Func<ContentfulConfig, GroupRepository>> _groupRepositoryFunc;
 
         public OrganisationRepositoryTest()
         {
@@ -36,16 +37,29 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             var contentfulFactory = new OrganisationContentfulFactory();
-            _httpClient = new Mock<IHttpClient>();
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+
+            _groupRepositoryFunc = new Mock<Func<ContentfulConfig, GroupRepository>>();
+
+            var _groupRepository = new Mock<IGroupRepository>();
+
+            _groupRepository = new Mock<IGroupRepository>();
+            var groups = new List<Group>();
+            var organisation = new Organisation() { Slug = "slug", Title = "Title" };
+            groups.Add(new GroupBuilder().Organisation(organisation).Build());
+            groups.Add(new GroupBuilder().Organisation(organisation).Build());
+            groups.Add(new GroupBuilder().Organisation(organisation).Build());
+            _groupRepository.Setup(o => o.GetLinkedGroupsByOrganisation(It.IsAny<string>())).ReturnsAsync(groups);
+
             _repository = new OrganisationRepository
             (
                 config,
                 contentfulFactory,
-                contentfulClientManager.Object
+                contentfulClientManager.Object,
+                _groupRepository.Object
             );
         }
 

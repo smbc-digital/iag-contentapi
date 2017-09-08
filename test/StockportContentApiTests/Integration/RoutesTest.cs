@@ -56,8 +56,18 @@ namespace StockportContentApiTests.Integration
                     new ContentfulGroupBuilder().Slug("zumba-fitness").Build()
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
-                                It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", "zumba-fitness").Include(1).Build()),
+                                It.IsAny<QueryBuilder<ContentfulGroup>>()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(groupCollection);
+
+                groupCollection.Items = new List<ContentfulGroup>
+                {
+                    new ContentfulGroupBuilder().Slug("zumba-fitness").Build(),
+                    new ContentfulGroupBuilder().Slug("slug-for-fun").Build(),
+                    new ContentfulGroupBuilder().Slug("third-slug").Build()
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(groupCollection);
 
                 var newsCollection = new ContentfulCollection<ContentfulNews>();
                 newsCollection.Items = new List<ContentfulNews>

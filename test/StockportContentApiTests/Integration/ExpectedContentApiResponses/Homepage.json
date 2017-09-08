@@ -98,7 +98,8 @@
       "phone": "",
       "email": "",
       "volunteering": false,
-      "volunteeringText": null
+      "volunteeringText": null,
+      "groups": []
     }
   }
 }

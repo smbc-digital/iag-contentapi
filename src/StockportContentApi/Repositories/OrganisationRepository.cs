@@ -18,13 +18,16 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulFactory;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly IGroupRepository _groupRepository;
 
         public OrganisationRepository(ContentfulConfig config,
             IContentfulFactory<ContentfulOrganisation, Organisation> contentfulFactory,
-            IContentfulClientManager contentfulClientManager)
+            IContentfulClientManager contentfulClientManager,
+            IGroupRepository groupRepository)
         {
             _contentfulFactory = contentfulFactory;
             _client = contentfulClientManager.GetClient(config);
+            _groupRepository = groupRepository;
         }
 
         public async Task<HttpResponse> GetOrganisation(string slug)
@@ -35,9 +38,13 @@ namespace StockportContentApi.Repositories
 
             var entry = entries.FirstOrDefault();
 
-            return entry == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found")
-                : HttpResponse.Successful(_contentfulFactory.ToModel(entry));
+            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
+
+            var organisation = _contentfulFactory.ToModel(entry);
+
+            organisation.Groups = await _groupRepository.GetLinkedGroupsByOrganisation(slug);
+
+            return HttpResponse.Successful(organisation); ;
         }
     }
 }

@@ -288,7 +288,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(listOfGroupCategories);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(testCategorySlug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -319,7 +319,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(listOfGroupCategories);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -349,7 +349,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -379,7 +379,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<GroupCategory>() { rawGroupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -467,7 +467,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _listGroupFactory.Setup(o => o.ToModel(new List<ContentfulGroup>() { contentfulGroup })).Returns(new List<Group>() { groupsecond, groupfirst, groupthird });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert
@@ -498,7 +498,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<GroupCategory>() { groupCategory });
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name z-a", "Stockport", string.Empty, string.Empty, string.Empty));
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name z-a", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
 
             // Assert

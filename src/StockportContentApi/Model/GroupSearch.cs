@@ -13,5 +13,6 @@ namespace StockportContentApi.Model
         public string Order { get; set; }
         public string Location { get; set; } = "Stockport";
         public string GetInvolved { get; set; } = string.Empty;
+        public string Organisation { get; set; } = string.Empty;
     }
 }

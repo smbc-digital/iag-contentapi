@@ -17,7 +17,19 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
-    public class GroupRepository : BaseRepository
+    public interface IGroupRepository
+    {
+        Task<HttpResponse> Get();
+        Task<HttpResponse> GetAdministratorsGroups(string email);
+        Task<ContentfulGroup> GetContentfulGroup(string slug);
+        Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories();
+        Task<HttpResponse> GetGroup(string slug, bool onlyActive);
+        Task<List<GroupCategory>> GetGroupCategories();
+        Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation);
+        Task<List<Group>> GetLinkedGroupsByOrganisation(string slug);
+    }
+
+    public class GroupRepository : BaseRepository, IGroupRepository
     {
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly DateComparer _dateComparer;
@@ -94,7 +106,7 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(group);
         }
 
-        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories)
+        public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation)
         {
             var groupResults = new GroupResults();
             
@@ -120,6 +132,7 @@ namespace StockportContentApi.Repositories
                 .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
                 .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
                 .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
+                .Where(g => organisation == string.Empty || (g.Organisation != null && g.Organisation.Slug == organisation))
                 .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
                 .ToList();
 
@@ -139,6 +152,8 @@ namespace StockportContentApi.Repositories
             }
 
             groupResults.Groups = groups;
+
+            groupResults.AvailableSubCategories = groups.SelectMany(g => g.SubCategories ?? new List<GroupSubCategory>()).ToList();
 
             var groupCategoryResults = await GetGroupCategories();
 
@@ -174,6 +189,19 @@ namespace StockportContentApi.Repositories
         public async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories()
         {
             return await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect, _groupsTimeout);
+        }
+
+        public async Task<List<Group>> GetLinkedGroupsByOrganisation(string slug)
+        {
+            var response = Get();
+
+            var groups = response.Result.Get<List<Group>>();
+
+            groups = groups.Where(g => g.Organisation.Slug == slug)
+                .OrderBy(g => g.Name)
+                .ToList();
+
+            return groups;
         }
 
         private async Task<List<GroupCategory>> GetGroupCategoriesDirect()

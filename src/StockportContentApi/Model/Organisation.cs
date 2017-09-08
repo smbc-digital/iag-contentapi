@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Model
+﻿using System.Collections.Generic;
+
+namespace StockportContentApi.Model
 {
     public class Organisation
     {
@@ -10,6 +12,7 @@
         public string Email { get; set; }
         public bool Volunteering { get; set; }
         public string VolunteeringText { get; set; } = "";
+        public List<Group> Groups { get; set; } = new List<Group>();
 
         public Organisation() { }
 
