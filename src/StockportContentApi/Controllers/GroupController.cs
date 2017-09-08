@@ -19,7 +19,7 @@ namespace StockportContentApi.Controllers
         private readonly Func<ContentfulConfig, GroupRepository> _groupRepository;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
-        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
+        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;        
         private readonly IMapper _mapper;
 
         public GroupController(ResponseHandler handler,
@@ -49,6 +49,16 @@ namespace StockportContentApi.Controllers
                 var groupRepository = _groupRepository(_createConfig(businessId));
                 return groupRepository.Get();
             });
+        }
+
+        [HttpGet]
+        [Route("/api/{businessId}/grouphomepage")]
+        public async Task<IActionResult> Homepage(string businessId)
+        {         
+            var repository = _groupRepository(_createConfig(businessId));
+            var response = await repository.GetGroupHomepage();
+            var homepage = response.Get<GroupHomepage>();          
+            return Ok(homepage);
         }
 
         [HttpGet]

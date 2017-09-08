@@ -36,6 +36,7 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
         private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
+        private readonly IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> _groupHomepageContentfulFactory;
         private readonly EventRepository _eventRepository;
         private readonly ICache _cache;
         private IConfiguration _configuration;
@@ -46,6 +47,7 @@ namespace StockportContentApi.Repositories
                                  IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                  IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
                                  IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
+                                 IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
                                  EventRepository eventRepository,
                                  ICache cache,
                                  IConfiguration configuration
@@ -60,6 +62,7 @@ namespace StockportContentApi.Repositories
             _cache = cache;
             _configuration = configuration;
             int.TryParse(_configuration["redisExpiryTimes:Groups"], out _groupsTimeout);
+            _groupHomepageContentfulFactory = groupHomepageContentfulFactory;
         }
 
         public async Task<HttpResponse> Get()
@@ -86,6 +89,17 @@ namespace StockportContentApi.Repositories
             var entry = entries.FirstOrDefault();
 
             return entry;
+        }
+
+        public async Task<HttpResponse> GetGroupHomepage()
+        {
+            var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
+            var entries = await _client.GetEntriesAsync(builder);
+            var entry = entries.ToList().First();
+            
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
+                : HttpResponse.Successful(_groupHomepageContentfulFactory.ToModel(entry));
         }
 
         public async Task<HttpResponse> GetGroup(string slug, bool onlyActive)
