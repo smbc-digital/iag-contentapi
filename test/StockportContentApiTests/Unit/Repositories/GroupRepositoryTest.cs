@@ -37,6 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _listGroupFactory;
         private readonly Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>> _listGroupCategoryFactory;
+        private readonly Mock<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>> _groupHomepageContentfulFactory;
         private readonly Mock<IContentfulClient> _client;
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly EventRepository _eventRepository;
@@ -62,6 +63,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _httpClient = new Mock<IHttpClient>();
             _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
             _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
+            _groupHomepageContentfulFactory = new Mock<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>();
             _logger = new Mock<ILogger<EventRepository>>();
 
             _cacheWrapper = new Mock<ICache>();
@@ -73,7 +75,7 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
             _eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeProvider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
-            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _eventRepository, _cacheWrapper.Object, _configuration.Object);
+            _repository = new GroupRepository(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object, _listGroupFactory.Object, _listGroupCategoryFactory.Object, _groupHomepageContentfulFactory.Object, _eventRepository, _cacheWrapper.Object, _configuration.Object);
         }
 
         [Fact]
@@ -543,6 +545,30 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             filteredGroups.Count().Should().Be(1);
 
+        }
+
+        [Fact]
+        public void ShouldReturnContenfulGroupHomepage()
+        {
+            var contenfulHomepage = new ContentfulGroupHomepageBuilder().Build();
+            var collection = new ContentfulCollection<ContentfulGroupHomepage>();
+            collection.Items = new List<ContentfulGroupHomepage> { contenfulHomepage };
+
+            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg");
+
+            var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
+
+            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupHomepage>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            _groupHomepageContentfulFactory.Setup(o => o.ToModel(contenfulHomepage)).Returns(groupHomepage);
+
+            var response = AsyncTestHelper.Resolve(_repository.GetGroupHomepage());
+            var homepage = response.Get<GroupHomepage>();
+
+            homepage.BackgroundImage.Should().Be(contenfulHomepage.BackgroundImage.File.Url);
+            homepage.Title.Should().Be(contenfulHomepage.Title);
+            homepage.Slug.Should().Be(contenfulHomepage.Slug);
         }
 
         private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
