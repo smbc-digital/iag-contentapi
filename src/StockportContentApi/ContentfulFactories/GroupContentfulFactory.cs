@@ -10,10 +10,12 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulGroupCategoryFactory;
         private readonly IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _contentfulGroupSubCategoryFactory;
+        private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulOrganisationFactory;
         private readonly DateComparer _dateComparer;
 
-        public GroupContentfulFactory(IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider)
+        public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation, Organisation> contentfulOrganisationFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider)
         {
+            _contentfulOrganisationFactory = contentfulOrganisationFactory;
             _contentfulGroupCategoryFactory = contentfulGroupCategoryFactory;
             _contentfulGroupSubCategoryFactory = contentfulGroupSubCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
@@ -35,6 +37,8 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.SubCategories.Where(o => o != null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
                 : new List<GroupSubCategory>();
 
+            var organisation = entry.Organisation != null ?  _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
+
             var status = "Published";
             if (!_dateComparer.DateNowIsNotBetweenHiddenRange(entry.DateHiddenFrom, entry.DateHiddenTo))
             {
@@ -46,7 +50,7 @@ namespace StockportContentApi.ContentfulFactories
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Our Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
-                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText);  
+                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, organisation);  
         }
     }
 }

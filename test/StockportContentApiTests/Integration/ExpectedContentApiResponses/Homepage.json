@@ -89,6 +89,16 @@
     "cost": "",
     "costText": "",
     "abilityLevel": "",
-    "volunteeringText": null
+    "volunteeringText": null,
+    "organisation": {
+      "title": "",
+      "slug": "",
+      "imageUrl": "",
+      "aboutUs": "",
+      "phone": "",
+      "email": "",
+      "volunteering": false,
+      "volunteeringText": null
+    }
   }
 }

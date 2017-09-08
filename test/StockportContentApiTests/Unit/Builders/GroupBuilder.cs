@@ -31,11 +31,12 @@ namespace StockportContentApiTests.Unit.Builders
         private List<string> _cost = new List<string> { "_cost" };
         private string _costText = "_costText";
         private string _abilityLevel = "_abilityLevel";
+        private Organisation _organisation = new Organisation();
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", string.Empty, string.Empty, string.Empty, string.Empty);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", string.Empty, string.Empty, string.Empty, string.Empty, _organisation);
         }
 
         public GroupBuilder Slug(string slug)

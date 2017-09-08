@@ -32,7 +32,9 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
         {
+            services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(p => new GroupSubCategoryContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory());
             services.AddSingleton<IContentfulFactory<Asset, Document>>(new DocumentContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(new ContactUsIdContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory());
@@ -66,7 +68,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
             services.AddSingleton<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(p => new EventListContentfulFactory(p.GetService<IContentfulFactory<ContentfulEvent, Event>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                 p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
@@ -148,6 +150,7 @@ namespace StockportContentApi.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
+            services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });

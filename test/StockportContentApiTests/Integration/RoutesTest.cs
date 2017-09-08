@@ -272,6 +272,26 @@ namespace StockportContentApiTests.Integration
                     It.Is<QueryBuilder<ContentfulStartPage>>(
                         q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", "new-start-page").Include(3).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(startPages);
+                
+                var organisations = new ContentfulCollection<ContentfulOrganisation>();
+                organisations.Items = new List<ContentfulOrganisation>()
+                {
+                    new ContentfulOrganisation()
+                    {
+                        AboutUs = "about us",
+                        Email = "email",
+                        Image = null,
+                        Phone = "phone",
+                        Slug = "slug",
+                        Title = "title",
+                        Volunteering = true,
+                        VolunteeringText = "help wanted"
+                    }
+                };
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulOrganisation>>(
+                        q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("organisation").FieldEquals("fields.slug", "slug").Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(organisations);
             });
         }
 
@@ -290,6 +310,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("Showcase", "/api/unittest/showcase/showcase_slug")]
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
+        [InlineData("Organisation", "/api/unittest/organisations/slug")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

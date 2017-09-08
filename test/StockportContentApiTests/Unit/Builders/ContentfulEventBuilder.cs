@@ -48,13 +48,14 @@ namespace StockportContentApiTests.Unit.Builders
                 new Asset()
                 {
                     Description = "",
-                    File = new File() {ContentType = "", FileName = "", Details = null, UploadUrl = "", Url = ""},
-                    SystemProperties = new SystemProperties() {Type = "Asset"},
+                    File = new File() { ContentType = "", FileName = "", Details = null, UploadUrl = "", Url = "" },
+                    SystemProperties = new SystemProperties() { Type = "Asset" },
                     Title = ""
                 },
             Cost = new List<string> { string.Empty },
             CostText = "",
-            AbilityLevel = ""
+            AbilityLevel = "",
+            Organisation = new ContentfulOrganisation()
         };
 
         public ContentfulEvent Build()
