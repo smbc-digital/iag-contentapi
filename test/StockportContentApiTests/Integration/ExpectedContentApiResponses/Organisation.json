@@ -7,5 +7,6 @@
   "email": "email",
   "volunteering": true,
   "volunteeringText": "help wanted",
-  "groups": []
+  "groups": [],
+  "donations": false 
 }

@@ -109,8 +109,10 @@
           "email": "",
           "volunteering": false,
           "volunteeringText": null,
-          "groups":[]
-        }
+          "groups": [],
+          "donations": false
+        },
+        "donations": false
       },
       "alerts": [
         {
@@ -221,8 +223,10 @@
           "email": "",
           "volunteering": false,
           "volunteeringText": null,
-          "groups": []
-        }
+          "groups": [],
+          "donations": false
+        },
+        "donations": false
       },
       "alerts": [
         {
@@ -266,6 +270,8 @@
     "email": "",
     "volunteering": false,
     "volunteeringText": null,
-    "groups": []
-  }
+    "groups": [],
+    "donations": false
+  },
+  "donations": false
 }

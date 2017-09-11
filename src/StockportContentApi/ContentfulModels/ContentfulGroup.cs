@@ -21,6 +21,7 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulGroupSubCategory> SubCategories { get; set; } = new List<ContentfulGroupSubCategory>();
         public MapPosition  MapPosition { get; set; } = new MapPosition();
         public bool Volunteering { get; set; } = false;
+        public bool Donations { get; set; } = false;
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public GroupAdministrators GroupAdministrators { get; set; } = new GroupAdministrators();
         public DateTime? DateHiddenFrom { get; set; }
