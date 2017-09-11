@@ -52,6 +52,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory());
@@ -149,7 +150,7 @@ namespace StockportContentApi.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
-            services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>()); });
+            
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
@@ -200,6 +201,7 @@ namespace StockportContentApi.Extensions
                         p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
                         p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(),
                         p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(),
+                        p.GetService<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(),
                         new EventRepository(x, p.GetService<IContentfulClientManager>(),
                             p.GetService<ITimeProvider>(),
                             p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
@@ -217,6 +219,8 @@ namespace StockportContentApi.Extensions
 
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
                 p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
+            services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(
+                p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, GroupRepository>>().Invoke(x)); });
 
             return services;
         }

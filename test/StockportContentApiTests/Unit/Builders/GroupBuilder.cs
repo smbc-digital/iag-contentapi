@@ -44,6 +44,11 @@ namespace StockportContentApiTests.Unit.Builders
             _slug = slug;
             return this;
         }
+        public GroupBuilder Organisation(Organisation org)
+        {
+            _organisation = org;
+            return this;
+        }
 
         public GroupBuilder CategoriesReference(List<GroupCategory> categoriesReference)
         {

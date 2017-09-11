@@ -6,5 +6,6 @@
   "phone": "phone",
   "email": "email",
   "volunteering": true,
-  "volunteeringText": "help wanted"
+  "volunteeringText": "help wanted",
+  "groups": []
 }

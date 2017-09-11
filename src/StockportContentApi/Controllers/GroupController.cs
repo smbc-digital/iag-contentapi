@@ -19,7 +19,7 @@ namespace StockportContentApi.Controllers
         private readonly Func<ContentfulConfig, GroupRepository> _groupRepository;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
-        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
+        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;        
         private readonly IMapper _mapper;
 
         public GroupController(ResponseHandler handler,
@@ -52,6 +52,16 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
+        [Route("/api/{businessId}/grouphomepage")]
+        public async Task<IActionResult> Homepage(string businessId)
+        {         
+            var repository = _groupRepository(_createConfig(businessId));
+            var response = await repository.GetGroupHomepage();
+            var homepage = response.Get<GroupHomepage>();          
+            return Ok(homepage);
+        }
+
+        [HttpGet]
         [Route("api/{businessId}/group/{groupSlug}")]
         public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true)
         { 
@@ -80,7 +90,7 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var groupRepository = _groupRepository(_createConfig(businessId));
-                return groupRepository.GetGroupResults(groupSearch.Category, groupSearch.Latitude, groupSearch.Longitude, groupSearch.Order, groupSearch.Location, slugs, groupSearch.GetInvolved, groupSearch.SubCategories);
+                return groupRepository.GetGroupResults(groupSearch.Category, groupSearch.Latitude, groupSearch.Longitude, groupSearch.Order, groupSearch.Location, slugs, groupSearch.GetInvolved, groupSearch.SubCategories, groupSearch.Organisation);
             });
         }
 
