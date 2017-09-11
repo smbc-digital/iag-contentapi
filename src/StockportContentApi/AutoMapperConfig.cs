@@ -94,6 +94,7 @@ namespace StockportContentApi
             destination.Slug = new Dictionary<string, string> { { "en-GB", source.Slug } };
             destination.Twitter = new Dictionary<string, string> { { "en-GB", source.Twitter } };
             destination.Volunteering = new Dictionary<string, bool> { { "en-GB", source.Volunteering } };
+            destination.Donations = new Dictionary<string, bool> { { "en-GB", source.Donations } };
             destination.Website = new Dictionary<string, string> { { "en-GB", source.Website } };
             destination.DateHiddenFrom = new Dictionary<string, string> { { "en-GB", source.DateHiddenFrom != null ? source.DateHiddenFrom.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
             destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB", source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
@@ -116,7 +117,11 @@ namespace StockportContentApi
             };
 
             destination.VolunteeringText = new Dictionary<string, string> { { "en-GB", source.VolunteeringText } };
-            destination.Organisation = new Dictionary<string, ManagementReference>() {{"en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } }};
+            if (destination.Organisation != null)
+            {
+                destination.Organisation = new Dictionary<string, ManagementReference>() {{"en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } }};    
+            }
+            
             destination.SubCategories = new Dictionary<string, List<ManagementReference>>()
             {
                 {

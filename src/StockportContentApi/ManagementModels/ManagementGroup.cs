@@ -19,6 +19,7 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, List<ManagementGroupCategory>> CategoriesReference { get; set; }
         public Dictionary<string, MapPosition> MapPosition { get; set; }
         public Dictionary<string, bool> Volunteering { get; set; }
+        public Dictionary<string, bool> Donations { get; set; }
         public Dictionary<string, GroupAdministrators> GroupAdministrators { get; set; }
         public Dictionary<string, string> DateHiddenFrom { get; set; }
         public Dictionary<string, string> DateHiddenTo { get; set; }
