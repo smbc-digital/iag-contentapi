@@ -1,4 +1,5 @@
-﻿using Contentful.Core.Models;
+﻿using System.Collections.Generic;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -11,6 +12,10 @@ namespace StockportContentApi.ContentfulModels
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }
         };
+        public string FeaturedGroupsHeading { get; set; } = string.Empty;
+        public List<ContentfulGroup> FeaturedGroups { get; set; } = new List<ContentfulGroup>();
+        public ContentfulGroupCategory FeaturedGroupsCategory { get; set; } = new ContentfulGroupCategory();
+        public ContentfulGroupSubCategory FeaturedGroupsSubCategory { get; set; } = new ContentfulGroupSubCategory();
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

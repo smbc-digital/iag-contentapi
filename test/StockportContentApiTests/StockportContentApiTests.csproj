@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <AssemblyName>StockportContentApiTests</AssemblyName>
@@ -14,13 +13,11 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Unit\MockContentfulResponses\**" />
     <EmbeddedResource Remove="Unit\MockContentfulResponses\**" />
     <None Remove="Unit\MockContentfulResponses\**" />
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="Integration\ExpectedContentApiResponses\Article.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
@@ -30,6 +27,7 @@
     <None Remove="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ContactUsId.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Event.json" />
+    <None Remove="Integration\ExpectedContentApiResponses\GroupHomePage.json" />
     <None Remove="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
     <None Remove="Integration\ExpectedContentApiResponses\EventsLatest.json" />
     <None Remove="Integration\ExpectedContentApiResponses\FeaturedContent.json" />
@@ -49,7 +47,6 @@
     <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
     <None Remove="Unit\MockButoResponses\VideoExists.json" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Article.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
@@ -66,6 +63,7 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Footer.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Group.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupCategory.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupHomePage.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Homepage.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\News.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\NewsListing.json" />
@@ -78,17 +76,14 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
     <EmbeddedResource Include="Unit\MockButoResponses\VideoExists.json" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\StockportContentApi\StockportContentApi.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
@@ -99,9 +94,7 @@
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="contentful.csharp" Version="0.14.0-beta" />
   </ItemGroup>
-
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-
 </Project>

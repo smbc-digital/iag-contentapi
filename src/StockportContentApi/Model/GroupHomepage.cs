@@ -7,12 +7,21 @@ namespace StockportContentApi.Model
         public string Title { get; set; }
         public string Slug { get; set; }
         public string BackgroundImage { get; set; }
+        public string FeaturedGroupsHeading { get; set; }
+        public List<Group> FeaturedGroups { get; set; }
+        public GroupCategory FeaturedGroupsCategory { get; set; }
+        public GroupSubCategory FeaturedGroupsSubCategory { get; set; }
 
-        public GroupHomepage(string title, string slug, string backgroundImage)
+        public GroupHomepage(string title, string slug, string backgroundImage, string featuredGroupsHeading, List<Group> featuredGroups, 
+            GroupCategory featuredGroupsCategory, GroupSubCategory featuredGroupsSubCategory)
         {
             Title = title;
             Slug = slug;
             BackgroundImage = backgroundImage;
+            FeaturedGroups = featuredGroups;
+            FeaturedGroupsCategory = featuredGroupsCategory;
+            FeaturedGroupsHeading = featuredGroupsHeading;
+            FeaturedGroupsSubCategory = featuredGroupsSubCategory;
         }
     }
 }
