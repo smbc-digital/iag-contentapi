@@ -207,6 +207,8 @@ namespace StockportContentApi.Controllers
             var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
             contentfulGroup.CategoriesReference = referencedCategories;
             contentfulGroup.Image = existingGroup.Image;
+            contentfulGroup.SubCategories = existingGroup.SubCategories;
+            contentfulGroup.Organisation = existingGroup.Organisation;
             var managementGroup = new ManagementGroup();
             _mapper.Map(contentfulGroup, managementGroup);
             return managementGroup;
