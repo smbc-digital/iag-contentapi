@@ -21,7 +21,7 @@ namespace StockportContentApi.ContentfulFactories
                 : string.Empty;
 
             return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
-                entry.Volunteering, entry.VolunteeringText);  
+                entry.Volunteering, entry.VolunteeringText, entry.Donations);  
         }
     }
 }
