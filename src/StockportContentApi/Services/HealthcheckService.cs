@@ -1,4 +1,5 @@
-﻿using StockportContentApi.Model;
+﻿using System.Collections.Generic;
+using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,8 +41,9 @@ namespace StockportContentApi.Services
 
         public async Task<Healthcheck> Get()
         {
-            var keys = await _cacheWrapper.GetKeys();
-            return new Healthcheck(_appVersion, _sha, _environment, keys);
+            // Commented out because it was breaking prod.
+            //var keys = await _cacheWrapper.GetKeys();
+            return new Healthcheck(_appVersion, _sha, _environment, new List<RedisValueData>());
         }
     }
 }

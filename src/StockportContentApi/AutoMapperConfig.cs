@@ -17,7 +17,11 @@ namespace StockportContentApi
 
             CreateMap<Group, ContentfulGroup>()
                 .ForMember(dest => dest.Image,
-                    opts => opts.Ignore());
+                    opts => opts.Ignore())
+                .ForMember(dest => dest.SubCategories,
+                    opts => opts.Ignore())
+                .ForMember(dest => dest.Organisation,
+                opts => opts.Ignore());
 
             CreateMap<EventCategory, ContentfulEventCategory>();
 
@@ -112,6 +116,14 @@ namespace StockportContentApi
             };
 
             destination.VolunteeringText = new Dictionary<string, string> { { "en-GB", source.VolunteeringText } };
+            destination.Organisation = new Dictionary<string, ManagementReference>() {{"en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } }};
+            destination.SubCategories = new Dictionary<string, List<ManagementReference>>()
+            {
+                {
+                    "en-GB", 
+                    source.SubCategories.Select(sc => new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
+                }
+            };
 
             return destination;
 
