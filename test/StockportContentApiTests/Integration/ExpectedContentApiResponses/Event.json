@@ -83,7 +83,8 @@
       "volunteering": false,
       "volunteeringText": null,
       "groups": []
-    }
+    },
+    "linkedGroups": null
   },
   "alerts": [
     {
