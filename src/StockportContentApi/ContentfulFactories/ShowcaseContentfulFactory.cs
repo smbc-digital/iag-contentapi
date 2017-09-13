@@ -83,6 +83,11 @@ namespace StockportContentApi.ContentfulFactories
                 entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
+            
+            var primaryItems =
+                entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
+                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))    
+                    .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
@@ -99,7 +104,7 @@ namespace StockportContentApi.ContentfulFactories
                                            _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems);
         }
     }
 }

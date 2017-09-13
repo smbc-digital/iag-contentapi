@@ -20,5 +20,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulSocialMediaLink> SocialMediaLinks { get; set; } = new List<ContentfulSocialMediaLink>();
         public string EmailAlertsTopicId { get; set; } = string.Empty;
         public string EmailAlertsText { get; set; } = string.Empty;
+        public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
     }
 }

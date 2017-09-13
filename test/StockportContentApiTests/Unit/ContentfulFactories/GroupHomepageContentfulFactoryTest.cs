@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Moq;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using Xunit;
 
@@ -19,14 +20,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _groupListFactory;
         private Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
         private Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
-
+        private readonly Mock<ITimeProvider> _mockTimeProvider;
+        
         public GroupHomepageContentfulFactoryTest()
         {
             _groupListFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
             _groupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
             _groupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroupHomepage = new ContentfulGroupHomepageBuilder().Build();
-            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object);
+            _mockTimeProvider = new Mock<ITimeProvider>();
+            
+            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object);
         }
 
         [Fact]
