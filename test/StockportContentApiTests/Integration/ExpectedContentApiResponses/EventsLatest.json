@@ -86,16 +86,11 @@
           "email": "",
           "volunteering": false,
           "volunteeringText": null,
-<<<<<<< HEAD
-          "groups": []
-        },
-        "linkedGroups": null
-=======
           "groups": [],
           "donations": false
         },
+        "linkedGroups": null,
         "donations": false
->>>>>>> 0a7c8fc926151e9d8968782c310239296d91f766
       },
       "alerts": [
         {
