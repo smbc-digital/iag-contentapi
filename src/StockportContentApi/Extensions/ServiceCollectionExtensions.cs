@@ -285,11 +285,8 @@ namespace StockportContentApi.Extensions
         /// <param name="configuration"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
         {
-            var loggerFactory = new LoggerFactory().AddNLog();
-            ILogger logger = loggerFactory.CreateLogger<Startup>();
-
             if (useRedisSession)
             {
                 var redisUrl = configuration["TokenStoreUrl"];
@@ -308,11 +305,8 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession)
+        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
         {
-            var loggerFactory = new LoggerFactory().AddNLog();
-            ILogger logger = loggerFactory.CreateLogger<Startup>();
-
             if (useRedisSession)
             {
                 var redisIp = configuration["TokenStoreUrl"];
