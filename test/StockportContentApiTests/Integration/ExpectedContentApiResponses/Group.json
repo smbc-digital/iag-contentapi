@@ -275,6 +275,6 @@
     "groups": [],
     "donations": false
   },
-  "linkedGroups":[],
+  "linkedGroups": null,
   "donations": false
 }
