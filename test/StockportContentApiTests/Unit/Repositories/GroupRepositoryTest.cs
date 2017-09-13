@@ -25,7 +25,6 @@ using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter;
 using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -555,7 +554,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulGroupHomepage>();
             collection.Items = new List<ContentfulGroupHomepage> { contenfulHomepage };
 
-            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, SetupGroups("slug"), null, null );
+            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, null, null, null);
 
             var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
 
@@ -572,7 +571,7 @@ namespace StockportContentApiTests.Unit.Repositories
             homepage.Slug.Should().Be(contenfulHomepage.Slug);
         }
 
-        private static List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
+        private List<ContentfulGroup> SetupContentfulGroups(string testCategorySlug)
         {
 
             var contentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(testCategorySlug).Build();

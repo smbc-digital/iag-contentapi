@@ -115,9 +115,33 @@ namespace StockportContentApi.Repositories
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
 
             var group = _groupFactory.ToModel(entry);
-            group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
+            group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));           
+
+            if(group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
+            {
+                group.SetLinkedGroups(await GetLinkedGroups(group));
+            }            
 
             return HttpResponse.Successful(group);
+        }
+
+        public async Task<List<Group>> GetLinkedGroups(Group group)
+        {
+            var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            var entries = await GetAllEntriesAsync(_client, builder);
+            var contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
+
+            contentfulGroups =
+                contentfulGroups.Where(
+                    groupItem => _dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
+
+            var groupList = _groupListFactory.ToModel(contentfulGroups.ToList());
+
+            var linkeddGroups = groupList.Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(group.CategoriesReference[0].Slug) || c.Slug.ToLower() == group.CategoriesReference[0].Slug.ToLower())
+                                       && g.SubCategories.Any(c => string.IsNullOrEmpty(group.SubCategories[0].Slug) || c.Slug.ToLower() == group.SubCategories[0].Slug.ToLower())
+                                       && g.Slug != group.Slug);
+          
+            return linkeddGroups.ToList();
         }
 
         public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation)
