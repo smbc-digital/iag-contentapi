@@ -117,7 +117,7 @@ namespace StockportContentApi.Repositories
             var group = _groupFactory.ToModel(entry);
             group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));           
 
-            if(group.CategoriesReference != null && group.SubCategories != null)
+            if(group.CategoriesReference.Any() && group.SubCategories.Any())
             {
                 group.SetLinkedGroups(await GetLinkedGroups(group.CategoriesReference, group.SubCategories));
             }            
