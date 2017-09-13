@@ -119,22 +119,29 @@ namespace StockportContentApi.Repositories
 
             if(group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
             {
-                group.SetLinkedGroups(await GetLinkedGroups(group.CategoriesReference, group.SubCategories));
+                group.SetLinkedGroups(await GetLinkedGroups(group));
             }            
 
             return HttpResponse.Successful(group);
         }
 
-        public async Task<List<Group>> GetLinkedGroups(List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories)
+        public async Task<List<Group>> GetLinkedGroups(Group group)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
-            var entries = await _client.GetEntriesAsync(builder); 
-            var groups = _groupListFactory.ToModel(entries.ToList());
+            var entries = await GetAllEntriesAsync(_client, builder);
+            var contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
 
-            var featuredGroup = groups.Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(categoriesReference[0].Slug) || c.Slug.ToLower() == categoriesReference[0].Slug.ToLower())
-                                       && g.SubCategories.Any(c => string.IsNullOrEmpty(subCategories[0].Slug) || c.Slug.ToLower() == subCategories[0].Slug.ToLower()));
+            contentfulGroups =
+                contentfulGroups.Where(
+                    groupItem => _dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
+
+            var groupList = _groupListFactory.ToModel(contentfulGroups.ToList());
+
+            var linkeddGroups = groupList.Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(group.CategoriesReference[0].Slug) || c.Slug.ToLower() == group.CategoriesReference[0].Slug.ToLower())
+                                       && g.SubCategories.Any(c => string.IsNullOrEmpty(group.SubCategories[0].Slug) || c.Slug.ToLower() == group.SubCategories[0].Slug.ToLower())
+                                       && g.Slug != group.Slug);
           
-            return featuredGroup.ToList();
+            return linkeddGroups.ToList();
         }
 
         public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation)
