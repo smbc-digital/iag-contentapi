@@ -33,6 +33,7 @@ namespace StockportContentApi.Model
         public string VolunteeringText { get; set; }
         public Organisation Organisation { get; set; }
         public List<Group> LinkedGroups { get; private set; }
+        public bool Donations { get; set; }
 
         public Group() { }
 
@@ -41,7 +42,7 @@ namespace StockportContentApi.Model
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation)
+            Organisation organisation, bool donations)
         {
             Name = name;
             Slug = slug;
@@ -59,6 +60,7 @@ namespace StockportContentApi.Model
             Breadcrumbs = breadcrumbs;
             MapPosition = mapPosition;
             Volunteering = volunteering;
+            Donations = donations;
             GroupAdministrators = groupAdministrators;
             DateHiddenFrom = dateHiddenFrom;
             DateHiddenTo = dateHiddenTo;

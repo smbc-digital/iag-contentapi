@@ -294,8 +294,19 @@ namespace StockportContentApiTests.Integration
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulOrganisation>>(
-                        q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("organisation").FieldEquals("fields.slug", "slug").Build()),
+                        q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("organisation")
+                                 .FieldEquals("fields.slug", "slug").Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(organisations);
+
+                var groupHomepage = new ContentfulGroupHomepageBuilder().Build();
+                    
+                var groupHomepageCollection = new ContentfulCollection<ContentfulGroupHomepage>();
+                groupHomepageCollection.Items = new List<ContentfulGroupHomepage>(){ groupHomepage };
+                
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulGroupHomepage>>(
+                        q => q.Build() == new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(groupHomepageCollection);
             });
         }
 
@@ -315,6 +326,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("GroupCategory", "/api/unittest/groupCategory")]
         [InlineData("ContactUsId", "/api/unittest/contactUsId/test-email")]
         [InlineData("Organisation", "/api/unittest/organisations/slug")]
+        [InlineData("GroupHomePage", "/api/unittest/grouphomepage")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

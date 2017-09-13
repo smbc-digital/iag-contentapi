@@ -109,10 +109,18 @@
           "email": "",
           "volunteering": false,
           "volunteeringText": null,
+<<<<<<< HEAD
           "groups": []
         },
         "linkedGroups": null
       },      
+=======
+          "groups": [],
+          "donations": false
+        },
+        "donations": false
+      },
+>>>>>>> 0a7c8fc926151e9d8968782c310239296d91f766
       "alerts": [
         {
           "title": "title",
@@ -222,9 +230,16 @@
           "email": "",
           "volunteering": false,
           "volunteeringText": null,
+<<<<<<< HEAD
           "groups": []
         },
         "linkedGroups": null
+=======
+          "groups": [],
+          "donations": false
+        },
+        "donations": false
+>>>>>>> 0a7c8fc926151e9d8968782c310239296d91f766
       },
       "alerts": [
         {
@@ -268,7 +283,14 @@
     "email": "",
     "volunteering": false,
     "volunteeringText": null,
+<<<<<<< HEAD
     "groups": []
   },
   "linkedGroups":[]
+=======
+    "groups": [],
+    "donations": false
+  },
+  "donations": false
+>>>>>>> 0a7c8fc926151e9d8968782c310239296d91f766
 }
