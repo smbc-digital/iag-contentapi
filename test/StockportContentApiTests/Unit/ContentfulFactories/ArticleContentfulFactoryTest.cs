@@ -27,7 +27,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<ITimeProvider> _timeProvider;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
-
+        private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
+        
         public ArticleContentfulFactoryTest()
         {
             _contentfulArticle = new ContentfulArticleBuilder().Build();
@@ -44,13 +45,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-
+            _advertisementFactory = new Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>>();
+            
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                _parentTopicFactory.Object, _LiveChatFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
+                _parentTopicFactory.Object, _LiveChatFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _advertisementFactory.Object, _alertFactory.Object);
         }
 
         [Fact]
@@ -72,7 +74,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
                 new List<Crumb> { crumb },
                 new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue) },
-                DateTime.MinValue, DateTime.MaxValue, false, "id", new NullEventBanner(), "expandingLinkTitle", new List<ExpandingLinkBox>());
+                DateTime.MinValue, DateTime.MaxValue, false, "id", new NullEventBanner(), "expandingLinkTitle", new NullAdvertisement(), new List<ExpandingLinkBox>());
             _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulArticle>()))
 
                 .Returns(topic);
@@ -80,7 +82,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
             var alert = new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc));
             _alertFactory.Setup(o => o.ToModel(_contentfulArticle.Alerts.First())).Returns(alert);
-
+            
+            var advertisment = new Advertisement("Advert Title","advert slug","advert teaser",DateTime.MaxValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), true,"url","image.jpg");
+            _advertisementFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAdvertisement>())).Returns(advertisment);    
+            
             var article = _articleFactory.ToModel(_contentfulArticle);
 
             article.ShouldBeEquivalentTo(_contentfulArticle, o => o
@@ -94,7 +99,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Excluding(e => e.Body)
                 .Excluding(e => e.Alerts)
                 .Excluding(e => e.AlertsInline)
-                .Excluding(e => e.LiveChat));
+                .Excluding(e => e.LiveChat)
+                .Excluding(e => e.Advertisement));
 
             article.Alerts.First().ShouldBeEquivalentTo(_contentfulArticle.Alerts.First());
             article.LiveChat.Title.ShouldBeEquivalentTo(_contentfulArticle.LiveChatText.Title);
@@ -119,6 +125,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory.Verify(o => o.ToModel(_contentfulArticle.Documents.First()), Times.Once);
             article.Documents.Count.Should().Be(1);
             article.Documents.First().Should().Be(document);
+            
+            article.Advertisement.Image.Should().Be(advertisment.Image);
+            article.Advertisement.Title.Should().Be(advertisment.Title);
+            article.Advertisement.Teaser.Should().Be(advertisment.Teaser);
         }
 
         [Fact]

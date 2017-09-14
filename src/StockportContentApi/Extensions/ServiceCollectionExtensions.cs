@@ -39,6 +39,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(new ContactUsIdContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(new CarouselContentContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(new AdvertisementContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>>(p => new HomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                 p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
@@ -75,6 +76,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
                 p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
+                p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
             (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
@@ -96,6 +98,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<Asset, Document>>(),
                 p.GetService<IVideoRepository>(),
                 p.GetService<ITimeProvider>(),
+                p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
                 (p => new TopicSiteMapContentfulFactory());

@@ -17,6 +17,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
+        private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
         private readonly DateComparer _dateComparer;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
@@ -24,9 +25,10 @@ namespace StockportContentApi.ContentfulFactories
             IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
             IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
             IContentfulFactory<ContentfulLiveChat, LiveChat> liveChatFactory,
-        IContentfulFactory<Asset, Document> documentFactory,
+            IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory,
             IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _sectionFactory = sectionFactory;
@@ -34,6 +36,7 @@ namespace StockportContentApi.ContentfulFactories
             _profileFactory = profileFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
+            _advertisementFactory = advertisementFactory;
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
@@ -73,9 +76,16 @@ namespace StockportContentApi.ContentfulFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
+            Advertisement advertisement = null;
+            if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
+                entry.Advertisement.SunsetDate))
+            {
+                advertisement = _advertisementFactory.ToModel(entry.Advertisement);
+            }
+
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
                 sections,breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                entry.LiveChatVisible, liveChat, alertsInline);
+                entry.LiveChatVisible, liveChat, alertsInline, advertisement);
         }
     }
 }

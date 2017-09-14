@@ -5,17 +5,17 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class AdvertismentContentfulFactory : IContentfulFactory<ContentfulAdvertisment, Advertisment>
+    public class AdvertisementContentfulFactory : IContentfulFactory<ContentfulAdvertisement, Advertisement>
     {
-        public Advertisment ToModel(ContentfulAdvertisment entry)
+        public Advertisement ToModel(ContentfulAdvertisement entry)
         {
 
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                 ? entry.Image.File.Url
                 : string.Empty;
 
-            return new Advertisment(entry.Title, entry.Slug, entry.Teaser, entry.SunriseDate, entry.SunriseDate,
-                entry.IsAdvertisment, entry.NavigartionUrl, imageUrl);
+            return new Advertisement(entry.Title, entry.Slug, entry.Teaser, entry.SunriseDate, entry.SunriseDate,
+                entry.IsAdvertisment, entry.NavigationUrl, imageUrl);
         }
     }
 }

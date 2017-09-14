@@ -39,6 +39,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
+        private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
         private Mock<ICache> _cache;
         private readonly Mock<IConfiguration> _configuration;
 
@@ -60,6 +61,8 @@ namespace StockportContentApiTests.Unit.Repositories
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _advertisementFactory = new Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>>();
+            
             _cache = new Mock<ICache>();
 
             var contentfulFactory = new ArticleContentfulFactory(
@@ -71,6 +74,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 documentFactory, 
                 _videoRepository.Object,
                 _mockTimeProvider.Object,
+                _advertisementFactory.Object,
                 _alertFactory.Object
                 );
 
@@ -238,7 +242,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             return new Article("", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
                 new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
-                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), false, new NullLiveChat(), new List<Alert>());
+                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), false, new NullLiveChat(), new List<Alert>(), new NullAdvertisement());
         }
     }
 }
