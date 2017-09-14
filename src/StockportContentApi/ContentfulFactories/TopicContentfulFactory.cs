@@ -13,8 +13,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
+        private readonly IContentfulFactory<ContentfulAdvertisment, Advertisment> _advertismentFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulAdvertisment, Advertisment> advertismentFactory, ITimeProvider timeProvider)
 
         {
             _subItemFactory = subItemFactory;
@@ -23,6 +24,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
+            _advertismentFactory = advertismentFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -61,9 +63,19 @@ namespace StockportContentApi.ContentfulFactories
 
             var primaryItemTitle = entry.PrimaryItemTitle;
 
+            var ad = _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisment.SunriseDate, entry.Advertisment.SunsetDate);
+            
+            var advertisment = entry.Advertisment.Where(advert => ContentfulHelpers.EntryIsNotALink(advert.Sys)
+                                                            &&
+                                                            _dateComparer.DateNowIsWithinSunriseAndSunsetDates(
+                                                                advert.SunriseDate, advert.SunsetDate))
+                .Select(ad => _advertismentFactory.ToModel(ad));
+
+
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes, primaryItemTitle);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisment, expandingLinkBoxes, primaryItemTitle);
         }
     }
 }

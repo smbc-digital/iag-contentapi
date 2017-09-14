@@ -18,5 +18,6 @@ namespace StockportContentApi.ContentfulModels
             Sys = new SystemProperties { Type = "Entry" }
         };
         public string PrimaryItemTitle { get; set; }
+        public ContentfulAdvertisment Advertisment { get; set; } = new ContentfulAdvertisment();
     }
 }

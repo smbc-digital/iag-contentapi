@@ -25,6 +25,7 @@ namespace StockportContentApi.Model
         public string ExpandingLinkTitle { get; }
         public IEnumerable<ExpandingLinkBox> ExpandingLinkBoxes { get; }
         public string PrimaryItemTitle { get; set; }
+        public Advertisment Advertisment { get; }
 
         public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
             IEnumerable<SubItem> tertiaryItems)
@@ -39,8 +40,8 @@ namespace StockportContentApi.Model
         public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage,
             string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, 
-            string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, 
-            string primaryItemTitle = null)
+            string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, Advertisment advertisment,
+            IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null)
         {
             Slug = slug;
             Name = name;
@@ -62,6 +63,7 @@ namespace StockportContentApi.Model
             ExpandingLinkTitle = expandingLinkTitle;
             ExpandingLinkBoxes = expandingLinkBoxes;
             PrimaryItemTitle = primaryItemTitle;
+            Advertisment = advertisment;
         }
     }
 
@@ -86,6 +88,7 @@ namespace StockportContentApi.Model
             string.Empty,
             new NullEventBanner(),
             string.Empty,
+            new Advertisment.NullAdvertisment(),
             new List<ExpandingLinkBox>(),
             string.Empty)
         {
