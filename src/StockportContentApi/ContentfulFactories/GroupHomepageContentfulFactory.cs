@@ -34,9 +34,9 @@ namespace StockportContentApi.ContentfulFactories
             var groupSubCategory = _groupSubCategoryListFactory.ToModel(entry.FeaturedGroupsSubCategory);
 
             var featuredGroup = groups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(
-                group.DateHiddenFrom, group.DateHiddenTo));
+                group.DateHiddenFrom, group.DateHiddenTo)).ToList();
 
-            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, groups, groupCategory, groupSubCategory);
+            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory);
         }
     }
 }
