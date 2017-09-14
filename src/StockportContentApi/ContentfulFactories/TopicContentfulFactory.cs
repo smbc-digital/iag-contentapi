@@ -13,8 +13,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
+        private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory, ITimeProvider timeProvider)
 
         {
             _subItemFactory = subItemFactory;
@@ -23,6 +24,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
+            _advertisementFactory = advertisementFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -61,9 +63,16 @@ namespace StockportContentApi.ContentfulFactories
 
             var primaryItemTitle = entry.PrimaryItemTitle;
 
+            Advertisement advertisement = null;
+            if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
+                entry.Advertisement.SunsetDate))
+            {
+                advertisement = _advertisementFactory.ToModel(entry.Advertisement);
+            }
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, expandingLinkBoxes, primaryItemTitle);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisement, expandingLinkBoxes, primaryItemTitle);
         }
     }
 }

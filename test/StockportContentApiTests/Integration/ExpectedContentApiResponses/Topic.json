@@ -91,5 +91,15 @@
       ]
     }
   ],
-  "primaryItemTitle": null 
+  "primaryItemTitle": null,
+  "advertisement":{
+      "title":"Advert Title",
+      "slug":"advert slug",
+      "teaser":"advert teaser",
+      "sunriseDate":"0001-01-01T00:00:00Z",
+      "sunsetDate":"0001-01-01T00:00:00Z",
+      "isadvertisement":true,
+      "navigationUrl":"",
+      "image":"url"
+  }
 } 
