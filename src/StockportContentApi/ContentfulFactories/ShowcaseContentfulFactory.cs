@@ -14,8 +14,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -23,6 +24,7 @@ namespace StockportContentApi.ContentfulFactories
             _socialMediaFactory = socialMediaFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
+            _keyFactFactory = keyFactFactory;
         }
         
         public Showcase ToModel(ContentfulShowcase entry)
@@ -99,7 +101,11 @@ namespace StockportContentApi.ContentfulFactories
                                            _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts);
+            var keyFacts = entry.KeyFacts.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                                               .Select(fact => _keyFactFactory.ToModel(fact)).ToList();
+
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, keyFacts);
         }
     }
 }

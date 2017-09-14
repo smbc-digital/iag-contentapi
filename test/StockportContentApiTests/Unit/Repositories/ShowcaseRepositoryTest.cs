@@ -68,7 +68,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
+            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
 
             var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
 

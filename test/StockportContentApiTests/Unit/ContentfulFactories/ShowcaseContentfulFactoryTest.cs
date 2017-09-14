@@ -39,6 +39,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
 
+            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
+
             var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
@@ -52,7 +54,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -93,7 +95,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
+            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -145,7 +149,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
+            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -197,7 +203,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object);
+            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
