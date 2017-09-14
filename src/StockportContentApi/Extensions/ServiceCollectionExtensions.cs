@@ -53,7 +53,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>() ));
+            services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory());
@@ -286,11 +286,8 @@ namespace StockportContentApi.Extensions
         /// <param name="configuration"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
         {
-            var loggerFactory = new LoggerFactory().AddNLog();
-            ILogger logger = loggerFactory.CreateLogger<Startup>();
-
             if (useRedisSession)
             {
                 var redisUrl = configuration["TokenStoreUrl"];
@@ -309,11 +306,8 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession)
+        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
         {
-            var loggerFactory = new LoggerFactory().AddNLog();
-            ILogger logger = loggerFactory.CreateLogger<Startup>();
-
             if (useRedisSession)
             {
                 var redisIp = configuration["TokenStoreUrl"];

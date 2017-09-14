@@ -32,6 +32,7 @@ namespace StockportContentApi.Model
         public string AbilityLevel { get; set; }
         public string VolunteeringText { get; set; }
         public Organisation Organisation { get; set; }
+        public List<Group> LinkedGroups { get; private set; }
         public bool Donations { get; set; }
 
         public Group() { }
@@ -74,6 +75,11 @@ namespace StockportContentApi.Model
         public void SetEvents(List<Event> events)
         {
             Events = events;
+        }
+
+        public void SetLinkedGroups(List<Group> linkedGroups)
+        {
+            LinkedGroups = linkedGroups;
         }
     }
 }

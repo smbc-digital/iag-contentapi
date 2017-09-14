@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Services;
@@ -11,6 +10,8 @@ using StockportContentApi.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 using StockportContentApi.Extensions;
 using StockportContentApi.Middleware;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace StockportContentApi
 {
@@ -33,11 +34,22 @@ namespace StockportContentApi
             _appEnvironment = configLoader.EnvironmentName(env);
 
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
+
+            var loggerConfig = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Application", "IAG Content Api")
+                .WriteTo.LiterateConsole();
+
+            Log.Logger = loggerConfig.CreateLogger();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            // logging
+            var loggerFactory = new LoggerFactory().AddSerilog();
+            ILogger logger = loggerFactory.CreateLogger<Startup>();
+
             // add other services
             services.AddCache(_useRedisSession);
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
@@ -51,11 +63,11 @@ namespace StockportContentApi
 
             if (_appEnvironment == "local")
             {
-                services.AddRedisLocal(Configuration, _useRedisSession);
+                services.AddRedisLocal(Configuration, _useRedisSession, logger);
             }
             else
             {
-                services.AddRedis(Configuration, _useRedisSession);
+                services.AddRedis(Configuration, _useRedisSession, logger);
             }
             
             services.AddRedirects(Configuration);
@@ -69,8 +81,11 @@ namespace StockportContentApi
             services.AddAutoMapper();
         }
 
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
         {
+            // add logging
+            loggerFactory.AddSerilog();
+
             app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseApplicationInsightsRequestTelemetry();
@@ -78,7 +93,8 @@ namespace StockportContentApi
             app.UseStaticFiles();
             app.UseMvc();
 
-            loggerFactory.AddNLog();
+            // close logger
+            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
     }
 }

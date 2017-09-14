@@ -26,6 +26,7 @@
       "subItems": []
     }
   ],
+  "primaryItems":[],
   "breadcrumbs": [
     {
       "title": "title",
@@ -77,5 +78,5 @@
       "sunsetDate": "2116-08-30T23:00:00Z"
     }
   ],
-  "keyFacts": null
+  "keyFacts": []
 }

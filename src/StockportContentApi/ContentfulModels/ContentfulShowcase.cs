@@ -21,5 +21,6 @@ namespace StockportContentApi.ContentfulModels
         public string EmailAlertsTopicId { get; set; } = string.Empty;
         public string EmailAlertsText { get; set; } = string.Empty;
         public List<ContentfulKeyFact> KeyFacts { get; set; } = new List<ContentfulKeyFact>();
+        public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
     }
 }
