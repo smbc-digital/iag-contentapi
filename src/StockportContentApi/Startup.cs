@@ -12,6 +12,10 @@ using StockportContentApi.Extensions;
 using StockportContentApi.Middleware;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using StockportWebapp.Configuration;
+using Serilog.Sinks.Elasticsearch;
+using System;
+using System.Collections.Specialized;
 
 namespace StockportContentApi
 {
@@ -39,6 +43,26 @@ namespace StockportContentApi
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "IAG Content Api")
                 .WriteTo.LiterateConsole();
+
+            // elastic search
+            var esConfig = new ElasticSearch();
+            Configuration.GetSection("ElasticSearch").Bind(esConfig);
+
+            if (esConfig.Enabled && !string.IsNullOrEmpty(esConfig.Url) && !string.IsNullOrEmpty(esConfig.Authorization))
+            {
+                loggerConfig.WriteTo.Elasticsearch(
+                    new ElasticsearchSinkOptions(new Uri(esConfig.Url))
+                    {
+                        AutoRegisterTemplate = true,
+                        MinimumLogEventLevel = esConfig.LogLevel,
+                        CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true),
+                        IndexFormat = esConfig.LogFormat,
+                        ModifyConnectionSettings = (c) => c.GlobalHeaders(new NameValueCollection
+                        {
+                            {"Authorization", esConfig.Authorization}
+                        })
+                    });
+            }
 
             Log.Logger = loggerConfig.CreateLogger();
         }
