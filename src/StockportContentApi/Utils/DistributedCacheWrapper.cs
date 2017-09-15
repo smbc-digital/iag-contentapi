@@ -50,8 +50,7 @@ namespace StockportContentApi.Utils
         public void SetString(string key, string value, int minutes)
         {
             var db = GetLeastUsedConnection().GetDatabase();
-            db.StringSet(key, value);
-            db.KeyExpire(key, DateTime.Now.AddMinutes(minutes));
+            db.StringSet(key, value, TimeSpan.FromMinutes(minutes));
         }
 
         public async Task<List<RedisValueData>> GetKeys()

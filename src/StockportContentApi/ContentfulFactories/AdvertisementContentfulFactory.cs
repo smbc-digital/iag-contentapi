@@ -15,7 +15,7 @@ namespace StockportContentApi.ContentfulFactories
                 : string.Empty;
 
             return new Advertisement(entry.Title, entry.Slug, entry.Teaser, entry.SunriseDate, entry.SunriseDate,
-                entry.IsAdvertisment, entry.NavigationUrl, imageUrl);
+                entry.IsAdvertisement, entry.NavigationUrl, imageUrl);
         }
     }
 }
