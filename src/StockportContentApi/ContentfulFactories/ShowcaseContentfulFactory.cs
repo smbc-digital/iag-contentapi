@@ -15,8 +15,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
+        private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -25,6 +26,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
             _keyFactFactory = keyFactFactory;
+            _profileFactory = profileFactory;
         }
         
         public Showcase ToModel(ContentfulShowcase entry)
@@ -109,7 +111,9 @@ namespace StockportContentApi.ContentfulFactories
             var keyFacts = entry.KeyFacts.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                                                .Select(fact => _keyFactFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts);
+            var profile = entry.Profile == null ? null : _profileFactory.ToModel(entry.Profile);
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile);
         }
     }
 }

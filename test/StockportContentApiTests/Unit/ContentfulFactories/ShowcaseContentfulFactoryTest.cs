@@ -41,6 +41,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
+            var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+
             var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
@@ -54,7 +56,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -97,7 +99,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
+            var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -151,7 +155,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
+            var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -205,7 +211,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object);
+            var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
