@@ -14,7 +14,7 @@ using StockportContentApi.ContentfulFactories;
 
 namespace StockportContentApi.Repositories
 {
-    public class AtoZRepository
+    public class AtoZRepository : BaseRepository
     {
         private readonly string _contentfulApiUrl;
         private readonly DateComparer _dateComparer;
@@ -48,8 +48,8 @@ namespace StockportContentApi.Repositories
         private async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
         {
             var atozList = new List<AtoZ>();           
-            var builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(2).Limit(1000);
-            var entries = await _client.GetEntriesAsync(builder);           
+            var builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(2);
+            var entries = await GetAllEntriesAsync(_client, builder);
             var entriesWithDisplayOn = entries != null ? entries.Where(x => x.DisplayOnAZ == "True") : null;
 
             if (entriesWithDisplayOn != null)

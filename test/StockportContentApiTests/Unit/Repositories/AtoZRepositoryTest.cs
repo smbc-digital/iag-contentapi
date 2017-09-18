@@ -48,6 +48,9 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ItGetsAnAtoZListingForTheLetterV()
         {
+            var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+            nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
@@ -58,9 +61,15 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Vintage Village 5").Build(),
                 };
 
-            _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
                     "The vintage village turned 6 with a great reception", "article", new List<string>()));
@@ -76,6 +85,9 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ItGetsAnAtoZListingForTheLetterB()
         {
+            var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+            nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
@@ -85,9 +97,14 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Bintage Village 4").Build(),
                     new ContentfulAToZBuilder().Title("Bintage Village 5").Build(),
                 };
-            _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                .Returns(new AtoZ("Bintage Village turns 6 years old", "bintage-village-turns-6-years-old",
@@ -104,6 +121,9 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ItReturnsANotFoundIfNoItemsMatch()
         {
+            var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+            nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
@@ -113,9 +133,14 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Bintage Village 4").Build(),
                     new ContentfulAToZBuilder().Title("Bintage Village 5").Build(),
                 };
-            _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
@@ -132,6 +157,9 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             var alternativeTitle = "Do you know this started!";
 
+            var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+            nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
@@ -142,9 +170,15 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Vintage Village 5").Build(),
                 };
 
-            _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>() { alternativeTitle }));
             var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null);
@@ -162,15 +196,24 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             var alternateTitles = new List<string> { "This is alternate title", "this is also another alternate title" };
 
+            var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+            nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
                     new ContentfulAToZBuilder().Title("Vintage Village").Build(),
                 };
 
-            _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
+            _client.Setup(o=>o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+                            It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
+            _client.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("title", "slug", "teaser", "article", alternateTitles));
             var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null);

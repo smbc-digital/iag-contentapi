@@ -233,6 +233,9 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
 
+                var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
+                nullAToZcollection.Items = new List<ContentfulAtoZ>();
+
                 var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
                 aToZcollection.Items = new List<ContentfulAtoZ>
                 {
@@ -242,9 +245,10 @@ namespace StockportContentApiTests.Integration
                     new ContentfulAToZBuilder().Title("Benefits & Support").Slug("benefits-and-support").Teaser("Benefits & Support").Sys("topic").Build(),
                     new ContentfulAToZBuilder().Title("Bins & Recycling").Slug("bins-and-recycling").Teaser("Collection days, bulky items").Sys("topic").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
-                               It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
+                httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
                 var smartAnswer = new ContentfulCollection<ContentfulSmartAnswers>();
                 smartAnswer.Items = new List<ContentfulSmartAnswers>()
