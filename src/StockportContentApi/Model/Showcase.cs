@@ -29,8 +29,9 @@ namespace StockportContentApi.Model
         public IEnumerable<Alert> Alerts { get; }
         public IEnumerable<KeyFact> KeyFacts { get; }
         public Profile Profile { get; }
+        public FieldOrder FieldOrder { get; }
 
-        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, IEnumerable<KeyFact> keyFacts, Profile profile)
+        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder)
         {
             Title = title;
             Slug = slug;
@@ -53,6 +54,7 @@ namespace StockportContentApi.Model
             KeyFacts = keyFacts;
             PrimaryItems = primaryItems;
             Profile = profile;
+            FieldOrder = fieldOrder;
         }
     }
 }
