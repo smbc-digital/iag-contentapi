@@ -29,9 +29,9 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var repository = _createRepository(_createConfig(businessId));
-                var article = repository.GetShowcases(showcaseSlug);
+                var showcase = repository.GetShowcases(showcaseSlug);
 
-                return article;
+                return showcase;
             });
         }
 
@@ -42,9 +42,9 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var repository = _createRepository(_createConfig(businessId));
-                var article = repository.Get();
+                var showcase = repository.Get();
 
-                return article;
+                return showcase;
             });
         }
     }

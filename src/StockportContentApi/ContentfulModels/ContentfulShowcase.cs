@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -23,5 +24,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulKeyFact> KeyFacts { get; set; } = new List<ContentfulKeyFact>();
         public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
         public ContentfulProfile Profile { get; set; } = null;
+        public FieldOrder FieldOrder { get; set; } = new FieldOrder();
     }
 }

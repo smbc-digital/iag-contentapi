@@ -77,7 +77,7 @@ namespace StockportContentApi.ContentfulFactories
                                         ? entry.Image.File.Url : string.Empty;
 
             Advertisement advertisement = null;
-            if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
+            if (entry.Advertisement != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
                 entry.Advertisement.SunsetDate))
             {
                 advertisement = _advertisementFactory.ToModel(entry.Advertisement);
