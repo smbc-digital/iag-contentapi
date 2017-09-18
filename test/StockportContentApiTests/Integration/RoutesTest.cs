@@ -243,7 +243,7 @@ namespace StockportContentApiTests.Integration
                     new ContentfulAToZBuilder().Title("Bins & Recycling").Slug("bins-and-recycling").Teaser("Collection days, bulky items").Sys("topic").Build()
                 };
                 httpClient.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
 
                 var smartAnswer = new ContentfulCollection<ContentfulSmartAnswers>();

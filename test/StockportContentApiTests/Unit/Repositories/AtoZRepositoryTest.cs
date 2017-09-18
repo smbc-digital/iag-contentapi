@@ -59,7 +59,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 };
 
             _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
@@ -86,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Bintage Village 5").Build(),
                 };
             _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
@@ -143,7 +143,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 };
 
             _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>() { alternativeTitle }));
@@ -169,7 +169,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 };
 
             _client.Setup(o => o.GetEntriesAsync(
-                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Build()),
+                               It.Is<QueryBuilder<ContentfulAtoZ>>(q => q.Build() == new QueryBuilder<ContentfulAtoZ>().ContentTypeIs("article").Include(2).Limit(1000).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("title", "slug", "teaser", "article", alternateTitles));
