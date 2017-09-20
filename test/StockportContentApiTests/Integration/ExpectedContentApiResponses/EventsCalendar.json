@@ -100,7 +100,19 @@
           "sunsetDate": "9999-09-09T00:00:00+00:00"
         }
       ],
-      "eventCategories": [],
+      "eventCategories": [
+        {
+          "name": "Category 2",
+          "slug": "category-2",
+          "icon": ""
+        },
+        {
+          "name": "Event Category",
+          "slug": "event-category",
+          "icon": ""
+
+        }
+      ],
       "free": null,
       "paid": null,
       "coord": {
@@ -214,20 +226,31 @@
           "sunsetDate": "9999-09-09T00:00:00+00:00"
         }
       ],
-      "eventCategories": [],
-      "free": null,
-      "paid": null,
-      "coord": {
-        "latitude": 53.5,
-        "longitude": -2.5,
-        "horizontalAccuracy": "NaN",
-        "verticalAccuracy": "NaN",
-        "speed": "NaN",
-        "course": "NaN",
-        "isUnknown": false,
-        "altitude": "NaN"
-      }
-    }
-  ],
+      "eventCategories": [
+        {
+          "name": "Category 2",
+          "slug": "category-2",
+          "icon": ""
+        },
+        {
+          "name": "Event Category",
+          "slug": "event-category",
+          "icon": ""
+        
+        }],
+          "free": null,
+          "paid": null,
+          "coord": {
+            "latitude": 53.5,
+            "longitude": -2.5,
+            "horizontalAccuracy": "NaN",
+            "verticalAccuracy": "NaN",
+            "speed": "NaN",
+            "course": "NaN",
+            "isUnknown": false,
+            "altitude": "NaN"
+          }
+        }
+      ],
   "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]
 }
