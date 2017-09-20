@@ -36,7 +36,7 @@ namespace StockportContentApi.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            var key = _configuration["ContentApiAuthenticationKey"] ?? string.Empty;
+            var key = _configuration["Authorization"] ?? string.Empty;
 
             if (string.IsNullOrEmpty(key))
             {
