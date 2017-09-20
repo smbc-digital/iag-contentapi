@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Middleware
             context.Request.Path = "/api/stockportgov/test";
 
             context.Request.Headers.Add("Authorization", "test");
-            _configuration.Setup(_ => _["ContentApiAuthenticationKey"]).Returns("test");
+            _configuration.Setup(_ => _["Authorization"]).Returns("test");
 
             // Act
             await _middleware.Invoke(context);
@@ -76,7 +76,7 @@ namespace StockportContentApiTests.Unit.Middleware
             context.Request.Path = "/api/stockportgov/test";
 
             context.Request.Headers.Add("Authorization", "test-invalid");
-            _configuration.Setup(_ => _["ContentApiAuthenticationKey"]).Returns("test");
+            _configuration.Setup(_ => _["Authorization"]).Returns("test");
 
             // Act
             await _middleware.Invoke(context);
@@ -90,7 +90,7 @@ namespace StockportContentApiTests.Unit.Middleware
         {
             // Arrange
             var context = new DefaultHttpContext();
-            _configuration.Setup(_ => _["ContentApiAuthenticationKey"]).Returns("test");
+            _configuration.Setup(_ => _["Authorization"]).Returns("test");
 
             // Act
             await _middleware.Invoke(context);
