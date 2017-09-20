@@ -25,7 +25,6 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly OrganisationRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<Func<ContentfulConfig, GroupRepository>> _groupRepositoryFunc;
 
         public OrganisationRepositoryTest()
         {
@@ -42,11 +41,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            _groupRepositoryFunc = new Mock<Func<ContentfulConfig, GroupRepository>>();
-
             var _groupRepository = new Mock<IGroupRepository>();
-
-            _groupRepository = new Mock<IGroupRepository>();
             var groups = new List<Group>();
             var organisation = new Organisation() { Slug = "slug", Title = "Title" };
             groups.Add(new GroupBuilder().Organisation(organisation).Build());

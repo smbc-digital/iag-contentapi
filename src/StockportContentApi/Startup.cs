@@ -16,6 +16,7 @@ using StockportWebapp.Configuration;
 using Serilog.Sinks.Elasticsearch;
 using System;
 using System.Collections.Specialized;
+using AspNetCoreRateLimit;
 
 namespace StockportContentApi
 {
@@ -82,6 +83,11 @@ namespace StockportContentApi
             services.AddTransient<ResponseHandler>();
             services.AddSingleton<ITimeProvider>(new TimeProvider());
             services.AddSingleton<IConfiguration>(Configuration);
+            
+            services.Configure<ClientRateLimitOptions>(Configuration.GetSection("ClientRateLimiting"));
+            services.Configure<ClientRateLimitPolicies>(Configuration.GetSection("ClientRateLimitPolicies"));
+            services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
             // add service extensions
 
@@ -111,7 +117,8 @@ namespace StockportContentApi
             loggerFactory.AddSerilog();
 
             app.UseMiddleware<AuthenticationMiddleware>();
-
+            app.UseClientRateLimiting();
+            
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();

@@ -38,7 +38,7 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/eventCategory")]
+        [Route("api/{businessId}/event-categories")]
         public async Task<IActionResult> GetEventCategories(string businessId)
         {
             return await _handler.Get(() =>

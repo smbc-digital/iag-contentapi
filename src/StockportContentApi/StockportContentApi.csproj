@@ -16,6 +16,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="2.1.0" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
