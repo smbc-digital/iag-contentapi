@@ -169,7 +169,7 @@ namespace StockportContentApi.Repositories
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
                     .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Contains(category.ToLower()) || e.EventCategories.Any(c => c.Slug == category.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
                     .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower() == "paid,free" || price.ToLower() == "free,paid" || (price.ToLower() == "free" && (e.Free ?? false)) || (price.ToLower() == "paid" && (e.Paid ?? false)))
                     .Where(e => (latitude == 0 && longitude == 0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
@@ -199,7 +199,9 @@ namespace StockportContentApi.Repositories
 
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.Categories.Select(c => c.ToLower()).Contains(category.ToLower()))
+                    .Where(e => string.IsNullOrWhiteSpace(category) 
+                        || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
+                        || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
