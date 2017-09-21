@@ -3,6 +3,7 @@ using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -12,13 +13,15 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _contentfulGroupSubCategoryFactory;
         private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulOrganisationFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation, Organisation> contentfulOrganisationFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider)
+        public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation, Organisation> contentfulOrganisationFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _contentfulOrganisationFactory = contentfulOrganisationFactory;
             _contentfulGroupCategoryFactory = contentfulGroupCategoryFactory;
             _contentfulGroupSubCategoryFactory = contentfulGroupSubCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Group ToModel(ContentfulGroup entry)
@@ -50,7 +53,8 @@ namespace StockportContentApi.ContentfulFactories
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering, 
-                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, organisation, entry.Donations);  
+                entry.GroupAdministrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 
+                organisation, entry.Donations).StripData(_httpContextAccessor);  
         }
     }
 }

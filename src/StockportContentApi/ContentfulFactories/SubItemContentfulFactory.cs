@@ -3,16 +3,19 @@ using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
     {
         private readonly DateComparer _dateComparer;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SubItemContentfulFactory(ITimeProvider timeProvider)
+        public SubItemContentfulFactory(ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _dateComparer = new DateComparer(timeProvider);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public SubItem ToModel(ContentfulReference entry)
@@ -52,7 +55,7 @@ namespace StockportContentApi.ContentfulFactories
             }
 
             return new SubItem(entry.Slug, title, entry.Teaser, 
-                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
+                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems).StripData(_httpContextAccessor);
         }
 
         private string GetEntryType(ContentfulReference entry)

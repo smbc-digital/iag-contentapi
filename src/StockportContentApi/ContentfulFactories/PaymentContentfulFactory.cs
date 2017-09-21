@@ -1,9 +1,8 @@
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -11,10 +10,12 @@ namespace StockportContentApi.ContentfulFactories
     {
 
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PaymentContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
+        public PaymentContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor)
         {
             _crumbFactory = crumbFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Payment ToModel(ContentfulPayment entry)
@@ -32,7 +33,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ParisReference,
                 entry.Fund,
                 entry.GlCodeCostCentreNumber,
-                breadcrumbs);
+                breadcrumbs).StripData(_httpContextAccessor);
         }
     }
 }

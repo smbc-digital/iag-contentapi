@@ -18,6 +18,8 @@ using StockportContentApi.Utils;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -35,7 +37,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            var contentfulFactory = new OrganisationContentfulFactory();
+            var contentfulFactory = new OrganisationContentfulFactory(HttpContextFake.GetHttpContextFake());
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();

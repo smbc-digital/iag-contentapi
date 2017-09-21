@@ -11,6 +11,8 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -27,7 +29,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Icon("icon")
                 .Build();
 
-            var contentfulFactory = new GroupCategoryContentfulFactory();
+            var contentfulFactory = new GroupCategoryContentfulFactory(HttpContextFake.GetHttpContextFake());
 
             var category = contentfulFactory.ToModel(contentfulShowcase);
 

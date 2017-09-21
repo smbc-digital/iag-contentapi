@@ -10,6 +10,8 @@ using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using System.Collections.Generic;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -41,7 +43,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
 
-            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _timeProvider.Object);
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
             
         }
 

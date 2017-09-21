@@ -9,6 +9,8 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -24,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-            _contentfulGroupFactory = new GroupContentfulFactory(new OrganisationContentfulFactory(), new GroupCategoryContentfulFactory(), new GroupSubCategoryContentfulFactory(), _timeProvider.Object);
+            _contentfulGroupFactory = new GroupContentfulFactory(new OrganisationContentfulFactory(HttpContextFake.GetHttpContextFake()), new GroupCategoryContentfulFactory(HttpContextFake.GetHttpContextFake()), new GroupSubCategoryContentfulFactory(HttpContextFake.GetHttpContextFake()), _timeProvider.Object, HttpContextFake.GetHttpContextFake());
             _contentfulGroupList = new List<ContentfulGroup> { new ContentfulGroupBuilder().Build() };
 
             _groupListContentfulFactory = new GroupListContentfulFactory(_contentfulGroupFactory);

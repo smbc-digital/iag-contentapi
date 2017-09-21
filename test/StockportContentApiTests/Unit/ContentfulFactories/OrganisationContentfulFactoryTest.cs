@@ -7,6 +7,8 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -31,7 +33,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 VolunteeringText = "help wanted"
             };
 
-            _organisationContentfulFactory = new OrganisationContentfulFactory();
+            _organisationContentfulFactory = new OrganisationContentfulFactory(HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

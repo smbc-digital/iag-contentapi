@@ -1,11 +1,10 @@
-using System;
 using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -17,14 +16,16 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>> _eventCategoryListFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>> eventCategoryListFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
+        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>> eventCategoryListFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _documentFactory = documentFactory;
             _groupFactory = groupFactory;
             _alertFactory = alertFactory;
             _eventCategoryListFactory = eventCategoryListFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Event ToModel(ContentfulEvent entry)
@@ -52,7 +53,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid).StripData(_httpContextAccessor);
         }
     }
 }

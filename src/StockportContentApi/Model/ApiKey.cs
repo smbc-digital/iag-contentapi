@@ -12,8 +12,9 @@ namespace StockportContentApi.Model
         public DateTime ActiveFrom { get; } 
         public DateTime ActiveTo { get; } 
         public List<string> EndPoints { get; }
-        
-        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints)
+        public bool CanViewSensitive { get; }
+
+        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints, bool canViewSensitive)
         {
             Name = name;
             Key = key;
@@ -21,6 +22,7 @@ namespace StockportContentApi.Model
             ActiveFrom = activeFrom;
             ActiveTo = activeTo;
             EndPoints = endPoints;
+            CanViewSensitive = canViewSensitive;
         }
     }
 }

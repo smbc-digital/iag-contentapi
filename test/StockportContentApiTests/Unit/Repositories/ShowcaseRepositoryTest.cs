@@ -24,6 +24,8 @@ using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -41,6 +43,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
 
         public ShowcaseRepositoryTest()
         {
@@ -57,7 +60,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _timeprovider = new Mock<ITimeProvider>();
             _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-
+            _httpContextAccessor = new Mock<IHttpContextAccessor>();
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
             var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
@@ -72,7 +75,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
 

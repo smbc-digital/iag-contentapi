@@ -4,6 +4,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -14,18 +15,18 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
         private IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
-                                        IContentfulFactory<Asset, Document> documentFactory,
-                                        IVideoRepository videoRepository,
-                                        ITimeProvider timeProvider,
-                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory )
+            IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
+            ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IHttpContextAccessor httpContextAccessor)
         {
             _profileFactory = profileFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Section ToModel(ContentfulSection entry)
@@ -41,7 +42,7 @@ namespace StockportContentApi.ContentfulFactories
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
             return new Section(entry.Title, entry.Slug, body, profiles, documents, 
-                               entry.SunriseDate, entry.SunsetDate, alertsInline);
+                               entry.SunriseDate, entry.SunsetDate, alertsInline).StripData(_httpContextAccessor);
         }
     }
 }

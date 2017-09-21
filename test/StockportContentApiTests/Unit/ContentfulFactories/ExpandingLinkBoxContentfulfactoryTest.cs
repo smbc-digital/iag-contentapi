@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Fakes;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
@@ -23,7 +25,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateAnExpandingLinkBoxFromAContentfulExpandingLinkBox()
         {
             var contentfulExpandingLinkBox = new ContentfulExpandingLinkBoxBuilder().Build();
-            var subItemFactory = new SubItemContentfulFactory(_timeProvider.Object);
+            var subItemFactory = new SubItemContentfulFactory(_timeProvider.Object, HttpContextFake.GetHttpContextFake());
             var factory = new ExpandingLinkBoxContentfulfactory(subItemFactory, _timeProvider.Object);
            
             var expandingLinkBox = factory.ToModel(contentfulExpandingLinkBox);

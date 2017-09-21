@@ -8,6 +8,8 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -39,7 +41,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 _groupFactory.Object, 
                 _alertFactory.Object,
                 _carouselContentFactory.Object,
-                _timeProvider.Object);
+                _timeProvider.Object,
+                HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

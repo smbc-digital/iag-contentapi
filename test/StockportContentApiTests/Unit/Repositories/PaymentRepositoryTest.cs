@@ -17,6 +17,8 @@ using StockportContentApi.Utils;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -41,7 +43,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new Crumb("title", "slug", "title"));
 
-            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object);
+            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake());
             _httpClient = new Mock<IHttpClient>();
             
             var contentfulClientManager = new Mock<IContentfulClientManager>();

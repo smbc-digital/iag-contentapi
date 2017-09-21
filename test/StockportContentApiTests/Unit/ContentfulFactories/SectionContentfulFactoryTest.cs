@@ -11,6 +11,8 @@ using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -36,7 +38,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
-                _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
+                _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

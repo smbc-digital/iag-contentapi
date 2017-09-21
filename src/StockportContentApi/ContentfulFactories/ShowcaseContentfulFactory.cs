@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -16,8 +16,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory, IHttpContextAccessor httpContextAccessor)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -27,6 +28,7 @@ namespace StockportContentApi.ContentfulFactories
             _alertFactory = alertFactory;
             _keyFactFactory = keyFactFactory;
             _profileFactory = profileFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
         
         public Showcase ToModel(ContentfulShowcase entry)
@@ -113,7 +115,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var profile = entry.Profile == null ? null : _profileFactory.ToModel(entry.Profile);
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder).StripData(_httpContextAccessor);
         }
     }
 }

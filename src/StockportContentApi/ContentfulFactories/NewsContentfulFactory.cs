@@ -5,6 +5,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -12,11 +13,13 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IVideoRepository _videoRepository;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NewsContentfulFactory(IVideoRepository videoRepository, IContentfulFactory<Asset, Document> documentFactory)
+        public NewsContentfulFactory(IVideoRepository videoRepository, IContentfulFactory<Asset, Document> documentFactory, IHttpContextAccessor httpContextAccessor)
         {
             _videoRepository = videoRepository;
             _documentFactory = documentFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public News ToModel(ContentfulNews entry)
@@ -27,7 +30,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new News(entry.Title, entry.Slug, entry.Teaser, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, new List<Crumb> { new Crumb("News", string.Empty, "news") }, 
-                entry.Alerts, entry.Tags, documents, entry.Categories);
+                entry.Alerts, entry.Tags, documents, entry.Categories).StripData(_httpContextAccessor);
         }
     }
 }

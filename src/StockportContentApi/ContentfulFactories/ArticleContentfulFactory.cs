@@ -4,6 +4,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -19,6 +20,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IVideoRepository _videoRepository;
         private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
@@ -29,7 +31,8 @@ namespace StockportContentApi.ContentfulFactories
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
             IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory,
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+            IHttpContextAccessor httpContextAccessor)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
@@ -41,6 +44,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
             _liveChatFactory = liveChatFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Article ToModel(ContentfulArticle entryContentfulArticle)
@@ -85,7 +89,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
                 sections,breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                entry.LiveChatVisible, liveChat, alertsInline, advertisement);
+                entry.LiveChatVisible, liveChat, alertsInline, advertisement).StripData(_httpContextAccessor);
         }
     }
 }

@@ -27,6 +27,8 @@ using System.Collections;
 using Contentful.Core.Models.Management;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -99,7 +101,8 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<Contentful.Core.IContentfulClient>();
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory());
+
+            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake()), HttpContextFake.GetHttpContextFake());
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
