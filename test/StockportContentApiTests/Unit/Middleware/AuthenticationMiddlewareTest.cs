@@ -49,7 +49,7 @@ namespace StockportContentApiTests.Unit.Middleware
             var builder = new QueryBuilder<ContentfulApiKey>().ContentTypeIs("apiKey");
             _apiRepository.Setup(_ => _.Get()).ReturnsAsync(
                 new List<ApiKey>()                {
-                    new ApiKey("name", "test", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" })
+                    new ApiKey("name", "test", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" }, 4)
                 });
             context.Request.Path = "/api/stockportgov/test";
 
@@ -71,7 +71,7 @@ namespace StockportContentApiTests.Unit.Middleware
             var builder = new QueryBuilder<ContentfulApiKey>().ContentTypeIs("apiKey");
             _apiRepository.Setup(_ => _.Get()).ReturnsAsync(
                 new List<ApiKey>()                {
-                    new ApiKey("name", "key", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" })
+                    new ApiKey("name", "key", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" }, 4)
                 });
             context.Request.Path = "/api/stockportgov/test";
 
