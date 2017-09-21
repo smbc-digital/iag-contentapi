@@ -212,9 +212,9 @@ namespace StockportContentApi.Repositories
 
             var contentfulGroups = await _client.GetEntriesAsync(builder);
 
-            var groups = contentfulGroups.Where(g => g.GroupAdministrators.Items.Any(i => i.Email.ToUpper() == email.ToUpper()));
+            var groups = contentfulGroups.Where(g => g.GroupAdministrators?.Items != null && g.GroupAdministrators.Items.Any(i => i != null && i.Email.ToUpper() == email.ToUpper())).ToList();
 
-            var result = _groupListFactory.ToModel(groups.ToList());
+            var result = _groupListFactory.ToModel(groups);
 
             return HttpResponse.Successful(result);
         }
