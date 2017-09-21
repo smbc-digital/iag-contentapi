@@ -7,6 +7,8 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApiTests.Unit.Repositories;
 using Moq;
 using StockportContentApi.Model;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -25,7 +27,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Build();
 
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object);
+            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var payment = contentfulFactory.ToModel(contentfulPayment);
 

@@ -81,10 +81,25 @@ namespace StockportContentApi.Middleware
                 if (validKey == null)
                 {
                     _logger.LogError("API Authentication Key is either missing or wrong");
-                    context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     await context.Response.WriteAsync("API Authentication Key is either missing or wrong");
                     return;
                 }
+                else
+                {
+                    if (validKey.CanViewSensitive)
+                    {
+                        context.Request.Headers["cannotViewSensitive"] = "false";
+                    }
+                    else
+                    {
+                        context.Request.Headers["cannotViewSensitive"] = "true";
+                    }
+                }
+            }
+            else
+            {
+                context.Request.Headers["cannotViewSensitive"] = "false";
             }
 
             await _next.Invoke(context);

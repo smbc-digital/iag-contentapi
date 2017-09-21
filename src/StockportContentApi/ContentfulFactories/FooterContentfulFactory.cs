@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -10,13 +10,15 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-        
-        public FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IHttpContextAccessor httpContextAccessor)
         {
             _subitemFactory = subitemFactory;
-           _socialMediaFactory = socialMediaFactory;           
+            _socialMediaFactory = socialMediaFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public Footer ToModel(ContentfulFooter entry)
         {
             var title = !string.IsNullOrEmpty(entry.Title)
@@ -30,15 +32,15 @@ namespace StockportContentApi.ContentfulFactories
             var copyrightSection = !string.IsNullOrEmpty(entry.CopyrightSection)
                 ? entry.CopyrightSection
                 : "";
-           
+
             var links =
-                entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))    
+                entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-            return new Footer(title, slug, copyrightSection, links, socialMediaLinks);
+            return new Footer(title, slug, copyrightSection, links, socialMediaLinks).StripData(_httpContextAccessor);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -14,8 +15,9 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
         private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
 
         {
             _subItemFactory = subItemFactory;
@@ -25,6 +27,7 @@ namespace StockportContentApi.ContentfulFactories
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
             _advertisementFactory = advertisementFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -72,7 +75,8 @@ namespace StockportContentApi.ContentfulFactories
 
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisement, expandingLinkBoxes, primaryItemTitle);
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisement, 
+                expandingLinkBoxes, primaryItemTitle).StripData(_httpContextAccessor);
         }
     }
 }

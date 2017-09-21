@@ -24,6 +24,8 @@ using Contentful.Core.Search;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -50,8 +52,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_SPACE", "SPACE")
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
-                .Build();          
-            var documentFactory = new DocumentContentfulFactory();
+                .Build();
+            var documentFactory = new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake());
             _videoRepository = new Mock<IVideoRepository>();
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(string.Empty);
             _mockTimeProvider = new Mock<ITimeProvider>();
@@ -75,7 +77,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 _videoRepository.Object,
                 _mockTimeProvider.Object,
                 _advertisementFactory.Object,
-                _alertFactory.Object
+                _alertFactory.Object,
+                HttpContextFake.GetHttpContextFake()
                 );
 
            var contentfulClientManager = new Mock<IContentfulClientManager>();
@@ -83,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _configuration = new Mock<IConfiguration>();
             _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
-            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
+            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(HttpContextFake.GetHttpContextFake()), _videoRepository.Object, _cache.Object, _configuration.Object);
         }
         
         [Fact]
@@ -141,8 +144,8 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulArticle> { rawArticle };
 
             _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-           
-            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+
+            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -159,7 +162,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulClient.Setup(o => o.GetEntriesAsync<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -174,7 +177,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
-            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }

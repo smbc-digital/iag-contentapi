@@ -11,11 +11,13 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ShowcaseContentfulFactoryTest
-    {           
+    {
         [Fact]
         public void ShouldCreateAShowcaseFromAContentfulShowcase()
         {
@@ -56,7 +58,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -101,7 +103,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -157,7 +159,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -213,7 +215,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 

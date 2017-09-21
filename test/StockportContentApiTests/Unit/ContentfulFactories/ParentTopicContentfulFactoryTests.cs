@@ -10,6 +10,8 @@ using StockportContentApi.Utils;
 using Xunit;
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -33,7 +35,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Returns(new DateTime(2017, 01, 02));
 
             // call constructor
-            _parentTopicContentfulFactory = new ParentTopicContentfulFactory(_subitemContentfulFactory.Object, _timeProvider.Object);
+            _parentTopicContentfulFactory = new ParentTopicContentfulFactory(_subitemContentfulFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

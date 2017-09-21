@@ -10,6 +10,8 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -21,7 +23,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
         private Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
-        
+
         public GroupHomepageContentfulFactoryTest()
         {
             _groupListFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
@@ -29,8 +31,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _groupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroupHomepage = new ContentfulGroupHomepageBuilder().Build();
             _mockTimeProvider = new Mock<ITimeProvider>();
-            
-            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object);
+
+            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

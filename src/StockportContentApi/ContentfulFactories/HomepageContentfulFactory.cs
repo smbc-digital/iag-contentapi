@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -13,14 +13,16 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider)
+        public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _subitemFactory = subitemFactory;
             _groupFactory = groupFactory;
             _alertFactory = alertFactory;
             _carouselFactory = carouselFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _httpContextAccessor = httpContextAccessor;
         }
         
         public Homepage ToModel(ContentfulHomepage entry)
@@ -56,7 +58,8 @@ namespace StockportContentApi.ContentfulFactories
                                                                         group.DateHiddenFrom, group.DateHiddenTo))
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
-            return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup);
+            return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, 
+                featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup).StripData(_httpContextAccessor);
         }
     }
 }

@@ -3,11 +3,19 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class GroupCategoryContentfulFactory : IContentfulFactory<ContentfulGroupCategory, GroupCategory>
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public GroupCategoryContentfulFactory(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         public GroupCategory ToModel(ContentfulGroupCategory entry)
         {
             var name = !string.IsNullOrEmpty(entry.Name)
@@ -26,7 +34,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Image.File.Url
                 : string.Empty;
 
-            return new GroupCategory(name, slug, icon, image);
+            return new GroupCategory(name, slug, icon, image).StripData(_httpContextAccessor);
         }
     }
 }

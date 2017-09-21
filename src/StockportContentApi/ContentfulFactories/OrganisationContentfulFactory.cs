@@ -1,15 +1,17 @@
-using System.Collections.Generic;
-using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class OrganisationContentfulFactory : IContentfulFactory<ContentfulOrganisation, Organisation>
     {
-        public OrganisationContentfulFactory()
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public OrganisationContentfulFactory(IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Organisation ToModel(ContentfulOrganisation entry)
@@ -21,7 +23,7 @@ namespace StockportContentApi.ContentfulFactories
                 : string.Empty;
 
             return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
-                entry.Volunteering, entry.VolunteeringText, entry.Donations);  
+                entry.Volunteering, entry.VolunteeringText, entry.Donations).StripData(_httpContextAccessor);  
         }
     }
 }

@@ -8,6 +8,8 @@ using StockportContentApi.ContentfulFactories;
 using Moq;
 using StockportContentApi.Model;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -19,7 +21,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var ContentfulReference =
                 new ContentfulSmartAnswerBuilder().Build();                    
  
-            var smartAnswers = new SmartAnswerContentfulFactory().ToModel(ContentfulReference);
+            var smartAnswers = new SmartAnswerContentfulFactory(HttpContextFake.GetHttpContextFake()).ToModel(ContentfulReference);
 
             var stringQuestionJson = JsonConvert.SerializeObject(ContentfulReference.QuestionJson);
 

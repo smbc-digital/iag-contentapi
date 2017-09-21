@@ -26,6 +26,8 @@ using StockportContentApiTests.Unit.Builders;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -52,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            var documentFactory = new DocumentContentfulFactory();
+            var documentFactory = new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake());
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
             _eventCategoryListFactory = new Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
@@ -64,7 +66,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
-            var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
+            var contentfulFactory = new EventContentfulFactory(documentFactory, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
             var eventHomepageFactory = new EventHomepageContentfulFactory(_mockTimeProvider.Object);
             _httpClient = new Mock<IHttpClient>();
             

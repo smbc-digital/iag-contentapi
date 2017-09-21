@@ -3,6 +3,7 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -10,13 +11,14 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ParentTopicContentfulFactory(
-            IContentfulFactory<ContentfulReference, SubItem> subItemFactory, 
-            ITimeProvider timeProvider)
+        public ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
+            ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _subItemFactory = subItemFactory;
             _dateComparer = new DateComparer(timeProvider);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         private ContentfulArticle _entry;
@@ -44,7 +46,7 @@ namespace StockportContentApi.ContentfulFactories
                 .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems);
+            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems).StripData(_httpContextAccessor);
         }
 
         private ContentfulReference CheckCurrentArticle(ContentfulReference item)
@@ -61,7 +63,7 @@ namespace StockportContentApi.ContentfulFactories
                 Slug = _entry.Slug,
                 Image = _entry.Image,
                 Teaser = _entry.Teaser,
-                Sys = {ContentType = new ContentType() {SystemProperties = new SystemProperties() {Id = "article"}}}
+                Sys = { ContentType = new ContentType() { SystemProperties = new SystemProperties() { Id = "article" } } }
             };
         }
     }

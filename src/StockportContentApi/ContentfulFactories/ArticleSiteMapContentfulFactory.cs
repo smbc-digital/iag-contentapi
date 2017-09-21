@@ -1,17 +1,22 @@
-﻿using System.Linq;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class ArticleSiteMapContentfulFactory : IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>
     {
-       public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ArticleSiteMapContentfulFactory(IHttpContextAccessor httpContextAccessor)
         {
-            return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate);
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
+        {
+            return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate).StripData(_httpContextAccessor);
         }
     }
 }

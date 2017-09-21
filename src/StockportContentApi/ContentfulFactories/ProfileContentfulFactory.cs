@@ -1,18 +1,20 @@
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Profile>
     {
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
+        public ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor)
         {
             _crumbFactory = crumbFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Profile ToModel(ContentfulProfile entry)
@@ -25,7 +27,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.BackgroundImage.File.Url : string.Empty;
 
             return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.Teaser, imageUrl, 
-                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs);
+                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs).StripData(_httpContextAccessor);
         }
     }
 }

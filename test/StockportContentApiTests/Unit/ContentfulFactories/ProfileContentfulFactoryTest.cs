@@ -7,6 +7,8 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -20,7 +22,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             _contentfulProfile = new ContentfulProfileBuilder().Build();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object);
+            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

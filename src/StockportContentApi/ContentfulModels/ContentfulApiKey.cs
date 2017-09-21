@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contentful.Core.Models;
-using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -15,5 +13,6 @@ namespace StockportContentApi.ContentfulModels
         public DateTime ActiveFrom { get; set; } = DateTime.MinValue;
         public DateTime ActiveTo { get; set; } = DateTime.MaxValue;
         public List<string> EndPoints { get; set; } = new List<string>();
+        public bool CanViewSensitive { get; set; } = false;
     }
 }

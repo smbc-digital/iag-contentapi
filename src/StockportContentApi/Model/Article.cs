@@ -8,7 +8,7 @@ namespace StockportContentApi.Model
     {
         public string Body { get; set; }
         public string Slug { get; }
-        public string Title { get; }
+        public string Title { get; set; }
         public string Teaser { get; }
         public string Icon { get; }
         public string BackgroundImage { get; }

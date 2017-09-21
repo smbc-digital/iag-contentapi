@@ -2,6 +2,9 @@
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulFactories;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -12,7 +15,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var contentfulDocument = new ContentfulDocumentBuilder().Build();
 
-            var document = new DocumentContentfulFactory().ToModel(contentfulDocument);
+            var document = new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake()).ToModel(contentfulDocument);
 
             document.FileName.Should().Be(contentfulDocument.File.FileName);
             document.Title.Should().Be(contentfulDocument.Description);

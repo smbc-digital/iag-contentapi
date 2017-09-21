@@ -1,9 +1,8 @@
 using System.Linq;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -12,13 +11,14 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
         private IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public StartPageFactoryContentfulFactory(ITimeProvider timeProvider,
-                                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
+        public StartPageFactoryContentfulFactory(ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor)
         {
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
             _crumbFactory = crumbFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public StartPage ToModel(ContentfulStartPage entry)
@@ -33,7 +33,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,
                 entry.FormLinkLabel, entry.FormLink, entry.LowerBody, entry.BackgroundImage, entry.Icon,
-                breadcrumbs, alerts);
+                breadcrumbs, alerts).StripData(_httpContextAccessor);
         }
     }
 }
