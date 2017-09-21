@@ -9,7 +9,7 @@ namespace StockportContentApi.Model
     {
         public string Title { get; }
         [SensitiveData]
-        public string Text { get; }
+        public string Text { get; set; }
         public SystemProperties Sys { get; set; }
 
         public LiveChat(string title, string text)

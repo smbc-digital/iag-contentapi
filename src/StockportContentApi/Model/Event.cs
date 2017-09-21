@@ -16,7 +16,7 @@ namespace StockportContentApi.Model
         public string Fee { get; }
         public string Location { get; }
         [SensitiveData]
-        public string SubmittedBy { get; }
+        public string SubmittedBy { get; set; }
         public DateTime EventDate { get; }
         public string StartTime { get; }
         public string EndTime { get; }

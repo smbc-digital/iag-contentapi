@@ -10,11 +10,11 @@ namespace StockportContentApi.Utils
     {
         public static T StripData<T>(this T model, IHttpContextAccessor _httpContextAccessor)
         {
-            var canViewSensitive = false;
+            var cannotViewSensitive = false;
 
-            bool.TryParse(_httpContextAccessor.HttpContext.Request.Headers["canViewSensitive"], out canViewSensitive);
+            bool.TryParse(_httpContextAccessor.HttpContext.Request.Headers["cannotViewSensitive"], out cannotViewSensitive);
 
-            if (canViewSensitive) return model;
+            if (!cannotViewSensitive) return model;
 
             var type = model.GetType();
             var properties = type.GetProperties();

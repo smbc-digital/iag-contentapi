@@ -6,23 +6,23 @@ namespace StockportContentApi.Model
     public class Payment
     {
         [SensitiveData]
-        public string Title { get; }
+        public string Title { get; set; }
         [SensitiveData]
-        public string Slug { get; }
+        public string Slug { get; set; }
         [SensitiveData]
-        public string Teaser { get; }
+        public string Teaser { get; set; }
         [SensitiveData]
-        public string Description { get; }
+        public string Description { get; set; }
         [SensitiveData]
-        public string PaymentDetailsText { get; }
+        public string PaymentDetailsText { get; set; }
         [SensitiveData]
-        public string ReferenceLabel { get; }
+        public string ReferenceLabel { get; set; }
         [SensitiveData]
-        public string ParisReference { get; }
+        public string ParisReference { get; set; }
         [SensitiveData]
-        public string Fund { get; }
+        public string Fund { get; set; }
         [SensitiveData]
-        public string GlCodeCostCentreNumber { get; }
+        public string GlCodeCostCentreNumber { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
 
         public Payment(string title,

@@ -75,13 +75,17 @@ namespace StockportContentApi.Middleware
                 {
                     if (validKey.CanViewSensitive)
                     {
-                        context.Request.Headers["canViewSensitive"] = "true";
+                        context.Request.Headers["cannotViewSensitive"] = "false";
+                    }
+                    else
+                    {
+                        context.Request.Headers["cannotViewSensitive"] = "true";
                     }
                 }
             }
             else
             {
-                context.Request.Headers["canViewSensitive"] = "true";
+                context.Request.Headers["cannotViewSensitive"] = "false";
             }
 
             await _next.Invoke(context);
