@@ -9,6 +9,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using System.Text.RegularExpressions;
 
 namespace StockportContentApi.Middleware
 {
@@ -59,10 +60,23 @@ namespace StockportContentApi.Middleware
             if (authenticationKey != key)
             {
                 var routeValues = context.Request.Path.Value.Split('/');
-                var businessId = routeValues[2];
-                var endpoint = routeValues[3];
 
-                var validKey = await GetValidKey(authenticationKey, businessId, endpoint);
+                var versionText = routeValues[2];
+                var pattern = new Regex("v[0-9]+");
+                if (!pattern.IsMatch(versionText))
+                {
+                    _logger.LogError("Invalid attempt to access API from API Key without a version");
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("API Authentication Key is either missing or wrong");
+                    return;
+                }
+
+                int version;
+                int.TryParse(versionText.Replace("v", string.Empty), out version);
+                var businessId = routeValues[3];
+                var endpoint = routeValues[4];
+
+                var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version);
 
                 if (validKey == null)
                 {
@@ -76,7 +90,7 @@ namespace StockportContentApi.Middleware
             await _next.Invoke(context);
         }
 
-        private async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint)
+        private async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version)
         {
             var repo = _repository(_createConfig(businessId));
             var keys = await repo.Get();
@@ -86,7 +100,8 @@ namespace StockportContentApi.Middleware
             var validKey = keys.FirstOrDefault(k => "Bearer " + k.Key == authenticationKey.ToString().Trim() 
                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(k.ActiveFrom,
                                                         k.ActiveTo)
-                                                    && k.EndPoints.Any(e => e.ToLower() == validEndPoint));
+                                                    && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
+                                                    && k.Version >= version);
 
             return validKey;
         }

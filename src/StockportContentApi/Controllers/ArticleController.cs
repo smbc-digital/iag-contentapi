@@ -1,8 +1,10 @@
 ﻿using StockportContentApi.Repositories;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Http;
 
 namespace StockportContentApi.Controllers
 {
@@ -21,9 +23,10 @@ namespace StockportContentApi.Controllers
             _createConfig = createConfig;
             _createRepository = createRepository;
         }
-
+        
         [HttpGet]
-        [Route("api/{businessId}/article/{articleSlug}")]
+        [Route("api/{businessId}/articles/{articleSlug}")]
+        [Route("api/v1/{businessId}/articles/{articleSlug}")]
         public async Task<IActionResult> GetArticle(string articleSlug,string  businessId)
         {
             return await _handler.Get(() =>
@@ -37,6 +40,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/articleSiteMap")]
+        [Route("api/v1/{businessId}/articleSiteMap")]
         public async Task<IActionResult> Index(string businessId)
         {
             return await _handler.Get(() =>

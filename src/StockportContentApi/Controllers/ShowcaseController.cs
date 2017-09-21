@@ -23,7 +23,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/showcase/{showcaseSlug}")]
+        [Route("api/{businessId}/showcases/{showcaseSlug}")]
+        [Route("api/v1/{businessId}/showcases/{showcaseSlug}")]
         public async Task<IActionResult> GetShowcase(string showcaseSlug, string  businessId)
         {
             return await _handler.Get(() =>
@@ -36,7 +37,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/showcase/")]
+        [Route("api/{businessId}/showcases/")]
+        [Route("api/v1/{businessId}/showcases/")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>

@@ -12,7 +12,7 @@ namespace StockportContentApi.ContentfulFactories
         public ApiKey ToModel(ContentfulApiKey entryContentfulApiKey)
         {
             return new ApiKey(entryContentfulApiKey.Name, entryContentfulApiKey.Key, entryContentfulApiKey.Email,
-                entryContentfulApiKey.ActiveFrom, entryContentfulApiKey.ActiveTo, entryContentfulApiKey.EndPoints);
+                entryContentfulApiKey.ActiveFrom, entryContentfulApiKey.ActiveTo, entryContentfulApiKey.EndPoints, entryContentfulApiKey.Version);
         }
     }
 }

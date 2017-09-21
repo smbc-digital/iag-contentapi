@@ -23,7 +23,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/profile/{profileSlug}")]
+        [Route("api/{businessId}/profiles/{profileSlug}")]
+        [Route("api/v1/{businessId}/profiles/{profileSlug}")]
         public async Task<IActionResult> GetProfile(string profileSlug, string  businessId)
         {
             return await _handler.Get(() =>
@@ -34,7 +35,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/profile/")]
+        [Route("api/{businessId}/profiles/")]
+        [Route("api/v1/{businessId}/profiles/")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>

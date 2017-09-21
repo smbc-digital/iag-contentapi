@@ -23,6 +23,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("/api/{businessId}/start-page/{slug}")]
+        [Route("/api/v1/{businessId}/start-page/{slug}")]
         public async Task<IActionResult> GetStartPage(string slug, string businessId)
         {
             return await _handler.Get(() =>
@@ -34,6 +35,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/start-page/")]
+        [Route("api/v1/{businessId}/start-page/")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>

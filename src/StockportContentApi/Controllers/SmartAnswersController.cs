@@ -24,6 +24,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/smart/{slug}")]
+        [Route("api/v1/{businessId}/smart/{slug}")]
         public async Task<IActionResult> Index(string businessId, string slug)
         {
             return await _handler.Get(() =>

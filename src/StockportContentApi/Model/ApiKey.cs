@@ -12,8 +12,9 @@ namespace StockportContentApi.Model
         public DateTime ActiveFrom { get; } 
         public DateTime ActiveTo { get; } 
         public List<string> EndPoints { get; }
+        public int Version { get; }
         
-        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints)
+        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints, int version)
         {
             Name = name;
             Key = key;
@@ -21,6 +22,7 @@ namespace StockportContentApi.Model
             ActiveFrom = activeFrom;
             ActiveTo = activeTo;
             EndPoints = endPoints;
+            Version = version;
         }
     }
 }

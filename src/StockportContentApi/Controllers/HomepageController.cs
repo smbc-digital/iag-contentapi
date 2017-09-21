@@ -23,6 +23,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("api/{businessId}/homepage")]
+        [Route("api/v1/{businessId}/homepage")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>
