@@ -14,8 +14,9 @@ namespace StockportContentApi.Model
         public List<string> EndPoints { get; }
         public int Version { get; }
         public bool CanViewSensitive { get; }
+        public List<string> AllowedVerbs{ get; }
 
-        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints, int version, bool canViewSensitive)
+        public ApiKey(string name, string key, string email, DateTime activeFrom, DateTime activeTo, List<string> endPoints, int version, bool canViewSensitive, List<string> allowedVerbs)
         {
             Name = name;
             Key = key;
@@ -25,6 +26,7 @@ namespace StockportContentApi.Model
             EndPoints = endPoints;
             Version = version;
             CanViewSensitive = canViewSensitive;
+            AllowedVerbs = allowedVerbs;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace StockportContentApi.ContentfulModels
         public DateTime ActiveFrom { get; set; } = DateTime.MinValue;
         public DateTime ActiveTo { get; set; } = DateTime.MaxValue;
         public List<string> EndPoints { get; set; } = new List<string>();
+        public List<string> AllowedVerbs{ get; set; } = new List<string>();
         public bool CanViewSensitive { get; set; } = false;
     }
 }

@@ -75,8 +75,9 @@ namespace StockportContentApi.Middleware
                 int.TryParse(versionText.Replace("v", string.Empty), out version);
                 var businessId = routeValues[3];
                 var endpoint = routeValues[4];
+                var verb = context.Request.Method;
 
-                var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version);
+                var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version, verb);
 
                 if (validKey == null)
                 {
@@ -105,7 +106,7 @@ namespace StockportContentApi.Middleware
             await _next.Invoke(context);
         }
 
-        private async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version)
+        private async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version, string verb)
         {
             var repo = _repository(_createConfig(businessId));
             var keys = await repo.Get();
@@ -116,7 +117,8 @@ namespace StockportContentApi.Middleware
                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(k.ActiveFrom,
                                                         k.ActiveTo)
                                                     && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
-                                                    && k.Version >= version);
+                                                    && k.Version >= version
+                                                    && k.AllowedVerbs.Any(v => v.ToUpper() == verb.ToUpper()));
 
             return validKey;
         }

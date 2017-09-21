@@ -18,7 +18,7 @@ namespace StockportContentApi.ContentfulFactories
         {
             return new ApiKey(entryContentfulApiKey.Name, entryContentfulApiKey.Key, entryContentfulApiKey.Email,
                 entryContentfulApiKey.ActiveFrom, entryContentfulApiKey.ActiveTo, entryContentfulApiKey.EndPoints, 
-                entryContentfulApiKey.Version, entryContentfulApiKey.CanViewSensitive).StripData(_httpContextAccessor);
+                entryContentfulApiKey.Version, entryContentfulApiKey.CanViewSensitive, entryContentfulApiKey.AllowedVerbs).StripData(_httpContextAccessor);
         }
     }
 }

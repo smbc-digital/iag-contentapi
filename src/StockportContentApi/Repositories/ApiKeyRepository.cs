@@ -35,7 +35,10 @@ namespace StockportContentApi.Repositories
             _contentfulFactory = contentfulFactory;
             _cache = cache;
             _client = contentfulClientManager.GetClient(config);
-            int.TryParse(configuration["redisExpiryTimes:ApiKeys"], out _apiKeyTimeout);
+            if (!int.TryParse(configuration["redisExpiryTimes:ApiKeys"], out _apiKeyTimeout))
+            {
+                _apiKeyTimeout = 60;
+            };
         }
         
         public async Task<IEnumerable<ApiKey>> Get()

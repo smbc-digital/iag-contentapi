@@ -39,7 +39,7 @@ namespace StockportContentApi.Controllers
 
         [HttpGet]
         [Route("/api/{businessId}/news/latest/{limit}")]
-        [Route("/api/v1/businessId}/news/latest/{limit}")]
+        [Route("/api/v1/{businessId}/news/latest/{limit}")]
         public async Task<IActionResult> LatestNews(string businessId, int limit)
         {
             return await _handler.Get(() =>
