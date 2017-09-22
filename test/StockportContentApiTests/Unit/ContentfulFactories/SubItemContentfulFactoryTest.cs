@@ -77,6 +77,36 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
+        public void ShouldCreateSubItemWithDefaultIconIfNotSet()
+        {
+            var ContentfulReference =
+                new ContentfulReference
+                {
+                    Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+                };
+
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+
+            subItem.Icon.Should().Be("si-default");
+        }
+
+
+        [Fact]
+        public void ShouldCreateSubItemWithIcon()
+        {
+            var ContentfulReference =
+                new ContentfulReference
+                {
+                    Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } },
+                    Icon = "fa-unique"
+                };
+
+            var subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+
+            subItem.Icon.Should().Be("fa-unique");
+        }
+
+        [Fact]
         public void ShouldCreateSubItemWithoutSubItems()
         {
             var ContentfulReference = new ContentfulReferenceBuilder()

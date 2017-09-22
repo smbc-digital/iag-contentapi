@@ -54,6 +54,11 @@ namespace StockportContentApi.ContentfulFactories
                 }
             }
 
+            if (string.IsNullOrEmpty(entry.Icon))
+            {
+                entry.Icon = "si-default";
+            }
+
             return new SubItem(entry.Slug, title, entry.Teaser, 
                 entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems).StripData(_httpContextAccessor);
         }
