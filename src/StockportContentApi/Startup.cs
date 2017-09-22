@@ -116,6 +116,8 @@ namespace StockportContentApi
             {
                 c.SingleApiVersion(new Info {Title = "Stockport Content API", Version = "v1"});
 
+                c.DocumentFilter<SwaggerFilter>();
+                
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
                 {
                     Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\".",

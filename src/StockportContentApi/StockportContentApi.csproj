@@ -34,11 +34,11 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="5.3.0" />
     <PackageReference Include="Serilog.Sinks.Literate" Version="3.0.0" />
-    <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
     <PackageReference Include="contentful.csharp" Version="0.14.0-beta" />
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="1.1.2" />
     <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />

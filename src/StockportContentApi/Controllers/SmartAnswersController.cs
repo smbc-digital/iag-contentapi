@@ -7,6 +7,7 @@ using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class SmartAnswersController : Controller
     {
         private ResponseHandler _handler;
