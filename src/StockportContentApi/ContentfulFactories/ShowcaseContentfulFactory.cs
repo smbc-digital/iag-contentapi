@@ -119,7 +119,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.KeyFactSubheading
                 : "";
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon).StripData(_httpContextAccessor);
         }
     }
 }

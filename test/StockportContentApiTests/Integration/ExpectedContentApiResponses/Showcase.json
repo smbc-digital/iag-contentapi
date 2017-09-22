@@ -333,5 +333,6 @@
   "keyFactSubheading": "",
   "keyFacts": [],
   "profile": null,
-  "fieldOrder": { "items": [] }
+  "fieldOrder": { "items": [] },
+  "icon" :  ""
 }
