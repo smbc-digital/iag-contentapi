@@ -27,11 +27,12 @@ namespace StockportContentApi.Model
         public string EmailAlertsTopicId { get; set; }
         public string EmailAlertsText { get; set; }
         public IEnumerable<Alert> Alerts { get; }
+        public string KeyFactSubheading { get; }
         public IEnumerable<KeyFact> KeyFacts { get; }
         public Profile Profile { get; }
         public FieldOrder FieldOrder { get; }
 
-        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder)
+        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs, IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading)
         {
             Title = title;
             Slug = slug;
@@ -55,6 +56,7 @@ namespace StockportContentApi.Model
             PrimaryItems = primaryItems;
             Profile = profile;
             FieldOrder = fieldOrder;
+            KeyFactSubheading = keyFactSubheading;
         }
     }
 }

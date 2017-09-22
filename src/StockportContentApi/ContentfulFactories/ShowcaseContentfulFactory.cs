@@ -115,7 +115,11 @@ namespace StockportContentApi.ContentfulFactories
 
             var profile = entry.Profile == null ? null : _profileFactory.ToModel(entry.Profile);
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder).StripData(_httpContextAccessor);
+            var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
+                ? entry.KeyFactSubheading
+                : "";
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading).StripData(_httpContextAccessor);
         }
     }
 }

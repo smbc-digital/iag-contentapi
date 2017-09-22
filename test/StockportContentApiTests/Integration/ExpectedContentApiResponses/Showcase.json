@@ -26,7 +26,7 @@
       "subItems": []
     }
   ],
-  "primaryItems":[],
+  "primaryItems": [],
   "breadcrumbs": [
     {
       "title": "title",
@@ -299,37 +299,39 @@
         "isUnknown": false,
         "altitude": "NaN"
       }
-    
-    }],
-      "emailAlertsTopicId": "alertId",
-      "emailAlertsText": "alertText",
-      "alerts": [
-        {
-          "title": "Warning alert",
-          "subHeading": "This is a warning alert.",
-          "body": "This is a warning alert.",
-          "severity": "Warning",
-          "sunriseDate": "2016-06-30T23:00:00Z",
-          "sunsetDate": "2018-08-01T00:00:00Z"
-        },
-        {
-          "title": "Information alert",
-          "subHeading": "test",
-          "body": "This is an information alert.",
-          "severity": "Information",
-          "sunriseDate": "2016-06-30T23:00:00Z",
-          "sunsetDate": "2116-08-30T23:00:00Z"
-        },
-        {
-          "title": "Error alert",
-          "subHeading": "",
-          "body": "This is an error alert.",
-          "severity": "Error",
-          "sunriseDate": "2016-07-31T23:00:00Z",
-          "sunsetDate": "2116-08-30T23:00:00Z"
-        }
-      ],
-      "keyFacts": [],
-      "profile": null,
-      "fieldOrder": { "items": [] }
+
     }
+  ],
+  "emailAlertsTopicId": "alertId",
+  "emailAlertsText": "alertText",
+  "alerts": [
+    {
+      "title": "Warning alert",
+      "subHeading": "This is a warning alert.",
+      "body": "This is a warning alert.",
+      "severity": "Warning",
+      "sunriseDate": "2016-06-30T23:00:00Z",
+      "sunsetDate": "2018-08-01T00:00:00Z"
+    },
+    {
+      "title": "Information alert",
+      "subHeading": "test",
+      "body": "This is an information alert.",
+      "severity": "Information",
+      "sunriseDate": "2016-06-30T23:00:00Z",
+      "sunsetDate": "2116-08-30T23:00:00Z"
+    },
+    {
+      "title": "Error alert",
+      "subHeading": "",
+      "body": "This is an error alert.",
+      "severity": "Error",
+      "sunriseDate": "2016-07-31T23:00:00Z",
+      "sunsetDate": "2116-08-30T23:00:00Z"
+    }
+  ],
+  "keyFactSubheading": "",
+  "keyFacts": [],
+  "profile": null,
+  "fieldOrder": { "items": [] }
+}
