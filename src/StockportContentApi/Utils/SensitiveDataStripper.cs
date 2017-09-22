@@ -10,6 +10,8 @@ namespace StockportContentApi.Utils
     {
         public static T StripData<T>(this T model, IHttpContextAccessor _httpContextAccessor)
         {
+            if (model == null) return default(T);
+
             var cannotViewSensitive = false;
 
             bool.TryParse(_httpContextAccessor.HttpContext.Request.Headers["cannotViewSensitive"], out cannotViewSensitive);
