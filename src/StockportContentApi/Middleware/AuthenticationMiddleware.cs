@@ -53,12 +53,6 @@ namespace StockportContentApi.Middleware
             var businessId = routeValues.Length > 3 ? routeValues[3] : string.Empty;
             var endpoint = routeValues.Length > 4 ? routeValues[4] : string.Empty;
 
-            if (routeValues[1].ToLower() == "swagger")
-            {
-                await _next.Invoke(context);
-                return;
-            }
-
             if (string.IsNullOrEmpty(authenticationKey))
             {
                 _logger.LogError("API Authentication Key is either missing or wrong");
