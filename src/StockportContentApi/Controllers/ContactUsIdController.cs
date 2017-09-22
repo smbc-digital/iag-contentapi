@@ -6,6 +6,7 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ContactUsIdController : Controller
     {
         private readonly ResponseHandler _handler;

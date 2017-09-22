@@ -61,7 +61,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
-
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("api/{businessId}/clearcache/{cacheKey}")]
         [Route("api/v1/{businessId}/clearcache/{cacheKey}")]

@@ -6,9 +6,9 @@ using StockportContentApi.Config;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class PaymentController : Controller
     {
-        
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, PaymentRepository> _createRepository;

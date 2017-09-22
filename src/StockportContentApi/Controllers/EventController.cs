@@ -5,7 +5,6 @@ using StockportContentApi.Config;
 using StockportContentApi.Repositories;
 using StockportContentApi.Model;
 using System.Collections.Generic;
-using StockportContentApi.Http;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using AutoMapper;
@@ -78,6 +77,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
         [Route("api/{businessId}/events/{slug}")]
         [Route("api/v1/{businessId}/events/{slug}")]
@@ -135,6 +135,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
         [Route("api/{businessId}/events/{slug}")]
         [Route("api/v1/{businessId}/events/{slug}")]

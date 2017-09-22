@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class RedirectsController : Controller
     {     
         private readonly ResponseHandler _handler;
