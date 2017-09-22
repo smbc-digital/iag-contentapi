@@ -215,7 +215,11 @@ namespace StockportContentApi.Controllers
             var existingGroup = await repository.GetContentfulGroup(slug);
 
             existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
-            existingGroup.GroupAdministrators.Items.Add(user);
+
+            if (user != null)
+            {
+                existingGroup.GroupAdministrators.Items.Add(user);
+            }
 
             ManagementGroup managementGroup = new ManagementGroup();
             _mapper.Map(existingGroup, managementGroup);
