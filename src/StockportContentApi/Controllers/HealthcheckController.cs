@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HealthcheckController : Controller
     {
         private readonly IHealthcheckService _healthcheckService;

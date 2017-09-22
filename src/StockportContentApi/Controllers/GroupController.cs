@@ -99,6 +99,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("api/{businessId}/groups/administrators/{email}")]
         [Route("api/v1/{businessId}/groups/administrators/{email}")]
@@ -111,6 +112,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
         [Route("api/{businessId}/groups/{slug}")]
         [Route("api/v1/{businessId}/groups/{slug}")]
@@ -133,6 +135,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
         [Route("api/{businessId}/groups/{slug}")]
         [Route("api/v1/{businessId}/groups/{slug}")]
@@ -163,6 +166,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
         [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
@@ -186,6 +190,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
         [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
@@ -194,6 +199,7 @@ namespace StockportContentApi.Controllers
             return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]

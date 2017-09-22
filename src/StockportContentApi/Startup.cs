@@ -18,6 +18,7 @@ using System;
 using System.Collections.Specialized;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Http;
+using Swashbuckle.Swagger.Model;
 
 namespace StockportContentApi
 {
@@ -111,12 +112,28 @@ namespace StockportContentApi
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
             services.AddAutoMapper();
+            services.AddSwaggerGen(c =>
+            {
+                c.SingleApiVersion(new Info {Title = "Stockport Content API", Version = "v1"});
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\".",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+            });
         }
 
         public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
         {
             // add logging
             loggerFactory.AddSerilog();
+
+            // swagger
+            app.UseSwagger();
+            app.UseSwaggerUi();
 
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseClientRateLimiting();
