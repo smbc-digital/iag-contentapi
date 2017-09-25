@@ -46,6 +46,7 @@
           "slug": "",
           "type": "events"
         }
+
       ],
       "documents": [
         {
@@ -113,7 +114,8 @@
           "donations": false
         },
         "linkedGroups": null,
-        "donations": false
+        "donations": false,
+        "accessibleTransportLink": "/accessibleTransport"
       },
       "alerts": [
         {
@@ -149,7 +151,8 @@
         "course": "NaN",
         "isUnknown": false,
         "altitude": "NaN"
-      }
+      },
+      "accessibleTransportLink": "/accessibleTransport"
     },
     {
       "title": "title",
@@ -239,7 +242,8 @@
           "donations": false
         },
         "linkedGroups": null,
-        "donations": false
+        "donations": false,
+        "accessibleTransportLink": "/accessibleTransport"
       },
       "alerts": [
         {
@@ -250,6 +254,7 @@
           "sunriseDate": "0001-01-01T00:00:00Z",
           "sunsetDate": "9999-09-09T00:00:00Z"
         }
+
       ],
       "eventCategories": [
         {
@@ -274,7 +279,9 @@
         "course": "NaN",
         "isUnknown": false,
         "altitude": "NaN"
-      }
+      },
+      "accessibleTransportLink": "/accessibleTransport"
+
     }
   ],
   "groupAdministrators": { "items": [] },
@@ -298,5 +305,6 @@
     "donations": false
   },
   "linkedGroups": null,
-  "donations": false
+  "donations": false,
+  "accessibleTransportLink": "/accessibleTransport"
 }

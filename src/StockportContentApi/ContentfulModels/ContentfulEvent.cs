@@ -33,5 +33,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulEventCategory> EventCategories { get; set; } = new List<ContentfulEventCategory>();
         public bool? Free { get; set; } = null;
         public bool? Paid { get; set; } = null;
+        public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
     }
 }

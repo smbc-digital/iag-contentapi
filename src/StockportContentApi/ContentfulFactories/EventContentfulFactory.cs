@@ -53,7 +53,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid).StripData(_httpContextAccessor);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid, entry.AccessibleTransportLink).StripData(_httpContextAccessor);
         }
     }
 }

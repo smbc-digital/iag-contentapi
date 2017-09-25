@@ -103,6 +103,7 @@
       "donations": false
     },
     "linkedGroups": null,
-    "donations": false
+    "donations": false,
+    "accessibleTransportLink": "/accessibleTransport"
   }
 }

@@ -86,7 +86,8 @@
       "donations": false
     },
     "linkedGroups": null,
-    "donations": false
+    "donations": false,
+    "accessibleTransportLink": "/accessibleTransport"
   },
   "alerts": [
     {
@@ -97,6 +98,8 @@
       "sunriseDate": "0001-01-01T00:00:00+00:00",
       "sunsetDate": "9999-09-09T00:00:00+00:00"
     }
+
+
   ],
   "eventCategories": [
     {
@@ -122,5 +125,6 @@
     "course": "NaN",
     "isUnknown": false,
     "altitude": "NaN"
-  }
+  },
+  "accessibleTransportLink": "/accessibleTransport"
 }

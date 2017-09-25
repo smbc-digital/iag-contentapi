@@ -31,5 +31,6 @@ namespace StockportContentApi.ContentfulModels
         public string AbilityLevel { get; set; }
         public string VolunteeringText { get; set; }
         public ContentfulOrganisation Organisation { get; set; } = new ContentfulOrganisation();
+        public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
     }
 }

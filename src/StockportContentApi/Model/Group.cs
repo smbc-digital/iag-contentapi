@@ -34,7 +34,7 @@ namespace StockportContentApi.Model
         public Organisation Organisation { get; set; }
         public List<Group> LinkedGroups { get; private set; }
         public bool Donations { get; set; }
-
+        public string AccessibleTransportLink { get; set; }
         public Group() { }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
@@ -42,7 +42,7 @@ namespace StockportContentApi.Model
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations)
+            Organisation organisation, bool donations, string accessibleTransportLink)
         {
             Name = name;
             Slug = slug;
@@ -70,6 +70,7 @@ namespace StockportContentApi.Model
             AbilityLevel = abilityLevel;
             VolunteeringText = volunteeringText;
             Organisation = organisation;
+            AccessibleTransportLink = accessibleTransportLink;
         }
 
         public void SetEvents(List<Event> events)
