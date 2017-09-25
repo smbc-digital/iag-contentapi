@@ -53,6 +53,12 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public ContentfulAToZBuilder AlternativeTitles(List<string> alternativeTitles)
+        {
+            _alternativeTitles = alternativeTitles;
+            return this;
+        }
+
         public ContentfulAToZBuilder Sys(string sysId)
         {
             _sys = new SystemProperties

@@ -1,14 +1,20 @@
 ﻿[
   {
-    "title": "C Letter Article",
-    "slug": "c-letter-article",
-    "teaser": "A C letter article",
-    "type": "article"
+    "title": "Benefits & Support",
+    "slug": "benefits-and-support",
+    "teaser": "Benefits & Support",
+    "type": "topic"
   },
   {
-    "title": "C Letter Topic",
-    "slug": "d-letter-topic",
-    "teaser": "This is a d letter topic",
+    "title": "Bins & Recycling",
+    "slug": "bins-and-recycling",
+    "teaser": "Collection days, bulky items",
     "type": "topic"
+  },
+  {
+    "title": "Vintage Village turns 6 years old",
+    "slug": "vintage-village-turns-6-years-old",
+    "teaser": "The vintage village turned 6 with a great reception",
+    "type": "article"
   }
 ]

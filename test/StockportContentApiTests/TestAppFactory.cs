@@ -88,6 +88,27 @@ namespace StockportContentApiTests
                 var newsCategories = new List<string> { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" };
                 cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>(), It.IsAny<int>())).ReturnsAsync(newsCategories);
 
+                var nullAToZ = new List<AtoZ>();             
+                var aToZArticle = new List<AtoZ>
+                {
+                    new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>()),                    
+                };
+                var aToZTopic = new List<AtoZ>
+                {
+                    new AtoZ("Benefits & Support", "benefits-and-support", "Benefits & Support", "topic", new List<string>()),
+                     new AtoZ("Bins & Recycling", "bins-and-recycling", "Collection days, bulky items", "topic", new List<string>()),
+                };
+
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+
                 services.AddSingleton(cache.Object);
 
                 var contentfulClientManager = new Mock<IContentfulClientManager>();
