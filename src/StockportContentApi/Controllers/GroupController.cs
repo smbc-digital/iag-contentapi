@@ -179,7 +179,7 @@ namespace StockportContentApi.Controllers
 
             existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
 
-            ManagementGroup managementGroup = new ManagementGroup();
+            var managementGroup = new ManagementGroup();
             _mapper.Map(existingGroup, managementGroup);
 
             return await _handler.Get(async () =>
@@ -187,7 +187,9 @@ namespace StockportContentApi.Controllers
                 var managementRepository = _managementRepository(_createConfig(businessId));
                 var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
-                return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+                var response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+                
+                return response.StatusCode == System.Net.HttpStatusCode.OK ? HttpResponse.Successful($"Successfully deleted administrator") : HttpResponse.Failure(response.StatusCode, "An error has occurred");
             });
         }
 
