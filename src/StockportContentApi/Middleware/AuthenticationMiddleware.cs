@@ -42,12 +42,16 @@ namespace StockportContentApi.Middleware
             if (string.IsNullOrEmpty(key))
             {
                 _logger.LogCritical("API Authentication Key is missing from the config");
-                context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 await context.Response.WriteAsync("API Authentication Key is missing from the config");
                 return;
             }
 
             var authenticationKey = context.Request.Headers["Authorization"];
+            var routeValues = context.Request.Path.Value.Split('/');
+            var versionText = routeValues.Length > 2 ? routeValues[2] : string.Empty;
+            var businessId = routeValues.Length > 3 ? routeValues[3] : string.Empty;
+            var endpoint = routeValues.Length > 4 ? routeValues[4] : string.Empty;
 
             if (string.IsNullOrEmpty(authenticationKey))
             {
@@ -59,9 +63,6 @@ namespace StockportContentApi.Middleware
 
             if (authenticationKey != key)
             {
-                var routeValues = context.Request.Path.Value.Split('/');
-
-                var versionText = routeValues[2];
                 var pattern = new Regex("v[0-9]+");
                 if (!pattern.IsMatch(versionText))
                 {
@@ -73,8 +74,6 @@ namespace StockportContentApi.Middleware
 
                 int version;
                 int.TryParse(versionText.Replace("v", string.Empty), out version);
-                var businessId = routeValues[3];
-                var endpoint = routeValues[4];
                 var verb = context.Request.Method;
 
                 var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version, verb);
