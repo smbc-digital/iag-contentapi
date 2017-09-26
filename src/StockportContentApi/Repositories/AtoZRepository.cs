@@ -58,9 +58,7 @@ namespace StockportContentApi.Repositories
             atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-article-" + letterToLower, () => GetAtoZItemFromContentType("article", letterToLower), _atoZTimeout));
             atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-topic-" + letterToLower, () => GetAtoZItemFromContentType("topic", letterToLower), _atoZTimeout));
             atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-showcase-" + letterToLower, () => GetAtoZItemFromContentType("showcase", letterToLower), _atoZTimeout));
-
             atozItems = atozItems.OrderBy(o => o.Title).ToList();
-
             return atozItems;
         }
 
