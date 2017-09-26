@@ -6,6 +6,7 @@ using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomepageController : Controller
     {
 
