@@ -53,6 +53,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("/api/{businessId}/grouphomepage")]
         [Route("/api/v1/{businessId}/grouphomepage")]

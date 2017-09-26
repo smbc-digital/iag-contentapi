@@ -39,6 +39,7 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("api/{businessId}/articleSiteMap")]
         [Route("api/v1/{businessId}/articleSiteMap")]
