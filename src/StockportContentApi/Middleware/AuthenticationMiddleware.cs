@@ -72,8 +72,7 @@ namespace StockportContentApi.Middleware
                     return;
                 }
 
-                int version;
-                int.TryParse(versionText.Replace("v", string.Empty), out version);
+                int.TryParse(versionText.Replace("v", string.Empty), out int version);
                 var verb = context.Request.Method;
 
                 var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version, verb);
@@ -110,9 +109,11 @@ namespace StockportContentApi.Middleware
             var repo = _repository(_createConfig(businessId));
             var keys = await repo.Get();
 
+            if (keys == null) return null;
+
             var validEndPoint = GetApiEndPoint(endpoint);
 
-            var validKey = keys.FirstOrDefault(k => "Bearer " + k.Key == authenticationKey.ToString().Trim() 
+            var validKey = keys.FirstOrDefault(k => "Bearer " + k.Key == authenticationKey.Trim() 
                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(k.ActiveFrom,
                                                         k.ActiveTo)
                                                     && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
