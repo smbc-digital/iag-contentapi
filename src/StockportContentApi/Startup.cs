@@ -45,7 +45,7 @@ namespace StockportContentApi
             var loggerConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "IAG Content Api")
-                .WriteTo.LiterateConsole();
+                .WriteTo.Console();
 
             // elastic search
             var esConfig = new ElasticSearch();
