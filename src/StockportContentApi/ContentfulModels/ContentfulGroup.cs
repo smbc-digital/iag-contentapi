@@ -26,7 +26,7 @@ namespace StockportContentApi.ContentfulModels
         public GroupAdministrators GroupAdministrators { get; set; } = new GroupAdministrators();
         public DateTime? DateHiddenFrom { get; set; }
         public DateTime? DateHiddenTo { get; set; }
-        public List<string> Cost { get; set; }
+        public List<string> Cost { get; set; } = new List<string>();
         public string CostText { get; set; }
         public string AbilityLevel { get; set; }
         public string VolunteeringText { get; set; }

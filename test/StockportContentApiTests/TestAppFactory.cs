@@ -19,7 +19,6 @@ using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog.Extensions.Logging;
-using StockportContentApi.Middleware;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests
@@ -99,15 +98,15 @@ namespace StockportContentApiTests
                      new AtoZ("Bins & Recycling", "bins-and-recycling", "Collection days, bulky items", "topic", new List<string>()),
                 };
 
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"b"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
-                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"c"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-article-v"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-topic-v"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-showcase-v"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-article-b"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-topic-b"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-showcase-b"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-article-c"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-topic-c"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
+                cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "atoz-showcase-c"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(nullAToZ);
 
                 services.AddSingleton(cache.Object);
 

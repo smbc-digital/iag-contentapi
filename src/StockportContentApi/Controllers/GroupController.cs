@@ -120,21 +120,28 @@ namespace StockportContentApi.Controllers
         [Route("api/v1/{businessId}/groups/{slug}")]
         public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
         {
-            var repository = _groupRepository(_createConfig(businessId));
-            var existingGroup = await repository.GetContentfulGroup(group.Slug);
-
-            var existingCategories = await repository.GetContentfulGroupCategories();
-            var referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
-
-            var managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
-
-            return await _handler.Get(async () =>
+            try
             {
-                var managementRepository = _managementRepository(_createConfig(businessId));
-                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
-                existingGroup.Sys.Version = version;
-                return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
-            });
+                var groupRepository = _groupRepository(_createConfig(businessId));
+                var existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
+
+                var existingCategories = await groupRepository.GetContentfulGroupCategories();
+                var referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
+
+                var managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
+
+                return await _handler.Get(async () =>
+                {
+                    var managementRepository = _managementRepository(_createConfig(businessId));
+                    var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                    existingGroup.Sys.Version = version;
+                    return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

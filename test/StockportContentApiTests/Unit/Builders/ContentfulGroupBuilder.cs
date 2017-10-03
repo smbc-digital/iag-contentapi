@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _facebook = "_facebook";
         private string _address = "_address";
         private string _description = "_description";
-        private List<string> _cost = new List<string> { string.Empty };
+        private List<string> _cost = new List<string> ();
         private string _costText = "";
         private string _abilityLevel = "";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();

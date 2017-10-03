@@ -27,7 +27,7 @@ namespace StockportContentApi.Model
         public DateTime? DateHiddenFrom { get; set; }
         public DateTime? DateHiddenTo { get; set; }
         public string Status { get; set; }
-        public string Cost { get; set; }
+        public List<string> Cost { get; set; }
         public string CostText { get; set; }
         public string AbilityLevel { get; set; }
         public string VolunteeringText { get; set; }
@@ -41,7 +41,7 @@ namespace StockportContentApi.Model
             string twitter, string facebook, string address, string description, string imageUrl,
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
-            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, string cost, string costText, string abilityLevel, string volunteeringText, 
+            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
             Organisation organisation, bool donations, string accessibleTransportLink)
         {
             Name = name;

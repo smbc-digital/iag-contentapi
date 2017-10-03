@@ -240,47 +240,6 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
 
-                //var nullAToZcollection = new ContentfulCollection<ContentfulAtoZ>();
-                //nullAToZcollection.Items = new List<ContentfulAtoZ>();
-
-                //var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
-                //aToZcollection.Items = new List<ContentfulAtoZ>
-                //{
-                //    new ContentfulAToZBuilder().Title("Vintage Village turns 6 years old").Build(),
-                //    new ContentfulAToZBuilder().Title("C Letter Article").Slug("c-letter-article").Teaser("A C letter article").Sys("article").Build(),
-                //    new ContentfulAToZBuilder().Title("C Letter Topic").Slug("d-letter-topic").Teaser("This is a d letter topic").Sys("topic").Build(),
-                //    new ContentfulAToZBuilder().Title("Benefits & Support").Slug("benefits-and-support").Teaser("Benefits & Support").Sys("topic").Build(),
-                //    new ContentfulAToZBuilder().Title("Bins & Recycling").Slug("bins-and-recycling").Teaser("Collection days, bulky items").Sys("topic").Build()
-                //};
-
-                //httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
-                //httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
-                //httpClient.Setup(o => o.GetEntriesAsync<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0", It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
-
-                //var aToZArticle = new List<AtoZ>
-                //{
-                //    new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "article", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "article", new List<string>(){"V atoztitle"})
-                //};
-                //var aToZShowcase = new List<AtoZ>
-                //{
-                //    new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "showcase", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "showcase", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "showcase", new List<string>(){"V atoztitle"})
-                //};
-
-                //var aToZTopic = new List<AtoZ>
-                //{
-                //    new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "topic", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "topic", new List<string>(){"V atoztitle"}),
-                //    new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string>(){"V atoztitle"})
-                //};
-                //_cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZArticle);
-                //_cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZTopic);
-                //_cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-showcase-{"v"}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>())).ReturnsAsync(aToZShowcase);
-
-
                 var smartAnswer = new ContentfulCollection<ContentfulSmartAnswers>();
                 smartAnswer.Items = new List<ContentfulSmartAnswers>()
                 {

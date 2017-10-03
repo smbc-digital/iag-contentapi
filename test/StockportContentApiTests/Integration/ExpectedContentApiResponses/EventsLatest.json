@@ -73,7 +73,7 @@
         "dateHiddenFrom": null,
         "dateHiddenTo": null,
         "status": "Published",
-        "cost": "",
+        "cost":  [],
         "costText": "",
         "abilityLevel": "",
         "volunteeringText": null,

@@ -53,7 +53,7 @@ namespace StockportContentApiTests.Unit.Builders
                     SystemProperties = new SystemProperties() { Type = "Asset" },
                     Title = ""
                 },
-            Cost = new List<string> { string.Empty },
+            Cost = new List<string> (),
             CostText = "",
             AbilityLevel = "",
             Organisation = new ContentfulOrganisation()

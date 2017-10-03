@@ -51,7 +51,7 @@ namespace StockportContentApi.ContentfulFactories
             var administrators = entry.GroupAdministrators;
             administrators.Items = administrators.Items.Select(i => i.StripData(_httpContextAccessor)).ToList();
 
-            var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost[0] : string.Empty;
+            var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost : new List<string>();
 
             return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
