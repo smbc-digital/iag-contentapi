@@ -150,6 +150,9 @@ namespace StockportContentApi.Middleware
                     return "start pages";
                 case "smart":
                     return "smart answers";
+                case "organisation":
+                case "organisations":
+                    return "organisations";
                 default:
                     return endpoint.ToLower();
             }
