@@ -4,16 +4,13 @@
 * To build and run tests:
 
 ```
-make build
+make build-and-test
 ```
 
 ## Running the app
 * You would need to set up the following environment variables to run the app
 (these need to correspond with the business Id that you use in the webapp):
-  - {`BUSINESS_ID`}_ACCESS_KEY
-  - {`BUSINESS_ID`}_SPACE
-* The app can run several different business Ids at once, as long as the corresponding
-business Ids are provided.
+  - ASPNETCORE_ENVIRONMENT with a value of **local**
 
 ### Configuration
 The app has three config files which are kept in `src/StockportContentApi/app-config/`
@@ -24,11 +21,11 @@ The app has three config files which are kept in `src/StockportContentApi/app-co
 
 ### How to run
 ```
-make run
+make run and then visit http://localhost:5001
 ```
 
 ### Package
-make win-package
+make publish-app, this will package the app in release mode and output it into src/StockportContentApi/publish dir
 
 ## Contentful Integration
 * The Content Api acts as a translation layer between [Contentful](contentful.com) and the webapp.
@@ -41,15 +38,12 @@ https://cdn.contentful.com/spaces/SPACE_KEY/entries?access_token=ACCESS_TOKEN&co
 * `ACCESS_TOKEN`: Corresponds to the contentful space access token
 * `CONTENT_TYPE`: This relates to the content type that is stored within Contentful.
 
-Both the `SPACE_KEY` and `ACCESS_TOKEN` are gained from the businessId specific environment variables defined above. This allows for businessId specific data to be retrieved from Contentful.
+Both the `SPACE_KEY` and `ACCESS_TOKEN` are gained from the businessId specific app settings defined above. This allows for businessId specific data to be retrieved from Contentful.
 
-### Prerequisites:
-This app runs using at least .Net Core SDK version 1.0.0-preview2-003121.
+## Dot net core version
+This app runs using .Net Core SDK version 1.0.4.
 
-## Postman tests
+## Swagger
+Swagger is set up as an automated api documentation under /swagger/ui/index.html
 
-### Stockport gov
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/00f1a874443afbd38801)
 
-### Healthystockport
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/5e7a2148c69eaf36d18e)

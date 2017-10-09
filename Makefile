@@ -8,7 +8,6 @@ require-envs-%:
 	done; \
 	if [[ -n $$FAIL ]]; then echo "Aborting..." && exit 1; fi
 
-# Project automation targets: (these run in docker)
 # ---------------------------------------------------------------------------------------
 PROJECT_NAME = StockportContentApi
 
@@ -16,14 +15,6 @@ APPLICATION_ROOT_PATH = ./src/StockportContentApi
 APPLICATION_PUBLISH_PATH = $(APPLICATION_ROOT_PATH)/publish/
 
 APP_VERSION ?= $(BUILD_NUMBER)
-
-
-# .PHONY: build run
-# build:
-# 	git rev-parse HEAD > src/$(PROJECT_NAME)/sha.txt
-# 	echo $(APP_VERSION) > src/$(PROJECT_NAME)/version.txt
-# 	./docker.sh build $(IMAGE) $(TAG) Dockerfile
-
 
 .PHONY: build
 build: clean dotnet-restore dotnet-test version publish-app package-app
@@ -39,6 +30,14 @@ dotnet-restore:
 .PHONY: dotnet-test
 dotnet-test:
 	cd test/StockportContentApiTests; dotnet test
+
+.PHONY: build-and-test
+build-and-test:
+	dotnet restore; dotnet build; cd test/StockportContentApiTests; dotnet test
+
+.PHONY: run
+run:
+	cd src/StockportContentApi; dotnet run
 
 .PHONY: publish-app
 publish-app:
