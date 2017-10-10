@@ -12,6 +12,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _subHeading = "subHeading";
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private string _slug = "slug";
         private SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
@@ -27,7 +28,8 @@ namespace StockportContentApiTests.Unit.Builders
                 SubHeading = _subHeading,
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
-                Sys = _sys
+                Sys = _sys,
+                Slug = _slug
             };
         }
 

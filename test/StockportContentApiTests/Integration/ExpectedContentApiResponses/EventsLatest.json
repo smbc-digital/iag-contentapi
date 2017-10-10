@@ -100,7 +100,8 @@
           "body": "body",
           "severity": "severity",
           "sunriseDate": "0001-01-01T00:00:00+00:00",
-          "sunsetDate": "9999-09-09T00:00:00+00:00"
+          "sunsetDate": "9999-09-09T00:00:00+00:00",
+          "slug": "slug"
         }
       ],
       "eventCategories": [

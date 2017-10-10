@@ -42,7 +42,8 @@ namespace StockportContentApiTests.Builders
                 Severity = "Warning",
                 SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
                 SunsetDate = new DateTime(2018, 8, 1, 0, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties() {Type = "Entry"},
+                Slug = "slug"
             },
             new ContentfulAlert()
             {
@@ -52,7 +53,8 @@ namespace StockportContentApiTests.Builders
                 Severity = "Information",
                 SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
                 SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties() {Type = "Entry"},
+                Slug = "slug"
             },
             new ContentfulAlert()
             {
@@ -62,7 +64,8 @@ namespace StockportContentApiTests.Builders
                 Severity = "Error",
                 SunriseDate = new DateTime(2016, 7, 31, 23, 0, 0, DateTimeKind.Utc),
                 SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties() {Type = "Entry"},
+                Slug = "slug"
             }
         };
 

@@ -58,7 +58,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventBannerFactory.Setup(o => o.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
             _advertisementFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAdvertisement>())).Returns(advertisment);
             
-            var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10));
+            var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty);
             _alertFactory.Setup(o => o.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
 
             var topic = _topicContentfulFactory.ToModel(_contentfulTopic);

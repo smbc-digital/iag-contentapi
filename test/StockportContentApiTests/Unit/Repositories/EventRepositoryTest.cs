@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc)));
+                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty));
 
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));

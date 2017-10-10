@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private const string ThumbnailImage = "thumbnail.jpg";
         private readonly List<Crumb> _crumbs = new List<Crumb>() { new Crumb("title", "slug", "type") };
         private readonly List<Alert> _alerts = new List<Alert>() {
-                new Alert("title", "subheading", "body", "severity", new DateTime(2016, 08, 5), new DateTime(2016, 08, 11)) };
+                new Alert("title", "subheading", "body", "severity", new DateTime(2016, 08, 5), new DateTime(2016, 08, 11), string.Empty) };
         private readonly List<string> _newsCategories = new List<string>() { "news-category-1", "news-category-2" };
 
         private readonly ContentfulConfig _config = new ContentfulConfig("test")
@@ -126,7 +126,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "news-of-the-century";
             List<Alert> alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
                                                                  "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc)) };
+                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc), "slug") };
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
            
             var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();

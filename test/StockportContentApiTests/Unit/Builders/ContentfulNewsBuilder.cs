@@ -18,7 +18,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<string> _tags = new List<string> { "Bramall Hall", "Events" };
         private List<Alert> _alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
                                                                  "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc)) };
+                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc), "slug") };
         private List<Asset> _documents = new List<Asset>();
 
         private List<string> _categories = new List<string> { "A category" };

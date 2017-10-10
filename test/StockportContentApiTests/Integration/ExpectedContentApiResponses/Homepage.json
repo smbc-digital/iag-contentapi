@@ -23,7 +23,8 @@
       "body": "This is a warning alert.",
       "severity": "Warning",
       "sunriseDate": "2016-06-30T23:00:00Z",
-      "sunsetDate": "2018-08-01T00:00:00Z"
+      "sunsetDate": "2018-08-01T00:00:00Z",
+      "slug": "slug"
     },
     {
       "title": "Information alert",
@@ -31,7 +32,8 @@
       "body": "This is an information alert.",
       "severity": "Information",
       "sunriseDate": "2016-06-30T23:00:00Z",
-      "sunsetDate": "2116-08-30T23:00:00Z"
+      "sunsetDate": "2116-08-30T23:00:00Z",
+      "slug": "slug"
     },
     {
       "title": "Error alert",
@@ -39,7 +41,8 @@
       "body": "This is an error alert.",
       "severity": "Error",
       "sunriseDate": "2016-07-31T23:00:00Z",
-      "sunsetDate": "2116-08-30T23:00:00Z"
+      "sunsetDate": "2116-08-30T23:00:00Z",
+      "slug": "slug"
     }
   ],
   "carouselContents": [
