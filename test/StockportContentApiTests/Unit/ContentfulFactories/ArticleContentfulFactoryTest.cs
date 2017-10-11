@@ -83,7 +83,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Returns(topic);
             var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
             _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
-            var alert = new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty);
+            var alert = new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug");
             _alertFactory.Setup(o => o.ToModel(_contentfulArticle.Alerts.First())).Returns(alert);
             
             var advertisment = new Advertisement("Advert Title","advert slug","advert teaser",DateTime.MaxValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), true,"url","image.jpg");
