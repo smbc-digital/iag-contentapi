@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Contentful.Core.Models;
 using FluentAssertions;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
@@ -16,7 +15,7 @@ namespace StockportContentApiTests.Unit.Model
             var actual = new ContentfulNews();
             var expected = new ContentfulNews
             {
-                Alerts = new List<Alert>(),
+                Alerts = new List<ContentfulAlert>(),
                 Body = string.Empty,
                 Categories = new List<string>(),
                 Documents = new List<Asset>(),

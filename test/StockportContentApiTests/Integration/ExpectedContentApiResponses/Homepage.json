@@ -1,45 +1,89 @@
-﻿{
-  "popularSearchTerms": [ "popular search term" ],
-  "featuredTasksHeading": "Featured tasks heading",
-  "featuredTasksSummary": "Featured tasks summary",
-  "featuredTasks": [],
-  "featuredTopics": [
-    {
-      "slug": "council-tax",
-      "title": "Council Tax",
-      "teaser": "How to pay, discounts",
-      "icon": "si-house",
-      "type": "id",
-      "sunriseDate": "0001-01-01T00:00:00Z",
-      "sunsetDate": "0001-01-01T00:00:00Z",
-      "image": "",
-      "subItems": []
-    }
-  ],
-  "alerts": [
-    {
-      "title": "title",
-      "subHeading": "subHeading",
-      "body": "body",
-      "severity": "severity",
-      "sunriseDate": "0001-01-01T00:00:00Z",
-      "sunsetDate": "9999-09-09T00:00:00Z",
-      "slug": "slug"
-    }
-  ],
-  "carouselContents": [
-    {
-      "title": "Red Rock is opening this Autumn",
-      "slug": "red-rock-opening",
-      "teaser": "The long awaited cinema complex is due to open late Oct 2016. Come and take a look.",
-      "image": "image.jpg",
-      "sunriseDate": "2016-09-01T00:00:00Z",
-      "sunsetDate": "2016-09-30T00:00:00Z",
-      "url": "http://fake.url"
-    }
-  ],
-  "backgroundImage": "image.jpg",
-  "freeText": "homepage text",
+﻿{  
+   "popularSearchTerms":[  
+      "popular search term"
+   ],
+   "featuredTasksHeading":"Featured tasks heading",
+   "featuredTasksSummary":"Featured tasks summary",
+   "featuredTasks":[  
+
+   ],
+   "featuredTopics":[  
+      {  
+         "slug":"slug",
+         "title":"name",
+         "teaser":"teaser",
+         "icon":"icon",
+         "type":"id",
+         "sunriseDate":"0001-01-01T00:00:00Z",
+         "sunsetDate":"9999-09-09T00:00:00Z",
+         "image":"background-image-url.jpg",
+         "subItems":[  
+            {  
+               "slug":"sub-slug",
+               "title":"title",
+               "teaser":"teaser",
+               "icon":"icon",
+               "type":"id",
+               "sunriseDate":"0001-01-01T00:00:00Z",
+               "sunsetDate":"9999-09-09T00:00:00Z",
+               "image":"image",
+               "subItems":[  
+
+               ]
+            },
+            {  
+               "slug":"secondary-slug",
+               "title":"title",
+               "teaser":"teaser",
+               "icon":"icon",
+               "type":"id",
+               "sunriseDate":"0001-01-01T00:00:00Z",
+               "sunsetDate":"9999-09-09T00:00:00Z",
+               "image":"image",
+               "subItems":[  
+
+               ]
+            },
+            {  
+               "slug":"tertiary-slug",
+               "title":"title",
+               "teaser":"teaser",
+               "icon":"icon",
+               "type":"id",
+               "sunriseDate":"0001-01-01T00:00:00Z",
+               "sunsetDate":"9999-09-09T00:00:00Z",
+               "image":"image",
+               "subItems":[  
+
+               ]
+            }
+         ]
+      }
+   ],
+   "alerts":[  
+      {  
+         "title":"title",
+         "subHeading":"subHeading",
+         "body":"body",
+         "severity":"severity",
+         "sunriseDate":"0001-01-01T00:00:00Z",
+         "sunsetDate":"9999-09-09T00:00:00Z",
+         "slug":"slug"
+      }
+   ],
+   "carouselContents":[  
+      {  
+         "title":"title",
+         "slug":"slug",
+         "teaser":"teaser",
+         "image":"image.jpg",
+         "sunriseDate":"2016-09-01T00:00:00Z",
+         "sunsetDate":"2016-09-30T00:00:00Z",
+         "url":"url"
+      }
+   ],
+   "backgroundImage":"image.jpg",
+   "freeText":"homepage text",
   "featuredGroup": {
     "name": "_name",
     "slug": "_slug",
@@ -52,8 +96,12 @@
     "description": "_description",
     "imageUrl": "image-url.jpg",
     "thumbnailImageUrl": "image-url.jpg?h=250",
-    "categoriesReference": [],
-    "subCategories": [],
+    "categoriesReference": [
+
+    ],
+    "subCategories": [
+
+    ],
     "breadcrumbs": [
       {
         "title": "Stockport Local",
@@ -67,11 +115,17 @@
     },
     "volunteering": false,
     "events": null,
-    "groupAdministrators": { "items": [] },
+    "groupAdministrators": {
+      "items": [
+
+      ]
+    },
     "dateHiddenFrom": "0001-01-01T00:00:00Z",
     "dateHiddenTo": "0001-01-01T00:00:00Z",
     "status": "Published",
-    "cost": [],
+    "cost": [
+
+    ],
     "costText": "",
     "abilityLevel": "",
     "volunteeringText": null,
@@ -84,7 +138,9 @@
       "email": "",
       "volunteering": false,
       "volunteeringText": null,
-      "groups": [],
+      "groups": [
+
+      ],
       "donations": false
     },
     "linkedGroups": null,

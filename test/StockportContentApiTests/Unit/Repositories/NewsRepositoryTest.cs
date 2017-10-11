@@ -7,27 +7,19 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi;
 using StockportContentApi.Client;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Extensions;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using File = System.IO.File;
-using HttpResponse = StockportContentApi.Http.HttpResponse;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using System.Collections;
 using Contentful.Core.Models.Management;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -68,6 +60,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly ContentfulCollection<ContentfulNewsRoom> _newsroomContentfulCollection;
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder;
 
         public NewsRepositoryTest()
         {
@@ -82,7 +75,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     new Field()
                     {
                         Name = "Categories",
-                        Items = new Contentful.Core.Models.Schema()
+                        Items = new Schema()
                         {
                             Validations = new List<IFieldValidator>()
                             {
@@ -99,10 +92,11 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsRoomBuilder().Build()
             };
             _contentfulClientManager = new Mock<IContentfulClientManager>();
-            _client = new Mock<Contentful.Core.IContentfulClient>();
+            _client = new Mock<IContentfulClient>();
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
+            _alertBuilder = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
-            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake()), HttpContextFake.GetHttpContextFake());
+            _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake()), HttpContextFake.GetHttpContextFake(), _alertBuilder.Object, _mockTimeProvider.Object);
 
             _client.Setup(o => o.GetEntriesAsync(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
@@ -124,9 +118,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "news-of-the-century";
-            List<Alert> alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
-                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc), "slug") };
+            List<Alert> alerts = new List<Alert> { new AlertBuilder().Build() };
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
            
             var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();

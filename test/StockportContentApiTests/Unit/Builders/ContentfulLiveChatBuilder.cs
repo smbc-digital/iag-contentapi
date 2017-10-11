@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -10,18 +7,16 @@ namespace StockportContentApiTests.Unit.Builders
     {
         private string _title = "title";
         private string _text = "text";
+        private SystemProperties _sys = new SystemProperties { Type = "Entry" };
 
-        public ContentfulLiveChat Build()
+    public ContentfulLiveChat Build()
         {
             return new ContentfulLiveChat()
             {
                 Title = _title,
                 Text = _text,
-                Sys = new SystemProperties
-                {
-                    Type = "Entry",
-                }
-           };
+                Sys = _sys
+            };
         }
     }
 }

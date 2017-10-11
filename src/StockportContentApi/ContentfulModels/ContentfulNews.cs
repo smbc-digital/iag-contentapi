@@ -17,7 +17,7 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public List<string> Tags { get; set; } = new List<string>();
-        public List<Alert> Alerts { get; set; } = new List<Alert>();
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public List<string> Categories { get; set; } = new List<string>();
         public SystemProperties Sys { get; set; } = new SystemProperties();

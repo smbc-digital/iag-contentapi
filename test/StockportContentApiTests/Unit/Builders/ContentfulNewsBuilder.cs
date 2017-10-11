@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -16,9 +15,7 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
         private List<string> _tags = new List<string> { "Bramall Hall", "Events" };
-        private List<Alert> _alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
-                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                  new DateTime(2017, 11, 22, 22, 0, 0, DateTimeKind.Utc), "slug") };
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
         private List<Asset> _documents = new List<Asset>();
 
         private List<string> _categories = new List<string> { "A category" };

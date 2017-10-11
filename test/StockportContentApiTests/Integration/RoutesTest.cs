@@ -114,10 +114,9 @@ namespace StockportContentApiTests.Integration
                 var newsroomCollection = new ContentfulCollection<ContentfulNewsRoom>();
                 newsroomCollection.Items = new List<ContentfulNewsRoom>
                 {
-                    new ContentfulNewsRoom() {Alerts = new List<Alert> { new Alert("New alert", "alert sub heading updated", "Alert body",
-                                                                 "Error", new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc), "slug") }, EmailAlerts = true, EmailAlertsTopicId = "test-id", Sys = null, Title = "title"}
+                    new ContentfulNewsRoomBuilder().Build()
                 };
+
                 httpClient.Setup(o => o.GetEntriesAsync(
                                It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);

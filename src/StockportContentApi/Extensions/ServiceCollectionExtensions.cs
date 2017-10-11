@@ -91,9 +91,11 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulKeyFact, KeyFact>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
                 (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IHttpContextAccessor>()));
+
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
-                p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(p => new NewsRoomContentfulFactory(p.GetService<IHttpContextAccessor>()));
+                p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>()));
+
+            services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(p => new NewsRoomContentfulFactory(p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(p => new GroupCategoryContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventCategory, EventCategory>>(p => new EventCategoryContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>>

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -20,17 +18,7 @@ namespace StockportContentApiTests.Unit.Builders
 
         private readonly List<ContentfulCarouselContent> _carouselContents = new List<ContentfulCarouselContent>
         {
-            new ContentfulCarouselContent
-            {
-                Title = "Red Rock is opening this Autumn",
-                Slug = "red-rock-opening",
-                Teaser = "The long awaited cinema complex is due to open late Oct 2016. Come and take a look.",
-                Image = new Asset { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } },
-                SunriseDate = new DateTime(2016, 9, 1, 0, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2016, 9, 30, 0, 0, 0, DateTimeKind.Utc),
-                Url = "http://fake.url",
-                Sys = new SystemProperties {Type = "Entry"}
-            }
+            new ContentfulCarouselContentBuilder().Build()
         };
 
         private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
@@ -42,25 +30,7 @@ namespace StockportContentApiTests.Unit.Builders
 
         private readonly List<ContentfulReference> _featuredTopics = new List<ContentfulReference>
         {
-            new ContentfulTopicBuilder().Slug("council-tax").Name("Council Tax")
-                                        .Teaser("How to pay, discounts")
-                                        .Summary(string.Empty)
-                                        .Icon("si-house")
-                                        .BackgroundImage(new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } })
-                                        .Image(new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } })
-                                        .SubItems(new List<ContentfulReference>())
-                                        .SecondaryItems(new List<ContentfulReference>())
-                                        .TertiaryItems(new List<ContentfulReference>())
-                                        .Breadcrumbs(new List<ContentfulReference>())
-                                        .Alerts(new List<ContentfulAlert>())
-                                        .SunriseDate(DateTime.MinValue)
-                                        .SunsetDate(DateTime.MinValue)
-                                        .EmailAlerts(false)
-                                        .EmailAlertsTopicId(string.Empty)
-                                        .EventBanner(new ContentfulEventBannerBuilder().Build())
-                                        .ExpandingLinkTitle(string.Empty)
-                                        .ExpandingLinkBoxes(new List<ContentfulExpandingLinkBox>())
-                                        .Build()
+            new ContentfulTopicBuilder().Build()
         };
 
         private readonly SystemProperties _sys = new SystemProperties
