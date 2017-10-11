@@ -18,16 +18,7 @@ namespace StockportContentApiTests.Unit.Builders
             new ContentfulProfileBuilder().Build() };
         private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
         {
-            new ContentfulAlert()
-            {
-                Title = "title",
-                SubHeading = "subHeading",
-                Body = "body",
-                Severity = "severity",
-                SunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"}
-            }
+            new ContentfulAlertBuilder().Build()
         };
         private SystemProperties _sys = new SystemProperties
         {

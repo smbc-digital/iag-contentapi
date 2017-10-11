@@ -34,39 +34,7 @@ namespace StockportContentApiTests.Builders
 
         private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
         {
-            new ContentfulAlert()
-            {
-                Title = "Warning alert",
-                SubHeading = "This is a warning alert.",
-                Body = "This is a warning alert.",
-                Severity = "Warning",
-                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2018, 8, 1, 0, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            },
-            new ContentfulAlert()
-            {
-                Title = "Information alert",
-                SubHeading = "test",
-                Body = "This is an information alert.",
-                Severity = "Information",
-                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            },
-            new ContentfulAlert()
-            {
-                Title = "Error alert",
-                SubHeading = string.Empty,
-                Body = "This is an error alert.",
-                Severity = "Error",
-                SunriseDate = new DateTime(2016, 7, 31, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            }
+            new ContentfulAlertBuilder().Build()
         };
 
         public ContentfulShowcase Build()

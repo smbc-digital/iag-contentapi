@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -34,30 +33,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};
 
-        private ContentfulGroup _group = new ContentfulGroup()
-        {
-            Twitter = null,
-            Address = "Test street",
-            Slug = "zumba-fitness",
-            PhoneNumber = "phone",
-            Email = "email",
-            Website = "",
-            Facebook = null,
-            Description = "",
-            Name = "Zumba Fitness",
-            Image =
-                new Asset()
-                {
-                    Description = "",
-                    File = new File() { ContentType = "", FileName = "", Details = null, UploadUrl = "", Url = "" },
-                    SystemProperties = new SystemProperties() { Type = "Asset" },
-                    Title = ""
-                },
-            Cost = new List<string> (),
-            CostText = "",
-            AbilityLevel = "",
-            Organisation = new ContentfulOrganisation()
-        };
+        private ContentfulGroup _group = new ContentfulGroupBuilder().Build();
 
         public ContentfulEvent Build()
         {

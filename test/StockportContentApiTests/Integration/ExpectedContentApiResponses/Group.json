@@ -10,8 +10,12 @@
   "description": "_description",
   "imageUrl": "image-url.jpg",
   "thumbnailImageUrl": "image-url.jpg?h=250",
-  "categoriesReference": [],
-  "subCategories": [],
+  "categoriesReference": [
+
+  ],
+  "subCategories": [
+
+  ],
   "breadcrumbs": [
     {
       "title": "Stockport Local",
@@ -25,271 +29,19 @@
   },
   "volunteering": false,
   "events": [
-    {
-      "title": "title",
-      "slug": "event1",
-      "teaser": "teaser",
-      "imageUrl": "image-url.jpg",
-      "thumbnailImageUrl": "image-url.jpg?h=250",
-      "description": "description",
-      "fee": "fee",
-      "location": "location",
-      "submittedBy": "submittedBy",
-      "eventDate": "9999-09-09T00:00:00Z",
-      "startTime": "10:00",
-      "endTime": "17:00",
-      "occurences": -1,
-      "eventFrequency": "None",
-      "breadcrumbs": [
-        {
-          "title": "Events",
-          "slug": "",
-          "type": "events"
-        }
 
-      ],
-      "documents": [
-        {
-          "title": "documentTitle",
-          "size": 674192,
-          "url": "url.pdf",
-          "lastUpdated": "2016-10-05T00:00:00Z",
-          "fileName": "fileName"
-        }
-      ],
-      "categories": [ "category 1", "category 2" ],
-      "mapPosition": {
-        "lon": -2.5,
-        "lat": 53.5
-      },
-      "bookingInformation": "booking information",
-      "featured": false,
-      "updatedAt": "2016-10-05T00:00:00Z",
-      "tags": [ "tag 1", "tag 2" ],
-      "group": {
-        "name": "Zumba Fitness",
-        "slug": "zumba-fitness",
-        "phoneNumber": "phone",
-        "email": "email",
-        "website": "",
-        "twitter": null,
-        "facebook": null,
-        "address": "Test street",
-        "description": "",
-        "imageUrl": "",
-        "thumbnailImageUrl": "",
-        "categoriesReference": [],
-        "subCategories": [],
-        "breadcrumbs": [
-          {
-            "title": "Stockport Local",
-            "slug": "",
-            "type": "groups"
-          }
-        ],
-        "mapPosition": {
-          "lon": 0.0,
-          "lat": 0.0
-        },
-        "volunteering": false,
-        "events": null,
-        "groupAdministrators": { "items": [] },
-        "dateHiddenFrom": null,
-        "dateHiddenTo": null,
-        "status": "Published",
-        "cost": [],
-        "costText": "",
-        "abilityLevel": "",
-        "volunteeringText": null,
-        "organisation": {
-          "title": "",
-          "slug": "",
-          "imageUrl": "",
-          "aboutUs": "",
-          "phone": "",
-          "email": "",
-          "volunteering": false,
-          "volunteeringText": null,
-          "groups": [],
-          "donations": false
-        },
-        "linkedGroups": null,
-        "donations": false,
-        "accessibleTransportLink": "/accessibleTransport"
-      },
-      "alerts": [
-        {
-          "title": "title",
-          "subHeading": "subHeading",
-          "body": "body",
-          "severity": "severity",
-          "sunriseDate": "0001-01-01T00:00:00Z",
-          "sunsetDate": "9999-09-09T00:00:00Z",
-          "slug": "slug"
-        }
-      ],
-      "eventCategories": [
-        {
-          "name": "Category 2",
-          "slug": "category-2",
-          "icon": ""
-        },
-        {
-          "name": "Event Category",
-          "slug": "event-category",
-          "icon": ""
-        }
-      ],
-      "free": null,
-      "paid": null,
-      "coord": {
-        "latitude": 53.5,
-        "longitude": -2.5,
-        "horizontalAccuracy": "NaN",
-        "verticalAccuracy": "NaN",
-        "speed": "NaN",
-        "course": "NaN",
-        "isUnknown": false,
-        "altitude": "NaN"
-      },
-      "accessibleTransportLink": "/accessibleTransport"
-    },
-    {
-      "title": "title",
-      "slug": "event2",
-      "teaser": "teaser",
-      "imageUrl": "image-url.jpg",
-      "thumbnailImageUrl": "image-url.jpg?h=250",
-      "description": "description",
-      "fee": "fee",
-      "location": "location",
-      "submittedBy": "submittedBy",
-      "eventDate": "9999-09-09T00:00:00Z",
-      "startTime": "10:00",
-      "endTime": "17:00",
-      "occurences": -1,
-      "eventFrequency": "None",
-      "breadcrumbs": [
-        {
-          "title": "Events",
-          "slug": "",
-          "type": "events"
-        }
-      ],
-      "documents": [
-        {
-          "title": "documentTitle",
-          "size": 674192,
-          "url": "url.pdf",
-          "lastUpdated": "2016-10-05T00:00:00Z",
-          "fileName": "fileName"
-        }
-      ],
-      "categories": [ "category 1", "category 2" ],
-      "mapPosition": {
-        "lon": -2.5,
-        "lat": 53.5
-      },
-      "bookingInformation": "booking information",
-      "featured": false,
-      "updatedAt": "2016-10-05T00:00:00Z",
-      "tags": [ "tag 1", "tag 2" ],
-      "group": {
-        "name": "Zumba Fitness",
-        "slug": "zumba-fitness",
-        "phoneNumber": "phone",
-        "email": "email",
-        "website": "",
-        "twitter": null,
-        "facebook": null,
-        "address": "Test street",
-        "description": "",
-        "imageUrl": "",
-        "thumbnailImageUrl": "",
-        "categoriesReference": [],
-        "subCategories": [],
-        "breadcrumbs": [
-          {
-            "title": "Stockport Local",
-            "slug": "",
-            "type": "groups"
-          }
-        ],
-        "mapPosition": {
-          "lon": 0.0,
-          "lat": 0.0
-        },
-        "volunteering": false,
-        "events": null,
-        "groupAdministrators": { "items": [] },
-        "dateHiddenFrom": null,
-        "dateHiddenTo": null,
-        "status": "Published",
-        "cost": [],
-        "costText": "",
-        "abilityLevel": "",
-        "volunteeringText": null,
-        "organisation": {
-          "title": "",
-          "slug": "",
-          "imageUrl": "",
-          "aboutUs": "",
-          "phone": "",
-          "email": "",
-          "volunteering": false,
-          "volunteeringText": null,
-          "groups": [],
-          "donations": false
-        },
-        "linkedGroups": null,
-        "donations": false,
-        "accessibleTransportLink": "/accessibleTransport"
-      },
-      "alerts": [
-        {
-          "title": "title",
-          "subHeading": "subHeading",
-          "body": "body",
-          "severity": "severity",
-          "sunriseDate": "0001-01-01T00:00:00Z",
-          "sunsetDate": "9999-09-09T00:00:00Z",
-          "slug": "slug"
-        }
-
-      ],
-      "eventCategories": [
-        {
-          "name": "Category 2",
-          "slug": "category-2",
-          "icon": ""
-        },
-        {
-          "name": "Event Category",
-          "slug": "event-category",
-          "icon": ""
-        }
-      ],
-      "free": null,
-      "paid": null,
-      "coord": {
-        "latitude": 53.5,
-        "longitude": -2.5,
-        "horizontalAccuracy": "NaN",
-        "verticalAccuracy": "NaN",
-        "speed": "NaN",
-        "course": "NaN",
-        "isUnknown": false,
-        "altitude": "NaN"
-      },
-      "accessibleTransportLink": "/accessibleTransport"
-
-    }
   ],
-  "groupAdministrators": { "items": [] },
+  "groupAdministrators": {
+    "items": [
+
+    ]
+  },
   "dateHiddenFrom": "0001-01-01T00:00:00Z",
   "dateHiddenTo": "0001-01-01T00:00:00Z",
   "status": "Published",
-  "cost": [],
+  "cost": [
+
+  ],
   "costText": "",
   "abilityLevel": "",
   "volunteeringText": null,
@@ -302,7 +54,9 @@
     "email": "",
     "volunteering": false,
     "volunteeringText": null,
-    "groups": [],
+    "groups": [
+
+    ],
     "donations": false
   },
   "linkedGroups": null,

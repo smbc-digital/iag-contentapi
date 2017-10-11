@@ -35,50 +35,10 @@ namespace StockportContentApiTests.Unit.Builders
 
         private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
         {
-            new ContentfulAlert()
-            {
-                Title = "Warning alert",
-                SubHeading = "This is a warning alert.",
-                Body = "This is a warning alert.",
-                Severity = "Warning",
-                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2018, 8, 1, 0, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            },
-            new ContentfulAlert()
-            {
-                Title = "Information alert",
-                SubHeading = "test",
-                Body = "This is an information alert.",
-                Severity = "Information",
-                SunriseDate = new DateTime(2016, 6, 30, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            },
-            new ContentfulAlert()
-            {
-                Title = "Error alert",
-                SubHeading = string.Empty,
-                Body = "This is an error alert.",
-                Severity = "Error",
-                SunriseDate = new DateTime(2016, 7, 31, 23, 0, 0, DateTimeKind.Utc),
-                SunsetDate = new DateTime(2116, 8, 30, 23, 0, 0, DateTimeKind.Utc),
-                Sys = new SystemProperties() {Type = "Entry"},
-                Slug = "slug"
-            }
+            new ContentfulAlertBuilder().Build()
         };
 
-        private readonly List<ContentfulReference> _featuredTasks = new List<ContentfulReference>
-        {
-            //new ContentfulReferenceBuilder().Slug("pay-council-tax").Title("Pay Council Tax").SubItems(new List<ContentfulReference>()).Build(),
-            //new ContentfulReferenceBuilder().Slug("check-your-bin-day").Title("Check your bin day").SubItems(new List<ContentfulReference>()).Build(),
-            //new ContentfulReferenceBuilder().Slug("find-a-planning-application").Title("Find a planning application").SubItems(new List<ContentfulReference>()).Build(),
-            //new ContentfulReferenceBuilder().Slug("find-or-renew-a-book").Title("Find or renew a book").SubItems(new List<ContentfulReference>()).Build(),
-            //new ContentfulReferenceBuilder().Slug("school-holiday-and-term-dates").Title("School holiday & term dates").SubItems(new List<ContentfulReference>()).Build(),
-            //new ContentfulReferenceBuilder().Slug("search-job-vacancies").Title("Search job vacancies").SubItems(new List<ContentfulReference>()).Build()
-        };
+        private readonly List<ContentfulReference> _featuredTasks = new List<ContentfulReference>();
 
         private readonly List<ContentfulReference> _featuredTopics = new List<ContentfulReference>
         {

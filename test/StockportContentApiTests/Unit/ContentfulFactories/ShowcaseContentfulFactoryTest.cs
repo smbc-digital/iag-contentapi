@@ -35,8 +35,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-                .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
+            topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
 
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty));
@@ -72,7 +71,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             showcase.FeaturedItems.First().Icon.Should().Be(subItems.First().Icon);
             showcase.FeaturedItems.First().Slug.Should().Be(subItems.First().Slug);
             showcase.FeaturedItems.Should().HaveCount(1);
-            showcase.Alerts.Count().Should().Be(3);
+            showcase.Alerts.Count().Should().Be(1);
         }
 
         [Fact]
