@@ -304,22 +304,22 @@ namespace StockportContentApiTests.Integration
         }
 
         [Theory]
-        [InlineData("StartPage", "/api/unittest/start-page/new-start-page")]
-        [InlineData("Profile", "/api/unittest/profiles/profile_slug")]
-        [InlineData("Topic", "/api/unittest/topics/topic_slug")]
-        [InlineData("Homepage", "/api/unittest/homepage")]
-        [InlineData("AtoZ", "/api/unittest/atoz/v")]
-        [InlineData("AtoZTopic", "/api/unittest/atoz/b")]
-        [InlineData("AtoZArticleAndTopic", "/api/unittest/atoz/c")]
-        [InlineData("RedirectDictionary", "/api/redirects")]
-        [InlineData("Footer", "/api/unittest/footer")]
-        [InlineData("Group", "/api/unittest/groups/zumba-fitness")]
-        [InlineData("Payment", "/api/unittest/payments/payment_slug")]
-        [InlineData("Showcase", "/api/unittest/showcases/showcase_slug")]
-        [InlineData("GroupCategory", "/api/unittest/group-categories")]
-        [InlineData("ContactUsId", "/api/unittest/contact-us-id/test-email")]
-        [InlineData("Organisation", "/api/unittest/organisations/slug")]
-        [InlineData("GroupHomePage", "/api/unittest/grouphomepage")]
+        [InlineData("StartPage", "/unittest/start-page/new-start-page")]
+        [InlineData("Profile", "/unittest/profiles/profile_slug")]
+        [InlineData("Topic", "/unittest/topics/topic_slug")]
+        [InlineData("Homepage", "/unittest/homepage")]
+        [InlineData("AtoZ", "/unittest/atoz/v")]
+        [InlineData("AtoZTopic", "/unittest/atoz/b")]
+        [InlineData("AtoZArticleAndTopic", "/unittest/atoz/c")]
+        [InlineData("RedirectDictionary", "/redirects")]
+        [InlineData("Footer", "/unittest/footer")]
+        [InlineData("Group", "/unittest/groups/zumba-fitness")]
+        [InlineData("Payment", "/unittest/payments/payment_slug")]
+        [InlineData("Showcase", "/unittest/showcases/showcase_slug")]
+        [InlineData("GroupCategory", "/unittest/group-categories")]
+        [InlineData("ContactUsId", "/unittest/contact-us-id/test-email")]
+        [InlineData("Organisation", "/unittest/organisations/slug")]
+        [InlineData("GroupHomePage", "/unittest/grouphomepage")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
@@ -336,14 +336,14 @@ namespace StockportContentApiTests.Integration
         }
 
         [Theory]
-        [InlineData("News", "/api/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]
-        [InlineData("NewsListing", "/api/unittest/news", "2016-08-10T01:00:00+01:00")]
-        [InlineData("NewsListing", "/api/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
-        [InlineData("NewsListing", "/api/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
-        [InlineData("NewsListingFilteredByDate", "/api/unittest/news?dateFrom=2016-06-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
-        [InlineData("Event", "/api/unittest/events/event1?date=9999-09-09", "2016-12-10T01:00:00+01:00")]
-        [InlineData("EventsCalendar", "/api/unittest/events", "2016-12-10T01:00:00+01:00")]
-        [InlineData("EventsLatest", "/api/unittest/events/latest/1", "2016-12-10T01:00:00+01:00")]
+        [InlineData("News", "/unittest/news/news_item", "2016-08-10T01:00:00+01:00")]
+        [InlineData("NewsListing", "/unittest/news", "2016-08-10T01:00:00+01:00")]
+        [InlineData("NewsListing", "/unittest/news?tag=Events", "2016-08-10T01:00:00+01:00")]
+        [InlineData("NewsListing", "/unittest/news?category=A category", "2016-08-10T01:00:00+01:00")]
+        [InlineData("NewsListingFilteredByDate", "/unittest/news?dateFrom=2016-06-01&dateTo=2016-08-31", "2017-08-02T01:00:00+01:00")]
+        [InlineData("Event", "/unittest/events/event1?date=9999-09-09", "2016-12-10T01:00:00+01:00")]
+        [InlineData("EventsCalendar", "/unittest/events", "2016-12-10T01:00:00+01:00")]
+        [InlineData("EventsLatest", "/unittest/events/latest/1", "2016-12-10T01:00:00+01:00")]
         public async Task EndToEnd_ReturnsPageForASlug_WithTimeframeCheck(string file, string path, string stringDate)
         {
             var date = DateTime.Parse(stringDate);

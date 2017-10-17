@@ -51,7 +51,7 @@ namespace StockportContentApiTests.Unit.Middleware
                 new List<ApiKey>()                {
                     new ApiKey("name", "test", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" }, 4, true, new List<string>(){ "Get", "Put", "Udpate", "Delete" } )
                 });
-            context.Request.Path = "/api/stockportgov/test";
+            context.Request.Path = "/stockportgov/test";
 
             context.Request.Headers.Add("Authorization", "test");
             _configuration.Setup(_ => _["Authorization"]).Returns("test");
@@ -73,7 +73,7 @@ namespace StockportContentApiTests.Unit.Middleware
                 new List<ApiKey>()                {
                     new ApiKey("name", "key", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "test", "test" }, 4, true, new List<string>(){ "Get", "Put", "Udpate", "Delete" })
                 });
-            context.Request.Path = "/api/stockportgov/test";
+            context.Request.Path = "/stockportgov/test";
 
             context.Request.Headers.Add("Authorization", "test-invalid");
             _configuration.Setup(_ => _["Authorization"]).Returns("test");

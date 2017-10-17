@@ -22,8 +22,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/news")]
-        [Route("/api/v1/{businessId}/news")]
+        [Route("{businessId}/news")]
+        [Route("v1/{businessId}/news")]
         public async Task<IActionResult> Index(string businessId, 
                                             [FromQuery] string tag = null, 
                                             [FromQuery] string category = null,
@@ -38,8 +38,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/news/latest/{limit}")]
-        [Route("/api/v1/{businessId}/news/latest/{limit}")]
+        [Route("{businessId}/news/latest/{limit}")]
+        [Route("v1/{businessId}/news/latest/{limit}")]
         public async Task<IActionResult> LatestNews(string businessId, int limit)
         {
             return await _handler.Get(() =>
@@ -50,8 +50,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/news/{slug}")]
-        [Route("/api/v1/{businessId}/news/{slug}")]
+        [Route("{businessId}/news/{slug}")]
+        [Route("v1/{businessId}/news/{slug}")]
         public async Task<IActionResult> Detail(string slug, string businessId)
         {
             return await _handler.Get(() =>
@@ -63,8 +63,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
-        [Route("api/{businessId}/clearcache/{cacheKey}")]
-        [Route("api/v1/{businessId}/clearcache/{cacheKey}")]
+        [Route("{businessId}/clearcache/{cacheKey}")]
+        [Route("v1/{businessId}/clearcache/{cacheKey}")]
         public async Task<IActionResult> cacheKey(string businessId, string cacheKey)
         {
             return await _handler.Get(() =>

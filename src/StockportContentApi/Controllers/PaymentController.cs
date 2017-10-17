@@ -23,8 +23,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/payments/{slug}")]
-        [Route("api/v1/{businessId}/payments/{slug}")]
+        [Route("{businessId}/payments/{slug}")]
+        [Route("v1/{businessId}/payments/{slug}")]
         public async Task<IActionResult> GetPayment(string slug, string  businessId)
         {
             return await _handler.Get(() =>
@@ -35,8 +35,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/payments")]
-        [Route("api/v1/{businessId}/payments")]
+        [Route("{businessId}/payments")]
+        [Route("v1/{businessId}/payments")]
         public async Task<IActionResult> Index(string businessId)
         {
             return await _handler.Get(() =>

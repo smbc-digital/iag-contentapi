@@ -37,8 +37,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/event-categories")]
-        [Route("api/v1/{businessId}/event-categories")]
+        [Route("{businessId}/event-categories")]
+        [Route("v1/{businessId}/event-categories")]
         public async Task<IActionResult> GetEventCategories(string businessId)
         {
             return await _handler.Get(() =>
@@ -49,8 +49,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/eventhomepage")]
-        [Route("/api/v1/{businessId}/eventhomepage")]
+        [Route("{businessId}/eventhomepage")]
+        [Route("v1/{businessId}/eventhomepage")]
         public async Task<IActionResult> Homepage(string businessId)
         {
             var categoryRepository = _eventCategoryRepository(_createConfig(businessId));
@@ -66,8 +66,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/events/{slug}")]
-        [Route("/api/v1/{businessId}/events/{slug}")]
+        [Route("{businessId}/events/{slug}")]
+        [Route("v1/{businessId}/events/{slug}")]
         public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date)
         {
             return await _handler.Get(() =>
@@ -79,8 +79,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
-        [Route("api/{businessId}/events/{slug}")]
-        [Route("api/v1/{businessId}/events/{slug}")]
+        [Route("{businessId}/events/{slug}")]
+        [Route("v1/{businessId}/events/{slug}")]
         public async Task<IActionResult> UpdateEvent([FromBody] Event eventDetail, string businessId)
         {
             var repository = _eventRepository(_createConfig(businessId));
@@ -114,10 +114,10 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/events")]
-        [Route("/api/{businessId}/events/latest/{limit}")]
-        [Route("/api/v1/{businessId}/events")]
-        [Route("/api/v1/{businessId}/events/latest/{limit}")]
+        [Route("{businessId}/events")]
+        [Route("{businessId}/events/latest/{limit}")]
+        [Route("v1/{businessId}/events")]
+        [Route("v1/{businessId}/events/latest/{limit}")]
         public async Task<IActionResult> Index(
             string businessId, 
             int limit = 0,
@@ -137,8 +137,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
-        [Route("api/{businessId}/events/{slug}")]
-        [Route("api/v1/{businessId}/events/{slug}")]
+        [Route("{businessId}/events/{slug}")]
+        [Route("v1/{businessId}/events/{slug}")]
         public async Task<IActionResult> DeleteEvent(string slug, string businessId)
         {
             var repository = _eventRepository(_createConfig(businessId));

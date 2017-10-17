@@ -25,9 +25,9 @@ namespace StockportContentApi.Controllers
         }
         
         [HttpGet]
-        [Route("api/{businessId}/articles/{articleSlug}")]
-        [Route("api/v1/{businessId}/articles/{articleSlug}")]
-        [Route("api/v2/{businessId}/articles/{articleSlug}")]
+        [Route("{businessId}/articles/{articleSlug}")]
+        [Route("v1/{businessId}/articles/{articleSlug}")]
+        [Route("v2/{businessId}/articles/{articleSlug}")]
         public async Task<IActionResult> GetArticle(string articleSlug,string  businessId)
         {
             return await _handler.Get(() =>
@@ -41,8 +41,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
-        [Route("api/{businessId}/articleSiteMap")]
-        [Route("api/v1/{businessId}/articleSiteMap")]
+        [Route("{businessId}/articleSiteMap")]
+        [Route("v1/{businessId}/articleSiteMap")]
         public async Task<IActionResult> Index(string businessId)
         {
             return await _handler.Get(() =>

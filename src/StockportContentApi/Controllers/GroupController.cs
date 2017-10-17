@@ -42,8 +42,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/groups")]
-        [Route("api/v1/{businessId}/groups")]
+        [Route("{businessId}/groups")]
+        [Route("v1/{businessId}/groups")]
         public async Task<IActionResult> GetGroups(string businessId)
         {
             return await _handler.Get(() =>
@@ -55,8 +55,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
-        [Route("/api/{businessId}/grouphomepage")]
-        [Route("/api/v1/{businessId}/grouphomepage")]
+        [Route("{businessId}/grouphomepage")]
+        [Route("v1/{businessId}/grouphomepage")]
         public async Task<IActionResult> Homepage(string businessId)
         {         
             var repository = _groupRepository(_createConfig(businessId));
@@ -66,8 +66,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/groups/{groupSlug}")]
-        [Route("api/v1/{businessId}/groups/{groupSlug}")]
+        [Route("{businessId}/groups/{groupSlug}")]
+        [Route("v1/{businessId}/groups/{groupSlug}")]
         public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true)
         { 
             return await _handler.Get(() =>
@@ -78,8 +78,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/group-categories")]
-        [Route("api/v1/{businessId}/group-categories")]
+        [Route("{businessId}/group-categories")]
+        [Route("v1/{businessId}/group-categories")]
         public async Task<IActionResult> GetGroupCategories(string businessId)
         {
             return await _handler.Get(() =>
@@ -90,8 +90,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/group-results")]
-        [Route("api/v1/{businessId}/group-results")]
+        [Route("{businessId}/group-results")]
+        [Route("v1/{businessId}/group-results")]
         public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch, [FromQuery] string slugs = "")
         {
             return await _handler.Get(() =>
@@ -103,8 +103,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
-        [Route("api/{businessId}/groups/administrators/{email}")]
-        [Route("api/v1/{businessId}/groups/administrators/{email}")]
+        [Route("{businessId}/groups/administrators/{email}")]
+        [Route("v1/{businessId}/groups/administrators/{email}")]
         public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email)
         {
             return await _handler.Get(() =>
@@ -116,8 +116,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
-        [Route("api/{businessId}/groups/{slug}")]
-        [Route("api/v1/{businessId}/groups/{slug}")]
+        [Route("{businessId}/groups/{slug}")]
+        [Route("v1/{businessId}/groups/{slug}")]
         public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
         {
             try
@@ -146,8 +146,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
-        [Route("api/{businessId}/groups/{slug}")]
-        [Route("api/v1/{businessId}/groups/{slug}")]
+        [Route("{businessId}/groups/{slug}")]
+        [Route("v1/{businessId}/groups/{slug}")]
         public async Task<IActionResult> DeleteGroup(string slug, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -177,8 +177,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
-        [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
-        [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
         {
             var repository = _groupRepository(_createConfig(businessId));
@@ -203,8 +203,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
-        [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
-        [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> UpdateAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
             return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
@@ -212,8 +212,8 @@ namespace StockportContentApi.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
-        [Route("api/{businessId}/groups/{slug}/administrators/{emailAddress}")]
-        [Route("api/v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
+        [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
         public async Task<IActionResult> AddAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         {
             return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);

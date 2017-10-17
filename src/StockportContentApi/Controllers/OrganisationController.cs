@@ -22,8 +22,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/organisations/{organisationSlug}")]
-        [Route("api/v1/{businessId}/organisations/{organisationSlug}")]
+        [Route("{businessId}/organisations/{organisationSlug}")]
+        [Route("v1/{businessId}/organisations/{organisationSlug}")]
         public async Task<IActionResult> GetOrganisation(string organisationSlug, string  businessId)
         {
             return await _handler.Get(() =>

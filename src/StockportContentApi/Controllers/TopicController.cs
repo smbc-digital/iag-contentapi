@@ -22,8 +22,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/topics/{topicSlug}")]
-        [Route("api/v1/{businessId}/topics/{topicSlug}")]
+        [Route("{businessId}/topics/{topicSlug}")]
+        [Route("v1/{businessId}/topics/{topicSlug}")]
         public async Task<IActionResult> GetTopicByTopicSlug(string businessId, string topicSlug)
         {
             return await _handler.Get(() =>
@@ -34,8 +34,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/{businessId}/topics/")]
-        [Route("api/v1/{businessId}/topics/")]
+        [Route("{businessId}/topics/")]
+        [Route("v1/{businessId}/topics/")]
         public async Task<IActionResult> Get(string businessId)
         {
             return await _handler.Get(() =>

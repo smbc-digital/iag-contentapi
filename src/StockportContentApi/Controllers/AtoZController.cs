@@ -22,8 +22,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/atoz/{letter}")]
-        [Route("/api/v1/{businessId}/atoz/{letter}")]
+        [Route("{businessId}/atoz/{letter}")]
+        [Route("v1/{businessId}/atoz/{letter}")]
         public async Task<IActionResult> Index(string letter, string businessId)
         {
             return await _handler.Get(() =>

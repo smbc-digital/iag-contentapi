@@ -9,7 +9,7 @@ namespace StockportContentApi.Utils
 
         public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
         {
-            var pathStart = "/api/{businessId}";
+            var pathStart = "/{businessId}";
             var pathLength = pathStart.Length;
             foreach (var item in swaggerDoc.Paths)
             {

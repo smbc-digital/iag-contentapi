@@ -31,6 +31,10 @@ dotnet-restore:
 dotnet-test:
 	cd test/StockportContentApiTests; dotnet test
 
+.PHONY: test
+test:
+	cd test/StockportContentApiTests; dotnet test
+
 .PHONY: build-and-test
 build-and-test:
 	dotnet restore; dotnet build; cd test/StockportContentApiTests; dotnet test

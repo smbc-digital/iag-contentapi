@@ -23,8 +23,8 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("/api/{businessId}/contact-us-id/{slug}")]
-        [Route("/api/v1/{businessId}/contact-us-id/{slug}")]
+        [Route("{businessId}/contact-us-id/{slug}")]
+        [Route("v1/{businessId}/contact-us-id/{slug}")]
         public async Task<IActionResult> Detail(string slug, string businessId)
         {
             return await _handler.Get(() =>
