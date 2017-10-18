@@ -320,6 +320,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("ContactUsId", "/unittest/contact-us-id/test-email")]
         [InlineData("Organisation", "/unittest/organisations/slug")]
         [InlineData("GroupHomePage", "/unittest/grouphomepage")]
+        [InlineData("GroupAdvisor", "/unittest/group-advisors/testemail@notandomain.xyz")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
