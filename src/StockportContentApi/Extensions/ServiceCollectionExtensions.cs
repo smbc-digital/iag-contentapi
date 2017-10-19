@@ -127,6 +127,8 @@ namespace StockportContentApi.Extensions
                     , p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>>
                 (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>
+                (p => new GroupAdvisorContentfulFactory());
 
             return services;
         }
@@ -242,6 +244,12 @@ namespace StockportContentApi.Extensions
                     return x => new ApiKeyRepository(x, p.GetService<IContentfulClientManager>(),
                         p.GetService<IContentfulFactory<ContentfulApiKey, ApiKey>>(), p.GetService<IConfiguration>(),
                         p.GetService<ICache>());
+                });
+
+            services.AddSingleton<Func<ContentfulConfig, IGroupAdvisorRepository>>(
+                p =>
+                {
+                    return x => new GroupAdvisorRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>());
                 });
 
             return services;

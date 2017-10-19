@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Arrange
             var builder = new ContentfulGroupAdvisorBuilder();
             var contentfulGroupAdvisor = builder.Build();
-            var factory = new GroupAdvisorContentfulFactory(HttpContextFake.GetHttpContextFake());
+            var factory = new GroupAdvisorContentfulFactory();
 
             // Act
             var result = factory.ToModel(contentfulGroupAdvisor);

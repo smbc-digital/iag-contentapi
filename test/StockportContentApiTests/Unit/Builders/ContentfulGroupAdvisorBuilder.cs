@@ -16,8 +16,8 @@ namespace StockportContentApiTests.Unit.Builders
             return new ContentfulGroupAdvisor
             {
                 Name = _name,
-                EmailAddress = _email,
-                HasGlobalAccess = _globalAccess,
+                Email = _email,
+                GlobalAccess = _globalAccess,
                 Groups = _contentfulReference
             };
         }

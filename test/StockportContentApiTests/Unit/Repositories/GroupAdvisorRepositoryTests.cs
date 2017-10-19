@@ -13,13 +13,16 @@ using Contentful.Core.Search;
 using StockportContentApi.ContentfulModels;
 using Contentful.Core.Models;
 using StockportContentApiTests.Unit.Builders;
+using StockportContentApi.ContentfulFactories;
+using System.Linq;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class GroupAdvisorRepositoryTests
     {
-        Mock<IContentfulClientManager> _contentfulClientManager;
+        Mock<IContentfulClientManager> _contentfulClientManager = new Mock<IContentfulClientManager>();
         Mock<IContentfulClient> _client = new Mock<IContentfulClient>();
+        Mock<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>> _contentfulFactory = new Mock<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>();
         GroupAdvisorRepository _reporisory;
 
         public GroupAdvisorRepositoryTests()
@@ -33,7 +36,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _reporisory = new GroupAdvisorRepository(config, _contentfulClientManager.Object);
+            _reporisory = new GroupAdvisorRepository(config, _contentfulClientManager.Object, _contentfulFactory.Object);
         }
 
         [Fact]
@@ -52,14 +55,16 @@ namespace StockportContentApiTests.Unit.Repositories
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "test-group"))))
+                              .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "not-a-group"))))
+                              .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "not-a-group" }).Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.GetAdvisorsByGroup("test-group"));
-            var model = result.Get<IEnumerable<GroupAdvisor>>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().HaveCount(2);
+            result.Should().HaveCount(2);
         }
 
         [Fact]
@@ -70,21 +75,22 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulGroupAdvisor>();
             collection.Items = new List<ContentfulGroupAdvisor>()
             {
-                new ContentfulGroupAdvisorBuilder().Email("not-email").Build(),
                 new ContentfulGroupAdvisorBuilder().Build()
             };
 
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupAdvisor>())).Returns(new GroupAdvisorBuilder().Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.Get("email"));
-            var model = result.Get<IEnumerable<GroupAdvisor>>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().HaveCount(1);
+            result.Should().NotBeNull();
+            result.Name.Should().Be("name");
+            result.EmailAddress.Should().Be("email");
+            result.HasGlobalAccess.Should().Be(false);
         }
 
         [Fact]
@@ -101,14 +107,14 @@ namespace StockportContentApiTests.Unit.Repositories
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "test-group"))))
+                              .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
-            var model = result.Get<bool>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().BeTrue();
+            result.Should().BeTrue();
         }
 
         [Fact]
@@ -125,14 +131,14 @@ namespace StockportContentApiTests.Unit.Repositories
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
+                              .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "group" }).Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
-            var model = result.Get<bool>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().BeFalse();
+            result.Should().BeFalse();
         }
 
         [Fact]
@@ -149,14 +155,14 @@ namespace StockportContentApiTests.Unit.Repositories
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
+                              .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
-            var model = result.Get<bool>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         [Fact]
@@ -173,14 +179,14 @@ namespace StockportContentApiTests.Unit.Repositories
             // Mock
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
+            _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
+                              .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());
 
             // Act
             var result = AsyncTestHelper.Resolve(_reporisory.CheckIfUserHasAccessToGroupBySlug("group", "email"));
-            var model = result.Get<bool>();
 
             // Assert
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            model.Should().BeFalse();
+            result.Should().BeTrue();
         }
     }
 }

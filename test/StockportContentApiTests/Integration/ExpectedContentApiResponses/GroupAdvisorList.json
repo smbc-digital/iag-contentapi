@@ -1,0 +1,8 @@
+﻿[
+  {
+    "name": "name",
+    "emailAddress": "testemail@notandomain.xyz",
+    "groups": [ "slug" ],
+    "hasGlobalAccess": false
+  }
+]

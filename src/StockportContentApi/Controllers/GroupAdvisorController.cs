@@ -3,6 +3,7 @@ using StockportContentApi.Config;
 using StockportContentApi.Repositories;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace StockportContentApi.Controllers
 {
@@ -10,11 +11,11 @@ namespace StockportContentApi.Controllers
     {
         readonly ResponseHandler _handler;
         readonly Func<string, ContentfulConfig> _createConfig;
-        readonly Func<ContentfulConfig, GroupAdvisorRepository> _createRepository;
+        readonly Func<ContentfulConfig, IGroupAdvisorRepository> _createRepository;
 
         public GroupAdvisorController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, GroupAdvisorRepository> createRepository)
+            Func<ContentfulConfig, IGroupAdvisorRepository> createRepository)
         {
             _createRepository = createRepository;
             _handler = handler;
@@ -26,11 +27,12 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/groups/{slug}/advisors/")]
         public async Task<IActionResult> GroupAdvisorsByGroup(string businessId, string slug)
         {
-            return await _handler.Get(() =>
-            {
-                var repository = _createRepository(_createConfig(businessId));
-                return repository.GetAdvisorsByGroup(slug);
-            });
+            var repository = _createRepository(_createConfig(businessId));
+            var result = await repository.GetAdvisorsByGroup(slug);
+
+            if (result == null || !result.Any()) return new NotFoundObjectResult($"No group advisors found for group {slug}");
+
+            return new OkObjectResult(result);
         }
 
         [HttpGet]
@@ -38,11 +40,12 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/groups/advisors/{email}")]
         public async Task<IActionResult> GetGroupAdvisorsByEmail(string businessId, string email)
         {
-            return await _handler.Get(() =>
-            {
-                var repository = _createRepository(_createConfig(businessId));
-                return repository.Get(email);
-            });
+            var repository = _createRepository(_createConfig(businessId));
+            var result = await repository.Get(email);
+
+            if (result == null) return new NotFoundObjectResult($"No group advisor found for email {email}");
+
+            return new OkObjectResult(result);
         }
 
         [HttpGet]
@@ -50,11 +53,12 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/groups/{slug}/advisors/{email}")]
         public async Task<IActionResult> CheckIfUserHasAccessToGroupBySlug(string businessId, string email, string slug)
         {
-            return await _handler.Get(() =>
-            {
-                var repository = _createRepository(_createConfig(businessId));
-                return repository.CheckIfUserHasAccessToGroupBySlug(slug, email);
-            });
+            var repository = _createRepository(_createConfig(businessId));
+            var result = await repository.CheckIfUserHasAccessToGroupBySlug(slug, email);
+
+            if (!result) return new NotFoundObjectResult($"Email {email} doesn't have access to group {slug}'s advisor console");
+
+            return new OkObjectResult(result);
         }
     }
 }

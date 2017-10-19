@@ -292,14 +292,29 @@ namespace StockportContentApiTests.Integration
                     It.IsAny<CancellationToken>())).ReturnsAsync(organisations);
 
                 var groupHomepage = new ContentfulGroupHomepageBuilder().Build();
-                    
-                var groupHomepageCollection = new ContentfulCollection<ContentfulGroupHomepage>();
-                groupHomepageCollection.Items = new List<ContentfulGroupHomepage>(){ groupHomepage };
-                
+
+                var groupHomepageCollection = new ContentfulCollection<ContentfulGroupHomepage>
+                {
+                    Items = new List<ContentfulGroupHomepage>() { groupHomepage }
+                };
+
                 httpClient.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulGroupHomepage>>(
                         q => q.Build() == new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupHomepageCollection);
+
+                var groupAdvisor = new ContentfulCollection<ContentfulGroupAdvisor>
+                {
+                    Items = new List<ContentfulGroupAdvisor> { new ContentfulGroupAdvisorBuilder().Email("testemail@notandomain.xyz").Build() }
+                };
+
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "testemail@notandomain.xyz").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(groupAdvisor);
+
+                httpClient.Setup(o => o.GetEntriesAsync(
+                    It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1).Build()),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(groupAdvisor);
             });
         }
 
@@ -320,7 +335,8 @@ namespace StockportContentApiTests.Integration
         [InlineData("ContactUsId", "/unittest/contact-us-id/test-email")]
         [InlineData("Organisation", "/unittest/organisations/slug")]
         [InlineData("GroupHomePage", "/unittest/grouphomepage")]
-        [InlineData("GroupAdvisor", "/unittest/group-advisors/testemail@notandomain.xyz")]
+        [InlineData("GroupAdvisor", "/unittest/groups/advisors/testemail@notandomain.xyz")]
+        [InlineData("GroupAdvisorList", "/unittest/groups/slug/advisors")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

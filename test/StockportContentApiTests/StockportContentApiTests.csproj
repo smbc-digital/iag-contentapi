@@ -27,6 +27,7 @@
     <None Remove="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ContactUsId.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Event.json" />
+    <None Remove="Integration\ExpectedContentApiResponses\GroupAdvisor.json" />
     <None Remove="Integration\ExpectedContentApiResponses\GroupHomePage.json" />
     <None Remove="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
     <None Remove="Integration\ExpectedContentApiResponses\EventsLatest.json" />
@@ -55,6 +56,8 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZArticleAndTopic.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ContactUsId.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupAdvisorList.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupAdvisor.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Organisation.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Event.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
