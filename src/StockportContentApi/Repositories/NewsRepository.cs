@@ -149,11 +149,5 @@ namespace StockportContentApi.Repositories
             var result = await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
             return result;
         }
-
-        public async Task<HttpResponse> ClearCache(string cacheKey)
-        {
-            _cache.RemoveItemFromCache(cacheKey);
-            return HttpResponse.Successful(true);
-        }
     }
 }

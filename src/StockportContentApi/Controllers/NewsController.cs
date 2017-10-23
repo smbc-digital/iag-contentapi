@@ -60,18 +60,5 @@ namespace StockportContentApi.Controllers
                 return repository.GetNews(slug);
             });
         }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet]
-        [Route("{businessId}/clearcache/{cacheKey}")]
-        [Route("v1/{businessId}/clearcache/{cacheKey}")]
-        public async Task<IActionResult> cacheKey(string businessId, string cacheKey)
-        {
-            return await _handler.Get(() =>
-            {
-                var repository = _newsRepository(_createConfig(businessId));
-                return repository.ClearCache(cacheKey);
-            });
-        }
     }
 }

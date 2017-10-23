@@ -16,7 +16,9 @@
     },
     "web": {
       "commandName": "Project",
-      "environmentVariables": {}
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT":  "local" 
+      }
     }
   }
 }
