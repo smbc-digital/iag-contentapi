@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
+using StockportContentApi.Exceptions;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.Utils
@@ -41,10 +42,15 @@ namespace StockportContentApi.Utils
             return await db.StringGetAsync(key);
         }
 
-        public void Remove(string key)
+        public async void Remove(string key)
         {
             var db = GetLeastUsedConnection().GetDatabase();
-            db.KeyDeleteAsync(key);
+            var successfulDelete = await db.KeyDeleteAsync(key);
+
+            if (successfulDelete == false)
+            {
+                throw new CacheException();
+            }
         }
         
         public void SetString(string key, string value, int minutes)

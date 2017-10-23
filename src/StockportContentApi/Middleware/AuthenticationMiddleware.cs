@@ -50,9 +50,9 @@ namespace StockportContentApi.Middleware
             var authenticationKey = context.Request.Headers["Authorization"];
             var routeValues = context.Request.Path.Value.Split('/');
 
-            var versionText = routeValues.Length > 1 ? routeValues[1] : string.Empty;
-            var businessId = routeValues.Length > 2 ? routeValues[2] : string.Empty;
-            var endpoint = routeValues.Length > 3 ? routeValues[3] : string.Empty;
+            var versionText = routeValues.Length > 0 ? routeValues[0] : string.Empty;
+            var businessId = routeValues.Length > 1 ? routeValues[1] : string.Empty;
+            var endpoint = routeValues.Length > 2 ? routeValues[2] : string.Empty;
 
             if (string.IsNullOrEmpty(authenticationKey))
             {
