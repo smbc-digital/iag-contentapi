@@ -1,4 +1,5 @@
 ﻿using System;
+using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
@@ -16,6 +17,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulGroup _contentfulGroup;
         private readonly GroupContentfulFactory _groupContentfulFactory;
+
+        private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
         private readonly Mock<IContentfulFactory<ContentfulOrganisation, Organisation>> _contentfulOrganisationFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
@@ -31,7 +34,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulGroupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroup = new ContentfulGroupBuilder().Build();
          
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object);
         }
 
         [Fact]

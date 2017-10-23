@@ -33,7 +33,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _abilityLevel = "_abilityLevel";
         private Organisation _organisation = new Organisation();
         private string _additionalInformation = "additional inforamtion";
-        private List<Asset> _additionalDocuments = new List<Asset>();
+        private List<Document> _additionalDocuments = new List<Document>();
 
         public Group Build()
         {

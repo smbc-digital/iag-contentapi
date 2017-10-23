@@ -36,7 +36,7 @@ namespace StockportContentApi.Model
         public bool Donations { get; set; }
         public string AccessibleTransportLink { get; set; }
         public string AdditionalInformation { get; set; }
-        public List<Asset> AdditionalDocuments { get; set; }
+        public List<Document> AdditionalDocuments { get; set; }
 
         public Group() { }
 
@@ -45,7 +45,7 @@ namespace StockportContentApi.Model
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Asset> additionalDocuments)
+            Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Document> additionalDocuments)
         {
             Name = name;
             Slug = slug;
