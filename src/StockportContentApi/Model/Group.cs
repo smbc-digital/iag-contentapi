@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+using Contentful.Core.Models;
 
 namespace StockportContentApi.Model
 {
@@ -35,6 +35,9 @@ namespace StockportContentApi.Model
         public List<Group> LinkedGroups { get; private set; }
         public bool Donations { get; set; }
         public string AccessibleTransportLink { get; set; }
+        public string AdditionalInformation { get; set; }
+        public List<Asset> AdditionalDocuments { get; set; }
+
         public Group() { }
 
         public Group(string name, string slug, string phoneNumber, string email, string website,
@@ -42,7 +45,7 @@ namespace StockportContentApi.Model
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations, string accessibleTransportLink)
+            Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Asset> additionalDocuments)
         {
             Name = name;
             Slug = slug;
@@ -71,6 +74,8 @@ namespace StockportContentApi.Model
             VolunteeringText = volunteeringText;
             Organisation = organisation;
             AccessibleTransportLink = accessibleTransportLink;
+            AdditionalInformation = additionalInformation;
+            AdditionalDocuments = additionalDocuments;
         }
 
         public void SetEvents(List<Event> events)

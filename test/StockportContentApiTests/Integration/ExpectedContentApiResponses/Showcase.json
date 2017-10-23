@@ -139,7 +139,9 @@
         },
         "linkedGroups": null,
         "donations": false,
-        "accessibleTransportLink": "/accessibleTransport"
+        "accessibleTransportLink": "/accessibleTransport",
+        "additionalInformation": "",
+        "additionalDocuments": []
       },
       "alerts": [
         {
@@ -267,7 +269,9 @@
         },
         "linkedGroups": null,
         "donations": false,
-        "accessibleTransportLink": "/accessibleTransport"
+        "accessibleTransportLink": "/accessibleTransport",
+        "additionalInformation": "",
+        "additionalDocuments": []
       },
       "alerts": [
         {
