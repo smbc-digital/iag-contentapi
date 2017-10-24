@@ -21,7 +21,10 @@ namespace StockportContentApi
                 .ForMember(dest => dest.SubCategories,
                     opts => opts.Ignore())
                 .ForMember(dest => dest.Organisation,
+                opts => opts.Ignore())
+                .ForMember(dest => dest.AdditionalDocuments,
                 opts => opts.Ignore());
+
 
             CreateMap<EventCategory, ContentfulEventCategory>();
 
@@ -82,6 +85,7 @@ namespace StockportContentApi
                 destination = new ManagementGroup();
             }
 
+            destination.AdditionalInformation = new Dictionary<string, string> {{"en-GB", source.AdditionalInformation}};
             destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
             destination.Address = new Dictionary<string, string> { { "en-GB", source.Address } };
             destination.Description = new Dictionary<string, string> { { "en-GB", source.Description } };
