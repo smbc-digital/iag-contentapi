@@ -167,7 +167,7 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddSingleton<Func<ContentfulConfig, IDocumentRepository>>(p => {return x => new DocumentRepository(x, p.GetService<IContentfulClientManager>());});
+            services.AddSingleton<Func<ContentfulConfig, IDocumentRepository>>(p => { return x => new DocumentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<DocumentRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
@@ -357,7 +357,7 @@ namespace StockportContentApi.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IDocumentRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>()));
+            services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IDocumentRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>()));
             return services;
         }
 
