@@ -112,6 +112,8 @@ namespace StockportContentApi
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
             services.AddAutoMapper();
+            services.AddServices();
+            services.AddBuilders();
             services.AddSwaggerGen(c =>
             {
                 c.SingleApiVersion(new Info {Title = "Stockport Content API", Version = "v1"});

@@ -11,6 +11,15 @@ namespace StockportContentApi.Config
         public string AccessKey;
         public string ManagementKey;
 
+        // NEW
+        public ContentfulConfig(string spaceKey, string accessKey, string managementKey)
+        {
+            SpaceKey = spaceKey;
+            AccessKey = accessKey;
+            ManagementKey = managementKey;
+        }
+
+        // OLD (FUNC)
         public ContentfulConfig(string businessId)
         {
             Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");

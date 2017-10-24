@@ -9,16 +9,13 @@ namespace StockportContentApi.Controllers
 {
     public class GroupAdvisorController : Controller
     {
-        readonly ResponseHandler _handler;
         readonly Func<string, ContentfulConfig> _createConfig;
         readonly Func<ContentfulConfig, IGroupAdvisorRepository> _createRepository;
 
-        public GroupAdvisorController(ResponseHandler handler,
-            Func<string, ContentfulConfig> createConfig,
+        public GroupAdvisorController(Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, IGroupAdvisorRepository> createRepository)
         {
             _createRepository = createRepository;
-            _handler = handler;
             _createConfig = createConfig;
         }
 

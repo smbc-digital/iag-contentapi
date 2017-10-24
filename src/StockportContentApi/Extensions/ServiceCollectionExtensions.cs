@@ -21,6 +21,8 @@ using NLog.Extensions.Logging;
 using StackExchange.Redis;
 using StockportWebapp.DataProtection;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.Builders;
+using StockportContentApi.Services;
 
 namespace StockportContentApi.Extensions
 {
@@ -165,6 +167,7 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
+            services.AddSingleton<Func<ContentfulConfig, IDocumentRepository>>(p => {return x => new DocumentRepository(x, p.GetService<IContentfulClientManager>());});
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
@@ -351,6 +354,21 @@ namespace StockportContentApi.Extensions
 
             return services;
         }
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IDocumentRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>()));
+            return services;
+        }
+
+        public static IServiceCollection AddBuilders(this IServiceCollection services)
+        {
+            services.AddSingleton<IContentfulConfigBuilder>(p =>
+                new ContentfulConfigBuilder(p.GetService<IConfiguration>()));
+
+            return services;
+        }
+
 
         private static string GetHostEntryForUrl(string host, ILogger logger)
         {
