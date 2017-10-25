@@ -4,7 +4,6 @@ using Contentful.Core.Models;
 using StockportContentApi.Builders;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
