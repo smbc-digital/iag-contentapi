@@ -4,6 +4,7 @@ using Contentful.Core.Models;
 using StockportContentApi.Builders;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
@@ -48,33 +49,46 @@ namespace StockportContentApi.Services
         public async Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug)
         {
             var config = _contentfulConfigBuilder.Build(businessId);
-
-            // get logged in person
             var user = _loggedInHelper.GetLoggedInPerson();
 
-            // user isn't logged in
-            if (string.IsNullOrEmpty(user.Email)) return null;
+            var hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
 
-            // check if the user has access to the group
-            var groupAdvisorsRepository = _groupAdvisorRepository(config);
-            var groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
+            if (string.IsNullOrEmpty(user.Email) || !hasPermission) return null;
+            
+            var asset = await GetDocumentAsAsset(assetId, config);
+            
+            return asset == null || !await DoesGroupReferenceAsset(groupSlug, config, asset)
+                ? null
+                : _documentFactory.ToModel(asset);
+        }
 
-            // get asset
-            var repository = _documentRepository(config);
-            var assetResponse = await repository.Get(assetId);
+        private async Task<bool> DoesGroupReferenceAsset(string groupSlug, ContentfulConfig config, Asset asset)
+        {
+            var group = await GetGroup(groupSlug, config);
 
-            // get the group and check if the asset exists in the group
+            var assetExistsInGroup = @group.AdditionalDocuments.Exists(o => o.AssetId == asset.SystemProperties.Id);
+            return assetExistsInGroup;
+        }
+
+        private async Task<Group> GetGroup(string groupSlug, ContentfulConfig config)
+        {
             var groupRepository = _groupRepository(config);
             var groupResponse = await groupRepository.GetGroup(groupSlug, false);
+            return groupResponse.Get<Group>();
+        }
 
-            var group = groupResponse.Get<Group>();
+        private async Task<Asset> GetDocumentAsAsset(string assetId, ContentfulConfig config)
+        {
+            var repository = _documentRepository(config);
+            var assetResponse = await repository.Get(assetId);
+            return assetResponse;
+        }
 
-            // check if asset exists in the group
-            var assetExistsInGroup = group.AdditionalDocuments.Exists(o => o.AssetId == assetResponse.SystemProperties.Id);
-
-            return assetResponse == null || !groupAdvisorResponse || !assetExistsInGroup
-                ? null
-                : _documentFactory.ToModel(assetResponse);
+        private async Task<bool> IsUserAdvisorForGroup(string groupSlug, ContentfulConfig config, LoggedInPerson user)
+        {
+            var groupAdvisorsRepository = _groupAdvisorRepository(config);
+            var groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
+            return groupAdvisorResponse;
         }
     }
 }
