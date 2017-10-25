@@ -10,6 +10,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using System.Text.RegularExpressions;
+using StockportContentApi.Exceptions;
 
 namespace StockportContentApi.Middleware
 {
@@ -18,28 +19,22 @@ namespace StockportContentApi.Middleware
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationMiddleware> _logger;
-        private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, IApiKeyRepository> _repository;
-        private readonly DateComparer _dateComparer;
+        private readonly IAuthenticationHelper _authHelper;
 
         public AuthenticationMiddleware(RequestDelegate next, IConfiguration configuration,
-            ILogger<AuthenticationMiddleware> logger, ITimeProvider timeProvider,
-            Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, IApiKeyRepository> repository)
+            ILogger<AuthenticationMiddleware> logger, IAuthenticationHelper authHelper)
         {
             _next = next;
             _configuration = configuration;
             _logger = logger;
-            _createConfig = createConfig;
-            _repository = repository;
-            _dateComparer = new DateComparer(timeProvider);
+            _authHelper = authHelper;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            var key = _configuration["Authorization"] ?? string.Empty;
+            var apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
 
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(apiConfigurationkey))
             {
                 _logger.LogCritical("API Authentication Key is missing from the config");
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -47,14 +42,9 @@ namespace StockportContentApi.Middleware
                 return;
             }
 
-            var authenticationKey = context.Request.Headers["Authorization"];
-            var routeValues = context.Request.Path.Value.Split('/');
+            var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
 
-            var versionText = routeValues.Length > 0 ? routeValues[0] : string.Empty;
-            var businessId = routeValues.Length > 1 ? routeValues[1] : string.Empty;
-            var endpoint = routeValues.Length > 2 ? routeValues[2] : string.Empty;
-
-            if (string.IsNullOrEmpty(authenticationKey))
+            if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
                 _logger.LogError("API Authentication Key is either missing or wrong");
                 context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
@@ -62,10 +52,13 @@ namespace StockportContentApi.Middleware
                 return;
             }
 
-            if (authenticationKey != key)
+            if (authenticationData.AuthenticationKey != apiConfigurationkey)
             {
-                var pattern = new Regex("v[0-9]+");
-                if (!pattern.IsMatch(versionText))
+                try
+                {
+                    _authHelper.CheckVersionIsProvided(authenticationData);
+                }
+                catch (AuthorizationException)
                 {
                     _logger.LogError("Invalid attempt to access API from API Key without a version");
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -73,29 +66,22 @@ namespace StockportContentApi.Middleware
                     return;
                 }
 
-                int.TryParse(versionText.Replace("v", string.Empty), out int version);
-                var verb = context.Request.Method;
+                ApiKey validKey;
 
-                var validKey = await GetValidKey(authenticationKey, businessId, endpoint, version, verb);
-
-                if (validKey == null)
+                try
+                {
+                    validKey = await _authHelper.GetValidKey(authenticationData.AuthenticationKey, authenticationData.BusinessId,
+                        authenticationData.Endpoint, authenticationData.Version, authenticationData.Verb);
+                }
+                catch (AuthorizationException)
                 {
                     _logger.LogError("API Authentication Key is either missing or wrong");
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     await context.Response.WriteAsync("API Authentication Key is either missing or wrong");
                     return;
                 }
-                else
-                {
-                    if (validKey.CanViewSensitive)
-                    {
-                        context.Request.Headers["cannotViewSensitive"] = "false";
-                    }
-                    else
-                    {
-                        context.Request.Headers["cannotViewSensitive"] = "true";
-                    }
-                }
+
+                _authHelper.HandleSensitiveData(context, validKey);
             }
             else
             {
@@ -103,60 +89,6 @@ namespace StockportContentApi.Middleware
             }
 
             await _next.Invoke(context);
-        }
-
-        private async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version, string verb)
-        {
-            var repo = _repository(_createConfig(businessId));
-            var keys = await repo.Get();
-
-            if (keys == null) return null;
-
-            var validEndPoint = GetApiEndPoint(endpoint);
-
-            var validKey = keys.FirstOrDefault(k => "Bearer " + k.Key == authenticationKey.Trim() 
-                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(k.ActiveFrom,
-                                                        k.ActiveTo)
-                                                    && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
-                                                    && k.Version >= version
-                                                    && k.AllowedVerbs.Any(v => v.ToUpper() == verb.ToUpper()));
-
-            return validKey;
-        }
-
-        private static string GetApiEndPoint(string endpoint)
-        {
-            switch (endpoint.ToLower())
-            {
-                case "article":
-                case "articles":
-                    return "articles";
-                case "group":
-                case "groups":
-                    return "groups";
-                case "payment":
-                case "payments":
-                    return "payments";
-                case "event":
-                case "events":
-                    return "events";
-                case "topic":
-                case "topics":
-                    return "topics";
-                case "profile":
-                case "profiles":
-                    return "profiles";
-                case "start-page":
-                case "start-pages":
-                    return "start pages";
-                case "smart":
-                    return "smart answers";
-                case "organisation":
-                case "organisations":
-                    return "organisations";
-                default:
-                    return endpoint.ToLower();
-            }
         }
     }
 }
