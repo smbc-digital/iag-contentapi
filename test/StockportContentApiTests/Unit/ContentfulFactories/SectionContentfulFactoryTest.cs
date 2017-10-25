@@ -46,7 +46,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
             _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
-            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            var document = new DocumentBuilder().Build();
             _documentFactory.Setup(o => o.ToModel(_contentfulSection.Documents.First())).Returns(document);
             const string processedBody = "this is processed body";
             _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);

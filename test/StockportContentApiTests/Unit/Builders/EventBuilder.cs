@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Builders
         private int _occurences = -1;
         private EventFrequency _eventFrequency = EventFrequency.None;
         private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Events", "", "events")};
-        private List<Document> _documents = new List<Document> { new Document("title", 22, DateTime.MinValue, "url", "fileName") };
+        private List<Document> _documents = new List<Document> { new DocumentBuilder().Build() };
         private List<string> _categories = new List<string> {"Category 1", "Category 2"};
         private MapPosition _mapPosition = new MapPosition() {Lat = 53.47, Lon = -2.2};
         private string _bookingInformation = "booking information";

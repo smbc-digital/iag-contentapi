@@ -78,6 +78,7 @@ namespace StockportContentApi
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             // add other services
+            services.AddSingleton(new CurrentEnvironment(_appEnvironment));
             services.AddCache(_useRedisSession);
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
@@ -102,7 +103,9 @@ namespace StockportContentApi
             {
                 services.AddRedis(Configuration, _useRedisSession, logger);
             }
-            
+
+            services.AddGroupConfiguration(Configuration, logger);
+            services.AddHelpers();
             services.AddRedirects(Configuration);
             services.AddContentfulConfig(Configuration);
             services.AddOptions();

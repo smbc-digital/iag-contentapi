@@ -212,7 +212,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
                 p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()); });
             services.AddSingleton<RedirectsRepository>();
-            services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
+            services.AddSingleton<Func<ContentfulConfig, IGroupRepository>>(
                 p => {
                     return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(),
                         p.GetService<ITimeProvider>(),
@@ -238,7 +238,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
                 p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
             services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(
-                p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, GroupRepository>>().Invoke(x)); });
+                p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>().Invoke(x)); });
 
             
             services.AddSingleton<Func<ContentfulConfig, IApiKeyRepository>>(
@@ -357,7 +357,7 @@ namespace StockportContentApi.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IDocumentRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>()));
+            services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IDocumentRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>(), p.GetService<ILoggedInHelper>()));
             return services;
         }
 
@@ -365,6 +365,30 @@ namespace StockportContentApi.Extensions
         {
             services.AddSingleton<IContentfulConfigBuilder>(p =>
                 new ContentfulConfigBuilder(p.GetService<IConfiguration>()));
+
+            return services;
+        }
+
+        public static IServiceCollection AddGroupConfiguration(this IServiceCollection services, IConfigurationRoot configuration, ILogger logger)
+        {
+            if (!string.IsNullOrEmpty(configuration["group:authenticationKey"]))
+            {
+                var groupKeys = new GroupAuthenticationKeys { Key = configuration["group:authenticationKey"] };
+                services.AddSingleton(groupKeys);
+
+                services.AddSingleton<IJwtDecoder>(p => new JwtDecoder(p.GetService<GroupAuthenticationKeys>(), p.GetService<ILogger<JwtDecoder>>()));
+            }
+            else
+            {
+                logger.LogInformation("Group authenticationKey not found.");
+            }
+
+            return services;
+        }
+
+        public static IServiceCollection AddHelpers(this IServiceCollection services)
+        {
+            services.AddTransient<ILoggedInHelper>(p => new LoggedInHelper(p.GetService<IHttpContextAccessor>(), p.GetService<CurrentEnvironment>(), p.GetService<IJwtDecoder>(), p.GetService<ILogger<LoggedInHelper>>()));
 
             return services;
         }

@@ -44,7 +44,7 @@ namespace StockportContentApi.Repositories
 
             organisation.Groups = await _groupRepository.GetLinkedGroupsByOrganisation(slug);
 
-            return HttpResponse.Successful(organisation); ;
+            return HttpResponse.Successful(organisation);
         }
     }
 }

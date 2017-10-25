@@ -24,7 +24,6 @@ namespace StockportContentApi.Controllers
             return new OkObjectResult(result);
         }
 
-        // TODO: Possibly move this to the webapp instead
         [HttpGet]
         [Route("{businessId}/documents/{groupSlug}/{assetId}")]
         public async Task<IActionResult> GetSecureDocument(string businessId, string groupSlug, string assetId)

@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             // Arrange
             const string processedBody = "this is processed body";
-            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            var document = new DocumentBuilder().Build();
 
             // Mock
             _videoRepository.Setup(o => o.Process(_contentfulNews.Body)).Returns(processedBody);
