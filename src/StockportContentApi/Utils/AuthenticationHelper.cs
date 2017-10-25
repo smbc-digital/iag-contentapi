@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using StockportContentApi.Config;
 using StockportContentApi.Exceptions;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -18,21 +19,19 @@ namespace StockportContentApi.Utils
     {
         AuthenticationData ExtractAuthenticationDataFromContext(HttpContext context);
         string GetApiEndPoint(string endpoint);
-        Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version, string verb);
+        Task<ApiKey> GetValidKey(IApiKeyRepository repository, string authenticationKey, string businessId, string endpoint, int version, string verb);
         void HandleSensitiveData(HttpContext context, ApiKey validKey);
         void CheckVersionIsProvided(AuthenticationData authenticationData);
     }
 
     public class AuthenticationHelper : IAuthenticationHelper
     {
-        private readonly IApiKeyRepository _repository;
         private readonly DateComparer _dateComparer;
         private const string BeginsWithV = "v";
         private const string ThenZeroOrMoreIntegers = "[0-9]+";
 
-        public AuthenticationHelper(IApiKeyRepository repository, ITimeProvider timeProvider)
+        public AuthenticationHelper(ITimeProvider timeProvider, Func<ContentfulConfig, IApiKeyRepository> createRepository, Func<string, ContentfulConfig> createConfig)
         {
-            _repository = repository;           
             _dateComparer = new DateComparer(timeProvider);
         }
 
@@ -45,21 +44,21 @@ namespace StockportContentApi.Utils
 
             var routeValues = context.Request.Path.Value.Split('/');
 
-            authenticationData.VersionText = routeValues.Length > 0 ? routeValues[0] : string.Empty;
+            authenticationData.VersionText = routeValues.Length > 1 ? routeValues[1] : string.Empty;
             int.TryParse(authenticationData.VersionText.Replace("v", string.Empty), out var version);
             authenticationData.Version = version;
 
-            authenticationData.BusinessId = routeValues.Length > 1 ? routeValues[1] : string.Empty;
-            authenticationData.Endpoint = routeValues.Length > 2 ? routeValues[2] : string.Empty;
+            authenticationData.BusinessId = routeValues.Length > 2 ? routeValues[2] : string.Empty;
+            authenticationData.Endpoint = routeValues.Length > 3 ? routeValues[3] : string.Empty;
             authenticationData.Verb = context.Request.Method;
 
 
             return authenticationData;
         }
 
-        public async Task<ApiKey> GetValidKey(string authenticationKey, string businessId, string endpoint, int version, string verb)
+        public async Task<ApiKey> GetValidKey(IApiKeyRepository repository, string authenticationKey, string businessId, string endpoint, int version, string verb)
         {
-            var keys = await _repository.Get();
+            var keys = await repository.Get();
 
             if (keys == null)
             {
