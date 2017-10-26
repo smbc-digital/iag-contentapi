@@ -30,7 +30,7 @@ namespace StockportContentApi.Utils
         private const string BeginsWithV = "v";
         private const string ThenZeroOrMoreIntegers = "[0-9]+";
 
-        public AuthenticationHelper(ITimeProvider timeProvider, Func<ContentfulConfig, IApiKeyRepository> createRepository, Func<string, ContentfulConfig> createConfig)
+        public AuthenticationHelper(ITimeProvider timeProvider)
         {
             _dateComparer = new DateComparer(timeProvider);
         }
@@ -72,7 +72,7 @@ namespace StockportContentApi.Utils
                                                         k.ActiveTo)
                                                     && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
                                                     && k.Version >= version
-                                                    && k.AllowedVerbs.Any(v => v.ToUpper() == verb.ToUpper()));
+                                                    && k.AllowedVerbs.Any(v => string.Equals(v, verb, StringComparison.CurrentCultureIgnoreCase)));
 
             if (validKey == null)
             {

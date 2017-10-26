@@ -16,18 +16,24 @@ namespace StockportContentApi.Middleware
 {
     public class AuthenticationMiddleware
     {
+        private readonly Func<ContentfulConfig, IApiKeyRepository> _repository;
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationMiddleware> _logger;
         private readonly IAuthenticationHelper _authHelper;
+        private readonly Func<string, ContentfulConfig> _createConfig;
 
         public AuthenticationMiddleware(RequestDelegate next, IConfiguration configuration,
-            ILogger<AuthenticationMiddleware> logger, IAuthenticationHelper authHelper)
+            ILogger<AuthenticationMiddleware> logger, IAuthenticationHelper authHelper,
+            Func<string, ContentfulConfig> createConfig,
+            Func<ContentfulConfig, IApiKeyRepository> repository)
         {
+            _repository = repository;
             _next = next;
             _configuration = configuration;
             _logger = logger;
             _authHelper = authHelper;
+            _createConfig = createConfig;
         }
 
         public async Task Invoke(HttpContext context)
@@ -70,7 +76,8 @@ namespace StockportContentApi.Middleware
 
                 try
                 {
-                    validKey = await _authHelper.GetValidKey(authenticationData.AuthenticationKey, authenticationData.BusinessId,
+                    var repo = _repository(_createConfig(authenticationData.BusinessId));
+                    validKey = await _authHelper.GetValidKey(repo, authenticationData.AuthenticationKey, authenticationData.BusinessId,
                         authenticationData.Endpoint, authenticationData.Version, authenticationData.Verb);
                 }
                 catch (AuthorizationException)

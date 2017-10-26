@@ -212,7 +212,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
                 p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()); });
             services.AddSingleton<RedirectsRepository>();
-            services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper(p.GetService<ITimeProvider>(), p.GetService<Func<ContentfulConfig, IApiKeyRepository>>(), p.GetService<Func<string, ContentfulConfig>>()));
+            services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper(p.GetService<ITimeProvider>()));
             services.AddSingleton<Func<ContentfulConfig, GroupRepository>>(
                 p => {
                     return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(),

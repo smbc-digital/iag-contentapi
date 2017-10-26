@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Authentication;
 using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using StockportContentApi.Config;
+using StockportContentApi.Exceptions;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Xunit;
@@ -15,21 +16,16 @@ namespace StockportContentApiTests.Unit.Helpers
 {
     public class AuthenticationHelperTests
     {
-        private Mock<ITimeProvider> _timeProvider;
-        private AuthenticationHelper _helper;
-        private readonly Mock<Func<string, ContentfulConfig>> _createConfig;
-        public Mock<IApiKeyRepository> _repository { get; set; }
-        Mock<Func<ContentfulConfig, IApiKeyRepository>> _createRepository;
+        private readonly AuthenticationHelper _helper;
+        private readonly Mock<IApiKeyRepository> _repository;
 
         public AuthenticationHelperTests()
         {
-            _createConfig = new Mock<Func<string, ContentfulConfig>>();
-            _timeProvider = new Mock<ITimeProvider>();
-            _createRepository = new Mock<Func<ContentfulConfig, IApiKeyRepository>>();
+            var timeProvider = new Mock<ITimeProvider>();
+            timeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 10, 25));
             _repository = new Mock<IApiKeyRepository>();
-            _createRepository.Setup(_ => _.Invoke(It.IsAny<ContentfulConfig>())).Returns(_repository.Object);
 
-            _helper = new AuthenticationHelper(_timeProvider.Object, _createRepository.Object, _createConfig.Object);
+            _helper = new AuthenticationHelper(timeProvider.Object);
         }
 
         [Fact]
@@ -57,28 +53,29 @@ namespace StockportContentApiTests.Unit.Helpers
         public void GetValidKey_ShouldThrowExceptionIfNoKeysAreReturned()
         {
             // Arrange
-            var authenticationKey = "test";
-            var businessId = "stockportgov";
-            var endpoint = "articles";
-            var version = 1;
-            var verb = "GET";
+            const string authenticationKey = "test";
+            const string businessId = "stockportgov";
+            const string endpoint = "articles";
+            const int version = 1;
+            const string verb = "GET";
             _repository.Setup(_ => _.Get()).ReturnsAsync(new List<ApiKey>());
 
             // Act Assert
-            Assert.ThrowsAsync<AuthenticationException>(async () =>
+            Assert.ThrowsAsync<AuthorizationException>(async () =>
             {
-                    await _helper.GetValidKey(authenticationKey, businessId, endpoint, version, verb);
+                    await _helper.GetValidKey(_repository.Object, authenticationKey, businessId, endpoint, version, verb);
             });
         }
 
         [Fact]
-        public void GetValidKey_ShouldThrowExceptionWhenInvalidKey()
+        public async Task GetValidKey_ShouldThrowExceptionWhenKeyDoesNotMatchAsync()
         {
             // Arrange
+            var apiKey = new ApiKey("name", "test-fail", "email", DateTime.MinValue, DateTime.MaxValue, new List<string>() { "articles" }, 1, true, new List<string>() { "GET" });
+            _repository.Setup(_ => _.Get()).ReturnsAsync(new List<ApiKey>() { apiKey });
 
-            // Act
-
-            // Assert
+            // Act Assert
+            await Assert.ThrowsAsync<AuthorizationException>(() => _helper.GetValidKey(_repository.Object, "Bearer test", "stockportgov", "articles", 1, "GET"));
 
         }
 
