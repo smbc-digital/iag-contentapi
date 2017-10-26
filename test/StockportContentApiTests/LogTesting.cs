@@ -17,7 +17,7 @@ namespace StockportContentApiTests
                         It.IsAny<Exception>(),
                         It.IsAny<Func<object, Exception, string>>()
                     ), 
-                Times.AtLeastOnce);
+                Times.Once);
         }
     }
 }

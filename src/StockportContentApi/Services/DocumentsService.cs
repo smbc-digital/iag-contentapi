@@ -18,13 +18,13 @@ namespace StockportContentApi.Services
     public class DocumentsService : IDocumentService
     {
         private readonly IContentfulConfigBuilder _contentfulConfigBuilder;
-        private readonly Func<ContentfulConfig, IDocumentRepository> _documentRepository;
+        private readonly Func<ContentfulConfig, IAssetRepository> _documentRepository;
         private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _groupAdvisorRepository;
         private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly ILoggedInHelper _loggedInHelper;
 
-        public DocumentsService(Func<ContentfulConfig, IDocumentRepository> documentRepository, Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository, Func<ContentfulConfig, IGroupRepository> groupRepository, IContentfulFactory<Asset, Document> documentFactory, IContentfulConfigBuilder contentfulConfigBuilder, ILoggedInHelper loggedInHelper)
+        public DocumentsService(Func<ContentfulConfig, IAssetRepository> documentRepository, Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository, Func<ContentfulConfig, IGroupRepository> groupRepository, IContentfulFactory<Asset, Document> documentFactory, IContentfulConfigBuilder contentfulConfigBuilder, ILoggedInHelper loggedInHelper)
         {
             _documentRepository = documentRepository;
             _groupAdvisorRepository = groupAdvisorRepository;

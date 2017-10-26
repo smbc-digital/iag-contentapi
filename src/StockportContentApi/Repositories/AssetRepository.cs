@@ -9,17 +9,17 @@ using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {
-    public interface IDocumentRepository
+    public interface IAssetRepository
     {
         Task<Asset> Get(string assetId);
     }
 
-    public class DocumentRepository : IDocumentRepository
+    public class AssetRepository : IAssetRepository
     {
         private readonly IContentfulClient _client;
-        private readonly ILogger<DocumentRepository> _logger;
+        private readonly ILogger<AssetRepository> _logger;
 
-        public DocumentRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, ILogger<DocumentRepository> logger)
+        public AssetRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, ILogger<AssetRepository> logger)
         {
             _logger = logger;
             _client = contentfulClientManager.GetClient(config);

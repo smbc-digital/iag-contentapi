@@ -20,8 +20,8 @@ namespace StockportContentApiTests.Unit.Services
 {
     public class DocumentsServiceTests
     {
-        private readonly Mock<Func<ContentfulConfig, IDocumentRepository>> _mockDocumentRepositoryFunc = new Mock<Func<ContentfulConfig, IDocumentRepository>>();
-        private readonly Mock<IDocumentRepository> _mockDocumentRepository = new Mock<IDocumentRepository>();
+        private readonly Mock<Func<ContentfulConfig, IAssetRepository>> _mockDocumentRepositoryFunc = new Mock<Func<ContentfulConfig, IAssetRepository>>();
+        private readonly Mock<IAssetRepository> _mockDocumentRepository = new Mock<IAssetRepository>();
         private readonly Mock<Func<ContentfulConfig, IGroupAdvisorRepository>> _mockGroupAdvisorRepositoryFunc = new Mock<Func<ContentfulConfig, IGroupAdvisorRepository>>();
         private readonly Mock<IGroupAdvisorRepository> _mockGroupAdvisorRepository = new Mock<IGroupAdvisorRepository>();
         private readonly Mock<Func<ContentfulConfig, IGroupRepository>> _mockGroupRepositoryFunc = new Mock<Func<ContentfulConfig, IGroupRepository>>();
