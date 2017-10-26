@@ -12,7 +12,6 @@ namespace StockportContentApi.Services
 {
      public interface IDocumentService
      {
-         Task<Document> GetDocumentByAssetId(string businessId, string assetId);
          Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug);
      }
 
@@ -35,16 +34,6 @@ namespace StockportContentApi.Services
             _loggedInHelper = loggedInHelper;
         }
 
-        public async Task<Document> GetDocumentByAssetId(string businessId, string assetId)
-        {
-            var repository = _documentRepository(_contentfulConfigBuilder.Build(businessId));
-            var assetResponse = await repository.Get(assetId);
-
-            return assetResponse == null
-                ? null 
-                : _documentFactory.ToModel(assetResponse);
-        }
-
         public async Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug)
         {
             var config = _contentfulConfigBuilder.Build(businessId);
@@ -52,7 +41,7 @@ namespace StockportContentApi.Services
 
             var hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
 
-            if (string.IsNullOrEmpty(user.Email) || !hasPermission) return null;
+            if (!hasPermission) return null;
             
             var asset = await GetDocumentAsAsset(assetId, config);
             
@@ -65,7 +54,7 @@ namespace StockportContentApi.Services
         {
             var group = await GetGroup(groupSlug, config);
 
-            var assetExistsInGroup = @group.AdditionalDocuments.Exists(o => o.AssetId == asset.SystemProperties.Id);
+            var assetExistsInGroup = group.AdditionalDocuments.Exists(o => o.AssetId == asset.SystemProperties.Id);
             return assetExistsInGroup;
         }
 
@@ -85,6 +74,8 @@ namespace StockportContentApi.Services
 
         private async Task<bool> IsUserAdvisorForGroup(string groupSlug, ContentfulConfig config, LoggedInPerson user)
         {
+            if (string.IsNullOrEmpty(user.Email)) return false;
+
             var groupAdvisorsRepository = _groupAdvisorRepository(config);
             var groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
             return groupAdvisorResponse;

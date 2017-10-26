@@ -14,17 +14,6 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("{businessId}/documents/{assetId}")]
-        public async Task<IActionResult> Get(string businessId, string assetId)
-        {
-            var result = await _documentService.GetDocumentByAssetId(businessId, assetId);
-
-            if (result == null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
-
-            return new OkObjectResult(result);
-        }
-
-        [HttpGet]
         [Route("{businessId}/documents/{groupSlug}/{assetId}")]
         public async Task<IActionResult> GetSecureDocument(string businessId, string groupSlug, string assetId)
         {

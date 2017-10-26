@@ -119,5 +119,11 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public GroupBuilder AdditionalDocuments(List<Document> additionalDocuments)
+        {
+            _additionalDocuments = additionalDocuments;
+            return this;
+        }
+
     }
 }
