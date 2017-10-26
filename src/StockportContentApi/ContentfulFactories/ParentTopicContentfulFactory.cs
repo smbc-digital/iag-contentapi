@@ -32,39 +32,23 @@ namespace StockportContentApi.ContentfulFactories
             if (topicInBreadcrumb == null) return new NullTopic();
 
             var subItems = topicInBreadcrumb.SubItems
-                .Select(CheckCurrentArticle)
                 .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
             var secondaryItems = topicInBreadcrumb.SecondaryItems
-                .Select(CheckCurrentArticle)
-                .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                .Where(subItem => subItem != null  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
             var tertiaryItems = topicInBreadcrumb.TertiaryItems
-                .Select(CheckCurrentArticle)
                 .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems).StripData(_httpContextAccessor);
-        }
-
-        private ContentfulReference CheckCurrentArticle(ContentfulReference item)
-        {
-            if (item.Sys.Id != _entry.Sys.Id) return item;
-
-            // the link is to the current article
-            return new ContentfulReference
+            if (!topicInBreadcrumb.SubItems.Any(x => x.Sys.Id == _entry.Sys.Id) && (!topicInBreadcrumb.SecondaryItems.Any(x => x.Sys.Id == _entry.Sys.Id)) && (!topicInBreadcrumb.TertiaryItems.Any(x => x.Sys.Id == _entry.Sys.Id)))
             {
-                Icon = _entry.Icon,
-                Title = _entry.Title,
-                SunriseDate = _entry.SunriseDate,
-                SunsetDate = _entry.SunsetDate,
-                Slug = _entry.Slug,
-                Image = _entry.Image,
-                Teaser = _entry.Teaser,
-                Sys = { ContentType = new ContentType() { SystemProperties = new SystemProperties() { Id = "article" } } }
-            };
+                subItems.Insert(0, _subItemFactory.ToModel(entry));
+            }
+            
+            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems).StripData(_httpContextAccessor);
         }
     }
 }
