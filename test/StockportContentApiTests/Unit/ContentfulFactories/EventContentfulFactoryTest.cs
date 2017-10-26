@@ -50,7 +50,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateAnEventFromAContentfulEvent()
         {
-            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            var document = new DocumentBuilder().Build();
             _documentFactory.Setup(o => o.ToModel(_contentfulEvent.Documents.First())).Returns(document);
 
             var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);

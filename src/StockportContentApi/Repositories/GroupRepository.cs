@@ -20,12 +20,14 @@ namespace StockportContentApi.Repositories
     public interface IGroupRepository
     {
         Task<HttpResponse> Get();
-        Task<HttpResponse> GetAdministratorsGroups(string email);
         Task<ContentfulGroup> GetContentfulGroup(string slug);
-        Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories();
+        Task<HttpResponse> GetGroupHomepage();
         Task<HttpResponse> GetGroup(string slug, bool onlyActive);
-        Task<List<GroupCategory>> GetGroupCategories();
+        Task<List<Group>> GetLinkedGroups(Group group);
         Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation);
+        Task<HttpResponse> GetAdministratorsGroups(string email);
+        Task<List<GroupCategory>> GetGroupCategories();
+        Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories();
         Task<List<Group>> GetLinkedGroupsByOrganisation(string slug);
     }
 

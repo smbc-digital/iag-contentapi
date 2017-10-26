@@ -17,7 +17,7 @@ namespace StockportContentApi.Controllers
     {
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, GroupRepository> _groupRepository;
+        private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
         private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;        
@@ -25,7 +25,7 @@ namespace StockportContentApi.Controllers
 
         public GroupController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, GroupRepository> groupRepository,
+            Func<ContentfulConfig, IGroupRepository> groupRepository,
             Func<ContentfulConfig, EventRepository> eventRepository,
             Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
             Func<ContentfulConfig, ManagementRepository> managementRepository,

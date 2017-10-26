@@ -81,7 +81,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulArticle>()))
 
                 .Returns(topic);
-            var document = new Document("title", 1000, DateTime.MinValue.ToUniversalTime(), "url", "fileName");
+            var document = new DocumentBuilder().Build();
             _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
             var alert = new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug");
             _alertFactory.Setup(o => o.ToModel(_contentfulArticle.Alerts.First())).Returns(alert);
