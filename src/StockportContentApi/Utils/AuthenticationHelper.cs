@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -134,7 +133,7 @@ namespace StockportContentApi.Utils
             var versionPattern = new Regex(BeginsWithV + ThenZeroOrMoreIntegers);
             if (!versionPattern.IsMatch(authenticationData.VersionText))
             {
-                throw new AuthenticationException();
+                throw new AuthorizationException();
             }
         }
     }
