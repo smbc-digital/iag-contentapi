@@ -128,20 +128,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 {
                     ContentfulReferences
                 })
-                .Title("article-title")
-                .Slug("article-slug")
+                .Title("title")
+                .Slug("slug")
                 .SystemId("same-id-as-article")
                 .Build();
 
             _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug == "article-slug")))
-                .Returns(new SubItem("article-slug", "article-title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
+                .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
 
             var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 
             result.Should().BeOfType<Topic>();
             result.SubItems.Should().HaveCount(2);
-            result.SubItems.First().Title.Should().Be("article-title");
-            result.SubItems.First().Slug.Should().Be("article-slug");
+            result.SubItems.First().Title.Should().Be("title");
+            result.SubItems.First().Slug.Should().Be("slug");
             result.SubItems.ToList()[1].Title.Should().Be("title");
             result.SubItems.ToList()[1].Slug.Should().Be("slug");
         }
