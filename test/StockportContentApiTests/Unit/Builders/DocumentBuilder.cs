@@ -13,10 +13,11 @@ namespace StockportContentApiTests.Unit.Builders
         private string _url = "url";
         private DateTime _lastUpdated = DateTime.MinValue;
         private string _fileName = "fileName";
+        private string _mediaType = "mediatype";
 
         public Document Build()
         {
-            return new Document(_title, _size, _lastUpdated, _url, _fileName, _assetId);
+            return new Document(_title, _size, _lastUpdated, _url, _fileName, _assetId, _mediaType);
         }
     }
 }

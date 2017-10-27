@@ -79,7 +79,8 @@
           "url": "url.pdf",
           "lastUpdated": "2016-10-05T00:00:00Z",
           "fileName": "fileName",
-          "assetId": null
+          "assetId": null,
+          "mediaType":  null
         }
       ],
       "categories": [ "category 1", "category 2" ],
@@ -210,7 +211,8 @@
           "url": "url.pdf",
           "lastUpdated": "2016-10-05T00:00:00Z",
           "fileName": "fileName",
-          "assetId": null
+          "assetId": null,
+          "mediaType": null
         }
       ],
       "categories": [ "category 1", "category 2" ],

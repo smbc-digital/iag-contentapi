@@ -32,7 +32,7 @@ namespace StockportContentApi.Utils
 
             try
             {
-                var token = _httpContextAccessor.HttpContext.Request.Cookies[CookieName()];
+                var token = _httpContextAccessor.HttpContext.Request.Headers["jwtCookie"];
 
                 if (!string.IsNullOrEmpty(token)) person = _decoder.Decode(token);
             }
@@ -42,21 +42,6 @@ namespace StockportContentApi.Utils
             }
 
             return person;
-        }
-
-        private string CookieName()
-        {
-            switch (_environment.Name.ToUpper())
-            {
-                case "INT":
-                    return "int_jwtCookie";
-                case "QA":
-                    return "qa_jwtCookie";
-                case "STAGE":
-                    return "staging_jwtCookie";
-                default:
-                    return "jwtCookie";
-            }
         }
     }
 }

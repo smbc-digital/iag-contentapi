@@ -27,7 +27,8 @@ namespace StockportContentApi.ContentfulFactories
                     entry.SystemProperties.UpdatedAt.Value,
                     entry.File?.Url,
                     entry.File?.FileName,
-                    entry.SystemProperties.Id).StripData(_httpContextAccessor);
+                    entry.SystemProperties.Id,
+                    entry.File.ContentType).StripData(_httpContextAccessor);
         }
     }
 }
