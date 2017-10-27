@@ -20,6 +20,7 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulReference> SubItems { get; set; } = new List<ContentfulReference>();
         public List<ContentfulReference> SecondaryItems { get; set; } = new List<ContentfulReference>();
         public List<ContentfulReference> TertiaryItems { get; set; } = new List<ContentfulReference>();
+        public List<ContentfulReference> Sections { get; set; } = new List<ContentfulReference>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

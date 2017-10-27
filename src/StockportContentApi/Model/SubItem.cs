@@ -15,6 +15,11 @@ namespace StockportContentApi.Model
         public readonly string Image;
         public readonly List<SubItem> SubItems;
 
+        public SubItem()
+        {
+            
+        }
+
         public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems)
         {
             Slug = slug;
