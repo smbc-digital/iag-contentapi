@@ -5,12 +5,18 @@ Values that should be in the config file
 ```
 {
   "healthystockport": {
-    "Space": "Healthy stockport space",
-    "AccessKey": "Healthy stockport key"
+    "Space": "Healthy Stockport Space",
+    "AccessKey": "Healthy Stockport Key"
   },
   "stockportgov": {
-    "Space": "Stockport gov space",
-    "AccessKey":  "Stockport gov key" 
-  }
+    "Space": "Stockportgov Space",
+    "AccessKey": "Stockportgov Key",
+    "ManagementKey": "Stockportgov Management API key"
+  },
+  "Authorization": "xx",
+  "ClientRateLimiting": {
+    "ClientIdHeader": "xx",
+    "ClientWhiteList":  ["xx"] 
+  } 
 }
 ```
