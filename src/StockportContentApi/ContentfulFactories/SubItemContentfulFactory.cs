@@ -29,7 +29,7 @@ namespace StockportContentApi.ContentfulFactories
 
             if (entry.SubItems != null)
             {
-                foreach (var item in entry.SubItems.Where(subItem => EntryIsValid(subItem)))
+                foreach (var item in entry.SubItems.Where(EntryIsValid))
                 {
                     var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
                     subItems.Add(newItem);
@@ -38,7 +38,7 @@ namespace StockportContentApi.ContentfulFactories
 
             if (entry.SecondaryItems != null)
             {
-                foreach (var item in entry.SecondaryItems.Where(subItem => EntryIsValid(subItem)))
+                foreach (var item in entry.SecondaryItems.Where(EntryIsValid))
                 {
                     var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
                     subItems.Add(newItem);
@@ -47,10 +47,19 @@ namespace StockportContentApi.ContentfulFactories
 
             if (entry.TertiaryItems != null)
             {
-                foreach (var item in entry.TertiaryItems.Where(subItem => EntryIsValid(subItem)))
+                foreach (var item in entry.TertiaryItems.Where(EntryIsValid))
                 {
                     var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
                     subItems.Add(newItem);
+                }
+            }
+
+            if (entry.Sections != null)
+            {
+                foreach (var section in entry.Sections)
+                {
+                    var newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>() );
+                    subItems.Add(newSection);
                 }
             }
 
