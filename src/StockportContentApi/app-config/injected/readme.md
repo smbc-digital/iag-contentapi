@@ -13,10 +13,15 @@ Values that should be in the config file
     "AccessKey": "Stockportgov Key",
     "ManagementKey": "Stockportgov Management API key"
   },
+  "TokenStoreUrl": "xx",
   "Authorization": "xx",
   "ClientRateLimiting": {
     "ClientIdHeader": "xx",
     "ClientWhiteList":  ["xx"] 
-  } 
+  },
+  "ElasticSearch": {
+    "Url": "xx",
+    "Authorization": "xx"
+  }
 }
 ```
