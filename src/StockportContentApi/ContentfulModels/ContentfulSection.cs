@@ -4,7 +4,7 @@ using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulSection : IContentfulModel
+    public class ContentfulSection : ContentfulReference, IContentfulModel
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
