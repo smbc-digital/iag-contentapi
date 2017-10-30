@@ -56,7 +56,7 @@ namespace StockportContentApi.ContentfulFactories
 
             if (entry.Sections != null)
             {
-                foreach (var section in entry.Sections)
+                foreach (var section in entry.Sections.Where(EntryIsValid))
                 {
                     var newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>() );
                     subItems.Add(newSection);
