@@ -1,89 +1,89 @@
-﻿{  
-   "popularSearchTerms":[  
-      "popular search term"
-   ],
-   "featuredTasksHeading":"Featured tasks heading",
-   "featuredTasksSummary":"Featured tasks summary",
-   "featuredTasks":[  
+﻿{
+  "popularSearchTerms": [
+    "popular search term"
+  ],
+  "featuredTasksHeading": "Featured tasks heading",
+  "featuredTasksSummary": "Featured tasks summary",
+  "featuredTasks": [
 
-   ],
-   "featuredTopics":[  
-      {  
-         "slug":"slug",
-         "title":"name",
-         "teaser":"teaser",
-         "icon":"icon",
-         "type":"id",
-         "sunriseDate":"0001-01-01T00:00:00Z",
-         "sunsetDate":"9999-09-09T00:00:00Z",
-         "image":"background-image-url.jpg",
-         "subItems":[  
-            {  
-               "slug":"sub-slug",
-               "title":"title",
-               "teaser":"teaser",
-               "icon":"icon",
-               "type":"id",
-               "sunriseDate":"0001-01-01T00:00:00Z",
-               "sunsetDate":"9999-09-09T00:00:00Z",
-               "image":"image",
-               "subItems":[  
+  ],
+  "featuredTopics": [
+    {
+      "slug": "slug",
+      "title": "name",
+      "teaser": "teaser",
+      "icon": "icon",
+      "type": "id",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z",
+      "image": "background-image-url.jpg",
+      "subItems": [
+        {
+          "slug": "sub-slug",
+          "title": "title",
+          "teaser": "teaser",
+          "icon": "icon",
+          "type": "id",
+          "sunriseDate": "0001-01-01T00:00:00Z",
+          "sunsetDate": "9999-09-09T00:00:00Z",
+          "image": "image",
+          "subItems": [
 
-               ]
-            },
-            {  
-               "slug":"secondary-slug",
-               "title":"title",
-               "teaser":"teaser",
-               "icon":"icon",
-               "type":"id",
-               "sunriseDate":"0001-01-01T00:00:00Z",
-               "sunsetDate":"9999-09-09T00:00:00Z",
-               "image":"image",
-               "subItems":[  
+          ]
+        },
+        {
+          "slug": "secondary-slug",
+          "title": "title",
+          "teaser": "teaser",
+          "icon": "icon",
+          "type": "id",
+          "sunriseDate": "0001-01-01T00:00:00Z",
+          "sunsetDate": "9999-09-09T00:00:00Z",
+          "image": "image",
+          "subItems": [
 
-               ]
-            },
-            {  
-               "slug":"tertiary-slug",
-               "title":"title",
-               "teaser":"teaser",
-               "icon":"icon",
-               "type":"id",
-               "sunriseDate":"0001-01-01T00:00:00Z",
-               "sunsetDate":"9999-09-09T00:00:00Z",
-               "image":"image",
-               "subItems":[  
+          ]
+        },
+        {
+          "slug": "tertiary-slug",
+          "title": "title",
+          "teaser": "teaser",
+          "icon": "icon",
+          "type": "id",
+          "sunriseDate": "0001-01-01T00:00:00Z",
+          "sunsetDate": "9999-09-09T00:00:00Z",
+          "image": "image",
+          "subItems": [
 
-               ]
-            }
-         ]
-      }
-   ],
-   "alerts":[  
-      {  
-         "title":"title",
-         "subHeading":"subHeading",
-         "body":"body",
-         "severity":"severity",
-         "sunriseDate":"0001-01-01T00:00:00Z",
-         "sunsetDate":"9999-09-09T00:00:00Z",
-         "slug":"slug"
-      }
-   ],
-   "carouselContents":[  
-      {  
-         "title":"title",
-         "slug":"slug",
-         "teaser":"teaser",
-         "image":"image.jpg",
-         "sunriseDate":"2016-09-01T00:00:00Z",
-         "sunsetDate":"2016-09-30T00:00:00Z",
-         "url":"url"
-      }
-   ],
-   "backgroundImage":"image.jpg",
-   "freeText":"homepage text",
+          ]
+        }
+      ]
+    }
+  ],
+  "alerts": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z",
+      "slug": "slug"
+    }
+  ],
+  "carouselContents": [
+    {
+      "title": "title",
+      "slug": "slug",
+      "teaser": "teaser",
+      "image": "image.jpg",
+      "sunriseDate": "2016-09-01T00:00:00Z",
+      "sunsetDate": "2016-09-30T00:00:00Z",
+      "url": "url"
+    }
+  ],
+  "backgroundImage": "image.jpg",
+  "freeText": "homepage text",
   "featuredGroup": {
     "name": "_name",
     "slug": "_slug",
@@ -148,5 +148,6 @@
     "accessibleTransportLink": "/accessibleTransport",
     "additionalInformation": "",
     "additionalDocuments": []
-  }
+  },
+  "eventCategory":  ""
 }

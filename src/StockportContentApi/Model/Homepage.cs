@@ -15,9 +15,10 @@ namespace StockportContentApi.Model
         public string BackgroundImage { get; }
         public string FreeText { get; }
         public Group FeaturedGroup { get; }
+        public string EventCategory { get; }
 
         public Homepage(IEnumerable<string> popularSearchTerms , string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,
-            IEnumerable<CarouselContent> carouselContents, string backgroundImage, string freeText, Group featuredGroup)
+            IEnumerable<CarouselContent> carouselContents, string backgroundImage, string freeText, Group featuredGroup, string eventCategory)
         {
             PopularSearchTerms = popularSearchTerms;
             FeaturedTasksHeading = featuredTasksHeading;
@@ -29,12 +30,13 @@ namespace StockportContentApi.Model
             BackgroundImage = backgroundImage;
             FreeText = freeText;
             FeaturedGroup = featuredGroup;
+            EventCategory = eventCategory;
         }
     }
 
     public class NullHomepage : Homepage
     {
-        public NullHomepage() : base(Enumerable.Empty<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(),new List<CarouselContent>(), "","", null)
+        public NullHomepage() : base(Enumerable.Empty<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(),new List<CarouselContent>(), "","", null, string.Empty)
         {
         }
     }

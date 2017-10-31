@@ -15,6 +15,7 @@ namespace StockportContentApi.ContentfulModels
         public Asset BackgroundImage { get; set; } = new Asset();
         public string FreeText { get; set; } = string.Empty;
         public IEnumerable<ContentfulGroup> FeaturedGroups { get; set; } = new List<ContentfulGroup>();
+        public string EventCategory { get; set; } = string.Empty;
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }
