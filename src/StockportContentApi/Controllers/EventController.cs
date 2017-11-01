@@ -101,18 +101,6 @@ namespace StockportContentApi.Controllers
             });
         }
 
-        private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories, ContentfulEvent existingEvent)
-        {
-            var contentfulEvent = _mapper.Map<ContentfulEvent>(eventDetail);
-            contentfulEvent.EventCategories = categories;
-            contentfulEvent.Image = existingEvent.Image;
-            contentfulEvent.Group = existingEvent.Group;
-            contentfulEvent.Documents = existingEvent.Documents;
-            var managementEvent = new ManagementEvent();
-            _mapper.Map(contentfulEvent, managementEvent);
-            return managementEvent;
-        }
-
         [HttpGet]
         [Route("{businessId}/events")]
         [Route("{businessId}/events/latest/{limit}")]
@@ -135,6 +123,23 @@ namespace StockportContentApi.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("{businessId}/events/without-categories")]
+        [Route("v1/{businessId}/events/without-categories")]
+        public async Task<IActionResult> Index(
+            string businessId,
+            [FromQuery] DateTime? dateFrom = null,
+            [FromQuery] DateTime? dateTo = null,
+            [FromQuery] string category = null)
+        {
+            return await _handler.Get(() =>
+            {
+                var repository = _eventRepository(_createConfig(businessId));
+                return repository.Get(dateFrom, dateTo, category);
+            });
+        }
+
+
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpDelete]
         [Route("{businessId}/events/{slug}")]
@@ -151,6 +156,18 @@ namespace StockportContentApi.Controllers
                 existingEvent.Sys.Version = version;
                 return await managementRepository.Delete(existingEvent.Sys);
             });
+        }
+
+        private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories, ContentfulEvent existingEvent)
+        {
+            var contentfulEvent = _mapper.Map<ContentfulEvent>(eventDetail);
+            contentfulEvent.EventCategories = categories;
+            contentfulEvent.Image = existingEvent.Image;
+            contentfulEvent.Group = existingEvent.Group;
+            contentfulEvent.Documents = existingEvent.Documents;
+            var managementEvent = new ManagementEvent();
+            _mapper.Map(contentfulEvent, managementEvent);
+            return managementEvent;
         }
     }
 }

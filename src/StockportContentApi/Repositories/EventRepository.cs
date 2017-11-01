@@ -118,7 +118,7 @@ namespace StockportContentApi.Repositories
             eventItem = GetEventFromItsOccurrences(date, eventItem);
             if (eventItem != null && !string.IsNullOrEmpty(eventItem.Group?.Slug) && !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             {
-                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<GroupSubCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null, "published", new List<string>() {string.Empty}, string.Empty, string.Empty, string.Empty, null, false,string.Empty, string.Empty, new List<Document>());
+                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<GroupSubCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null, "published", new List<string>() { string.Empty }, string.Empty, string.Empty, string.Empty, null, false, string.Empty, string.Empty, new List<Document>());
             }
 
             return eventItem == null
@@ -193,13 +193,54 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
+        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category)
+        {
+            var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+
+            if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
+
+            var searchdateFrom = dateFrom;
+            var searchdateTo = dateTo;
+
+            var now = _timeProvider.Now().Date;
+
+            if (!dateFrom.HasValue && !dateTo.HasValue)
+            {
+                searchdateFrom = now;
+                searchdateTo = DateTime.MaxValue;
+            }
+            else if (dateFrom.HasValue && !dateTo.HasValue)
+            {
+                searchdateTo = DateTime.MaxValue;
+            }
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < now)
+            {
+                searchdateFrom = DateTime.MinValue;
+            }
+            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= now)
+            {
+                searchdateFrom = now;
+            }
+
+            var events =
+                    GetAllEventsAndTheirReccurrences(entries)
+                    .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
+                    .Where(e => string.IsNullOrWhiteSpace(category) || e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower()))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+
+            return HttpResponse.Successful(events);
+        }
+
         public async Task<List<Event>> GetEventsByCategory(string category)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             var events =
                     GetAllEventsAndTheirReccurrences(entries)
-                    .Where(e => string.IsNullOrWhiteSpace(category) 
+                    .Where(e => string.IsNullOrWhiteSpace(category)
                         || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
                         || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
                     .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
