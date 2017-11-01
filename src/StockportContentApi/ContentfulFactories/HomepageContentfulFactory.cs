@@ -59,7 +59,7 @@ namespace StockportContentApi.ContentfulFactories
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
             return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, 
-                featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup).StripData(_httpContextAccessor);
+                featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory).StripData(_httpContextAccessor);
         }
     }
 }
