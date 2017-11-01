@@ -13,7 +13,6 @@ namespace StockportContentApi.ContentfulModels
             File = new File { Url = string.Empty },
             SystemProperties = new SystemProperties { Type = "Asset" }
         };
-        public List<ContentfulSection> Sections { get; set; } = new List<ContentfulSection>();
         
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public List<ContentfulProfile> Profiles { get; set; } = new List<ContentfulProfile>();
