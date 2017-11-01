@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Search;
@@ -50,7 +51,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var profile = new Profile("type", "title", "slug", "subtitle",
                 "teaser", "image", "body", "icon", "backgroundImage",
-                new List<Crumb> { new Crumb("title", "slug", "type") });
+                new List<Crumb> { new Crumb("title", "slug", "type") }, new List<Alert>{new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug")});
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 

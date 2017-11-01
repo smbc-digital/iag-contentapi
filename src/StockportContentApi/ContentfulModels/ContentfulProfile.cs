@@ -15,6 +15,8 @@ namespace StockportContentApi.ContentfulModels
         public string Icon { get; set; } = string.Empty;
         public Asset BackgroundImage { get; set; } = new Asset {File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+        public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }

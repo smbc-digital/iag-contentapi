@@ -10,11 +10,13 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor)
+        public ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
+            _alertFactory = alertFactory;
         }
 
         public Profile ToModel(ContentfulProfile entry)
@@ -22,12 +24,15 @@ namespace StockportContentApi.ContentfulFactories
             var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
+            var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
+                                     .Select(alert => _alertFactory.ToModel(alert)).ToList();
+
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
             var backgroundImageUrl = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
                 ? entry.BackgroundImage.File.Url : string.Empty;
 
             return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.Teaser, imageUrl, 
-                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs).StripData(_httpContextAccessor);
+                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs, alerts).StripData(_httpContextAccessor);
         }
     }
 }
