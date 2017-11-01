@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             _contentfulProfile = new ContentfulProfileBuilder().Build();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake());
+            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake(), new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object);
         }
 
         [Fact]

@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Document> _documents = new List<Document> { new DocumentBuilder().Build() };
         private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug") };
         private List<Alert> _alertsInline = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug") };
-        private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>()) };       
+        private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>(), new List<Alert> { new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug") }) };       
         private Advertisement _advertisement = new Advertisement("title", "slug", "teaser", DateTime.MinValue,
             DateTime.MaxValue, true, "url", "image");
         

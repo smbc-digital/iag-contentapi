@@ -14,8 +14,9 @@ namespace StockportContentApi.Model
         public string Icon { get; }
         public string BackgroundImage { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
+        public List<Alert> Alerts { get; }
 
-        public Profile(string type, string title, string slug, string subtitle, string teaser, string image, string body, string icon, string backgroundImage, IEnumerable<Crumb> breadcrumbs)
+        public Profile(string type, string title, string slug, string subtitle, string teaser, string image, string body, string icon, string backgroundImage, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts)
         {
             Type = type;
             Title = title;
@@ -27,6 +28,7 @@ namespace StockportContentApi.Model
             Icon = icon;
             BackgroundImage = backgroundImage;
             Breadcrumbs = breadcrumbs;
+            Alerts = alerts;
         }
 
         public Profile(string type, string title, string slug, string subtitle, string teaser, string image)
