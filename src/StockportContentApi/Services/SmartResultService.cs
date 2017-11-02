@@ -6,6 +6,7 @@ using StockportContentApi.Builders;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Exceptions;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
@@ -38,8 +39,9 @@ namespace StockportContentApi.Services
 
             var smartResult = await repository.Get(slug);
 
+
             return smartResult == null
-                ? null
+                ? throw new ServiceException()
                 : _smartResultFactory.ToModel(smartResult);
         }
 

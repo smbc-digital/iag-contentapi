@@ -10,13 +10,6 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class SmartResultContentfulFactory : IContentfulFactory<ContentfulSmartResult, SmartResult>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public SmartResultContentfulFactory(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
-
         public SmartResult ToModel(ContentfulSmartResult entry)
         {
             var buttonText = string.IsNullOrEmpty(entry.ButtonText) ? "Go to Homepage" : entry.ButtonText;

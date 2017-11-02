@@ -40,9 +40,9 @@ namespace StockportContentApi.Repositories
                     .FieldEquals("fields.slug", slug)
                     .Include(3);
 
-                var entry = await _client.GetEntriesAsync(builder);
+                var entries = await _client.GetEntriesAsync(builder);
 
-                return entry.FirstOrDefault();
+                return entries.FirstOrDefault();
             }
             catch (ContentfulException ex)
             {
