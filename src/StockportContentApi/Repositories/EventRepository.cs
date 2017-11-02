@@ -193,43 +193,30 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(eventCalender);
         }
 
-        public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category)
+        public async Task<HttpResponse> Get(string category)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
-            var searchdateFrom = dateFrom;
-            var searchdateTo = dateTo;
-
-            var now = _timeProvider.Now().Date;
-
-            if (!dateFrom.HasValue && !dateTo.HasValue)
-            {
-                searchdateFrom = now;
-                searchdateTo = DateTime.MaxValue;
-            }
-            else if (dateFrom.HasValue && !dateTo.HasValue)
-            {
-                searchdateTo = DateTime.MaxValue;
-            }
-            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < now)
-            {
-                searchdateFrom = DateTime.MinValue;
-            }
-            else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= now)
-            {
-                searchdateFrom = now;
-            }
+            var eventsAll = GetAllEventsAndTheirReccurrences(entries);
 
             var events =
-                    GetAllEventsAndTheirReccurrences(entries)
-                    .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                    .Where(e => string.IsNullOrWhiteSpace(category) || e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower()))
+                    eventsAll
+                    .Where(e => e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower()))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
+
+            if (!events.Any())
+            {
+                    events = eventsAll.Where(e => e.Tags.Contains(category.ToLower()))
+                    .OrderBy(o => o.EventDate)
+                    .ThenBy(c => c.StartTime)
+                    .ThenBy(t => t.Title)
+                    .ToList();
+            }
 
             return HttpResponse.Successful(events);
         }

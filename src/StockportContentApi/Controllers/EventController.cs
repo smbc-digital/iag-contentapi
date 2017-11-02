@@ -124,18 +124,16 @@ namespace StockportContentApi.Controllers
         }
 
         [HttpGet]
-        [Route("{businessId}/events/without-categories")]
-        [Route("v1/{businessId}/events/without-categories")]
+        [Route("{businessId}/events/by-category")]
+        [Route("v1/{businessId}/events/by-category")]
         public async Task<IActionResult> Index(
             string businessId,
-            [FromQuery] DateTime? dateFrom = null,
-            [FromQuery] DateTime? dateTo = null,
             [FromQuery] string category = null)
         {
             return await _handler.Get(() =>
             {
                 var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(dateFrom, dateTo, category);
+                return repository.Get(category);
             });
         }
 
