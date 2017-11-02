@@ -12,8 +12,8 @@ namespace StockportContentApi.ContentfulFactories
     {
         public SmartResult ToModel(ContentfulSmartResult entry)
         {
-            var buttonText = string.IsNullOrEmpty(entry.ButtonText) ? "Go to Homepage" : entry.ButtonText;
-            var buttonLink = string.IsNullOrEmpty(entry.ButtonLink) ? "https://stockport.gov.uk/" : entry.ButtonLink;
+            var buttonText = string.IsNullOrEmpty(entry.ButtonText) ? "Go to homepage" : entry.ButtonText;
+            var buttonLink = string.IsNullOrEmpty(entry.ButtonLink) ? "https://www.stockport.gov.uk/" : entry.ButtonLink;
 
             return new SmartResult(entry.Title, entry.Slug, entry.Subheading, entry.Icon, entry.Body, buttonText, buttonLink);         
         }
