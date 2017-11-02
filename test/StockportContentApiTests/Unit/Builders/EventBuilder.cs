@@ -71,6 +71,11 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public EventBuilder EventCategories(List<EventCategory> categoriesList)
+        {
+            _eventCategories = categoriesList;
+            return this;
+        }
 
         public EventBuilder EventBookingInformation(string bookingInformation)
         {
@@ -81,6 +86,12 @@ namespace StockportContentApiTests.Unit.Builders
         public EventBuilder Featured(bool featured)
         {
             _featured = featured;
+            return this;
+        }
+
+        public EventBuilder Tags(List<string> tags)
+        {
+            _tags = tags;
             return this;
         }
     }
