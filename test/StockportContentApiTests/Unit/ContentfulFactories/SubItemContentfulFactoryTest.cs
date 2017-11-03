@@ -199,5 +199,26 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             subItem.SubItems.Should().HaveCount(6);
         }
+
+        [Fact]
+        public void ToModel_ShouldHandleGroupsHomepageSlugCorrectly()
+        {
+            // Arrange
+            var contentfulReference = new ContentfulReferenceBuilder()
+                .Slug("test-group-homepage")
+                .Name("custom name")
+                .Title(string.Empty)
+                .SubItems(null)
+                .TertiaryItems(null)
+                .SecondaryItems(null)
+                .SystemContentTypeId("groupHomepage")
+                .Build();
+
+            // Act
+            var subItem = _subItemContentfulFactory.ToModel(contentfulReference);
+
+            // Assert
+            subItem.Slug.Should().Be("groups");
+        }
     }
 }

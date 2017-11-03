@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -68,8 +69,15 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Icon = "si-default";
             }
 
-            return new SubItem(entry.Slug, title, entry.Teaser, 
+            var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
+
+            return new SubItem(handledSlug, title, entry.Teaser, 
                 entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems).StripData(_httpContextAccessor);
+        }
+
+        private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)
+        {
+            return sys.ContentType.SystemProperties.Id == "groupHomepage" ? "groups" : entrySlug;
         }
 
         private string GetEntryType(ContentfulReference entry)
