@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var result = _smartResultContentfulFactory.ToModel(contentfulentry);
 
             // Assert
-            result.ButtonText.Should().Be("Go to Homepage");
+            result.ButtonText.Should().Be("Go to homepage");
 
         }
 
@@ -49,7 +49,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var result = _smartResultContentfulFactory.ToModel(contentfulentry);
 
             // Assert
-            result.ButtonLink.Should().Be("https://stockport.gov.uk/");
+            result.ButtonLink.Should().Be("https://www.stockport.gov.uk/");
 
         }
 
