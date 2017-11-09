@@ -137,6 +137,8 @@ namespace StockportContentApi.Controllers
             var eventsByCategory = new List<Event>();
             var eventsByTag = new List<Event>();
 
+            if (string.IsNullOrEmpty(category)) return new NotFoundObjectResult("No events found");
+
             try
             {
                 // TOOD: Change this to a service call
