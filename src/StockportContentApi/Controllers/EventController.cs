@@ -9,6 +9,7 @@ using System.Linq;
 using StockportContentApi.ContentfulModels;
 using AutoMapper;
 using StockportContentApi.ManagementModels;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Controllers
 {
@@ -20,13 +21,15 @@ namespace StockportContentApi.Controllers
         private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
         private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<EventController> _logger;
 
         public EventController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, EventRepository> eventRepository,
             Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
             Func<ContentfulConfig, ManagementRepository> managementRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<EventController> logger)
         {
             _handler = handler;
             _createConfig = createConfig;
@@ -34,6 +37,7 @@ namespace StockportContentApi.Controllers
             _managementRepository = managementRepository;
             _eventCategoryRepository = eventCategoryRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -126,15 +130,30 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/events/by-category")]
         [Route("v1/{businessId}/events/by-category")]
-        public async Task<IActionResult> Index(
-            string businessId,
-            [FromQuery] string category = null)
+        public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "")
         {
-            return await _handler.Get(() =>
+            // TODO: Make non func
+            var repository = _eventRepository(_createConfig(businessId));
+            var eventsByCategory = new List<Event>();
+            var eventsByTag = new List<Event>();
+
+            try
             {
-                var repository = _eventRepository(_createConfig(businessId));
-                return repository.Get(category);
-            });
+                // TOOD: Change this to a service call
+                eventsByCategory = await repository.GetEventsByCategory(category);
+                eventsByTag = await repository.GetEventsByTag(category);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(0), ex, "There was an error with getting events by category / tag");
+                return new NotFoundObjectResult("No events found");
+            }
+
+            if (eventsByCategory.Count == 0 && eventsByTag.Count == 0) return new NotFoundObjectResult("No events found");
+
+            var events = eventsByCategory.Count > 0 ? eventsByCategory : eventsByTag;
+
+            return new OkObjectResult(events);
         }
 
 

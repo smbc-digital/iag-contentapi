@@ -203,20 +203,12 @@ namespace StockportContentApi.Repositories
 
             var events =
                     eventsAll
-                    .Where(e => e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower()))
+                    .Where(e => (e.EventCategories.Any(c => c.Slug.ToLower() == category.ToLower()) || e.EventCategories.Any(c => c.Name.ToLower() == category.ToLower())) || e.Tags.Contains(category.ToLower()))
+                    .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                     .OrderBy(o => o.EventDate)
                     .ThenBy(c => c.StartTime)
                     .ThenBy(t => t.Title)
                     .ToList();
-
-            if (!events.Any())
-            {
-                    events = eventsAll.Where(e => e.Tags.Contains(category.ToLower()))
-                    .OrderBy(o => o.EventDate)
-                    .ThenBy(c => c.StartTime)
-                    .ThenBy(t => t.Title)
-                    .ToList();
-            }
 
             return HttpResponse.Successful(events);
         }
