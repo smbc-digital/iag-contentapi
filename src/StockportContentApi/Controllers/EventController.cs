@@ -10,6 +10,7 @@ using StockportContentApi.ContentfulModels;
 using AutoMapper;
 using StockportContentApi.ManagementModels;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.Controllers
 {
@@ -132,30 +133,27 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/events/by-category")]
         public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "")
         {
-            // TODO: Make non func
             var repository = _eventRepository(_createConfig(businessId));
-            var eventsByCategory = new List<Event>();
-            var eventsByTag = new List<Event>();
 
-            if (string.IsNullOrEmpty(category)) return new NotFoundObjectResult("No events found");
+            if (string.IsNullOrEmpty(category)) return new NotFoundObjectResult("No category was supplied");
 
             try
             {
-                // TOOD: Change this to a service call
-                eventsByCategory = await repository.GetEventsByCategory(category);
-                eventsByTag = await repository.GetEventsByTag(category);
+                // TODO: Change this to a service call
+                var eventsByCategory = await repository.GetEventsByCategory(category);
+                var eventsByTag = await repository.GetEventsByTag(category);
+
+                if (eventsByCategory.Count == 0 && eventsByTag.Count == 0) return new NotFoundObjectResult($"No events found for category {category}");
+
+                var events = eventsByCategory.Count > 0 ? eventsByCategory : eventsByTag;
+
+                return new OkObjectResult(events);
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(0), ex, "There was an error with getting events by category / tag");
-                return new NotFoundObjectResult("No events found");
+                _logger.LogError(new EventId(0), ex, $"There was an error with getting events by category / tag for category {category}");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            if (eventsByCategory.Count == 0 && eventsByTag.Count == 0) return new NotFoundObjectResult("No events found");
-
-            var events = eventsByCategory.Count > 0 ? eventsByCategory : eventsByTag;
-
-            return new OkObjectResult(events);
         }
 
 
