@@ -4,6 +4,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using Microsoft.AspNetCore.Http;
 
+
 namespace StockportContentApi.ContentfulFactories
 {
     public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
@@ -33,6 +34,15 @@ namespace StockportContentApi.ContentfulFactories
         
         public Showcase ToModel(ContentfulShowcase entry)
         {
+
+            var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                                          && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                 .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
+
+            var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
+
             var title = !string.IsNullOrEmpty(entry.Title)
                 ? entry.Title
                 : "";
@@ -119,7 +129,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.KeyFactSubheading
                 : "";
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon,subItems, tertiaryItems).StripData(_httpContextAccessor);
         }
     }
 }

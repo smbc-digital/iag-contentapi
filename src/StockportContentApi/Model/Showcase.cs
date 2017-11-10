@@ -16,6 +16,8 @@ namespace StockportContentApi.Model
         public string NewsCategoryTag { get; set; }
         public string NewsCategoryOrTag { get; set; }
         public News NewsArticle { get; set; }
+        public IEnumerable<SubItem> TertiaryItems { get; }
+        public IEnumerable<SubItem> SubItems { get; }
         public string BodySubheading { get; set; }
         public string Body { get; set; }
         public IEnumerable<SubItem> FeaturedItems { get; set; }
@@ -36,7 +38,7 @@ namespace StockportContentApi.Model
         public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
             IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, 
             string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, 
-            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon)
+            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems)
         {
             Title = title;
             Slug = slug;
@@ -62,6 +64,8 @@ namespace StockportContentApi.Model
             FieldOrder = fieldOrder;
             KeyFactSubheading = keyFactSubheading;
             Icon = icon;
+            SubItems = subItems;
+            TertiaryItems = tertiaryItems;
         }
     }
 }
