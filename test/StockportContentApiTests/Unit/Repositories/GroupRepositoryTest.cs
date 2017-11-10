@@ -551,13 +551,13 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulGroupHomepage>();
             collection.Items = new List<ContentfulGroupHomepage> { contenfulHomepage };
 
-            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, null, null, null);
+            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, null, null, null, null);
 
             var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
 
             _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupHomepage>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
+            
             _groupHomepageContentfulFactory.Setup(o => o.ToModel(contenfulHomepage)).Returns(groupHomepage);
 
             var response = AsyncTestHelper.Resolve(_repository.GetGroupHomepage());

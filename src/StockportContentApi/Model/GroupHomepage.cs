@@ -11,9 +11,10 @@ namespace StockportContentApi.Model
         public List<Group> FeaturedGroups { get; set; }
         public GroupCategory FeaturedGroupsCategory { get; set; }
         public GroupSubCategory FeaturedGroupsSubCategory { get; set; }
+        public IEnumerable<Alert> Alerts { get; set; }
 
         public GroupHomepage(string title, string slug, string backgroundImage, string featuredGroupsHeading, List<Group> featuredGroups, 
-            GroupCategory featuredGroupsCategory, GroupSubCategory featuredGroupsSubCategory)
+            GroupCategory featuredGroupsCategory, GroupSubCategory featuredGroupsSubCategory, IEnumerable<Alert> alerts)
         {
             Title = title;
             Slug = slug;
@@ -22,6 +23,7 @@ namespace StockportContentApi.Model
             FeaturedGroupsCategory = featuredGroupsCategory;
             FeaturedGroupsHeading = featuredGroupsHeading;
             FeaturedGroupsSubCategory = featuredGroupsSubCategory;
+            Alerts = alerts;
         }
     }
 }

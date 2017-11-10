@@ -14,14 +14,16 @@ namespace StockportContentApi.ContentfulFactories
         private IContentfulFactory<ContentfulGroupCategory, GroupCategory> _groupCategoryListFactory;
         private IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _groupSubCategoryListFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public GroupHomepageContentfulFactory(IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public GroupHomepageContentfulFactory(IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _groupListFactory = groupListFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
             _groupSubCategoryListFactory = groupSubCategoryListFactory;
             _dateComparer = new DateComparer(timeProvider);
             _httpContextAccessor = httpContextAccessor;
+            _alertFactory = alertFactory;
         }
 
         public GroupHomepage ToModel(ContentfulGroupHomepage entry)
@@ -39,7 +41,9 @@ namespace StockportContentApi.ContentfulFactories
             var featuredGroup = groups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(
                 group.DateHiddenFrom, group.DateHiddenTo)).ToList();
 
-            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory).StripData(_httpContextAccessor);
+            var alerts = entry.Alerts.Select(_ => _alertFactory.ToModel(_));
+
+            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts).StripData(_httpContextAccessor);
         }
     }
 }

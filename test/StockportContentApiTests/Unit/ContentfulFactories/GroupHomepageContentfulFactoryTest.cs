@@ -22,6 +22,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _groupListFactory;
         private Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
         private Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
+        private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
 
         public GroupHomepageContentfulFactoryTest()
@@ -31,8 +32,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _groupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroupHomepage = new ContentfulGroupHomepageBuilder().Build();
             _mockTimeProvider = new Mock<ITimeProvider>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
-            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake(), _alertFactory.Object);
         }
 
         [Fact]
