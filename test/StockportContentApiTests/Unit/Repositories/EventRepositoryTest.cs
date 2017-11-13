@@ -86,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 
             // Act - return events using a method which checks occurances
-            var result = AsyncTestHelper.Resolve(_repository.GetEventsByCategory("category"));
+            var result = AsyncTestHelper.Resolve(_repository.GetEventsByCategory("category", true));
 
             // Assert - Check event date is first date that occurs in the future
             result[0].EventDate.Should().Be(new DateTime(2017, 07, 06));

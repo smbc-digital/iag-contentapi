@@ -213,7 +213,7 @@ namespace StockportContentApi.Repositories
             return HttpResponse.Successful(events);
         }
 
-        public async Task<List<Event>> GetEventsByCategory(string category)
+        public async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
@@ -228,7 +228,7 @@ namespace StockportContentApi.Repositories
                     .ThenBy(t => t.Title)
                     .ToList();
 
-            return GetNextOccurenceOfEvents(events);
+            return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
         }
 
         public async Task<List<Event>> GetEventsByTag(string tag)
