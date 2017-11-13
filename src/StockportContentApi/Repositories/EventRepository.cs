@@ -231,7 +231,7 @@ namespace StockportContentApi.Repositories
             return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
         }
 
-        public async Task<List<Event>> GetEventsByTag(string tag)
+        public async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
         {
             var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
@@ -244,7 +244,7 @@ namespace StockportContentApi.Repositories
                     .ThenBy(t => t.Title)
                     .ToList();
 
-            return GetNextOccurenceOfEvents(events);
+            return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
         }
 
         private List<Event> GetNextOccurenceOfEvents(List<Event> events)

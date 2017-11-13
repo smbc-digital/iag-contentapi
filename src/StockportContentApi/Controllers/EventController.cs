@@ -141,7 +141,7 @@ namespace StockportContentApi.Controllers
             {
                 // TODO: Change this to a service call
                 var eventsByCategory = await repository.GetEventsByCategory(category, onlyNextOccurrence);
-                var eventsByTag = await repository.GetEventsByTag(category);
+                var eventsByTag = await repository.GetEventsByTag(category, onlyNextOccurrence);
 
                 if (eventsByCategory.Count == 0 && eventsByTag.Count == 0) return new NotFoundObjectResult($"No events found for category {category}");
 
