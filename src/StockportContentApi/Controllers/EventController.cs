@@ -131,7 +131,7 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/events/by-category")]
         [Route("v1/{businessId}/events/by-category")]
-        public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "")
+        public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
         {
             var repository = _eventRepository(_createConfig(businessId));
 
@@ -140,7 +140,7 @@ namespace StockportContentApi.Controllers
             try
             {
                 // TODO: Change this to a service call
-                var eventsByCategory = await repository.GetEventsByCategory(category);
+                var eventsByCategory = await repository.GetEventsByCategory(category, onlyNextOccurrence);
                 var eventsByTag = await repository.GetEventsByTag(category);
 
                 if (eventsByCategory.Count == 0 && eventsByTag.Count == 0) return new NotFoundObjectResult($"No events found for category {category}");
