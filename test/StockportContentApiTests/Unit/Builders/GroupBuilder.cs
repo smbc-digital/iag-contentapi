@@ -36,11 +36,12 @@ namespace StockportContentApiTests.Unit.Builders
         private List<Document> _additionalDocuments = new List<Document>();
         private List<string> _suitableFor = new List<string>();
         private List<string> _ageRanges = new List<string>();
+        private DateTime? _dateLastModified = new DateTime?();
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _suitableFor, _ageRanges);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges);
         }
 
         public GroupBuilder Slug(string slug)
