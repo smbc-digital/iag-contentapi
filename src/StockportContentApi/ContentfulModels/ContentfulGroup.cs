@@ -34,5 +34,7 @@ namespace StockportContentApi.ContentfulModels
         public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
         public string AdditionalInformation { get; set; } = string.Empty;
         public List<Asset> AdditionalDocuments { get; set; } = new List<Asset>();
+        public List<string> SuitableFor { get; set; } = new List<string>();
+        public List<string> AgeRange { get; set; } = new List<string>();
     }
 }

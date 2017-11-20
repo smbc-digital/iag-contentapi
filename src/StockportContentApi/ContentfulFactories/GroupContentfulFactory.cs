@@ -64,7 +64,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
                 administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 
-                organisation, entry.Donations, entry.AccessibleTransportLink, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt).StripData(_httpContextAccessor);
+                organisation, entry.Donations, entry.AccessibleTransportLink, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange).StripData(_httpContextAccessor);
         }
     }
 }

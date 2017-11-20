@@ -17,12 +17,12 @@ namespace StockportContentApiTests.Unit.Builders
         private string _facebook = "_facebook";
         private string _address = "_address";
         private string _description = "_description";
-        private List<string> _cost = new List<string> ();
+        private List<string> _cost = new List<string>();
         private string _costText = "";
         private string _abilityLevel = "";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private List<ContentfulGroupCategory> _categoriesReference = new List<ContentfulGroupCategory>();
-        private MapPosition _mapPosition = new MapPosition() {Lat=39,Lon= 2};
+        private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
         private SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
@@ -31,6 +31,8 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _dateHiddenFrom = new DateTime(0001, 01, 01, 00, 00, 00);
         private DateTime _dateHiddenTo = new DateTime(0001, 01, 01, 00, 00, 00);
         private ContentfulOrganisation _organisation = new ContentfulOrganisation();
+        private List<string> _suitableFor = new List<string>();
+        private List<string> _ageRanges = new List<string>();
 
         public ContentfulGroup Build()
         {
@@ -55,7 +57,9 @@ namespace StockportContentApiTests.Unit.Builders
                 Cost = _cost,
                 CostText = _costText,
                 AbilityLevel = _abilityLevel,
-                Organisation = _organisation
+                Organisation = _organisation,
+                AgeRange = _ageRanges,
+                SuitableFor = _suitableFor
             };
         }
 
