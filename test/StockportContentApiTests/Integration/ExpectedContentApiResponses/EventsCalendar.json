@@ -93,7 +93,9 @@
         "donations": false,
         "accessibleTransportLink": "/accessibleTransport",
         "additionalInformation": "",
-        "additionalDocuments": []
+        "additionalDocuments": [],
+        "suitableFor": [],
+        "ageRange": []
       },
       "alerts": [
         {
@@ -226,7 +228,9 @@
         "donations": false,
         "accessibleTransportLink": "/accessibleTransport",
         "additionalInformation": "",
-        "additionalDocuments": []
+        "additionalDocuments": [],
+        "suitableFor": [],
+        "ageRange": []
       },
       "alerts": [
         {
