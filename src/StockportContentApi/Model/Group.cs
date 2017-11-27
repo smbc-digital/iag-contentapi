@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using StockportContentApi.Attributes;
 
 namespace StockportContentApi.Model
 {
@@ -35,6 +36,8 @@ namespace StockportContentApi.Model
         public List<Group> LinkedGroups { get; private set; }
         public bool Donations { get; set; }
         public string AccessibleTransportLink { get; set; }
+
+        [SensitiveData]
         public string AdditionalInformation { get; set; }
         public List<Document> AdditionalDocuments { get; set; }
         public DateTime? DateLastModified { get; set; }

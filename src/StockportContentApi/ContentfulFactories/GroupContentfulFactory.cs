@@ -43,9 +43,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.SubCategories.Where(o => o != null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
                 : new List<GroupSubCategory>();
 
-            var groupDocuments =
-                entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                    .Select(document => _documentFactory.ToModel(document)).ToList();
+            var groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties)).Select(document => _documentFactory.ToModel(document)).ToList();
 
             var organisation = entry.Organisation != null ?  _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
 
