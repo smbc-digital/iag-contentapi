@@ -43,9 +43,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.SubCategories.Where(o => o != null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
                 : new List<GroupSubCategory>();
 
-            var groupDocuments =
-                entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                    .Select(document => _documentFactory.ToModel(document)).ToList();
+            var groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties)).Select(document => _documentFactory.ToModel(document)).ToList();
 
             var organisation = entry.Organisation != null ?  _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
 
@@ -64,7 +62,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
                 administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 
-                organisation, entry.Donations, entry.AccessibleTransportLink, entry.AdditionalInformation, groupDocuments).StripData(_httpContextAccessor);
+                organisation, entry.Donations, entry.AccessibleTransportLink, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange).StripData(_httpContextAccessor);
         }
     }
 }

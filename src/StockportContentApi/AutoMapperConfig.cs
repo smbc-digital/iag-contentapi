@@ -134,6 +134,8 @@ namespace StockportContentApi
                 }
             };
 
+            destination.AgeRange = new Dictionary<string, List<string>> { { "en-GB", source.AgeRange } };
+            destination.SuitableFor = new Dictionary<string, List<string>> { { "en-GB", source.SuitableFor } };
             return destination;
 
         }

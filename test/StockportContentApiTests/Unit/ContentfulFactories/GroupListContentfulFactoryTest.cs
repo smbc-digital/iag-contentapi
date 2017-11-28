@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             // Assert
             groupList[0].ShouldBeEquivalentTo(_contentfulGroupList[0], o => o.Excluding(e => e.ImageUrl).Excluding(e => e.ThumbnailImageUrl)
-            .Excluding(e => e.Events).Excluding(e => e.Breadcrumbs).Excluding(e => e.Status).Excluding(e => e.Cost).Excluding(e => e.Organisation).Excluding(e=> e.LinkedGroups));
+            .Excluding(e => e.Events).Excluding(e => e.Breadcrumbs).Excluding(e => e.Status).Excluding(e => e.Cost).Excluding(e => e.Organisation).Excluding(e=> e.LinkedGroups).Excluding(e => e.DateLastModified));
         }
     }
 }

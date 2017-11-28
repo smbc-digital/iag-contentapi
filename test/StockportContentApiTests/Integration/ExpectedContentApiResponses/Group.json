@@ -63,5 +63,8 @@
   "donations": false,
   "accessibleTransportLink": "/accessibleTransport",
   "additionalInformation": "",
-  "additionalDocuments":[]
+  "additionalDocuments": [],
+  "dateLastModified": null,
+  "suitableFor": [],
+  "ageRange": []
 }

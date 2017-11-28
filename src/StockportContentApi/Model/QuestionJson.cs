@@ -14,6 +14,7 @@ namespace StockportContentApi.Model
         public List<Question> questions { get; set; }
         public List<Behaviour> behaviours { get; set; }
         public string description { get; set; }
+        public bool HideBackButton { get; set; }
     }
 
     public class Option
@@ -28,7 +29,9 @@ namespace StockportContentApi.Model
     {
         public string type { get; set; }
         public string message { get; set; }
+        public string value { get; set; }
     }
+
 
     public class Question
     {
@@ -60,6 +63,7 @@ namespace StockportContentApi.Model
         RedirectToAction,
         RedirectToActionController,
         GoToPage,
-        GoToSummary
+        GoToSummary,
+        HandOffToDTS
     }
 }

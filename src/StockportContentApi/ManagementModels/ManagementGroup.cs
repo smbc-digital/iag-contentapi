@@ -31,5 +31,7 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, List<ManagementReference>> SubCategories { get; set; }
         public Dictionary<string, string> AdditionalInformation { get; set; }
         public Dictionary<string, List<ManagementAsset>> AdditionalDocuments { get; set; }
+        public Dictionary<string, List<string>> SuitableFor { get; set; }
+        public Dictionary<string, List<string>> AgeRange { get; set; }
     }
 }

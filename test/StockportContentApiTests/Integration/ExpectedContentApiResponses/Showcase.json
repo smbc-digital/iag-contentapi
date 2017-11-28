@@ -145,7 +145,10 @@
         "donations": false,
         "accessibleTransportLink": "/accessibleTransport",
         "additionalInformation": "",
-        "additionalDocuments": []
+        "additionalDocuments": [],
+        "dateLastModified": null,
+        "suitableFor": [],
+        "ageRange": []
       },
       "alerts": [
         {
@@ -277,7 +280,10 @@
         "donations": false,
         "accessibleTransportLink": "/accessibleTransport",
         "additionalInformation": "",
-        "additionalDocuments": []
+        "additionalDocuments": [],
+        "dateLastModified": null,
+        "suitableFor": [],
+        "ageRange": []
       },
       "alerts": [
         {
