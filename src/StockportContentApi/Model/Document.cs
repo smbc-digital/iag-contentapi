@@ -1,15 +1,21 @@
-﻿using System;
+﻿using StockportContentApi.Attributes;
+using System;
 
 namespace StockportContentApi.Model
 {
     public class Document
     {
-        public string Title { get; }
-        public int Size { get; }
-        public string Url { get; }
-        public DateTime LastUpdated { get; }
-        public string FileName { get; }
+        [SensitiveData]
+        public string Title { get; set; }
+        public int Size { get; set; }
+        [SensitiveData]
+        public string Url { get; set; }
+        public DateTime LastUpdated { get; set; }
+        [SensitiveData]
+        public string FileName { get; set; }
+        [SensitiveData]
         public string AssetId { get; set; }
+        [SensitiveData]
         public string MediaType { get; set; }
 
         public Document(string title, int size, DateTime lastUpdated, string url, string fileName, string assetId, string mediaType)
