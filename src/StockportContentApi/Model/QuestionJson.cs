@@ -64,6 +64,6 @@ namespace StockportContentApi.Model
         RedirectToActionController,
         GoToPage,
         GoToSummary,
-        HandOffToDTS
+        HandOffData
     }
 }
