@@ -42,29 +42,20 @@ namespace StockportContentApi
 
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
 
-            var loggerConfig = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("Application", "IAG Content Api")
-                .WriteTo.Console();
+            var loggerConfig = new LoggerConfiguration();
 
-            // elastic search
+            // when this "feature toggle" has been removed, this can be deleted
             var esConfig = new ElasticSearch();
             Configuration.GetSection("ElasticSearch").Bind(esConfig);
 
-            if (esConfig.Enabled && !string.IsNullOrEmpty(esConfig.Url) && !string.IsNullOrEmpty(esConfig.Authorization))
+            if (esConfig.Enabled)
             {
-                loggerConfig.WriteTo.Elasticsearch(
-                    new ElasticsearchSinkOptions(new Uri(esConfig.Url))
-                    {
-                        AutoRegisterTemplate = true,
-                        MinimumLogEventLevel = esConfig.LogLevel,
-                        CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true),
-                        IndexFormat = esConfig.LogFormat,
-                        ModifyConnectionSettings = (c) => c.GlobalHeaders(new NameValueCollection
-                        {
-                            {"Authorization", esConfig.Authorization}
-                        })
-                    });
+                // elastic search and logging to the console in one
+                loggerConfig.Enrich.FromLogContext().ReadFrom.Configuration(Configuration);
+            }
+            else
+            {
+                loggerConfig.Enrich.FromLogContext().WriteTo.Console();
             }
 
             Log.Logger = loggerConfig.CreateLogger();
@@ -119,10 +110,10 @@ namespace StockportContentApi
             services.AddBuilders();
             services.AddSwaggerGen(c =>
             {
-                c.SingleApiVersion(new Info {Title = "Stockport Content API", Version = "v1"});
+                c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" });
 
                 c.DocumentFilter<SwaggerFilter>();
-                
+
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
                 {
                     Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\".",
@@ -144,7 +135,7 @@ namespace StockportContentApi
 
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseClientRateLimiting();
-            
+
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();
