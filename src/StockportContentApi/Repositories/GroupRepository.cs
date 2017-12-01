@@ -115,11 +115,24 @@ namespace StockportContentApi.Repositories
                 : entries.FirstOrDefault();
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
-
+             
             var group = _groupFactory.ToModel(entry);
-            group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));           
+            group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
 
-            if(group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
+            var twitterUser = group.Twitter.ToString();
+            var faceBookUser = group.Facebook.ToString();
+            if (twitterUser.StartsWith("@"))
+            {
+                twitterUser = twitterUser.Replace("@", "/");
+                group.Twitter = @"https://www.twitter.com"+ twitterUser;
+            }
+            if (faceBookUser.StartsWith("/"))
+            {
+                faceBookUser = faceBookUser.Replace("/", "");
+                group.Facebook = @"https://www.facebook.com/"+faceBookUser;
+            }
+
+            if (group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
             {
                 group.SetLinkedGroups(await GetLinkedGroups(group));
             }            
