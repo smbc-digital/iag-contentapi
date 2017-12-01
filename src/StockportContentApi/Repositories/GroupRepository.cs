@@ -119,14 +119,14 @@ namespace StockportContentApi.Repositories
             var group = _groupFactory.ToModel(entry);
             group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
 
-            var twitterUser = group.Twitter.ToString();
-            var faceBookUser = group.Facebook.ToString();
-            if (twitterUser.StartsWith("@"))
+            var twitterUser = group.Twitter;
+            var faceBookUser = group.Facebook;
+            if (twitterUser != null && twitterUser.StartsWith("@"))
             {
                 twitterUser = twitterUser.Replace("@", "/");
                 group.Twitter = @"https://www.twitter.com"+ twitterUser;
             }
-            if (faceBookUser.StartsWith("/"))
+            if (faceBookUser != null && faceBookUser.StartsWith("/"))
             {
                 faceBookUser = faceBookUser.Replace("/", "");
                 group.Facebook = @"https://www.facebook.com/"+faceBookUser;
