@@ -37,11 +37,13 @@ namespace StockportContentApiTests.Unit.Builders
         private List<string> _suitableFor = new List<string>();
         private List<string> _ageRanges = new List<string>();
         private DateTime? _dateLastModified = new DateTime?();
+        private string _donationsText = "_donationsText";
+        private string _donationsUrl = "_donationsUrl";
 
         public Group Build()
         {
             return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
         }
 
         public GroupBuilder Slug(string slug)
@@ -128,5 +130,16 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public GroupBuilder DonationsText(string donationsText)
+        {
+            _donationsText = donationsText;
+            return this;
+        }
+        public GroupBuilder DonationsUrl(string donationsUrl)
+        {
+            _donationsUrl = donationsUrl;
+            return this;
+
+        }
+        }
     }
-}

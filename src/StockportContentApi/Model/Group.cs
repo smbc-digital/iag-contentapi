@@ -35,6 +35,8 @@ namespace StockportContentApi.Model
         public Organisation Organisation { get; set; }
         public List<Group> LinkedGroups { get; private set; }
         public bool Donations { get; set; }
+        public string DonationsText { get; set; }
+        public string DonationsUrl { get; set; }
         public string AccessibleTransportLink { get; set; }
 
         [SensitiveData]
@@ -52,7 +54,7 @@ namespace StockportContentApi.Model
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
             Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Document> additionalDocuments, 
-            DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange)
+            DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange,string donationsText,string donationsUrl)
         {
             Name = name;
             Slug = slug;
@@ -86,6 +88,8 @@ namespace StockportContentApi.Model
             DateLastModified = dateLastModified;
             SuitableFor = suitableFor;
             AgeRange = ageRange;
+            DonationsText = donationsText;
+            DonationsUrl = donationsUrl;
         }
 
         public void SetEvents(List<Event> events)

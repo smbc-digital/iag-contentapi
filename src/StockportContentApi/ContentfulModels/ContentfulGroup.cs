@@ -36,5 +36,7 @@ namespace StockportContentApi.ContentfulModels
         public List<Asset> AdditionalDocuments { get; set; } = new List<Asset>();
         public List<string> SuitableFor { get; set; } = new List<string>();
         public List<string> AgeRange { get; set; } = new List<string>();
+        public string DonationsText { get; set; }
+        public string DonationsUrl { get; set; }
     }
 }

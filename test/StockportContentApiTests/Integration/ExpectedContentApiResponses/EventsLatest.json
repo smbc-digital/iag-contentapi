@@ -91,6 +91,8 @@
         },
         "linkedGroups": null,
         "donations": false,
+        "donationsText": null,
+        "donationsUrl": null,
         "accessibleTransportLink": "/accessibleTransport",
         "additionalInformation": "",
         "additionalDocuments": [],
