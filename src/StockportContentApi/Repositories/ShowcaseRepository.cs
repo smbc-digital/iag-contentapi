@@ -119,9 +119,9 @@ namespace StockportContentApi.Repositories
 
             if (newsEntry != null && newsEntry.Any())
             {
-                var now = DateTime.Now.Date;
-                var article = newsEntry.Where(e => now > e.SunriseDate.Date)
-                                        .Where(e => now < e.SunsetDate.Date)
+                var now = DateTime.Now.AddMinutes(5);
+                var article = newsEntry.Where(e => now > e.SunriseDate)
+                                        .Where(e => now < e.SunsetDate)
                                         .OrderByDescending(n => n.SunriseDate)
                                         .Take(1)
                                         .FirstOrDefault();
