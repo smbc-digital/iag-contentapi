@@ -17,5 +17,7 @@ namespace StockportContentApi.ContentfulModels
         public bool Donations { get; set; } = false;
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public string VolunteeringText { get; set; }
+        public string DonationsText { get; set; }
+        public string DonationsUrl { get; set; }
     }
 }

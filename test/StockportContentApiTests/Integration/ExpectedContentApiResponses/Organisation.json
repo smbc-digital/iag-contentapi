@@ -7,6 +7,10 @@
   "email": "email",
   "volunteering": true,
   "volunteeringText": "help wanted",
-  "groups": [],
-  "donations": false 
+  "donationsText": null,
+  "donationsUrl": null,
+  "groups": [
+
+  ],
+  "donations": false
 }
