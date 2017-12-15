@@ -1,5 +1,7 @@
 ﻿using System.Net.Http;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using Xunit;
@@ -11,8 +13,9 @@ namespace StockportContentApiTests.Unit.Client
         [Fact]
         public void ShouldReturnClient()
         {
+            var _configuration = new Mock<IConfiguration>();
             var httpClient = new HttpClient();
-            var manager = new ContentfulClientManager(httpClient);
+            var manager = new ContentfulClientManager(httpClient, _configuration.Object);
             var config = new ContentfulConfig("test")
                .Add("DELIVERY_URL", "https://test.url")
                .Add("TEST_SPACE", "SPACE")
