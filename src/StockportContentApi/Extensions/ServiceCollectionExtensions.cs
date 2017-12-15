@@ -156,7 +156,7 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddContentfulClients(this IServiceCollection services)
         {
-            services.AddSingleton<IContentfulClientManager>(new ContentfulClientManager(new System.Net.Http.HttpClient()));
+            services.AddSingleton<IContentfulClientManager>(p => new ContentfulClientManager(new System.Net.Http.HttpClient(), p.GetService<IConfiguration>()));
 
             return services;
         }
