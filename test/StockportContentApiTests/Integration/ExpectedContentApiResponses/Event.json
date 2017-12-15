@@ -1,139 +1,163 @@
-﻿{
-  "title": "title",
-  "slug": "event1",
-  "teaser": "teaser",
-  "imageUrl": "image-url.jpg",
-  "thumbnailImageUrl": "image-url.jpg?h=250",
-  "description": "description",
-  "fee": "fee",
-  "location": "location",
-  "submittedBy": "submittedBy",
-  "eventDate": "9999-09-09T00:00:00Z",
-  "startTime": "10:00",
-  "endTime": "17:00",
-  "occurences": -1,
-  "eventFrequency": "None",
-  "breadcrumbs": [
-    {
-      "title": "Events",
-      "slug": "",
-      "type": "events"
-    }
-  ],
-  "documents": [
-    {
-      "title": "documentTitle",
-      "size": 674192,
-      "url": "url.pdf",
-      "lastUpdated": "2016-10-05T00:00:00Z",
-      "fileName": "fileName",
-      "assetId": null,
-      "mediaType": null
-    }
-  ],
-  "categories": [ "category 1", "category 2" ],
-  "mapPosition": {
-    "lon": -2.5,
-    "lat": 53.5
-  },
-  "bookingInformation": "booking information",
-  "featured": false,
-  "updatedAt": "2016-10-05T00:00:00Z",
-  "tags": [ "tag 1", "tag 2" ],
-  "group": {
-    "name": "_name",
-    "slug": "_slug",
-    "phoneNumber": "_phoneNumber",
-    "email": "_email",
-    "website": "_website",
-    "twitter": "_twitter",
-    "facebook": "_facebook",
-    "address": "_address",
-    "description": "_description",
-    "imageUrl": "image-url.jpg",
-    "thumbnailImageUrl": "image-url.jpg?h=250",
-    "categoriesReference": [],
-    "subCategories": [],
-    "breadcrumbs": [
-      {
-        "title": "Stockport Local",
-        "slug": "",
-        "type": "groups"
+﻿{  
+   "title":"title",
+   "slug":"event1",
+   "teaser":"teaser",
+   "imageUrl":"image-url.jpg",
+   "thumbnailImageUrl":"image-url.jpg?h=250",
+   "description":"description",
+   "fee":"fee",
+   "location":"location",
+   "submittedBy":"submittedBy",
+   "eventDate":"9999-09-09T00:00:00Z",
+   "startTime":"10:00",
+   "endTime":"17:00",
+   "occurences":-1,
+   "eventFrequency":"None",
+   "breadcrumbs":[  
+      {  
+         "title":"Events",
+         "slug":"",
+         "type":"events"
       }
-    ],
-    "mapPosition": {
-      "lon": 2.0,
-      "lat": 39.0
-    },
-    "volunteering": false,
-    "events": null,
-    "groupAdministrators": { "items": [] },
-    "dateHiddenFrom": "0001-01-01T00:00:00Z",
-    "dateHiddenTo": "0001-01-01T00:00:00Z",
-    "status": "Published",
-    "cost": [],
-    "costText": "",
-    "abilityLevel": "",
-    "volunteeringText": null,
-    "organisation": {
-      "title": "",
-      "slug": "",
-      "imageUrl": "",
-      "aboutUs": "",
-      "phone": "",
-      "email": "",
-      "volunteering": false,
-      "volunteeringText": null,
-      "groups": [],
-      "donations": false
+   ],
+   "documents":[  
+      {  
+         "title":"documentTitle",
+         "size":674192,
+         "url":"url.pdf",
+         "lastUpdated":"2016-10-05T00:00:00Z",
+         "fileName":"fileName",
+         "assetId":null,
+         "mediaType":null
+      }
+   ],
+   "categories":[  
+      "category 1",
+      "category 2"
+   ],
+   "mapPosition":{  
+      "lon":-2.5,
+      "lat":53.5
+   },
+   "bookingInformation":"booking information",
+   "featured":false,
+   "updatedAt":"2016-10-05T00:00:00Z",
+   "tags":[  
+      "tag 1",
+      "tag 2"
+   ],
+   "group":{  
+      "name":"_name",
+      "slug":"_slug",
+      "phoneNumber":"_phoneNumber",
+      "email":"_email",
+      "website":"_website",
+      "twitter":"_twitter",
+      "facebook":"_facebook",
+      "address":"_address",
+      "description":"_description",
+      "imageUrl":"image-url.jpg",
+      "thumbnailImageUrl":"image-url.jpg?h=250",
+      "categoriesReference":[  
 
-    },
-    "linkedGroups": null,
-    "donations": false,
-    "donationsText": null,
-    "donationsUrl": null,
-    "accessibleTransportLink": "/accessibleTransport",
-    "additionalInformation": "",
-    "additionalDocuments": [],
-    "dateLastModified": null,
-    "suitableFor": [],
-    "ageRange": []
-  },
-  "alerts": [
-    {
-      "title": "title",
-      "subHeading": "subHeading",
-      "body": "body",
-      "severity": "severity",
-      "sunriseDate": "0001-01-01T00:00:00+00:00",
-      "sunsetDate": "9999-09-09T00:00:00+00:00",
-      "slug": "slug"
-    }
-  ],
-  "eventCategories": [
-    {
-      "name": "Category 2",
-      "slug": "category-2",
-      "icon": ""
-    },
+      ],
+      "subCategories":[  
+
+      ],
+      "breadcrumbs":[  
+         {  
+            "title":"Stockport Local",
+            "slug":"",
+            "type":"groups"
+         }
+      ],
+      "mapPosition":{  
+         "lon":2.0,
+         "lat":39.0
+      },
+      "volunteering":false,
+      "events":null,
+      "groupAdministrators":{  
+         "items":[  
+
+         ]
+      },
+      "dateHiddenFrom":"0001-01-01T00:00:00Z",
+      "dateHiddenTo":"0001-01-01T00:00:00Z",
+      "status":"Published",
+      "cost":[  
+
+      ],
+      "costText":"",
+      "abilityLevel":"",
+      "volunteeringText":null,
+      "organisation":{  
+         "title":"",
+         "slug":"",
+         "imageUrl":"",
+         "aboutUs":"",
+         "phone":"",
+         "email":"",
+         "volunteering":false,
+         "volunteeringText":null,
+         "donationsText":null,
+         "donationsUrl":null,
+         "groups":[  
+
+         ],
+         "donations":false
+      },
+      "linkedGroups":null,
+      "donations":false,
+      "donationsText":null,
+      "donationsUrl":null,
+      "accessibleTransportLink":"/accessibleTransport",
+      "additionalInformation":"",
+      "additionalDocuments":[  
+
+      ],
+      "dateLastModified":null,
+      "suitableFor":[  
+
+      ],
+      "ageRange":[  
+
+      ]
+   },
+   "alerts":[  
+      {  
+         "title":"title",
+         "subHeading":"subHeading",
+         "body":"body",
+         "severity":"severity",
+         "sunriseDate":"0001-01-01T00:00:00Z",
+         "sunsetDate":"9999-09-09T00:00:00Z",
+         "slug":"slug"
+      }
+   ],
+   "eventCategories":[  
+      {  
+         "name":"Category 2",
+         "slug":"category-2",
+         "icon":""
+      },
     {
       "name": "Event Category",
       "slug": "event-category",
       "icon": ""
-
     }
-  ],
-  "free": null,
-  "paid": null,
-  "coord": {
-    "latitude": 53.5,
-    "longitude": -2.5,
-    "horizontalAccuracy": "NaN",
-    "verticalAccuracy": "NaN",
-    "speed": "NaN",
-    "course": "NaN",
-    "isUnknown": false,
-    "altitude": "NaN"
-  },
-  "accessibleTransportLink": "/accessibleTransport"
+   ],
+   "free":null,
+   "paid":null,
+   "coord":{  
+      "latitude":53.5,
+      "longitude":-2.5,
+      "horizontalAccuracy":"NaN",
+      "verticalAccuracy":"NaN",
+      "speed":"NaN",
+      "course":"NaN",
+      "isUnknown":false,
+      "altitude":"NaN"
+   },
+   "accessibleTransportLink":"/accessibleTransport"
 }

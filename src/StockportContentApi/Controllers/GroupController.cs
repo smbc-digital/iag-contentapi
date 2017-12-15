@@ -256,7 +256,6 @@ namespace StockportContentApi.Controllers
             contentfulGroup.Image = existingGroup.Image;
             contentfulGroup.SubCategories = existingGroup.SubCategories;
             contentfulGroup.Organisation = existingGroup.Organisation;
-            contentfulGroup.Donations = existingGroup.Donations;
 
             var managementGroup = new ManagementGroup();
             _mapper.Map(contentfulGroup, managementGroup);

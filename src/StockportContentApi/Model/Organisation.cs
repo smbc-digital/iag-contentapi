@@ -12,13 +12,15 @@ namespace StockportContentApi.Model
         public string Email { get; set; }
         public bool Volunteering { get; set; }
         public string VolunteeringText { get; set; } = "";
+        public string DonationsText { get; set; } = "";
+        public string DonationsUrl { get; set; } = "";
         public List<Group> Groups { get; set; } = new List<Group>();
         public bool Donations { get; set; }
 
         public Organisation() { }
 
         public Organisation(string title, string slug, string imageUrl, string aboutUs, string phone,
-            string email, bool volunteering, string volunteeringText, bool donations)
+            string email, bool volunteering, string volunteeringText, bool donations,string donationsText,string donationsUrl)
         {
             Title = title;
             Slug = slug;
@@ -29,6 +31,8 @@ namespace StockportContentApi.Model
             Volunteering = volunteering;
             Donations = donations;
             VolunteeringText = volunteeringText;
+            DonationsText = donationsText;
+            DonationsUrl = donationsUrl;
         }
     }
 }

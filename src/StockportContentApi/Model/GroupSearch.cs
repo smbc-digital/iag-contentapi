@@ -6,6 +6,8 @@ namespace StockportContentApi.Model
 {
     public class GroupSearch
     {
+        internal string donation { get; set; } = string.Empty;
+
         public string Category { get; set; }
         public string SubCategories { get; set; } = string.Empty;
         public double Latitude { get; set; }

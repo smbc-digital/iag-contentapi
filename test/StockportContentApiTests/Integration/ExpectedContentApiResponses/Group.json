@@ -10,8 +10,12 @@
   "description": "_description",
   "imageUrl": "image-url.jpg",
   "thumbnailImageUrl": "image-url.jpg?h=250",
-  "categoriesReference": [],
-  "subCategories": [],
+  "categoriesReference": [
+
+  ],
+  "subCategories": [
+
+  ],
   "breadcrumbs": [
     {
       "title": "Stockport Local",
@@ -24,12 +28,20 @@
     "lat": 39.0
   },
   "volunteering": false,
-  "events": [],
-  "groupAdministrators": { "items": [] },
+  "events": [
+
+  ],
+  "groupAdministrators": {
+    "items": [
+
+    ]
+  },
   "dateHiddenFrom": "0001-01-01T00:00:00Z",
   "dateHiddenTo": "0001-01-01T00:00:00Z",
   "status": "Published",
-  "cost": [],
+  "cost": [
+
+  ],
   "costText": "",
   "abilityLevel": "",
   "volunteeringText": null,
@@ -42,7 +54,11 @@
     "email": "",
     "volunteering": false,
     "volunteeringText": null,
-    "groups": [],
+    "donationsText": null,
+    "donationsUrl": null,
+    "groups": [
+
+    ],
     "donations": false
   },
   "linkedGroups": null,
@@ -51,8 +67,14 @@
   "donationsUrl": null,
   "accessibleTransportLink": "/accessibleTransport",
   "additionalInformation": "",
-  "additionalDocuments": [],
+  "additionalDocuments": [
+
+  ],
   "dateLastModified": null,
-  "suitableFor": [],
-  "ageRange": []
+  "suitableFor": [
+
+  ],
+  "ageRange": [
+
+  ]
 }
