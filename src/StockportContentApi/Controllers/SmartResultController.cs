@@ -21,6 +21,7 @@ namespace StockportContentApi.Controllers
         }
 
         [Route("{businessId}/smart-result/{slug}")]
+        [HttpGet]
         public async Task<IActionResult> GetSmartResult(string businessId, string slug)
         {
             try
