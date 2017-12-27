@@ -90,12 +90,16 @@ namespace StockportContentApi.Utils
                     return "articles";
                 case "group":
                 case "groups":
+                case "group-categories":
+                case "group-results":
                     return "groups";
                 case "payment":
                 case "payments":
                     return "payments";
                 case "event":
                 case "events":
+                case "event-categories":
+                case "eventhomepage":
                     return "events";
                 case "topic":
                 case "topics":
@@ -108,6 +112,9 @@ namespace StockportContentApi.Utils
                     return "start pages";
                 case "smart":
                     return "smart answers";
+                case "showcase":
+                case "showcases":
+                    return "showcase";
                 case "organisation":
                 case "organisations":
                     return "organisations";

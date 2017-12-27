@@ -121,6 +121,7 @@ namespace StockportContentApi
                     In = "header",
                     Type = "apiKey"
                 });
+
             });
         }
 
@@ -131,7 +132,7 @@ namespace StockportContentApi
 
             // swagger
             app.UseSwagger();
-            app.UseSwaggerUi();
+            app.UseSwaggerUi(swaggerUrl: _appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json");
 
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseClientRateLimiting();
