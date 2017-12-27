@@ -11,6 +11,7 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using Xunit;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -19,7 +20,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulGroupHomepage _contentfulGroupHomepage;
         private readonly GroupHomepageContentfulFactory _groupHomepageContentfulFactory;
-        private Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _groupListFactory;
+        private Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
         private Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
@@ -27,20 +28,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
         public GroupHomepageContentfulFactoryTest()
         {
-            _groupListFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
+            _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
             _groupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
             _groupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroupHomepage = new ContentfulGroupHomepageBuilder().Build();
             _mockTimeProvider = new Mock<ITimeProvider>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
-            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupListFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake(), _alertFactory.Object);
+            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake(), _alertFactory.Object);
         }
 
         [Fact]
         public void ShouldReturnGroupHomepage()
         {
-            _groupListFactory.Setup(o => o.ToModel(It.IsAny<List<ContentfulGroup>>())).Returns(new List<Group> {new GroupBuilder().Build()});
+            _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(new GroupBuilder().Build());
             _groupCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupCategory>())).Returns(new GroupCategory("title", "slug", "icon", "image"));
             _groupSubCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupSubCategory>())).Returns(new GroupSubCategory("title","slug"));
             

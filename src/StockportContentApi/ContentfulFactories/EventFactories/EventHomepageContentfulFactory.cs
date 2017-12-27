@@ -3,7 +3,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.EventFactories
 {
     public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
     {

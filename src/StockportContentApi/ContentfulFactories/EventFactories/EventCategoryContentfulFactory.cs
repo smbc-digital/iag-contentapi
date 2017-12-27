@@ -3,18 +3,18 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.EventFactories
 {
-    public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>
+    public class EventCategoryContentfulFactory : IContentfulFactory<ContentfulEventCategory, EventCategory>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GroupSubCategoryContentfulFactory(IHttpContextAccessor httpContextAccessor)
+        public EventCategoryContentfulFactory(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)
+        public EventCategory ToModel(ContentfulEventCategory entry)
         {
             var name = !string.IsNullOrEmpty(entry.Name)
                 ? entry.Name
@@ -24,7 +24,11 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Slug
                 : "";
 
-            return new GroupSubCategory(name, slug).StripData(_httpContextAccessor);
+            var icon = !string.IsNullOrEmpty(entry.Icon)
+                ? entry.Icon
+                : "";
+
+            return new EventCategory(name, slug, icon).StripData(_httpContextAccessor);
         }
     }
 }

@@ -22,6 +22,12 @@ using StackExchange.Redis;
 using StockportWebapp.DataProtection;
 using Microsoft.AspNetCore.Http;
 using StockportContentApi.Builders;
+using StockportContentApi.ContentfulFactories.ArticleFactories;
+using StockportContentApi.ContentfulFactories.EventFactories;
+using StockportContentApi.ContentfulFactories.GroupFactories;
+using StockportContentApi.ContentfulFactories.NewsFactories;
+using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
+using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.Services;
 
 namespace StockportContentApi.Extensions
@@ -54,13 +60,10 @@ namespace StockportContentApi.Extensions
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
-            services.AddSingleton<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(p => new GroupListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>()));
-            services.AddSingleton<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(p => new GroupCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>()));
-            services.AddSingleton<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>(p => new EventCategoryListContentfulFactory(p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory(p.GetService<IHttpContextAccessor>()));
@@ -72,12 +75,11 @@ namespace StockportContentApi.Extensions
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
                 p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                p.GetService<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>(),
+                p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
-            services.AddSingleton<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(p => new EventListContentfulFactory(p.GetService<IContentfulFactory<ContentfulEvent, Event>>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
@@ -178,9 +180,7 @@ namespace StockportContentApi.Extensions
                 p => {
                     return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
                         p.GetService<IContentfulClientManager>(),
-                        p.GetService<IContentfulFactory<List<ContentfulEvent>, List<Event>>>(),
                         p.GetService<IContentfulFactory<ContentfulNews, News>>(),
-                        p.GetService<ITimeProvider>(),
                         new EventRepository(x,
                             p.GetService<IContentfulClientManager>(),
                             p.GetService<ITimeProvider>(),
@@ -220,8 +220,7 @@ namespace StockportContentApi.Extensions
                     return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(),
                         p.GetService<ITimeProvider>(),
                         p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                        p.GetService<IContentfulFactory<List<ContentfulGroup>, List<Group>>>(),
-                        p.GetService<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>(),
+                        p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
                         p.GetService<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(),
                         new EventRepository(x, p.GetService<IContentfulClientManager>(),
                             p.GetService<ITimeProvider>(),

@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.GroupFactories
 {
     public class GroupHomepageContentfulFactory : IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>
     {
         private readonly DateComparer _dateComparer;
-        private IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
+        private IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private IContentfulFactory<ContentfulGroupCategory, GroupCategory> _groupCategoryListFactory;
         private IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _groupSubCategoryListFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public GroupHomepageContentfulFactory(IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        public GroupHomepageContentfulFactory(IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
-            _groupListFactory = groupListFactory;
+            _groupFactory = groupFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
             _groupSubCategoryListFactory = groupSubCategoryListFactory;
             _dateComparer = new DateComparer(timeProvider);
@@ -32,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories
                                            ? entry.BackgroundImage.File.Url : string.Empty;
 
 
-            var groups = _groupListFactory.ToModel(entry.FeaturedGroups);
+            var groups = entry.FeaturedGroups.Select(g => _groupFactory.ToModel(g));
 
             var groupCategory = _groupCategoryListFactory.ToModel(entry.FeaturedGroupsCategory);
 

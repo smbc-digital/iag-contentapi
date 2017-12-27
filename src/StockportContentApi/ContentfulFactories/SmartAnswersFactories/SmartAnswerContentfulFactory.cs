@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.SmartAnswersFactories
 {
     public class SmartAnswerContentfulFactory : IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>
     {

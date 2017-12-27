@@ -1,12 +1,12 @@
+using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.EventFactories
 {
     public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
     {
@@ -14,16 +14,16 @@ namespace StockportContentApi.ContentfulFactories
 
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>> _eventCategoryListFactory;
+        private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
         private readonly DateComparer _dateComparer;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>> eventCategoryListFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
         {
             _documentFactory = documentFactory;
             _groupFactory = groupFactory;
             _alertFactory = alertFactory;
-            _eventCategoryListFactory = eventCategoryListFactory;
+            _eventCategoryFactory = eventCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
             _httpContextAccessor = httpContextAccessor;
         }
@@ -40,7 +40,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var group = _groupFactory.ToModel(entry.Group);
 
-            var categories = _eventCategoryListFactory.ToModel(entry.EventCategories);
+            var categories = entry.EventCategories.Select(ec => _eventCategoryFactory.ToModel(ec));
 
             var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
                                                         &&
@@ -53,7 +53,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories, entry.Free, entry.Paid, entry.AccessibleTransportLink).StripData(_httpContextAccessor);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink).StripData(_httpContextAccessor);
         }
     }
 }

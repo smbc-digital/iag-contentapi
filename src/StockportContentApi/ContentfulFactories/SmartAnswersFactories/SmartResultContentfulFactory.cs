@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.SmartAnswersFactories
 {
     public class SmartResultContentfulFactory : IContentfulFactory<ContentfulSmartResult, SmartResult>
     {

@@ -11,6 +11,7 @@ using Xunit;
 using System.Collections.Generic;
 using StockportContentApi.Utils;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -22,7 +23,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-        private readonly Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>> _eventCategoryListFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory;
         private readonly EventContentfulFactory _eventContentfulFactory;
         private readonly List<Alert> _alerts = new List<Alert>() {
                 new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9), string.Empty) };
@@ -34,7 +35,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            _eventCategoryListFactory = new Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>();
+            _eventCategoryFactory = new Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>>();
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
@@ -43,7 +44,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty));
 
-            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
             
         }
 

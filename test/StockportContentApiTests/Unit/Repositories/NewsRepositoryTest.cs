@@ -20,6 +20,7 @@ using IContentfulClient = Contentful.Core.IContentfulClient;
 using Contentful.Core.Models.Management;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
 using StockportContentApi.ContentfulModels;
 using Xunit;
 

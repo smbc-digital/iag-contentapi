@@ -1,10 +1,10 @@
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.NewsFactories
 {
     public class NewsRoomContentfulFactory : IContentfulFactory<ContentfulNewsRoom, Newsroom>
     {

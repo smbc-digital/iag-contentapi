@@ -43,7 +43,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<IConfiguration> _configuration;
-        private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
 
         public ShowcaseRepositoryTest()
         {
@@ -60,7 +59,6 @@ namespace StockportContentApiTests.Unit.Repositories
             _timeprovider = new Mock<ITimeProvider>();
             _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-            _httpContextAccessor = new Mock<IHttpContextAccessor>();
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
             var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
@@ -77,8 +75,6 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
 
-            var eventListFactory = new Mock<IContentfulFactory<List<ContentfulEvent>, List<Event>>>();
-
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
@@ -94,9 +90,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
 
-            
-
-            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, eventListFactory.Object, newsListFactory.Object, _timeprovider.Object, eventRepository);
+            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object, eventRepository);
         }
 
         [Fact]

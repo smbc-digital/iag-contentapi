@@ -1,10 +1,10 @@
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.TopicFactories
 {
     public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     {

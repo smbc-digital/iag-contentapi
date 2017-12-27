@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.GroupFactories
 {
     public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
     {

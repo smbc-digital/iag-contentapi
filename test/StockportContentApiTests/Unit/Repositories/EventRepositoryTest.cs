@@ -21,6 +21,7 @@ using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -31,7 +32,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
         private readonly Mock<IContentfulClient> _contentfulClient = new Mock<IContentfulClient>();
         private readonly Mock<IHttpClient> _httpClient = new Mock<IHttpClient>();
-        private readonly Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>> _eventCategoryListFactory = new Mock<IContentfulFactory<List<ContentfulEventCategory>, List<EventCategory>>>();
+        private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory = new Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>>();
         private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
@@ -61,11 +62,11 @@ namespace StockportContentApiTests.Unit.Repositories
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty));
 
             // TODO: Make this into a mock instead of concrete class, will need refactor to tests with this also
-            var contentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryListFactory.Object, _alertFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
             var eventHomepageFactory = new EventHomepageContentfulFactory(_mockTimeProvider.Object);
 
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);
-            _eventCategoryListFactory.Setup(o => o.ToModel(It.IsAny<List<ContentfulEventCategory>>())).Returns(new List<EventCategory>());
+            _eventCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEventCategory>())).Returns(new EventCategory("", "", ""));
             _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
             _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
@@ -81,7 +82,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawEvent = new ContentfulEventBuilder().EventCategory(new List<string>() { "category" }).EventDate(new DateTime(2017, 06, 01)).Occurrences(10).Frequency(EventFrequency.Weekly).Build();
             var events = new List<ContentfulEvent> { rawEvent };
 
-            _eventCategoryListFactory.Setup(o => o.ToModel(It.IsAny<List<ContentfulEventCategory>>())).Returns(new List<EventCategory>() { new EventCategory("category", "category", "icon") });
+            _eventCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEventCategory>())).Returns(new EventCategory("category", "category", "icon"));
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 
@@ -450,13 +451,17 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldGetOneEventForACategory()
         {
+            var contentfulCategory1 = new ContentfulEventCategory {Name = "Category 1", Slug = "category-1"};
+            var contentfulCategory2 = new ContentfulEventCategory {Name = "Category 2", Slug = "category-2"};
+            var category1 = new EventCategory("Category 1", "category-1", "icon1");
+            var category2 = new EventCategory("Category 2", "category-2", "icon2");
             var anEvent =
-                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 1", Slug = "category-1" }, new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" } }).Build();
+                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { contentfulCategory1, contentfulCategory2 }).Build();
             var anotherEvent = new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" } }).Build();
             var events = new List<ContentfulEvent> { anEvent, anotherEvent };
 
-            _eventCategoryListFactory.Setup(o => o.ToModel(events[0].EventCategories)).Returns(new List<EventCategory>() { new EventCategory("Category 1", "category-1", "icon1"), new EventCategory("Category 2", "category-2", "icon2") });
-            _eventCategoryListFactory.Setup(o => o.ToModel(events[1].EventCategories)).Returns(new List<EventCategory>() { new EventCategory("Category 2", "category-2", "icon2") });
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory1)).Returns(category1);
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory2)).Returns(category2);
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 
@@ -472,14 +477,20 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldGetTwoEventsForACategory()
         {
+            var contentfulCategory1 = new ContentfulEventCategory { Name = "category 1", Slug = "category 1" };
+            var contentfulCategory2 = new ContentfulEventCategory { Name = "category 2", Slug = "category 2" };
+            var category1 = new EventCategory("category 1", "category 1", "icon1");
+            var category2 = new EventCategory("category 2", "category 2", "icon2");
             var anEvent =
-                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 1", Slug = "category-1" }, new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" } }).Build();
-            var anotherEvent = new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" } }).Build();
+                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory> { contentfulCategory1, contentfulCategory2 }).Build();
+            var anotherEvent = new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory> { contentfulCategory2 }).Build();
             var events = new List<ContentfulEvent> { anEvent, anotherEvent };
+
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 
-            _eventCategoryListFactory.Setup(o => o.ToModel(It.IsAny<List<ContentfulEventCategory>>())).Returns(new List<EventCategory>() { new EventCategory("Category 1", "category-1", "icon1"), new EventCategory("Category 2", "category-2", "icon2") });
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory1)).Returns(category1);
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory2)).Returns(category2);
 
             var response = AsyncTestHelper.Resolve(_repository.Get(null, null, "category 2", 0, null, null, null, 0, 0));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -497,25 +508,28 @@ namespace StockportContentApiTests.Unit.Repositories
             var dateTo = new DateTime(2017, 02, 15);
 
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+            var contentfulCategory1 = new ContentfulEventCategory { Name = "Category 1", Slug = "category-1" };
+            var contentfulCategory2 = new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" };
+            var contentfulCategory3 = new ContentfulEventCategory { Name = "Category 3", Slug = "category-3" };
 
             var event1 =
-                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 1", Slug = "category-1" } })
+                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { contentfulCategory1 })
                     .EventDate(new DateTime(2017, 08, 01))
                     .Build();
             var event2 =
-                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" } })
+                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { contentfulCategory2 })
                     .EventDate(new DateTime(2016, 08, 01))
                     .Build();
             var event3 =
-                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 3", Slug = "category-3" } })
+                new ContentfulEventBuilder().EventCategoryList(new List<ContentfulEventCategory>() { contentfulCategory3 })
                     .EventDate(new DateTime(2016, 08, 01))
                     .Build();
 
             var events = new List<ContentfulEvent> { event1, event2, event3 };
 
-            _eventCategoryListFactory.Setup(o => o.ToModel(events[0].EventCategories)).Returns(new List<EventCategory>() { new EventCategory("Category 1", "category-1", "icon1") });
-            _eventCategoryListFactory.Setup(o => o.ToModel(events[1].EventCategories)).Returns(new List<EventCategory>() { new EventCategory("Category 2", "category-2", "icon2") });
-            _eventCategoryListFactory.Setup(o => o.ToModel(events[2].EventCategories)).Returns(new List<EventCategory>() { new EventCategory("Category 3", "category-3", "icon3") });
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory1)).Returns(new EventCategory("Category 1", "category-1", "icon1"));
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory2)).Returns(new EventCategory("Category 2", "category-2", "icon2"));
+            _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory3)).Returns(new EventCategory("Category 3", "category-3", "icon3"));
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
 

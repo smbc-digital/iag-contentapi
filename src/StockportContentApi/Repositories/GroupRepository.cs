@@ -36,8 +36,7 @@ namespace StockportContentApi.Repositories
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
-        private readonly IContentfulFactory<List<ContentfulGroup>, List<Group>> _groupListFactory;
-        private readonly IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> _groupCategoryListFactory;
+        private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _groupCategoryFactory;
         private readonly IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> _groupHomepageContentfulFactory;
         private readonly EventRepository _eventRepository;
         private readonly ICache _cache;
@@ -47,8 +46,7 @@ namespace StockportContentApi.Repositories
         public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                                  ITimeProvider timeProvider,
                                  IContentfulFactory<ContentfulGroup, Group> groupFactory,
-                                 IContentfulFactory<List<ContentfulGroup>, List<Group>> groupListFactory,
-                                 IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>> groupCategoryListFactory,
+                                 IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory,
                                  IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
                                  EventRepository eventRepository,
                                  ICache cache,
@@ -58,8 +56,7 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
             _client = clientManager.GetClient(config);
             _groupFactory = groupFactory;
-            _groupListFactory = groupListFactory;
-            _groupCategoryListFactory = groupCategoryListFactory;
+            _groupCategoryFactory = groupCategoryFactory;
             _eventRepository = eventRepository;
             _cache = cache;
             _configuration = configuration;
@@ -77,11 +74,11 @@ namespace StockportContentApi.Repositories
                 contentfulGroups.Where(
                     group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
 
-            var groupList = _groupListFactory.ToModel(contentfulGroups.ToList());
+            var groupList = contentfulGroups.Select(g => _groupFactory.ToModel(g));
 
             return entries == null || !groupList.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Groups found")
-                : HttpResponse.Successful(groupList);
+                : HttpResponse.Successful(groupList.ToList());
         }
 
         public async Task<ContentfulGroup> GetContentfulGroup(string slug)
@@ -150,7 +147,7 @@ namespace StockportContentApi.Repositories
                 contentfulGroups.Where(
                     groupItem => _dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
 
-            var groupList = _groupListFactory.ToModel(contentfulGroups.ToList());
+            var groupList = contentfulGroups.Select(g => _groupFactory.ToModel(g));
 
             var linkeddGroups = groupList.Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(group.CategoriesReference[0].Slug) || c.Slug.ToLower() == group.CategoriesReference[0].Slug.ToLower())
                                        && g.SubCategories.Any(c => string.IsNullOrEmpty(group.SubCategories[0].Slug) || c.Slug.ToLower() == group.SubCategories[0].Slug.ToLower())
@@ -181,13 +178,14 @@ namespace StockportContentApi.Repositories
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
-            var groups = _groupListFactory.ToModel(entries.ToList())
-                .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
-                .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
-                .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
-                .Where(g => organisation == string.Empty || (g.Organisation != null && g.Organisation.Slug == organisation))
-                .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
-                .ToList();
+            var groups = 
+                 entries.Select(g => _groupFactory.ToModel(g))
+                        .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
+                        .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
+                        .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
+                        .Where(g => organisation == string.Empty || (g.Organisation != null && g.Organisation.Slug == organisation))
+                        .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
+                        .ToList();
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
             {
@@ -229,9 +227,9 @@ namespace StockportContentApi.Repositories
 
             var groups = contentfulGroups.Where(g => g.GroupAdministrators?.Items != null && g.GroupAdministrators.Items.Any(i => i != null && i.Email.ToUpper() == email.ToUpper())).ToList();
 
-            var result = _groupListFactory.ToModel(groups);
+            var result = groups.Select(g => _groupFactory.ToModel(g));
 
-            return HttpResponse.Successful(result);
+            return HttpResponse.Successful(result.ToList());
         }
 
         public async Task<List<GroupCategory>> GetGroupCategories()
@@ -262,7 +260,7 @@ namespace StockportContentApi.Repositories
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
             var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
 
-            var groupCategoryList = _groupCategoryListFactory.ToModel(groupCategoryEntries.ToList())
+            var groupCategoryList = groupCategoryEntries.Select(gc => _groupCategoryFactory.ToModel(gc))
                 .OrderBy(c => c.Name).ToList();
 
             return !groupCategoryList.Any() ? null : groupCategoryList;

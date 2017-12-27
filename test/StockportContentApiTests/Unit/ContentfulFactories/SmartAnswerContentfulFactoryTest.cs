@@ -9,6 +9,7 @@ using Moq;
 using StockportContentApi.Model;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

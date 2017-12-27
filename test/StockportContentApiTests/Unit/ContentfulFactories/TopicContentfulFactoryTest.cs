@@ -11,6 +11,7 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

@@ -25,14 +25,8 @@ namespace StockportContentApiTests.Unit.Repositories
     public class HomepageRepositoryTest
     {
         private readonly HomepageRepository _repository;
-        private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
         private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory;
-        private readonly Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>> _listGroupFactory;
-        private readonly Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>> _listGroupCategoryFactory;
         private readonly Mock<IContentfulClient> _client;
-        private readonly Mock<ITimeProvider> _timeProvider;
-        private readonly Mock<ICache> _cacheWrapper;
-        private readonly Mock<ILogger<HomepageRepository>> _logger;
 
         public HomepageRepositoryTest()
         {
@@ -44,12 +38,6 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _homepageFactory = new Mock<IContentfulFactory<ContentfulHomepage, Homepage>>();
-            _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-            _timeProvider = new Mock<ITimeProvider>();
-            _listGroupFactory = new Mock<IContentfulFactory<List<ContentfulGroup>, List<Group>>>();
-            _listGroupCategoryFactory = new Mock<IContentfulFactory<List<ContentfulGroupCategory>, List<GroupCategory>>>();
-            _logger = new Mock<ILogger<HomepageRepository>>();
-            _cacheWrapper = new Mock<ICache>();
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();

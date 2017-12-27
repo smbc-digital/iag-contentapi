@@ -4,6 +4,7 @@ using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;

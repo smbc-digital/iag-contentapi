@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.ContentfulFactories.ArticleFactories;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
+using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.NewsFactories
 {
     public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
     {

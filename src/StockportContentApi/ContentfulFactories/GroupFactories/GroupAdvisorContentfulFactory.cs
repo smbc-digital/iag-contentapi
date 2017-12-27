@@ -2,7 +2,7 @@
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
-namespace StockportContentApi.ContentfulFactories
+namespace StockportContentApi.ContentfulFactories.GroupFactories
 {
     public class GroupAdvisorContentfulFactory : IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>
     {
