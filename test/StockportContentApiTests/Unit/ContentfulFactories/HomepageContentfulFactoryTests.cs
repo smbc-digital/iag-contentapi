@@ -87,9 +87,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var contentfulHomepage = new ContentfulHomepageBuilder()
                 .FeaturedGroups(new List<ContentfulGroup>()
                 {
-                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2018, 01, 01)).Build(),
-                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2018, 01, 01)).Build(),
-                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2018, 01, 01)).Build()
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2022, 01, 01)).Build(),
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2022, 01, 01)).Build(),
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2022, 01, 01)).Build()
                 }).Build();
 
             var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);

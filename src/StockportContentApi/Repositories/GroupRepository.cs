@@ -121,8 +121,9 @@ namespace StockportContentApi.Repositories
             if (twitterUser != null && twitterUser.StartsWith("@"))
             {
                 twitterUser = twitterUser.Replace("@", "/");
-                group.Twitter = @"https://www.twitter.com"+ twitterUser;
+                group.Twitter = @"https://www.twitter.com" + twitterUser;
             }
+
             if (faceBookUser != null && faceBookUser.StartsWith("/"))
             {
                 faceBookUser = faceBookUser.Replace("/", "");
