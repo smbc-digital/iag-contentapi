@@ -42,6 +42,7 @@ namespace StockportContentApi.Extensions
         public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
         {
             services.AddSingleton<IContentfulFactory<ContentfulKeyFact, KeyFact>>(p => new KeyFactContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulSmartResult, SmartResult>>(p => new SmartResultContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulApiKey, ApiKey>>(p => new ApiKeyContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory(p.GetService<IHttpContextAccessor>()));
@@ -171,6 +172,8 @@ namespace StockportContentApi.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddSingleton<Func<ContentfulConfig, ISmartResultRepository>>(p => {return x => new SmartResultRepository(x, p.GetService<ILogger<SmartResultRepository>>(), p.GetService<IContentfulClientManager>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, IPrivacyNoticeRepository>>(p => { return x => new PrivacyNoticeRepository(x, p.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p => { return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<AssetRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
