@@ -127,7 +127,12 @@ namespace StockportContentApi.Repositories
             if (faceBookUser != null && faceBookUser.StartsWith("/"))
             {
                 faceBookUser = faceBookUser.Replace("/", "");
-                group.Facebook = @"https://www.facebook.com/"+faceBookUser;
+                group.Facebook = @"https://www.facebook.co.uk"+faceBookUser;
+            }
+
+            if (faceBookUser != null && (!faceBookUser.StartsWith("http") || !faceBookUser.StartsWith("http")))
+            {
+                group.Facebook = @"https://" + faceBookUser;
             }
 
             if (group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
