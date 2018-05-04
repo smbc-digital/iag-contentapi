@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
+using StockportContentApi.Http;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,12 +29,19 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/privacy-notices/{slug}")]
         public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId)
         {
-            return await _handler.Get(() =>
+            return await _handler.Get(async () =>
             {
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
-                var privacyNotice = repository.GetPrivacyNotice(slug);
+                var privacyNotice = await repository.GetPrivacyNotice(slug);
 
-                return privacyNotice;
+                if (privacyNotice == null)
+                {
+                    return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notice not found");
+                }
+                else
+                {
+                    return HttpResponse.Successful(privacyNotice);
+                }
             });
         }
 
@@ -42,12 +50,19 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/privacy-notices")]
         public async Task<IActionResult> GetAllPrivacyNotices(string businessId)
         {
-            return await _handler.Get(() =>
+            return await _handler.Get(async () =>
             {
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
-                var allPrivacyNotices = repository.GetAllPrivacyNotices();
+                var allPrivacyNotices = await repository.GetAllPrivacyNotices();
 
-                return allPrivacyNotices;
+                if (allPrivacyNotices == null)
+                {
+                    return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notices not found");
+                }
+                else
+                {
+                    return HttpResponse.Successful(allPrivacyNotices);
+                }
             });
         }
     }

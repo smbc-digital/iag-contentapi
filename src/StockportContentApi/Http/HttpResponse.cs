@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,11 @@ namespace StockportContentApi.Http
                 default:
                     return new EmptyResult();
             }
+        }
+
+        internal static HttpResponse Failure(HttpStatusCode notFound)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()

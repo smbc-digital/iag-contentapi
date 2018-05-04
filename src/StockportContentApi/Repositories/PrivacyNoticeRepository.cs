@@ -15,8 +15,8 @@ namespace StockportContentApi.Repositories
 {
     public interface IPrivacyNoticeRepository
     {
-        Task<HttpResponse> GetPrivacyNotice(string slug);
-        Task<HttpResponse> GetAllPrivacyNotices();
+        Task<PrivacyNotice> GetPrivacyNotice(string slug);
+        Task<List<PrivacyNotice>> GetAllPrivacyNotices();
     }
 
     public class PrivacyNoticeRepository : IPrivacyNoticeRepository
@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
             _client = contentfulClientManager.GetClient(config);
         }
 
-        public async Task<HttpResponse> GetPrivacyNotice(string slug)
+        public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
         {
             var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug);
 
@@ -39,24 +39,20 @@ namespace StockportContentApi.Repositories
 
             var entry = entries.FirstOrDefault();
 
-            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Privacy Notice found");
-
             var privacyNotice = _contentfulFactory.ToModel(entry);
 
-            return HttpResponse.Successful(privacyNotice);
+            return privacyNotice;
         }
 
-        public async Task<HttpResponse> GetAllPrivacyNotices()
+        public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
         {
             var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Limit(1000);
 
             var entries = await _client.GetEntriesAsync(builder);
 
-            if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Privacy Notices found");
-
             var convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 
-            return HttpResponse.Successful(convertedEntries);
+            return convertedEntries;
         }
     }
 }
