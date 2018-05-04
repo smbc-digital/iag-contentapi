@@ -328,7 +328,7 @@ namespace StockportContentApiTests.Integration
         [InlineData("AtoZArticleAndTopic", "/unittest/atoz/c")]
         [InlineData("RedirectDictionary", "/redirects")]
         [InlineData("Footer", "/unittest/footer")]
-        [InlineData("Group", "/unittest/groups/zumba-fitness")]
+        [InlineData("Group", "/unittest/groups/zumba3")]
         [InlineData("Payment", "/unittest/payments/payment_slug")]
         [InlineData("Showcase", "/unittest/showcases/showcase_slug")]
         [InlineData("GroupCategory", "/unittest/group-categories")]
