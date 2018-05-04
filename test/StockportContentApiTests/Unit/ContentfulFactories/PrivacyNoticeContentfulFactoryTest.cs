@@ -35,11 +35,27 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Arrange
             var contentfulPrivacyNotice = new ContentfulPrivacyNotice()
             {
-                Slug = 
+                Slug = "test-slug",
+                Title = "test-title",
+                Directorate = "test-directorate",
+                ActivitiesAsset = "test-activities-asset",
+                TransactionsActivity = "test-transactions-activity",
+                Purpose = "test-purpose",
+                TypeOfData = "test-type-of-data",
+                Legislation = "test-legislation",
+                Obtained = "test-obtained",
+                ExternallyShared = "test-externally-shared",
+                RetentionPeriod = "test-retention-period",
+                Conditions = "test-conditions",
+                ConditionsSpecial = "test-conditions-special",
+                UrlOne = "test-url-1",
+                UrlTwo = "test-url-2",
+                UrlThree = "test-url-3"
             };
             // Act
-
+            var privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
             // Assert
+            privacyNotice.ShouldBeEquivalentTo(contentfulPrivacyNotice);
         }
     }
 }

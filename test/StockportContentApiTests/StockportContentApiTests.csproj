@@ -40,6 +40,8 @@
     <None Remove="Integration\ExpectedContentApiResponses\NewsListing.json" />
     <None Remove="Integration\ExpectedContentApiResponses\NewsListingFilteredByDate.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Payment.json" />
+    <None Remove="Integration\ExpectedContentApiResponses\PrivacyNotice.json" />
+    <None Remove="Integration\ExpectedContentApiResponses\PrivacyNotices.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Profile.json" />
     <None Remove="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Showcase.json" />
@@ -72,6 +74,8 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\NewsListing.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\NewsListingFilteredByDate.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Payment.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\PrivacyNotice.json" />
+    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\PrivacyNotices.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Profile.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Showcase.json" />

@@ -315,6 +315,81 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntriesAsync(
                     It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupAdvisor);
+
+                var privacyNotice = new ContentfulCollection<ContentfulPrivacyNotice>()
+                {
+                    Items = new List<ContentfulPrivacyNotice>()
+                    {
+                        new ContentfulPrivacyNotice()
+                        {
+                            Slug = "test-slug",
+                            Title = "test-title",
+                            Directorate = "test-directorate",
+                            ActivitiesAsset = "test-activities-asset",
+                            TransactionsActivity = "test-transactions-activity",
+                            Purpose = "test-purpose",
+                            TypeOfData = "test-type-of-data",
+                            Legislation = "test-legislation",
+                            Obtained = "test-obtained",
+                            ExternallyShared = "test-externally-shared",
+                            RetentionPeriod = "test-retention-period",
+                            Conditions = "test-conditions",
+                            ConditionsSpecial = "test-conditions-special",
+                            UrlOne = "test-url-1",
+                            UrlTwo = "test-url-2",
+                            UrlThree = "test-url-3"
+                        }
+                    }
+                };
+
+                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", "slug").Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotice);
+
+                var privacyNotices = new ContentfulCollection<ContentfulPrivacyNotice>()
+                {
+                    Items = new List<ContentfulPrivacyNotice>()
+                    {
+                        new ContentfulPrivacyNotice()
+                        {
+                            Slug = "test-slug",
+                            Title = "test-title",
+                            Directorate = "test-directorate",
+                            ActivitiesAsset = "test-activities-asset",
+                            TransactionsActivity = "test-transactions-activity",
+                            Purpose = "test-purpose",
+                            TypeOfData = "test-type-of-data",
+                            Legislation = "test-legislation",
+                            Obtained = "test-obtained",
+                            ExternallyShared = "test-externally-shared",
+                            RetentionPeriod = "test-retention-period",
+                            Conditions = "test-conditions",
+                            ConditionsSpecial = "test-conditions-special",
+                            UrlOne = "test-url-1",
+                            UrlTwo = "test-url-2",
+                            UrlThree = "test-url-3"
+                        },
+                        new ContentfulPrivacyNotice()
+                        {
+                            Slug = "test-slug-2",
+                            Title = "test-title-2",
+                            Directorate = "test-directorate-2",
+                            ActivitiesAsset = "test-activities-asset-2",
+                            TransactionsActivity = "test-transactions-activity-2",
+                            Purpose = "test-purpose-2",
+                            TypeOfData = "test-type-of-data-2",
+                            Legislation = "test-legislation-2",
+                            Obtained = "test-obtained-2",
+                            ExternallyShared = "test-externally-shared-2",
+                            RetentionPeriod = "test-retention-period-2",
+                            Conditions = "test-conditions-2",
+                            ConditionsSpecial = "test-conditions-special-2",
+                            UrlOne = "test-url-1-2",
+                            UrlTwo = "test-url-2-2",
+                            UrlThree = "test-url-3-2"
+                        }
+                    }
+                };
+
+                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Limit(1000).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotices);
             });
         }
 
@@ -337,6 +412,8 @@ namespace StockportContentApiTests.Integration
         [InlineData("GroupHomePage", "/unittest/grouphomepage")]
         [InlineData("GroupAdvisor", "/unittest/groups/advisors/testemail@notandomain.xyz")]
         [InlineData("GroupAdvisorList", "/unittest/groups/slug/advisors")]
+        [InlineData("PrivacyNotice", "/unittest/privacy-notices/slug")]
+        [InlineData("PrivacyNotices", "/unittest/privacy-notices")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

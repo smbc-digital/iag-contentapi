@@ -1,0 +1,40 @@
+[
+  {
+    "slug": "test-slug",
+    "title": "test-title",
+    "directorate": "test-directorate",
+    "activitiesAsset": "test-activities-asset",
+    "transactionsActivity": "test-transactions-activity",
+    "purpose": "test-purpose",
+    "typeOfData": "test-type-of-data",
+    "legislation": "test-legislation",
+    "obtained": "test-obtained",
+    "externallyShared": "test-externally-shared",
+    "retentionPeriod": "test-retention-period",
+    "conditions": "test-conditions",
+    "conditionsSpecial": "test-conditions-special",
+    "urlOne": "test-url-1",
+    "urlTwo": "test-url-2",
+    "urlThree": "test-url-3"
+  },
+  {
+    "slug": "test-slug-2",
+    "title": "test-title-2",
+    "directorate": "test-directorate-2",
+    "activitiesAsset": "test-activities-asset-2",
+    "transactionsActivity": "test-transactions-activity-2",
+    "purpose": "test-purpose-2",
+    "typeOfData": "test-type-of-data-2",
+    "legislation": "test-legislation-2",
+    "obtained": "test-obtained-2",
+    "externallyShared": "test-externally-shared-2",
+    "retentionPeriod": "test-retention-period-2",
+    "conditions": "test-conditions-2",
+    "conditionsSpecial": "test-conditions-special-2",
+    "urlOne": "test-url-1-2",
+    "urlTwo": "test-url-2-2",
+    "urlThree": "test-url-3-2"
+  }
+
+
+]

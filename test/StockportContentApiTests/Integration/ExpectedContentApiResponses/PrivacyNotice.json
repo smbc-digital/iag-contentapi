@@ -1,0 +1,18 @@
+{
+  "slug": "test-slug",
+  "title": "test-title",
+  "directorate": "test-directorate",
+  "activitiesAsset": "test-activities-asset",
+  "transactionsActivity": "test-transactions-activity",
+  "purpose": "test-purpose",
+  "typeOfData": "test-type-of-data",
+  "legislation": "test-legislation",
+  "obtained": "test-obtained",
+  "externallyShared": "test-externally-shared",
+  "retentionPeriod": "test-retention-period",
+  "conditions": "test-conditions",
+  "conditionsSpecial": "test-conditions-special",
+  "urlOne": "test-url-1",
+  "urlTwo": "test-url-2",
+  "urlThree": "test-url-3"
+}
