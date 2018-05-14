@@ -5,6 +5,7 @@ using StockportContentApi.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Moq;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -12,10 +13,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class PrivacyNoticeContentfulFactoryTest
     {
         private readonly PrivacyNoticeContentfulFactory _privacyNoticeContentfulFactory;
+        private Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory;
 
         public PrivacyNoticeContentfulFactoryTest()
         {
-            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory();
+            _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object);
         }
 
         [Fact]
@@ -37,17 +40,15 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             {
                 Slug = "test-slug",
                 Title = "test-title",
-                Directorate = "test-directorate",
-                ActivitiesAsset = "test-activities-asset",
-                TransactionsActivity = "test-transactions-activity",
+                Category = "test-category",
                 Purpose = "test-purpose",
                 TypeOfData = "test-type-of-data",
                 Legislation = "test-legislation",
                 Obtained = "test-obtained",
                 ExternallyShared = "test-externally-shared",
                 RetentionPeriod = "test-retention-period",
-                Conditions = "test-conditions",
-                ConditionsSpecial = "test-conditions-special",
+                OutsideEu = false,
+                AutomatedDecision = false,
                 UrlOne = "test-url-1",
                 UrlTwo = "test-url-2",
                 UrlThree = "test-url-3"

@@ -21,10 +21,11 @@ namespace StockportContentApi.Model
         public string UrlOne { get; set; }
         public string UrlTwo { get; set; }
         public string UrlThree { get; set; }
+        public IEnumerable<Crumb> Breadcrumbs { get; }
 
         public PrivacyNotice() { }
 
-        public PrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, string urlOne, string urlTwo, string urlThree)
+        public PrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, string urlOne, string urlTwo, string urlThree, IEnumerable<Crumb> breadcrumbs)
         {
             Slug = slug;
             Title = title;
@@ -40,6 +41,7 @@ namespace StockportContentApi.Model
             UrlOne = urlOne;
             UrlTwo = urlTwo;
             UrlThree = urlThree;
+            Breadcrumbs = breadcrumbs;
         }
     }
 }

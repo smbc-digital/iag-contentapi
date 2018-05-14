@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulPrivacyNotice
+    public class ContentfulPrivacyNotice : ContentfulReference
     {
         public string Slug { get; set; }
         public string Title { get; set; }
@@ -22,11 +22,12 @@ namespace StockportContentApi.ContentfulModels
         public string UrlOne { get; set; }
         public string UrlTwo { get; set; }
         public string UrlThree { get; set; }
+        public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
         public SystemProperties Sys { get; set; }
 
         public ContentfulPrivacyNotice() { }
 
-        public ContentfulPrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, string urlOne, string urlTwo, string urlThree, SystemProperties sys)
+        public ContentfulPrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, string urlOne, string urlTwo, string urlThree, List<ContentfulReference> breadcrumbs, SystemProperties sys)
         {
             Slug = slug;
             Title = title;
@@ -42,6 +43,7 @@ namespace StockportContentApi.ContentfulModels
             UrlOne = urlOne;
             UrlTwo = urlTwo;
             UrlThree = urlThree;
+            Breadcrumbs = breadcrumbs;
             Sys = sys;
         }
     }
