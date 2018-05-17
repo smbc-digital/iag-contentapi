@@ -42,7 +42,8 @@ namespace StockportContentApi.Extensions
         public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
         {
             services.AddSingleton<IContentfulFactory<ContentfulKeyFact, KeyFact>>(p => new KeyFactContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(p => new PrivacyNoticeParentTopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>()));
             services.AddSingleton<IContentfulFactory<ContentfulSmartResult, SmartResult>>(p => new SmartResultContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulApiKey, ApiKey>>(p => new ApiKeyContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory(p.GetService<IHttpContextAccessor>()));

@@ -33,7 +33,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
         {
-            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug);
+            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug).Include(3);
 
             var entries = await _client.GetEntriesAsync(builder);
 

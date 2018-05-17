@@ -14,11 +14,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly PrivacyNoticeContentfulFactory _privacyNoticeContentfulFactory;
         private Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory;
+        private Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>> _mockTopicFactory;
+
 
         public PrivacyNoticeContentfulFactoryTest()
         {
             _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object);
+            _mockTopicFactory = new Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>>();
+            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object, _mockTopicFactory.Object);
         }
 
         [Fact]
@@ -51,12 +54,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 AutomatedDecision = false,
                 UrlOne = "test-url-1",
                 UrlTwo = "test-url-2",
-                UrlThree = "test-url-3"
+                UrlThree = "test-url-3",
+                Breadcrumbs= new List<ContentfulReference>()
             };
             // Act
             var privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
             // Assert
-            privacyNotice.ShouldBeEquivalentTo(contentfulPrivacyNotice);
+            privacyNotice.ShouldBeEquivalentTo(contentfulPrivacyNotice, p => p
+                .Excluding(e => e.ParentTopic));
         }
     }
 }

@@ -3,7 +3,7 @@
   "title": "test-title",
   "category": "test-category",
   "outsideEu": false,
-  "automatedDecision" : false,
+  "automatedDecision": false,
   "purpose": "test-purpose",
   "typeOfData": "test-type-of-data",
   "legislation": "test-legislation",
@@ -13,5 +13,49 @@
   "urlOne": "test-url-1",
   "urlTwo": "test-url-2",
   "urlThree": "test-url-3",
-  "breadcrumbs": [] 
+  "breadcrumbs": [],
+  "parentTopic": {
+
+    "slug": "",
+    "name": "",
+    "teaser": "",
+    "summary": "",
+    "icon": "",
+    "backgroundImage": "",
+    "image": "",
+    "subItems": [
+    ],
+    "secondaryItems": [
+    ],
+    "tertiaryItems": [
+    ],
+    "breadcrumbs": [
+    ],
+    "alerts": [
+    ],
+    "sunriseDate": "0001-01-01T00:00:00Z",
+    "sunsetDate": "0001-01-01T00:00:00Z",
+    "emailAlerts": false,
+    "emailAlertsTopicId": "",
+    "eventBanner": {
+      "title": "",
+      "teaser": "",
+      "icon": "",
+      "link": ""
+    },
+    "expandingLinkTitle": "",
+    "expandingLinkBoxes": [
+    ],
+    "primaryItemTitle": "",
+    "advertisement": {
+      "title": "",
+      "slug": "",
+      "teaser": "",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "0001-01-01T00:00:00Z",
+      "isadvertisement": true,
+      "navigationUrl": "",
+      "image": ""
+    }
+  }
 }
