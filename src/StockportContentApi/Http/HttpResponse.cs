@@ -49,11 +49,6 @@ namespace StockportContentApi.Http
             }
         }
 
-        internal static HttpResponse Failure(HttpStatusCode notFound)
-        {
-            throw new NotImplementedException();
-        }
-
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
