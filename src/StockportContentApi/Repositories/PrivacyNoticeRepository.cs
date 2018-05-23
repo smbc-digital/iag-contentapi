@@ -46,7 +46,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
         {
-            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Limit(1000);
+            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000);
 
             var entries = await _client.GetEntriesAsync(builder);
 
