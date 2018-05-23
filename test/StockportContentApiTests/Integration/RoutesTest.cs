@@ -383,7 +383,7 @@ namespace StockportContentApiTests.Integration
                     }
                 };
 
-                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Limit(1000).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotices);
+                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotices);
             });
         }
 
