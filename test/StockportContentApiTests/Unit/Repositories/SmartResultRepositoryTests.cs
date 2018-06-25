@@ -48,7 +48,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             const string slug = "a-slug";
             var builder = new QueryBuilder<ContentfulSmartResult>().ContentTypeIs("smartResult").FieldEquals("fields.slug", slug).Include(3);
-            _client.Setup(_ => _.GetEntriesAsync(
+            _client.Setup(_ => _.GetEntries(
                 It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<ContentfulCollection<ContentfulSmartResult>>());
 
@@ -56,7 +56,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _repository.Get(slug);
 
             // Assert
-            _client.Verify(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()),Times.Once);
+            _client.Verify(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()),Times.Once);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             var builder = new QueryBuilder<ContentfulSmartResult>().ContentTypeIs("smartResult").FieldEquals("fields.slug", slug).Include(3);
-            _client.Setup(_ => _.GetEntriesAsync(
+            _client.Setup(_ => _.GetEntries(
                 It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(entries);
 
@@ -86,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var result = await _repository.Get(slug);
 
             // Assert
-            _client.Verify(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()), Times.Once);
+            _client.Verify(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()), Times.Once);
             result.Should().Be(entry);
         }
 
@@ -96,7 +96,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Arrange
             var slug = "a-slug";
             var builder = new QueryBuilder<ContentfulSmartResult>().ContentTypeIs("smartResult").FieldEquals("fields.slug", slug).Include(3);
-            _client.Setup(_ => _.GetEntriesAsync(
+            _client.Setup(_ => _.GetEntries(
                 It.Is<QueryBuilder<ContentfulSmartResult>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ThrowsAsync(new ContentfulException(200,"error"));
 

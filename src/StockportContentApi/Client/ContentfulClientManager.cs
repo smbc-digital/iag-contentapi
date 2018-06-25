@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Contentful.Core;
+using Microsoft.Extensions.Configuration;
 using StockportContentApi.Config;
 
 namespace StockportContentApi.Client
 {
     public interface IContentfulClientManager
     {
-        Contentful.Core.IContentfulClient GetClient(ContentfulConfig config);
-        Contentful.Core.IContentfulManagementClient GetManagementClient(ContentfulConfig config);
+        IContentfulClient GetClient(ContentfulConfig config);
+        IContentfulManagementClient GetManagementClient(ContentfulConfig config);
     }
 
     public class ContentfulClientManager : IContentfulClientManager
@@ -20,19 +21,20 @@ namespace StockportContentApi.Client
             _configuration = configuration;
         }
 
-        public Contentful.Core.IContentfulClient GetClient(ContentfulConfig config)
+        public IContentfulClient GetClient(ContentfulConfig config)
         {
             bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
-            var client = new Contentful.Core.ContentfulClient(_httpClient, config.AccessKey, config.SpaceKey, usePreviewApi)
+            var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey)
             {
                 ResolveEntriesSelectively = true
             };
+
             return client;
         }
-
-        public Contentful.Core.IContentfulManagementClient GetManagementClient(ContentfulConfig config)
+            
+        public IContentfulManagementClient GetManagementClient(ContentfulConfig config)
         {
-            var client = new Contentful.Core.ContentfulManagementClient(_httpClient, config.ManagementKey, config.SpaceKey);
+            var client = new ContentfulManagementClient(_httpClient, config.ManagementKey, config.SpaceKey);
             return client;
         }
     }

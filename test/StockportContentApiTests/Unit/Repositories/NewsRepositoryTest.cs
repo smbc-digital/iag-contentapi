@@ -99,11 +99,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake()), HttpContextFake.GetHttpContextFake(), _alertBuilder.Object, _mockTimeProvider.Object);
 
-            _client.Setup(o => o.GetEntriesAsync(
+            _client.Setup(o => o.GetEntries(
             It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
             It.IsAny<CancellationToken>())).ReturnsAsync(_newsroomContentfulCollection);
 
-            _client.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetContentType("news", It.IsAny<CancellationToken>()))
                .ReturnsAsync(_newsContentType);
 
             _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
@@ -132,7 +132,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     .FieldEquals("fields.slug", slug)
                     .Include(1)
                     .Build();
-            _client.Setup(o => o.GetEntriesAsync(
+            _client.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
@@ -192,7 +192,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -254,7 +254,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -304,7 +304,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "Events").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -343,7 +343,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -382,7 +382,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[in]", "Events").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -421,7 +421,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("This is within the date Range").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is within the date Range").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -453,7 +453,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("This is within the date Range").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is within the date Range").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -485,7 +485,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsListCollection.Items.ToList());
@@ -580,7 +580,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Tags(new List<string> { "#testTag", "foo" }).Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Tags(new List<string> { "#testTag", "foo" }).Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
             };
-            _client.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+            _client.Setup(o => o.GetEntries<ContentfulNews>(
                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).FieldEquals("fields.tags[match]", "testTag").Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -615,7 +615,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build()
             };
-            _client.Setup(o => o.GetEntriesAsync(
+            _client.Setup(o => o.GetEntries(
                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 

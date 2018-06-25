@@ -58,7 +58,7 @@ namespace StockportContentApiTests.Unit.Repositories
                    new ContentfulFooterBuilder().Build()
                 };
 
-            _client.Setup(o => o.GetEntriesAsync(
+            _client.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
@@ -82,7 +82,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<Footer>();
             collection.Items = new List<Footer>();
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<Footer>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<Footer>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var footer = AsyncTestHelper.Resolve(_repository.GetFooter());

@@ -48,7 +48,7 @@ namespace StockportContentApi.Repositories
         private async Task<ContentfulSmartAnswers> GetSmartEntry(string slug)
         {
             var builder = new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers").FieldEquals("fields.slug", slug).Include(1);
-            var entires = await _client.GetEntriesAsync(builder);
+            var entires = await _client.GetEntries(builder);
 
             var entry = entires.FirstOrDefault();
 

@@ -81,7 +81,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 Items = new List<ContentfulOrganisation> { contentfulOrganisation }
             };
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulOrganisation>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+            _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulOrganisation>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(contentfulCollection);
 
             // Act
@@ -105,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulOrganisation>();
 
             var builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(
+            _contentfulClient.Setup(o => o.GetEntries(
                 It.IsAny<QueryBuilder<ContentfulOrganisation>>(),
                      It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);

@@ -51,7 +51,7 @@ namespace StockportContentApi.Repositories
         private async Task<IEnumerable<ApiKey>> GetAllApiKeys()
         {
             var builder = new QueryBuilder<ContentfulApiKey>().ContentTypeIs("apiKey");
-            var entries = await _client.GetEntriesAsync<ContentfulApiKey>(builder);
+            var entries = await _client.GetEntries<ContentfulApiKey>(builder);
             var contentfuApiKeys = entries as IEnumerable<ContentfulApiKey> ?? entries.ToList();
 
             var apiKeys = contentfuApiKeys.Select(k => _contentfulFactory.ToModel(k)).ToList();

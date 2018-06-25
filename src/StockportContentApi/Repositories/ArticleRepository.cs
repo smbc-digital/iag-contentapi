@@ -105,7 +105,7 @@ namespace StockportContentApi.Repositories
                 .FieldEquals("fields.slug", articleSlug)
                 .Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
             return entry;

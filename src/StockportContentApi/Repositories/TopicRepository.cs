@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
         {
             var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
 
@@ -46,7 +46,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get()
         {
             var builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var contentfulTopics = entries as IEnumerable<ContentfulTopicForSiteMap> ?? entries.ToList();
 
             var topics = GetAllTopics(contentfulTopics.ToList());

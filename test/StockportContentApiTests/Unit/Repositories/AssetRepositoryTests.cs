@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public async void ShouldReturnAsset()
         {
-            _contentfulClient.Setup(o => o.GetAssetAsync("asset", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
+            _contentfulClient.Setup(o => o.GetAsset("asset", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Asset());
 
             var assetRepository = new AssetRepository(new ContentfulConfig("", "", ""), _contentfulClientManager.Object,
@@ -46,7 +46,7 @@ namespace StockportContentApiTests.Unit.Repositories
         public async void ShouldReturnNullIfNoAssetIsFoundAndLogWarning()
         {
             _contentfulClient.Setup(o =>
-                    o.GetAssetAsync("asset-fail", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
+                    o.GetAsset("asset-fail", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ContentfulException(500, "There was a problem with getting assetid: asset-fail from contentful"));
 
             var assetRepository = new AssetRepository(new ContentfulConfig("", "", ""), _contentfulClientManager.Object,

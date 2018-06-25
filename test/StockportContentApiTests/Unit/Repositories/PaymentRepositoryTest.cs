@@ -69,7 +69,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = rawPayments;
 
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(
+            _contentfulClient.Setup(o => o.GetEntries(
                 It.Is<QueryBuilder<ContentfulPayment>>(
                      q => q.Build() == builder.Build()),
                      It.IsAny<CancellationToken>()))
@@ -98,7 +98,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulPayment> { rawPayment };
 
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(
+            _contentfulClient.Setup(o => o.GetEntries(
                 It.Is<QueryBuilder<ContentfulPayment>>(
                      q => q.Build() == builder.Build()),     
                      It.IsAny<CancellationToken>()))
@@ -129,7 +129,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulPayment>();
 
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(
+            _contentfulClient.Setup(o => o.GetEntries(
                 It.IsAny<QueryBuilder<ContentfulPayment>>(),
                      It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);

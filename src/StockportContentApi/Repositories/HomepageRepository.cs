@@ -26,7 +26,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get()
         {
             var builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null

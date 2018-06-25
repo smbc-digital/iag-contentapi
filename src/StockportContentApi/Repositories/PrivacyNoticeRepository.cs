@@ -35,7 +35,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug).Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
 
@@ -48,7 +48,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 

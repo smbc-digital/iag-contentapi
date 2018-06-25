@@ -53,7 +53,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "test-group"))))
                               .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
@@ -79,7 +79,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupAdvisor>())).Returns(new GroupAdvisorBuilder().Build());
 
@@ -105,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "test-group"))))
                               .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
@@ -129,7 +129,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
                               .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "group" }).Build());
@@ -153,7 +153,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
                               .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());
@@ -177,7 +177,7 @@ namespace StockportContentApiTests.Unit.Repositories
             };
 
             // Mock
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == query), It.IsAny<CancellationToken>()))
                    .ReturnsAsync(collection);
             _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug == "group"))))
                               .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());

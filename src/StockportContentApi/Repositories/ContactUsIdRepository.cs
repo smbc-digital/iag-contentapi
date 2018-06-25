@@ -28,7 +28,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");

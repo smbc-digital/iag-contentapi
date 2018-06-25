@@ -27,7 +27,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
 
             var groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();

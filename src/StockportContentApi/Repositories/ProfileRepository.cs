@@ -26,7 +26,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetProfile(string slug)
         {
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null 
@@ -37,7 +37,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get()
         {
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
 

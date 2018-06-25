@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
                 .FieldEquals("fields.slug", startPageSlug)
                 .Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (!entries.Any())
                 return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'");
@@ -50,7 +50,7 @@ namespace StockportContentApi.Repositories
                 .ContentTypeIs("startPage")
                 .Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (!entries.Any())
                 return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");

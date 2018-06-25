@@ -72,7 +72,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulTopic> { contentfulTopic };
 
             var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()), 
+            _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()), 
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topic);
@@ -93,7 +93,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulTopic>();
 
             var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulTopic>>(),
+            _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulTopic>>(),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));

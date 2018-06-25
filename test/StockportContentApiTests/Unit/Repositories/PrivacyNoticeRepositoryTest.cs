@@ -62,12 +62,12 @@ namespace StockportContentApiTests.Unit.Repositories
                 Items = new List<ContentfulPrivacyNotice> { contentfulPrivacyNotice }
             };
 
-            _contentfulClient.Setup(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+            _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
             _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
             // Act
             var result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice(slug));
             // Assert
-            _contentfulClient.Verify(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
+            _contentfulClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 Items = new List<ContentfulPrivacyNotice> { contentfulPrivacyNotice }
             };
 
-            _contentfulClient.Setup(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+            _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
             _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
 
             // Act
@@ -117,12 +117,12 @@ namespace StockportContentApiTests.Unit.Repositories
                 Items = contentfulPrivacyNotices
             };
 
-            _contentfulClient.Setup(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+            _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
             _contentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulPrivacyNotice>())).Returns(privacyNotice);
             // Act
             var result = AsyncTestHelper.Resolve(_repository.GetAllPrivacyNotices());
             // Assert
-            _contentfulClient.Verify(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
+            _contentfulClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 Items = contentfulPrivacyNotices
             };
 
-            _contentfulClient.Setup(_ => _.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+            _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
             _contentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulPrivacyNotice>())).Returns(privacyNotice);
 
             // Act

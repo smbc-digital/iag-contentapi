@@ -35,7 +35,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (entries == null) return new List<GroupAdvisor>();
 
@@ -48,7 +48,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (entries == null) return null;
 
@@ -59,7 +59,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             if (entries == null) return false;
 

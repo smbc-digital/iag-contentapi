@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
 

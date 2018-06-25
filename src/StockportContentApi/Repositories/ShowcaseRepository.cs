@@ -36,7 +36,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var showcases = entries.Select(e => _contentfulFactory.ToModel(e));
 
             return showcases.GetType() == typeof(NullHomepage)
@@ -49,7 +49,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
 
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
             var showcase = _contentfulFactory.ToModel(entry);
@@ -92,7 +92,7 @@ namespace StockportContentApi.Repositories
                 new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
                     .FieldMatches(n => n.Categories, tag)
                     .Include(1);
-            var newsEntry = await _client.GetEntriesAsync(newsBuilder);
+            var newsEntry = await _client.GetEntries(newsBuilder);
 
             if (newsEntry != null && newsEntry.Any())
             {
@@ -104,7 +104,7 @@ namespace StockportContentApi.Repositories
                     new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
                         .FieldMatches(n => n.Tags, tag)
                         .Include(1);
-                newsEntry = await _client.GetEntriesAsync(newsBuilder);
+                newsEntry = await _client.GetEntries(newsBuilder);
 
                 if (newsEntry != null && newsEntry.Any())
                 {

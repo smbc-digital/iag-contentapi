@@ -30,7 +30,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetPayment(string slug)
         {
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             return entry == null 
@@ -41,7 +41,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> Get()
         {
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();          
             
             var payments = GetAllPayments(contentfulPayments);

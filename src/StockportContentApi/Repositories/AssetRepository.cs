@@ -29,7 +29,7 @@ namespace StockportContentApi.Repositories
         {
             try
             {
-                return await _client.GetAssetAsync(assetId, QueryBuilder<Asset>.New);
+                return await _client.GetAsset(assetId, QueryBuilder<Asset>.New);
             }
             catch (ContentfulException ex)
             {

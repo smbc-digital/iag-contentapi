@@ -84,7 +84,7 @@ namespace StockportContentApi.Repositories
         public async Task<ContentfulGroup> GetContentfulGroup(string slug)
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             return entry;
@@ -93,7 +93,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetGroupHomepage()
         {
             var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.ToList().First();
             
             return entry == null
@@ -105,7 +105,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = onlyActive 
                 ? entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo)) 
@@ -229,7 +229,7 @@ namespace StockportContentApi.Repositories
                     .Include(1)
                     .Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            var contentfulGroups = await _client.GetEntriesAsync(builder);
+            var contentfulGroups = await _client.GetEntries(builder);
 
             var groups = contentfulGroups.Where(g => g.GroupAdministrators?.Items != null && g.GroupAdministrators.Items.Any(i => i != null && i.Email.ToUpper() == email.ToUpper())).ToList();
 
@@ -264,7 +264,7 @@ namespace StockportContentApi.Repositories
         private async Task<List<GroupCategory>> GetGroupCategoriesDirect()
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
-            var groupCategoryEntries = await _client.GetEntriesAsync(groupCategoryBuilder);
+            var groupCategoryEntries = await _client.GetEntries(groupCategoryBuilder);
 
             var groupCategoryList = groupCategoryEntries.Select(gc => _groupCategoryFactory.ToModel(gc))
                 .OrderBy(c => c.Name).ToList();
@@ -275,7 +275,7 @@ namespace StockportContentApi.Repositories
         private async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategoriesDirect()
         {
             var groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
-            var result = await _client.GetEntriesAsync(groupCategoryBuilder);
+            var result = await _client.GetEntries(groupCategoryBuilder);
 
             return !result.Any() ? null : result;
         }

@@ -34,7 +34,7 @@ namespace StockportContentApi.Repositories
             var sections = new List<ContentfulSectionForSiteMap>();
 
             var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-            var articles = await _client.GetEntriesAsync(builder);
+            var articles = await _client.GetEntries(builder);
 
             foreach (var article in articles.Where(e => e.Sections.Any()))
             {
@@ -53,7 +53,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulSection>().ContentTypeIs("section").FieldEquals("fields.slug", slug).Include(3);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
             var Section = _contentfulFactory.ToModel(entry);

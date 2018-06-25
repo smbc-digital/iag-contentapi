@@ -64,7 +64,7 @@ namespace StockportContentApi.Repositories
 
             _client = ClientManager.GetClient(config);
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
 
             return !entries.Any() 
                 ? new NullBusinessIdToRedirects()

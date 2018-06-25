@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulEventBuilder().Slug("event_item").UpdatedAt(new DateTime(2016,10,5)).EventDate(new DateTime(2016, 12, 30)).Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulEvent>(
+                httpClient.Setup(o => o.GetEntries<ContentfulEvent>(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", "event_item").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
 
@@ -52,7 +52,7 @@ namespace StockportContentApiTests.Integration
                     new ContentfulEventBuilder().Slug("event1").UpdatedAt(new DateTime(9999,9,9)).Build(),
                     new ContentfulEventBuilder().Slug("event2").UpdatedAt(new DateTime(9999,9,9)).Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
@@ -62,11 +62,11 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulGroupBuilder().Slug("zumba-fitness").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.IsAny<QueryBuilder<ContentfulGroup>>(),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupCollection);
 
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulGroup>(
+                httpClient.Setup(o => o.GetEntries<ContentfulGroup>(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupCollection);
 
@@ -75,7 +75,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulNewsBuilder().Slug("news_item").SunriseDate(DateTime.MinValue).SunsetDate(new DateTime(9999, 09, 09, 0, 0, 0, DateTimeKind.Utc)).Document().Build(),
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(newsCollection);
 
@@ -85,7 +85,7 @@ namespace StockportContentApiTests.Integration
                     new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2016, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2017, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build(),
                     new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build(),
                 };
-                httpClient.Setup(o => o.GetEntriesAsync<ContentfulNews>(
+                httpClient.Setup(o => o.GetEntries<ContentfulNews>(
                                 It.Is<string>(q => !q.Contains(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldEquals("fields.slug", "news_item").Include(1).Build())),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
 
@@ -107,7 +107,7 @@ namespace StockportContentApiTests.Integration
                     }
                 };
                
-                httpClient.Setup(o => o.GetContentTypeAsync("news", It.IsAny<CancellationToken>()))
+                httpClient.Setup(o => o.GetContentType("news", It.IsAny<CancellationToken>()))
                     .ReturnsAsync(newsContent);
 
 
@@ -117,7 +117,7 @@ namespace StockportContentApiTests.Integration
                     new ContentfulNewsRoomBuilder().Build()
                 };
 
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
 
@@ -126,7 +126,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("id").Build()}).Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", "topic_slug").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(topicCollection);
 
@@ -135,7 +135,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulProfileBuilder().Slug("profile_slug").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "profile_slug").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(profileCollection);
@@ -145,7 +145,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Slug("test-article").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "test-article").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(articleCollection);
@@ -155,7 +155,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulArticleBuilder().Slug("about-us").WithOutSection().Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                 new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "about-us").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(articleCollection);
@@ -165,7 +165,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulArticleBuilder().Slug("test-me").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build()}).Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                It.Is<QueryBuilder<ContentfulArticle>>(q => q.Build() ==
                                new QueryBuilder<ContentfulArticle>().ContentTypeIs("article").FieldEquals("fields.slug", "test-me").Include(3).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(articleCollection);
@@ -175,7 +175,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulPaymentBuilder().Slug("payment_slug").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                     It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build() == new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "payment_slug").Include(1).Build()),
                                     It.IsAny<CancellationToken>())).ReturnsAsync(paymentCollection);
 
@@ -184,7 +184,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email"}
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", "test-email").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(contactUsIdCollection);
 
@@ -196,7 +196,7 @@ namespace StockportContentApiTests.Integration
                                         .SocialMediaLinks(new List<ContentfulSocialMediaLink>() { new ContentfulSocialMediaLink() { Title = "sm-link-title", Slug = "sm-link-slug", Url = "http://link.url" , Icon = "sm-link-icon" } })
                                         .Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", "showcase_slug").Include(3).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(showcaseCollection);
 
@@ -206,7 +206,7 @@ namespace StockportContentApiTests.Integration
                    new ContentfulFooterBuilder().Build()
                 };
 
-               httpClient.Setup(o => o.GetEntriesAsync(
+               httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
@@ -215,7 +215,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulGroupCategoryBuilder().Slug("groupCategory_slug").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build() == new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(catGroupCollection);
 
@@ -224,7 +224,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulEventBuilder().Slug("event-slug").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
                 
@@ -235,7 +235,7 @@ namespace StockportContentApiTests.Integration
                 };
 
                 var homepageBuilder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
 
@@ -244,7 +244,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulSmartAnswerBuilder().Slug("smartAnswer_slug").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulSmartAnswers>>(
                         q => q.Build() == new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers")
                                  .FieldEquals("fields.slug", "smartAnswer_slug").Include(1).Build()),
@@ -255,7 +255,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulRedirectBuilder().BuildForRouteTest()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulRedirect>>(
                         q => q.Build() == new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(Redirects);
@@ -265,7 +265,7 @@ namespace StockportContentApiTests.Integration
                 {
                     new ContentfulStartPageBuilder().Slug("new-start-page").Build()
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulStartPage>>(
                         q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", "new-start-page").Include(3).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(startPages);
@@ -285,7 +285,7 @@ namespace StockportContentApiTests.Integration
                         VolunteeringText = "help wanted"
                     }
                 };
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulOrganisation>>(
                         q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("organisation")
                                  .FieldEquals("fields.slug", "slug").Build()),
@@ -298,7 +298,7 @@ namespace StockportContentApiTests.Integration
                     Items = new List<ContentfulGroupHomepage>() { groupHomepage }
                 };
 
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulGroupHomepage>>(
                         q => q.Build() == new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupHomepageCollection);
@@ -308,11 +308,11 @@ namespace StockportContentApiTests.Integration
                     Items = new List<ContentfulGroupAdvisor> { new ContentfulGroupAdvisorBuilder().Email("testemail@notandomain.xyz").Build() }
                 };
 
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "testemail@notandomain.xyz").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupAdvisor);
 
-                httpClient.Setup(o => o.GetEntriesAsync(
+                httpClient.Setup(o => o.GetEntries(
                     It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build() == new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(groupAdvisor);
 
@@ -340,7 +340,7 @@ namespace StockportContentApiTests.Integration
                     }
                 };
 
-                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", "slug").Include(3).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotice);
+                httpClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", "slug").Include(3).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotice);
 
                 var privacyNotices = new ContentfulCollection<ContentfulPrivacyNotice>()
                 {
@@ -383,7 +383,7 @@ namespace StockportContentApiTests.Integration
                     }
                 };
 
-                httpClient.Setup(_ => _.GetEntriesAsync(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotices);
+                httpClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulPrivacyNotice>>(q => q.Build() == new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000).Build()), It.IsAny<CancellationToken>())).ReturnsAsync(privacyNotices);
             });
         }
 

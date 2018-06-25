@@ -49,7 +49,7 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             if (entries == null || !entries.Any()) new List<EventCategory>();
 
             var eventCategories = entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();

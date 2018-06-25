@@ -26,7 +26,7 @@ namespace StockportContentApi.Repositories
             do
             {
                 builderString = builderString.Replace("skip=xxx", $"skip={skip}");
-                var items = await _client.GetEntriesAsync<T>(builderString);
+                var items = await _client.GetEntries<T>(builderString);
                 builderString = builderString.Replace($"skip={skip}", "skip=xxx");
                 totalItems = items.Total;
                 result.Items = result.Items.Concat(items.Items);

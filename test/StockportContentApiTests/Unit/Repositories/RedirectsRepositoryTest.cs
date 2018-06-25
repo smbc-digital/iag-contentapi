@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object);
@@ -86,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object);
@@ -114,7 +114,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object);

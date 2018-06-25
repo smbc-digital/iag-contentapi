@@ -54,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulHomepage> { contentfulHomepage };
 
             var builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             _homepageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulHomepage>()))

@@ -61,7 +61,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulContactUsId>();
             collection.Items = new List<ContentfulContactUsId> { rawContactUsId };
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulContactUsId>>(), It.IsAny<CancellationToken>()))
+            _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulContactUsId>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
             // Act
@@ -83,7 +83,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Act
             var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
-            _contentfulClient.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+            _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug));

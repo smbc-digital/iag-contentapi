@@ -51,13 +51,13 @@ namespace StockportContentApi.Repositories
         private async Task<ContentfulNewsRoom> GetNewsRoom()
         {
             var builder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             return entries.FirstOrDefault();
         }
 
         private async Task<List<string>> GetNewsCategories()
         {
-            var eventType = await _client.GetContentTypeAsync("news");
+            var eventType = await _client.GetContentType("news");
             var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
             return validation?.RequiredValues;
         }

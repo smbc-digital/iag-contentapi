@@ -39,9 +39,9 @@ namespace StockportContentApi.Repositories
 
             try
             {
-                var group = await _client.CreateOrUpdateEntryAsync(entry, null, null, systemProperties.Version);
+                var group = await _client.CreateOrUpdateEntry(entry, null, null, systemProperties.Version);
                 if (group.SystemProperties.Version != null)
-                    await _client.PublishEntryAsync(entry.SystemProperties.Id, group.SystemProperties.Version.Value);
+                    await _client.PublishEntry(entry.SystemProperties.Id, group.SystemProperties.Version.Value);
                 return HttpResponse.Successful(group);
             }
             catch (Exception ex)
@@ -55,8 +55,8 @@ namespace StockportContentApi.Repositories
         {
             try
             {
-                await _client.UnpublishEntryAsync(systemProperties.Id, systemProperties.Version.Value);
-                await _client.DeleteEntryAsync(systemProperties.Id, systemProperties.Version.Value);
+                await _client.UnpublishEntry(systemProperties.Id, systemProperties.Version.Value);
+                await _client.DeleteEntry(systemProperties.Id, systemProperties.Version.Value);
                 return HttpResponse.Successful("Successfully Deleted Entry: " + systemProperties.Id);
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<int> GetVersion(string entryId)
         {
-            var managementGroup = await _client.GetEntryAsync(entryId);
+            var managementGroup = await _client.GetEntry(entryId);
             return managementGroup.SystemProperties.Version ?? 0;
         }
     }

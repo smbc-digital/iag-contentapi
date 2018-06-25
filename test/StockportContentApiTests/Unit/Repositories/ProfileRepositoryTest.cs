@@ -55,7 +55,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
-            _client.Setup(o => o.GetEntriesAsync(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
             _profileFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(profile);
 
@@ -76,7 +76,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulProfile>();
 
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            _client.Setup(o => o.GetEntriesAsync(It.IsAny<QueryBuilder<ContentfulProfile>>(),
+            _client.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));

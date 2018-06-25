@@ -31,7 +31,7 @@ namespace StockportContentApi.Repositories
 
             var builder = new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1);
 
-            var entries = await _client.GetEntriesAsync(builder);
+            var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
             var footer = _contentfulFactory.ToModel(entry);
