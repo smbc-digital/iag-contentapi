@@ -24,7 +24,7 @@ namespace StockportContentApi.Client
         public IContentfulClient GetClient(ContentfulConfig config)
         {
             bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
-            var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey)
+            var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey, usePreviewApi)
             {
                 ResolveEntriesSelectively = true
             };
