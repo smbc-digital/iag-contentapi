@@ -124,13 +124,13 @@ namespace StockportContentApi.Repositories
                 group.Twitter = @"https://www.twitter.com" + twitterUser;
             }
 
-            if (faceBookUser != null && faceBookUser.StartsWith("/"))
+            if (!string.IsNullOrEmpty(faceBookUser) && faceBookUser.StartsWith("/"))
             {
                 faceBookUser = faceBookUser.Replace("/", "");
                 group.Facebook = @"https://www.facebook.co.uk"+faceBookUser;
             }
 
-            if (faceBookUser != null && (!faceBookUser.StartsWith("http") || !faceBookUser.StartsWith("http")))
+            if (!string.IsNullOrEmpty(faceBookUser) && (!faceBookUser.StartsWith("http") || !faceBookUser.StartsWith("http")))
             {
                 group.Facebook = @"https://" + faceBookUser;
             }
