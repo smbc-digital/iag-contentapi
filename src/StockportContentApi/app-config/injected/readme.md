@@ -19,9 +19,9 @@ Values that should be in the config file
     "ClientIdHeader": "xx",
     "ClientWhiteList":  ["xx"] 
   },
-  "ElasticSearch": {
-    "Url": "xx",
-    "Authorization": "xx"
+  "ElasticSearchAwsSecretsConfiguration": {
+    "Accesskey": "xx",
+    "Secretkey": "xx"
   }
 }
 ```

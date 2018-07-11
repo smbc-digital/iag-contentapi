@@ -13,9 +13,6 @@ using StockportContentApi.Middleware;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using StockportWebapp.Configuration;
-using Serilog.Sinks.Elasticsearch;
-using System;
-using System.Collections.Specialized;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.Swagger.Model;
@@ -41,30 +38,13 @@ namespace StockportContentApi
             _appEnvironment = configLoader.EnvironmentName(env);
 
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
-
-            var loggerConfig = new LoggerConfiguration();
-
-            // when this "feature toggle" has been removed, this can be deleted
-            var esConfig = new ElasticSearch();
-            Configuration.GetSection("ElasticSearch").Bind(esConfig);
-
-            if (esConfig.Enabled)
-            {
-                // elastic search and logging to the console in one
-                loggerConfig.Enrich.FromLogContext().ReadFrom.Configuration(Configuration);
-            }
-            else
-            {
-                loggerConfig.Enrich.FromLogContext().WriteTo.Console();
-            }
-
-            Log.Logger = loggerConfig.CreateLogger();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            // logging
+            ConfigureSerilog();
+
             var loggerFactory = new LoggerFactory().AddSerilog();
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
@@ -144,6 +124,19 @@ namespace StockportContentApi
 
             // close logger
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+        }
+
+        private void ConfigureSerilog()
+        {
+            var logConfig = new LoggerConfiguration()
+                .ReadFrom
+                .Configuration(Configuration);
+
+            var esLogConfig = new ElasticSearchLogConfigurator(Configuration);
+            esLogConfig.Configure(logConfig);
+
+            Log.Logger = logConfig.CreateLogger();
+            Log.Logger.Warning("Completed logging configuration...");
         }
     }
 }
