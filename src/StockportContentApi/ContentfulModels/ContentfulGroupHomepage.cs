@@ -15,5 +15,7 @@ namespace StockportContentApi.ContentfulModels
         public ContentfulGroupCategory FeaturedGroupsCategory { get; set; } = new ContentfulGroupCategory();
         public ContentfulGroupSubCategory FeaturedGroupsSubCategory { get; set; } = new ContentfulGroupSubCategory();
         public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+        public string Body { get; set; } = string.Empty;
+        public string SecondaryBody { get; set; } = string.Empty;
     }
 }

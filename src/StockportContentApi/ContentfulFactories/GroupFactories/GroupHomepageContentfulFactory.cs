@@ -43,7 +43,11 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var alerts = entry.Alerts.Select(_ => _alertFactory.ToModel(_));
 
-            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts).StripData(_httpContextAccessor);
+            var body = entry.Body;
+
+            var secondaryBody = entry.SecondaryBody;
+
+            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, body, secondaryBody).StripData(_httpContextAccessor);
         }
     }
 }
