@@ -15,8 +15,9 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         private IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _groupSubCategoryListFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
 
-        public GroupHomepageContentfulFactory(IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        public GroupHomepageContentfulFactory(IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _groupFactory = groupFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
@@ -24,6 +25,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             _dateComparer = new DateComparer(timeProvider);
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
+            _eventBannerFactory = eventBannerFactory;
         }
 
         public GroupHomepage ToModel(ContentfulGroupHomepage entry)
@@ -51,7 +53,10 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var secondaryBody = entry.SecondaryBody;
 
-            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody).StripData(_httpContextAccessor);
+            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
+                ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
+
+            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner).StripData(_httpContextAccessor);
         }
     }
 }

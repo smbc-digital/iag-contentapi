@@ -15,8 +15,14 @@
     "slug": ""
   },
   "alerts": [],
-  "bodyHeading":  "",
+  "bodyHeading": "",
   "body": "",
   "secondaryBodyHeading": "",
-  "secondaryBody": "" 
+  "secondaryBody": "",
+  "eventBanner": {
+    "title": "title",
+    "teaser": "teaser",
+    "icon": "icon",
+    "link": "link"
+  }
 }

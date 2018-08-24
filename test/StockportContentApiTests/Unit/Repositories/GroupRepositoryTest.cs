@@ -547,7 +547,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulGroupHomepage>();
             collection.Items = new List<ContentfulGroupHomepage> { contenfulHomepage };
 
-            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, null, null, null, null, string.Empty, string.Empty, string.Empty, string.Empty);
+            var groupHomepage = new GroupHomepage("title", "slug", "image-url.jpg", string.Empty, null, null, null, null, string.Empty, string.Empty, string.Empty, string.Empty, new NullEventBanner());
 
             var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
 

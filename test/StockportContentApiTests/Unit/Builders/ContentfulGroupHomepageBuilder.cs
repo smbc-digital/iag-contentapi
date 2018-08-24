@@ -12,6 +12,8 @@ namespace StockportContentApiTests.Unit.Builders
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
+        private ContentfulEventBanner _eventBanner =
+            new ContentfulEventBannerBuilder().Build();
 
         public ContentfulGroupHomepage Build()
         {
@@ -19,7 +21,8 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Slug = _slug,
                 Title = _title,
-                BackgroundImage = _backgroundImage
+                BackgroundImage = _backgroundImage,
+                EventBanner = _eventBanner
             };
         }
 
@@ -34,6 +37,12 @@ namespace StockportContentApiTests.Unit.Builders
             _title = title;
             return this;
         }
-       
+
+        public ContentfulGroupHomepageBuilder EventBanner(ContentfulEventBanner banner)
+        {
+            _eventBanner = banner;
+            return this;
+        }
+
     }
 }
