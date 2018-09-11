@@ -95,7 +95,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
             var entries = await _client.GetEntries(builder);
             var entry = entries.ToList().First();
-            
+
             return entry == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
                 : HttpResponse.Successful(_groupHomepageContentfulFactory.ToModel(entry));
@@ -107,12 +107,12 @@ namespace StockportContentApi.Repositories
 
             var entries = await _client.GetEntries(builder);
 
-            var entry = onlyActive 
-                ? entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo)) 
+            var entry = onlyActive
+                ? entries.FirstOrDefault(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
                 : entries.FirstOrDefault();
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
-             
+
             var group = _groupFactory.ToModel(entry);
             group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
 
@@ -127,7 +127,7 @@ namespace StockportContentApi.Repositories
             if (!string.IsNullOrEmpty(faceBookUser) && faceBookUser.StartsWith("/"))
             {
                 faceBookUser = faceBookUser.Replace("/", "");
-                group.Facebook = @"https://www.facebook.co.uk"+faceBookUser;
+                group.Facebook = @"https://www.facebook.co.uk" + faceBookUser;
             }
 
             if (!string.IsNullOrEmpty(faceBookUser) && (!faceBookUser.StartsWith("http") || !faceBookUser.StartsWith("http")))
@@ -138,7 +138,7 @@ namespace StockportContentApi.Repositories
             if (group.CategoriesReference != null && group.CategoriesReference != null && group.CategoriesReference.Any() && group.SubCategories.Any())
             {
                 group.SetLinkedGroups(await GetLinkedGroups(group));
-            }            
+            }
 
             return HttpResponse.Successful(group);
         }
@@ -158,14 +158,14 @@ namespace StockportContentApi.Repositories
             var linkeddGroups = groupList.Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(group.CategoriesReference[0].Slug) || c.Slug.ToLower() == group.CategoriesReference[0].Slug.ToLower())
                                        && g.SubCategories.Any(c => string.IsNullOrEmpty(group.SubCategories[0].Slug) || c.Slug.ToLower() == group.SubCategories[0].Slug.ToLower())
                                        && g.Slug != group.Slug);
-          
+
             return linkeddGroups.ToList();
         }
 
         public async Task<HttpResponse> GetGroupResults(string category, double latitude, double longitude, string order, string location, string slugs, string volunteering, string subCategories, string organisation)
         {
             var groupResults = new GroupResults();
-            
+
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
@@ -184,7 +184,28 @@ namespace StockportContentApi.Repositories
 
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
-            var groups = 
+            var groupsWithNoCoordinates = new List<Group>();
+            if (location.ToLower() == Defaults.Groups.Location)
+            {
+                var noCoordinatesBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+                var noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
+
+                groupsWithNoCoordinates = noCoordinatesEntries.Select(g => _groupFactory.ToModel(g))
+                    .Where(_ => _.MapPosition.Lat == 0 && _.MapPosition.Lon == 0)
+                    .Where(g => g.CategoriesReference.Any(c =>
+                        string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
+                    .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
+                    .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
+                    .Where(g => organisation == string.Empty ||
+                                (g.Organisation != null && g.Organisation.Slug == organisation))
+                    .Where(g => !subCategoriesList.Any() ||
+                                g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
+                    .ToList();
+
+                groupsWithNoCoordinates = groupsWithNoCoordinates.OrderBy(g => g.Name).ToList();
+            }
+
+            var groups =
                  entries.Select(g => _groupFactory.ToModel(g))
                         .Where(g => g.CategoriesReference.Any(c => string.IsNullOrEmpty(category) || c.Slug.ToLower() == category.ToLower()))
                         .Where(g => _dateComparer.DateNowIsNotBetweenHiddenRange(g.DateHiddenFrom, g.DateHiddenTo))
@@ -192,6 +213,8 @@ namespace StockportContentApi.Repositories
                         .Where(g => organisation == string.Empty || (g.Organisation != null && g.Organisation.Slug == organisation))
                         .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
                         .ToList();
+
+            if(groupsWithNoCoordinates.Count > 0) groups.AddRange(groupsWithNoCoordinates);
 
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
             {

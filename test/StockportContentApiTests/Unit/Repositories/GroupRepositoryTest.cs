@@ -277,6 +277,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
             var categoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
 
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(listOfGroupCategories);
@@ -307,6 +311,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(listOfGroupCategories);
 
             var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("slug-that-matches-no-groups", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
@@ -335,6 +343,10 @@ namespace StockportContentApiTests.Unit.Repositories
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<GroupCategory>() { rawGroupCategory });
 
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetGroupResults(slug, Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
             var filteredGroupResults = response.Get<GroupResults>();
@@ -361,6 +373,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "group-categories"), It.IsAny<Func<Task<List<GroupCategory>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<GroupCategory>() { rawGroupCategory });
+
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetGroupResults("fake-category-slug", Defaults.Groups.StockportLatitude, Defaults.Groups.StockportLongitude, "name a-z", "Stockport", string.Empty, string.Empty, string.Empty, string.Empty));
@@ -452,6 +468,10 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries< ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
             _groupFactory.Setup(o => o.ToModel(contentfulGroupFirst)).Returns(groupfirst);
             _groupFactory.Setup(o => o.ToModel(contentfulGroupSecond)).Returns(groupsecond);
             _groupFactory.Setup(o => o.ToModel(contentfulGroupThird)).Returns(groupthird);
@@ -486,6 +506,10 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).FieldEquals("fields.mapPosition[near]", Defaults.Groups.StockportLatitude + "," + Defaults.Groups.StockportLongitude + ",10").Build();
             _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            var noLatLngBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).Build();
+            _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(noLatLngBuilder)),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             _groupFactory.Setup(o => o.ToModel(contentfulGroupFirst)).Returns(groupfirst);
