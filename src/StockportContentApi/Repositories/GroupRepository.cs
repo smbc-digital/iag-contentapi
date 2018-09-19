@@ -185,7 +185,7 @@ namespace StockportContentApi.Repositories
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groupsWithNoCoordinates = new List<Group>();
-            if (location.ToLower() == Defaults.Groups.Location && string.IsNullOrEmpty(slugs))
+            if (location.ToLower() == Defaults.Groups.Location && string.IsNullOrEmpty(slugs) && string.IsNullOrEmpty(category))
             {
                 var noCoordinatesBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
                 var noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
