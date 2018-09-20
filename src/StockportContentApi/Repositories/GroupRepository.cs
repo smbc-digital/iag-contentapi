@@ -185,10 +185,18 @@ namespace StockportContentApi.Repositories
             if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
             var groupsWithNoCoordinates = new List<Group>();
-            if (location.ToLower() == Defaults.Groups.Location && string.IsNullOrEmpty(slugs) && category == "help-and-support")
+            var noCoordinatesEntries = entries;
+            if (location.ToLower() == Defaults.Groups.Location)
             {
                 var noCoordinatesBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
-                var noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
+                if (!string.IsNullOrEmpty(slugs))
+                {
+                    noCoordinatesEntries = entries;
+                }
+                else
+                {
+                     noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
+                }
 
                 groupsWithNoCoordinates = noCoordinatesEntries.Select(g => _groupFactory.ToModel(g))
                     .Where(_ => _.MapPosition.Lat == 0 && _.MapPosition.Lon == 0)
@@ -202,7 +210,7 @@ namespace StockportContentApi.Repositories
                                 g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
                     .ToList();
 
-                groupsWithNoCoordinates = groupsWithNoCoordinates.OrderBy(g => g.Name).ToList();
+                groupsWithNoCoordinates = groupsWithNoCoordinates.OrderBy(g => g.Name).Distinct().ToList();
             }
 
             var groups =
@@ -212,10 +220,10 @@ namespace StockportContentApi.Repositories
                         .Where(g => volunteering == string.Empty || (g.Volunteering && volunteering == "yes"))
                         .Where(g => organisation == string.Empty || (g.Organisation != null && g.Organisation.Slug == organisation))
                         .Where(g => !subCategoriesList.Any() || g.SubCategories.Any(c => subCategoriesList.Contains(c.Slug)))
+                     .Where(_ => _.MapPosition.Lat != 0 && _.MapPosition.Lon != 0)
                         .ToList();
 
             if(groupsWithNoCoordinates.Count > 0) groups.AddRange(groupsWithNoCoordinates);
-
             switch (!string.IsNullOrEmpty(order) ? order.ToLower() : "name a-z")
             {
                 case "name a-z":
@@ -230,7 +238,7 @@ namespace StockportContentApi.Repositories
                     groups = groups.OrderBy(g => g.Name).ToList();
                     break;
             }
-
+            //if(!string.IsNullOrEmpty(category))
             groupResults.Groups = groups;
 
             groupResults.AvailableSubCategories = groups.SelectMany(g => g.SubCategories ?? new List<GroupSubCategory>()).ToList();
