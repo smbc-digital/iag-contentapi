@@ -16,10 +16,11 @@ namespace StockportContentApi.Model
         public string Icon { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public List<Alert> Alerts { get; }
+        public IEnumerable<Alert> AlertsInline { get; }
 
         public StartPage(
             string title, string slug, string teaser, string summary, string upperBody, string formLinkLabel,
-            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts)
+            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts,  IEnumerable<Alert> inlineAlerts)
         {
             Title = title;
             Slug = slug;
@@ -33,6 +34,7 @@ namespace StockportContentApi.Model
             BackgroundImage = backgroundImage;
             Icon = icon;
             Alerts = alerts;
+            AlertsInline = inlineAlerts;
         }
     }
 
@@ -41,6 +43,6 @@ namespace StockportContentApi.Model
         public NullStartPage()
             : base(
                 string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>()) { }
+                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>(), new List<Alert>()) { }
     }
 }

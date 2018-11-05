@@ -31,9 +31,13 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                     .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
+            var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                       && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Select(alertInline => _alertFactory.ToModel(alertInline));
+
             return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,
                 entry.FormLinkLabel, entry.FormLink, entry.LowerBody, entry.BackgroundImage, entry.Icon,
-                breadcrumbs, alerts).StripData(_httpContextAccessor);
+                breadcrumbs, alerts,alertsInline).StripData(_httpContextAccessor);
         }
     }
 }
