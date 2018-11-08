@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApi
 {
@@ -18,6 +19,15 @@ namespace StockportContentApi
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.Sources.Clear();
+                    config.SetBasePath(Directory.GetCurrentDirectory() + "/app-config");
+                    config
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+                        .AddJsonFile($"injected/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json", optional: true);
+                })
                 .Build();
     }
 }
