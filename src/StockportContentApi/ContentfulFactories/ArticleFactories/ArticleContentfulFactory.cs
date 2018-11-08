@@ -5,6 +5,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.ContentfulFactories.ArticleFactories
 {

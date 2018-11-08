@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.ContentfulFactories.EventFactories
 {

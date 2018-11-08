@@ -1,7 +1,7 @@
 using Contentful.Core.Models;
 using Microsoft.AspNetCore.Http;
-using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.ContentfulFactories
 {

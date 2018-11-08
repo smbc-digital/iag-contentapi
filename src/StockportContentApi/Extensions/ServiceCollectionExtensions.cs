@@ -26,6 +26,7 @@ using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
 using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.Services;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.Extensions
 {

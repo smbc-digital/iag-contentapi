@@ -16,6 +16,7 @@ using StockportContentApi.Utils;
 using GeoCoordinatePortable;
 using Contentful.Core.Models;
 using Microsoft.Extensions.Configuration;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.Repositories
 {

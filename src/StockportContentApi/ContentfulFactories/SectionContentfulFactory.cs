@@ -5,6 +5,7 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Microsoft.AspNetCore.Http;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.ContentfulFactories
 {
