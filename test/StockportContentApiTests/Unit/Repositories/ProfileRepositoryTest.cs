@@ -63,7 +63,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseProfile = response.Get<Profile>();
-            responseProfile.ShouldBeEquivalentTo(profile);
+            responseProfile.Should().BeEquivalentTo(profile);
 
         }
 

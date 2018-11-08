@@ -81,7 +81,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var topic = response.Get<Topic>();
-            topic.ShouldBeEquivalentTo(_topic);
+            topic.Should().BeEquivalentTo(_topic);
         }
 
         [Fact]

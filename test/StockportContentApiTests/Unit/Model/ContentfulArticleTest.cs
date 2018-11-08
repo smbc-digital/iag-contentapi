@@ -32,7 +32,7 @@ namespace StockportContentApiTests.Unit.Model
                 LiveChatVisible = false,
                 LiveChatText = new ContentfulLiveChat()
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

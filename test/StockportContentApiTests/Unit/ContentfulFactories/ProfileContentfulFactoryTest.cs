@@ -33,12 +33,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
-            profile.ShouldBeEquivalentTo(_contentfulProfile, o => o.Excluding(e => e.Breadcrumbs)
-                .Excluding(e => e.Image).Excluding(e => e.BackgroundImage));
+            profile.Should().BeEquivalentTo(_contentfulProfile, o => o.ExcludingMissingMembers());
             profile.Image.Should().Be(_contentfulProfile.Image.File.Url);
             profile.BackgroundImage.Should().Be(_contentfulProfile.BackgroundImage.File.Url);
             _crumbFactory.Verify(o => o.ToModel(_contentfulProfile.Breadcrumbs.First()), Times.Once);
-            profile.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
+            profile.Breadcrumbs.First().Should().BeEquivalentTo(crumb);
         }
 
         [Fact]

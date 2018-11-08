@@ -21,7 +21,7 @@ namespace StockportContentApiTests.Unit.Model
                 Subheading = string.Empty,
                 FeaturedItems = new List<ContentfulReference>(),
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

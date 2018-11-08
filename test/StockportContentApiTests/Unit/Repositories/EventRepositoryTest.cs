@@ -111,19 +111,7 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventItem = response.Get<Event>();
 
-            eventItem.ShouldBeEquivalentTo(rawEvent,
-                o =>
-                    o.Excluding(raw => raw.ThumbnailImageUrl)
-                        .Excluding(raw => raw.ImageUrl)
-                        .Excluding(raw => raw.Documents)
-                        .Excluding(e => e.UpdatedAt)
-                        .Excluding(e => e.Group)
-                        .Excluding(e => e.Coord)
-                        .Excluding(e => e.Alerts)
-                        .Excluding(e => e.EventCategories)
-                        .Excluding(e => e.Breadcrumbs)
-                        .Excluding(e => e.EventFrequency));
-
+            eventItem.Should().BeEquivalentTo(rawEvent, o => o.ExcludingNestedObjects());
             eventItem.ThumbnailImageUrl.Should().Be(rawEvent.Image.File.Url + "?h=250");
             eventItem.ImageUrl.Should().Be(rawEvent.Image.File.Url);
             eventItem.Documents.Count.Should().Be(rawEvent.Documents.Count);
@@ -195,31 +183,10 @@ namespace StockportContentApiTests.Unit.Repositories
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Count.Should().Be(2);
             eventCalender.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o
-                    .Excluding(e => e.ThumbnailImageUrl)
-                    .Excluding(e => e.ImageUrl)
-                    .Excluding(e => e.Documents)
-                    .Excluding(e => e.UpdatedAt)
-                    .Excluding(e => e.Coord)
-                    .Excluding(e => e.Group)
-                    .Excluding(e => e.EventCategories)
-                    .Excluding(e => e.Alerts)
-                    .Excluding(e => e.Breadcrumbs)
-                    .Excluding(e => e.EventFrequency));
+                .Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
 
             eventCalender.Events.Last()
-                .ShouldBeEquivalentTo(anotherEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl)
-                    .Excluding(e => e.ImageUrl)
-                    .Excluding(e => e.Documents)
-                    .Excluding(e => e.UpdatedAt)
-                    .Excluding(e => e.Coord)
-                    .Excluding(e => e.Group)
-                    .Excluding(e => e.EventCategories)
-                    .Excluding(e => e.Alerts)
-                    .Excluding(e => e.Breadcrumbs)
-                    .Excluding(e => e.EventFrequency));
+                .Should().BeEquivalentTo(anotherEvent, o => o.ExcludingNestedObjects());
         }
 
         [Fact]
@@ -251,10 +218,10 @@ namespace StockportContentApiTests.Unit.Repositories
 
             contentfulEvents.Count.Should().Be(2);
             contentfulEvents.First()
-                .ShouldBeEquivalentTo(anEvent);
+                .Should().BeEquivalentTo(anEvent);
 
             contentfulEvents.Last()
-                .ShouldBeEquivalentTo(anotherEvent);
+                .Should().BeEquivalentTo(anotherEvent);
         }
 
         [Fact]
@@ -445,8 +412,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
             eventCalender.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency).Excluding(e => e.EventFrequency));
+                .Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
         }
 
         [Fact]
@@ -470,9 +436,7 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+            eventCalender.Events.First().Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
         }
 
         [Fact]
@@ -497,9 +461,7 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(2);
-            eventCalender.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+            eventCalender.Events.First().Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
         }
 
         [Fact]
@@ -539,11 +501,8 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var eventCalender = response.Get<EventCalender>();
             eventCalender.Events.Should().HaveCount(1);
-            eventCalender.Events.First()
-                .ShouldBeEquivalentTo(event3,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.Coord).Excluding(e => e.EventCategories).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.UpdatedAt).Excluding(e => e.Group).Excluding(e => e.Alerts).Excluding(e => e.Breadcrumbs).Excluding(e => e.EventFrequency));
+            eventCalender.Events.First().Should().BeEquivalentTo(event3, o => o.ExcludingNestedObjects());
         }
-
 
         public void ShouldGetEventsWithLimitOfTwo()
         {
@@ -566,9 +525,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var eventsCalendar = response.Get<EventCalender>();
             eventsCalendar.Events.Should().HaveCount(2);
 
-            eventsCalendar.Events.First()
-                .ShouldBeEquivalentTo(anEvent,
-                    o => o.Excluding(e => e.ThumbnailImageUrl).Excluding(e => e.ImageUrl).Excluding(e => e.Documents).Excluding(e => e.Group));
+            eventsCalendar.Events.First().Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
         }
 
 

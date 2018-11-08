@@ -54,15 +54,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var section = _sectionFactory.ToModel(_contentfulSection);
 
-            section.ShouldBeEquivalentTo(_contentfulSection, o => o.Excluding(e => e.Profiles)
-                                                                  .Excluding(e => e.Documents)
-                                                                  .Excluding(e => e.Body)
-                                                                  .Excluding(e => e.AlertsInline));
+            section.Should().BeEquivalentTo(_contentfulSection, o => o.ExcludingMissingMembers());
 
             _videoRepository.Verify(o => o.Process(_contentfulSection.Body), Times.Once());
             section.Body.Should().Be(processedBody);
             _profileFactory.Verify(o => o.ToModel(_contentfulSection.Profiles.First()), Times.Once);
-            section.Profiles.First().ShouldBeEquivalentTo(profile);
+            section.Profiles.First().Should().BeEquivalentTo(profile);
             _documentFactory.Verify(o => o.ToModel(_contentfulSection.Documents.First()), Times.Once);
             section.Documents.Count.Should().Be(1);
             section.Documents.First().Should().Be(document);    

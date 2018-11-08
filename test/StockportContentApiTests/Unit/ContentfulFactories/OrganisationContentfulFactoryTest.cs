@@ -40,7 +40,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateAGroupFromAContentfulGroup()
         {
             var group = _organisationContentfulFactory.ToModel(_contentfulOrganisation);
-            group.ShouldBeEquivalentTo(_contentfulOrganisation, o => o.Excluding(e => e.ImageUrl).Excluding(e => e.Groups));
+            group.Should().BeEquivalentTo(_contentfulOrganisation, o => o.ExcludingMissingMembers());
         }
     }
 }

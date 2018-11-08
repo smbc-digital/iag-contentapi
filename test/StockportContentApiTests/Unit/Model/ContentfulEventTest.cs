@@ -38,7 +38,7 @@ namespace StockportContentApiTests.Unit.Model
                 Tags = new List<string>(),
                 Alerts = new List<ContentfulAlert>()
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

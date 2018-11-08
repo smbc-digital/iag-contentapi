@@ -60,8 +60,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Act
             var privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
             // Assert
-            privacyNotice.ShouldBeEquivalentTo(contentfulPrivacyNotice, p => p
-                .Excluding(e => e.ParentTopic));
+            privacyNotice.Should().BeEquivalentTo(contentfulPrivacyNotice, p => p
+                .ExcludingMissingMembers());
         }
     }
 }

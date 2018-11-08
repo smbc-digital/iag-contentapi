@@ -28,7 +28,7 @@ namespace StockportContentApiTests.Unit.Model
                 MapPosition = new MapPosition(),
                 Volunteering = false
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

@@ -73,7 +73,7 @@ namespace StockportContentApiTests.Unit.Repositories
             //
             _cache.Verify(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>(), It.Is<int>(s => s == 60)), Times.Once);
             response.Result.StatusCode.Should().Be(HttpStatusCode.OK);
-            responseSmartAnswer.ShouldBeEquivalentTo(smartAnswersModel);
+            responseSmartAnswer.Should().BeEquivalentTo(smartAnswersModel);
        }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace StockportContentApiTests.Unit.Repositories
             //
             _cache.Verify(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"smart-{slug}"), It.IsAny<Func<Task<ContentfulSmartAnswers>>>(), It.Is<int>(s => s == 60)), Times.Once);
             response.Result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            responseSmartAnswer.ShouldBeEquivalentTo(null);
+            responseSmartAnswer.Should().BeNull();
         }
     }
 }

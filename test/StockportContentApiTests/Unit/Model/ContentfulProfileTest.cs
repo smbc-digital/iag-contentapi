@@ -25,7 +25,7 @@ namespace StockportContentApiTests.Unit.Model
                 BackgroundImage = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Breadcrumbs = new List<ContentfulReference>()
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

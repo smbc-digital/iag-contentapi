@@ -19,7 +19,7 @@ namespace StockportContentApiTests.Unit.Model
                 Icon = string.Empty,
                 Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } }
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

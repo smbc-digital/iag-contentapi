@@ -98,7 +98,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(group);
+            responseGroup.Should().BeEquivalentTo(group);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(group);
+            responseGroup.Should().BeEquivalentTo(group);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(group);
+            responseGroup.Should().BeEquivalentTo(group);
         }
 
         [Fact]
@@ -185,7 +185,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(null);
+            responseGroup.Should().BeNull();
         }
 
         [Fact]
@@ -214,7 +214,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(null);
+            responseGroup.Should().BeNull();
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             var responseGroup = response.Get<Group>();
-            responseGroup.ShouldBeEquivalentTo(null);
+            responseGroup.Should().BeNull();
         }
 
         [Fact]
@@ -410,7 +410,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseProfile = response.Get<Group>();
-            responseProfile.MapPosition.ShouldBeEquivalentTo(location);
+            responseProfile.MapPosition.Should().BeEquivalentTo(location);
         }
 
         [Fact]

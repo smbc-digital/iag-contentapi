@@ -64,7 +64,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var topic = _topicContentfulFactory.ToModel(_contentfulTopic);
 
-            topic.ShouldBeEquivalentTo(_contentfulTopic, o => o.Excluding(e => e.Breadcrumbs)
+            topic.Should().BeEquivalentTo(_contentfulTopic, o => o.Excluding(e => e.Breadcrumbs)
                                                                  .Excluding(e => e.SubItems)
                                                                  .Excluding(e => e.SecondaryItems)
                                                                  .Excluding(e => e.TertiaryItems)
@@ -78,9 +78,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  );
 
             _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Once);
-            topic.Breadcrumbs.First().ShouldBeEquivalentTo(crumb);
+            topic.Breadcrumbs.First().Should().BeEquivalentTo(crumb);
             _alertFactory.Verify(o => o.ToModel(_contentfulTopic.Alerts.First()), Times.Once);
-            topic.Alerts.First().ShouldBeEquivalentTo(alert);
+            topic.Alerts.First().Should().BeEquivalentTo(alert);
             _subItemFactory.Verify(o => o.ToModel(_contentfulTopic.SubItems.First()), Times.Once);
             _subItemFactory.Verify(o => o.ToModel(_contentfulTopic.SecondaryItems.First()), Times.Once);
             _subItemFactory.Verify(o => o.ToModel(_contentfulTopic.TertiaryItems.First()), Times.Once);

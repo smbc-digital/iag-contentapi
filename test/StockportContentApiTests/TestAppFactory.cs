@@ -29,12 +29,24 @@ namespace StockportContentApiTests
         public static TestServer MakeFakeApp()
         {
             var hostBuilder = new WebHostBuilder()
-             .UseStartup<FakeStartup>()
-             .UseUrls("http://localhost:5001")
-             .UseKestrel()
-             .UseEnvironment("test")
+                .UseStartup<FakeStartup>()
+                .UseUrls("http://localhost:5001")
+                .UseKestrel()
+                .UseEnvironment("test")
                 .UseContentRoot(Path.GetFullPath(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
-                    "..", "..", "..")));
+                    "..", "..", "..")))
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.Sources.Clear();
+                    config
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
+                            optional: true);
+                    var tempConfig = config.Build();
+                    config.AddJsonFile(
+                        $"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json",
+                        optional: true);
+                });
 
             return new TestServer(hostBuilder);
         }

@@ -27,7 +27,7 @@ namespace StockportContentApiTests.Unit.Model
                 Teaser = string.Empty,
                 Title = string.Empty
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace StockportContentApiTests.Unit.Model
                 EmailAlerts = false,
                 EmailAlertsTopicId = string.Empty
             };
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

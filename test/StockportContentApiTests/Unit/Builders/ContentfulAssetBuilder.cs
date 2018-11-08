@@ -6,6 +6,7 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulAssetBuilder
     {
         private string _url = "image-url.jpg";
+        private string _title = "title";
         private string _type = "Asset";
         private string _fileName = "fileName";
         private string _description = "description";
@@ -21,13 +22,14 @@ namespace StockportContentApiTests.Unit.Builders
                 {
                     Url = _url,
                     Details = new FileDetails { Size = _size },
-                    FileName = _fileName
+                    FileName = _fileName,
                 },
                 SystemProperties = new SystemProperties
                 {
                     Type = _type,
                     UpdatedAt = _updatedAt
-                }
+                },
+                Title = _title
             };
         }
 
@@ -64,6 +66,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulAssetBuilder UpdatedAt(DateTime updatedAt)
         {
             _updatedAt = updatedAt;
+            return this;
+        }
+
+        public ContentfulAssetBuilder Title(string title)
+        {
+            _title = title;
             return this;
         }
     }

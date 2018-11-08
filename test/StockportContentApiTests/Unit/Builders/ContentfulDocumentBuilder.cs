@@ -6,6 +6,7 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulDocumentBuilder
     {
         private string _description = "documentTitle";
+        private string _title = "title";
         private string _url = "url.pdf";
         private int _size = 674192;
         private string _fileName = "fileName";
@@ -18,6 +19,7 @@ namespace StockportContentApiTests.Unit.Builders
                                                .Description(_description)
                                                .FileSize(_size)
                                                .UpdatedAt(_updatedAt)
+                                               .Title(_title)
                                                .Build();
         }
     }

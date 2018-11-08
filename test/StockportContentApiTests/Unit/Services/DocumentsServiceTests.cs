@@ -92,7 +92,7 @@ namespace StockportContentApiTests.Unit.Services
             var result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
             // Assert
-            result.ShouldBeEquivalentTo(expectedResult);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]

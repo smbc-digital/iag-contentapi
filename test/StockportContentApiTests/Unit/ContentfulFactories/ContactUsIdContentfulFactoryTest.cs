@@ -4,6 +4,7 @@ using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Fakes;
+using StockportContentApi.Model;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -24,7 +25,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateAContactUsIdFromAContentfulContactUsId()
         {
             var contactUsId = _contactUsIdContentfulFactory.ToModel(_contentfulContactUsId);
-            contactUsId.ShouldBeEquivalentTo(_contentfulContactUsId);
+            contactUsId.Should().BeOfType<ContactUsId>();
+            contactUsId.Should().BeEquivalentTo(_contentfulContactUsId, o => o.ExcludingMissingMembers());
         }
     }
 }
