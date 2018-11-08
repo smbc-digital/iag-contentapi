@@ -43,6 +43,10 @@ build-and-test:
 run:
 	cd src/StockportContentApi; dotnet run
 
+.PHONY: build-and-run
+build-and-run:
+	cd src/StockportContentApi; dotnet build; dotnet run
+
 .PHONY: publish-app
 publish-app:
 	cd src/StockportContentApi; dotnet publish --configuration Release -o publish;
