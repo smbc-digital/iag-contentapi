@@ -12,6 +12,7 @@ using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.Fakes;
 using StockportContentApi.Utils;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

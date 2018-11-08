@@ -14,6 +14,7 @@ using StockportContentApi.Utils;
 using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.ArticleFactories;
 using StockportContentApi.Fakes;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

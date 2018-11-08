@@ -15,6 +15,7 @@ using StockportContentApi.Services;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Services
 {

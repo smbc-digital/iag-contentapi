@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog.Extensions.Logging;
 using StockportContentApi.Model;
@@ -40,7 +41,7 @@ namespace StockportContentApiTests
 
         public class FakeStartup : Startup
         {
-            public FakeStartup(IHostingEnvironment env) : base(env)
+            public FakeStartup(IConfiguration config, IHostingEnvironment env) : base(config, env)
             {
             }
 
@@ -84,13 +85,13 @@ namespace StockportContentApiTests
                 cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.IsAny<int>()))
                     .ReturnsAsync(new ContentfulNewsRoomBuilder().Build());
 
-                var newsCategories = new List<string> { "Benefits","Business","Council leader","Crime prevention and safety","Children and families","Environment","Elections","Health and social care","Housing","Jobs","Leisure and culture","Libraries","Licensing","Partner organisations","Planning and building","Roads and travel","Schools and education","Waste and recycling","Test Category" };
+                var newsCategories = new List<string> { "Benefits", "Business", "Council leader", "Crime prevention and safety", "Children and families", "Environment", "Elections", "Health and social care", "Housing", "Jobs", "Leisure and culture", "Libraries", "Licensing", "Partner organisations", "Planning and building", "Roads and travel", "Schools and education", "Waste and recycling", "Test Category" };
                 cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>(), It.IsAny<int>())).ReturnsAsync(newsCategories);
 
-                var nullAToZ = new List<AtoZ>();             
+                var nullAToZ = new List<AtoZ>();
                 var aToZArticle = new List<AtoZ>
                 {
-                    new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>()),                    
+                    new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>()),
                 };
                 var aToZTopic = new List<AtoZ>
                 {
@@ -112,7 +113,7 @@ namespace StockportContentApiTests
 
                 var contentfulClientManager = new Mock<IContentfulClientManager>();
                 contentfulClientManager.Setup(o => o.GetClient(It.IsAny<ContentfulConfig>())).Returns(FakeContentfulClientFactory.Client.Object);
-                services.AddSingleton(contentfulClientManager.Object);                
+                services.AddSingleton(contentfulClientManager.Object);
             }
 
             // used for removing middleware authentication
@@ -129,7 +130,7 @@ namespace StockportContentApiTests
             public LoggingHttpClient GetHttpClient(ILoggerFactory loggingFactory)
             {
                 var fakeHttpClient = FakeHttpClientFactory.Client;
-                
+
                 return new LoggingHttpClient(fakeHttpClient, loggingFactory.CreateLogger<LoggingHttpClient>());
             }
 

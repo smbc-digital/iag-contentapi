@@ -3,6 +3,7 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using System;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Builders
 {

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.Fakes;
+using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Repositories
 {

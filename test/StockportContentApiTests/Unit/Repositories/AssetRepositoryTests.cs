@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Contentful.Core;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Xunit;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Razor.CodeGenerators;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Client;
