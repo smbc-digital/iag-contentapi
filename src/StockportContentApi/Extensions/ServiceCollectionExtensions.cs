@@ -284,7 +284,7 @@ namespace StockportContentApi.Extensions
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddContentfulConfig(this IServiceCollection services, IConfigurationRoot configuration)
+        public static IServiceCollection AddContentfulConfig(this IServiceCollection services, IConfiguration configuration)
         {
             Func<string, ContentfulConfig> createConfig = businessId =>
                 new ContentfulConfig(businessId)
@@ -305,7 +305,7 @@ namespace StockportContentApi.Extensions
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRedirects(this IServiceCollection services, IConfigurationRoot configuration)
+        public static IServiceCollection AddRedirects(this IServiceCollection services, IConfiguration configuration)
         {
             var redirectBusinessIds = new List<string>();
             configuration.GetSection("RedirectBusinessIds").Bind(redirectBusinessIds);
@@ -321,7 +321,7 @@ namespace StockportContentApi.Extensions
         /// <param name="configuration"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, bool useRedisSession, ILogger logger)
         {
             if (useRedisSession)
             {
@@ -341,7 +341,7 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfigurationRoot configuration, bool useRedisSession, ILogger logger)
+        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfiguration configuration, bool useRedisSession, ILogger logger)
         {
             if (useRedisSession)
             {
@@ -373,7 +373,7 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddGroupConfiguration(this IServiceCollection services, IConfigurationRoot configuration, ILogger logger)
+        public static IServiceCollection AddGroupConfiguration(this IServiceCollection services, IConfiguration configuration, ILogger logger)
         {
             if (!string.IsNullOrEmpty(configuration["group:authenticationKey"]))
             {

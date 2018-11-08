@@ -25,18 +25,12 @@ namespace StockportContentApi
         private readonly string _appEnvironment;
         private const string ConfigDir = "app-config";
         private readonly bool _useRedisSession;
-        public IConfigurationRoot Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            _contentRootPath = env.ContentRootPath;
-
-            var configBuilder = new ConfigurationBuilder();
-            var configLoader = new ConfigurationLoader(configBuilder, ConfigDir);
-
-            Configuration = configLoader.LoadConfiguration(env, _contentRootPath);
-            _appEnvironment = configLoader.EnvironmentName(env);
-
+            Configuration = configuration;
+            _appEnvironment = env.EnvironmentName;
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
         }
 
