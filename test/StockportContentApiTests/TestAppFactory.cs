@@ -129,7 +129,7 @@ namespace StockportContentApiTests
             }
 
             // used for removing middleware authentication
-            public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
+            public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
             {
                 app.UseStaticFiles();
                 app.UseMvc();
