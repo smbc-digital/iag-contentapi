@@ -19,13 +19,12 @@ namespace StockportContentApiTests.Config
                 .Add("TESTID_MANAGEMENT_KEY", "KEY")
                 .Add("TESTID_SPACE", space)
                 .Build();
+            var expectedResult = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
 
             config.AccessKey.Should().Be(key);
             config.SpaceKey.Should().Be(space);
 
-            Assert.Equal(
-                config.ContentfulUrl.ToString(),
-                "https://fake.url/spaces/SPACE/entries?access_token=KEY");
+            Assert.Equal(config.ContentfulUrl.ToString(), expectedResult);
         }
         
         [Fact]

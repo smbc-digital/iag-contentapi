@@ -98,6 +98,25 @@ namespace StockportContentApi
             });
         }
 
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
+        {
+            // add logging
+            loggerFactory.AddSerilog();
+
+            // swagger
+            app.UseSwagger();
+            app.UseSwaggerUi(swaggerUrl: _appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json");
+
+            app.UseMiddleware<AuthenticationMiddleware>();
+            app.UseClientRateLimiting();
+            
+            app.UseStaticFiles();
+            app.UseMvc();
+
+            // close logger
+            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+        }
+       
         private void ConfigureSerilog()
         {
             var logConfig = new LoggerConfiguration()
