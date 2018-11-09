@@ -19,7 +19,7 @@ using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
-using NLog.Extensions.Logging;
+using Serilog;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests
@@ -136,7 +136,7 @@ namespace StockportContentApiTests
                 app.UseStaticFiles();
                 app.UseMvc();
 
-                loggerFactory.AddNLog();
+                loggerFactory.AddSerilog();
             }
 
             public LoggingHttpClient GetHttpClient(ILoggerFactory loggingFactory)
