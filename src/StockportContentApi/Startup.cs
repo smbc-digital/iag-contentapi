@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,14 +6,14 @@ using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
-using Microsoft.Extensions.Caching.Distributed;
 using StockportContentApi.Extensions;
-using StockportContentApi.Middleware;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
-using StockportWebapp.Configuration;
 using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
+using StockportContentApi.Middleware;
 using Swashbuckle.Swagger.Model;
 
 namespace StockportContentApi
@@ -23,13 +22,13 @@ namespace StockportContentApi
     {
         private readonly string _contentRootPath;
         private readonly string _appEnvironment;
-        private const string ConfigDir = "app-config";
         private readonly bool _useRedisSession;
         public IConfiguration Configuration { get; set; }
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            _contentRootPath = env.ContentRootPath;
             _appEnvironment = env.EnvironmentName;
             _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
         }
@@ -97,27 +96,6 @@ namespace StockportContentApi
                 });
 
             });
-        }
-
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
-        {
-            // add logging
-            loggerFactory.AddSerilog();
-
-            // swagger
-            app.UseSwagger();
-            app.UseSwaggerUi(swaggerUrl: _appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json");
-
-            app.UseMiddleware<AuthenticationMiddleware>();
-            app.UseClientRateLimiting();
-
-            app.UseApplicationInsightsRequestTelemetry();
-            app.UseApplicationInsightsExceptionTelemetry();
-            app.UseStaticFiles();
-            app.UseMvc();
-
-            // close logger
-            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
 
         private void ConfigureSerilog()

@@ -8,8 +8,8 @@ namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulPrivacyNotice : ContentfulReference
     {
-        public string Slug { get; set; }
-        public string Title { get; set; }
+        public new string Slug { get; set; }
+        public new string Title { get; set; }
         public string Category { get; set; }
         public bool OutsideEu { get; set; }
         public bool AutomatedDecision { get; set; }
@@ -23,7 +23,7 @@ namespace StockportContentApi.ContentfulModels
         public string UrlTwo { get; set; }
         public string UrlThree { get; set; }
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
-        public SystemProperties Sys { get; set; }
+        public new SystemProperties Sys { get; set; }
 
         public ContentfulPrivacyNotice() { }
 

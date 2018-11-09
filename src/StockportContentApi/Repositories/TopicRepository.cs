@@ -40,7 +40,6 @@ namespace StockportContentApi.Repositories
             var model = _topicFactory.ToModel(entry);
 
             return HttpResponse.Successful(model);
-            return HttpResponse.Successful(model);
         }
 
         public async Task<HttpResponse> Get()

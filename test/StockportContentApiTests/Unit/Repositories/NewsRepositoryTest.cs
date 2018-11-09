@@ -51,11 +51,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-        private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
         private readonly Mock<IContentfulClient> _client;
-        private readonly Mock<IContentfulClientManager> _contentfulManager;
         private readonly NewsContentfulFactory _contentfulFactory;
         private readonly Mock<IContentfulClientManager> _contentfulClientManager;
         private readonly ContentType _newsContentType;

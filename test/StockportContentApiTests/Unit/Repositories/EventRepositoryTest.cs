@@ -504,6 +504,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.First().Should().BeEquivalentTo(event3, o => o.ExcludingNestedObjects());
         }
 
+        [Fact(Skip = "Needs to fixed")]
         public void ShouldGetEventsWithLimitOfTwo()
         {
             var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 09, 01)).Build();
@@ -529,6 +530,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
 
+        [Fact(Skip = "Needs to fixed")]
         public void ShouldCreateEventWithFauteredSetToTrue()
         {
             const string slug = "event-of-the-century";
@@ -548,6 +550,7 @@ namespace StockportContentApiTests.Unit.Repositories
             eventItem.Featured.Should().BeTrue();
         }
 
+        [Fact(Skip = "Needs to fixed")]
         public void ShouldCreateEventWithFauteredSetToFalse()
         {
             const string slug = "event-of-the-century";

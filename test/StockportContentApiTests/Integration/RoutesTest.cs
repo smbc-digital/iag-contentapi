@@ -485,7 +485,7 @@ namespace StockportContentApiTests.Integration
             return url;
         }
 
-        public void StartServer(DateTime date)
+        private void StartServer(DateTime date)
         {
             TestAppFactory.FakeTimeProvider.SetDateTime(date);
             var server = TestAppFactory.MakeFakeApp();

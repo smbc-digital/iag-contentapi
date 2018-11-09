@@ -19,7 +19,7 @@ using StockportContentApiTests.Unit.Builders;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
-using NLog.Extensions.Logging;
+using Serilog;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests
@@ -129,14 +129,12 @@ namespace StockportContentApiTests
             }
 
             // used for removing middleware authentication
-            public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
+            public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
             {
-                app.UseApplicationInsightsRequestTelemetry();
-                app.UseApplicationInsightsExceptionTelemetry();
                 app.UseStaticFiles();
                 app.UseMvc();
 
-                loggerFactory.AddNLog();
+                loggerFactory.AddSerilog();
             }
 
             public LoggingHttpClient GetHttpClient(ILoggerFactory loggingFactory)
