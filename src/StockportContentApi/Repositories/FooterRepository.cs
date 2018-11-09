@@ -18,7 +18,6 @@ namespace StockportContentApi.Repositories
     public class FooterRepository
     {
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly string _contentType = "footer";
         private readonly IContentfulFactory<ContentfulFooter, Footer> _contentfulFactory;
 
         public FooterRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulFooter, Footer> contentfulFactory)
