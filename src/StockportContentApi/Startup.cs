@@ -130,7 +130,7 @@ namespace StockportContentApi
             esLogConfig.Configure(logConfig);
 
             Log.Logger = logConfig.CreateLogger();
-            Log.Logger.Warning("Completed logging configuration...");
+            Log.Logger.Information("Completed logging configuration...");
         }
     }
 }
