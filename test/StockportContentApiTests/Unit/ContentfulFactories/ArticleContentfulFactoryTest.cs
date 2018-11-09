@@ -29,7 +29,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
-        private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
         private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
