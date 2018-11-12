@@ -9,10 +9,10 @@ namespace StockportContentApi
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://0.0.0.0:5001")
                 .UseKestrel()
@@ -27,8 +27,9 @@ namespace StockportContentApi
                         .AddJsonFile("appsettings.json", true)
                         .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true);
                     var tempConfig = config.Build();
-                    config.AddJsonFile($"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json", true);
-                })
-                .Build();
+                    config.AddJsonFile(
+                        $"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json",
+                        true);
+                });
     }
 }

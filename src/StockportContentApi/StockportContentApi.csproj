@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>StockportContentApi</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>StockportContentApi</PackageId>
-    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <AssetTargetFallback>$(AssetTargetFallback);dotnet5.6</AssetTargetFallback>
     <DefaultItemExcludes>$(DefaultItemExcludes);publish/**/*</DefaultItemExcludes>
   </PropertyGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Elasticsearch.Net.Aws" Version="6.0.0" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
     <PackageReference Include="jose-jwt" Version="2.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Serilog" Version="2.7.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.1" />
@@ -22,10 +22,8 @@
     <PackageReference Include="contentful.csharp" Version="3.6.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="6.5.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.513" />
     <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
  
 </Project>

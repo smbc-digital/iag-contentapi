@@ -76,7 +76,6 @@ namespace StockportContentApi
             services.AddContentfulClients();
             services.AddContentfulFactories();
             services.AddRepositories();
-            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
             services.AddAutoMapper();
             services.AddServices();
