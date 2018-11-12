@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Moq;
 using StockportContentApi.Utils;
 using Xunit;
@@ -77,9 +78,9 @@ namespace StockportContentApiTests.Unit.Utils
             valueFromCall.Should().Be("Cache Data");
         }
 
-        private async Task<string> testFallbackMethodAsync()
+        public async Task<string> testFallbackMethodAsync()
         {
-            return "Contentful Data";
+            return await Task.FromResult("Contentful Data");
         }
     }
 }

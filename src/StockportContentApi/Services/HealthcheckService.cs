@@ -43,7 +43,7 @@ namespace StockportContentApi.Services
         {
             // Commented out because it was breaking prod.
             //var keys = await _cacheWrapper.GetKeys();
-            return new Healthcheck(_appVersion, _sha, _environment, new List<RedisValueData>());
+            return await Task.FromResult(new Healthcheck(_appVersion, _sha, _environment, new List<RedisValueData>()));
         }
     }
 }

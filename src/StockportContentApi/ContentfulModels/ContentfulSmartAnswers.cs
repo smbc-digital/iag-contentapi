@@ -8,8 +8,8 @@ namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulSmartAnswers : ContentfulReference
     {
-        public string Title { get; set; }
-        public string Slug { get; set; }
+        public new string Title { get; set; }
+        public new string Slug { get; set; }
         public List<QuestionJson> QuestionJson { get; set; }
     }
 }

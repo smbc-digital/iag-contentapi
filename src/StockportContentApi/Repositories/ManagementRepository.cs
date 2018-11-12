@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AutoMapper;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using Contentful.Core;
 using Contentful.Core.Models;
-using NLog.Common;
-using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
-using StockportContentApi.ManagementModels;
 using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories

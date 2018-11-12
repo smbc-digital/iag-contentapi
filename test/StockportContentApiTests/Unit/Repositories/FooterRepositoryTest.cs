@@ -71,6 +71,7 @@ namespace StockportContentApiTests.Unit.Repositories
             footer.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
+        [Fact(Skip = "Needs to fixed")]
         public void ShouldReturn404IfNoEntryExists()
         {
             var builderFooter = new Footer("Title", "a-slug", "Copyright", new List<SubItem>(),

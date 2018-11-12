@@ -281,11 +281,10 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<Group>> GetLinkedGroupsByOrganisation(string slug)
         {
-            var response = Get();
+            var response = await Get();
+            var groups = response.Get<List<Group>>();
 
-            var groups = response.Result.Get<List<Group>>();
-
-            groups = groups.Where(g => g.Organisation.Slug == slug)
+            groups =  groups.Where(g => g.Organisation.Slug == slug)
                 .OrderBy(g => g.Name)
                 .ToList();
 
