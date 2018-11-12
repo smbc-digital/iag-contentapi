@@ -2,10 +2,8 @@
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using System.Threading.Tasks;
-using StockportContentApi.Http;
 using Contentful.Core.Search;
 using StockportContentApi.ContentfulModels;
-using System.Net;
 using System.Linq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Model;

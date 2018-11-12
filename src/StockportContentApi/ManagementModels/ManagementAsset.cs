@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-
-namespace StockportContentApi.ManagementModels
+﻿namespace StockportContentApi.ManagementModels
 {
     public class ManagementAsset
     {

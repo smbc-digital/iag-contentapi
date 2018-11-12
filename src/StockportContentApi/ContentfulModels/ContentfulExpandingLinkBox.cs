@@ -1,10 +1,5 @@
-﻿using Contentful.Core.Configuration;
-using Contentful.Core.Models;
-using Newtonsoft.Json;
-using System;
+﻿using Contentful.Core.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockportContentApi.ContentfulModels
 {

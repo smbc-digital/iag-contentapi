@@ -9,8 +9,6 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
-using System.Collections.Generic;
 
 namespace StockportContentApi.Repositories
 {

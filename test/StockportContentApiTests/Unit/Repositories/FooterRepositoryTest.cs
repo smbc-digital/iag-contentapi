@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
-using StockportContentApi.Factories;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using Xunit;

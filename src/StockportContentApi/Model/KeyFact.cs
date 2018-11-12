@@ -1,5 +1,4 @@
-﻿using System;
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class KeyFact
     {

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using System;
 using Document = StockportContentApi.Model.Document;

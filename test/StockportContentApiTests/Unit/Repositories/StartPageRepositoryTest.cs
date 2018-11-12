@@ -7,19 +7,14 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi;
 using StockportContentApi.Client;
-using StockportContentApi.Factories;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApiTests.Builders;
-using StockportContentApiTests.Unit.Fakes;
 using Xunit;
-using File = System.IO.File;
 
 namespace StockportContentApiTests.Unit.Repositories
 {

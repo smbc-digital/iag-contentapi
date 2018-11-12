@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Configuration;
-using Contentful.Core.Models;
-using Newtonsoft.Json;
+﻿using Contentful.Core.Models;
 using StockportContentApi.Attributes;
 
 namespace StockportContentApi.Model

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Search;
@@ -12,7 +11,6 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using Contentful.Core.Models;

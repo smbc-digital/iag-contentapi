@@ -10,7 +10,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
+
 namespace StockportContentApi.Repositories
 {
     public class RedirectsRepository : BaseRepository

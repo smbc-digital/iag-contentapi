@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.Model;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.ContentfulModels
 {

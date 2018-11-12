@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+﻿using Xunit;
 using FluentAssertions;
-using StockportContentApi.ContentfulModels;
 using Contentful.Core.Models;
-using StockportContentApi.ContentfulFactories;
-using Moq;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
-using StockportContentApiTests.Unit.Builders;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.Fakes;
 

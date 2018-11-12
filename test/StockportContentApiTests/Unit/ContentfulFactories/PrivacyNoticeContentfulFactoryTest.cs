@@ -2,9 +2,7 @@
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Moq;
 using Xunit;
 

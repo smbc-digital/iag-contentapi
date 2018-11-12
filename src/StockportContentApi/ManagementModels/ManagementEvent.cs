@@ -1,10 +1,6 @@
-﻿using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockportContentApi.ManagementModels
 {

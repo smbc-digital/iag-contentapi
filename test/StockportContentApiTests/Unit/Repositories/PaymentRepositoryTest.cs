@@ -17,7 +17,6 @@ using StockportContentApi.Utils;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories

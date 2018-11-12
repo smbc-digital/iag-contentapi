@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core;
-using Contentful.Core.Models;
-using Contentful.Core.Search;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

@@ -15,7 +15,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
-using StockportContentApi.Model;
 using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Integration

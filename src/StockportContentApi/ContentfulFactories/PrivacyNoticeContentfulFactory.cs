@@ -1,9 +1,6 @@
 ﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using StockportContentApi.Config;
 using StockportContentApi.Exceptions;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;

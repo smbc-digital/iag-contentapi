@@ -1,11 +1,6 @@
-﻿using System;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using StockportContentApi.Config;
 using StockportContentApi.Exceptions;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Controllers

@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Fakes;

@@ -9,7 +9,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Linq;
-using Contentful.Core;
 using Contentful.Core.Models;
 using Microsoft.Extensions.Configuration;
 using StockportContentApi.Client;

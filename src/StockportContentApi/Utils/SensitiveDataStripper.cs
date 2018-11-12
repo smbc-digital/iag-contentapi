@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using StockportContentApi.Attributes;
-using System;
 using System.Linq;
-using System.Reflection;
 
 namespace StockportContentApi.Utils
 {

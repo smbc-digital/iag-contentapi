@@ -3,15 +3,11 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Unit.Builders;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Moq;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using StockportContentApiTests.Builders;
 using Xunit;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.Fakes;
 

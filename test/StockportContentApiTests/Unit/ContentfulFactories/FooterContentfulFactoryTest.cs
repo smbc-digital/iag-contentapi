@@ -2,13 +2,11 @@
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulModels;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulFactories;
 using Moq;
 using StockportContentApi.Model;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

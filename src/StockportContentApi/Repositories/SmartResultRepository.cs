@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Contentful.Core;
 using Contentful.Core.Errors;
-using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Client;

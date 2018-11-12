@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
@@ -10,7 +9,6 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.Fakes;
 

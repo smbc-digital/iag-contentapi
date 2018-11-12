@@ -1,7 +1,5 @@
 ﻿using StockportContentApi.Config;
 using StockportContentApi.Model;
-using StockportContentApi.Http;
-using System.Net;
 using System.Threading.Tasks;
 using StockportContentApi.Utils;
 using StockportContentApi.ContentfulFactories;
@@ -10,7 +8,6 @@ using StockportContentApi.Client;
 using Contentful.Core.Search;
 using System.Linq;
 using System.Collections.Generic;
-using System.Globalization;
 using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApi.Repositories

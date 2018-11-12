@@ -1,5 +1,3 @@
-using Contentful.Core.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public static class AsyncTestHelper

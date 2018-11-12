@@ -2,8 +2,6 @@
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulFactories;
-using Microsoft.AspNetCore.Http;
-using Moq;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

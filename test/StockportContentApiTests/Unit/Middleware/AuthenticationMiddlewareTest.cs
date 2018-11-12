@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -10,11 +8,7 @@ using StockportContentApi.Middleware;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Xunit;
-using Contentful.Core.Search;
-using StockportContentApi.ContentfulModels;
-using System.Collections.Generic;
 using StockportContentApi.Exceptions;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Middleware
 {

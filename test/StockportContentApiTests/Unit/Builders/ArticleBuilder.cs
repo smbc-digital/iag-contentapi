@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders

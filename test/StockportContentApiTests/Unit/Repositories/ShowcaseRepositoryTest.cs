@@ -18,13 +18,10 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using StockportContentApi.Factories;
 using Microsoft.Extensions.Logging;
 using StockportContentApiTests.Unit.Builders;
-using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +8,6 @@ using StockportContentApi.Config;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
-using System.Text.RegularExpressions;
 using StockportContentApi.Exceptions;
 
 namespace StockportContentApi.Middleware

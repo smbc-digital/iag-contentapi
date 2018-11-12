@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using Contentful.Core.Models;
@@ -11,14 +9,11 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using StockportContentApi.Utils;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
