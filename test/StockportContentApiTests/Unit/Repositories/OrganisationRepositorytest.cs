@@ -90,7 +90,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            contentfulOrganisation.Should().BeEquivalentTo(organisation, o => o.ExcludingNestedObjects());
+            organisation.Slug.Should().Be(contentfulOrganisation.Slug);
         }
 
         [Fact]

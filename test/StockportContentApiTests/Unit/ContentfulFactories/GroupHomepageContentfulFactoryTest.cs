@@ -4,6 +4,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Unit.Builders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Moq;
 using StockportContentApi.Model;
@@ -40,19 +41,46 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake(), _alertFactory.Object, _eventBannerFactory.Object);
         }
 
-        [Fact(Skip = "Fluent Assertions update")]
+        [Fact]
         public void ShouldReturnGroupHomepage()
         {
+            // Arrange
             var eventBanner = new EventBanner("title", "teaser", "icon", "link");
+            var featuredGroup = new GroupBuilder().Build();
+            var category = new GroupCategory("title", "slug", "icon", "image");
+            var subCategory = new GroupSubCategory("title", "slug");
+            var alert = new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MinValue,
+                "slug");
 
-            _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(new GroupBuilder().Build());
-            _groupCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupCategory>())).Returns(new GroupCategory("title", "slug", "icon", "image"));
-            _groupSubCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupSubCategory>())).Returns(new GroupSubCategory("title","slug"));
+            _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(featuredGroup);
+            _groupCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupCategory>())).Returns(category);
+            _groupSubCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupSubCategory>())).Returns(subCategory);
             _eventBannerFactory.Setup(o => o.ToModel(_contentfulGroupHomepage.EventBanner)).Returns(eventBanner);
+            _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
-            var groupHomepage = _groupHomepageContentfulFactory.ToModel(_contentfulGroupHomepage);
-            groupHomepage.Should().BeEquivalentTo(_contentfulGroupHomepage, o => o.ExcludingMissingMembers());
-            groupHomepage.BackgroundImage.Should().Be(_contentfulGroupHomepage.BackgroundImage.File.Url);
+            // Act
+            var result = _groupHomepageContentfulFactory.ToModel(_contentfulGroupHomepage);
+
+            // Assert
+            result.Title.Should().Be("title");
+            result.Slug.Should().Be("slug");
+            result.BackgroundImage.Should().Be("image-url.jpg");
+            result.FeaturedGroupsHeading.Should().Be("heading");
+
+            result.FeaturedGroups.Count.Should().Be(1);
+            result.FeaturedGroups.First().Should().BeEquivalentTo(featuredGroup);
+
+            result.FeaturedGroupsCategory.Should().BeEquivalentTo(category);
+            result.FeaturedGroupsSubCategory.Should().BeEquivalentTo(subCategory);
+
+            result.Alerts.Count().Should().Be(1);
+            result.Alerts.First().Should().BeEquivalentTo(alert);
+
+            result.BodyHeading.Should().Be("bodyheading");
+            result.Body.Should().Be("body");
+            result.SecondaryBodyHeading.Should().Be("secondaryBodyHeading");
+            result.SecondaryBody.Should().Be("secondaryBody");
+            result.EventBanner.Should().BeEquivalentTo(eventBanner);
         }
         
     }

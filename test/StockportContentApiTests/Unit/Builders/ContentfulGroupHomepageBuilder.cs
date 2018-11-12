@@ -1,5 +1,7 @@
-﻿using Contentful.Core.Models;
+﻿using System.Collections.Generic;
+using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -14,6 +16,11 @@ namespace StockportContentApiTests.Unit.Builders
         };
         private ContentfulEventBanner _eventBanner =
             new ContentfulEventBannerBuilder().Build();
+        private string _featuredGroupsHeading = "heading";
+        private List<ContentfulGroup> _featuredGroups = new List<ContentfulGroup>
+        {
+            new ContentfulGroupBuilder().Build()
+        };
 
         public ContentfulGroupHomepage Build()
         {
@@ -22,7 +29,17 @@ namespace StockportContentApiTests.Unit.Builders
                 Slug = _slug,
                 Title = _title,
                 BackgroundImage = _backgroundImage,
-                EventBanner = _eventBanner
+                EventBanner = _eventBanner,
+                FeaturedGroupsHeading = _featuredGroupsHeading,
+                FeaturedGroups = _featuredGroups,
+                Alerts = new List<ContentfulAlert>
+                {
+                    new ContentfulAlertBuilder().Build()
+                },
+                BodyHeading = "bodyheading",
+                Body = "body",
+                SecondaryBodyHeading = "secondaryBodyHeading",
+                SecondaryBody = "secondaryBody"
             };
         }
 

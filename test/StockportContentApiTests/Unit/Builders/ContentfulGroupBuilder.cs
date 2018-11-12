@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _facebook = "_facebook";
         private string _address = "_address";
         private string _description = "_description";
-        private List<string> _cost = new List<string>() {"lots"};
+        private List<string> _cost = new List<string> { "lots" };
         private string _costText = "";
         private string _abilityLevel = "";
         private string _accessibleTransportLink = "link";
@@ -37,13 +37,28 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
         private SystemProperties _sys = new SystemProperties
         {
-            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id"} }
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id"} },
+            UpdatedAt = DateTime.MinValue
         };
-        private GroupAdministrators _groupAdministrators = new GroupAdministrators();
+        private GroupAdministrators _groupAdministrators = new GroupAdministrators()
+        {
+            Items = new List<GroupAdministratorItems>
+            {
+                new GroupAdministratorItems
+                {
+                    Name = "Name",
+                    Email = "Email",
+                    Permission = "admin"
+                }
+            }
+        };
         private DateTime _dateHiddenFrom = DateTime.MinValue;
         private DateTime _dateHiddenTo = DateTime.MinValue;
         private ContentfulOrganisation _organisation = new ContentfulOrganisation();
-        private List<string> _suitableFor = new List<string>();
+        private List<string> _suitableFor = new List<string>()
+        {
+            "people"
+        };
         private List<string> _ageRanges = new List<string>(){"15-20"};
         private bool _volunteering = true;
         private string _volunteeringText = "text";
@@ -56,6 +71,16 @@ namespace StockportContentApiTests.Unit.Builders
                 {
                     Type = "NotALink"
                 }
+            }
+        };
+        private string _donationsText = "donText";
+        private string _donationsUrl = "donUrl";
+        private List<ContentfulGroupSubCategory> _subCategories = new List<ContentfulGroupSubCategory>
+        {
+            new ContentfulGroupSubCategory
+            {
+                Name = "name",
+                Slug = "slug"
             }
         };
 
@@ -89,7 +114,11 @@ namespace StockportContentApiTests.Unit.Builders
                 AdditionalInformation = _additionalInformation,
                 Volunteering = _volunteering,
                 VolunteeringText = _volunteeringText,
-                AdditionalDocuments = _additionalDocuments
+                AdditionalDocuments = _additionalDocuments,
+                DonationsText = _donationsText,
+                DonationsUrl = _donationsUrl,
+                SubCategories = _subCategories
+                
             };
         }
 

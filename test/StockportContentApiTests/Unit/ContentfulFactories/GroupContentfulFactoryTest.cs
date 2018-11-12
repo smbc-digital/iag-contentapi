@@ -48,7 +48,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Arrange
             var crumb = new Crumb("Stockport Local", string.Empty, "groups");
             var category = new GroupCategory("name", "slug", "icon", "imageUrl");
-            var returnEvent = _contentfulEventBuilder.Build();
             var administrators = new GroupAdministrators
             {
                 Items = new List<GroupAdministratorItems>
@@ -63,8 +62,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             };
             var mapPosition = new MapPosition
             {
-                Lat = 12,
-                Lon = 12
+                Lat = 39,
+                Lon = 2
             };
             var subCategories = new List<GroupSubCategory>
             {
@@ -73,10 +72,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var organisation = new Organisation
             {
                 Title = "Org"
-            };
-            var linkedGroups = new List<Group>
-            {
-                new GroupBuilder().Build()
             };
             var suitableFor = new List<string>
             {
@@ -87,11 +82,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
             _contentfulGroupCategoryFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulGroupCategory>()))
                 .Returns(category);
+            _contentfulGroupSubCategoryFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulGroupSubCategory>()))
+                .Returns(subCategories.First());
+            _contentfulOrganisationFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulOrganisation>()))
+                .Returns(organisation);
 
             // Act
             var result = _groupContentfulFactory.ToModel(_contentfulGroup);
-
-
+            
             // Assert
             result.AbilityLevel.Should().Be("");
             result.AccessibleTransportLink.Should().Be("link");
@@ -119,13 +117,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Email.Should().Be("_email");
             result.Description.Should().Be("_description");
             result.Donations.Should().BeFalse();
-            result.DonationsText.Should().Be("");
-            result.DonationsUrl.Should().Be("");
-            result.ImageUrl.Should().Be("");
-
-            result.Events.Count.Should().Be(1);
-            result.Events.First().Should().BeEquivalentTo(returnEvent);
-
+            result.DonationsText.Should().Be("donText");
+            result.DonationsUrl.Should().Be("donUrl");
+            result.ImageUrl.Should().Be("image-url.jpg");
             result.GroupAdministrators.Should().BeEquivalentTo(administrators);
             result.MapPosition.Should().BeEquivalentTo(mapPosition);
             result.Name.Should().Be("_name");
@@ -139,7 +133,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.SubCategories.Should().BeEquivalentTo(subCategories);
             result.Status.Should().Be("Published");
             result.Organisation.Should().BeEquivalentTo(organisation);
-            result.LinkedGroups.Should().BeEquivalentTo(linkedGroups);
             result.SuitableFor.Should().BeEquivalentTo(suitableFor);
         }
     }

@@ -149,9 +149,6 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var news = response.Get<News>();        
-            news.Should().BeEquivalentTo(contentfulNews, o => o.ExcludingNestedObjects());
-            news.Image.Should().Be(contentfulNews.Image.File.Url);
-            news.ThumbnailImage.Should().Be(contentfulNews.Image.File.Url + "?h=250");
         }
 
         [Fact]
