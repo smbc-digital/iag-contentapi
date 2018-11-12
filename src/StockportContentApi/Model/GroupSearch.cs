@@ -1,8 +1,4 @@
-﻿using GeoCoordinatePortable;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class GroupSearch
     {

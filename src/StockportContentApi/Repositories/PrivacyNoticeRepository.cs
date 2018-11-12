@@ -3,12 +3,9 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace StockportContentApi.Repositories

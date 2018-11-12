@@ -11,7 +11,6 @@ using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 

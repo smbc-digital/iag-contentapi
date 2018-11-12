@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using StockportContentApi.Model;
 using Xunit;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;

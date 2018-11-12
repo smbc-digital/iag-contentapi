@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.Utils;
 using Xunit;

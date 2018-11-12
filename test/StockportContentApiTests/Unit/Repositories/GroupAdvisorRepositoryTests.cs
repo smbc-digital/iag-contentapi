@@ -4,7 +4,6 @@ using StockportContentApi.Repositories;
 using StockportContentApi.Config;
 using StockportContentApi.Client;
 using Moq;
-using System.Net;
 using StockportContentApi.Model;
 using System.Collections.Generic;
 using Contentful.Core;

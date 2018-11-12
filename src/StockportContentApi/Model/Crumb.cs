@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Contentful.Core.Models;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Crumb
     {     

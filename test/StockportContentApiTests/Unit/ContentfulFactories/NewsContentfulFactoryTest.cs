@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;

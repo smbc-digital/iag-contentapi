@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
@@ -7,7 +6,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

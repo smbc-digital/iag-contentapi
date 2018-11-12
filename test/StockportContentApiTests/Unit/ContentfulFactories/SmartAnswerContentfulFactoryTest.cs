@@ -1,14 +1,7 @@
-﻿using System.Linq;
-using Xunit;
+﻿using Xunit;
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
-using StockportContentApi.ContentfulModels;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulFactories;
-using Moq;
-using StockportContentApi.Model;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
 using StockportContentApi.Fakes;
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using StockportContentApi.Builders;
 using StockportContentApi.Config;
@@ -9,7 +7,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Exceptions;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.Services
 {

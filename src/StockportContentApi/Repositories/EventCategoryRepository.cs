@@ -10,7 +10,6 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories

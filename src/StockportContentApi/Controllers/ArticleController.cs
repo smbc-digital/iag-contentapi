@@ -1,10 +1,8 @@
 ﻿using StockportContentApi.Repositories;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
-using StockportContentApi.Http;
 
 namespace StockportContentApi.Controllers
 {

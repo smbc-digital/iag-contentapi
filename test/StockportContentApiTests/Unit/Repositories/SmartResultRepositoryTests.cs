@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Contentful.Core;
 using Contentful.Core.Errors;
@@ -13,7 +11,6 @@ using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using Xunit;
 

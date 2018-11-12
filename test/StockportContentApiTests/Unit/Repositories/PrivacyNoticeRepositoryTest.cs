@@ -9,9 +9,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Xunit;
 

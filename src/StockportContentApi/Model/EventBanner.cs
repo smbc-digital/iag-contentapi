@@ -1,7 +1,4 @@
-﻿using Contentful.Core.Configuration;
-using Newtonsoft.Json;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
    public class EventBanner
     {

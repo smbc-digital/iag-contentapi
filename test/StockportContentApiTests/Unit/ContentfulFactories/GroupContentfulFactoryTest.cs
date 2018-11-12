@@ -10,7 +10,6 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;

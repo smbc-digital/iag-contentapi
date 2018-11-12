@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.Model
 {

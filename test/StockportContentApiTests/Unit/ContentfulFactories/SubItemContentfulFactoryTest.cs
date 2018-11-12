@@ -9,7 +9,6 @@ using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

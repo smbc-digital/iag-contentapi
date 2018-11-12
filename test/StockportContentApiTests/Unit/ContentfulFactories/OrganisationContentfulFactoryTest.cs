@@ -1,13 +1,9 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
-using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories

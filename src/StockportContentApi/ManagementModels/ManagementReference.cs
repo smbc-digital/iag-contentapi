@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StockportContentApi.Model;
-
-namespace StockportContentApi.ManagementModels
+﻿namespace StockportContentApi.ManagementModels
 {
     public class ManagementReference
     {

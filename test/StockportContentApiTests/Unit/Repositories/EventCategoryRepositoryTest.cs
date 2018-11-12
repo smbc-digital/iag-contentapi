@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading;
 using Contentful.Core.Models;
-using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.Config;
@@ -16,7 +13,6 @@ using StockportContentApi.Client;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
-using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
