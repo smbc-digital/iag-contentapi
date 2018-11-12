@@ -45,24 +45,34 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreateASectionFromAContentfulSection()
         {
+            // Arrange
             var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
             _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
+
             var document = new DocumentBuilder().Build();
             _documentFactory.Setup(o => o.ToModel(_contentfulSection.Documents.First())).Returns(document);
+
             const string processedBody = "this is processed body";
             _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-            var section = _sectionFactory.ToModel(_contentfulSection);
+            var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug");
+            _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
-            section.Should().BeEquivalentTo(_contentfulSection, o => o.ExcludingMissingMembers());
+            // Act
+            var result = _sectionFactory.ToModel(_contentfulSection);
 
-            _videoRepository.Verify(o => o.Process(_contentfulSection.Body), Times.Once());
-            section.Body.Should().Be(processedBody);
-            _profileFactory.Verify(o => o.ToModel(_contentfulSection.Profiles.First()), Times.Once);
-            section.Profiles.First().Should().BeEquivalentTo(profile);
-            _documentFactory.Verify(o => o.ToModel(_contentfulSection.Documents.First()), Times.Once);
-            section.Documents.Count.Should().Be(1);
-            section.Documents.First().Should().Be(document);    
+            // Assert
+            result.AlertsInline.Count().Should().Be(1);
+            result.AlertsInline.First().Should().BeEquivalentTo(alert);
+            result.Body.Should().BeEquivalentTo("this is processed body");
+            result.Documents.Count().Should().Be(1);
+            result.Documents.First().Should().BeEquivalentTo(document);
+            result.Profiles.Count().Should().Be(1);
+            result.Profiles.First().Should().BeEquivalentTo(profile);
+            result.Slug.Should().Be("slug");
+            result.SunriseDate.Should().Be(DateTime.MinValue);
+            result.SunsetDate.Should().Be(DateTime.MinValue);
+            result.Title.Should().Be("title");
         }
 
         [Fact]

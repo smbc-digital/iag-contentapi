@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
@@ -19,6 +21,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly ContentfulGroup _contentfulGroup;
         private readonly GroupContentfulFactory _groupContentfulFactory;
+        private readonly ContentfulEventBuilder _contentfulEventBuilder = new ContentfulEventBuilder();
 
         private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
         private readonly Mock<IContentfulFactory<ContentfulOrganisation, Organisation>> _contentfulOrganisationFactory;
@@ -39,11 +42,105 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object);
         }
 
-        [Fact(Skip = "Fluent Assertions update")]
+        [Fact]
         public void ShouldCreateAGroupFromAContentfulGroup()
         {
-            var group = _groupContentfulFactory.ToModel(_contentfulGroup);
-            group.Should().BeEquivalentTo(_contentfulGroup, o => o.ExcludingMissingMembers());
+            // Arrange
+            var crumb = new Crumb("Stockport Local", string.Empty, "groups");
+            var category = new GroupCategory("name", "slug", "icon", "imageUrl");
+            var returnEvent = _contentfulEventBuilder.Build();
+            var administrators = new GroupAdministrators
+            {
+                Items = new List<GroupAdministratorItems>
+                {
+                    new GroupAdministratorItems
+                    {
+                        Name = "Name",
+                        Email = "Email",
+                        Permission = "admin"
+                    }
+                }
+            };
+            var mapPosition = new MapPosition
+            {
+                Lat = 12,
+                Lon = 12
+            };
+            var subCategories = new List<GroupSubCategory>
+            {
+                new GroupSubCategory("name", "slug")
+            };
+            var organisation = new Organisation
+            {
+                Title = "Org"
+            };
+            var linkedGroups = new List<Group>
+            {
+                new GroupBuilder().Build()
+            };
+            var suitableFor = new List<string>
+            {
+                "people"
+            };
+            var document = new DocumentBuilder().Build();
+
+            _documentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
+            _contentfulGroupCategoryFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulGroupCategory>()))
+                .Returns(category);
+
+            // Act
+            var result = _groupContentfulFactory.ToModel(_contentfulGroup);
+
+
+            // Assert
+            result.AbilityLevel.Should().Be("");
+            result.AccessibleTransportLink.Should().Be("link");
+            result.AdditionalDocuments.Count.Should().Be(1);
+            result.AdditionalDocuments.First().Should().BeEquivalentTo(document);
+            result.AdditionalInformation.Should().Be("info");
+            result.Address.Should().Be("_address");
+
+            result.AgeRange.Count.Should().Be(1);
+            result.AgeRange.First().Should().BeEquivalentTo("15-20");
+
+            result.Breadcrumbs.Count.Should().Be(1);
+            result.Breadcrumbs.First().Should().BeEquivalentTo(crumb);
+
+            result.CategoriesReference.Count.Should().Be(1);
+            result.CategoriesReference.First().Should().BeEquivalentTo(category);
+
+            result.Cost.Count.Should().Be(1);
+            result.CostText.Should().Be("");
+
+            result.DateHiddenFrom.Should().Be(DateTime.MinValue);
+            result.DateHiddenTo.Should().Be(DateTime.MinValue);
+            result.DateLastModified.Should().Be(DateTime.MinValue);
+
+            result.Email.Should().Be("_email");
+            result.Description.Should().Be("_description");
+            result.Donations.Should().BeFalse();
+            result.DonationsText.Should().Be("");
+            result.DonationsUrl.Should().Be("");
+            result.ImageUrl.Should().Be("");
+
+            result.Events.Count.Should().Be(1);
+            result.Events.First().Should().BeEquivalentTo(returnEvent);
+
+            result.GroupAdministrators.Should().BeEquivalentTo(administrators);
+            result.MapPosition.Should().BeEquivalentTo(mapPosition);
+            result.Name.Should().Be("_name");
+            result.Slug.Should().Be("_slug");
+            result.PhoneNumber.Should().Be("_phoneNumber");
+            result.Website.Should().Be("_website");
+            result.Twitter.Should().Be("_twitter");
+            result.Facebook.Should().Be("_facebook");
+            result.Volunteering.Should().Be(true);
+            result.VolunteeringText.Should().Be("text");
+            result.SubCategories.Should().BeEquivalentTo(subCategories);
+            result.Status.Should().Be("Published");
+            result.Organisation.Should().BeEquivalentTo(organisation);
+            result.LinkedGroups.Should().BeEquivalentTo(linkedGroups);
+            result.SuitableFor.Should().BeEquivalentTo(suitableFor);
         }
     }
 }

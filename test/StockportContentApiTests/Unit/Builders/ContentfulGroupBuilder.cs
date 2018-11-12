@@ -17,22 +17,47 @@ namespace StockportContentApiTests.Unit.Builders
         private string _facebook = "_facebook";
         private string _address = "_address";
         private string _description = "_description";
-        private List<string> _cost = new List<string>();
+        private List<string> _cost = new List<string>() {"lots"};
         private string _costText = "";
         private string _abilityLevel = "";
+        private string _accessibleTransportLink = "link";
+        private string _additionalInformation = "info";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-        private List<ContentfulGroupCategory> _categoriesReference = new List<ContentfulGroupCategory>();
+        private List<ContentfulGroupCategory> _categoriesReference = new List<ContentfulGroupCategory>
+        {
+            new ContentfulGroupCategory
+            {
+                Name = "name",
+                Slug = "slug",
+                Image = new Asset(),
+                Icon = "icon",
+                Sys = new SystemProperties()
+            }
+        };
         private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
         private SystemProperties _sys = new SystemProperties
         {
-            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id"} }
         };
         private GroupAdministrators _groupAdministrators = new GroupAdministrators();
-        private DateTime _dateHiddenFrom = new DateTime(0001, 01, 01, 00, 00, 00);
-        private DateTime _dateHiddenTo = new DateTime(0001, 01, 01, 00, 00, 00);
+        private DateTime _dateHiddenFrom = DateTime.MinValue;
+        private DateTime _dateHiddenTo = DateTime.MinValue;
         private ContentfulOrganisation _organisation = new ContentfulOrganisation();
         private List<string> _suitableFor = new List<string>();
-        private List<string> _ageRanges = new List<string>();
+        private List<string> _ageRanges = new List<string>(){"15-20"};
+        private bool _volunteering = true;
+        private string _volunteeringText = "text";
+        private List<Asset> _additionalDocuments = new List<Asset>
+        {
+            new Asset
+            {
+                Title = "Document",
+                SystemProperties = new SystemProperties
+                {
+                    Type = "NotALink"
+                }
+            }
+        };
 
         public ContentfulGroup Build()
         {
@@ -59,7 +84,12 @@ namespace StockportContentApiTests.Unit.Builders
                 AbilityLevel = _abilityLevel,
                 Organisation = _organisation,
                 AgeRange = _ageRanges,
-                SuitableFor = _suitableFor
+                SuitableFor = _suitableFor,
+                AccessibleTransportLink = _accessibleTransportLink,
+                AdditionalInformation = _additionalInformation,
+                Volunteering = _volunteering,
+                VolunteeringText = _volunteeringText,
+                AdditionalDocuments = _additionalDocuments
             };
         }
 

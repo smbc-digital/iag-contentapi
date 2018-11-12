@@ -14,8 +14,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _summary = "summary";
         private string _teaser = "teaser";
         private string _expandingLinkTitle = "expandingLinkTitle";
-        private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+        private DateTime _sunriseDate = DateTime.MinValue;
+        private DateTime _sunsetDate = DateTime.MaxValue;
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
         private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
