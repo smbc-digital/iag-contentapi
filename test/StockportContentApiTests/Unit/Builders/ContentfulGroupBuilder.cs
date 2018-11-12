@@ -29,9 +29,22 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Name = "name",
                 Slug = "slug",
-                Image = new Asset(),
+                Image = new Asset
+                {
+                    SystemProperties = new SystemProperties
+                    {
+                        Type = "NotALink"
+                    },
+                    File = new File
+                    {
+                        Url = "test-url"
+                    }
+                },
                 Icon = "icon",
-                Sys = new SystemProperties()
+                Sys = new SystemProperties
+                {
+                    Type = "NotALink"
+                }
             }
         };
         private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
@@ -69,8 +82,21 @@ namespace StockportContentApiTests.Unit.Builders
                 Title = "Document",
                 SystemProperties = new SystemProperties
                 {
-                    Type = "NotALink"
-                }
+                    Type = "NotALink",
+                    UpdatedAt = DateTime.MinValue,
+                    Id = "id"
+                },
+                File = new File
+                {
+                    ContentType = "test",
+                    Details = new FileDetails
+                    {
+                        Size = 200
+                    },
+                    Url = "url",
+                    FileName = "filename"
+                },
+                Description = "description"
             }
         };
         private string _donationsText = "donText";
