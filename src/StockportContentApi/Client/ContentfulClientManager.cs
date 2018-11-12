@@ -13,7 +13,7 @@ namespace StockportContentApi.Client
     public class ContentfulClientManager : IContentfulClientManager
     {
         private readonly System.Net.Http.HttpClient _httpClient;
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public ContentfulClientManager(System.Net.Http.HttpClient httpClient, IConfiguration configuration)
         {

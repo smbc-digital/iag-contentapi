@@ -11,16 +11,15 @@ namespace StockportContentApi.Config
     {
         private const string ElasticsearchConfigurationKey = "ElasticSearchAwsConfiguration";
         private const string ElasticsearchSecretsConfigurationKey = "ElasticSearchAwsSecretsConfiguration";
-        private readonly IConfiguration _configuration;
-        private ElasticSearchLogConfiguration _elasticSearchLogConfiguration = new ElasticSearchLogConfiguration();
-        private ElasticSearchLogSecretConfiguration _elasticSearchLogSecretConfiguration = new ElasticSearchLogSecretConfiguration();
+        private readonly ElasticSearchLogConfiguration _elasticSearchLogConfiguration = new ElasticSearchLogConfiguration();
+        private readonly ElasticSearchLogSecretConfiguration _elasticSearchLogSecretConfiguration = new ElasticSearchLogSecretConfiguration();
 
         public ElasticSearchLogConfigurator(IConfiguration configuration)
         {
-            _configuration = configuration;
+            var config = configuration;
 
-            var elasticSearchLogConfigurationSection = _configuration.GetSection(ElasticsearchConfigurationKey);
-            var elasticSearchLogSecretConfigurationSection = _configuration.GetSection(ElasticsearchSecretsConfigurationKey);
+            var elasticSearchLogConfigurationSection = config.GetSection(ElasticsearchConfigurationKey);
+            var elasticSearchLogSecretConfigurationSection = config.GetSection(ElasticsearchSecretsConfigurationKey);
 
             if (elasticSearchLogConfigurationSection.AsEnumerable().Any() && elasticSearchLogSecretConfigurationSection.AsEnumerable().Any())
             {
@@ -68,10 +67,7 @@ namespace StockportContentApi.Config
                 IndexFormat = elasticSearchLogConfiguration.IndexFormat,
                 InlineFields = elasticSearchLogConfiguration.InlineFields,
                 MinimumLogEventLevel = elasticSearchLogConfiguration.MinimumLogLevel,
-                ModifyConnectionSettings = conn =>
-                {
-                    return new ConnectionConfiguration(singleNodeConnectionPool, awsHttpConnection);
-                }
+                ModifyConnectionSettings = conn => new ConnectionConfiguration(singleNodeConnectionPool, awsHttpConnection)
             };
 
             return options;
