@@ -24,10 +24,10 @@ namespace StockportContentApi
                     config.Sources.Clear();
                     config.SetBasePath(Directory.GetCurrentDirectory() + "/app-config");
                     config
-                        .AddJsonFile("appsettings.json", optional: true)
-                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
+                        .AddJsonFile("appsettings.json", true)
+                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true);
                     var tempConfig = config.Build();
-                    config.AddJsonFile($"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json", optional: true);
+                    config.AddJsonFile($"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json", true);
                 })
                 .Build();
     }
