@@ -4,7 +4,7 @@
 * To build and run tests:
 
 ```
-make build-and-test
+make build test
 ```
 
 ## Running the app
@@ -28,7 +28,7 @@ make run and then visit http://localhost:5001
 make publish-app, this will package the app in release mode and output it into src/StockportContentApi/publish dir
 
 ## Contentful Integration
-* The Content Api acts as a translation layer between [Contentful](contentful.com) and the webapp.
+* The Content Api acts as a translation layer between [Contentful](www.contentful.com) and the webapp.
 
 ```
 https://cdn.contentful.com/spaces/SPACE_KEY/entries?access_token=ACCESS_TOKEN&content_type=CONTENT_TYPE
@@ -41,9 +41,7 @@ https://cdn.contentful.com/spaces/SPACE_KEY/entries?access_token=ACCESS_TOKEN&co
 Both the `SPACE_KEY` and `ACCESS_TOKEN` are gained from the businessId specific app settings defined above. This allows for businessId specific data to be retrieved from Contentful.
 
 ## Dot net core version
-This app runs using .Net Core SDK version 1.0.4.
+This app runs using .Net Core SDK version 2.1.5.
 
 ## Swagger
 Swagger is set up as an automated api documentation under /swagger/ui/index.html
-
-

@@ -1,12 +1,6 @@
 Avaliable commands:
 
-  build:            runs clean, restore, test, version, publish and package
   clean:            removes the /bin/ dir contents
-  dotnet-restore:   runs dotnet restore command
-  dotnet-test:      runs the dotnet test command
+  build:            runs dotnet restore and build for the main application
   test:             another command to run the tests
-  publish-app:      runs dotnet publish command in release configuration
-  version:          adds current version to version.txt
-  package-app:      packages the application into a .zip file
-  build-and-test:   runs restore, build and test
   run:              runs the appliation
