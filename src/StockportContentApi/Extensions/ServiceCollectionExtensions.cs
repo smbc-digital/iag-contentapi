@@ -401,8 +401,6 @@ namespace StockportContentApi.Extensions
 
         private static string GetHostEntryForUrl(string host, ILogger logger)
         {
-            logger.LogError($"Attempting to resolve : {host}");
-            Console.WriteLine($"Attempting to resolve : {host}");
             var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
 
             if (!addresses.Any())
