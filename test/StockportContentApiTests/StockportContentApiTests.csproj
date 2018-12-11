@@ -13,11 +13,13 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
+  
   <ItemGroup>
     <Compile Remove="Unit\MockContentfulResponses\**" />
     <EmbeddedResource Remove="Unit\MockContentfulResponses\**" />
     <None Remove="Unit\MockContentfulResponses\**" />
   </ItemGroup>
+
   <ItemGroup>
     <None Remove="Integration\ExpectedContentApiResponses\Article.json" />
     <None Remove="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
@@ -50,6 +52,7 @@
     <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
     <None Remove="Unit\MockButoResponses\VideoExists.json" />
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Article.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
@@ -83,30 +86,30 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
     <EmbeddedResource Include="Unit\MockButoResponses\VideoExists.json" />
   </ItemGroup>
+
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\StockportContentApi\StockportContentApi.csproj" />
   </ItemGroup>
+
   <ItemGroup>
+    <PackageReference Include="contentful.csharp" Version="3.6.0" />
+    <PackageReference Include="FluentAssertions" Version="5.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="5.5.0" />
     <PackageReference Include="Moq" Version="4.10.0" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
-    <PackageReference Include="contentful.csharp" Version="3.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
+
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties Integration_4ExpectedContentApiResponses_4Event_1json__JSONSchema="http://json.schemastore.org/apple-app-site-association" /></VisualStudio></ProjectExtensions>
 </Project>
