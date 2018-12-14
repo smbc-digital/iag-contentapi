@@ -24,6 +24,7 @@ namespace StockportContentApi.Model
         [SensitiveData]
         public string GlCodeCostCentreNumber { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
+        public string Icon { get; set; }
 
         public Payment(string title,
             string slug,
@@ -34,6 +35,7 @@ namespace StockportContentApi.Model
             string parisReference,
             string fund,
             string glCodeCostCentreNumber,
+            string icon,
             IEnumerable<Crumb> breadcrumbs
             )
         {
@@ -46,6 +48,7 @@ namespace StockportContentApi.Model
             ParisReference = parisReference;
             Fund = fund;
             GlCodeCostCentreNumber = glCodeCostCentreNumber;
+            Icon = icon;
             Breadcrumbs = breadcrumbs;
         }
     }

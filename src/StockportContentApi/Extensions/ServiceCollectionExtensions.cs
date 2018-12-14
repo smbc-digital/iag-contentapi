@@ -133,6 +133,9 @@ namespace StockportContentApi.Extensions
                 (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>
                 (p => new GroupAdvisorContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
+            (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(),  p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
+                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
             return services;
         }
@@ -257,6 +260,9 @@ namespace StockportContentApi.Extensions
                 {
                     return x => new GroupAdvisorRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>());
                 });
+
+            services.AddSingleton<Func<ContentfulConfig, ContactUsAreaRepository>>(
+                p => { return x => new ContactUsAreaRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()); });
 
             return services;
         }

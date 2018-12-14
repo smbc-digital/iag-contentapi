@@ -51,7 +51,6 @@ namespace StockportContentApi.Utils
             authenticationData.Endpoint = routeValues.Length > 3 ? routeValues[3] : string.Empty;
             authenticationData.Verb = context.Request.Method;
 
-
             return authenticationData;
         }
 
