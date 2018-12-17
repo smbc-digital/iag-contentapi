@@ -66,7 +66,7 @@ namespace StockportContentApi.ContentfulFactories
 
             if (string.IsNullOrEmpty(entry.Icon))
             {
-                entry.Icon = "si-default";
+                entry.Icon = type == "payment" ? "fa fa-gbp" : "si-default";
             }
 
             var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
