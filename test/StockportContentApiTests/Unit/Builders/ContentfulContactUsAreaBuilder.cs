@@ -10,12 +10,14 @@ namespace StockportContentApiTests.Builders
         private string _slug { get; set; } = "slug";
         private string _teaser { get; set; } = "teaser";
         private string _body { get; set; } = "body";
+        private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
+
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         {
           new ContentfulReferenceBuilder().Build()
         };
 
-        private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
         {
             new ContentfulAlertBuilder().Build()
         };
@@ -29,7 +31,8 @@ namespace StockportContentApiTests.Builders
                 Teaser = _teaser,
                 Breadcrumbs = _breadcrumbs,
                 Body = _body,
-                Alerts = _alerts
+                Alerts = _alerts,
+                PrimaryItems = _primaryItems
             };
         }
 
@@ -60,6 +63,18 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder PrimaryItems(List<ContentfulReference> primaryItems)
+        {
+            _primaryItems = primaryItems;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder Alerts(List<ContentfulAlert> alerts)
+        {
+            _alerts = alerts;
             return this;
         }
     }
