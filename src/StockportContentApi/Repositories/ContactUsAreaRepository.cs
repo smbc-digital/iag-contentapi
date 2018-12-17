@@ -30,10 +30,10 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
-            var footer = _contentfulFactory.ToModel(entry);
-            if (footer == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
+            var contactUsArea = _contentfulFactory.ToModel(entry);
+            if (contactUsArea == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
 
-            return HttpResponse.Successful(footer);
+            return HttpResponse.Successful(contactUsArea);
         }
     }
 }

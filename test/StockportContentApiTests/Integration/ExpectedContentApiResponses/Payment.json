@@ -14,5 +14,6 @@
       "slug": "slug",
       "type": "id"
     }
-  ] 
+  ],
+  "icon":  "fa fa-gbp" 
 }

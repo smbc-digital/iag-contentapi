@@ -10,7 +10,7 @@ namespace StockportContentApi.ContentfulModels
         public string ParisReference { get; set; } = string.Empty;
         public string Fund { get; set; } = string.Empty;
         public string GlCodeCostCentreNumber { get; set; } = string.Empty;
-        public new string Icon { get; set; } = "fa-gbp";
+        public new string Icon { get; set; } = "fa fa-gbp";
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
     }
 }

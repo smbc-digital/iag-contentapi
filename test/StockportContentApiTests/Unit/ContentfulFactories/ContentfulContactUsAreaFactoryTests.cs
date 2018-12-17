@@ -26,7 +26,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldCreate_ValidContentfulContactUsAreModel()
         {
-            var entry = new ContentfulContactUsAreaBuilder().Build();
+            var entry = new ContentfulContactUsAreaBuilder()
+                                .Build();
 
             var result = _factory.ToModel(entry);
 
@@ -52,7 +53,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 {
                 }
             };
-            var entry = new ContentfulContactUsAreaBuilder().PrimaryItems(primaryItems).Build();
+            var entry = new ContentfulContactUsAreaBuilder()
+                                .PrimaryItems(primaryItems)
+                                .Build();
+
             _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
             var result = _factory.ToModel(entry);
