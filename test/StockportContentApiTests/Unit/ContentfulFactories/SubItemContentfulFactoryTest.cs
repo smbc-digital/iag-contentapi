@@ -239,7 +239,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var subItem = _subItemContentfulFactory.ToModel(contentfulReference);
 
             // Assert
-            subItem.Icon.Should().Be("fa fa-gbp");
+            subItem.Icon.Should().Be("si-coin");
         }
     }
 }
