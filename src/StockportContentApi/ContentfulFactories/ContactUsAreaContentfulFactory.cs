@@ -34,14 +34,6 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Slug
                 : "";
 
-            var body = !string.IsNullOrEmpty(entry.Body)
-                ? entry.Body
-                : "";
-
-            var teaser = !string.IsNullOrEmpty(entry.Teaser)
-                ? entry.Teaser
-                : "";
-
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                     .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -55,7 +47,7 @@ namespace StockportContentApi.ContentfulFactories
                                                      _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            return new ContactUsArea(slug, title, teaser, breadcrumbs, body, alerts, primaryItems).StripData(_httpContextAccessor);
+            return new ContactUsArea(slug, title, breadcrumbs, alerts, primaryItems).StripData(_httpContextAccessor);
         }
     }
 }

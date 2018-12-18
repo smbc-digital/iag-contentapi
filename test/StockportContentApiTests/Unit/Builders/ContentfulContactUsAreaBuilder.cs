@@ -8,8 +8,6 @@ namespace StockportContentApiTests.Builders
     {
         private string _title { get; set; } = "title";
         private string _slug { get; set; } = "slug";
-        private string _teaser { get; set; } = "teaser";
-        private string _body { get; set; } = "body";
         private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -28,9 +26,7 @@ namespace StockportContentApiTests.Builders
             {
                 Title = _title,
                 Slug = _slug,
-                Teaser = _teaser,
                 Breadcrumbs = _breadcrumbs,
-                Body = _body,
                 Alerts = _alerts,
                 PrimaryItems = _primaryItems
             };
@@ -45,18 +41,6 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder Title(string title)
         {
             _title = title;
-            return this;
-        }
-
-        public ContentfulContactUsAreaBuilder Teaser(string teaser)
-        {
-            _teaser = teaser;
-            return this;
-        }
-
-        public ContentfulContactUsAreaBuilder Body(string body)
-        {
-            _body = body;
             return this;
         }
 

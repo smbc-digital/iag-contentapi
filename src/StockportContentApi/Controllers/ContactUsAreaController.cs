@@ -8,7 +8,6 @@ namespace StockportContentApi.Controllers
 {
     public class ContactUsController : Controller
     {
-
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, ContactUsAreaRepository> _createRepository;

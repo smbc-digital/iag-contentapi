@@ -34,14 +34,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result.Breadcrumbs);
             Assert.NotNull(result.Alerts);
             Assert.NotNull(result.PrimaryItems);
-            Assert.NotNull(result.Body);
             Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Teaser);
             Assert.NotNull(result.Title);
             Assert.Equal("title", result.Title);
             Assert.Equal("slug", result.Slug);
-            Assert.Equal("teaser", result.Teaser);
-            Assert.Equal("body", result.Body);
         }
 
         [Fact]
@@ -64,9 +60,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result.Breadcrumbs);
             Assert.NotNull(result.Alerts);
             Assert.Single(result.PrimaryItems);
-            Assert.NotNull(result.Body);
             Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Teaser);
             Assert.NotNull(result.Title);
         }
 
@@ -101,9 +95,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.Single(result.Breadcrumbs);
             Assert.Single(result.Alerts);
             Assert.Single(result.PrimaryItems);
-            Assert.NotNull(result.Body);
             Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Teaser);
             Assert.NotNull(result.Title);
         }
     }
