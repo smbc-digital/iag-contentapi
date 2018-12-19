@@ -58,70 +58,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 _parentTopicFactory.Object, _LiveChatFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _advertisementFactory.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
         }
 
-        [Fact(Skip = "Fluent Assertions update")]
-        public void ShouldCreateAnArticleFromAContentfulArticle()
-        {
-            const string processedBody = "this is processed body";
-            _videoRepository.Setup(o => o.Process(_contentfulArticle.Body)).Returns(processedBody);
-            var section = new Section("title", "slug", "body", new List<Profile>(), new List<Document>(),
-                DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), new List<Alert>());
-            _sectionFactory.Setup(o => o.ToModel(_contentfulArticle.Sections.First())).Returns(section);
-            _LiveChatFactory.Setup(o => o.ToModel(It.IsAny<ContentfulLiveChat>())).Returns(new LiveChat("title", "text"));
-            var crumb = new Crumb("title", "slug", "type");
-            _crumbFactory.Setup(o => o.ToModel(_contentfulArticle.Breadcrumbs.First())).Returns(crumb);
-            var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image",
-                new List<Crumb> { crumb });
-            _profileFactory.Setup(o => o.ToModel(_contentfulArticle.Profiles.First())).Returns(profile);
-            var subItems = new List<SubItem> {
-                new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()) };
-            var topic = new Topic("slug", "name", "teaser", "summary", "icon", "image", "image", subItems, subItems, subItems,
-                new List<Crumb> { crumb },
-                new List<Alert> { new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, string.Empty) },
-                DateTime.MinValue, DateTime.MaxValue, false, "id", new NullEventBanner(), "expandingLinkTitle", new NullAdvertisement(), new List<ExpandingLinkBox>());
-            _parentTopicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulArticle>()))
-
-                .Returns(topic);
-            var document = new DocumentBuilder().Build();
-            _documentFactory.Setup(o => o.ToModel(_contentfulArticle.Documents.First())).Returns(document);
-            var alert = new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug");
-            _alertFactory.Setup(o => o.ToModel(_contentfulArticle.Alerts.First())).Returns(alert);
-            
-            var advertisment = new Advertisement("Advert Title","advert slug","advert teaser",DateTime.MaxValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), true,"url","image.jpg");
-            _advertisementFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAdvertisement>())).Returns(advertisment);    
-            
-            var article = _articleFactory.ToModel(_contentfulArticle);
-
-            article.Should().BeEquivalentTo(_contentfulArticle, o => o.ExcludingNestedObjects());
-
-            article.Alerts.First().Should().BeEquivalentTo(_contentfulArticle.Alerts.First());
-            article.LiveChat.Title.Should().BeEquivalentTo(_contentfulArticle.LiveChatText.Title);
-            article.LiveChat.Text.Should().BeEquivalentTo(_contentfulArticle.LiveChatText.Text);
-
-            _videoRepository.Verify(o => o.Process(_contentfulArticle.Body), Times.Once());
-            article.Body.Should().Be(processedBody);
-            article.BackgroundImage.Should().Be(_contentfulArticle.BackgroundImage.File.Url);
-
-            _sectionFactory.Verify(o => o.ToModel(_contentfulArticle.Sections.First()), Times.Once);
-            article.Sections.First().Should().BeEquivalentTo(section);
-
-            _crumbFactory.Verify(o => o.ToModel(_contentfulArticle.Breadcrumbs.First()), Times.Once);
-            article.Breadcrumbs.First().Should().BeEquivalentTo(crumb);
-
-            _profileFactory.Verify(o => o.ToModel(_contentfulArticle.Profiles.First()), Times.Once);
-            article.Profiles.First().Should().BeEquivalentTo(profile);
-
-            _parentTopicFactory.Verify(o => o.ToModel(It.IsAny<ContentfulArticle>()), Times.Once);
-            article.ParentTopic.Should().BeEquivalentTo(topic);
-
-            _documentFactory.Verify(o => o.ToModel(_contentfulArticle.Documents.First()), Times.Once);
-            article.Documents.Count.Should().Be(1);
-            article.Documents.First().Should().Be(document);
-            
-            article.Advertisement.Image.Should().Be(advertisment.Image);
-            article.Advertisement.Title.Should().Be(advertisment.Title);
-            article.Advertisement.Teaser.Should().Be(advertisment.Teaser);
-        }
-
         [Fact]
         public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks()
         {
@@ -190,9 +126,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             article.AlertsInline.Count().Should().Be(1);
         }
-
-
-
 
         [Fact]
         public void ItShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate()

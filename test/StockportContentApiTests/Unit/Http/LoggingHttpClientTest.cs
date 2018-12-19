@@ -1,4 +1,5 @@
-﻿using StockportContentApi.Http;
+﻿using System.Threading.Tasks;
+using StockportContentApi.Http;
 using StockportContentApiTests.Unit.Fakes;
 using Xunit;
 
@@ -24,14 +25,14 @@ namespace StockportContentApiTests.Unit.Http
         }
 
         [Fact]
-        public void DoesNotLogAccessKey()
+        public async void DoesNotLogAccessKey()
         {
             var urlWithKey = "https://fake.url/spaces/SPACE/entries?access_token=KEY&content_type=topic";
 
             _fakeHttpClient.For(urlWithKey).Return(HttpResponse.Successful("A response"));
 
             var httpClient = new LoggingHttpClient(_fakeHttpClient, _fakeLogger);
-            httpClient.Get(urlWithKey);
+            await httpClient.Get(urlWithKey);
             
             Assert.DoesNotContain("KEY", _fakeLogger.InfoMessage);
             Assert.Contains("access_token=*****", _fakeLogger.InfoMessage);

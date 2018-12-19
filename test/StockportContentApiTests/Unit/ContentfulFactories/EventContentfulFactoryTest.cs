@@ -48,35 +48,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             
         }
 
-        [Fact(Skip = "fluent assertion updated - BeEquivalentTo change causing issues")]
-        public void ShouldCreateAnEventFromAContentfulEvent()
-        {
-            var document = new DocumentBuilder().Build();
-            _documentFactory.Setup(o => o.ToModel(_contentfulEvent.Documents.First())).Returns(document);
-
-            var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
-
-            var mapPosition = new MapPosition() {Lat = 53.5, Lon = -2.5};
-
-            anEvent.Should().BeOfType<Event>();
-            anEvent.Should().BeEquivalentTo(_contentfulEvent, o => o.ExcludingMissingMembers());
-            anEvent.ImageUrl.Should().Be(_contentfulEvent.Image.File.Url);
-            anEvent.ThumbnailImageUrl.Should().Be(_contentfulEvent.Image.File.Url + "?h=250");
-            anEvent.Documents.Count.Should().Be(1);
-            anEvent.Documents.First().Should().Be(document);
-            anEvent.MapPosition.Lat.Should().Be(mapPosition.Lat);
-            anEvent.MapPosition.Lon.Should().Be(mapPosition.Lon);
-            anEvent.Featured.Should().BeFalse();
-            anEvent.Alerts.Count.Should().Be(1);
-            anEvent.Alerts[0].Title.Should().Be(_alerts[0].Title);
-            anEvent.Alerts[0].Body.Should().Be(_alerts[0].Body);
-            anEvent.Alerts[0].Severity.Should().Be(_alerts[0].Severity);
-            anEvent.Alerts[0].SubHeading.Should().Be(_alerts[0].SubHeading);
-            anEvent.Alerts[0].SunsetDate.Should().Be(_alerts[0].SunsetDate);
-            anEvent.Alerts[0].SunriseDate.Should().Be(_alerts[0].SunriseDate);
-            _documentFactory.Verify(o => o.ToModel(_contentfulEvent.Documents.First()), Times.Once);
-        }
-
         [Fact]
         public void ShouldNotAddDocumentsOrImageIfTheyAreLinks() 
         {

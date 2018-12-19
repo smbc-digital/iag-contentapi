@@ -14,7 +14,6 @@ namespace StockportContentApi.Repositories
     public class ContactUsAreaRepository
     {
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly string _contentType = "footer";
         private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory;
 
         public ContactUsAreaRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory)
