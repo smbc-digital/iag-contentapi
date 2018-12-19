@@ -20,7 +20,6 @@ namespace StockportContentApi.ContentfulFactories
 
         public Payment ToModel(ContentfulPayment entry)
         {
-
             var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                               .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
@@ -33,6 +32,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ParisReference,
                 entry.Fund,
                 entry.GlCodeCostCentreNumber,
+                entry.Icon,
                 breadcrumbs).StripData(_httpContextAccessor);
         }
     }

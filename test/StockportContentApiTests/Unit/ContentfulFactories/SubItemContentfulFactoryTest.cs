@@ -219,5 +219,27 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Assert
             subItem.Slug.Should().Be("groups");
         }
+
+        [Fact]
+        public void ToModel_ShouldSetPaymentsGroupIconCorrectly_WhenNonSet()
+        {
+            // Arrange
+            var contentfulReference = new ContentfulReferenceBuilder()
+                .Slug("test-payment-group")
+                .Name("custom name")
+                .Title("title")
+                .SubItems(null)
+                .TertiaryItems(null)
+                .SecondaryItems(null)
+                .Icon(null)
+                .SystemContentTypeId("payment")
+                .Build();
+
+            // Act
+            var subItem = _subItemContentfulFactory.ToModel(contentfulReference);
+
+            // Assert
+            subItem.Icon.Should().Be("si-coin");
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
 
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                 ? entry.Image.File.Url
-                : string.Empty;
+                : string.Empty; 
 
             var group = _groupFactory.ToModel(entry.Group);
 
