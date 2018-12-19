@@ -12,15 +12,17 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulInsetText, InsetText> _insetTextFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulInsetText, InsetText> insetTextFactory)
         {
             _httpContextAccessor = httpContextAccessor;
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
+            _insetTextFactory = insetTextFactory;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -47,7 +49,10 @@ namespace StockportContentApi.ContentfulFactories
                                                      _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            return new ContactUsArea(slug, title, breadcrumbs, alerts, primaryItems).StripData(_httpContextAccessor);
+            var insetTexts = entry.InsetText.Where(insetText => ContentfulHelpers.EntryIsNotALink(insetText.Sys))
+                .Select(insetText => _insetTextFactory.ToModel(insetText)).ToList();
+
+            return new ContactUsArea(slug, title, breadcrumbs, alerts, insetTexts, primaryItems).StripData(_httpContextAccessor);
         }
     }
 }
