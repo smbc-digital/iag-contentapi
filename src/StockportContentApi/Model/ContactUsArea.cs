@@ -11,14 +11,16 @@ namespace StockportContentApi.Model
         public IEnumerable<SubItem> PrimaryItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public IEnumerable<Alert> Alerts { get; }
+        public IEnumerable<InsetText> InsetTexts { get; }
 
         public ContactUsArea(string slug, string title, IEnumerable<Crumb> breadcrumbs, 
-            IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems) 
+            IEnumerable<Alert> alerts, IEnumerable<InsetText> insetTexts, IEnumerable<SubItem> primaryItems) 
         {
             Title = title;
             Slug = slug;
             Breadcrumbs = breadcrumbs;
             Alerts = alerts;
+            InsetTexts = insetTexts;
             PrimaryItems = primaryItems;
         }
     }
