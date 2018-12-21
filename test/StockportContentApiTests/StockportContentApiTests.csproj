@@ -4,7 +4,7 @@
     <AssemblyName>StockportContentApiTests</AssemblyName>
     <PackageId>StockportContentApiTests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>2.1.5</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.6</RuntimeFrameworkVersion>
     <AssetTargetFallback>$(AssetTargetFallback);dotnet5.6</AssetTargetFallback>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
