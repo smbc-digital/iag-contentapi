@@ -33,8 +33,8 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No payment found for '{slug}'") 
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No payment found for '{slug}'")
                 : HttpResponse.Successful(_paymentFactory.ToModel(entry));
         }
 

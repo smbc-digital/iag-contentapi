@@ -91,5 +91,11 @@ namespace StockportContentApiTests.Unit.Builders
             _contentTypeSystemId = id;
             return this;
         }
+
+        public ContentfulReferenceBuilder Icon(string icon)
+        {
+            _icon = icon;
+            return this;
+        }
     }
 }

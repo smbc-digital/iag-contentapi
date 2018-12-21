@@ -66,25 +66,5 @@ namespace StockportContentApiTests.Unit.Repositories
             footer.Get<Footer>().Slug.Should().Be(mockFooter.Slug);
             footer.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-
-        [Fact(Skip = "Needs to fixed")]
-        public void ShouldReturn404IfNoEntryExists()
-        {
-            var builderFooter = new Footer("Title", "a-slug", "Copyright", new List<SubItem>(),
-                new List<SocialMediaLink>());
-
-            var mockFooter = new Footer("test", "test", "test", null, null);
-
-            var builder = new QueryBuilder<Footer>().ContentTypeIs("footer").Include(1);
-            var collection = new ContentfulCollection<Footer>();
-            collection.Items = new List<Footer>();
-
-            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<Footer>>(q => q.Build() == builder.Build()),
-                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-            var footer = AsyncTestHelper.Resolve(_repository.GetFooter());
-
-            footer.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
     }
 }

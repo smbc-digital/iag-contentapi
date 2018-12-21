@@ -503,71 +503,6 @@ namespace StockportContentApiTests.Unit.Repositories
             eventCalender.Events.Should().HaveCount(1);
         }
 
-        [Fact(Skip = "Needs to fixed")]
-        public void ShouldGetEventsWithLimitOfTwo()
-        {
-            var anEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 09, 01)).Build();
-            var anotherEvent = new ContentfulEventBuilder().EventDate(new DateTime(2017, 10, 10)).Build();
-            var eventThree = new ContentfulEventBuilder().EventDate(new DateTime(2017, 10, 11)).Build();
-
-            var collection = new ContentfulCollection<ContentfulEvent>();
-            collection.Items = new List<ContentfulEvent> { anEvent, anotherEvent, eventThree };
-
-            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-
-            _contentfulClient.Setup(
-                    o => o.GetEntries<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
-
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, null, null, null, 0, 0));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var eventsCalendar = response.Get<EventCalender>();
-            eventsCalendar.Events.Should().HaveCount(2);
-
-            eventsCalendar.Events.First().Should().BeEquivalentTo(anEvent, o => o.ExcludingNestedObjects());
-        }
-
-
-        [Fact(Skip = "Needs to fixed")]
-        public void ShouldCreateEventWithFauteredSetToTrue()
-        {
-            const string slug = "event-of-the-century";
-            var anEvent = new ContentfulEventBuilder().Featured(true).Build();
-            var collection = new ContentfulCollection<ContentfulEvent>();
-            collection.Items = new List<ContentfulEvent> { anEvent };
-
-            _contentfulClient.Setup(
-                o =>
-                    o.GetEntries<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(),
-                        It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var eventItem = response.Get<Event>();
-            eventItem.Featured.Should().BeTrue();
-        }
-
-        [Fact(Skip = "Needs to fixed")]
-        public void ShouldCreateEventWithFauteredSetToFalse()
-        {
-            const string slug = "event-of-the-century";
-            var anEvent = new ContentfulEventBuilder().Featured(false).Build();
-            var collection = new ContentfulCollection<ContentfulEvent>();
-            collection.Items = new List<ContentfulEvent> { anEvent };
-            _contentfulClient.Setup(
-                o =>
-                    o.GetEntries<ContentfulEvent>(It.IsAny<QueryBuilder<ContentfulEvent>>(),
-                        It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-            var response = AsyncTestHelper.Resolve(_repository.GetEvent(slug, new DateTime(2017, 4, 1)));
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var eventItem = response.Get<Event>();
-            eventItem.Featured.Should().BeTrue();
-        }
-
         [Fact]
         public void ShouldGetTwoFeaturedEvents()
         {
@@ -747,7 +682,6 @@ namespace StockportContentApiTests.Unit.Repositories
 
             //Assert
             result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
         }
 
         [Fact]

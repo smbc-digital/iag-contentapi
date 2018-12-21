@@ -33,31 +33,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, HttpContextFake.GetHttpContextFake(), _alertBuilder.Object, _timeProvider.Object);
         }
 
-        [Fact(Skip = "Fluent Assertions update")]
-        public void ShouldCreateANewsFromAContentfulNews()
-        {
-            // Arrange
-            const string processedBody = "this is processed body";
-            var document = new DocumentBuilder().Build();
-
-            // Mock
-            _videoRepository.Setup(o => o.Process(_contentfulNews.Body)).Returns(processedBody);
-            _documentFactory.Setup(o => o.ToModel(_contentfulNews.Documents.First())).Returns(document);
-            _alertBuilder.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new AlertBuilder().Build());
-            
-            // Act
-            var news = _newsContentfulFactory.ToModel(_contentfulNews);
-
-            // Assert
-            news.Should().BeEquivalentTo(_contentfulNews, o => o.ExcludingMissingMembers());
-            news.Body.Should().Be(processedBody);
-            news.Image.Should().Be(_contentfulNews.Image.File.Url);
-            news.ThumbnailImage.Should().Be(_contentfulNews.Image.File.Url + "?h=250");            
-            news.Documents.Count.Should().Be(1);
-            news.Documents.First().Should().Be(document);
-            _documentFactory.Verify(o => o.ToModel(_contentfulNews.Documents.First()), Times.Once);
-        }
-
         [Fact]
         public void ShouldNotAddDocumentsOrImageIfTheyAreLinks()
         {
