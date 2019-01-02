@@ -13,7 +13,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _backgroundImage = "back-image-url.jpg";
         private string _image = "image-url.jpg";
-        private bool _liveChatVisible =  false;
         private List<Section> _sections = new List<Section> { new Section("title", "slug", "body", new List<Profile>(), new List<Document>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), new List<Alert>())};
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
@@ -27,13 +26,12 @@ namespace StockportContentApiTests.Unit.Builders
         
         private Topic _parentTopic = new Topic("slug", "name", "teaser", "summary", "icon", "background", "image", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), 
                                                 new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id", new NullEventBanner(), "expandingLinkTitle", new NullAdvertisement(), new List<ExpandingLinkBox>());
-        private LiveChat _liveChat = new LiveChat("title", "text");
-        
+       
         public Article Build()
         {
             return new Article(_body, _slug, _title, _teaser, _icon, _backgroundImage, _image, _sections, 
                 _breadcrumbs, _alerts, _profiles, _parentTopic, _documents, _sunriseDate, 
-                _sunsetDate, _liveChatVisible, _liveChat , _alertsInline, _advertisement);
+                _sunsetDate, _alertsInline, _advertisement);
         }
 
         public ArticleBuilder SunriseDate(DateTime sunriseDate)

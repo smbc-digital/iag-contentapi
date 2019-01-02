@@ -27,9 +27,7 @@ namespace StockportContentApiTests.Unit.Model
                 Profiles = new List<ContentfulProfile>(),
                 Documents = new List<Asset>(),
                 SunriseDate = DateTime.MinValue,
-                SunsetDate = DateTime.MaxValue,
-                LiveChatVisible = false,
-                LiveChatText = new ContentfulLiveChat()
+                SunsetDate = DateTime.MaxValue
             };
             actual.Should().BeEquivalentTo(expected);
         }
