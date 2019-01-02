@@ -50,8 +50,6 @@ namespace StockportContentApi.Middleware
 
             var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
 
-            authenticationData.AuthenticationKey = "f1116aa15a88407090df3145f2dd4ca9";
-
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
                 _logger.LogError("API Authentication Key is either missing or wrong");
