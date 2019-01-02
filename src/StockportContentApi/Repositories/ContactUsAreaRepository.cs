@@ -25,7 +25,7 @@ namespace StockportContentApi.Repositories
 
         public async Task<HttpResponse> GetContactUsArea() {
 
-            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(1);
+            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
 
             var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
