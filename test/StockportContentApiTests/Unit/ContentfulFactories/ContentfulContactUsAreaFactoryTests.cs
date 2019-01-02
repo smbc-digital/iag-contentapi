@@ -18,10 +18,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         private readonly Mock<IContentfulFactory<ContentfulInsetText, InsetText>> _mockInsetTextFactory = new Mock<IContentfulFactory<ContentfulInsetText, InsetText>>();
+        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>();
 
         public ContentfulContactUsAreaFactoryTests()
         {
-            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _mockTimeProvider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object);
+            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _mockTimeProvider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object, _mockContactUsCategoryFactory.Object);
         }
 
         [Fact]
@@ -40,6 +41,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result.Title);
             Assert.Equal("title", result.Title);
             Assert.Equal("slug", result.Slug);
+            Assert.NotNull(result.ContactUsCategories);
         }
 
         [Fact]
@@ -90,12 +92,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 new ContentfulInsetText()
             };
 
+            var contactUsCategories = new List<ContentfulContactUsCategory>
+            {
+                new ContentfulContactUsCategory()
+            };
 
             var entry = new ContentfulContactUsAreaBuilder()
                                 .PrimaryItems(primaryItems)
                                 .Breadcrumbs(breadcrumbs)
                                 .Alerts(alerts)
                                 .InsetTexts(insetTexts)
+                                .ContentfulContactUsCategories(contactUsCategories)
                                 .Build();
 
             _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
@@ -106,6 +113,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.Single(result.Alerts);
             Assert.Single(result.InsetTexts);
             Assert.Single(result.PrimaryItems);
+            Assert.Single(result.ContactUsCategories);
             Assert.NotNull(result.Slug);
             Assert.NotNull(result.Title);
         }

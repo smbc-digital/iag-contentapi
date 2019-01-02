@@ -62,6 +62,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulInsetText, InsetText>>(p => new InsetTextContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p => new ContactUsCategoryContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
@@ -137,7 +138,7 @@ namespace StockportContentApi.Extensions
                 (p => new GroupAdvisorContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
             (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(),  p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
-                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>()));
+                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
 
             return services;
         }
