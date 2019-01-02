@@ -25,6 +25,11 @@ namespace StockportContentApiTests.Builders
             new ContentfulInsetTextBuilder().Build()
         };
 
+        private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
+        {
+            new ContentfulContactUsCategoryBuilder().Build()
+        };
+
         public ContentfulContactUsArea Build()
         {
             return new ContentfulContactUsArea()
@@ -34,7 +39,8 @@ namespace StockportContentApiTests.Builders
                 Breadcrumbs = _breadcrumbs,
                 Alerts = _alerts,
                 InsetText = _insetTexts,
-                PrimaryItems = _primaryItems
+                PrimaryItems = _primaryItems,
+                ContactUsCategories = _contactUsCategories
             };
         }
 
@@ -71,6 +77,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder InsetTexts(List<ContentfulInsetText> insetTexts)
         {
             _insetTexts = insetTexts;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder ContentfulContactUsCategories(List<ContentfulContactUsCategory> contactUsCategories)
+        {
+            _contactUsCategories = contactUsCategories;
             return this;
         }
     }

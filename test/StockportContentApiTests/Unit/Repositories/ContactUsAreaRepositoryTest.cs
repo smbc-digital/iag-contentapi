@@ -28,6 +28,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
         private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         private readonly Mock<IContentfulFactory<ContentfulInsetText, InsetText>> _mockInsetTextFactory = new Mock<IContentfulFactory<ContentfulInsetText, InsetText>>();
+        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>();
+
         private readonly Mock<ITimeProvider> _timeprovider = new Mock<ITimeProvider>();
 
         public ContactUsAreaRepositoryTest()
@@ -43,7 +45,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _timeprovider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object);
+            var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _timeprovider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object, _mockContactUsCategoryFactory.Object);
 
             _repository = new ContactUsAreaRepository(config, contentfulClientManager.Object, contentfulFactory);
         }
@@ -58,7 +60,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawContactUsArea = new ContentfulContactUsAreaBuilder().Slug(slug).Build();
             collection.Items = new List<ContentfulContactUsArea> { rawContactUsArea };
 
-            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(1);
+            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
 
             _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
@@ -84,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
             collection.Items = new List<ContentfulContactUsArea> { rawContactUsArea };
 
-            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(1);
+            var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
             _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
