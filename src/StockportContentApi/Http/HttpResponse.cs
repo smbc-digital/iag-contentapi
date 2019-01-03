@@ -44,6 +44,7 @@ namespace StockportContentApi.Http
                 default:
                     return new EmptyResult();
             }
+
         }
 
         public override string ToString()
