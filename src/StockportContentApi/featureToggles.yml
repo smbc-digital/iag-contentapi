@@ -1,0 +1,28 @@
+---
+prod: &prod
+  SemanticProfile: false
+  
+stage: &stage
+  << : *prod
+
+qa: &qa
+  << : *prod
+  << : *stage
+
+int: &int
+  << : *prod
+  << : *stage
+  << : *qa
+
+local: &local
+  << : *prod
+  << : *stage
+  << : *qa
+  << : *int
+  SemanticProfile: true
+
+uitest: &uitest
+  << : *prod
+  << : *stage
+  << : *qa
+  << : *int
