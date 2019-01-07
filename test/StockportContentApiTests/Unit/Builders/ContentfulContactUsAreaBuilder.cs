@@ -8,6 +8,8 @@ namespace StockportContentApiTests.Builders
     {
         private string _title { get; set; } = "title";
         private string _slug { get; set; } = "slug";
+        private string _categoriesTitle { get; set; } = "categoriesTitle";
+
         private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -25,16 +27,23 @@ namespace StockportContentApiTests.Builders
             new ContentfulInsetTextBuilder().Build()
         };
 
+        private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
+        {
+            new ContentfulContactUsCategoryBuilder().Build()
+        };
+
         public ContentfulContactUsArea Build()
         {
             return new ContentfulContactUsArea()
             {
                 Title = _title,
                 Slug = _slug,
+                CategoriesTitle = _categoriesTitle,
                 Breadcrumbs = _breadcrumbs,
                 Alerts = _alerts,
                 InsetText = _insetTexts,
-                PrimaryItems = _primaryItems
+                PrimaryItems = _primaryItems,
+                ContactUsCategories = _contactUsCategories
             };
         }
 
@@ -47,6 +56,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder Title(string title)
         {
             _title = title;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder CategoriesTitle(string categoriesTitle)
+        {
+            _categoriesTitle = categoriesTitle;
             return this;
         }
 
@@ -71,6 +86,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder InsetTexts(List<ContentfulInsetText> insetTexts)
         {
             _insetTexts = insetTexts;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder ContentfulContactUsCategories(List<ContentfulContactUsCategory> contactUsCategories)
+        {
+            _contactUsCategories = contactUsCategories;
             return this;
         }
     }

@@ -10,6 +10,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);publish/**/*</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="featureToggles.yml" CopyToPublishDirectory="PreserveNewest" />
     <PackageReference Include="AspNetCoreRateLimit" Version="2.1.0" />
     <PackageReference Include="Elasticsearch.Net.Aws" Version="6.0.0" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
@@ -24,6 +25,7 @@
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="6.5.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.513" />
     <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
+    <PackageReference Include="YamlDotNet" Version="5.3.0" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties Properties_4launchSettings_1json__JSONSchema="http://json.schemastore.org/phraseapp" /></VisualStudio></ProjectExtensions>
  

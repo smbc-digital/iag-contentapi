@@ -10,11 +10,15 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _icon = "icon";
         private string _subtitle = "subtitle";
+        private string _leadParagraph = "lead paragraph";
         private string _teaser = "teaser";
         private string _body = "body";
         private string _type = "type";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
+
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+        { new ContentfulAlertBuilder().Build() }; 
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         { new ContentfulReferenceBuilder().Build() };
         private SystemProperties _sys = new SystemProperties
@@ -37,6 +41,22 @@ namespace StockportContentApiTests.Unit.Builders
                 BackgroundImage = _backgroundImage,
                 Breadcrumbs = _breadcrumbs,
                 Sys = _sys
+            };
+        }
+
+        public ContentfulProfileNew BuildNew()
+        {
+            return new ContentfulProfileNew
+            {
+                Title = _title,
+                Slug = _slug,
+                LeadParagraph = _leadParagraph,
+                Teaser = _teaser,
+                Image = _image,
+                Body = _body,
+                Breadcrumbs = _breadcrumbs,
+                Sys = _sys,
+                Alerts = _alerts
             };
         }
 

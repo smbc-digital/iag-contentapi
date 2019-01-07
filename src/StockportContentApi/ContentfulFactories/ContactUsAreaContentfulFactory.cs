@@ -13,9 +13,11 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulInsetText, InsetText> _insetTextFactory;
+        private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory;
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulInsetText, InsetText> insetTextFactory)
+        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulInsetText, InsetText> insetTextFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
         {
             _httpContextAccessor = httpContextAccessor;
             _subitemFactory = subitemFactory;
@@ -23,6 +25,7 @@ namespace StockportContentApi.ContentfulFactories
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
             _insetTextFactory = insetTextFactory;
+            _contactUsCategoryFactory = contactUsCategoryFactory;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -34,6 +37,10 @@ namespace StockportContentApi.ContentfulFactories
 
             var slug = !string.IsNullOrEmpty(entry.Slug)
                 ? entry.Slug
+                : "";
+
+            var categoriesTitle = !string.IsNullOrEmpty(entry.CategoriesTitle)
+                ? entry.CategoriesTitle
                 : "";
 
             var breadcrumbs =
@@ -52,7 +59,11 @@ namespace StockportContentApi.ContentfulFactories
             var insetTexts = entry.InsetText.Where(insetText => ContentfulHelpers.EntryIsNotALink(insetText.Sys))
                 .Select(insetText => _insetTextFactory.ToModel(insetText)).ToList();
 
-            return new ContactUsArea(slug, title, breadcrumbs, alerts, insetTexts, primaryItems).StripData(_httpContextAccessor);
+            var contactUsCategories =
+                entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
+                    .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
+
+            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories).StripData(_httpContextAccessor);
         }
     }
 }
