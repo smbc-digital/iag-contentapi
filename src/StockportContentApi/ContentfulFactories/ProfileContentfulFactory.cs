@@ -41,12 +41,14 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> _didYouKnowFactory;
 
-        public ProfileNewContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        public ProfileNewContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> didYouKnowFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
+            _didYouKnowFactory = didYouKnowFactory;
         }
 
         public ProfileNew ToModel(ContentfulProfileNew entry)
@@ -59,8 +61,11 @@ namespace StockportContentApi.ContentfulFactories
 
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
+            var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                                    .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
+
             return new ProfileNew(entry.Title, entry.Slug, entry.LeadParagraph, entry.Teaser, imageUrl,
-                               entry.Body, breadcrumbs, alerts).StripData(_httpContextAccessor);
+                               entry.Body, breadcrumbs, alerts, didYouKnowSection).StripData(_httpContextAccessor);
         }
     }
 }

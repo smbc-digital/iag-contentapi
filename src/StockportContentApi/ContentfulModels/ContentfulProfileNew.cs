@@ -15,5 +15,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
+        public List<ContentfulDidYouKnow> DidYouKnowSection { get; set; } = new List<ContentfulDidYouKnow>();
     }
 }
