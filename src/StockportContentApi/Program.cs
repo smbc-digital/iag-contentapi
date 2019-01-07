@@ -16,7 +16,7 @@ namespace StockportContentApi
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://0.0.0.0:5001")
                 .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+                //.UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .ConfigureAppConfiguration((hostContext, config) =>

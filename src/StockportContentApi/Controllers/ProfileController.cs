@@ -3,35 +3,34 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Services.Profile;
+using StockportContentApi.FeatureToggling;
 
 namespace StockportContentApi.Controllers
 {
     public class ProfileController : Controller
     {
-        
-        private readonly ResponseHandler _handler;
-        private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, ProfileRepository> _createRepository;
+        private readonly IProfileService _profileService;
+        private readonly FeatureToggles _featureToggles;
 
-        public ProfileController(ResponseHandler handler,
-            Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, ProfileRepository> createRepository)
+        public ProfileController(IProfileService profileService, FeatureToggles featureToggles)
         {
-            _handler = handler;
-            _createConfig = createConfig;
-            _createRepository = createRepository;
+            _profileService = profileService;
+            _featureToggles = featureToggles;
         }
 
         [HttpGet]
         [Route("{businessId}/profiles/{profileSlug}")]
         [Route("v1/{businessId}/profiles/{profileSlug}")]
-        public async Task<IActionResult> GetProfile(string profileSlug, string  businessId)
+        public async Task<IActionResult> GetProfile(string profileSlug, string businessId)
         {
-            return await _handler.Get(() =>
+            if (_featureToggles.SemanticProfile)
             {
-                var profileRepository = _createRepository(_createConfig(businessId));
-                return profileRepository.GetProfile(profileSlug);
-            });
+                var profileNew = await _profileService.GetProfileNew(profileSlug, businessId);
+                return new OkObjectResult(profileNew);
+            }
+            var profile = await _profileService.GetProfile(profileSlug, businessId);
+            return new OkObjectResult(profile);
         }
 
         [HttpGet]
@@ -39,11 +38,9 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/profiles/")]
         public async Task<IActionResult> Get(string businessId)
         {
-            return await _handler.Get(() =>
-            {
-                var profilerRepository = _createRepository(_createConfig(businessId));
-                return profilerRepository.Get();
-            });
+            var profiles = await _profileService.GetProfiles(businessId);
+
+            return new OkObjectResult(profiles);
         }
     }
 }

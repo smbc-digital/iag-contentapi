@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
@@ -22,6 +23,7 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly ProfileRepository _repository;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+        private readonly Mock<IContentfulFactory<ContentfulProfileNew, ProfileNew>> _profileNewFactory;
         private readonly Mock<IContentfulClient> _client;
 
         public ProfileRepositoryTest()
@@ -33,12 +35,13 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
+            _profileNewFactory = new Mock<IContentfulFactory<ContentfulProfileNew, ProfileNew>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object);
+            _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object, _profileNewFactory.Object);
         }
 
         [Fact]
@@ -51,7 +54,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var profile = new Profile("type", "title", "slug", "subtitle",
                 "teaser", "image", "body", "icon", "backgroundImage",
-                new List<Crumb> { new Crumb("title", "slug", "type") }, new List<Alert>{new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug")});
+                new List<Crumb> { new Crumb("title", "slug", "type") }, new List<Alert> { new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug") });
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
@@ -83,6 +86,61 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be($"No profile found for '{slug}'");
+        }
+
+        [Fact]
+        public async Task GetProfileNew_ShouldGetEntries()
+        {
+            // Arrange
+            _client
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                {
+                    Items = new List<ContentfulProfileNew>()
+                });
+            // Act
+            await _repository.GetProfileNew("fake slug");
+
+            // Assert
+            _client.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetProfileNew_ShouldReturnFailureWhenNoEntries()
+        {
+            // Arrange
+            _client
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                {
+                    Items = new List<ContentfulProfileNew>()
+                });
+            // Act
+            var response = await _repository.GetProfileNew("fake slug");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetProfileNew_ShouldReturnSuccessWhenEntriesExist()
+        {
+            // Arrange
+            _client
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                {
+                    Items = new List<ContentfulProfileNew>(){
+                        new ContentfulProfileNew(){
+                            Slug = "slug"
+                        }
+                    }
+                });
+            // Act
+            var response = await _repository.GetProfileNew("fake slug");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }

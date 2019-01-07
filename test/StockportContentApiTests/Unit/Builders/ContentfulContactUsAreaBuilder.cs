@@ -8,6 +8,8 @@ namespace StockportContentApiTests.Builders
     {
         private string _title { get; set; } = "title";
         private string _slug { get; set; } = "slug";
+        private string _categoriesTitle { get; set; } = "categoriesTitle";
+
         private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -36,6 +38,7 @@ namespace StockportContentApiTests.Builders
             {
                 Title = _title,
                 Slug = _slug,
+                CategoriesTitle = _categoriesTitle,
                 Breadcrumbs = _breadcrumbs,
                 Alerts = _alerts,
                 InsetText = _insetTexts,
@@ -53,6 +56,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulContactUsAreaBuilder Title(string title)
         {
             _title = title;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder CategoriesTitle(string categoriesTitle)
+        {
+            _categoriesTitle = categoriesTitle;
             return this;
         }
 

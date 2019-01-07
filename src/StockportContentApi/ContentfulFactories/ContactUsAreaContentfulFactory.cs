@@ -39,6 +39,10 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.Slug
                 : "";
 
+            var categoriesTitle = !string.IsNullOrEmpty(entry.CategoriesTitle)
+                ? entry.CategoriesTitle
+                : "";
+
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                     .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -59,7 +63,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
                     .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
-            return new ContactUsArea(slug, title, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories).StripData(_httpContextAccessor);
+            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories).StripData(_httpContextAccessor);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace StockportContentApi
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             // add other services
+            services.AddFeatureToggles(_contentRootPath, _appEnvironment);
             services.AddSingleton(new CurrentEnvironment(_appEnvironment));
             services.AddCache(_useRedisSession);
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
@@ -51,7 +52,6 @@ namespace StockportContentApi
             services.AddSingleton<ITimeProvider>(new TimeProvider());
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             services.Configure<ClientRateLimitOptions>(Configuration.GetSection("ClientRateLimiting"));
             services.Configure<ClientRateLimitPolicies>(Configuration.GetSection("ClientRateLimitPolicies"));
             services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();

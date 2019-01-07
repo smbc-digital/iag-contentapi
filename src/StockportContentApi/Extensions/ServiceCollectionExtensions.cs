@@ -27,11 +27,26 @@ using StockportContentApi.ContentfulFactories.SmartAnswersFactories;
 using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.Services;
 using Document = StockportContentApi.Model.Document;
+using StockportContentApi.FeatureToggling;
+using StockportContentApi.Services.Profile;
 
 namespace StockportContentApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+
+        public static IServiceCollection AddFeatureToggles(this IServiceCollection services, string contentRootPath, string appEnvironment)
+        {
+            services.AddTransient(p =>
+            {
+                var featureTogglesReader = new FeatureTogglesReader($"{contentRootPath}/featureToggles.yml", appEnvironment,
+                    p.GetService<ILogger<FeatureTogglesReader>>());
+                return featureTogglesReader.Build<FeatureToggles>();
+            });
+
+            return services;
+        }
+
         /// <summary>
         /// Add all custom contentful factories
         /// </summary>
@@ -82,6 +97,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulProfileNew, ProfileNew>>(p => new ProfileNewContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
@@ -120,6 +136,8 @@ namespace StockportContentApi.Extensions
                 ));
             services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
                 (p => new TopicSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>
+                (p => new DidYouKnowContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
                 (p => new ArticleSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
@@ -175,16 +193,17 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddSingleton<Func<ContentfulConfig, ISmartResultRepository>>(p => {return x => new SmartResultRepository(x, p.GetService<ILogger<SmartResultRepository>>(), p.GetService<IContentfulClientManager>()); });
+            services.AddSingleton<Func<ContentfulConfig, ISmartResultRepository>>(p => { return x => new SmartResultRepository(x, p.GetService<ILogger<SmartResultRepository>>(), p.GetService<IContentfulClientManager>()); });
 
             services.AddSingleton<Func<ContentfulConfig, IPrivacyNoticeRepository>>(p => { return x => new PrivacyNoticeRepository(x, p.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p => { return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<AssetRepository>>()); });
-            services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>() ); });
+            services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>()));
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
-                p => {
+                p =>
+                {
                     return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
                         p.GetService<IContentfulClientManager>(),
                         p.GetService<IContentfulFactory<ContentfulNews, News>>(),
@@ -198,8 +217,8 @@ namespace StockportContentApi.Extensions
                             p.GetService<IConfiguration>())
                     );
                 });
-            services.AddSingleton<Func<ContentfulConfig, ProfileRepository>>(
-                p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
+            services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
+                p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(), p.GetService<IContentfulFactory<ContentfulProfileNew, ProfileNew>>()); });
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(
@@ -223,7 +242,8 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<RedirectsRepository>();
             services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper(p.GetService<ITimeProvider>()));
             services.AddSingleton<Func<ContentfulConfig, IGroupRepository>>(
-                p => {
+                p =>
+                {
                     return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(),
                         p.GetService<ITimeProvider>(),
                         p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
@@ -249,7 +269,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(
                 p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>().Invoke(x)); });
 
-            
+
             services.AddSingleton<Func<ContentfulConfig, IApiKeyRepository>>(
                 p =>
                 {
@@ -371,6 +391,8 @@ namespace StockportContentApi.Extensions
         {
             services.AddTransient<ISmartResultService>(p => new SmartResultService(p.GetService<Func<ContentfulConfig, ISmartResultRepository>>(), p.GetService<IContentfulFactory<ContentfulSmartResult, SmartResult>>(), p.GetService<IContentfulConfigBuilder>()));
             services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IAssetRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>(), p.GetService<ILoggedInHelper>()));
+            services.AddTransient<IProfileService>(p => new ProfileService(p.GetService<Func<string, ContentfulConfig>>(), p.GetService<Func<ContentfulConfig, IProfileRepository>>()));
+
             return services;
         }
 
@@ -405,7 +427,6 @@ namespace StockportContentApi.Extensions
 
             return services;
         }
-
 
         private static string GetHostEntryForUrl(string host, ILogger logger)
         {
