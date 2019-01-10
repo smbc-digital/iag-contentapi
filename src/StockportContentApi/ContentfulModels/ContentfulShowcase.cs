@@ -25,8 +25,8 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulKeyFact> KeyFacts { get; set; } = new List<ContentfulKeyFact>();
         public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
         public ContentfulProfile Profile { get; set; } = null;
-        public FieldOrder FieldOrder { get; set; } = new FieldOrder();  
-        
-   
+        public FieldOrder FieldOrder { get; set; } = new FieldOrder();
+        public List<ContentfulDidYouKnow> DidYouKnowSection { get; set; } = new List<ContentfulDidYouKnow>();
+
     }
 }

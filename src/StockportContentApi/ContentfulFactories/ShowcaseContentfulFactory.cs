@@ -18,8 +18,11 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> _didYouKnowFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory, IHttpContextAccessor httpContextAccessor)
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+            IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> didYouKnowFactory,
+            IHttpContextAccessor httpContextAccessor)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -30,8 +33,9 @@ namespace StockportContentApi.ContentfulFactories
             _keyFactFactory = keyFactFactory;
             _profileFactory = profileFactory;
             _httpContextAccessor = httpContextAccessor;
+            _didYouKnowFactory = didYouKnowFactory;
         }
-        
+
         public Showcase ToModel(ContentfulShowcase entry)
         {
 
@@ -97,12 +101,12 @@ namespace StockportContentApi.ContentfulFactories
 
             var featuredItems =
                 entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
-            
+
             var primaryItems =
                 entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
-                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))    
+                                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
@@ -129,7 +133,10 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.KeyFactSubheading
                 : "";
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon,subItems, tertiaryItems).StripData(_httpContextAccessor);
+            var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
+
+            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection).StripData(_httpContextAccessor);
         }
     }
 }
