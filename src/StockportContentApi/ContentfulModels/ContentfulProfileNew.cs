@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -16,5 +17,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public List<ContentfulDidYouKnow> DidYouKnowSection { get; set; } = new List<ContentfulDidYouKnow>();
+        public FieldOrder FieldOrder { get; set; } = new FieldOrder();
     }
 }

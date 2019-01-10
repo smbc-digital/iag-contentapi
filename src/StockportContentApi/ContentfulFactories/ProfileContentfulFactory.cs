@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -65,7 +66,7 @@ namespace StockportContentApi.ContentfulFactories
                                     .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
 
             return new ProfileNew(entry.Title, entry.Slug, entry.LeadParagraph, entry.Teaser, imageUrl,
-                               entry.Body, breadcrumbs, alerts, didYouKnowSection).StripData(_httpContextAccessor);
+                               entry.Body, breadcrumbs, alerts, didYouKnowSection, entry.FieldOrder).StripData(_httpContextAccessor);
         }
     }
 }
