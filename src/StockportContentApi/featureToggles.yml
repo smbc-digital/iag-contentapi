@@ -13,13 +13,13 @@ int: &int
   << : *prod
   << : *stage
   << : *qa
+  SemanticProfile: true
 
 local: &local
   << : *prod
   << : *stage
   << : *qa
-  << : *int
-  SemanticProfile: true
+  << : *int  
 
 uitest: &uitest
   << : *prod
