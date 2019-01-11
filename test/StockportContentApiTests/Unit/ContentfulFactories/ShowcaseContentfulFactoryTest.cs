@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
                 .Teaser("showcase teaser")
                 .Subheading("subheading")
-                .FeaturedItems(new List<ContentfulReference>() {new ContentfulReference() { Sys = new SystemProperties() {Type = "Entry"} } })
+                .SecondaryItems(new List<ContentfulReference>() {new ContentfulReference() { Sys = new SystemProperties() {Type = "Entry"} } })
                 .Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
@@ -65,17 +65,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             showcase.HeroImageUrl.Should().Be("image-url.jpg");
             showcase.Teaser.Should().Be("showcase teaser");
             showcase.Subheading.Should().Be("subheading");
-            showcase.FeaturedItems.First().Title.Should().Be(subItems.First().Title);
-            showcase.FeaturedItems.First().Icon.Should().Be(subItems.First().Icon);
-            showcase.FeaturedItems.First().Slug.Should().Be(subItems.First().Slug);
-            showcase.FeaturedItems.Should().HaveCount(1);
+            showcase.SecondaryItems.First().Title.Should().Be(subItems.First().Title);
+            showcase.SecondaryItems.First().Icon.Should().Be(subItems.First().Icon);
+            showcase.SecondaryItems.First().Slug.Should().Be(subItems.First().Slug);
+            showcase.SecondaryItems.Should().HaveCount(1);
             showcase.Alerts.Count().Should().Be(1);
         }
 
         [Fact]
         public void ShouldCreateAShowcaseWithAnEmptyFeaturedItems()
         {
-            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(new List<ContentfulReference>()).Build();
+            var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(new List<ContentfulReference>()).Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
@@ -105,7 +105,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
             model.Should().BeOfType<Showcase>();
-            model.FeaturedItems.Should().BeEmpty();
+            model.SecondaryItems.Should().BeEmpty();
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var subItems = new List<ContentfulReference> {subItemThatShouldDisplay, subItemThatShouldHaveExpired};
 
-            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
+            var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
@@ -161,7 +161,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
             model.Should().BeOfType<Showcase>();
-            model.FeaturedItems.Count().Should().Be(1);
+            model.SecondaryItems.Count().Should().Be(1);
         }
 
         [Fact]
@@ -187,7 +187,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             subItems.Add(subItemThatShouldNotYetDisplay);
             subItems.Add(subItemThatShouldDisplay);
 
-            var contentfulShowcase = new ContentfulShowcaseBuilder().FeaturedItems(subItems).Build();
+            var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
             topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
@@ -217,7 +217,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
             model.Should().BeOfType<Showcase>();
-            model.FeaturedItems.Count().Should().Be(1);
+            model.SecondaryItems.Count().Should().Be(1);
         }
     }
 }

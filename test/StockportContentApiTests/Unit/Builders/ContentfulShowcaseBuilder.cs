@@ -12,7 +12,7 @@ namespace StockportContentApiTests.Builders
         private string _teaser { get; set; } = "teaser";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-        private List<ContentfulReference> _featuredItems { get; set; } = new List<ContentfulReference>
+        private List<ContentfulReference> _secondaryItems { get; set; } = new List<ContentfulReference>
         {
             new ContentfulReferenceBuilder().Build()
         };
@@ -49,7 +49,7 @@ namespace StockportContentApiTests.Builders
                 EventCategory = _eventCategory,
                 NewsSubheading = _newsSubheading,
                 NewsCategoryTag = _newsCategoryTag,
-                FeaturedItems = _featuredItems,
+                SecondaryItems = _secondaryItems,
                 Breadcrumbs = _breadcrumbs,
                 Consultations = _consultations,
                 SocialMediaLinks = _socialMediaLinks,
@@ -127,9 +127,9 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulShowcaseBuilder FeaturedItems(List<ContentfulReference> featuredItems)
+        public ContentfulShowcaseBuilder SecondaryItems(List<ContentfulReference> secondaryItems)
         {
-            _featuredItems = featuredItems;
+            _secondaryItems = secondaryItems;
             return this;
         }
 
