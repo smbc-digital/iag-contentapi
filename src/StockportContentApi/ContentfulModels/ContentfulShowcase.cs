@@ -6,7 +6,7 @@ namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulShowcase : ContentfulReference
     {
-        public List<ContentfulReference> FeaturedItems { get; set; } = new List<ContentfulReference>();
+        public List<ContentfulReference> SecondaryItems { get; set; } = new List<ContentfulReference>();
         public Asset HeroImage { get; set; } = new Asset{File = new File {Url = string.Empty}, SystemProperties = new SystemProperties {Type = "Asset"}};
         public string Subheading { get; set; } = string.Empty;
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();

@@ -20,7 +20,7 @@ namespace StockportContentApi.Model
         public IEnumerable<SubItem> SubItems { get; }
         public string BodySubheading { get; set; }
         public string Body { get; set; }
-        public IEnumerable<SubItem> FeaturedItems { get; set; }
+        public IEnumerable<SubItem> SecondaryItems { get; set; }
         public IEnumerable<SubItem> PrimaryItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public IEnumerable<Consultation> Consultations { get; set; }
@@ -36,7 +36,7 @@ namespace StockportContentApi.Model
         public string Icon { get; }
         public List<DidYouKnow> DidYouKnowSection { get; set; }
 
-        public Showcase(string slug, string title, IEnumerable<SubItem> featuredItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
+        public Showcase(string slug, string title, IEnumerable<SubItem> secondaryItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
             IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, 
             string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, 
             IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<DidYouKnow> didYouKnowSection)
@@ -46,7 +46,7 @@ namespace StockportContentApi.Model
             Teaser = teaser;
             Subheading = subheading;
             HeroImageUrl = heroImage;
-            FeaturedItems = featuredItems;
+            SecondaryItems = secondaryItems;
             Breadcrumbs = breadcrumbs;
             Consultations = consultations;
             SocialMediaLinks = socialMediaLinks;

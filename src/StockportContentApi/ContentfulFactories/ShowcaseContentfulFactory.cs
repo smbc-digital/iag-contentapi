@@ -99,9 +99,10 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.EmailAlertsText
                 : "";
 
-            var featuredItems =
-                entry.FeaturedItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+
+            var secondaryItems =
+                entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var primaryItems =
@@ -132,11 +133,12 @@ namespace StockportContentApi.ContentfulFactories
             var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
                 ? entry.KeyFactSubheading
                 : "";
-
+                
             var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, featuredItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection).StripData(_httpContextAccessor);
+
         }
     }
 }
