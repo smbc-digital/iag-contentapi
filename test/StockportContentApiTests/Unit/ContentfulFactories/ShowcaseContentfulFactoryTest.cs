@@ -42,6 +42,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
+            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+
             var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
@@ -57,17 +59,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(
-                topicFactory.Object, 
-                crumbFactory.Object, 
-                timeprovider.Object, 
-                consultationFactory.Object, 
-                socialMediaFactory.Object, 
-                _alertFactory.Object, 
-                _keyFactFactory.Object, 
-                _profileFactory.Object,
-                didYouKnowFactory.Object,
-                HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -112,9 +104,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>();
+            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, didYouKnowFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -170,9 +162,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>();
+            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, didYouKnowFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -228,9 +220,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>();
+            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, didYouKnowFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 

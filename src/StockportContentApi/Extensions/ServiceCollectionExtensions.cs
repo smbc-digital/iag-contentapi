@@ -97,7 +97,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulProfileNew, ProfileNew>>(p => new ProfileNewContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulProfileNew, ProfileNew>>(p => new ProfileNewContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
@@ -112,7 +112,7 @@ namespace StockportContentApi.Extensions
             (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                 p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
                 p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulKeyFact, KeyFact>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-                p.GetService<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>(), p.GetService<IHttpContextAccessor>()));
+                p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
                 (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IHttpContextAccessor>()));
 
@@ -137,8 +137,8 @@ namespace StockportContentApi.Extensions
                 ));
             services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
                 (p => new TopicSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>
-                (p => new DidYouKnowContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulInformationList, InformationList>>
+                (p => new InformationListContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
                 (p => new ArticleSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>

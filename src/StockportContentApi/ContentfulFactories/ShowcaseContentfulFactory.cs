@@ -18,18 +18,10 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> _didYouKnowFactory;
+        private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
 
-        public ShowcaseContentfulFactory(
-            IContentfulFactory<ContentfulReference, SubItem> subitemFactory, 
-            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
-            ITimeProvider timeProvider, 
-            IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, 
-            IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, 
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
-            IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, 
-            IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-            IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> didYouKnowFactory,
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+            IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
             IHttpContextAccessor httpContextAccessor)
         {
             _subitemFactory = subitemFactory;
@@ -41,7 +33,7 @@ namespace StockportContentApi.ContentfulFactories
             _keyFactFactory = keyFactFactory;
             _profileFactory = profileFactory;
             _httpContextAccessor = httpContextAccessor;
-            _didYouKnowFactory = didYouKnowFactory;
+            _informationListFactory = informationListFactory;
         }
 
         public Showcase ToModel(ContentfulShowcase entry)
@@ -143,9 +135,12 @@ namespace StockportContentApi.ContentfulFactories
                 : "";
                 
             var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
+                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection).StripData(_httpContextAccessor);
+            var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
+
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection).StripData(_httpContextAccessor);
 
         }
     }

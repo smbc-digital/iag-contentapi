@@ -42,14 +42,14 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> _didYouKnowFactory;
+        private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
 
-        public ProfileNewContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> didYouKnowFactory)
+        public ProfileNewContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
-            _didYouKnowFactory = didYouKnowFactory;
+            _informationListFactory = informationListFactory;
         }
 
         public ProfileNew ToModel(ContentfulProfileNew entry)
@@ -63,10 +63,13 @@ namespace StockportContentApi.ContentfulFactories
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
             var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                                    .Select(fact => _didYouKnowFactory.ToModel(fact)).ToList();
+                                    .Select(fact => _informationListFactory.ToModel(fact)).ToList();
+
+            var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
             return new ProfileNew(entry.Title, entry.Slug, entry.LeadParagraph, entry.Teaser, imageUrl,
-                               entry.Body, breadcrumbs, alerts, didYouKnowSection, entry.FieldOrder).StripData(_httpContextAccessor);
+                               entry.Body, breadcrumbs, alerts, didYouKnowSection, keyFactsSection, entry.FieldOrder).StripData(_httpContextAccessor);
         }
     }
 }

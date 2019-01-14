@@ -34,12 +34,13 @@ namespace StockportContentApi.Model
         public Profile Profile { get; }
         public FieldOrder FieldOrder { get; }
         public string Icon { get; }
-        public List<DidYouKnow> DidYouKnowSection { get; set; }
+        public List<InformationList> DidYouKnowSection { get; set; }
+        public List<InformationList> KeyFactsSection { get; set; }
 
         public Showcase(string slug, string title, IEnumerable<SubItem> secondaryItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
             IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, 
             string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, 
-            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<DidYouKnow> didYouKnowSection)
+            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<InformationList> didYouKnowSection, List<InformationList> keyFactsSection)
         {
             Title = title;
             Slug = slug;
@@ -68,6 +69,7 @@ namespace StockportContentApi.Model
             SubItems = subItems;
             TertiaryItems = tertiaryItems;
             DidYouKnowSection = didYouKnowSection;
+            KeyFactsSection = keyFactsSection;
         }
     }
 }
