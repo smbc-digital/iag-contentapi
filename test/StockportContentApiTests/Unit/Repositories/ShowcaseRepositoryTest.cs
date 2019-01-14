@@ -70,7 +70,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
+            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>();
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, didYouKnowFactory.Object, HttpContextFake.GetHttpContextFake());
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 

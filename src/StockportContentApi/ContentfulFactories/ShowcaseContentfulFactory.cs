@@ -20,7 +20,15 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> _didYouKnowFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+        public ShowcaseContentfulFactory(
+            IContentfulFactory<ContentfulReference, SubItem> subitemFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
+            ITimeProvider timeProvider, 
+            IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, 
+            IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, 
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+            IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, 
+            IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulDidYouKnow, DidYouKnow> didYouKnowFactory,
             IHttpContextAccessor httpContextAccessor)
         {
