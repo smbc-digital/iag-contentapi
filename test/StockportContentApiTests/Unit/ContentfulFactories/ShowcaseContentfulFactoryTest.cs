@@ -53,7 +53,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>();
+            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
             Mock<ITimeProvider> timeprovider = new Mock<ITimeProvider>();
 
