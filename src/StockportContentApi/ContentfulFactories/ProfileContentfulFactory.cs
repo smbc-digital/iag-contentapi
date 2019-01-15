@@ -32,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories
             var backgroundImageUrl = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                 ? entry.BackgroundImage.File.Url : string.Empty;
 
-            return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.LeadParagraph, entry.Teaser, imageUrl,
+            return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.Teaser, entry.Quote, imageUrl,
                                entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs, alerts).StripData(_httpContextAccessor);
         }
     }
@@ -68,7 +68,7 @@ namespace StockportContentApi.ContentfulFactories
             var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            return new ProfileNew(entry.Title, entry.Slug, entry.LeadParagraph, entry.Teaser, imageUrl,
+            return new ProfileNew(entry.Title, entry.Slug, entry.Subtitle, entry.Quote, imageUrl,
                                entry.Body, breadcrumbs, alerts, didYouKnowSection, keyFactsSection, entry.FieldOrder).StripData(_httpContextAccessor);
         }
     }

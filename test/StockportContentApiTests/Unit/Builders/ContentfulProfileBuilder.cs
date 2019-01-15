@@ -10,8 +10,8 @@ namespace StockportContentApiTests.Unit.Builders
         private string _slug = "slug";
         private string _icon = "icon";
         private string _subtitle = "subtitle";
-        private string _leadParagraph = "lead paragraph";
         private string _teaser = "teaser";
+        private string _quote = "quote";
         private string _body = "body";
         private string _type = "type";
         private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
@@ -50,8 +50,8 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Title = _title,
                 Slug = _slug,
-                LeadParagraph = _leadParagraph,
-                Teaser = _teaser,
+                Subtitle = _subtitle,
+                Quote = _quote,
                 Image = _image,
                 Body = _body,
                 Breadcrumbs = _breadcrumbs,

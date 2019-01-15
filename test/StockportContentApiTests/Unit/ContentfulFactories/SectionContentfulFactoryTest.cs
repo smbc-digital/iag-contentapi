@@ -49,7 +49,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 "title",
                 "slug",
                 "subtitle",
-                "leadparagraph",
                 "body",
                 "icon",
                 "image",
