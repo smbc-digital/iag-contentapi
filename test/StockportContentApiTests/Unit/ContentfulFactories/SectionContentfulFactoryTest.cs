@@ -45,7 +45,18 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateASectionFromAContentfulSection()
         {
             // Arrange
-            var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
+            var profile = new Profile("type",
+                "title",
+                "slug",
+                "subtitle",
+                "leadparagraph",
+                "body",
+                "icon",
+                "image",
+                new List<Crumb>
+                {
+                    new Crumb("title", "slug", "type")
+                });
             _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
 
             var document = new DocumentBuilder().Build();

@@ -52,9 +52,30 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulProfile>();
             collection.Items = new List<ContentfulProfile> { contentfulTopic };
 
-            var profile = new Profile("type", "title", "slug", "subtitle",
-                "teaser", "image", "body", "icon", "backgroundImage",
-                new List<Crumb> { new Crumb("title", "slug", "type") }, new List<Alert> { new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug") });
+            var profile = new Profile("type",
+                "title",
+                "slug",
+                "subtitle",
+                "leadparagraph",
+                "teaser",
+                "image",
+               "body",
+                "icon",
+                "backgroundImage",
+                new List<Crumb>
+                {
+                    new Crumb("title", "slug", "type")
+                },
+                new List<Alert>
+                {
+                    new Alert("title",
+                        "subheading",
+                        "body",
+                        "severity",
+                        DateTime.MinValue,
+                        DateTime.MaxValue,
+                        "slug")
+                });
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
