@@ -3,6 +3,7 @@
   "title": "title",
   "slug": "profile_slug",
   "subtitle": "subtitle",
+  "leadParagraph": "leadparagraph",
   "teaser": "teaser",
   "image": "image-url.jpg",
   "body": "body",
