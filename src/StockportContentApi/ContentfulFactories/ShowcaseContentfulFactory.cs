@@ -19,10 +19,11 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
+        private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
 
         public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -33,6 +34,7 @@ namespace StockportContentApi.ContentfulFactories
             _keyFactFactory = keyFactFactory;
             _profileFactory = profileFactory;
             _httpContextAccessor = httpContextAccessor;
+            _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
             _informationListFactory = informationListFactory;
         }
 
@@ -130,6 +132,8 @@ namespace StockportContentApi.ContentfulFactories
 
             var profile = entry.Profile == null ? null : _profileFactory.ToModel(entry.Profile);
 
+            var callToActionBanner = _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner);
+
             var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
                 ? entry.KeyFactSubheading
                 : "";
@@ -140,7 +144,7 @@ namespace StockportContentApi.ContentfulFactories
             var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection, callToActionBanner).StripData(_httpContextAccessor);
 
         }
     }

@@ -32,6 +32,7 @@ namespace StockportContentApi.Model
         public string KeyFactSubheading { get; }
         public IEnumerable<KeyFact> KeyFacts { get; }
         public Profile Profile { get; }
+        public CallToActionBanner CallToActionBanner { get; }
         public FieldOrder FieldOrder { get; }
         public string Icon { get; }
         public List<InformationList> DidYouKnowSection { get; set; }
@@ -40,7 +41,7 @@ namespace StockportContentApi.Model
         public Showcase(string slug, string title, IEnumerable<SubItem> secondaryItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
             IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, 
             string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, 
-            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<InformationList> didYouKnowSection, List<InformationList> keyFactsSection)
+            IEnumerable<KeyFact> keyFacts, Profile profile, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<InformationList> didYouKnowSection, List<InformationList> keyFactsSection, CallToActionBanner callToActionBanner)
         {
             Title = title;
             Slug = slug;
@@ -70,6 +71,7 @@ namespace StockportContentApi.Model
             TertiaryItems = tertiaryItems;
             DidYouKnowSection = didYouKnowSection;
             KeyFactsSection = keyFactsSection;
+            CallToActionBanner = callToActionBanner;
         }
     }
 }
