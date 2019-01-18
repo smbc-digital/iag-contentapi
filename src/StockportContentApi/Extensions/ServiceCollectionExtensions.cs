@@ -108,11 +108,13 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
             (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                 p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
                 p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulKeyFact, KeyFact>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-                p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>(), p.GetService<IHttpContextAccessor>()));
+                p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>(), p.GetService<IHttpContextAccessor>(),
+                p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>()));
             services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
                 (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IHttpContextAccessor>()));
 
