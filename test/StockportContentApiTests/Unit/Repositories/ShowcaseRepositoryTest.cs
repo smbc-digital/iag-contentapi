@@ -72,7 +72,18 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 

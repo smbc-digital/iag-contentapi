@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
                 .Teaser("showcase teaser")
                 .Subheading("subheading")
-                .SecondaryItems(new List<ContentfulReference>() {new ContentfulReference() { Sys = new SystemProperties() {Type = "Entry"} } })
+                .SecondaryItems(new List<ContentfulReference>() { new ContentfulReference() { Sys = new SystemProperties() { Type = "Entry" } } })
                 .Build();
 
             var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
@@ -55,11 +55,22 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
+
             Mock<ITimeProvider> timeprovider = new Mock<ITimeProvider>();
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -106,7 +117,18 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -135,7 +157,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 Sys = new SystemProperties() { Type = "Entry" }
             };
 
-            var subItems = new List<ContentfulReference> {subItemThatShouldDisplay, subItemThatShouldHaveExpired};
+            var subItems = new List<ContentfulReference> { subItemThatShouldDisplay, subItemThatShouldHaveExpired };
 
             var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
 
@@ -163,8 +185,18 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -180,7 +212,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 Title = "Sub1",
                 SunriseDate = new DateTime(2018, 12, 30),
                 SunsetDate = new DateTime(2019, 12, 30),
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties() { Type = "Entry" }
             };
 
             var subItemThatShouldDisplay = new ContentfulReference()
@@ -222,7 +254,18 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake());
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
+
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
