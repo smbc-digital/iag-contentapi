@@ -3,6 +3,7 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using Microsoft.AspNetCore.Http;
+using StockportContentApi.Services.Profile;
 
 
 namespace StockportContentApi.ContentfulFactories
@@ -130,6 +131,9 @@ namespace StockportContentApi.ContentfulFactories
 
             var profile = entry.Profile == null ? null : _profileFactory.ToModel(entry.Profile);
 
+            var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
+                .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
+
             var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
                 ? entry.KeyFactSubheading
                 : "";
@@ -140,7 +144,7 @@ namespace StockportContentApi.ContentfulFactories
             var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection).StripData(_httpContextAccessor);
 
         }
     }
