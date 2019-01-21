@@ -32,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories
             var backgroundImageUrl = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                 ? entry.BackgroundImage.File.Url : string.Empty;
 
-            return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.Teaser, entry.Quote, imageUrl,
+            return new Profile(entry.Type, entry.Title, entry.Slug, entry.LeadParagraph, entry.Teaser, entry.Quote, imageUrl,
                                entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs, alerts).StripData(_httpContextAccessor);
         }
     }

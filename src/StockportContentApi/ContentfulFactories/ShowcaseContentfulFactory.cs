@@ -135,7 +135,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
                 .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
-            var callToActionBanner = _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner);
+            var callToActionBanner = entry.CallToActionBanner == null ? null : _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner);
 
             var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
                 ? entry.KeyFactSubheading

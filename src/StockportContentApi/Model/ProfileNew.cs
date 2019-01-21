@@ -6,7 +6,7 @@ namespace StockportContentApi.Model
     {
         public string Title { get; }
         public string Slug { get; }
-        public string Subtitle { get; }
+        public string LeadParagraph { get; }
         public string Quote { get; }
         public string Image { get; }
         public string Body { get; }
@@ -23,7 +23,7 @@ namespace StockportContentApi.Model
 
         public ProfileNew(string title,
             string slug,
-            string subtitle,
+            string leadParagraph,
             string quote,
             string image,
             string body,
@@ -35,7 +35,7 @@ namespace StockportContentApi.Model
         {
             Title = title;
             Slug = slug;
-            Subtitle = subtitle;
+            LeadParagraph = leadParagraph;
             Quote = quote;
             Image = image;
             Body = body;
