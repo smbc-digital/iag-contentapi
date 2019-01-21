@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.Model
                 Type = string.Empty,
                 Title = string.Empty,
                 Slug = string.Empty,
-                Subtitle = string.Empty,
+                LeadParagraph = string.Empty,
                 Teaser = string.Empty,
                 Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Body = string.Empty,
