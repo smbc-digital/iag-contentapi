@@ -7,7 +7,7 @@ namespace StockportContentApi.Model
         public string Type { get; }
         public string Title { get; }
         public string Slug { get; }
-        public string Subtitle { get; }
+        public string LeadParagraph { get; }
         public string Teaser { get; }
         public string Quote { get; }
         public string Image { get; }
@@ -20,7 +20,7 @@ namespace StockportContentApi.Model
         public Profile(string type,
             string title,
             string slug,
-            string subtitle,
+            string leadParagraph,
             string teaser,
             string quote,
             string image,
@@ -33,7 +33,7 @@ namespace StockportContentApi.Model
             Type = type;
             Title = title;
             Slug = slug;
-            Subtitle = subtitle;
+            LeadParagraph = leadParagraph;
             Teaser = teaser;
             Quote = quote;
             Image = image;
@@ -47,7 +47,7 @@ namespace StockportContentApi.Model
         public Profile(string type,
             string title,
             string slug,
-            string subtitle,
+            string leadParagraph,
             string teaser,
             string quote,
             string image)
@@ -55,7 +55,7 @@ namespace StockportContentApi.Model
             Type = type;
             Title = title;
             Slug = slug;
-            Subtitle = subtitle;
+            LeadParagraph = leadParagraph;
             Teaser = teaser;
             Quote = quote;
             Image = image;
@@ -64,7 +64,7 @@ namespace StockportContentApi.Model
         public Profile(string type,
             string title,
             string slug,
-            string subtitle,
+            string leadParagraph,
             string body,
             string icon,
             string backgroundImage,
@@ -73,7 +73,7 @@ namespace StockportContentApi.Model
             Type = type;
             Title = title;
             Slug = slug;
-            Subtitle = subtitle;
+            LeadParagraph = leadParagraph;
             Body = body;
             Icon = icon;
             BackgroundImage = backgroundImage;
