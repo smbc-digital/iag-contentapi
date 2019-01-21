@@ -36,13 +36,39 @@ namespace StockportContentApi.Model
         public CallToActionBanner CallToActionBanner { get; }
         public FieldOrder FieldOrder { get; }
         public string Icon { get; }
+        public string DidYouKnowSubheading { get; set; }
         public List<InformationList> DidYouKnowSection { get; set; }
-        public List<InformationList> KeyFactsSection { get; set; }
 
-        public Showcase(string slug, string title, IEnumerable<SubItem> secondaryItems, string heroImage, string subheading, string teaser, IEnumerable<Crumb> breadcrumbs,
-            IEnumerable<Consultation> consultations, IEnumerable<SocialMediaLink> socialMediaLinks, string eventSubheading, string eventCategory, string newsSubheading, 
-            string newsCategoryTag, string bodySubheading, string body, string emailAlertsTopicId, string emailAlertsText, IEnumerable<Alert> alerts, IEnumerable<SubItem> primaryItems, 
-            IEnumerable<KeyFact> keyFacts, Profile profile, List<Profile> profiles, FieldOrder fieldOrder, string keyFactSubheading, string icon, IEnumerable<SubItem> subItems, IEnumerable<SubItem> tertiaryItems, List<InformationList> didYouKnowSection, List<InformationList> keyFactsSection, CallToActionBanner callToActionBanner)
+        public Showcase(string slug, 
+            string title, 
+            IEnumerable<SubItem> secondaryItems, 
+            string heroImage, 
+            string subheading, 
+            string teaser, 
+            IEnumerable<Crumb> breadcrumbs,
+            IEnumerable<Consultation> consultations, 
+            IEnumerable<SocialMediaLink> socialMediaLinks, 
+            string eventSubheading, 
+            string eventCategory, 
+            string newsSubheading, 
+            string newsCategoryTag, 
+            string bodySubheading, 
+            string body, 
+            string emailAlertsTopicId, 
+            string emailAlertsText, 
+            IEnumerable<Alert> alerts, 
+            IEnumerable<SubItem> primaryItems, 
+            IEnumerable<KeyFact> keyFacts, 
+            Profile profile, 
+            List<Profile> profiles, 
+            FieldOrder fieldOrder, 
+            string keyFactSubheading, 
+            string icon, 
+            IEnumerable<SubItem> subItems, 
+            IEnumerable<SubItem> tertiaryItems,
+            string didYouKnowSubheading,
+            List<InformationList> didYouKnowSection, 
+            CallToActionBanner callToActionBanner)
         {
             Title = title;
             Slug = slug;
@@ -71,8 +97,8 @@ namespace StockportContentApi.Model
             Icon = icon;
             SubItems = subItems;
             TertiaryItems = tertiaryItems;
+            DidYouKnowSubheading = didYouKnowSubheading;
             DidYouKnowSection = didYouKnowSection;
-            KeyFactsSection = keyFactsSection;
             CallToActionBanner = callToActionBanner;
         }
     }

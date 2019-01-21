@@ -140,14 +140,16 @@ namespace StockportContentApi.ContentfulFactories
             var keyFactSubheading = !string.IsNullOrEmpty(entry.KeyFactSubheading)
                 ? entry.KeyFactSubheading
                 : "";
-                
+
+            var didYouKnowSubheading = !string.IsNullOrEmpty(entry.DidYouKnowSubheading)
+                ? entry.DidYouKnowSubheading
+                : "";
+
             var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSection, keyFactsSection, callToActionBanner).StripData(_httpContextAccessor);
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSubheading, didYouKnowSection, callToActionBanner).StripData(_httpContextAccessor);
 
         }
     }
