@@ -9,7 +9,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _slug = "slug";
         private string _icon = "icon";
-        private string _leadParagraph = "leadParagraph";
+        private string _subtitle = "subtitle";
         private string _teaser = "teaser";
         private string _quote = "quote";
         private string _body = "body";
@@ -33,7 +33,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Type = _type,
                 Title = _title,
                 Slug = _slug,
-                LeadParagraph = _leadParagraph,
+                Subtitle = _subtitle,
                 Teaser = _teaser,
                 Image = _image,
                 Body = _body,
@@ -50,7 +50,7 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Title = _title,
                 Slug = _slug,
-                LeadParagraph = _leadParagraph,
+                Subtitle = _subtitle,
                 Quote = _quote,
                 Image = _image,
                 Body = _body,
