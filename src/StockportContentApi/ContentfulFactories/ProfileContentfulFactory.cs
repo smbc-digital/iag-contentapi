@@ -62,14 +62,15 @@ namespace StockportContentApi.ContentfulFactories
 
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
+            var didYouKnowSubheading = !string.IsNullOrEmpty(entry.DidYouKnowSubheading)
+                ? entry.DidYouKnowSubheading
+                : "";
+
             var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                                     .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-            var keyFactsSection = entry.KeyFactsSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
-
-            return new ProfileNew(entry.Title, entry.Slug, entry.LeadParagraph, entry.Quote, imageUrl,
-                               entry.Body, breadcrumbs, alerts, didYouKnowSection, keyFactsSection, entry.FieldOrder).StripData(_httpContextAccessor);
+            return new ProfileNew(entry.Title, entry.Slug, entry.Subtitle, entry.Quote, imageUrl,
+                               entry.Body, breadcrumbs, alerts, didYouKnowSubheading, didYouKnowSection, entry.FieldOrder).StripData(_httpContextAccessor);
         }
     }
 }
