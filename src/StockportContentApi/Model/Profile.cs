@@ -16,6 +16,8 @@ namespace StockportContentApi.Model
         public string BackgroundImage { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public List<Alert> Alerts { get; }
+        public string Author { get; }
+        public string Subject { get; }
 
         public Profile(string type,
             string title,
@@ -28,7 +30,9 @@ namespace StockportContentApi.Model
             string icon,
             string backgroundImage,
             IEnumerable<Crumb> breadcrumbs,
-            List<Alert> alerts)
+            List<Alert> alerts,
+            string author,
+            string subject)
         {
             Type = type;
             Title = title;
@@ -42,6 +46,8 @@ namespace StockportContentApi.Model
             BackgroundImage = backgroundImage;
             Breadcrumbs = breadcrumbs;
             Alerts = alerts;
+            Author = author;
+            Subject = subject;
         }
 
         public Profile(string type,
@@ -50,7 +56,9 @@ namespace StockportContentApi.Model
             string subtitle,
             string teaser,
             string quote,
-            string image)
+            string image,
+            string author,
+            string subject)
         {
             Type = type;
             Title = title;
@@ -59,6 +67,8 @@ namespace StockportContentApi.Model
             Teaser = teaser;
             Quote = quote;
             Image = image;
+            Author = author;
+            Subject = subject;
         }
 
         public Profile(string type,
@@ -68,7 +78,9 @@ namespace StockportContentApi.Model
             string body,
             string icon,
             string backgroundImage,
-            IEnumerable<Crumb> breadcrumbs)
+            IEnumerable<Crumb> breadcrumbs,
+            string author,
+            string subject)
         {
             Type = type;
             Title = title;
@@ -78,6 +90,8 @@ namespace StockportContentApi.Model
             Icon = icon;
             BackgroundImage = backgroundImage;
             Breadcrumbs = breadcrumbs;
+            Author = author;
+            Subject = subject;
         }
     }
 }

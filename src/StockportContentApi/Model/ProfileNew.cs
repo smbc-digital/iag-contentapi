@@ -15,6 +15,8 @@ namespace StockportContentApi.Model
         public string TriviaSubheading { get; }
         public List<InformationList> TriviaSection { get; }
         public FieldOrder FieldOrder { get; }
+        public string Author { get; }
+        public string Subject { get; }
 
         public ProfileNew()
         {
@@ -31,7 +33,9 @@ namespace StockportContentApi.Model
             List<Alert> alerts,
             string triviaSubheading,
             List<InformationList> triviaSection,
-            FieldOrder fieldOrder)
+            FieldOrder fieldOrder,
+            string author,
+            string subject)
         {
             Title = title;
             Slug = slug;
@@ -44,6 +48,8 @@ namespace StockportContentApi.Model
             TriviaSubheading = triviaSubheading;
             TriviaSection = triviaSection;
             FieldOrder = fieldOrder;
+            Author = author;
+            Subject = subject;
         }
 
     }

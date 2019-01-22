@@ -33,7 +33,7 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.BackgroundImage.File.Url : string.Empty;
 
             return new Profile(entry.Type, entry.Title, entry.Slug, entry.Subtitle, entry.Teaser, entry.Quote, imageUrl,
-                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs, alerts).StripData(_httpContextAccessor);
+                               entry.Body, entry.Icon, backgroundImageUrl, breadcrumbs, alerts, entry.Author, entry.Subject).StripData(_httpContextAccessor);
         }
     }
 
@@ -70,7 +70,7 @@ namespace StockportContentApi.ContentfulFactories
                                     .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
             return new ProfileNew(entry.Title, entry.Slug, entry.Subtitle, entry.Quote, imageUrl,
-                               entry.Body, breadcrumbs, alerts, TriviaSubheading, TriviaSection, entry.FieldOrder).StripData(_httpContextAccessor);
+                               entry.Body, breadcrumbs, alerts, TriviaSubheading, TriviaSection, entry.FieldOrder, entry.Author, entry.Subject).StripData(_httpContextAccessor);
         }
     }
 }

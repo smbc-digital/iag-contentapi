@@ -75,7 +75,9 @@ namespace StockportContentApiTests.Unit.Repositories
                         DateTime.MinValue,
                         DateTime.MaxValue,
                         "slug")
-                });
+                },
+                "",
+                "");
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
