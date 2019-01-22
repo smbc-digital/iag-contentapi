@@ -85,8 +85,8 @@ namespace StockportContentApiTests.Unit.Builders
                         DateTime.MinValue,
                         DateTime.MaxValue,
                         "slug")
-                }, 
-                "", 
+                },
+                "",
                 "")
         };
         private Advertisement _advertisement = new Advertisement("title",
