@@ -33,6 +33,8 @@ namespace StockportContentApi.Model
         public IEnumerable<KeyFact> KeyFacts { get; }
         public Profile Profile { get; }
         public List<Profile> Profiles { get; }
+        public string ProfileHeading { get; }
+        public string ProfileLink { get; }
         public CallToActionBanner CallToActionBanner { get; }
         public FieldOrder FieldOrder { get; }
         public string Icon { get; }
@@ -68,7 +70,9 @@ namespace StockportContentApi.Model
             IEnumerable<SubItem> tertiaryItems,
             string didYouKnowSubheading,
             List<InformationList> didYouKnowSection, 
-            CallToActionBanner callToActionBanner)
+            CallToActionBanner callToActionBanner,
+            string profileHeading,
+            string profileLink)
         {
             Title = title;
             Slug = slug;
@@ -100,6 +104,8 @@ namespace StockportContentApi.Model
             DidYouKnowSubheading = didYouKnowSubheading;
             DidYouKnowSection = didYouKnowSection;
             CallToActionBanner = callToActionBanner;
+            ProfileHeading = profileHeading;
+            ProfileLink = profileLink;
         }
     }
 }
