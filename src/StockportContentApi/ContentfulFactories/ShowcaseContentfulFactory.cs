@@ -105,7 +105,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var secondaryItems =
                 entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var primaryItems =
@@ -141,15 +141,47 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.KeyFactSubheading
                 : "";
 
-            var didYouKnowSubheading = !string.IsNullOrEmpty(entry.DidYouKnowSubheading)
-                ? entry.DidYouKnowSubheading
+            var triviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
+                ? entry.TriviaSubheading
                 : "";
 
-            var didYouKnowSection = entry.DidYouKnowSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+            var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, didYouKnowSubheading, didYouKnowSection, callToActionBanner, entry.ProfileHeading, entry.ProfileLink).StripData(_httpContextAccessor);
+            return new Showcase(
+                slug,
+                title,
+                secondaryItems,
+                heroImage,
+                subHeading,
+                teaser,
+                breadcrumbs,
+                consultations,
+                socialMediaLinks,
+                eventSubheading,
+                eventCategory,
+                newsSubheading,
+                newsCategoryTag,
+                bodySubheading,
+                body,
+                emailAlertsTopicId,
+                emailAlertsText,
+                alerts,
+                primaryItems,
+                keyFacts,
+                profile,
+                profiles,
+                entry.FieldOrder,
+                keyFactSubheading,
+                entry.Icon,
+                subItems,
+                tertiaryItems,
+                triviaSubheading,
+                triviaSection,
+                callToActionBanner,
+                entry.ProfileHeading,
+                entry.ProfileLink
+            ).StripData(_httpContextAccessor);
 
         }
     }
