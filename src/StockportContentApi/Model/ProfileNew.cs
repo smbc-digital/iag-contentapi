@@ -12,8 +12,8 @@ namespace StockportContentApi.Model
         public string Body { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public List<Alert> Alerts { get; }
-        public string DidYouKnowSubheading { get; }
-        public List<InformationList> DidYouKnowSection { get; }
+        public string TriviaSubheading { get; }
+        public List<InformationList> TriviaSection { get; }
         public FieldOrder FieldOrder { get; }
 
         public ProfileNew()
@@ -29,8 +29,8 @@ namespace StockportContentApi.Model
             string body,
             IEnumerable<Crumb> breadcrumbs,
             List<Alert> alerts,
-            string didYouKnowSubheading,
-            List<InformationList> didYouKnowSection,
+            string triviaSubheading,
+            List<InformationList> triviaSection,
             FieldOrder fieldOrder)
         {
             Title = title;
@@ -41,8 +41,8 @@ namespace StockportContentApi.Model
             Body = body;
             Breadcrumbs = breadcrumbs;
             Alerts = alerts;
-            DidYouKnowSubheading = didYouKnowSubheading;
-            DidYouKnowSection = didYouKnowSection;
+            TriviaSubheading = triviaSubheading;
+            TriviaSection = triviaSection;
             FieldOrder = fieldOrder;
         }
 

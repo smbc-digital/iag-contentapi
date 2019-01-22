@@ -36,8 +36,8 @@ namespace StockportContentApi.Model
         public CallToActionBanner CallToActionBanner { get; }
         public FieldOrder FieldOrder { get; }
         public string Icon { get; }
-        public string DidYouKnowSubheading { get; set; }
-        public List<InformationList> DidYouKnowSection { get; set; }
+        public string TriviaSubheading { get; set; }
+        public List<InformationList> TriviaSection { get; set; }
 
         public Showcase(string slug, 
             string title, 
@@ -66,8 +66,8 @@ namespace StockportContentApi.Model
             string icon, 
             IEnumerable<SubItem> subItems, 
             IEnumerable<SubItem> tertiaryItems,
-            string didYouKnowSubheading,
-            List<InformationList> didYouKnowSection, 
+            string triviaSubheading,
+            List<InformationList> triviaSection, 
             CallToActionBanner callToActionBanner)
         {
             Title = title;
@@ -97,8 +97,8 @@ namespace StockportContentApi.Model
             Icon = icon;
             SubItems = subItems;
             TertiaryItems = tertiaryItems;
-            DidYouKnowSubheading = didYouKnowSubheading;
-            DidYouKnowSection = didYouKnowSection;
+            TriviaSubheading = triviaSubheading;
+            TriviaSection = triviaSection;
             CallToActionBanner = callToActionBanner;
         }
     }

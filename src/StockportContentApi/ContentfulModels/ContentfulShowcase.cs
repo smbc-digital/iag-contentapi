@@ -28,7 +28,7 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulProfile> Profiles { get; set; } = new List<ContentfulProfile>();
         public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
         public FieldOrder FieldOrder { get; set; } = new FieldOrder();
-        public string DidYouKnowSubheading { get; set; }
-        public List<ContentfulInformationList> DidYouKnowSection { get; set; } = new List<ContentfulInformationList>();
+        public string TriviaSubheading { get; set; }
+        public List<ContentfulInformationList> TriviaSection { get; set; } = new List<ContentfulInformationList>();
     }
 }
