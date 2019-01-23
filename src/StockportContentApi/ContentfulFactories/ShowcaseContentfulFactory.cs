@@ -109,13 +109,22 @@ namespace StockportContentApi.ContentfulFactories
 
             var secondaryItems =
                 entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))    
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var primaryItems =
                 entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
                                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
+
+            var featuredItemSubheading = !string.IsNullOrEmpty(entry.FeaturedItemsSubheading)
+                ? entry.FeaturedItemsSubheading
+                : "";
+
+            var featuredItems =
+                entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
+                .Select(item => _subitemFactory.ToModel(item)).ToList();
 
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
@@ -154,8 +163,43 @@ namespace StockportContentApi.ContentfulFactories
 
             var video = entry.Video == null ? null : _videoFactory.ToModel(entry.Video);
            
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, triviaSubheading, triviaSection, callToActionBanner, video).StripData(_httpContextAccessor);
-
+            return new Showcase(
+                slug,
+                title,
+                secondaryItems,
+                heroImage,
+                subHeading,
+                teaser,
+                breadcrumbs,
+                consultations,
+                socialMediaLinks,
+                eventSubheading,
+                eventCategory,
+                newsSubheading,
+                newsCategoryTag,
+                bodySubheading,
+                body,
+                emailAlertsTopicId,
+                emailAlertsText,
+                alerts,
+                primaryItems,
+                featuredItemSubheading,
+                featuredItems,
+                keyFacts,
+                profile,
+                profiles,
+                entry.FieldOrder,
+                keyFactSubheading,
+                entry.Icon,
+                subItems,
+                tertiaryItems,
+                triviaSubheading,
+                triviaSection,
+                callToActionBanner,
+                video
+                entry.ProfileHeading,
+                entry.ProfileLink
+            ).StripData(_httpContextAccessor);
         }
     }
 }

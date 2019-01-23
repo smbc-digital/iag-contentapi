@@ -55,7 +55,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 new List<Crumb>
                 {
                     new Crumb("title", "slug", "type")
-                });
+                },
+                "",
+                "");
             _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
 
             var document = new DocumentBuilder().Build();
