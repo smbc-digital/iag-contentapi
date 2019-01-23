@@ -38,6 +38,7 @@ namespace StockportContentApi.Model
         public string Icon { get; }
         public string TriviaSubheading { get; set; }
         public List<InformationList> TriviaSection { get; set; }
+        public Video Video { get; set; }
 
         public Showcase(string slug, 
             string title, 
@@ -68,7 +69,8 @@ namespace StockportContentApi.Model
             IEnumerable<SubItem> tertiaryItems,
             string triviaSubheading,
             List<InformationList> triviaSection, 
-            CallToActionBanner callToActionBanner)
+            CallToActionBanner callToActionBanner,
+            Video video)
         {
             Title = title;
             Slug = slug;
@@ -100,6 +102,7 @@ namespace StockportContentApi.Model
             TriviaSubheading = triviaSubheading;
             TriviaSection = triviaSection;
             CallToActionBanner = callToActionBanner;
+            Video = video;
         }
     }
 }

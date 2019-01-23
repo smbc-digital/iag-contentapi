@@ -21,10 +21,13 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
+        private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
 
         public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
-            IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory)
+            IHttpContextAccessor httpContextAccessor, 
+            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
+            IContentfulFactory<ContentfulVideo, Video> videoFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -37,6 +40,7 @@ namespace StockportContentApi.ContentfulFactories
             _httpContextAccessor = httpContextAccessor;
             _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
             _informationListFactory = informationListFactory;
+            _videoFactory = videoFactory;
         }
 
         public Showcase ToModel(ContentfulShowcase entry)
@@ -141,15 +145,16 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.KeyFactSubheading
                 : "";
 
-            var TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
+            var triviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                 ? entry.TriviaSubheading
                 : "";
 
-            var TriviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+            var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
-
-            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, TriviaSubheading, TriviaSection, callToActionBanner).StripData(_httpContextAccessor);
+            var video = entry.Video == null ? null : _videoFactory.ToModel(entry.Video);
+           
+            return new Showcase(slug, title, secondaryItems, heroImage, subHeading, teaser, breadcrumbs, consultations, socialMediaLinks, eventSubheading, eventCategory, newsSubheading, newsCategoryTag, bodySubheading, body, emailAlertsTopicId, emailAlertsText, alerts, primaryItems, keyFacts, profile, profiles, entry.FieldOrder, keyFactSubheading, entry.Icon, subItems, tertiaryItems, triviaSubheading, triviaSection, callToActionBanner, video).StripData(_httpContextAccessor);
 
         }
     }
