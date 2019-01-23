@@ -113,6 +113,15 @@ namespace StockportContentApi.ContentfulFactories
                                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
 
+            var featuredItemSubheading = !string.IsNullOrEmpty(entry.FeaturedItemsSubheading)
+                ? entry.FeaturedItemsSubheading
+                : "";
+
+            var featuredItems =
+                entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
+                .Select(item => _subitemFactory.ToModel(item)).ToList();
+
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -168,6 +177,8 @@ namespace StockportContentApi.ContentfulFactories
                 emailAlertsText,
                 alerts,
                 primaryItems,
+                featuredItemSubheading,
+                featuredItems,
                 keyFacts,
                 profile,
                 profiles,

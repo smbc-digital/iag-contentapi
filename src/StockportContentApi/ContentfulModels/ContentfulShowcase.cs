@@ -24,6 +24,8 @@ namespace StockportContentApi.ContentfulModels
         public string KeyFactSubheading { get; set; } = string.Empty;
         public List<ContentfulKeyFact> KeyFacts { get; set; } = new List<ContentfulKeyFact>();
         public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
+        public string FeaturedItemsSubheading { get; set; }
+        public List<ContentfulReference> FeaturedItems { get; set; } = new List<ContentfulReference>();
         public ContentfulProfile Profile { get; set; } = null;
         public List<ContentfulProfile> Profiles { get; set; } = new List<ContentfulProfile>();
         public string ProfileHeading { get; set; } = string.Empty;
