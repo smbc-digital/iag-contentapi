@@ -68,6 +68,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
+            var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
@@ -83,7 +85,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     Link = "url"
                 });
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object);
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 

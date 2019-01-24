@@ -112,12 +112,9 @@ namespace StockportContentApi.Model
             TriviaSubheading = triviaSubheading;
             TriviaSection = triviaSection;
             CallToActionBanner = callToActionBanner;
-<<<<<<< HEAD
             Video = video;
-=======
             ProfileHeading = profileHeading;
             ProfileLink = profileLink;
->>>>>>> d032dfdf0a26e3d4ae32846294b00954bf0114f1
         }
     }
 }

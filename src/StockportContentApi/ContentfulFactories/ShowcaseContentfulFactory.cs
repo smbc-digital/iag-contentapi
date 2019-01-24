@@ -196,9 +196,9 @@ namespace StockportContentApi.ContentfulFactories
                 triviaSubheading,
                 triviaSection,
                 callToActionBanner,
-                video
                 entry.ProfileHeading,
-                entry.ProfileLink
+                entry.ProfileLink,
+                video
             ).StripData(_httpContextAccessor);
         }
     }

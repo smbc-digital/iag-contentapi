@@ -55,6 +55,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
+            var videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+
             var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
             callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
                 new CallToActionBanner
@@ -70,7 +72,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, videoFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -117,6 +119,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
+            var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+
             var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
             callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
                 new CallToActionBanner
@@ -128,7 +132,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     Link = "url"
                 });
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -185,6 +189,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+
+            var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+            
             var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
             callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
                 new CallToActionBanner
@@ -196,7 +203,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     Link = "url"
                 });
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -254,6 +261,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
 
+            var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+
             var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
             callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
                 new CallToActionBanner
@@ -265,7 +274,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     Link = "url"
                 });
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
