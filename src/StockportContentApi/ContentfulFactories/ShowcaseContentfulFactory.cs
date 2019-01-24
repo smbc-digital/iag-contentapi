@@ -21,10 +21,13 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
+        private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
 
         public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
-            IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory)
+            IHttpContextAccessor httpContextAccessor, 
+            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
+            IContentfulFactory<ContentfulVideo, Video> videoFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -37,6 +40,7 @@ namespace StockportContentApi.ContentfulFactories
             _httpContextAccessor = httpContextAccessor;
             _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
             _informationListFactory = informationListFactory;
+            _videoFactory = videoFactory;
         }
 
         public Showcase ToModel(ContentfulShowcase entry)
@@ -113,6 +117,15 @@ namespace StockportContentApi.ContentfulFactories
                                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
 
+            var featuredItemSubheading = !string.IsNullOrEmpty(entry.FeaturedItemsSubheading)
+                ? entry.FeaturedItemsSubheading
+                : "";
+
+            var featuredItems =
+                entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
+                .Select(item => _subitemFactory.ToModel(item)).ToList();
+
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -148,6 +161,8 @@ namespace StockportContentApi.ContentfulFactories
             var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                 .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
+            var video = entry.Video == null ? null : _videoFactory.ToModel(entry.Video);
+           
             return new Showcase(
                 slug,
                 title,
@@ -168,6 +183,8 @@ namespace StockportContentApi.ContentfulFactories
                 emailAlertsText,
                 alerts,
                 primaryItems,
+                featuredItemSubheading,
+                featuredItems,
                 keyFacts,
                 profile,
                 profiles,
@@ -181,9 +198,9 @@ namespace StockportContentApi.ContentfulFactories
                 callToActionBanner,
                 entry.ProfileHeading,
                 entry.ProfileLink,
-                entry.EventsReadMoreText
+                entry.EventsReadMoreText,
+                video
             ).StripData(_httpContextAccessor);
-
         }
     }
 }

@@ -22,6 +22,8 @@ namespace StockportContentApi.Model
         public string Body { get; set; }
         public IEnumerable<SubItem> SecondaryItems { get; set; }
         public IEnumerable<SubItem> PrimaryItems { get; set; }
+        public string FeaturedItemsSubheading { get; set; }
+        public IEnumerable<SubItem> FeaturedItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public IEnumerable<Consultation> Consultations { get; set; }
         public IEnumerable<SocialMediaLink> SocialMediaLinks { get; set; }
@@ -41,6 +43,7 @@ namespace StockportContentApi.Model
         public string TriviaSubheading { get; set; }
         public List<InformationList> TriviaSection { get; set; }
         public string EventsReadMoreText { get; set; }
+        public Video Video { get; set; }
 
         public Showcase(string slug, 
             string title, 
@@ -60,7 +63,9 @@ namespace StockportContentApi.Model
             string emailAlertsTopicId, 
             string emailAlertsText, 
             IEnumerable<Alert> alerts, 
-            IEnumerable<SubItem> primaryItems, 
+            IEnumerable<SubItem> primaryItems,
+            string featuredItemsSubheading,
+            IEnumerable<SubItem> featuredItems,
             IEnumerable<KeyFact> keyFacts, 
             Profile profile, 
             List<Profile> profiles, 
@@ -70,11 +75,12 @@ namespace StockportContentApi.Model
             IEnumerable<SubItem> subItems,
             IEnumerable<SubItem> tertiaryItems,
             string triviaSubheading,
-            List<InformationList> triviaSection,
+            List<InformationList> triviaSection, 
             CallToActionBanner callToActionBanner,
             string profileHeading,
             string profileLink,
-            string eventsReadMoreText)
+            string eventsReadMoreText,
+            Video video)
         {
             Title = title;
             Slug = slug;
@@ -96,6 +102,8 @@ namespace StockportContentApi.Model
             Alerts = alerts;
             KeyFacts = keyFacts;
             PrimaryItems = primaryItems;
+            FeaturedItemsSubheading = featuredItemsSubheading;
+            FeaturedItems = featuredItems;
             Profile = profile;
             Profiles = profiles;
             FieldOrder = fieldOrder;
@@ -106,6 +114,7 @@ namespace StockportContentApi.Model
             TriviaSubheading = triviaSubheading;
             TriviaSection = triviaSection;
             CallToActionBanner = callToActionBanner;
+            Video = video;
             ProfileHeading = profileHeading;
             ProfileLink = profileLink;
             EventsReadMoreText = eventsReadMoreText;
