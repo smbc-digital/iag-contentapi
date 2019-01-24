@@ -26,6 +26,7 @@ namespace StockportContentApi.Model
         public IEnumerable<SubItem> FeaturedItems { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public IEnumerable<Consultation> Consultations { get; set; }
+        public string SocialMediaLinksSubheading { get; set; }
         public IEnumerable<SocialMediaLink> SocialMediaLinks { get; set; }
         public IEnumerable<Event> Events { get; set; }
         public string EmailAlertsTopicId { get; set; }
@@ -51,7 +52,8 @@ namespace StockportContentApi.Model
             string subheading, 
             string teaser, 
             IEnumerable<Crumb> breadcrumbs,
-            IEnumerable<Consultation> consultations, 
+            IEnumerable<Consultation> consultations,
+            string socialMediaLinksSubheading,
             IEnumerable<SocialMediaLink> socialMediaLinks, 
             string eventSubheading, 
             string eventCategory, 
@@ -88,6 +90,7 @@ namespace StockportContentApi.Model
             SecondaryItems = secondaryItems;
             Breadcrumbs = breadcrumbs;
             Consultations = consultations;
+            SocialMediaLinksSubheading = socialMediaLinksSubheading;
             SocialMediaLinks = socialMediaLinks;
             EventSubheading = eventSubheading;
             EventCategory = eventCategory;

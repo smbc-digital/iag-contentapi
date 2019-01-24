@@ -134,6 +134,10 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Consultations.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(consult => _consultationFactory.ToModel(consult)).ToList();
 
+            var socialMediaLinksSubheading = !string.IsNullOrEmpty(entry.SocialMediaLinksSubheading)
+                ? entry.SocialMediaLinksSubheading
+                : "";
+
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
@@ -172,6 +176,7 @@ namespace StockportContentApi.ContentfulFactories
                 teaser,
                 breadcrumbs,
                 consultations,
+                socialMediaLinksSubheading,
                 socialMediaLinks,
                 eventSubheading,
                 eventCategory,
