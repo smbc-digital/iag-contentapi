@@ -8,12 +8,12 @@ stage: &stage
 qa: &qa
   << : *prod
   << : *stage
+  SemanticProfile: true
 
 int: &int
   << : *prod
   << : *stage
   << : *qa
-  SemanticProfile: true
 
 local: &local
   << : *prod
