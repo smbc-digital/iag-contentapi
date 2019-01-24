@@ -180,7 +180,8 @@ namespace StockportContentApi.ContentfulFactories
                 triviaSection,
                 callToActionBanner,
                 entry.ProfileHeading,
-                entry.ProfileLink
+                entry.ProfileLink,
+                entry.EventsReadMoreText
             ).StripData(_httpContextAccessor);
 
         }

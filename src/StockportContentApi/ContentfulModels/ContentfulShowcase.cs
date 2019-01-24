@@ -32,5 +32,6 @@ namespace StockportContentApi.ContentfulModels
         public FieldOrder FieldOrder { get; set; } = new FieldOrder();
         public string TriviaSubheading { get; set; }
         public List<ContentfulInformationList> TriviaSection { get; set; } = new List<ContentfulInformationList>();
+        public string EventsReadMoreText { get; set; }
     }
 }
