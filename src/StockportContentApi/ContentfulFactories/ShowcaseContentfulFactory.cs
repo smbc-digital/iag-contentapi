@@ -203,6 +203,7 @@ namespace StockportContentApi.ContentfulFactories
                 callToActionBanner,
                 entry.ProfileHeading,
                 entry.ProfileLink,
+                entry.EventsReadMoreText,
                 video
             ).StripData(_httpContextAccessor);
         }
