@@ -23,7 +23,6 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly ProfileRepository _repository;
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
-        private readonly Mock<IContentfulFactory<ContentfulProfileNew, ProfileNew>> _profileNewFactory;
         private readonly Mock<IContentfulClient> _client;
 
         public ProfileRepositoryTest()
@@ -35,13 +34,12 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            _profileNewFactory = new Mock<IContentfulFactory<ContentfulProfileNew, ProfileNew>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-            _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object, _profileNewFactory.Object);
+            _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object);
         }
 
         [Fact]
@@ -52,19 +50,16 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulProfile>();
             collection.Items = new List<ContentfulProfile> { contentfulTopic };
 
-            var profile = new Profile("type",
+            var profile = new Profile(
                 "title",
                 "slug",
                 "subtitle",
-                "teaser",
                 "quote",
                 "image",
-               "body",
-                "icon",
-                "backgroundImage",
+                "body",
                 new List<Crumb>
                 {
-                    new Crumb("title", "slug", "type")
+                 new Crumb("title", "slug", "type")
                 },
                 new List<Alert>
                 {
@@ -76,8 +71,13 @@ namespace StockportContentApiTests.Unit.Repositories
                         DateTime.MaxValue,
                         "slug")
                 },
-                "",
-                "");
+                "trivia heading",
+                new List<InformationList>(),
+                new FieldOrder(),
+                "author",
+                "subject"
+                );
+            
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
@@ -116,16 +116,16 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             _client
-                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
                 {
-                    Items = new List<ContentfulProfileNew>()
+                    Items = new List<ContentfulProfile>()
                 });
             // Act
-            await _repository.GetProfileNew("fake slug");
+            await _repository.GetProfile("fake slug");
 
             // Assert
-            _client.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()), Times.Once());
+            _client.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -133,13 +133,13 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             _client
-                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
                 {
-                    Items = new List<ContentfulProfileNew>()
+                    Items = new List<ContentfulProfile>()
                 });
             // Act
-            var response = await _repository.GetProfileNew("fake slug");
+            var response = await _repository.GetProfile("fake slug");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -150,17 +150,17 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             _client
-                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfileNew>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ContentfulCollection<ContentfulProfileNew>
+                .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
                 {
-                    Items = new List<ContentfulProfileNew>(){
-                        new ContentfulProfileNew(){
+                    Items = new List<ContentfulProfile>(){
+                        new ContentfulProfile(){
                             Slug = "slug"
                         }
                     }
                 });
             // Act
-            var response = await _repository.GetProfileNew("fake slug");
+            var response = await _repository.GetProfile("fake slug");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -24,11 +24,6 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/profiles/{profileSlug}")]
         public async Task<IActionResult> GetProfile(string profileSlug, string businessId)
         {
-            if (_featureToggles.SemanticProfile)
-            {
-                var profileNew = await _profileService.GetProfileNew(profileSlug, businessId);
-                return new OkObjectResult(profileNew);
-            }
             var profile = await _profileService.GetProfile(profileSlug, businessId);
             return new OkObjectResult(profile);
         }

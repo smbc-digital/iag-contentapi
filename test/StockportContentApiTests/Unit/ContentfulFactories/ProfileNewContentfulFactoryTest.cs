@@ -12,25 +12,25 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class ProfileNewContentfulFactoryTest
     {
-        private readonly ContentfulProfileNew _contentfulProfileNew;
+        private readonly ContentfulProfile _contentfulProfile;
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
-        private readonly ProfileNewContentfulFactory _profileNewContentfulFactory;
+        private readonly ProfileContentfulFactory _profileContentfulFactory;
 
         public ProfileNewContentfulFactoryTest()
         {
-            _contentfulProfileNew = new ContentfulProfileBuilder().BuildNew();
+            _contentfulProfile = new ContentfulProfileBuilder().Build();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            _profileNewContentfulFactory = new ProfileNewContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake(), new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>().Object);
+            _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake(), new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>().Object);
         }
 
         [Fact]
         public void ShouldNotAddBreadcrumbsOrAlertsOrImageIfTheyAreLinks()
         {
-            _contentfulProfileNew.Image.SystemProperties.Type = "Link";
-            _contentfulProfileNew.Breadcrumbs.First().Sys.Type = "Link";
-            _contentfulProfileNew.Alerts.First().Sys.Type = "Link";
+            _contentfulProfile.Image.SystemProperties.Type = "Link";
+            _contentfulProfile.Breadcrumbs.First().Sys.Type = "Link";
+            _contentfulProfile.Alerts.First().Sys.Type = "Link";
 
-            var profile = _profileNewContentfulFactory.ToModel(_contentfulProfileNew);
+            var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
             _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
             profile.Breadcrumbs.Count().Should().Be(0);

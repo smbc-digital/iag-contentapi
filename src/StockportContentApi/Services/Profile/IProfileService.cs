@@ -7,8 +7,6 @@ namespace StockportContentApi.Services.Profile
     {
         Task<StockportContentApi.Model.Profile> GetProfile(string slug, string businessId);
 
-        Task<StockportContentApi.Model.ProfileNew> GetProfileNew(string slug, string businessId);
-
         Task<List<StockportContentApi.Model.Profile>> GetProfiles(string businessId);
     }
 }

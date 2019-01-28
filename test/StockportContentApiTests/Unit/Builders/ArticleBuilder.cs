@@ -65,30 +65,34 @@ namespace StockportContentApiTests.Unit.Builders
 
         private List<Profile> _profiles = new List<Profile>
         {
-            new Profile("type",
-                "title",
-                "slug",
-                "subtitle",
-                "teaser",
-                "quote",
-                "image",
-                "body",
-                "icon",
-                "background",
-                new List<Crumb>(),
-                new List<Alert>
-                {
-                    new Alert("title",
-                        "subheading",
-                        "body",
-                        "severity",
-                        DateTime.MinValue,
-                        DateTime.MaxValue,
-                        "slug")
-                },
-                "",
-                "")
-        };
+            new Profile(
+            "title",
+            "slug",
+            "subtitle",
+            "quote",
+            "image",
+            "body",
+            new List<Crumb>
+            {
+                new Crumb("title", "slug", "type")
+            },
+            new List<Alert>
+            {
+                new Alert("title",
+                    "subheading",
+                    "body",
+                    "severity",
+                    DateTime.MinValue,
+                    DateTime.MaxValue,
+                    "slug")
+            },
+            "trivia heading",
+            new List<InformationList>(),
+            new FieldOrder(),
+            "author",
+            "subject"
+            ),
+    };
         private Advertisement _advertisement = new Advertisement("title",
             "slug",
             "teaser",

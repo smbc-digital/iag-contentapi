@@ -31,24 +31,24 @@ namespace StockportContentApiTests.Unit.Services
         [Fact]
         public async Task GetProfileNew_ShouldReturnProfileIfResponseIsOK(){
             // Arrange
-            var response = HttpResponse.Successful(new ProfileNew());
-            _profileRepository.Setup(_ => _.GetProfileNew(It.IsAny<string>())).ReturnsAsync(response);
+            var response = HttpResponse.Successful(new Profile());
+            _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);
 
             // Act
-            var result = await profileService.GetProfileNew("slug", "stockportgov");
+            var result = await profileService.GetProfile("slug", "stockportgov");
 
             // Assert
-            result.Should().BeOfType(typeof(ProfileNew));
+            result.Should().BeOfType(typeof(Profile));
         }
 
         [Fact]
         public async Task GetProfileNew_ShouldReturnNullIfResponseIsError(){
             // Arrange
             var response = HttpResponse.Failure(HttpStatusCode.InternalServerError, "Error");
-            _profileRepository.Setup(_ => _.GetProfileNew(It.IsAny<string>())).ReturnsAsync(response);
+            _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);
 
             // Act
-            var result = await profileService.GetProfileNew("slug", "stockportgov");
+            var result = await profileService.GetProfile("slug", "stockportgov");
 
             // Assert
             result.Should().BeNull(null);

@@ -97,8 +97,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulProfileNew, ProfileNew>>(p => new ProfileNewContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
@@ -225,7 +224,9 @@ namespace StockportContentApi.Extensions
                     );
                 });
             services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
-                p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(), p.GetService<IContentfulFactory<ContentfulProfileNew, ProfileNew>>()); });
+                p => { return x => new ProfileRepository(x, 
+                    p.GetService<IContentfulClientManager>(), 
+                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(

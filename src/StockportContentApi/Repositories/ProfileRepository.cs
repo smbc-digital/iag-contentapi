@@ -14,7 +14,6 @@ namespace StockportContentApi.Repositories
     public interface IProfileRepository
     {
         Task<HttpResponse> GetProfile(string slug);
-        Task<HttpResponse> GetProfileNew(string slug);
         Task<HttpResponse> Get();
     }
 
@@ -22,7 +21,6 @@ namespace StockportContentApi.Repositories
     {
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-        private readonly IContentfulFactory<ContentfulProfileNew, ProfileNew> _profileFactoryNew;
 
         public ProfileRepository()
         {
@@ -30,12 +28,10 @@ namespace StockportContentApi.Repositories
         }
 
         public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
-                                 IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-                                 IContentfulFactory<ContentfulProfileNew, ProfileNew> profileFactoryNew)
+                                 IContentfulFactory<ContentfulProfile, Profile> profileFactory)
         {
             _client = clientManager.GetClient(config);
             _profileFactory = profileFactory;
-            _profileFactoryNew = profileFactoryNew;
         }
 
         public async Task<HttpResponse> GetProfile(string slug)
@@ -47,17 +43,6 @@ namespace StockportContentApi.Repositories
             return entry == null 
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'") 
                 : HttpResponse.Successful(_profileFactory.ToModel(entry));
-        }
-
-        public async Task<HttpResponse> GetProfileNew(string slug)
-        {
-            var builder = new QueryBuilder<ContentfulProfileNew>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-            var entries = await _client.GetEntries(builder);
-            var entry = entries.FirstOrDefault();
-
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'") 
-                : HttpResponse.Successful(_profileFactoryNew.ToModel(entry));
         }
 
         public async Task<HttpResponse> Get()

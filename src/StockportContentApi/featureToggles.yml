@@ -1,6 +1,5 @@
 ---
 prod: &prod
-  SemanticProfile: true
   
 stage: &stage
   << : *prod
