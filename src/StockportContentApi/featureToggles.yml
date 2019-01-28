@@ -1,6 +1,6 @@
 ---
 prod: &prod
-  SemanticProfile: false
+  SemanticProfile: true
   
 stage: &stage
   << : *prod
@@ -8,7 +8,6 @@ stage: &stage
 qa: &qa
   << : *prod
   << : *stage
-  SemanticProfile: true
 
 int: &int
   << : *prod
