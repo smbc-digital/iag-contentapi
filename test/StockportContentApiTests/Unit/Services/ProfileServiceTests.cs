@@ -29,7 +29,7 @@ namespace StockportContentApiTests.Unit.Services
         }
  
         [Fact]
-        public async Task GetProfileNew_ShouldReturnProfileIfResponseIsOK(){
+        public async Task GetProfile_ShouldReturnProfileIfResponseIsOK(){
             // Arrange
             var response = HttpResponse.Successful(new Profile());
             _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);
@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Unit.Services
         }
 
         [Fact]
-        public async Task GetProfileNew_ShouldReturnNullIfResponseIsError(){
+        public async Task GetProfile_ShouldReturnNullIfResponseIsError(){
             // Arrange
             var response = HttpResponse.Failure(HttpStatusCode.InternalServerError, "Error");
             _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);

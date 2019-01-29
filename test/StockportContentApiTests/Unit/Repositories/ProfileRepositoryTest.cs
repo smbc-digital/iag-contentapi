@@ -112,7 +112,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public async Task GetProfileNew_ShouldGetEntries()
+        public async Task GetProfile_ShouldGetEntries()
         {
             // Arrange
             _client
@@ -129,7 +129,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public async Task GetProfileNew_ShouldReturnFailureWhenNoEntries()
+        public async Task GetProfile_ShouldReturnFailureWhenNoEntries()
         {
             // Arrange
             _client
@@ -146,7 +146,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public async Task GetProfileNew_ShouldReturnSuccessWhenEntriesExist()
+        public async Task GetProfile_ShouldReturnSuccessWhenEntriesExist()
         {
             // Arrange
             _client
