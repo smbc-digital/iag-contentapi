@@ -1,5 +1,6 @@
 ---
 prod: &prod
+  default : true
   
 stage: &stage
   << : *prod
