@@ -242,7 +242,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
-                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
+                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>(), p.GetService<ILogger>()); });
             services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
                 p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
