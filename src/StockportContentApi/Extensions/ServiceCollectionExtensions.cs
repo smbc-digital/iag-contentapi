@@ -220,7 +220,8 @@ namespace StockportContentApi.Extensions
                             p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
                             p.GetService<ILogger<EventRepository>>(),
-                            p.GetService<IConfiguration>())
+                            p.GetService<IConfiguration>()),
+                        p.GetService<ILogger<ShowcaseRepository>>()
                     );
                 });
             services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
