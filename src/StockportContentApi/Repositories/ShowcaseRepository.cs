@@ -52,15 +52,18 @@ namespace StockportContentApi.Repositories
             var entry = entries.FirstOrDefault();
             var showcase = _contentfulFactory.ToModel(entry);
 
-            showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory,true);
-
-            if (!showcase.Events.Any())
+            if (showcase.EventCategory != string.Empty)
             {
-                var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
-                if (eventArticles.Any())
+                showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory, true);
+
+                if (!showcase.Events.Any())
                 {
-                    showcase.Events = eventArticles;
-                    showcase.EventsCategoryOrTag = "T";
+                    var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
+                    if (eventArticles.Any())
+                    {
+                        showcase.Events = eventArticles;
+                        showcase.EventsCategoryOrTag = "T";
+                    }
                 }
             }
 
