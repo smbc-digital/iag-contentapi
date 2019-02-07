@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
+using Contentful.Core;
 using Contentful.Core.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Client;
-using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApi.Config;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
-using Xunit;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApiTests.Unit.Builders;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
-using System;
+using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -29,6 +30,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>> _aToZFactory;
         private readonly Mock<ICache> _cache;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<ILogger> _logger;
 
         //private const string MockContentfulApiUrl = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
 
@@ -48,7 +50,8 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-            _aToZFactory = new Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>>();          
+            _aToZFactory = new Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>>();
+            _logger = new Mock<ILogger>();
         }
 
         [Fact]
@@ -57,29 +60,29 @@ namespace StockportContentApiTests.Unit.Repositories
             var letter = "v";
             var aToZArticle = new List<AtoZ>
             {
-                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "article", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "article", new List<string>(){"V atoztitle"})
+                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "article", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "article", new List<string> {"V atoztitle"})
             };
 
             var aToZShowcase = new List<AtoZ>
             {
-                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "showcase", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "showcase", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "showcase", new List<string>(){"V atoztitle"})
+                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "showcase", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "showcase", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "showcase", new List<string> {"V atoztitle"})
             };
 
             var aToZTopic = new List<AtoZ>
             {
-                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "topic", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "topic", new List<string>(){"V atoztitle"}),
-                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string>(){"V atoztitle"})
+                new AtoZ("V atoztitle 1", "atozslug1", "atozteaser1", "topic", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 2", "atozslug2", "atozteaser2", "topic", new List<string> {"V atoztitle"}),
+                new AtoZ("V atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string> {"V atoztitle"})
             };
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
                     "The vintage village turned 6 with a great reception", "article", new List<string>()));
-            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object);
+            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{letter}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(aToZArticle);
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-topic-{letter}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(aToZTopic);
@@ -98,23 +101,23 @@ namespace StockportContentApiTests.Unit.Repositories
             var letter = "b";
             var aToZArticle = new List<AtoZ>
             {
-                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "article", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "article", new List<string>(){"V atoztitle"})
+                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "article", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "article", new List<string> {"V atoztitle"})
             };
 
             var aToZShowcase = new List<AtoZ>
             {
-                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "showcase", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "showcase", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "showcase", new List<string>(){"V atoztitle"})
+                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "showcase", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "showcase", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "showcase", new List<string> {"V atoztitle"})
             };
 
             var aToZTopic = new List<AtoZ>
             {
-                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "topic", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "topic", new List<string>(){"V atoztitle"}),
-                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string>(){"V atoztitle"})
+                new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "topic", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 2", "atozslug2", "atozteaser2", "topic", new List<string> {"V atoztitle"}),
+                new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string> {"V atoztitle"})
             };
 
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"atoz-article-{letter}"), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(aToZArticle);
@@ -124,7 +127,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                .Returns(new AtoZ("Bintage Village turns 6 years old", "bintage-village-turns-6-years-old",
                    "The vintage village turned 6 with a great reception", "article", new List<string>()));
-            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object);
+            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
             var response = AsyncTestHelper.Resolve(repository.Get("b"));
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -144,7 +147,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
                    "The vintage village turned 6 with a great reception", "article", new List<string>()));
-            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object);
+            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
             var response = AsyncTestHelper.Resolve(repository.Get("b"));
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -162,11 +165,11 @@ namespace StockportContentApiTests.Unit.Repositories
             var aToZcollection = new ContentfulCollection<ContentfulAtoZ>();
             aToZcollection.Items = new List<ContentfulAtoZ>
                 {
-                    new ContentfulAToZBuilder().Title("Vintage Village 1").AlternativeTitles(new List<string>() { alternativeTitle }).Build(),
-                    new ContentfulAToZBuilder().Title("Vintage Village 2").AlternativeTitles(new List<string>() { alternativeTitle }).Build(),
-                    new ContentfulAToZBuilder().Title("Vintage Village 3").AlternativeTitles(new List<string>() { alternativeTitle }).Build(),
-                    new ContentfulAToZBuilder().Title("Vintage Village 4").AlternativeTitles(new List<string>() { alternativeTitle }).Build(),
-                    new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string>() { alternativeTitle }).Build()
+                    new ContentfulAToZBuilder().Title("Vintage Village 1").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                    new ContentfulAToZBuilder().Title("Vintage Village 2").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                    new ContentfulAToZBuilder().Title("Vintage Village 3").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                    new ContentfulAToZBuilder().Title("Vintage Village 4").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                    new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string> { alternativeTitle }).Build()
                 };
 
             _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
@@ -179,8 +182,8 @@ namespace StockportContentApiTests.Unit.Repositories
                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
-                .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string>() { alternativeTitle }));
-            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object);
+                .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string> { alternativeTitle }));
+            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
             var aToZListing = AsyncTestHelper.Resolve(repository.GetAtoZItemFromContentType("article","d"));
            
@@ -213,7 +216,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
                 .Returns(new AtoZ("title", "slug", "teaser", "article", alternateTitles));
-            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object);
+            var repository = new AtoZRepository(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
             var result = AsyncTestHelper.Resolve(repository.GetAtoZItemFromContentType("article", "t"));
           

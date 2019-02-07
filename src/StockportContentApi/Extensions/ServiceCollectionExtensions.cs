@@ -57,7 +57,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulVideo, Video>>(p => new VideoContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulKeyFact, KeyFact>>(p => new KeyFactContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(p => new PrivacyNoticeParentTopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(), p.GetService<ILogger>()));
             services.AddSingleton<IContentfulFactory<ContentfulSmartResult, SmartResult>>(p => new SmartResultContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulApiKey, ApiKey>>(p => new ApiKeyContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory(p.GetService<IHttpContextAccessor>()));
@@ -220,7 +220,8 @@ namespace StockportContentApi.Extensions
                             p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
                             p.GetService<ILogger<EventRepository>>(),
-                            p.GetService<IConfiguration>())
+                            p.GetService<IConfiguration>()),
+                        p.GetService<ILogger<ShowcaseRepository>>()
                     );
                 });
             services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
@@ -242,7 +243,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
-                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
+                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>(), p.GetService<ILogger>()); });
             services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
                 p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(

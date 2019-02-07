@@ -1,6 +1,9 @@
-﻿using StockportContentApi.ContentfulModels;
+﻿using System;
+using System.Collections.Generic;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
@@ -9,18 +12,28 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulPrivacyNotice, Topic> _parentTopicFactory;
+        private readonly ILogger _logger;
 
-        public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory)
+        public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory, ILogger logger)
         {
             _crumbFactory = crumbFactory;
             _parentTopicFactory = parentTopicFactory;
+            _logger = logger;
         }
 
         public PrivacyNotice ToModel(ContentfulPrivacyNotice entry)
         {
-            var breadcrumbs = entry.Breadcrumbs
-                .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+            var breadcrumbs = new List<Crumb>();
+            try
+            {
+                breadcrumbs = entry.Breadcrumbs
+                    .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Could not get breadcrumbs for Privacy Notice: {ex.Message}");
+            }
 
             var topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
 

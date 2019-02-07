@@ -12,6 +12,7 @@ using StockportContentApi.Client;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.ContentfulFactories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {
@@ -23,11 +24,12 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
         private readonly ICache _cache;
         private readonly int _atoZTimeout;
+        private readonly ILogger _logger;
         private IConfiguration _configuration;
 
         public AtoZRepository(ContentfulConfig config, IContentfulClientManager clientManager,
             IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
-            ITimeProvider timeProvider, ICache cache, IConfiguration configuration)
+            ITimeProvider timeProvider, ICache cache, IConfiguration configuration, ILogger logger)
         {
             _client = clientManager.GetClient(config);
             _contentfulApiUrl = config.ContentfulUrl.ToString();
@@ -35,6 +37,7 @@ namespace StockportContentApi.Repositories
             _dateComparer = new DateComparer(timeProvider);
             _cache = cache;
             _configuration = configuration;
+            _logger = logger;
             int.TryParse(_configuration["redisExpiryTimes:AtoZ"], out _atoZTimeout);
         }
 
@@ -66,7 +69,7 @@ namespace StockportContentApi.Repositories
         {
             var atozList = new List<AtoZ>();
             var builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(2);
-            var entries = await GetAllEntriesAsync(_client, builder);
+            var entries = await GetAllEntriesAsync(_client, builder, _logger);
             var entriesWithDisplayOn = entries != null ? entries
                 .Where(x => x.DisplayOnAZ == "True"
                 && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles == null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter)))))) : null;
