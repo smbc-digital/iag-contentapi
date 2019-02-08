@@ -27,5 +27,6 @@
     <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
     <PackageReference Include="YamlDotNet" Version="5.3.0" />
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties Properties_4launchSettings_1json__JSONSchema="http://json.schemastore.org/phraseapp" /></VisualStudio></ProjectExtensions>
  
 </Project>

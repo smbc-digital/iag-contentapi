@@ -29,7 +29,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-        private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
         private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
         
         public ArticleContentfulFactoryTest()
@@ -44,7 +43,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-            _LiveChatFactory = new Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
@@ -55,7 +53,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                _parentTopicFactory.Object, _LiveChatFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _advertisementFactory.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
+                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _advertisementFactory.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]
@@ -67,7 +65,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulArticle.Alerts.First().Sys.Type = "Link";
             _contentfulArticle.Profiles.First().Sys.Type = "Link";
             _contentfulArticle.Documents.First().SystemProperties.Type = "Link";
-            _contentfulArticle.LiveChatText.Sys.Type = "Link";
 
             var article = _articleFactory.ToModel(_contentfulArticle);
 
@@ -84,7 +81,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             article.Profiles.Count().Should().Be(0);
             _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-            article.LiveChat.Should().BeEquivalentTo(new NullLiveChat());
 
             article.ParentTopic.Should().BeEquivalentTo(new NullTopic());
 

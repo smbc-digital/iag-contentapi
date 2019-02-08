@@ -15,7 +15,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IContentfulFactory<ContentfulArticle, Topic> _parentTopicFactory;
-        private readonly IContentfulFactory<ContentfulLiveChat, LiveChat> _liveChatFactory;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
@@ -23,11 +22,10 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
         private readonly DateComparer _dateComparer;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory, 
-            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
-            IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
+        public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+            IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
-            IContentfulFactory<ContentfulLiveChat, LiveChat> liveChatFactory,
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
@@ -44,7 +42,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
-            _liveChatFactory = liveChatFactory;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -75,8 +72,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            var liveChat = ContentfulHelpers.EntryIsNotALink(entry.LiveChatText.Sys) ? _liveChatFactory.ToModel(entry.LiveChatText) : new NullLiveChat();
-            var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties) 
+            var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                         ? entry.BackgroundImage.File.Url : string.Empty;
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
@@ -89,8 +85,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             }
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
-                sections,breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, 
-                entry.LiveChatVisible, liveChat, alertsInline, advertisement).StripData(_httpContextAccessor);
+                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, advertisement).StripData(_httpContextAccessor);
         }
     }
 }

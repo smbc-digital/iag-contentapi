@@ -22,13 +22,11 @@ namespace StockportContentApi.Model
         public List<Document> Documents { get; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
-        public bool LiveChatVisible { get; }
-        public LiveChat LiveChat { get; }
         public Advertisement Advertisement { get; }
         
         public Article(string body, string slug, string title, string teaser, string icon, string backgroundImage, string image, List<Section> sections,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, IEnumerable<Profile> profiles, Topic parentTopic, List<Document> documents,
-            DateTime sunriseDate, DateTime sunsetDate, bool liveChatVisible, LiveChat liveChat, IEnumerable<Alert> alertsInline, Advertisement advertisement)
+            DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline, Advertisement advertisement)
         {
             Body = body;
             Slug = slug;
@@ -45,8 +43,6 @@ namespace StockportContentApi.Model
             Documents = documents;
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
-            LiveChatVisible = liveChatVisible;
-            LiveChat = liveChat;
             AlertsInline = alertsInline;
             Advertisement = advertisement;
         }
@@ -68,7 +64,7 @@ namespace StockportContentApi.Model
         public NullArticle()
         : base(
             string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(),
-            new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), false, new NullLiveChat(), new List<Alert>(), new NullAdvertisement())
+            new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), new List<Alert>(), new NullAdvertisement())
         { }
     }
 }
