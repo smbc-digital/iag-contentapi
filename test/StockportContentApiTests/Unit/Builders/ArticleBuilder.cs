@@ -13,25 +13,134 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _backgroundImage = "back-image-url.jpg";
         private string _image = "image-url.jpg";
-        private List<Section> _sections = new List<Section> { new Section("title", "slug", "body", new List<Profile>(), new List<Document>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), new List<Alert>())};
+
+        private List<Section> _sections = new List<Section>
+        {
+            new Section("title",
+                "slug",
+                "body",
+                new List<Profile>(),
+                new List<Document>(),
+                new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                new List<Alert>())
+        };
+
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-        private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Article", "article", "article")};
-        private List<Document> _documents = new List<Document> { new DocumentBuilder().Build() };
-        private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug") };
-        private List<Alert> _alertsInline = new List<Alert> { new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug") };
-        private List<Profile> _profiles = new List<Profile> { new Profile("type", "title", "slug", "subtitle", "teaser", "image", "body", "icon", "background", new List<Crumb>(), new List<Alert> { new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MaxValue, "slug") }) };       
-        private Advertisement _advertisement = new Advertisement("title", "slug", "teaser", DateTime.MinValue,
-            DateTime.MaxValue, true, "url", "image");
-        
-        private Topic _parentTopic = new Topic("slug", "name", "teaser", "summary", "icon", "background", "image", new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), 
-                                                new List<Alert>(), new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), false, "id", new NullEventBanner(), "expandingLinkTitle", new NullAdvertisement(), new List<ExpandingLinkBox>());
-       
+
+        private List<Crumb> _breadcrumbs = new List<Crumb>
+        {
+            new Crumb("Article", "article", "article")
+        };
+
+        private List<Document> _documents = new List<Document>
+        {
+            new DocumentBuilder().Build()
+        };
+
+        private List<Alert> _alerts = new List<Alert>
+        {
+            new Alert("title",
+                "subHeading",
+                "body",
+                "severity",
+                new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                "slug")
+        };
+
+        private List<Alert> _alertsInline = new List<Alert>
+        {
+            new Alert("title",
+                "subHeading",
+                "body",
+                "severity",
+                new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                "slug")
+        };
+
+        private List<Profile> _profiles = new List<Profile>
+        {
+            new Profile(
+            "title",
+            "slug",
+            "subtitle",
+            "quote",
+            "image",
+            "body",
+            new List<Crumb>
+            {
+                new Crumb("title", "slug", "type")
+            },
+            new List<Alert>
+            {
+                new Alert("title",
+                    "subheading",
+                    "body",
+                    "severity",
+                    DateTime.MinValue,
+                    DateTime.MaxValue,
+                    "slug")
+            },
+            "trivia heading",
+            new List<InformationList>(),
+            new FieldOrder(),
+            "author",
+            "subject"
+            ),
+    };
+        private Advertisement _advertisement = new Advertisement("title",
+            "slug",
+            "teaser",
+            DateTime.MinValue,
+            DateTime.MaxValue,
+            true,
+            "url",
+            "image");
+
+        private Topic _parentTopic = new Topic("slug",
+            "name",
+            "teaser",
+            "summary",
+            "icon",
+            "background",
+            "image",
+            new List<SubItem>(),
+            new List<SubItem>(),
+            new List<SubItem>(),
+            new List<Crumb>(),
+            new List<Alert>(),
+            new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+            false,
+            "id",
+            new NullEventBanner(),
+            "expandingLinkTitle",
+            new NullAdvertisement(),
+            new List<ExpandingLinkBox>());
+
         public Article Build()
         {
-            return new Article(_body, _slug, _title, _teaser, _icon, _backgroundImage, _image, _sections, 
-                _breadcrumbs, _alerts, _profiles, _parentTopic, _documents, _sunriseDate, 
-                _sunsetDate, _alertsInline, _advertisement);
+            return new Article(_body,
+                _slug,
+                _title,
+                _teaser,
+                _icon,
+                _backgroundImage,
+                _image,
+                _sections,
+                _breadcrumbs,
+                _alerts,
+                _profiles,
+                _parentTopic,
+                _documents,
+                _sunriseDate,
+                _sunsetDate,
+                _alertsInline,
+                _advertisement);
         }
 
         public ArticleBuilder SunriseDate(DateTime sunriseDate)

@@ -40,6 +40,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<ITimeProvider> _timeprovider;
         private readonly Mock<ICache> _cacheWrapper;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<ILogger<ShowcaseRepository>> _mockLogger;
 
         public ShowcaseRepositoryTest()
         {
@@ -56,6 +57,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _timeprovider = new Mock<ITimeProvider>();
             _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _mockLogger = new Mock<ILogger<ShowcaseRepository>>();
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
             var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
@@ -68,9 +70,24 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
+            var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, HttpContextFake.GetHttpContextFake());
+            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+
+            var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+            callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
+                new CallToActionBanner
+                {
+                    Title = "title",
+                    AltText = "altText",
+                    ButtonText = "button text",
+                    Image = "url",
+                    Link = "url"
+                });
+
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object);
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 
@@ -87,7 +104,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
 
-            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object, eventRepository);
+            _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object, eventRepository, _mockLogger.Object);
         }
 
         [Fact]

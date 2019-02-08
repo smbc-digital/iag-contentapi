@@ -9,6 +9,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {
@@ -18,17 +19,20 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly EventRepository _eventRepository;
+        private readonly ILogger<ShowcaseRepository> _logger;
 
         public ShowcaseRepository(ContentfulConfig config,
             IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
             IContentfulClientManager contentfulClientManager,
             IContentfulFactory<ContentfulNews, News> newsBuilder,
-            EventRepository eventRepository)
+            EventRepository eventRepository,
+            ILogger<ShowcaseRepository> logger)
         {
             _contentfulFactory = showcaseBuilder;
             _newsFactory = newsBuilder;
             _client = contentfulClientManager.GetClient(config);
             _eventRepository = eventRepository;
+            _logger = logger;
         }
         public async Task<HttpResponse> Get()
         {
@@ -50,17 +54,29 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntries(builder);
 
             var entry = entries.FirstOrDefault();
-            var showcase = _contentfulFactory.ToModel(entry);
 
-            showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory,true);
+            Showcase showcase = new Showcase();
 
-            if (!showcase.Events.Any())
+            try {
+                showcase = _contentfulFactory.ToModel(entry);
+            }
+            catch (Exception ex)
             {
-                var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
-                if (eventArticles.Any())
+                _logger.LogWarning($"Unable to serialize Showcase {slug}: {ex.Message}");
+            }
+
+            if (showcase.EventCategory != string.Empty)
+            {
+                showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory, true);
+
+                if (!showcase.Events.Any())
                 {
-                    showcase.Events = eventArticles;
-                    showcase.EventsCategoryOrTag = "T";
+                    var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
+                    if (eventArticles.Any())
+                    {
+                        showcase.Events = eventArticles;
+                        showcase.EventsCategoryOrTag = "T";
+                    }
                 }
             }
 

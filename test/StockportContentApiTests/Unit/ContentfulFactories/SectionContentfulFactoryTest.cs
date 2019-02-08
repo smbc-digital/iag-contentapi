@@ -45,7 +45,34 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateASectionFromAContentfulSection()
         {
             // Arrange
-            var profile = new Profile("type", "title", "slug", "subtitle", "body", "icon", "image", new List<Crumb> { new Crumb("title", "slug", "type") });
+            var profile = new Profile(
+                "title",
+                "slug",
+                "subtitle",
+                "quote",
+                "image",
+                "body",
+                new List<Crumb>
+                {
+                    new Crumb("title", "slug", "type")
+                },
+                new List<Alert>
+                {
+                    new Alert("title",
+                        "subheading",
+                        "body",
+                        "severity",
+                        DateTime.MinValue,
+                        DateTime.MaxValue,
+                        "slug")
+                },
+                "trivia heading",
+                new List<InformationList>(),
+                new FieldOrder(),
+                "author",
+                "subject"
+            );
+
             _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
 
             var document = new DocumentBuilder().Build();

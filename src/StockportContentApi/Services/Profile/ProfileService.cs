@@ -25,21 +25,10 @@ namespace StockportContentApi.Services.Profile
         {
             var profileRepository = _createRepository(_createConfig(businessId));
             var response = await profileRepository.GetProfile(slug);
+
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return response.Get<Model.Profile>();
-            }
-            return null;
-        }
-
-        public async Task<ProfileNew> GetProfileNew(string slug, string businessId)
-        {
-            var profileRepository = _createRepository(_createConfig(businessId));
-            var response = await profileRepository.GetProfileNew(slug);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return response.Get<ProfileNew>();
             }
 
             return null;

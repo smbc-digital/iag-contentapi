@@ -1,62 +1,39 @@
 ﻿using System.Collections.Generic;
 using Contentful.Core.Models;
+using SQLitePCL;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
     public class ContentfulProfileBuilder
     {
-        private string _title = "title";
         private string _slug = "slug";
-        private string _icon = "icon";
-        private string _subtitle = "subtitle";
-        private string _leadParagraph = "lead paragraph";
-        private string _teaser = "teaser";
-        private string _body = "body";
-        private string _type = "type";
-        private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-        private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-
-        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
-        { new ContentfulAlertBuilder().Build() }; 
-        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
-        { new ContentfulReferenceBuilder().Build() };
-        private SystemProperties _sys = new SystemProperties
+        private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
+        private readonly SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
+
         };
 
         public ContentfulProfile Build()
         {
             return new ContentfulProfile
             {
-                Type = _type,
-                Title = _title,
+                Title = "title",
                 Slug = _slug,
-                Subtitle = _subtitle,
-                Teaser = _teaser,
-                Image = _image,
-                Body = _body,
-                Icon = _icon,
-                BackgroundImage = _backgroundImage,
-                Breadcrumbs = _breadcrumbs,
-                Sys = _sys
-            };
-        }
-
-        public ContentfulProfileNew BuildNew()
-        {
-            return new ContentfulProfileNew
-            {
-                Title = _title,
-                Slug = _slug,
-                LeadParagraph = _leadParagraph,
-                Teaser = _teaser,
-                Image = _image,
-                Body = _body,
-                Breadcrumbs = _breadcrumbs,
+                Subtitle = "subtitle",
+                Quote = "quote",
+                Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
+                Body = "body",
+                Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
                 Sys = _sys,
-                Alerts = _alerts
+                Alerts = _alerts,
+                Author = "author",
+                FieldOrder = new FieldOrder(),
+                Subject = "subject",
+                TriviaSection = new List<ContentfulInformationList>(),
+                TriviaSubheading = "trivia heading"
             };
         }
 
