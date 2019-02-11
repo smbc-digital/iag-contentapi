@@ -13,7 +13,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _backgroundImage = "back-image-url.jpg";
         private string _image = "image-url.jpg";
-        private bool _liveChatVisible = false;
 
         private List<Section> _sections = new List<Section>
         {
@@ -123,8 +122,6 @@ namespace StockportContentApiTests.Unit.Builders
             new NullAdvertisement(),
             new List<ExpandingLinkBox>());
 
-        private LiveChat _liveChat = new LiveChat("title", "text");
-
         public Article Build()
         {
             return new Article(_body,
@@ -142,8 +139,6 @@ namespace StockportContentApiTests.Unit.Builders
                 _documents,
                 _sunriseDate,
                 _sunsetDate,
-                _liveChatVisible,
-                _liveChat,
                 _alertsInline,
                 _advertisement);
         }
