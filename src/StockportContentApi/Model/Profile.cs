@@ -8,6 +8,7 @@ namespace StockportContentApi.Model
         public string Slug { get; }
         public string Subtitle { get; }
         public string Quote { get; }
+        public List<InlineQuote> InlineQuotes { get; }
         public string Image { get; }
         public string Body { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
@@ -33,6 +34,7 @@ namespace StockportContentApi.Model
             List<Alert> alerts,
             string triviaSubheading,
             List<InformationList> triviaSection,
+            List<InlineQuote> inlineQuotes,
             FieldOrder fieldOrder,
             string author,
             string subject)
@@ -41,6 +43,7 @@ namespace StockportContentApi.Model
             Slug = slug;
             Subtitle = subtitle;
             Quote = quote;
+            InlineQuotes = inlineQuotes;
             Image = image;
             Body = body;
             Breadcrumbs = breadcrumbs;

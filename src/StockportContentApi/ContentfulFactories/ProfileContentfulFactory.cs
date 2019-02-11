@@ -13,17 +13,20 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
+        private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
 
         public ProfileContentfulFactory(
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IHttpContextAccessor httpContextAccessor, 
             IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
-            IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory)
+            IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
+            IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
             _informationListFactory = informationListFactory;
+            _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
         }
 
         public Profile ToModel(ContentfulProfile entry)
@@ -43,8 +46,10 @@ namespace StockportContentApi.ContentfulFactories
             var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                                     .Select(fact => _informationListFactory.ToModel(fact)).ToList();
 
+            var inlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList();
+
             return new Profile(entry.Title, entry.Slug, entry.Subtitle, entry.Quote, imageUrl,
-                               entry.Body, breadcrumbs, alerts, triviaSubheading, triviaSection, entry.FieldOrder, entry.Author, entry.Subject).StripData(_httpContextAccessor);
+                               entry.Body, breadcrumbs, alerts, triviaSubheading, triviaSection, inlineQuotes, entry.FieldOrder, entry.Author, entry.Subject).StripData(_httpContextAccessor);
         }
     }
 }
