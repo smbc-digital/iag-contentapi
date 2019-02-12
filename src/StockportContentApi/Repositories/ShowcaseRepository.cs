@@ -71,17 +71,18 @@ namespace StockportContentApi.Repositories
 
             if (showcase.EventCategory != string.Empty)
             {
-                showcase.Events = (await _eventRepository.GetEventsByCategory(showcase.EventCategory, true)).Take(3);
+                var events = await _eventRepository.GetEventsByCategory(showcase.EventCategory, true);
 
-                if (!showcase.Events.Any())
+                if (!events.Any())
                 {
-                    var eventArticles = (await _eventRepository.GetEventsByTag(showcase.EventCategory, true)).Take(3);
-                    if (eventArticles.Any())
+                    events = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
+                    if (events.Any())
                     {
-                        showcase.Events = eventArticles;
                         showcase.EventsCategoryOrTag = "T";
                     }
                 }
+
+                showcase.Events = events.Take(3);
             }
 
             var news = await PopulateNews(showcase.NewsCategoryTag);
