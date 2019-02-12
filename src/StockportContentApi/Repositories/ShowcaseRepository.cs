@@ -55,6 +55,10 @@ namespace StockportContentApi.Repositories
 
             var entry = entries.FirstOrDefault();
 
+            if (entry == null) {
+                return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
+            }
+
             Showcase showcase = new Showcase();
 
             try {
@@ -62,7 +66,7 @@ namespace StockportContentApi.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Unable to serialize Showcase {slug}: {ex.Message}");
+                _logger.LogError(ex, $"Unable to serialize Showcase {slug}: {ex.Message}");
             }
 
             if (showcase.EventCategory != string.Empty)
