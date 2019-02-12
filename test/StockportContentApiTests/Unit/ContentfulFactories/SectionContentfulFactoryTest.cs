@@ -68,6 +68,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 },
                 "trivia heading",
                 new List<InformationList>(),
+                new List<InlineQuote>(),
                 new FieldOrder(),
                 "author",
                 "subject"

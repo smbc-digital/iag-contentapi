@@ -73,6 +73,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 },
                 "trivia heading",
                 new List<InformationList>(),
+                new List<InlineQuote>(),
                 new FieldOrder(),
                 "author",
                 "subject"

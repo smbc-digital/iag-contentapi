@@ -1,33 +1,34 @@
 ﻿{
-    "title": "title",
-    "slug": "profile_slug",
-    "subtitle": "subtitle",
-    "quote": "quote",
-    "image": "image-url.jpg",
-    "body": "body",
-    "breadcrumbs": [
-        {
-            "title": "title",
-            "slug": "slug",
-            "type": "id"
-        }
-    ],
-    "alerts": [
-      {
-        "title": "title",
-        "subHeading": "subHeading",
-        "body": "body",
-        "severity": "severity",
-        "sunriseDate": "0001-01-01T00:00:00Z",
-        "sunsetDate": "9999-09-09T00:00:00Z",
-        "slug": "slug"
-      }
-    ],
-    "triviaSubheading": "trivia heading",
-    "triviaSection": [],
-    "fieldOrder": {
-        "items": []
-    },
-    "author": "author",
-    "subject": "subject"
+  "title": "title",
+  "slug": "profile_slug",
+  "subtitle": "subtitle",
+  "quote": "quote",
+  "inlineQuotes": [],
+  "image": "image-url.jpg",
+  "body": "body",
+  "breadcrumbs": [
+    {
+      "title": "title",
+      "slug": "slug",
+      "type": "id"
+    }
+  ],
+  "alerts": [
+    {
+      "title": "title",
+      "subHeading": "subHeading",
+      "body": "body",
+      "severity": "severity",
+      "sunriseDate": "0001-01-01T00:00:00Z",
+      "sunsetDate": "9999-09-09T00:00:00Z",
+      "slug": "slug"
+    }
+  ],
+  "triviaSubheading": "trivia heading",
+  "triviaSection": [],
+  "fieldOrder": {
+    "items": []
+  },
+  "author": "author",
+  "subject": "subject"
 }
