@@ -71,11 +71,11 @@ namespace StockportContentApi.Repositories
 
             if (showcase.EventCategory != string.Empty)
             {
-                showcase.Events = await _eventRepository.GetEventsByCategory(showcase.EventCategory, true);
+                showcase.Events = (await _eventRepository.GetEventsByCategory(showcase.EventCategory, true)).Take(3);
 
                 if (!showcase.Events.Any())
                 {
-                    var eventArticles = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
+                    var eventArticles = (await _eventRepository.GetEventsByTag(showcase.EventCategory, true)).Take(3);
                     if (eventArticles.Any())
                     {
                         showcase.Events = eventArticles;
