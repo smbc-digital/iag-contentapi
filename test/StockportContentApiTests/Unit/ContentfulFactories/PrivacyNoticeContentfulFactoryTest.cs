@@ -17,7 +17,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             var mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             var mockTopicFactory = new Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>>();
-            var mockLogger = new Mock<ILogger>();
+            var mockLogger = new Mock<ILogger<PrivacyNoticeContentfulFactory>>();
             _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(mockCrumbFactory.Object, mockTopicFactory.Object, mockLogger.Object);
         }
 
