@@ -12,9 +12,9 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IContentfulFactory<ContentfulPrivacyNotice, Topic> _parentTopicFactory;
-        private readonly ILogger _logger;
+        private readonly ILogger<PrivacyNoticeContentfulFactory> _logger;
 
-        public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory, ILogger logger)
+        public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory, ILogger<PrivacyNoticeContentfulFactory> logger)
         {
             _crumbFactory = crumbFactory;
             _parentTopicFactory = parentTopicFactory;
