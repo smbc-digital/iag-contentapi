@@ -37,5 +37,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulInformationList> TriviaSection { get; set; } = new List<ContentfulInformationList>();
         public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
         public ContentfulVideo Video { get; set; }
+        public string TypeformUrl { get; set; } = string.Empty;
     }
 }

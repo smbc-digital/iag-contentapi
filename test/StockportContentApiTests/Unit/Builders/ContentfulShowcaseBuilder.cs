@@ -24,6 +24,7 @@ namespace StockportContentApiTests.Builders
         private string _body { get; set; } = "body";
         private string _emailAlertsTopicId { get; set; } = "alertId";
         private string _emailAlertsText { get; set; } = "alertText";
+        private string _typeformUrl { get; set; } = "typeformUrl";
         private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -57,7 +58,8 @@ namespace StockportContentApiTests.Builders
                 Body = _body,
                 EmailAlertsText = _emailAlertsText,
                 EmailAlertsTopicId = _emailAlertsTopicId,
-                Alerts = _alerts
+                Alerts = _alerts,
+                TypeformUrl = _typeformUrl
             };
         }
 
@@ -148,6 +150,12 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder SocialMediaLinks(List<ContentfulSocialMediaLink> socialMediaLinks)
         {
             _socialMediaLinks = socialMediaLinks;
+            return this;
+        }
+
+        public ContentfulShowcaseBuilder TypeformUrl(string typeformUrl)
+        {
+            _typeformUrl = typeformUrl;
             return this;
         }
     }

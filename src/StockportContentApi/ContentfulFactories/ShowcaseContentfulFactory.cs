@@ -140,7 +140,8 @@ namespace StockportContentApi.ContentfulFactories
                 TriviaSubheading = entry.TriviaSubheading,
                 TriviaSection = triviaSection,
                 CallToActionBanner = callToActionBanner,
-                Video = video
+                Video = video,
+                TypeformUrl = entry.TypeformUrl
             }.StripData(_httpContextAccessor);
         }
     }

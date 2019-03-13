@@ -42,6 +42,7 @@ namespace StockportContentApi.Model
         public List<InformationList> TriviaSection { get; set; }
         public CallToActionBanner CallToActionBanner { get; set; }
         public Video Video { get; set; }
+        public string TypeformUrl { get; set; }
 
         public News NewsArticle { get; set; }
         public IEnumerable<SubItem> SubItems { get; set; }
