@@ -48,8 +48,32 @@ namespace StockportContentApi.ContentfulFactories
 
             var inlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList();
 
-            return new Profile(entry.Title, entry.Slug, entry.Subtitle, entry.Quote, imageUrl,
-                               entry.Body, breadcrumbs, alerts, triviaSubheading, triviaSection, inlineQuotes, entry.FieldOrder, entry.Author, entry.Subject).StripData(_httpContextAccessor);
+            var button = new Button
+            {
+                AnalyticsId = entry.Button.AnalyticsId,
+                Type = entry.Button.Type,
+                Link = entry.Button.Link,
+                Text = entry.Button.Text
+            };
+
+            return new Profile
+            {
+                Button = button,
+                Alerts = alerts,
+                Author = entry.Author,
+                Body = entry.Body,
+                Breadcrumbs = breadcrumbs,
+                FieldOrder = entry.FieldOrder,
+                Image = imageUrl,
+                InlineQuotes = inlineQuotes,
+                Quote = entry.Quote,
+                Slug = entry.Slug,
+                Subject = entry.Subject,
+                Subtitle = entry.Subtitle,
+                Title = entry.Title,
+                TriviaSection = triviaSection,
+                TriviaSubheading = triviaSubheading
+            }.StripData(_httpContextAccessor);
         }
     }
 }
