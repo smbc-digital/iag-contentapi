@@ -30,5 +30,11 @@
     "items": []
   },
   "author": "author",
-  "subject": "subject"
+  "subject": "subject",
+  "button": {
+    "type": null,
+    "text": null,
+    "link": null,
+    "analyticsId": null
+  }
 }

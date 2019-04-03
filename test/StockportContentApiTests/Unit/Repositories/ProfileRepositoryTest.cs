@@ -50,18 +50,19 @@ namespace StockportContentApiTests.Unit.Repositories
             var collection = new ContentfulCollection<ContentfulProfile>();
             collection.Items = new List<ContentfulProfile> { contentfulTopic };
 
-            var profile = new Profile(
-                "title",
-                "slug",
-                "subtitle",
-                "quote",
-                "image",
-                "body",
-                new List<Crumb>
+            var profile = new Profile
+            {
+                Title = "title",
+                Slug = "slug",
+                Subtitle = "subtitle",
+                Quote = "quote",
+                Image = "image",
+                Body = "body",
+                Breadcrumbs = new List<Crumb>
                 {
-                 new Crumb("title", "slug", "type")
+                    new Crumb("title", "slug", "type")
                 },
-                new List<Alert>
+                Alerts = new List<Alert>
                 {
                     new Alert("title",
                         "subheading",
@@ -71,14 +72,14 @@ namespace StockportContentApiTests.Unit.Repositories
                         DateTime.MaxValue,
                         "slug")
                 },
-                "trivia heading",
-                new List<InformationList>(),
-                new List<InlineQuote>(),
-                new FieldOrder(),
-                "author",
-                "subject"
-                );
-            
+                TriviaSubheading = "trivia heading",
+                TriviaSection = new List<InformationList>(),
+                InlineQuotes = new List<InlineQuote>(),
+                FieldOrder = new FieldOrder(),
+                Author = "author",
+                Subject = "subject"
+            };
+
             var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
 
 
