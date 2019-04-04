@@ -14,19 +14,22 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
         private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
+        private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
 
         public ProfileContentfulFactory(
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IHttpContextAccessor httpContextAccessor, 
             IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
-            IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory)
+            IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
+            IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
             _informationListFactory = informationListFactory;
             _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
+            _eventBannerFactory = eventBannerFactory;
         }
 
         public Profile ToModel(ContentfulProfile entry)
@@ -56,6 +59,8 @@ namespace StockportContentApi.ContentfulFactories
                 Text = entry.Button.Text
             };
 
+            var eventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner);
+
             return new Profile
             {
                 Button = button,
@@ -72,7 +77,8 @@ namespace StockportContentApi.ContentfulFactories
                 Subtitle = entry.Subtitle,
                 Title = entry.Title,
                 TriviaSection = triviaSection,
-                TriviaSubheading = triviaSubheading
+                TriviaSubheading = triviaSubheading,
+                EventsBanner = eventsBanner
             }.StripData(_httpContextAccessor);
         }
     }

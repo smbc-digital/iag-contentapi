@@ -16,17 +16,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly ProfileContentfulFactory _profileContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory;
+        private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
 
         public ProfileContentfulFactoryTest()
         {
             _contentfulProfile = new ContentfulProfileBuilder().Build();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+            _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _profileContentfulFactory = new ProfileContentfulFactory(
                 _crumbFactory.Object, 
                 HttpContextFake.GetHttpContextFake(), 
                 new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, 
                 new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>().Object,
-                new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object);
+                new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
+                _eventBannerFactory.Object);
         }
 
         [Fact]

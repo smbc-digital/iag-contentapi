@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
 {
@@ -19,6 +20,7 @@ namespace StockportContentApi.Model
         public string Author { get; set; }
         public string Subject { get; set; }
         public Button Button { get; set; }
+        public EventBanner EventsBanner { get; set; }
 
         public Profile()
         {

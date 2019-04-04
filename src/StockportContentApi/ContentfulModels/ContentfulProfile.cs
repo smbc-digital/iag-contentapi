@@ -22,5 +22,6 @@ namespace StockportContentApi.ContentfulModels
         public string Author { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
         public ContentfulButton Button { get; set; } = new ContentfulButton();
+        public ContentfulEventBanner EventsBanner {get; set; } = new ContentfulEventBanner();
     }
 }
