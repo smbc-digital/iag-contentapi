@@ -36,5 +36,11 @@
     "text": null,
     "link": null,
     "analyticsId": null
+  },
+  "eventsBanner": {
+    "title": "",
+    "teaser": "",
+    "icon": "",
+    "link": ""
   }
 }
