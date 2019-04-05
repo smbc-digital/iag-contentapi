@@ -38,5 +38,6 @@ namespace StockportContentApi.ContentfulModels
         public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
         public ContentfulVideo Video { get; set; }
         public string TypeformUrl { get; set; } = string.Empty;
+        public ContentfulSpotlightBanner SpotlightBanner { get; set; } = null;
     }
 }

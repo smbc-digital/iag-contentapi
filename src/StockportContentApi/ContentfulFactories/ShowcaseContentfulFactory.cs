@@ -21,12 +21,14 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
         private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
+        private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
 
         public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
             IHttpContextAccessor httpContextAccessor,
             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
-            IContentfulFactory<ContentfulVideo, Video> videoFactory)
+            IContentfulFactory<ContentfulVideo, Video> videoFactory, 
+            IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> spotlightBannerFactory)
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
@@ -40,6 +42,7 @@ namespace StockportContentApi.ContentfulFactories
             _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
             _informationListFactory = informationListFactory;
             _videoFactory = videoFactory;
+            _spotlightBannerFactory = spotlightBannerFactory;
         }
 
         public Showcase ToModel(ContentfulShowcase entry)
@@ -103,6 +106,10 @@ namespace StockportContentApi.ContentfulFactories
                 ? _videoFactory.ToModel(entry.Video)
                 : null;
 
+            var spotlightBanner = entry.SpotlightBanner != null
+                ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
+                : null;
+
             return new Showcase
             {
                 Title = entry.Title,
@@ -141,7 +148,8 @@ namespace StockportContentApi.ContentfulFactories
                 TriviaSection = triviaSection,
                 CallToActionBanner = callToActionBanner,
                 Video = video,
-                TypeformUrl = entry.TypeformUrl
+                TypeformUrl = entry.TypeformUrl,
+                SpotlightBanner = spotlightBanner
             }.StripData(_httpContextAccessor);
         }
     }
