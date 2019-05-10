@@ -33,7 +33,8 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Fund,
                 entry.GlCodeCostCentreNumber,
                 entry.Icon,
-                breadcrumbs).StripData(_httpContextAccessor);
+                breadcrumbs,
+                entry.ReferenceValidation).StripData(_httpContextAccessor);
         }
     }
 }
