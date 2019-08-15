@@ -167,7 +167,8 @@
         "isUnknown": false,
         "altitude": "NaN"
       },
-      "accessibleTransportLink": "/accessibleTransport"
+      "accessibleTransportLink": "/accessibleTransport",
+      "metaDescription": ""
     },
     {
       "title": "title",
@@ -336,7 +337,8 @@
         "isUnknown": false,
         "altitude": "NaN"
       },
-      "accessibleTransportLink": "/accessibleTransport"
+      "accessibleTransportLink": "/accessibleTransport",
+      "metaDescription": ""
     }
   ],
   "categories": [ "Arts and Crafts", "Business Events", "Sports", "Museums", "Charity", "Council", "Christmas", "Dance", "Education", "Chadkirk Chapel", "Community Group", "Public Health", "Fayre", "Talk", "Environment", "Comedy", "Family", "Armed Forces", "Antiques and Collectors", "Excercise and Fitness", "Fair", "Emergency Services", "Bonfire", "Remembrence Service" ]
