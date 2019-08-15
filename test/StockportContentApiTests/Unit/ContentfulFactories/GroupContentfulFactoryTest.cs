@@ -133,6 +133,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Status.Should().Be("Published");
             result.Organisation.Should().BeEquivalentTo(organisation);
             result.SuitableFor.Should().BeEquivalentTo(suitableFor);
+            result.MetaDescription.Should().Be("_metaDescription");
         }
     }
 }

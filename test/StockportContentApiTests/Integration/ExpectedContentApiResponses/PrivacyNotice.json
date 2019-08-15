@@ -15,10 +15,10 @@
   "urlThree": "test-url-3",
   "breadcrumbs": [],
   "parentTopic": {
-
     "slug": "",
     "name": "",
     "teaser": "",
+    "metaDescription": "",
     "summary": "",
     "icon": "",
     "backgroundImage": "",
