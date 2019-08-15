@@ -10,6 +10,7 @@ namespace StockportContentApi.Model
         public string Slug { get; }
         public string Title { get; set; }
         public string Teaser { get; }
+        public string MetaDescription { get; }
         public string Icon { get; }
         public string BackgroundImage { get; }
         public string Image { get; }
@@ -24,7 +25,7 @@ namespace StockportContentApi.Model
         public DateTime SunsetDate { get; }
         public Advertisement Advertisement { get; }
         
-        public Article(string body, string slug, string title, string teaser, string icon, string backgroundImage, string image, List<Section> sections,
+        public Article(string body, string slug, string title, string teaser, string metaDescription, string icon, string backgroundImage, string image, List<Section> sections,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, IEnumerable<Profile> profiles, Topic parentTopic, List<Document> documents,
             DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline, Advertisement advertisement)
         {
@@ -32,6 +33,7 @@ namespace StockportContentApi.Model
             Slug = slug;
             Title = title;
             Teaser = teaser;
+            MetaDescription = metaDescription;
             Icon = icon;
             BackgroundImage = backgroundImage;
             Image = image;
@@ -63,7 +65,7 @@ namespace StockportContentApi.Model
     {
         public NullArticle()
         : base(
-            string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(),
+            string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(),
             new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), new List<Alert>(), new NullAdvertisement())
         { }
     }

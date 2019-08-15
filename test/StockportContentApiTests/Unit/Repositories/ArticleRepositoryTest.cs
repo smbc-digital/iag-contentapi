@@ -236,7 +236,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
         private static Article EmptyArticle()
         {
-            return new Article("", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
+            return new Article("", "", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
                 new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
                 new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), new List<Alert>(), new NullAdvertisement());
         }

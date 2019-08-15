@@ -84,7 +84,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
                 advertisement = _advertisementFactory.ToModel(entry.Advertisement);
             }
 
-            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.Icon, backgroundImage, image,
+            return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
                 sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, advertisement).StripData(_httpContextAccessor);
         }
     }
