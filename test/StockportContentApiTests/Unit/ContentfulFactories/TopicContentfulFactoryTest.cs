@@ -99,6 +99,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.SunriseDate.Should().Be(DateTime.MinValue);
             result.SunsetDate.Should().Be(DateTime.MaxValue);
             result.Teaser.Should().BeEquivalentTo("teaser");
+            result.MetaDescription.Should().BeEquivalentTo("metaDescription");
         }
 
         [Fact]
