@@ -59,7 +59,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost : new List<string>();
 
-            return new Group(entry.Name, entry.Slug, entry.PhoneNumber, entry.Email, entry.Website,
+            return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
                 administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 

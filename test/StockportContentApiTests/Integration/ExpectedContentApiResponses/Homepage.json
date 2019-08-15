@@ -77,6 +77,7 @@
   "featuredGroup": {
     "name": "_name",
     "slug": "_slug",
+    "metaDescription":  "_metaDescription", 
     "phoneNumber": "_phoneNumber",
     "email": "_email",
     "website": "_website",
@@ -164,5 +165,6 @@
     "suitableFor": [ "people" ],
     "ageRange": [ "15-20" ]
   },
-  "eventCategory": ""
+  "eventCategory": "",
+  "metaDescription":  "meta description" 
 }

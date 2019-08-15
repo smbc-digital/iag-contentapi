@@ -28,6 +28,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Slug("showcase-slug")
                 .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
                 .Teaser("showcase teaser")
+                .MetaDescription("showcase metaDescription")
                 .Subheading("subheading")
                 .SecondaryItems(new List<ContentfulReference>() { new ContentfulReference() { Sys = new SystemProperties() { Type = "Entry" } } })
                 .Build();
@@ -83,6 +84,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             showcase.Title.Should().Be("showcase title");
             showcase.HeroImageUrl.Should().Be("image-url.jpg");
             showcase.Teaser.Should().Be("showcase teaser");
+            showcase.MetaDescription.Should().Be("showcase metaDescription");
             showcase.Subheading.Should().Be("subheading");
             showcase.SecondaryItems.First().Title.Should().Be(subItems.First().Title);
             showcase.SecondaryItems.First().Icon.Should().Be(subItems.First().Icon);

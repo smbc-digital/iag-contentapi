@@ -117,6 +117,7 @@ namespace StockportContentApi.ContentfulFactories
                 HeroImageUrl = heroImage,
                 PrimaryItems = primaryItems,
                 Teaser = entry.Teaser,
+                MetaDescription = entry.MetaDescription,
                 Subheading = entry.Subheading,
                 SecondaryItems = secondaryItems,
                 FeaturedItemsSubheading = entry.FeaturedItemsSubheading,

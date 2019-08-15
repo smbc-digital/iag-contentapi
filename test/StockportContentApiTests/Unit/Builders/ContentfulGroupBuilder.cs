@@ -11,6 +11,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _name = "_name";
         private string _slug = "_slug";
         private string _phoneNumber = "_phoneNumber";
+        private string _metaDescription = "_metaDescription";
         private string _email = "_email";
         private string _website = "_website";
         private string _twitter = "_twitter";
@@ -121,6 +122,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Name = _name,
                 PhoneNumber = _phoneNumber,
                 Slug = _slug,
+                MetaDescription = _metaDescription,
                 Twitter = _twitter,
                 Website = _website,
                 Image = _image,
@@ -151,6 +153,12 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulGroupBuilder Slug(string slug)
         {
             _slug = slug;
+            return this;
+        }
+
+        public ContentfulGroupBuilder MetaDescription(string metaDescription)
+        {
+            _metaDescription = metaDescription;
             return this;
         }
 

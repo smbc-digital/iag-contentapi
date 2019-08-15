@@ -45,6 +45,7 @@
       "group": {
         "name": "_name",
         "slug": "_slug",
+        "metaDescription": "_metaDescription",
         "phoneNumber": "_phoneNumber",
         "email": "_email",
         "website": "_website",
@@ -215,6 +216,7 @@
       "group": {
         "name": "_name",
         "slug": "_slug",
+        "metaDescription": "_metaDescription",
         "phoneNumber": "_phoneNumber",
         "email": "_email",
         "website": "_website",

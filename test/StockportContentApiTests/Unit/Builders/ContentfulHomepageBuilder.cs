@@ -11,6 +11,7 @@ namespace StockportContentApiTests.Unit.Builders
         private readonly string _featuredTasksSummary = "Featured tasks summary";
         private readonly Asset _backgroundImage = new Asset { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         private readonly string _freeText = "homepage text";
+        private readonly string _metaDescription = "meta description";
         private IEnumerable<ContentfulGroup> _featuredGroups = new List<ContentfulGroup>
         {
             new ContentfulGroupBuilder().Build()
@@ -52,7 +53,8 @@ namespace StockportContentApiTests.Unit.Builders
                 BackgroundImage = _backgroundImage,
                 FreeText = _freeText,
                 FeaturedGroups = _featuredGroups,
-                Sys = _sys
+                Sys = _sys,
+                MetaDescription = _metaDescription
             };
         }
 

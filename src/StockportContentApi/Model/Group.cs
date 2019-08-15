@@ -8,6 +8,7 @@ namespace StockportContentApi.Model
     {
         public string Name { get; set; }
         public string Slug { get; set; }
+        public string MetaDescription { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string Website { get; set; }
@@ -47,7 +48,7 @@ namespace StockportContentApi.Model
 
         public Group() { }
 
-        public Group(string name, string slug, string phoneNumber, string email, string website,
+        public Group(string name, string slug, string metaDescription,  string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
@@ -57,6 +58,7 @@ namespace StockportContentApi.Model
         {
             Name = name;
             Slug = slug;
+            MetaDescription = metaDescription;
             PhoneNumber = phoneNumber;
             Email = email;
             Website = website;

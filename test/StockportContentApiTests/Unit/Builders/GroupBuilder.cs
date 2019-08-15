@@ -9,6 +9,7 @@ namespace StockportContentApiTests.Unit.Builders
     {
         private string _name = "_name";
         private string _slug = "_slug";
+        private string _metaDescription = "_metaDescription";
         private string _phoneNumber = "_phoneNumber";
         private string _email = "_email";
         private string _website = "_website";
@@ -41,7 +42,7 @@ namespace StockportContentApiTests.Unit.Builders
 
         public Group Build()
         {
-            return new Group(_name, _slug, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
+            return new Group(_name, _slug, _metaDescription, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
                 _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
         }
 
@@ -50,6 +51,13 @@ namespace StockportContentApiTests.Unit.Builders
             _slug = slug;
             return this;
         }
+
+        public GroupBuilder MetaDescription(string metaDescription)
+        {
+            _metaDescription = metaDescription;
+            return this;
+        }
+
         public GroupBuilder Organisation(Organisation org)
         {
             _organisation = org;
