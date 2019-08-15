@@ -21,10 +21,14 @@ namespace StockportContentApi.Middleware
         private readonly IAuthenticationHelper _authHelper;
         private readonly Func<string, ContentfulConfig> _createConfig;
 
-        public AuthenticationMiddleware(RequestDelegate next, IConfiguration configuration,
-            ILogger<AuthenticationMiddleware> logger, IAuthenticationHelper authHelper,
+        public AuthenticationMiddleware(
+            RequestDelegate next, 
+            IConfiguration configuration,
+            ILogger<AuthenticationMiddleware> logger, 
+            IAuthenticationHelper authHelper,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, IApiKeyRepository> repository)
+            Func<ContentfulConfig, 
+            IApiKeyRepository> repository)
         {
             _repository = repository;
             _next = next;

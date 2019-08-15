@@ -107,6 +107,7 @@ namespace StockportContentApiTests.Unit.Builders
         private Topic _parentTopic = new Topic("slug",
             "name",
             "teaser",
+            "metaDescription",
             "summary",
             "icon",
             "background",
