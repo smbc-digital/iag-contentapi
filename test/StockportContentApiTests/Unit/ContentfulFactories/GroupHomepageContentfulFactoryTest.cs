@@ -60,6 +60,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Assert
             result.Title.Should().Be("title");
             result.Slug.Should().Be("slug");
+            result.MetaDescription.Should().Be("metaDescription");
             result.BackgroundImage.Should().Be("image-url.jpg");
             result.FeaturedGroupsHeading.Should().Be("heading");
 
