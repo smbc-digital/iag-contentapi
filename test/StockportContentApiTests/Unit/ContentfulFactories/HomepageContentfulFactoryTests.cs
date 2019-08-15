@@ -52,6 +52,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
             homepage.FeaturedGroup.Should().NotBeNull();
+            homepage.MetaDescription.Should().BeEquivalentTo("meta description");
         }
 
         [Fact]

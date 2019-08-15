@@ -165,5 +165,6 @@
     "suitableFor": [ "people" ],
     "ageRange": [ "15-20" ]
   },
-  "eventCategory": ""
+  "eventCategory": "",
+  "metaDescription":  "meta description" 
 }
