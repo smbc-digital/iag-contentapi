@@ -10,5 +10,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulReference> PrimaryItems { get; set; } = new List<ContentfulReference>();
         public IEnumerable<ContentfulInsetText> InsetText { get; set; } = new List<ContentfulInsetText>();
         public IEnumerable<ContentfulContactUsCategory> ContactUsCategories { get; set; } = new List<ContentfulContactUsCategory>();
+        public string MetaDescription { get; set; } = string.Empty;
     }
 }
