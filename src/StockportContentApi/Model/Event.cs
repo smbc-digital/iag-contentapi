@@ -37,13 +37,15 @@ namespace StockportContentApi.Model
         public bool? Paid { get; }
         public GeoCoordinate Coord { get; }
         public string AccessibleTransportLink { get; } 
+
+        public string MetaDescription { get; }
        
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee,
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime,
                      int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl,
                      List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,
-                     string bookingInformation, DateTime? updatedAt, List<string> tags, Group group, List<Alert> alerts, List<EventCategory> eventCategories, bool? free, bool? paid, string accessibleTransportLink)
+                     string bookingInformation, DateTime? updatedAt, List<string> tags, Group group, List<Alert> alerts, List<EventCategory> eventCategories, bool? free, bool? paid, string accessibleTransportLink, string metaDescription)
         {
             Title = title;
             Slug = slug;
@@ -74,6 +76,7 @@ namespace StockportContentApi.Model
             Free = free;
             Coord = MapPosition == null ? null : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
             AccessibleTransportLink = accessibleTransportLink;
+            MetaDescription = metaDescription;
         }
 
         public bool ShouldSerializeFrequency()

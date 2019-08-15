@@ -15,5 +15,7 @@ namespace StockportContentApi.ContentfulModels
         public string Tag9 { get; set; } = string.Empty;
         public string Tag10 { get; set; } = string.Empty;
         public SystemProperties Sys { get; set; } = new SystemProperties();
+
+        public string MetaDescription { get; set; } = string.Empty;
     }
 }
