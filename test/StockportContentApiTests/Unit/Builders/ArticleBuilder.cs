@@ -20,6 +20,7 @@ namespace StockportContentApiTests.Unit.Builders
             new Section("title",
                 "slug",
                 "body",
+                "metaDescription",
                 new List<Profile>(),
                 new List<Document>(),
                 new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),

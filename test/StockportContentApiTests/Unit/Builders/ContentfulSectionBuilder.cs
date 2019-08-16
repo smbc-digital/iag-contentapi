@@ -9,6 +9,7 @@ namespace StockportContentApiTests.Unit.Builders
     {
         private string _title = "title";
         private string _slug = "slug";
+        private string _metaDescription = "metaDescription";
         private string _body = "body";
         private DateTime _sunriseDate = DateTime.MinValue;
         private DateTime _sunsetDate = DateTime.MinValue;
@@ -30,6 +31,7 @@ namespace StockportContentApiTests.Unit.Builders
             {
                 Title = _title,
                 Slug = _slug,
+                MetaDescription = _metaDescription,
                 Body = _body,
                 Profiles = _profiles,
                 Documents = _documents,
