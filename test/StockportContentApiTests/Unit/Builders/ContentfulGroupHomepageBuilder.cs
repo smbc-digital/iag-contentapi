@@ -7,7 +7,8 @@ namespace StockportContentApiTests.Unit.Builders
     public class ContentfulGroupHomepageBuilder
     {
         private string _title = "title";
-        private string _slug = "slug";       
+        private string _slug = "slug";
+        private string _metaDescription = "metaDescription";
         private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
         private SystemProperties _sys = new SystemProperties
         {
@@ -26,6 +27,7 @@ namespace StockportContentApiTests.Unit.Builders
             return new ContentfulGroupHomepage
             {
                 Slug = _slug,
+                MetaDescription = _metaDescription,
                 Title = _title,
                 BackgroundImage = _backgroundImage,
                 EventBanner = _eventBanner,
@@ -47,7 +49,11 @@ namespace StockportContentApiTests.Unit.Builders
             _slug = slug;
             return this;
         }
-
+        public ContentfulGroupHomepageBuilder MetaDescription(string metaDescription)
+        {
+            _metaDescription = metaDescription;
+            return this;
+        }
         public ContentfulGroupHomepageBuilder Title(string title)
         {
             _title = title;

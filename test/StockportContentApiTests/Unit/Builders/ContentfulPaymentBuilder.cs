@@ -14,6 +14,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _parisReference = "parisReference";
         private string _fund = "fund";
         private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
+        private string _metaDescription = "metaDescription";
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
             new ContentfulReferenceBuilder().Build() };
 
@@ -30,7 +31,8 @@ namespace StockportContentApiTests.Unit.Builders
                 ParisReference = _parisReference,
                 Fund = _fund,
                 GlCodeCostCentreNumber = _glCodeCostCentreNumber,
-                Breadcrumbs = _breadcrumbs
+                Breadcrumbs = _breadcrumbs,
+                MetaDescription = _metaDescription
             };
         }
 

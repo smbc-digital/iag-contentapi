@@ -9,6 +9,7 @@ namespace StockportContentApiTests.Builders
         private string _title { get; set; } = "title";
         private string _slug { get; set; } = "slug";
         private string _categoriesTitle { get; set; } = "categoriesTitle";
+        private string _metaDescription { get; set; } = "metaDescription";
 
         private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
@@ -43,7 +44,8 @@ namespace StockportContentApiTests.Builders
                 Alerts = _alerts,
                 InsetText = _insetTexts,
                 PrimaryItems = _primaryItems,
-                ContactUsCategories = _contactUsCategories
+                ContactUsCategories = _contactUsCategories,
+                MetaDescription = _metaDescription
             };
         }
 

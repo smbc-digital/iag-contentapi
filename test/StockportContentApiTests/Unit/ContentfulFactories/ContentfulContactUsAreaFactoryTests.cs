@@ -43,6 +43,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.Equal("title", result.Title);
             Assert.Equal("slug", result.Slug);
             Assert.NotNull(result.ContactUsCategories);
+            Assert.Equal("metaDescription", result.MetaDescription);
         }
 
         [Fact]

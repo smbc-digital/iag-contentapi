@@ -14,9 +14,10 @@ namespace StockportContentApi.Model
         public IEnumerable<Alert> Alerts { get; }
         public IEnumerable<InsetText> InsetTexts { get; }
         public IEnumerable<ContactUsCategory> ContactUsCategories { get; set; }
+        public string MetaDescription { get; set; }
 
         public ContactUsArea(string slug, string title, string categoriesTitle, IEnumerable<Crumb> breadcrumbs, 
-            IEnumerable<Alert> alerts, IEnumerable<InsetText> insetTexts, IEnumerable<SubItem> primaryItems, IEnumerable<ContactUsCategory> contactUsCategories) 
+            IEnumerable<Alert> alerts, IEnumerable<InsetText> insetTexts, IEnumerable<SubItem> primaryItems, IEnumerable<ContactUsCategory> contactUsCategories, string metaDescription) 
         {
             Title = title;
             Slug = slug;
@@ -26,6 +27,7 @@ namespace StockportContentApi.Model
             InsetTexts = insetTexts;
             PrimaryItems = primaryItems;
             ContactUsCategories = contactUsCategories;
+            MetaDescription = metaDescription;
         }
     }
 }
