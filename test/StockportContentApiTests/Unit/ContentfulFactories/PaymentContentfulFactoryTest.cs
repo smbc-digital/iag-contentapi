@@ -32,6 +32,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             payment.Title.Should().Be("payment title");
             payment.Teaser.Should().Be("payment teaser");
             payment.ReferenceLabel.Should().Be("reference label");
+            payment.MetaDescription.Should().Be("metaDescription");
         }
     }
 }

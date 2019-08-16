@@ -15,5 +15,6 @@ namespace StockportContentApi.ContentfulModels
         public new string Icon { get; set; } = "si-coin";
         public EPaymentReferenceValidation ReferenceValidation { get; set; } = EPaymentReferenceValidation.None;
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
+        public string MetaDescription { get; set; } = string.Empty;
     }
 }
