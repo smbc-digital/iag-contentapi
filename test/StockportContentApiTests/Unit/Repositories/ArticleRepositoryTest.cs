@@ -219,6 +219,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
                 "title",
                 "section-with-inline-alerts",
+                "metaDescription",
                 "body",
                 new List<Profile>(),
                 new List<Document>(),
