@@ -181,7 +181,7 @@ namespace StockportContentApiTests.Integration
                 var contactUsIdCollection = new ContentfulCollection<ContentfulContactUsId>();
                 contactUsIdCollection.Items = new List<ContentfulContactUsId>
                 {
-                    new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email"}
+                    new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email", SuccessPageReturnUrl = "test button url", SuccessPageButtonText = "test button text"}
                 };
                 httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", "test-email").Include(1).Build()),
