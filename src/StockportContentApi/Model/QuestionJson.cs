@@ -35,6 +35,7 @@ namespace StockportContentApi.Model
     {
         public string questionId { get; set; }
         public string secondaryInfo { get; set; }
+        public string textSubLabel { get; set; }
         public string questionType { get; set; }
         public string label { get; set; }
         public List<Option> options { get; set; }
