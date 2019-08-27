@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
@@ -61,7 +62,9 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost : new List<string>();
 
-            var groupBranding = entry.GroupBranding != null ? entry.GroupBranding.Where(o => o != null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>(); 
+            var groupBranding = entry.GroupBranding != null ? entry.GroupBranding.Where(o => o != null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
+
+
 
             return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 

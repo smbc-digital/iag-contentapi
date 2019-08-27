@@ -162,6 +162,8 @@ namespace StockportContentApi.Extensions
                 (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>
                 (p => new GroupAdvisorContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>
+                (p => new GroupBrandingContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
             (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                  p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));

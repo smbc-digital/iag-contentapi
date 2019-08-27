@@ -38,7 +38,6 @@ namespace StockportContentApi.Model
         public string DonationsText { get; set; }
         public string DonationsUrl { get; set; }
         public string AccessibleTransportLink { get; set; }
-
         public List<GroupBranding> GroupBranding { get; set; }
 
         [SensitiveData]
@@ -86,7 +85,7 @@ namespace StockportContentApi.Model
             VolunteeringText = volunteeringText;
             Organisation = organisation;
             AccessibleTransportLink = accessibleTransportLink;
-            GroupBranding = GroupBranding;
+            GroupBranding = groupBranding;
             AdditionalInformation = additionalInformation;
             AdditionalDocuments = additionalDocuments;
             DateLastModified = dateLastModified;

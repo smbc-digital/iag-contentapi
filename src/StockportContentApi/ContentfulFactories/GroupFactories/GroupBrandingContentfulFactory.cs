@@ -15,21 +15,18 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         }
         public GroupBranding ToModel(ContentfulGroupBranding entry)
         {
-            string image;
-            string imageDescription;
+            var file = new MediaAsset();
 
-            if(entry.File != null)
+            if (entry != null && entry.File != null)
             {
-                image = entry.File.File.Url != null ? entry.File.File.Url : string.Empty;
-                imageDescription = entry.File.Description != null ? entry.File.Description : string.Empty;
-            }
-            else
-            {
-                image = string.Empty;
-                imageDescription = string.Empty;
+                file = new MediaAsset
+                {
+                    Url = entry.File.File.Url,
+                    Description = entry.File.Description
+                };
             }
 
-            return new GroupBranding(entry.Title, entry.Text, image, imageDescription, entry.Url).StripData(_httpContextAccessor);
+            return new GroupBranding(entry.Title, entry.Text, file, entry.Url).StripData(_httpContextAccessor);
         }
     }
 }
