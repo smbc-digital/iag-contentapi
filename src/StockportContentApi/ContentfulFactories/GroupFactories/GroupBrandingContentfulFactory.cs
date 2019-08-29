@@ -17,7 +17,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         {
             var file = new MediaAsset();
 
-            if (entry != null && entry.File != null)
+            if (entry != null && entry.File != null && entry.File.File != null)
             {
                 file = new MediaAsset
                 {
