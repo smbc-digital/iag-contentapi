@@ -6,95 +6,96 @@
   "featuredGroupsHeading": "heading",
   "featuredGroups": [
     {
-      "name": "_name",
-      "slug": "_slug",
-      "metaDescription": "_metaDescription",
-      "phoneNumber": "_phoneNumber",
-      "email": "_email",
-      "website": "_website",
-      "twitter": "_twitter",
-      "facebook": "_facebook",
-      "address": "_address",
-      "description": "_description",
-      "imageUrl": "image-url.jpg",
-      "thumbnailImageUrl": "image-url.jpg?h=250",
-      "categoriesReference": [
-        {
-          "name": "name",
-          "slug": "slug",
-          "icon": "icon",
-          "imageUrl": "test-url"
-        }
-      ],
-      "subCategories": [
-        {
-          "name": "name",
-          "slug": "slug"
-        }
-      ],
-      "breadcrumbs": [
-        {
-          "title": "Stockport Local",
-          "slug": "",
-          "type": "groups"
-        }
-      ],
-      "mapPosition": {
-        "lon": 2.0,
-        "lat": 39.0
-      },
-      "volunteering": true,
-      "events": null,
-      "groupAdministrators": {
-        "items": [
-          {
-            "email": "Email",
-            "permission": "admin",
-            "name": "Name"
-          }
-        ]
-      },
-      "dateHiddenFrom": "0001-01-01T00:00:00Z",
-      "dateHiddenTo": "0001-01-01T00:00:00Z",
-      "status": "Published",
-      "cost": [ "lots" ],
-      "costText": "",
-      "abilityLevel": "",
-      "volunteeringText": "text",
-      "organisation": {
-        "title": "",
-        "slug": "",
-        "imageUrl": "",
-        "aboutUs": "",
-        "phone": "",
-        "email": "",
-        "volunteering": false,
-        "volunteeringText": null,
-        "donationsText": null,
-        "donationsUrl": null,
-        "groups": [],
-        "donations": false
-      },
-      "linkedGroups": null,
-      "donations": false,
-      "donationsText": "donText",
-      "donationsUrl": "donUrl",
-      "accessibleTransportLink": "link",
-      "additionalInformation": "info",
-      "additionalDocuments": [
-        {
-          "title": "description",
-          "size": 200,
-          "url": "url",
-          "lastUpdated": "0001-01-01T00:00:00Z",
-          "fileName": "filename",
-          "assetId": "id",
-          "mediaType": "test"
-        }
-      ],
-      "dateLastModified": "0001-01-01T00:00:00Z",
-      "suitableFor": [ "people" ],
-      "ageRange": [ "15-20" ]
+        "name": "_name",
+        "slug": "_slug",
+        "metaDescription": "_metaDescription",
+        "phoneNumber": "_phoneNumber",
+        "email": "_email",
+        "website": "_website",
+        "twitter": "_twitter",
+        "facebook": "_facebook",
+        "address": "_address",
+        "description": "_description",
+        "imageUrl": "image-url.jpg",
+        "thumbnailImageUrl": "image-url.jpg?h=250",
+        "categoriesReference": [
+            {
+                "name": "name",
+                "slug": "slug",
+                "icon": "icon",
+                "imageUrl": "test-url"
+            }
+        ],
+        "subCategories": [
+            {
+                "name": "name",
+                "slug": "slug"
+            }
+        ],
+        "breadcrumbs": [
+            {
+                "title": "Stockport Local",
+                "slug": "",
+                "type": "groups"
+            }
+        ],
+        "mapPosition": {
+            "lon": 2.0,
+            "lat": 39.0
+        },
+        "volunteering": true,
+        "events": null,
+        "groupAdministrators": {
+            "items": [
+                {
+                    "email": "Email",
+                    "permission": "admin",
+                    "name": "Name"
+                }
+            ]
+        },
+        "dateHiddenFrom": "0001-01-01T00:00:00Z",
+        "dateHiddenTo": "0001-01-01T00:00:00Z",
+        "status": "Published",
+        "cost": [ "lots" ],
+        "costText": "",
+        "abilityLevel": "",
+        "volunteeringText": "text",
+        "organisation": {
+            "title": "",
+            "slug": "",
+            "imageUrl": "",
+            "aboutUs": "",
+            "phone": "",
+            "email": "",
+            "volunteering": false,
+            "volunteeringText": null,
+            "donationsText": null,
+            "donationsUrl": null,
+            "groups": [],
+            "donations": false
+        },
+        "linkedGroups": null,
+        "donations": false,
+        "donationsText": "donText",
+        "donationsUrl": "donUrl",
+        "accessibleTransportLink": "link",
+        "groupBranding": [],
+        "additionalInformation": "info",
+        "additionalDocuments": [
+            {
+                "title": "description",
+                "size": 200,
+                "url": "url",
+                "lastUpdated": "0001-01-01T00:00:00Z",
+                "fileName": "filename",
+                "assetId": "id",
+                "mediaType": "test"
+            }
+        ],
+        "dateLastModified": "0001-01-01T00:00:00Z",
+        "suitableFor": [ "people" ],
+        "ageRange": [ "15-20" ]
     }
   ],
   "featuredGroupsCategory": {

@@ -38,6 +38,7 @@ namespace StockportContentApi.Model
         public string DonationsText { get; set; }
         public string DonationsUrl { get; set; }
         public string AccessibleTransportLink { get; set; }
+        public List<GroupBranding> GroupBranding { get; set; }
 
         [SensitiveData]
         public string AdditionalInformation { get; set; }
@@ -53,7 +54,7 @@ namespace StockportContentApi.Model
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Document> additionalDocuments, 
+            Organisation organisation, bool donations, string accessibleTransportLink, List<GroupBranding> groupBranding, string additionalInformation, List<Document> additionalDocuments, 
             DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange,string donationsText,string donationsUrl)
         {
             Name = name;
@@ -84,6 +85,7 @@ namespace StockportContentApi.Model
             VolunteeringText = volunteeringText;
             Organisation = organisation;
             AccessibleTransportLink = accessibleTransportLink;
+            GroupBranding = groupBranding;
             AdditionalInformation = additionalInformation;
             AdditionalDocuments = additionalDocuments;
             DateLastModified = dateLastModified;

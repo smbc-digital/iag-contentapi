@@ -39,11 +39,12 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime? _dateLastModified = new DateTime?();
         private string _donationsText = "_donationsText";
         private string _donationsUrl = "_donationsUrl";
+        private List<GroupBranding> _groupBranding = new List<GroupBranding>();
 
         public Group Build()
         {
             return new Group(_name, _slug, _metaDescription, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _groupBranding, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
         }
 
         public GroupBuilder Slug(string slug)
@@ -147,6 +148,12 @@ namespace StockportContentApiTests.Unit.Builders
             _donationsUrl = donationsUrl;
             return this;
 
+        }
+
+        public GroupBuilder GroupBranding(List<GroupBranding> groupBranding)
+        {
+            _groupBranding = groupBranding;
+            return this;
         }
         }
     }

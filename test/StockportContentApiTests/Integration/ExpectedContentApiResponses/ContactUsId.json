@@ -1,5 +1,7 @@
 ﻿{
   "name": "Test email",
   "slug": "test-email",
-  "emailAddress": "test@stockport.gov.uk"
+  "emailAddress": "test@stockport.gov.uk",
+  "successPageButtonText": "test button text",
+  "successPageReturnUrl": "test button url"
 }
