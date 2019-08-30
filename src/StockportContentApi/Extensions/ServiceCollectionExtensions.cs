@@ -165,6 +165,12 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
             (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                  p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
+            services.AddSingleton<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>(_ => new BasicLinkListContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ => new CommsContentfulFactory(
+                _.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>(),
+                _.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                _.GetService<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>()
+                ));
 
             return services;
         }
@@ -227,9 +233,12 @@ namespace StockportContentApi.Extensions
                     );
                 });
             services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
-                p => { return x => new ProfileRepository(x, 
-                    p.GetService<IContentfulClientManager>(), 
-                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
+                p =>
+                {
+                    return x => new ProfileRepository(x,
+                 p.GetService<IContentfulClientManager>(),
+                 p.GetService<IContentfulFactory<ContentfulProfile, Profile>>());
+                });
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(
@@ -297,6 +306,16 @@ namespace StockportContentApi.Extensions
 
             services.AddSingleton<Func<ContentfulConfig, ContactUsAreaRepository>>(
                 p => { return x => new ContactUsAreaRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, CommsRepository>>(_ =>
+            {
+                return config =>
+                    new CommsRepository(
+                        config,
+                        _.GetService<IContentfulClientManager>(),
+                        _.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()
+                    );
+            });
 
             return services;
         }
