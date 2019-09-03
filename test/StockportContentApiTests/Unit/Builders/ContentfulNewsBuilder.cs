@@ -10,6 +10,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _slug = "slug";
         private string _teaser = "teaser";
+        private string _purpose = "purpose";
         private string _imageUrl = "image.jpg";
         private string _body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
         private DateTime _sunriseDate = new DateTime(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
@@ -27,6 +28,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Title = _title,
                 Slug = _slug,
                 Teaser = _teaser,
+                Purpose = _purpose,
                 Image = new ContentfulAssetBuilder().Url(_imageUrl).Build(),
                 Body = _body,
                 SunriseDate  = _sunriseDate,

@@ -17,6 +17,7 @@
       "title": "title",
       "slug": "news_item",
       "teaser": "teaser",
+      "purpose":  "purpose", 
       "image": "image.jpg",
       "thumbnailImage": "image.jpg?h=250",
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
