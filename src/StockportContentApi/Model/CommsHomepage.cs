@@ -6,7 +6,7 @@ namespace StockportContentApi.Model
     {
         public string Title { get; }
 
-        public SpotlightBanner SpotlightBanner { get; }
+        public CallToActionBanner CallToActionBanner { get; }
 
         public string LatestNewsHeader { get; }
 
@@ -31,7 +31,7 @@ namespace StockportContentApi.Model
             string facebookFeedTitle,
             IEnumerable<BasicLink> usefullLinks,
             Event whatsOnInStockportEvent,
-            SpotlightBanner spotlightBanner
+            CallToActionBanner callToActionBanner
             )
         {
             Title = title;
@@ -42,7 +42,7 @@ namespace StockportContentApi.Model
             FacebookFeedTitle = facebookFeedTitle;
             UsefullLinks = usefullLinks;
             WhatsOnInStockportEvent = whatsOnInStockportEvent;
-            SpotlightBanner = spotlightBanner;
+            CallToActionBanner = callToActionBanner;
         }
     }
 }

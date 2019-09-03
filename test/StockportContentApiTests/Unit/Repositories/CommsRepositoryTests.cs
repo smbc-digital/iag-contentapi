@@ -56,7 +56,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty, 
                     new List<BasicLink>(), 
                     new EventBuilder().Build(), 
-                    new SpotlightBanner(string.Empty, string.Empty, string.Empty) 
+                    new CallToActionBanner() 
                     ));
 
             _mockClient
@@ -105,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty,
                     new List<BasicLink>(),
                     null,
-                    new SpotlightBanner(string.Empty, string.Empty, string.Empty)
+                    new CallToActionBanner()
                 ))
                 .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
 
@@ -166,7 +166,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty,
                     new List<BasicLink>(),
                     null,
-                    new SpotlightBanner(string.Empty, string.Empty, string.Empty)
+                    new CallToActionBanner()
                 ))
                 .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
 

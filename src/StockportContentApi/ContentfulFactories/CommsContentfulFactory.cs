@@ -6,16 +6,16 @@ namespace StockportContentApi.ContentfulFactories
 {
     public class CommsContentfulFactory : IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>
     {
-        private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
+        private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
         private readonly IContentfulFactory<ContentfulEvent, Event> _eventFactory;
         private readonly IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>> _basicLinkFactory;
 
         public CommsContentfulFactory(
-            IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> spotlightBannerFactory, 
+            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
             IContentfulFactory<ContentfulEvent, Event> eventFactory,
             IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>> basicLinkFactory)
         {
-            _spotlightBannerFactory = spotlightBannerFactory;
+            _callToActionFactory = callToActionFactory;
             _eventFactory = eventFactory;
             _basicLinkFactory = basicLinkFactory;
         }
@@ -23,7 +23,7 @@ namespace StockportContentApi.ContentfulFactories
         public CommsHomepage ToModel(ContentfulCommsHomepage model)
         {
 
-            var spotlightBanner = _spotlightBannerFactory.ToModel(model.SpotlightBanner);
+            var callToActionBanner = _callToActionFactory.ToModel(model.CallToActionBanner);
             var displayEvent = _eventFactory.ToModel(model.WhatsOnInStockportEvent);
             var basicLinks = _basicLinkFactory.ToModel(model.UsefullLinks);
 
@@ -36,7 +36,7 @@ namespace StockportContentApi.ContentfulFactories
                 model.FacebookFeedTitle,
                 basicLinks,
                 displayEvent,
-                spotlightBanner
+                callToActionBanner
                 );
         }
     }

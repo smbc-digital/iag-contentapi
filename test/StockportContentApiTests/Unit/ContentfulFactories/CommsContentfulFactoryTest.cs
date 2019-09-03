@@ -14,7 +14,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class CommsContentfulFactoryTest
     {
-        private readonly Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> _spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
+        private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
         private readonly Mock<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>> _basicLinkFactory = new Mock<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>();
         private readonly CommsContentfulFactory _factory;
@@ -22,7 +22,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public CommsContentfulFactoryTest()
         {
             _factory = new CommsContentfulFactory(
-                _spotlightBannerFactory.Object,
+                _callToActionFactory.Object,
                 _eventFactory.Object,
                 _basicLinkFactory.Object
             );
@@ -32,9 +32,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ToModel_ShouldReturnLinkList()
         {
             // Arrange
-            _spotlightBannerFactory
-                .Setup(_ => _.ToModel(It.IsAny<ContentfulSpotlightBanner>()))
-                .Returns(new SpotlightBanner("test 1", "test 2", "test 3"));
+            _callToActionFactory
+                .Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+                .Returns(new CallToActionBanner());
             _eventFactory
                 .Setup(_ => _.ToModel(It.IsAny<ContentfulEvent>()))
                 .Returns(new EventBuilder().Build());
@@ -45,7 +45,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var model = new ContentfulCommsHomepage
             {
                 WhatsOnInStockportEvent = new ContentfulEventBuilder().Build(),
-                SpotlightBanner = new ContentfulSpotlightBanner(),
+                CallToActionBanner = new ContentfulCallToActionBanner(),
                 UsefullLinks = new AutoConstructedList<ContentfulBasicLink>(),
                 TwitterFeedHeader = "twiiter",
                 InstagramFeedTitle = "instagram header",
@@ -62,7 +62,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.WhatsOnInStockportEvent);
-            Assert.NotNull(result.SpotlightBanner);
+            Assert.NotNull(result.CallToActionBanner);
             Assert.NotNull(result.UsefullLinks);
             Assert.Equal("twiiter", result.TwitterFeedHeader);
             Assert.Equal("instagram header", result.InstagramFeedTitle);

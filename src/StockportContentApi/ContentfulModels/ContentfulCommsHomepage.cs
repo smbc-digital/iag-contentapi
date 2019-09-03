@@ -7,7 +7,7 @@ namespace StockportContentApi.ContentfulModels
     {
         public string Title { get; set; } = string.Empty;
 
-        public ContentfulSpotlightBanner SpotlightBanner { get; set; } = null;
+        public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
 
         public string LatestNewsHeader { get; set; } = string.Empty;
 

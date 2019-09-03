@@ -169,7 +169,7 @@ namespace StockportContentApi.Extensions
                  p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
             services.AddSingleton<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>(_ => new BasicLinkListContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ => new CommsContentfulFactory(
-                _.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>(),
+                _.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
                 _.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
                 _.GetService<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>()
                 ));
