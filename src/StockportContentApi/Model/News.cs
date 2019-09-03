@@ -8,7 +8,7 @@ namespace StockportContentApi.Model
         public string Title { get; }
         public string Slug { get; }
         public string Teaser { get; }
-        public string Type { get; set; }
+        public string Purpose { get; set; }
         public string Image { get; }
         public string ThumbnailImage { get; }
         public string Body { get; }
@@ -20,12 +20,12 @@ namespace StockportContentApi.Model
         public List<Document> Documents { get; }
         public List<string> Categories { get; }
 
-        public News(string title, string slug, string teaser, string type, string image, string thumbnailImage, string body, DateTime sunriseDate, DateTime sunsetDate, List<Crumb> breadcrumbs, List<Alert> alerts, List<string> tags, List<Document> documents, List<string> categories)
+        public News(string title, string slug, string teaser, string purpose, string image, string thumbnailImage, string body, DateTime sunriseDate, DateTime sunsetDate, List<Crumb> breadcrumbs, List<Alert> alerts, List<string> tags, List<Document> documents, List<string> categories)
         {
             Title = title;
             Slug = slug;
             Teaser = teaser;
-            Type = type;
+            Purpose = purpose;
             Image = image;
             ThumbnailImage = thumbnailImage;
             Body = body;
