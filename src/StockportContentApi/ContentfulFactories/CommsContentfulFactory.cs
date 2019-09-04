@@ -23,7 +23,9 @@ namespace StockportContentApi.ContentfulFactories
         public CommsHomepage ToModel(ContentfulCommsHomepage model)
         {
 
-            var callToActionBanner = _callToActionFactory.ToModel(model.CallToActionBanner);
+            var callToActionBanner = model.CallToActionBanner != null 
+                ? _callToActionFactory.ToModel(model.CallToActionBanner)
+                : null;
             var displayEvent = _eventFactory.ToModel(model.WhatsOnInStockportEvent);
             var basicLinks = _basicLinkFactory.ToModel(model.UsefullLinks);
 
