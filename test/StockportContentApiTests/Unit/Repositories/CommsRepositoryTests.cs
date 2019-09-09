@@ -48,7 +48,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Setup(_ => _
                     .ToModel(It.IsAny<ContentfulCommsHomepage>()))
                 .Returns(new CommsHomepage(
-                    string.Empty, 
+                    string.Empty,
+                    string.Empty,
                     string.Empty, 
                     string.Empty, 
                     string.Empty, 
@@ -56,8 +57,9 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty, 
                     new List<BasicLink>(), 
                     new EventBuilder().Build(), 
-                    new CallToActionBanner() 
-                    ));
+                    new CallToActionBanner(),
+                    string.Empty
+                ));
 
             _mockClient
                 .Setup(_ =>
@@ -103,9 +105,11 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty,
                     string.Empty,
                     string.Empty,
+                    string.Empty,
                     new List<BasicLink>(),
                     null,
-                    new CallToActionBanner()
+                    new CallToActionBanner(),
+                    string.Empty
                 ))
                 .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
 
@@ -164,9 +168,11 @@ namespace StockportContentApiTests.Unit.Repositories
                     string.Empty,
                     string.Empty,
                     string.Empty,
+                    string.Empty,
                     new List<BasicLink>(),
                     null,
-                    new CallToActionBanner()
+                    new CallToActionBanner(),
+                    string.Empty
                 ))
                 .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
 

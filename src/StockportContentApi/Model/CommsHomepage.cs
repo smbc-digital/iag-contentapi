@@ -6,6 +6,8 @@ namespace StockportContentApi.Model
     {
         public string Title { get; }
 
+        public string MetaDescription { get; set; }
+
         public CallToActionBanner CallToActionBanner { get; }
 
         public string LatestNewsHeader { get; }
@@ -22,8 +24,11 @@ namespace StockportContentApi.Model
 
         public Event WhatsOnInStockportEvent { get; }
 
+        public string EmailAlertsTopicId { get; set; }
+
         public CommsHomepage(
             string title,
+            string metaDescription,
             string latestNewsHeader,
             string twitterFeedHeader,
             string instagramFeedTitle,
@@ -31,10 +36,12 @@ namespace StockportContentApi.Model
             string facebookFeedTitle,
             IEnumerable<BasicLink> usefullLinks,
             Event whatsOnInStockportEvent,
-            CallToActionBanner callToActionBanner
+            CallToActionBanner callToActionBanner,
+            string emailAlertsTopicId
             )
         {
             Title = title;
+            MetaDescription = metaDescription;
             LatestNewsHeader = latestNewsHeader;
             TwitterFeedHeader = twitterFeedHeader;
             InstagramFeedTitle = instagramFeedTitle;
@@ -43,6 +50,7 @@ namespace StockportContentApi.Model
             UsefullLinks = usefullLinks;
             WhatsOnInStockportEvent = whatsOnInStockportEvent;
             CallToActionBanner = callToActionBanner;
+            EmailAlertsTopicId = emailAlertsTopicId;
         }
     }
 }

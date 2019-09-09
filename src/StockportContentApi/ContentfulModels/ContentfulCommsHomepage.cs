@@ -7,6 +7,8 @@ namespace StockportContentApi.ContentfulModels
     {
         public string Title { get; set; } = string.Empty;
 
+        public string MetaDescription { get; set; } = string.Empty;
+
         public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
 
         public string LatestNewsHeader { get; set; } = string.Empty;
@@ -24,5 +26,7 @@ namespace StockportContentApi.ContentfulModels
         public ContentfulEvent WhatsOnInStockportEvent { get; set; } = null;
 
         public SystemProperties Sys { get; set; } = new SystemProperties();
+
+        public string EmailAlertsTopicId { get; set; }
     }
 }

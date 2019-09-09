@@ -45,6 +45,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var model = new ContentfulCommsHomepage
             {
                 WhatsOnInStockportEvent = new ContentfulEventBuilder().Build(),
+                MetaDescription = "meta description",
                 CallToActionBanner = new ContentfulCallToActionBanner(),
                 UsefullLinks = new AutoConstructedList<ContentfulBasicLink>(),
                 TwitterFeedHeader = "twiiter",
@@ -65,6 +66,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result.CallToActionBanner);
             Assert.NotNull(result.UsefullLinks);
             Assert.Equal("twiiter", result.TwitterFeedHeader);
+            Assert.Equal("meta description", result.MetaDescription);
             Assert.Equal("instagram header", result.InstagramFeedTitle);
             Assert.Equal("facebook", result.FacebookFeedTitle);
             Assert.Equal("title", result.Title);

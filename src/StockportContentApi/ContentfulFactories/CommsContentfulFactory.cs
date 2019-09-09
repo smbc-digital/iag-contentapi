@@ -31,6 +31,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new CommsHomepage(
                 model.Title,
+                model.MetaDescription,
                 model.LatestNewsHeader,
                 model.TwitterFeedHeader,
                 model.InstagramFeedTitle,
@@ -38,7 +39,8 @@ namespace StockportContentApi.ContentfulFactories
                 model.FacebookFeedTitle,
                 basicLinks,
                 displayEvent,
-                callToActionBanner
+                callToActionBanner,
+                model.EmailAlertsTopicId
                 );
         }
     }
