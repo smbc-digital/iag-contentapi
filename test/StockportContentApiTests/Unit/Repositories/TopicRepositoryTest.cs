@@ -36,7 +36,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            _topic = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
+            _topic = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
                 new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id",new NullEventBanner(), "expandingLinkTitle",  new NullAdvertisement(), new List<ExpandingLinkBox>());
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
@@ -44,11 +44,11 @@ namespace StockportContentApiTests.Unit.Repositories
             var alertInside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
                 new DateTime(2017, 02, 03), string.Empty);
 
-            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image",
+            _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
                 DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle",  new NullAdvertisement(), new List<ExpandingLinkBox>());
 
-            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "summary", "icon", "backgroundImage", "image", 
+            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", 
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, 
                 DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle",  new NullAdvertisement(), new List<ExpandingLinkBox>());
 

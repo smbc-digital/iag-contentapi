@@ -8,6 +8,7 @@ namespace StockportContentApi.Model
     {
         public string Name { get; set; }
         public string Slug { get; set; }
+        public string MetaDescription { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string Website { get; set; }
@@ -37,6 +38,7 @@ namespace StockportContentApi.Model
         public string DonationsText { get; set; }
         public string DonationsUrl { get; set; }
         public string AccessibleTransportLink { get; set; }
+        public List<GroupBranding> GroupBranding { get; set; }
 
         [SensitiveData]
         public string AdditionalInformation { get; set; }
@@ -47,16 +49,17 @@ namespace StockportContentApi.Model
 
         public Group() { }
 
-        public Group(string name, string slug, string phoneNumber, string email, string website,
+        public Group(string name, string slug, string metaDescription,  string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
             string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
             MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
             DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations, string accessibleTransportLink, string additionalInformation, List<Document> additionalDocuments, 
+            Organisation organisation, bool donations, string accessibleTransportLink, List<GroupBranding> groupBranding, string additionalInformation, List<Document> additionalDocuments, 
             DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange,string donationsText,string donationsUrl)
         {
             Name = name;
             Slug = slug;
+            MetaDescription = metaDescription;
             PhoneNumber = phoneNumber;
             Email = email;
             Website = website;
@@ -82,6 +85,7 @@ namespace StockportContentApi.Model
             VolunteeringText = volunteeringText;
             Organisation = organisation;
             AccessibleTransportLink = accessibleTransportLink;
+            GroupBranding = groupBranding;
             AdditionalInformation = additionalInformation;
             AdditionalDocuments = additionalDocuments;
             DateLastModified = dateLastModified;

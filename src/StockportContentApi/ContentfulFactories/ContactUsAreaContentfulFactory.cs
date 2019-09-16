@@ -63,7 +63,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
                     .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
-            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories).StripData(_httpContextAccessor);
+            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories, entry.MetaDescription).StripData(_httpContextAccessor);
         }
     }
 }

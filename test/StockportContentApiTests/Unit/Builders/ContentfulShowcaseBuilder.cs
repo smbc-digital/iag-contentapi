@@ -10,6 +10,7 @@ namespace StockportContentApiTests.Builders
         private string _title { get; set; } = "title";
         private string _slug { get; set; } = "slug";
         private string _teaser { get; set; } = "teaser";
+        private string _metaDescription { get; set; } = "metaDescription";
         private string _subheading { get; set; } = "subheading";
         private Asset _heroImage { get; set; } = new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         private List<ContentfulReference> _secondaryItems { get; set; } = new List<ContentfulReference>
@@ -44,6 +45,7 @@ namespace StockportContentApiTests.Builders
                 Title = _title,
                 Slug = _slug,
                 Teaser = _teaser,
+                MetaDescription = _metaDescription,
                 Subheading = _subheading,
                 HeroImage = _heroImage,
                 EventSubheading = _eventSubheading,
@@ -84,6 +86,11 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder Teaser(string teaser)
         {
             _teaser = teaser;
+            return this;
+        }
+        public ContentfulShowcaseBuilder MetaDescription(string metaDescription)
+        {
+            _metaDescription = metaDescription;
             return this;
         }
 

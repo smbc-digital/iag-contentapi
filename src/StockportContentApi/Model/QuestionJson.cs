@@ -54,6 +54,7 @@ namespace StockportContentApi.Model
         public EQuestionType behaviourType { get; set; }
         public List<Condition> conditions { get; set; }
         public object value { get; set; }
+        public object redirectValue { get; set; }
     }
 
     public enum EQuestionType

@@ -35,6 +35,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private const string Body = "The news";
         private const string Slug = "news-of-the-century";
         private const string Teaser = "Read more for the news";
+        private const string Purpose = "Purpose";
         private readonly DateTime _sunriseDate = new DateTime(2016, 08, 01);
         private readonly DateTime _sunsetDate = new DateTime(2016, 08, 10);
         private const string Image = "image.jpg";
@@ -139,7 +140,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsCollection);
 
 
-            var newsItem = new News(Title, Slug, Teaser, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" });
+            var newsItem = new News(Title, Slug, Teaser, Purpose, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" });
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(newsItem);
 
@@ -178,7 +179,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);          
                 
@@ -240,7 +241,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(new List<Alert> { }, true, "");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -290,7 +291,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -329,7 +330,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -368,7 +369,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "Events" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -407,7 +408,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+            var news = new News("This is within the date Range", Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -439,7 +440,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News("This is within the date Range", Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+            var news = new News("This is within the date Range", Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -471,7 +472,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -505,7 +506,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() {"tag1", "tag2" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() {"tag1", "tag2" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -533,7 +534,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "testTag" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "testTag" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -566,7 +567,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { expectedTagQueryValue }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { expectedTagQueryValue }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -600,7 +601,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, null, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 

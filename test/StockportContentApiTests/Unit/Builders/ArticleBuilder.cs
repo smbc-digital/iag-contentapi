@@ -10,6 +10,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _title = "title";
         private string _body = "body";
         private string _teaser = "teaser";
+        private string _metaDescription = "metaDescription";
         private string _icon = "icon";
         private string _backgroundImage = "back-image-url.jpg";
         private string _image = "image-url.jpg";
@@ -19,6 +20,7 @@ namespace StockportContentApiTests.Unit.Builders
             new Section("title",
                 "slug",
                 "body",
+                "metaDescription",
                 new List<Profile>(),
                 new List<Document>(),
                 new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -106,6 +108,7 @@ namespace StockportContentApiTests.Unit.Builders
         private Topic _parentTopic = new Topic("slug",
             "name",
             "teaser",
+            "metaDescription",
             "summary",
             "icon",
             "background",
@@ -130,6 +133,7 @@ namespace StockportContentApiTests.Unit.Builders
                 _slug,
                 _title,
                 _teaser,
+                _metaDescription,
                 _icon,
                 _backgroundImage,
                 _image,

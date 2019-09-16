@@ -16,6 +16,9 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
 
         public EventHomepage ToModel(ContentfulEventHomepage entry)
         {
+
+
+
             var tags = new List<string>();
 
             tags.Add(entry.Tag1);
@@ -47,7 +50,10 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
                 });
             }
 
-            return new EventHomepage(rows);
+            var eventHomePage =  new EventHomepage(rows);
+            eventHomePage.MetaDescription = entry.MetaDescription;
+
+            return eventHomePage;
         }
     }
 }

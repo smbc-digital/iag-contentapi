@@ -16,10 +16,10 @@
     "urlThree": "test-url-3-1",
     "breadcrumbs": [],
     "parentTopic": {
-
       "slug": "",
       "name": "",
       "teaser": "",
+      "metaDescription": "",
       "summary": "",
       "icon": "",
       "backgroundImage": "",
@@ -78,10 +78,10 @@
     "urlThree": "test-url-3-2",
     "breadcrumbs": [],
     "parentTopic": {
-
       "slug": "",
       "name": "",
       "teaser": "",
+      "metaDescription": "",
       "summary": "",
       "icon": "",
       "backgroundImage": "",

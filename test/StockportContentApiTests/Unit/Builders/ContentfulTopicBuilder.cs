@@ -12,6 +12,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _icon = "icon";
         private string _summary = "summary";
         private string _teaser = "teaser";
+        private string _metaDescription = "metaDescription";
         private string _expandingLinkTitle = "expandingLinkTitle";
         private DateTime _sunriseDate = DateTime.MinValue;
         private DateTime _sunsetDate = DateTime.MaxValue;
@@ -48,6 +49,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Slug =  _slug,
                 Name = _name,
                 Teaser = _teaser,
+                MetaDescription = _metaDescription,
                 Summary = _summary,
                 Icon = _icon,
                 BackgroundImage = _backgroundImage,
@@ -88,6 +90,11 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulTopicBuilder Teaser(string teaser)
         {
             _teaser = teaser;
+            return this;
+        }
+        public ContentfulTopicBuilder MetaDescription(string metaDescription)
+        {
+            _metaDescription = metaDescription;
             return this;
         }
 

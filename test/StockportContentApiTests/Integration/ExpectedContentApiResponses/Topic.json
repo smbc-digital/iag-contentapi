@@ -2,6 +2,7 @@
   "slug": "topic_slug",
   "name": "name",
   "teaser": "teaser",
+  "metaDescription": "metaDescription",
   "summary": "summary",
   "icon": "icon",
   "backgroundImage": "background-image-url.jpg",

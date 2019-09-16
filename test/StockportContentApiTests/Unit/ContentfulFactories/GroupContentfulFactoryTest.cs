@@ -26,6 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulOrganisation, Organisation>> _contentfulOrganisationFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
+        private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _contentfulGroupBrandingFactory;
         private Mock<ITimeProvider> _timeProvider;
 
         public GroupContentfulFactoryTest()
@@ -36,9 +37,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulOrganisationFactory = new Mock<IContentfulFactory<ContentfulOrganisation, Organisation>>();
             _contentfulGroupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
             _contentfulGroupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
+            _contentfulGroupBrandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
             _contentfulGroup = new ContentfulGroupBuilder().Build();
          
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object);
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object, _contentfulGroupBrandingFactory.Object);
         }
 
         [Fact]
@@ -133,6 +135,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Status.Should().Be("Published");
             result.Organisation.Should().BeEquivalentTo(organisation);
             result.SuitableFor.Should().BeEquivalentTo(suitableFor);
+            result.MetaDescription.Should().Be("_metaDescription");
         }
     }
 }

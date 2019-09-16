@@ -9,6 +9,7 @@ namespace StockportContentApi.ContentfulModels
     {
         public string Name { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
+        public string MetaDescription { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Website { get; set; } = string.Empty;
@@ -38,5 +39,6 @@ namespace StockportContentApi.ContentfulModels
         public List<string> AgeRange { get; set; } = new List<string>();
         public string DonationsText { get; set; }
         public string DonationsUrl { get; set; }
+        public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>();
     }
 }

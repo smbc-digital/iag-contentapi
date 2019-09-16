@@ -55,7 +55,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
-            return new GroupHomepage(entry.Title, entry.Slug, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner).StripData(_httpContextAccessor);
+            return new GroupHomepage(entry.Title, entry.Slug, entry.MetaDescription, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner).StripData(_httpContextAccessor);
         }
     }
 }
