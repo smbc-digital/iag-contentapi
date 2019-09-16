@@ -9,6 +9,8 @@ namespace StockportContentApi.ContentfulModels
     {
         public string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
+
+        public string MetaDescription { get; set; } = string.Empty;
         public string Teaser { get; set; } = string.Empty;      
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };             
         public string Description { get; set; } = string.Empty;

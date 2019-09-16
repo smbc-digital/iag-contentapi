@@ -13,6 +13,7 @@ namespace StockportContentApi.Controllers
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, HomepageRepository> _createRepository;
+
         public HomepageController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, HomepageRepository> createRepository)

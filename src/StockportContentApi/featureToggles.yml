@@ -1,6 +1,6 @@
 ---
 prod: &prod
-  SemanticProfile: false
+  default : true
   
 stage: &stage
   << : *prod
@@ -18,8 +18,7 @@ local: &local
   << : *prod
   << : *stage
   << : *qa
-  << : *int
-  SemanticProfile: true
+  << : *int  
 
 uitest: &uitest
   << : *prod

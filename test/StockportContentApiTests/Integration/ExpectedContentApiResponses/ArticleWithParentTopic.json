@@ -135,11 +135,5 @@
     }
   ],
   "sunriseDate": "2016-01-10T00:00:00Z",
-  "sunsetDate": "2017-01-20T00:00:00Z",
-  "liveChatVisible": false,
-  "liveChat": {
-    "title": "title",
-    "text": "text",
-    "sys": null
-  }
+  "sunsetDate": "2017-01-20T00:00:00Z"
 }

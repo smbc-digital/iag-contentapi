@@ -18,7 +18,9 @@ namespace StockportContentApi.ContentfulFactories
             return new ContactUsId(
                 entry.Name,
                 entry.Slug,
-                entry.EmailAddress).StripData(_httpContextAccessor);
+                entry.EmailAddress,
+                entry.SuccessPageButtonText,
+                entry.SuccessPageReturnUrl).StripData(_httpContextAccessor);
         }
     }
 }

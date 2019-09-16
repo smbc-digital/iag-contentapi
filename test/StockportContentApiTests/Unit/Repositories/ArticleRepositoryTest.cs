@@ -36,7 +36,6 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-        private Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>> _LiveChatFactory;
         private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
         private Mock<ICache> _cache;
         private readonly Mock<IConfiguration> _configuration;
@@ -53,7 +52,6 @@ namespace StockportContentApiTests.Unit.Repositories
             _videoRepository = new Mock<IVideoRepository>();
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(string.Empty);
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _LiveChatFactory = new Mock<IContentfulFactory<ContentfulLiveChat, LiveChat>>();
             _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
@@ -68,7 +66,6 @@ namespace StockportContentApiTests.Unit.Repositories
                 _crumbFactory.Object, 
                 _profileFactory.Object, 
                 _parentTopicFactory.Object,
-                _LiveChatFactory.Object,
                 documentFactory, 
                 _videoRepository.Object,
                 _mockTimeProvider.Object,
@@ -222,6 +219,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
                 "title",
                 "section-with-inline-alerts",
+                "metaDescription",
                 "body",
                 new List<Profile>(),
                 new List<Document>(),
@@ -239,9 +237,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
         private static Article EmptyArticle()
         {
-            return new Article("", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
+            return new Article("", "", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
                 new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
-                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), false, new NullLiveChat(), new List<Alert>(), new NullAdvertisement());
+                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), new List<Alert>(), new NullAdvertisement());
         }
     }
 }

@@ -20,6 +20,7 @@ namespace StockportContentApi.Model
         public string value { get; set; }
         public string image { get; set; }
         public string tertiaryInformation { get; set; }
+        public string SubLabel { get; set; }
     }
 
     public class ValidatorData
@@ -34,6 +35,7 @@ namespace StockportContentApi.Model
     {
         public string questionId { get; set; }
         public string secondaryInfo { get; set; }
+        public string textSubLabel { get; set; }
         public string questionType { get; set; }
         public string label { get; set; }
         public List<Option> options { get; set; }
@@ -52,6 +54,7 @@ namespace StockportContentApi.Model
         public EQuestionType behaviourType { get; set; }
         public List<Condition> conditions { get; set; }
         public object value { get; set; }
+        public object redirectValue { get; set; }
     }
 
     public enum EQuestionType

@@ -15,5 +15,7 @@
       "type": "id"
     }
   ],
-  "icon":  "si-coin" 
+  "icon": "si-coin",
+    "referenceValidation": 0,
+  "metaDescription":  "metaDescription" 
 }

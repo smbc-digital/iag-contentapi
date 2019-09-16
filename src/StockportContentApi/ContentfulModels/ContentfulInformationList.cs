@@ -2,7 +2,7 @@
 
 namespace StockportContentApi.ContentfulModels
 {
-    public class ContentfulDidYouKnow : IContentfulModel
+    public class ContentfulInformationList : IContentfulModel
     {
         public string Name { get; set; } = string.Empty;
 

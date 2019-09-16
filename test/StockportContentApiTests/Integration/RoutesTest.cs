@@ -181,7 +181,7 @@ namespace StockportContentApiTests.Integration
                 var contactUsIdCollection = new ContentfulCollection<ContentfulContactUsId>();
                 contactUsIdCollection.Items = new List<ContentfulContactUsId>
                 {
-                    new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email"}
+                    new ContentfulContactUsId() {Slug = "test-email", EmailAddress = "test@stockport.gov.uk", Name = "Test email", SuccessPageReturnUrl = "test button url", SuccessPageButtonText = "test button text"}
                 };
                 httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulContactUsId>>(q => q.Build() == new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", "test-email").Include(1).Build()),
@@ -387,25 +387,25 @@ namespace StockportContentApiTests.Integration
         }
 
         [Theory]
-        // [InlineData("StartPage", "/unittest/start-page/new-start-page")]
+        [InlineData("StartPage", "/unittest/start-page/new-start-page")]
         [InlineData("Profile", "/unittest/profiles/profile_slug")]
-        // [InlineData("Topic", "/unittest/topics/topic_slug")]
-        // [InlineData("Homepage", "/unittest/homepage")]
-        // [InlineData("AtoZ", "/unittest/atoz/v")]
-        // [InlineData("AtoZTopic", "/unittest/atoz/b")]
-        // [InlineData("AtoZArticleAndTopic", "/unittest/atoz/c")]
-        // [InlineData("RedirectDictionary", "/redirects")]
-        // [InlineData("Footer", "/unittest/footer")]
-        // [InlineData("Payment", "/unittest/payments/payment_slug")]
-        // [InlineData("Showcase", "/unittest/showcases/showcase_slug")]
-        // [InlineData("GroupCategory", "/unittest/group-categories")]
-        // [InlineData("ContactUsId", "/unittest/contact-us-id/test-email")]
-        // [InlineData("Organisation", "/unittest/organisations/slug")]
-        // [InlineData("GroupHomePage", "/unittest/grouphomepage")]
-        // [InlineData("GroupAdvisor", "/unittest/groups/advisors/testemail@notandomain.xyz")]
-        // [InlineData("GroupAdvisorList", "/unittest/groups/slug/advisors")]
-        // [InlineData("PrivacyNotice", "/unittest/privacy-notices/slug")]
-        // [InlineData("PrivacyNotices", "/unittest/privacy-notices")]
+        [InlineData("Topic", "/unittest/topics/topic_slug")]
+        [InlineData("Homepage", "/unittest/homepage")]
+        [InlineData("AtoZ", "/unittest/atoz/v")]
+        [InlineData("AtoZTopic", "/unittest/atoz/b")]
+        [InlineData("AtoZArticleAndTopic", "/unittest/atoz/c")]
+        [InlineData("RedirectDictionary", "/redirects")]
+        [InlineData("Footer", "/unittest/footer")]
+        [InlineData("Payment", "/unittest/payments/payment_slug")]
+        //[InlineData("Showcase", "/unittest/showcases/showcase_slug")]
+        [InlineData("GroupCategory", "/unittest/group-categories")]
+        [InlineData("ContactUsId", "/unittest/contact-us-id/test-email")]
+        [InlineData("Organisation", "/unittest/organisations/slug")]
+        [InlineData("GroupHomePage", "/unittest/grouphomepage")]
+        [InlineData("GroupAdvisor", "/unittest/groups/advisors/testemail@notandomain.xyz")]
+        [InlineData("GroupAdvisorList", "/unittest/groups/slug/advisors")]
+        [InlineData("PrivacyNotice", "/unittest/privacy-notices/slug")]
+        [InlineData("PrivacyNotices", "/unittest/privacy-notices")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);

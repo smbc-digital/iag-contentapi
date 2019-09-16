@@ -18,9 +18,6 @@ namespace StockportContentApi.ContentfulModels
         public List<Asset> Documents { get; set; } = new List<Asset>();
         public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
       
-        public bool LiveChatVisible { get; set; } = false;
-        public ContentfulLiveChat LiveChatText { get; set; } = new ContentfulLiveChat();
-       
         // references
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
         public ContentfulAdvertisement Advertisement { get; set; } = null;

@@ -3,6 +3,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -11,15 +12,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class PrivacyNoticeContentfulFactoryTest
     {
         private readonly PrivacyNoticeContentfulFactory _privacyNoticeContentfulFactory;
-        private Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory;
-        private Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>> _mockTopicFactory;
-
 
         public PrivacyNoticeContentfulFactoryTest()
         {
-            _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            _mockTopicFactory = new Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>>();
-            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object, _mockTopicFactory.Object);
+            var mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+            var mockTopicFactory = new Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>>();
+            var mockLogger = new Mock<ILogger<PrivacyNoticeContentfulFactory>>();
+            _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(mockCrumbFactory.Object, mockTopicFactory.Object, mockLogger.Object);
         }
 
         [Fact]
@@ -27,17 +26,21 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             // Arrange
             var contentfulPrivacyNotice = new ContentfulPrivacyNotice();
+
             // Act
             var privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
+
             // Assert
-            privacyNotice.Should().BeOfType<PrivacyNotice>();
+            privacyNotice
+                .Should()
+                .BeOfType<PrivacyNotice>();
         }
 
         [Fact]
         public void ToModel_ShouldConvertContentfulPrivacyNoticeToPrivacyNotice()
         {
             // Arrange
-            var contentfulPrivacyNotice = new ContentfulPrivacyNotice()
+            var contentfulPrivacyNotice = new ContentfulPrivacyNotice
             {
                 Slug = "test-slug",
                 Title = "test-title",
@@ -55,10 +58,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 UrlThree = "test-url-3",
                 Breadcrumbs= new List<ContentfulReference>()
             };
+
             // Act
             var privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
+
             // Assert
-            privacyNotice.Should().BeEquivalentTo(contentfulPrivacyNotice, p => p
+            privacyNotice
+                .Should()
+                .BeEquivalentTo(contentfulPrivacyNotice, p => p
                 .ExcludingMissingMembers());
         }
     }

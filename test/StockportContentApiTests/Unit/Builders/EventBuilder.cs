@@ -15,6 +15,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _fee = "fee";
         private string _location = "location";
         private string _submittedby = "submittedBy";
+        private string _metaDescription = "metaDescription";
         private DateTime _eventDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private string _startTime = "10:00";
         private string _endTime = "17:00";
@@ -38,7 +39,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
                 _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs, _thumbnailImage, 
-                _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts, _eventCategories, null, null,null);
+                _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts, _eventCategories, null, null,null, _metaDescription);
         }
 
         public EventBuilder Slug(string slug)

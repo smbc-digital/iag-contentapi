@@ -42,7 +42,7 @@ namespace StockportContentApi.ContentfulFactories
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            return new Section(entry.Title, entry.Slug, body, profiles, documents, 
+            return new Section(entry.Title, entry.Slug, entry.MetaDescription, body, profiles, documents, 
                                entry.SunriseDate, entry.SunsetDate, alertsInline).StripData(_httpContextAccessor);
         }
     }

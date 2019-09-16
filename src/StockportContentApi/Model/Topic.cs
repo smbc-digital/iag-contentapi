@@ -8,6 +8,9 @@ namespace StockportContentApi.Model
         public string Slug { get; }
         public string Name { get; }
         public string Teaser { get; }
+
+        public string MetaDescription { get;  }
+
         public string Summary { get;}
         public string Icon { get; }
         public string BackgroundImage { get; }
@@ -37,7 +40,7 @@ namespace StockportContentApi.Model
             TertiaryItems = tertiaryItems;
         }
       
-        public Topic(string slug, string name, string teaser, string summary, string icon, string backgroundImage,
+        public Topic(string slug, string name, string teaser, string metaDescription, string summary, string icon, string backgroundImage,
             string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, 
             string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, Advertisement advertisement,
@@ -46,6 +49,7 @@ namespace StockportContentApi.Model
             Slug = slug;
             Name = name;
             Teaser = teaser;
+            MetaDescription = metaDescription;
             Summary = summary;
             Icon = icon;
             BackgroundImage = backgroundImage;
@@ -70,6 +74,7 @@ namespace StockportContentApi.Model
     public class NullTopic : Topic
     {
         public NullTopic() : base(
+            string.Empty,
             string.Empty,
             string.Empty,
             string.Empty,

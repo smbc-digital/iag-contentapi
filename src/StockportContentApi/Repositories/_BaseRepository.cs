@@ -1,15 +1,17 @@
-﻿using Contentful.Core.Models;
+﻿using System;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using StockportContentApi.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {
     public abstract class BaseRepository
     {
-        public async Task<ContentfulCollection<T>> GetAllEntriesAsync<T>(Contentful.Core.IContentfulClient _client, QueryBuilder<T> builder)
+        public async Task<ContentfulCollection<T>> GetAllEntriesAsync<T>(Contentful.Core.IContentfulClient _client, QueryBuilder<T> builder, ILogger logger = null)
         {
             var result = new ContentfulCollection<T>();
             result.Items = new List<T>();
@@ -26,7 +28,18 @@ namespace StockportContentApi.Repositories
             do
             {
                 builderString = builderString.Replace("skip=xxx", $"skip={skip}");
-                var items = await _client.GetEntries<T>(builderString);
+                var items = new ContentfulCollection<T>();
+
+                try
+                {
+                    items = await _client.GetEntries<T>(builderString);
+                }
+                catch (Exception ex)
+                {
+                    logger?.LogError(ex, $"Could not get Entries: {ex.Message}");
+                    throw;
+                }
+
                 builderString = builderString.Replace($"skip={skip}", "skip=xxx");
                 totalItems = items.Total;
                 result.Items = result.Items.Concat(items.Items);

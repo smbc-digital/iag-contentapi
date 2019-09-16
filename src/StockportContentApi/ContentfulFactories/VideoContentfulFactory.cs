@@ -5,18 +5,18 @@ using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
-    public class DidYouKnowContentfulFactory : IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>
+    public class VideoContentfulFactory : IContentfulFactory<ContentfulVideo, Video>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DidYouKnowContentfulFactory(IHttpContextAccessor httpContextAccessor)
+        public VideoContentfulFactory(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public DidYouKnow ToModel(ContentfulDidYouKnow entry)
+        public Video ToModel(ContentfulVideo entry)
         {
-            return new DidYouKnow(entry.Name, entry.Icon, entry.Text, entry.Link).StripData(_httpContextAccessor);
+            return new Video(entry.Heading, entry.Text, entry.VideoEmbedCode).StripData(_httpContextAccessor);
         }
     }
 }

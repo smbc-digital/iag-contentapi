@@ -54,9 +54,10 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
         {
+            services.AddSingleton<IContentfulFactory<ContentfulVideo, Video>>(p => new VideoContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulKeyFact, KeyFact>>(p => new KeyFactContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(p => new PrivacyNoticeParentTopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p => new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(), p.GetService<ILogger<PrivacyNoticeContentfulFactory>>()));
             services.AddSingleton<IContentfulFactory<ContentfulSmartResult, SmartResult>>(p => new SmartResultContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulApiKey, ApiKey>>(p => new ApiKeyContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p => new OrganisationContentfulFactory(p.GetService<IHttpContextAccessor>()));
@@ -82,6 +83,8 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>(p =>
+                new SpotlightBannerContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulConsultation, Consultation>>(p => new ConsultationContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p => new SocialMediaLinkContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p => new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
@@ -96,9 +99,10 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulProfileNew, ProfileNew>>(p => new ProfileNewContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>()));
-            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(p =>
+                new InlineQuoteContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>(), p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
+            services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()));
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                 p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
@@ -108,12 +112,19 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
             (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                 p.GetService<IContentfulFactory<ContentfulConsultation, Consultation>>(),
-                p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulKeyFact, KeyFact>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(), p.GetService<IHttpContextAccessor>()));
+                p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulKeyFact, KeyFact>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
+                p.GetService<IContentfulFactory<ContentfulInformationList, InformationList>>(), p.GetService<IHttpContextAccessor>(),
+                p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
+                p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
+                p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
             services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
-                (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IHttpContextAccessor>()));
+                (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink,
+                SocialMediaLink>>(),
+                p.GetService<IHttpContextAccessor>()));
 
             services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
                 p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>()));
@@ -126,7 +137,6 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
                 p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
                 p.GetService<IContentfulFactory<ContentfulArticle, Topic>>(),
-                p.GetService<IContentfulFactory<ContentfulLiveChat, LiveChat>>(),
                 p.GetService<IContentfulFactory<Asset, Document>>(),
                 p.GetService<IVideoRepository>(),
                 p.GetService<ITimeProvider>(),
@@ -136,12 +146,10 @@ namespace StockportContentApi.Extensions
                 ));
             services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
                 (p => new TopicSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulDidYouKnow, DidYouKnow>>
-                (p => new DidYouKnowContentfulFactory(p.GetService<IHttpContextAccessor>()));
+            services.AddSingleton<IContentfulFactory<ContentfulInformationList, InformationList>>
+                (p => new InformationListContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
                 (p => new ArticleSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulLiveChat, LiveChat>>
-                (p => new LiveChatContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulSmartAnswers, SmartAnswer>>
                 (p => new SmartAnswerContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
@@ -154,9 +162,17 @@ namespace StockportContentApi.Extensions
                 (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>
                 (p => new GroupAdvisorContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>
+                (p => new GroupBrandingContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
-            (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(),  p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
+            (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                  p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
+            services.AddSingleton<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>(_ => new BasicLinkListContentfulFactory());
+            services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ => new CommsContentfulFactory(
+                _.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
+                _.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                _.GetService<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>()
+                ));
 
             return services;
         }
@@ -214,11 +230,17 @@ namespace StockportContentApi.Extensions
                             p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
                             p.GetService<ILogger<EventRepository>>(),
-                            p.GetService<IConfiguration>())
+                            p.GetService<IConfiguration>()),
+                        p.GetService<ILogger<ShowcaseRepository>>()
                     );
                 });
             services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
-                p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(), p.GetService<IContentfulFactory<ContentfulProfileNew, ProfileNew>>()); });
+                p =>
+                {
+                    return x => new ProfileRepository(x,
+                 p.GetService<IContentfulClientManager>(),
+                 p.GetService<IContentfulFactory<ContentfulProfile, Profile>>());
+                });
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(
@@ -234,7 +256,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
-                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
+                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>(), p.GetService<ILogger>()); });
             services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
                 p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
@@ -286,6 +308,16 @@ namespace StockportContentApi.Extensions
 
             services.AddSingleton<Func<ContentfulConfig, ContactUsAreaRepository>>(
                 p => { return x => new ContactUsAreaRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, CommsRepository>>(_ =>
+            {
+                return config =>
+                    new CommsRepository(
+                        config,
+                        _.GetService<IContentfulClientManager>(),
+                        _.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()
+                    );
+            });
 
             return services;
         }

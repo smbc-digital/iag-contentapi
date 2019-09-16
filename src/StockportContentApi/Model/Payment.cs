@@ -1,5 +1,6 @@
 ﻿using StockportContentApi.Attributes;
 using System.Collections.Generic;
+using StockportContentApi.Enums;
 
 namespace StockportContentApi.Model
 {
@@ -25,6 +26,8 @@ namespace StockportContentApi.Model
         public string GlCodeCostCentreNumber { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public string Icon { get; set; }
+        public EPaymentReferenceValidation ReferenceValidation { get; set; }
+        public string MetaDescription { get; set; }
 
         public Payment(string title,
             string slug,
@@ -36,7 +39,9 @@ namespace StockportContentApi.Model
             string fund,
             string glCodeCostCentreNumber,
             string icon,
-            IEnumerable<Crumb> breadcrumbs
+            IEnumerable<Crumb> breadcrumbs,
+            EPaymentReferenceValidation referenceValidation,
+            string metaDescription
             )
         {
             Title = title;
@@ -50,6 +55,8 @@ namespace StockportContentApi.Model
             GlCodeCostCentreNumber = glCodeCostCentreNumber;
             Icon = icon;
             Breadcrumbs = breadcrumbs;
+            ReferenceValidation = referenceValidation;
+            MetaDescription = metaDescription;
         }
     }
 }

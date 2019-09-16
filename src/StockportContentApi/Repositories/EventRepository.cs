@@ -119,7 +119,7 @@ namespace StockportContentApi.Repositories
             eventItem = GetEventFromItsOccurrences(date, eventItem);
             if (eventItem != null && !string.IsNullOrEmpty(eventItem.Group?.Slug) && !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             {
-                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<GroupSubCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null, "published", new List<string>() { string.Empty }, string.Empty, string.Empty, string.Empty, null, false, string.Empty, string.Empty, new List<Document>(), null, new List<string>(), new List<string>(),string.Empty,string.Empty);
+                eventItem.Group = new Group(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<GroupCategory>(), new List<GroupSubCategory>(), new List<Crumb>(), new MapPosition(), false, null, null, null, "published", new List<string>() { string.Empty }, string.Empty, string.Empty, string.Empty, null, false, string.Empty, new List<GroupBranding>(), string.Empty, new List<Document>(), null, new List<string>(), new List<string>(),string.Empty,string.Empty);
             }
 
             return eventItem == null
