@@ -12,6 +12,13 @@ namespace StockportContentApi.Model
         public List<Behaviour> behaviours { get; set; }
         public string description { get; set; }
         public bool HideBackButton { get; set; }
+        public InlineAlert alert { get; set; }
+    }
+
+    public class InlineAlert
+    {
+        public string Icon { get; set; }
+        public string Content { get; set; }
     }
 
     public class Option
