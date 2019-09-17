@@ -19,5 +19,7 @@ namespace StockportContentApi.ContentfulModels
         };
         public string PrimaryItemTitle { get; set; }
         public ContentfulAdvertisement Advertisement { get; set; } = null;
+
+        public bool DisplayContactUs { get; set; } = true;
     }
 }

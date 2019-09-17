@@ -56,6 +56,7 @@
       "isadvertisement": true,
       "navigationUrl": "",
       "image": ""
-    }
+    },
+    "displayContactUs": true
   }
 }

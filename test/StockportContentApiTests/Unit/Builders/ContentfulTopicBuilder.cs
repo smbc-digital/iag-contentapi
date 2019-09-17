@@ -67,6 +67,7 @@ namespace StockportContentApiTests.Unit.Builders
                 ExpandingLinkTitle = _expandingLinkTitle,
                 ExpandingLinkBoxes = _expandingLinkBox,
                 Advertisement =_advertisement,
+                DisplayContactUs = false,
                 Sys = new SystemProperties()
                 {
                     ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },

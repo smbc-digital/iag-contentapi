@@ -57,8 +57,8 @@
         "isadvertisement": true,
         "navigationUrl": "",
         "image": ""
-      }
-
+      },
+      "displayContactUs": true
     }
   },
   {
@@ -119,8 +119,8 @@
         "isadvertisement": true,
         "navigationUrl": "",
         "image": ""
-      }
-
+      },
+      "displayContactUs": true
     }
   }
 

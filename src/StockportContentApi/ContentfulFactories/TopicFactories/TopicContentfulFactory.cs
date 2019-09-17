@@ -66,6 +66,8 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             var primaryItemTitle = entry.PrimaryItemTitle;
 
+            var displayContactUs = entry.DisplayContactUs;
+
             Advertisement advertisement = null;
             if (entry.Advertisement != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
                 entry.Advertisement.SunsetDate))
@@ -76,7 +78,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisement, 
-                expandingLinkBoxes, primaryItemTitle).StripData(_httpContextAccessor);
+                expandingLinkBoxes, primaryItemTitle, displayContactUs).StripData(_httpContextAccessor);
         }
     }
 }

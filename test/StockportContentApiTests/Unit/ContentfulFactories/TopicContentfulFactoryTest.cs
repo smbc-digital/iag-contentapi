@@ -100,6 +100,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.SunsetDate.Should().Be(DateTime.MaxValue);
             result.Teaser.Should().BeEquivalentTo("teaser");
             result.MetaDescription.Should().BeEquivalentTo("metaDescription");
+            result.DisplayContactUs.Should().Be(false);
         }
 
         [Fact]
