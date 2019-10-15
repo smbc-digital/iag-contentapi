@@ -18,7 +18,7 @@ namespace StockportContentApi.ContentfulFactories.SmartAnswersFactories
         public SmartAnswer ToModel(ContentfulSmartAnswers entry)
         {
             var stringQuestionJson = JsonConvert.SerializeObject(entry.QuestionJson);
-            return new SmartAnswer(entry.Title, entry.Slug, stringQuestionJson).StripData(_httpContextAccessor);
+            return new SmartAnswer(entry.Title, entry.Slug, stringQuestionJson, entry.TypeformUrl).StripData(_httpContextAccessor);
         }
     }
 }

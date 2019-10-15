@@ -8,5 +8,6 @@ namespace StockportContentApi.ContentfulModels
         public new string Title { get; set; }
         public new string Slug { get; set; }
         public List<QuestionJson> QuestionJson { get; set; }
+        public string TypeformUrl { get; set; } = string.Empty;
     }
 }
