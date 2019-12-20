@@ -35,7 +35,11 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Icon,
                 breadcrumbs,
                 entry.ReferenceValidation,
-                entry.MetaDescription).StripData(_httpContextAccessor);
+                entry.MetaDescription,
+                entry.ReturnUrl,
+                entry.CatalogueId,
+                entry.PaymentDescription
+                ).StripData(_httpContextAccessor);
         }
     }
 }

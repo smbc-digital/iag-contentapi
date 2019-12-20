@@ -28,6 +28,9 @@ namespace StockportContentApi.Model
         public string Icon { get; set; }
         public EPaymentReferenceValidation ReferenceValidation { get; set; }
         public string MetaDescription { get; set; }
+        public string ReturnUrl { get; set; }
+        public string CatalogueId { get; set; }
+        public string PaymentDescription { get; set; }
 
         public Payment(string title,
             string slug,
@@ -41,7 +44,10 @@ namespace StockportContentApi.Model
             string icon,
             IEnumerable<Crumb> breadcrumbs,
             EPaymentReferenceValidation referenceValidation,
-            string metaDescription
+            string metaDescription,
+            string returnUrl,
+            string catalogueId,
+            string paymentDescription
             )
         {
             Title = title;
@@ -57,6 +63,9 @@ namespace StockportContentApi.Model
             Breadcrumbs = breadcrumbs;
             ReferenceValidation = referenceValidation;
             MetaDescription = metaDescription;
+            ReturnUrl = returnUrl;
+            CatalogueId = catalogueId;
+            PaymentDescription = paymentDescription;
         }
     }
 }

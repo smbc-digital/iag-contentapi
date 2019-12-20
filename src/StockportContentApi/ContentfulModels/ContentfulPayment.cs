@@ -16,5 +16,8 @@ namespace StockportContentApi.ContentfulModels
         public EPaymentReferenceValidation ReferenceValidation { get; set; } = EPaymentReferenceValidation.None;
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
         public string MetaDescription { get; set; } = string.Empty;
+        public string ReturnUrl { get; set; } = string.Empty;
+        public string CatalogueId { get; set; } = string.Empty;
+        public string PaymentDescription { get; set; } = string.Empty;
     }
 }
