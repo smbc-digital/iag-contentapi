@@ -1,7 +1,7 @@
 ﻿{
   "title": "title",
   "slug": "payment_slug",
-  "teaser":  "teaser", 
+  "teaser": "teaser",
   "description": "description",
   "paymentDetailsText": "paymentDetailsText",
   "referenceLabel": "referenceLabel",
@@ -16,6 +16,9 @@
     }
   ],
   "icon": "si-coin",
-    "referenceValidation": 0,
-  "metaDescription":  "metaDescription" 
+  "referenceValidation": 0,
+  "metaDescription": "metaDescription",
+  "returnUrl": "",
+  "catalogueId": "",
+  "paymentDescription": ""
 }
