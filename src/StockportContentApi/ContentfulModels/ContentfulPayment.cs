@@ -18,6 +18,7 @@ namespace StockportContentApi.ContentfulModels
         public string MetaDescription { get; set; } = string.Empty;
         public string ReturnUrl { get; set; } = string.Empty;
         public string CatalogueId { get; set; } = string.Empty;
+        public string AccountReference { get; set; } = string.Empty;
         public string PaymentDescription { get; set; } = string.Empty;
     }
 }

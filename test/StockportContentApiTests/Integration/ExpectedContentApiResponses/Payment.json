@@ -20,5 +20,6 @@
   "metaDescription": "metaDescription",
   "returnUrl": "",
   "catalogueId": "",
+  "accountReference": "",
   "paymentDescription": ""
 }

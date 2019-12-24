@@ -30,6 +30,7 @@ namespace StockportContentApi.Model
         public string MetaDescription { get; set; }
         public string ReturnUrl { get; set; }
         public string CatalogueId { get; set; }
+        public string AccountReference { get; set; }
         public string PaymentDescription { get; set; }
 
         public Payment(string title,
@@ -47,6 +48,7 @@ namespace StockportContentApi.Model
             string metaDescription,
             string returnUrl,
             string catalogueId,
+            string accountReference,
             string paymentDescription
             )
         {
@@ -65,6 +67,7 @@ namespace StockportContentApi.Model
             MetaDescription = metaDescription;
             ReturnUrl = returnUrl;
             CatalogueId = catalogueId;
+            AccountReference = accountReference;
             PaymentDescription = paymentDescription;
         }
     }
