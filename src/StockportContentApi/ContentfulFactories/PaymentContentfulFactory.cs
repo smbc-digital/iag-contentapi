@@ -39,7 +39,8 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ReturnUrl,
                 entry.CatalogueId,
                 entry.AccountReference,
-                entry.PaymentDescription
+                entry.PaymentDescription,
+                entry.Alerts
                 ).StripData(_httpContextAccessor);
         }
     }
