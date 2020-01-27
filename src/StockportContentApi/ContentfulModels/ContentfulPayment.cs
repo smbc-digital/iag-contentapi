@@ -20,6 +20,6 @@ namespace StockportContentApi.ContentfulModels
         public string CatalogueId { get; set; } = string.Empty;
         public string AccountReference { get; set; } = string.Empty;
         public string PaymentDescription { get; set; } = string.Empty;
-        public IEnumerable<Alert> Alerts { get; set; } = new List<Alert>();
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     }
 }

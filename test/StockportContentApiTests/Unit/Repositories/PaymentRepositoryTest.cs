@@ -26,6 +26,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly PaymentRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IHttpClient> _httpClient;
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+        private readonly Mock<ITimeProvider> _timeProvider;
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
 
         public PaymentRepositoryTest()
@@ -37,12 +39,14 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _timeProvider = new Mock<ITimeProvider>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
             _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new Crumb("title", "slug", "title"));
 
-            var contentfulFactory = new PaymentContentfulFactory(_crumbFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new PaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object, HttpContextFake.GetHttpContextFake());
             _httpClient = new Mock<IHttpClient>();
             
             var contentfulClientManager = new Mock<IContentfulClientManager>();

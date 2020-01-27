@@ -16,7 +16,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _fund = "fund";
         private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
         private string _metaDescription = "metaDescription";
-        private IEnumerable<Alert> _alerts = new List<Alert>();
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
             new ContentfulReferenceBuilder().Build() };
 
@@ -98,7 +98,7 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulPaymentBuilder Alerts(IEnumerable<Alert> alerts)
+        public ContentfulPaymentBuilder Alerts(List<ContentfulAlert> alerts)
         {
             _alerts = alerts;
             return this;
