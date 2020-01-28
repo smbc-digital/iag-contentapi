@@ -32,6 +32,7 @@ namespace StockportContentApi.Model
         public string CatalogueId { get; set; }
         public string AccountReference { get; set; }
         public string PaymentDescription { get; set; }
+        public IEnumerable<Alert> Alerts { get; }
 
         public Payment(string title,
             string slug,
@@ -49,7 +50,8 @@ namespace StockportContentApi.Model
             string returnUrl,
             string catalogueId,
             string accountReference,
-            string paymentDescription
+            string paymentDescription,
+            IEnumerable<Alert> alerts
             )
         {
             Title = title;
@@ -69,6 +71,7 @@ namespace StockportContentApi.Model
             CatalogueId = catalogueId;
             AccountReference = accountReference;
             PaymentDescription = paymentDescription;
+            Alerts = alerts;
         }
     }
 }

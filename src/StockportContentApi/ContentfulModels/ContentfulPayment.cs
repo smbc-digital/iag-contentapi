@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using StockportContentApi.Enums;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -20,5 +20,6 @@ namespace StockportContentApi.ContentfulModels
         public string CatalogueId { get; set; } = string.Empty;
         public string AccountReference { get; set; } = string.Empty;
         public string PaymentDescription { get; set; } = string.Empty;
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     }
 }

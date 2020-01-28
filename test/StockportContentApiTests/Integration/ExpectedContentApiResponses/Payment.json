@@ -21,5 +21,6 @@
   "returnUrl": "",
   "catalogueId": "",
   "accountReference": "",
-  "paymentDescription": ""
+  "paymentDescription": "",
+  "alerts": []
 }

@@ -1,4 +1,5 @@
 ﻿using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 using System.Collections.Generic;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -15,6 +16,7 @@ namespace StockportContentApiTests.Unit.Builders
         private string _fund = "fund";
         private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
         private string _metaDescription = "metaDescription";
+        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
             new ContentfulReferenceBuilder().Build() };
 
@@ -32,7 +34,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Fund = _fund,
                 GlCodeCostCentreNumber = _glCodeCostCentreNumber,
                 Breadcrumbs = _breadcrumbs,
-                MetaDescription = _metaDescription
+                MetaDescription = _metaDescription,
+                Alerts = _alerts
             };
         }
 
@@ -93,7 +96,12 @@ namespace StockportContentApiTests.Unit.Builders
         {
             _breadcrumbs = breadcrumbs;
             return this;
+        }
 
+        public ContentfulPaymentBuilder Alerts(List<ContentfulAlert> alerts)
+        {
+            _alerts = alerts;
+            return this;
         }
     }
 }
