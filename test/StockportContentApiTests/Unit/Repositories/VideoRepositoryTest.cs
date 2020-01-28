@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Config;
+using StockportContentApi.FeatureToggling;
 using StockportContentApi.Http;
 using StockportContentApi.Repositories;
 using Xunit;
@@ -13,22 +14,25 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly VideoRepository _videoRepository;
         private readonly Mock<ILogger<VideoRepository>> _videoLogger;
+        private readonly Mock<FeatureToggles> _featureToggle = new Mock<FeatureToggles>();
         private readonly Mock<IHttpClient> _fakeHttpClient;
         private const string MockButoApiUrl = "https://api.buto.tv/v2/";
+        private const string MockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
 
         public VideoRepositoryTest()
         {
             _videoLogger = new Mock<ILogger<VideoRepository>>();
             _fakeHttpClient = new Mock<IHttpClient>();
-            _videoRepository = new VideoRepository(new ButoConfig(MockButoApiUrl), _fakeHttpClient.Object, _videoLogger.Object);
+            _videoRepository = new VideoRepository(new ButoConfig(MockButoApiUrl), new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object, _videoLogger.Object, _featureToggle.Object);
         }
 
         /// <summary>
         /// Nothing should be replaced as both videos exist
         /// </summary>
         [Fact]
-        public void KeepsVideoTagsForMultipleVideoTagsInContent()
+        public void KeepsVideoTagsForMultipleButoVideoTagsInContent()
         {
+            _featureToggle.Object.TwentyThreeVideo = false;
             _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId1"))
                 .ReturnsAsync(HttpResponse.Successful(
                     GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
