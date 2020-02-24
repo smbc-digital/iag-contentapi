@@ -67,7 +67,9 @@ namespace StockportContentApi
 
             CreateMap<GroupBranding, ContentfulGroupBranding>()
                 .ForMember(dest => dest.Sys,
-                    opts => opts.Ignore());
+                    opts => opts.Ignore())
+                .ForMember(dest => dest.File,
+                    opts => opts.MapFrom(src => new MediaAsset() { Url = src.File.Url, Description = src.File.Description }));
 
             CreateMap<Asset, LinkReference>()
                 .ForMember(dest => dest.Sys, opts => opts.MapFrom(src => new ManagementAsset() { Id = src.SystemProperties.Id }));

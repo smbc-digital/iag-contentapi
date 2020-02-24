@@ -9,7 +9,7 @@ namespace StockportContentApi.ContentfulModels
 
         public string Text { get; set; } = string.Empty;
 
-        public MediaAsset File { get; set; } = new MediaAsset();
+        public Asset File { get; set; } = new Asset();
 
         public string Url { get; set; } = string.Empty;
 

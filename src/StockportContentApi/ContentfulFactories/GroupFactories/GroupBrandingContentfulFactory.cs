@@ -17,11 +17,11 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         {
             var file = new MediaAsset();
 
-            if (entry != null && entry.File != null && entry.File.Url != null)
+            if (entry != null && entry.File != null && entry.File.File != null)
             {
                 file = new MediaAsset
                 {
-                    Url = entry.File.Url,
+                    Url = entry.File.File.Url,
                     Description = entry.File.Description
                 };
             }
