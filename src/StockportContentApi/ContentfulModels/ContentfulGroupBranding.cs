@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Models;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -8,7 +9,7 @@ namespace StockportContentApi.ContentfulModels
 
         public string Text { get; set; } = string.Empty;
 
-        public Asset File { get; set; } = new Asset();
+        public MediaAsset File { get; set; } = new MediaAsset();
 
         public string Url { get; set; } = string.Empty;
 
