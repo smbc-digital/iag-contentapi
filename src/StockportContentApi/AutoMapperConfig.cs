@@ -69,7 +69,7 @@ namespace StockportContentApi
                 .ForMember(dest => dest.Sys,
                     opts => opts.Ignore())
                 .ForMember(dest => dest.File,
-                    opts => opts.MapFrom(src => new MediaAsset() { Url = src.File.Url, Description = src.File.Description }));
+                    opts => opts.Ignore());
 
             CreateMap<Asset, LinkReference>()
                 .ForMember(dest => dest.Sys, opts => opts.MapFrom(src => new ManagementAsset() { Id = src.SystemProperties.Id }));
@@ -144,6 +144,13 @@ namespace StockportContentApi
             destination.SuitableFor = new Dictionary<string, List<string>> { { "en-GB", source.SuitableFor } };
             destination.DonationsText = new Dictionary<string, string> { { "en-GB", source.DonationsText } };
             destination.DonationsUrl = new Dictionary<string, string> { { "en-GB", source.DonationsUrl } };
+            destination.GroupBranding = new Dictionary<string, List<ManagementReference>>
+            {
+                { 
+                    "en-GB", 
+                    source.GroupBranding.Select(sc => new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
+                }
+            };
             return destination;
 
         }

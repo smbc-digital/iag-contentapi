@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ManagementModels
@@ -34,5 +35,6 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, List<ManagementAsset>> AdditionalDocuments { get; set; }
         public Dictionary<string, List<string>> SuitableFor { get; set; }
         public Dictionary<string, List<string>> AgeRange { get; set; }
+        public Dictionary<string, List<ManagementReference>> GroupBranding { get; set; }
     }
 }

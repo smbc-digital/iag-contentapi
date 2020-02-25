@@ -252,6 +252,7 @@ namespace StockportContentApi.Controllers
         private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories, ContentfulGroup existingGroup)
         {
             var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
+            contentfulGroup.GroupBranding = existingGroup.GroupBranding;
             contentfulGroup.CategoriesReference = referencedCategories;
             contentfulGroup.Image = existingGroup.Image;
             contentfulGroup.SubCategories = existingGroup.SubCategories;
