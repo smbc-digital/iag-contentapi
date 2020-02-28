@@ -44,7 +44,7 @@ namespace StockportContentApiTests.Unit.Builders
         public Group Build()
         {
             return new Group(_name, _slug, _metaDescription, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _groupBranding, _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
+                _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false ,string.Empty, _groupBranding, new List<string>(), _additionalInformation, _additionalDocuments, _dateLastModified,  _suitableFor, _ageRanges,_donationsText,_donationsUrl);
         }
 
         public GroupBuilder Slug(string slug)
