@@ -31,7 +31,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             _contentfulGroupBrandingFactory = groupBrandingFactory;
         }
 
-        public Group ToModel(ContentfulGroup entry)
+        public Group ToModel(ContentfulGroup entry) 
         {
             var imageUrl = entry.Image != null 
                 ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
@@ -70,7 +70,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
                 administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 
-                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText,entry.DonationsUrl).StripData(_httpContextAccessor);
+                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText,entry.DonationsUrl).StripData(_httpContextAccessor);
         }
     }
 }

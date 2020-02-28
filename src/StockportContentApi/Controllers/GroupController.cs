@@ -97,7 +97,7 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var groupRepository = _groupRepository(_createConfig(businessId));
-                return groupRepository.GetGroupResults(groupSearch.Category, groupSearch.Latitude, groupSearch.Longitude, groupSearch.Order, groupSearch.Location, slugs, groupSearch.GetInvolved, groupSearch.SubCategories, groupSearch.Organisation);
+                return groupRepository.GetGroupResults(groupSearch,slugs);
             });
         }
 

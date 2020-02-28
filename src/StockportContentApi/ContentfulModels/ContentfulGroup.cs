@@ -40,5 +40,7 @@ namespace StockportContentApi.ContentfulModels
         public string DonationsText { get; set; }
         public string DonationsUrl { get; set; }
         public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>();
+        public List<string> Tags { get; set; } = new List<string>();
+
     }
 }
