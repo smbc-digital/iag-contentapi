@@ -80,7 +80,8 @@
         "donationsText": "donText",
         "donationsUrl": "donUrl",
         "accessibleTransportLink": "link",
-        "groupBranding": [],
+      "groupBranding": [],
+      "tags": [],
         "additionalInformation": "info",
         "additionalDocuments": [
             {
