@@ -57,20 +57,22 @@ namespace StockportContentApi.Repositories
 
         private static IEnumerable<string> GetVideosTags(string body)
         {
-            var matches = Regex.Matches(body, "{{VIDEO:(\\s*[/a-zA-Z0-9][^}]+)}}").OfType<Match>();
+            var matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
             return matches.Select(m => m.Value).ToList();
         }
 
         private bool VideoExists(string videoId)
         {
             string url;
-            if (_featureToggles.TwentyThreeVideo)
+            var videoData = videoId.Split(';');
+
+            if (_featureToggles.TwentyThreeVideo && videoData.Length > 1)
             {
-                url = $"{_twentyThreeConfig.BaseUrl}{videoId}";
+                url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
             }
             else
             {
-                url = $"{_butoConfig.BaseUrl}video/{videoId}";
+                url = $"{_butoConfig.BaseUrl}video/{videoData[0]}";
             }
             
             var response = _httpClient.Get(url);
@@ -82,7 +84,7 @@ namespace StockportContentApi.Repositories
             }
 
             // video doesn't exist, log and return false
-            _logger.LogWarning("Buto video with id \"" + videoId + "\" not found.");
+            _logger.LogWarning("Buto video with id \"" + videoData[0] + "\" not found.");
             return false;
         }
     }
