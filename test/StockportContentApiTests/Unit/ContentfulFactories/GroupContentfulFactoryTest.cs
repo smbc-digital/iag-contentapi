@@ -28,6 +28,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
         private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _contentfulGroupBrandingFactory;
         private Mock<ITimeProvider> _timeProvider;
+        private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
 
         public GroupContentfulFactoryTest()
         {
@@ -39,8 +40,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulGroupSubCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>();
             _contentfulGroupBrandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
             _contentfulGroup = new ContentfulGroupBuilder().Build();
-         
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object, _contentfulGroupBrandingFactory.Object);
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object, _contentfulGroupBrandingFactory.Object, _alertFactory.Object);
         }
 
         [Fact]
@@ -90,7 +91,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             // Act
             var result = _groupContentfulFactory.ToModel(_contentfulGroup);
-            
+
             // Assert
             result.AbilityLevel.Should().Be("");
             result.AccessibleTransportLink.Should().Be("link");

@@ -48,16 +48,16 @@ namespace StockportContentApi.Model
         public DateTime? DateLastModified { get; set; }
         public List<string> SuitableFor { get; set; }
         public List<string> AgeRange { get; set; }
-
+        public IEnumerable<Alert> Alerts { get; }
         public Group() { }
 
-        public Group(string name, string slug, string metaDescription,  string phoneNumber, string email, string website,
+        public Group(string name, string slug, string metaDescription, string phoneNumber, string email, string website,
             string twitter, string facebook, string address, string description, string imageUrl,
-            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs, 
-            MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators, 
-            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText, 
-            Organisation organisation, bool donations, string accessibleTransportLink, List<GroupBranding> groupBranding, List<string> tags, string additionalInformation, List<Document> additionalDocuments, 
-            DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange,string donationsText,string donationsUrl)
+            string thumbnailImageUrl, List<GroupCategory> categoriesReference, List<GroupSubCategory> subCategories, List<Crumb> breadcrumbs,
+            MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators,
+            DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText,
+            Organisation organisation, bool donations, string accessibleTransportLink, List<GroupBranding> groupBranding, List<string> tags, string additionalInformation, List<Document> additionalDocuments,
+            DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange, string donationsText, string donationsUrl, IEnumerable<Alert> alerts)
         {
             Name = name;
             Slug = slug;
@@ -96,6 +96,7 @@ namespace StockportContentApi.Model
             AgeRange = ageRange;
             DonationsText = donationsText;
             DonationsUrl = donationsUrl;
+            Alerts = alerts;
         }
 
         public void SetEvents(List<Event> events)

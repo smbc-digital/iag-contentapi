@@ -20,7 +20,7 @@ namespace StockportContentApi.Controllers
         private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
         private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
         private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
-        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;        
+        private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
         private readonly IMapper _mapper;
 
         public GroupController(ResponseHandler handler,
@@ -58,10 +58,10 @@ namespace StockportContentApi.Controllers
         [Route("{businessId}/grouphomepage")]
         [Route("v1/{businessId}/grouphomepage")]
         public async Task<IActionResult> Homepage(string businessId)
-        {         
+        {
             var repository = _groupRepository(_createConfig(businessId));
             var response = await repository.GetGroupHomepage();
-            var homepage = response.Get<GroupHomepage>();          
+            var homepage = response.Get<GroupHomepage>();
             return Ok(homepage);
         }
 
@@ -69,7 +69,7 @@ namespace StockportContentApi.Controllers
         [Route("{businessId}/groups/{groupSlug}")]
         [Route("v1/{businessId}/groups/{groupSlug}")]
         public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true)
-        { 
+        {
             return await _handler.Get(() =>
             {
                 var groupRepository = _groupRepository(_createConfig(businessId));
@@ -97,7 +97,7 @@ namespace StockportContentApi.Controllers
             return await _handler.Get(() =>
             {
                 var groupRepository = _groupRepository(_createConfig(businessId));
-                return groupRepository.GetGroupResults(groupSearch,slugs);
+                return groupRepository.GetGroupResults(groupSearch, slugs);
             });
         }
 
@@ -164,7 +164,8 @@ namespace StockportContentApi.Controllers
                     var eventVersion = await managementRepository.GetVersion(groupEvent.Sys.Id);
                     groupEvent.Sys.Version = eventVersion;
                     var result = await managementRepository.Delete(groupEvent.Sys);
-                    if (result.StatusCode != System.Net.HttpStatusCode.OK) {
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
                         return result;
                     }
                 }
@@ -196,7 +197,7 @@ namespace StockportContentApi.Controllers
                 var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 var response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
-                
+
                 return response.StatusCode == System.Net.HttpStatusCode.OK ? HttpResponse.Successful($"Successfully deleted administrator") : HttpResponse.Failure(response.StatusCode, "An error has occurred");
             });
         }

@@ -20,7 +20,7 @@ namespace StockportContentApi.ContentfulModels
         public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public List<ContentfulGroupCategory> CategoriesReference { get; set; } = new List<ContentfulGroupCategory>();
         public List<ContentfulGroupSubCategory> SubCategories { get; set; } = new List<ContentfulGroupSubCategory>();
-        public MapPosition  MapPosition { get; set; } = new MapPosition();
+        public MapPosition MapPosition { get; set; } = new MapPosition();
         public bool Volunteering { get; set; } = false;
         public bool Donations { get; set; } = false;
         public SystemProperties Sys { get; set; } = new SystemProperties();
@@ -41,6 +41,6 @@ namespace StockportContentApi.ContentfulModels
         public string DonationsUrl { get; set; }
         public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>();
         public List<string> Tags { get; set; } = new List<string>();
-
+        public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     }
 }

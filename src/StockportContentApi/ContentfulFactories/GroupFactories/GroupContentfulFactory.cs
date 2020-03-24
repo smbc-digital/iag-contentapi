@@ -19,8 +19,20 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _contentfulGroupBrandingFactory;
         private readonly DateComparer _dateComparer;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation, Organisation> contentfulOrganisationFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulGroupCategoryFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> contentfulGroupSubCategoryFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> groupBrandingFactory)
+        public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation,
+            Organisation> contentfulOrganisationFactory,
+            IContentfulFactory<ContentfulGroupCategory,
+                GroupCategory> contentfulGroupCategoryFactory,
+            IContentfulFactory<ContentfulGroupSubCategory,
+                GroupSubCategory> contentfulGroupSubCategoryFactory,
+            ITimeProvider timeProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IContentfulFactory<Asset, Document> documentFactory,
+            IContentfulFactory<ContentfulGroupBranding,
+            GroupBranding> groupBrandingFactory,
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _contentfulOrganisationFactory = contentfulOrganisationFactory;
             _contentfulGroupCategoryFactory = contentfulGroupCategoryFactory;
@@ -29,13 +41,14 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             _httpContextAccessor = httpContextAccessor;
             _documentFactory = documentFactory;
             _contentfulGroupBrandingFactory = groupBrandingFactory;
+            _alertFactory = alertFactory;
         }
 
-        public Group ToModel(ContentfulGroup entry) 
+        public Group ToModel(ContentfulGroup entry)
         {
-            var imageUrl = entry.Image != null 
-                ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
-                    ? entry.Image.File.Url 
+            var imageUrl = entry.Image != null
+                ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                    ? entry.Image.File.Url
                     : string.Empty
                 : string.Empty;
 
@@ -49,7 +62,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties)).Select(document => _documentFactory.ToModel(document)).ToList();
 
-            var organisation = entry.Organisation != null ?  _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
+            var organisation = entry.Organisation != null ? _contentfulOrganisationFactory.ToModel(entry.Organisation) : new Organisation();
 
             var status = "Published";
             if (!_dateComparer.DateNowIsNotBetweenHiddenRange(entry.DateHiddenFrom, entry.DateHiddenTo))
@@ -64,13 +77,15 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
             var groupBranding = entry.GroupBranding != null ? entry.GroupBranding.Where(o => o != null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
 
-
+            var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                               && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                    .Select(alert => _alertFactory.ToModel(alert));
 
             return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,
-                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
-                categoriesReferences, subCategories, new List <Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
-                administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText, 
-                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText,entry.DonationsUrl).StripData(_httpContextAccessor);
+                entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
+                categoriesReferences, subCategories, new List<Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
+                administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText,
+                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText, entry.DonationsUrl, alerts).StripData(_httpContextAccessor);
         }
     }
 }

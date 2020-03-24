@@ -160,7 +160,7 @@ namespace StockportContentApi.Repositories
 
             return linkeddGroups.ToList();
         }
-        
+
         //TODO:: look at the Tags lowercase potential issue
         public async Task<HttpResponse> GetGroupResults(GroupSearch groupSearch, string slugs)
         {
@@ -200,7 +200,7 @@ namespace StockportContentApi.Repositories
                 }
                 else
                 {
-                     noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
+                    noCoordinatesEntries = await GetAllEntriesAsync(_client, noCoordinatesBuilder);
                 }
 
                 groupsWithNoCoordinates = noCoordinatesEntries.Select(g => _groupFactory.ToModel(g))
@@ -230,7 +230,7 @@ namespace StockportContentApi.Repositories
                      .Where(_ => _.MapPosition.Lat != 0 && _.MapPosition.Lon != 0)
                         .ToList();
 
-            if(groupsWithNoCoordinates.Count > 0) groups.AddRange(groupsWithNoCoordinates);
+            if (groupsWithNoCoordinates.Count > 0) groups.AddRange(groupsWithNoCoordinates);
             switch (!string.IsNullOrEmpty(groupSearch.Order) ? groupSearch.Order.ToLower() : "name a-z")
             {
                 case "name a-z":
@@ -291,7 +291,7 @@ namespace StockportContentApi.Repositories
             var response = await Get();
             var groups = response.Get<List<Group>>();
 
-            groups =  groups.Where(g => g.Organisation.Slug == slug)
+            groups = groups.Where(g => g.Organisation.Slug == slug)
                 .OrderBy(g => g.Name)
                 .ToList();
 
