@@ -41,6 +41,7 @@ namespace StockportContentApiTests.Unit.Builders
                                    (new ContentfulSectionBuilder().Build()) };
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";
+        private DateTime _updatedAt = DateTime.Now;
 
         public ContentfulArticle Build()
         {
@@ -65,10 +66,10 @@ namespace StockportContentApiTests.Unit.Builders
                 Sys = new SystemProperties
                 {
                     ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
-                    Id = _systemId
-
+                    Id = _systemId,
+                    UpdatedAt = _updatedAt
                 }
-        };
+            };
         }
 
         public ContentfulArticleBuilder Slug(string slug)
