@@ -4,6 +4,7 @@ prod: &prod
   
 stage: &stage
   << : *prod
+  TwentyThreeVideo: true
 
 qa: &qa
   << : *prod
@@ -13,7 +14,6 @@ int: &int
   << : *prod
   << : *stage
   << : *qa
-  TwentyThreeVideo: true
 
 local: &local
   << : *prod
