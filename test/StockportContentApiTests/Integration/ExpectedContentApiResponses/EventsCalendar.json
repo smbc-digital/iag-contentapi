@@ -133,7 +133,8 @@
         ],
         "dateLastModified": "0001-01-01T00:00:00Z",
         "suitableFor": [ "people" ],
-        "ageRange": [ "15-20" ]
+        "ageRange": [ "15-20" ],
+        "alerts": []
       },
       "alerts": [
         {
@@ -306,7 +307,8 @@
         ],
         "dateLastModified": "0001-01-01T00:00:00Z",
         "suitableFor": [ "people" ],
-        "ageRange": [ "15-20" ]
+        "ageRange": [ "15-20" ],
+        "alerts": []
       },
       "alerts": [
         {
