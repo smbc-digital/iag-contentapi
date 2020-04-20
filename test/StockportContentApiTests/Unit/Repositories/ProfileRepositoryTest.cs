@@ -70,7 +70,8 @@ namespace StockportContentApiTests.Unit.Repositories
                         "severity",
                         DateTime.MinValue,
                         DateTime.MaxValue,
-                        "slug")
+                        "slug",
+                        false)
                 },
                 TriviaSubheading = "trivia heading",
                 TriviaSection = new List<InformationList>(),

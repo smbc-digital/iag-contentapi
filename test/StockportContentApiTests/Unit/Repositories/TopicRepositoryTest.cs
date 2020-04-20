@@ -40,9 +40,9 @@ namespace StockportContentApiTests.Unit.Repositories
                 new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id",new NullEventBanner(), "expandingLinkTitle",  new NullAdvertisement(), new List<ExpandingLinkBox>());
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
-                new DateTime(2017, 01, 02), string.Empty);
+                new DateTime(2017, 01, 02), string.Empty, false);
             var alertInside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
-                new DateTime(2017, 02, 03), string.Empty);
+                new DateTime(2017, 02, 03), string.Empty, false);
 
             _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },

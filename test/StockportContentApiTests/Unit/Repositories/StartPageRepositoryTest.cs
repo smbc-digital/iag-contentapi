@@ -53,11 +53,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty) };
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false) };
 
             List<Alert> _inlineAlerts = new List<Alert> { new Alert("title", "subHeading", "body",
                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty) };
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false) };
 
             var startPageItem = new StartPage("Start Page", "startPageSlug", "this is a teaser", "This is a summary", "An upper body", "Start now", "http://start.com", "Lower body", "image.jpg","icon", new List<Crumb> { new Crumb("title", "slug", "type") }, _alerts, _inlineAlerts);
 

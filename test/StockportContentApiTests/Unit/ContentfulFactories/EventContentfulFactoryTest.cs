@@ -26,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory;
         private readonly EventContentfulFactory _eventContentfulFactory;
         private readonly List<Alert> _alerts = new List<Alert>() {
-                new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9), string.Empty) };
+                new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9), string.Empty, false) };
 
         public EventContentfulFactoryTest()
         {
@@ -42,7 +42,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "subHeading", "body",
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug"));
+                                                                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug", false));
 
             _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
             

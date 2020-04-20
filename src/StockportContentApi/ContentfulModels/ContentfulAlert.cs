@@ -13,6 +13,6 @@ namespace StockportContentApi.ContentfulModels
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public string Slug { get; set; } = string.Empty;
-
+        public bool IsStatic { get; set; }
     }
 }

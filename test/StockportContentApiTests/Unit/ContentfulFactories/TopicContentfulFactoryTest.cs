@@ -62,7 +62,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
             _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
-            var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty);
+            var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false);
             _alertFactory.Setup(_ => _.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
 
             var expandingLinkBox = new ExpandingLinkBox("title", new List<SubItem>());

@@ -50,7 +50,8 @@ namespace StockportContentApiTests.Unit.Builders
                 "severity",
                 new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
-                "slug")
+                "slug",
+                false)
         };
 
         private List<Alert> _alertsInline = new List<Alert>
@@ -61,7 +62,8 @@ namespace StockportContentApiTests.Unit.Builders
                 "severity",
                 new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
-                "slug")
+                "slug",
+                false)
         };
 
         private List<Profile> _profiles = new List<Profile>
@@ -86,7 +88,8 @@ namespace StockportContentApiTests.Unit.Builders
                         "severity",
                         DateTime.MinValue,
                         DateTime.MaxValue,
-                        "slug")
+                        "slug",
+                        false)
                 },
                 TriviaSubheading = "trivia heading",
                 TriviaSection = new List<InformationList>(),

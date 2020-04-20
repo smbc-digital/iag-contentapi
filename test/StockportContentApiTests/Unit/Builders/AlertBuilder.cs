@@ -13,6 +13,7 @@ namespace StockportContentApiTests.Unit.Builders
         private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
         private string _slug = "slug";
+        private bool _isStatic = false;
         private SystemProperties _sys = new SystemProperties
         {
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
@@ -20,7 +21,7 @@ namespace StockportContentApiTests.Unit.Builders
 
         public Alert Build()
         {
-            return new Alert(_title, _subHeading, _body, _severity, _sunriseDate, _sunsetDate, _slug);
+            return new Alert(_title, _subHeading, _body, _severity, _sunriseDate, _sunsetDate, _slug, _isStatic);
         }
     }
 }

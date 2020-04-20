@@ -65,7 +65,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                         "severity",
                         DateTime.MinValue,
                         DateTime.MaxValue,
-                        "slug")
+                        "slug",
+                        false)
                 },
                 TriviaSubheading = "trivia heading",
                 TriviaSection = new List<InformationList>(),
@@ -83,7 +84,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             const string processedBody = "this is processed body";
             _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-            var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug");
+            var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false);
             _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
             // Act
