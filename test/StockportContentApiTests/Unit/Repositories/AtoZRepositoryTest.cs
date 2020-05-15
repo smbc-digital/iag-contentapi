@@ -172,13 +172,13 @@ namespace StockportContentApiTests.Unit.Repositories
                     new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string> { alternativeTitle }).Build()
                 };
 
-            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
+            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=article&include=0&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
 
-            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=topic&include=0&limit=1000&skip=0",
                               It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
-            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=showcase&include=0&limit=1000&skip=0",
                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
@@ -205,13 +205,13 @@ namespace StockportContentApiTests.Unit.Repositories
                 new ContentfulAToZBuilder().Title("Vintage Village").AlternativeTitles(alternateTitles).Build()
             };
 
-            _client.Setup(o=>o.GetEntries<ContentfulAtoZ>("?content_type=article&include=2&limit=1000&skip=0",
+            _client.Setup(o=>o.GetEntries<ContentfulAtoZ>("?content_type=article&include=0&limit=1000&skip=0",
                                It.IsAny<CancellationToken>())).ReturnsAsync(aToZcollection);
 
-            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=topic&include=2&limit=1000&skip=0",
+            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=topic&include=0&limit=1000&skip=0",
                             It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
-            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=showcase&include=2&limit=1000&skip=0",
+            _client.Setup(o => o.GetEntries<ContentfulAtoZ>("?content_type=showcase&include=0&limit=1000&skip=0",
                              It.IsAny<CancellationToken>())).ReturnsAsync(nullAToZcollection);
 
             _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
