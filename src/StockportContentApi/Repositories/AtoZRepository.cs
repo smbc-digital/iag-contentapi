@@ -68,7 +68,9 @@ namespace StockportContentApi.Repositories
         public async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
         {
             var atozList = new List<AtoZ>();
-            var builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(2);
+            var builder = new QueryBuilder<ContentfulAtoZ>()
+                .ContentTypeIs(contentType)
+                .Include(0);
             var entries = await GetAllEntriesAsync(_client, builder, _logger);
             var entriesWithDisplayOn = entries != null ? entries
                 .Where(x => x.DisplayOnAZ == "True"
