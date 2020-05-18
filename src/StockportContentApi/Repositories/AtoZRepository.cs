@@ -70,7 +70,8 @@ namespace StockportContentApi.Repositories
             var atozList = new List<AtoZ>();
             var builder = new QueryBuilder<ContentfulAtoZ>()
                 .ContentTypeIs(contentType)
-                .Include(0);
+                .Include(0)
+                .Limit(200);
             var entries = await GetAllEntriesAsync(_client, builder, _logger);
             var entriesWithDisplayOn = entries != null ? entries
                 .Where(x => x.DisplayOnAZ == "True"
