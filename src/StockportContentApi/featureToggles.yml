@@ -1,10 +1,10 @@
 ---
 prod: &prod
+  TwentyThreeVideo: true
   default : true
   
 stage: &stage
   << : *prod
-  TwentyThreeVideo: true
 
 qa: &qa
   << : *prod
