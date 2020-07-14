@@ -37,7 +37,7 @@ namespace StockportContentApi.ContentfulFactories
 
             return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,
                 entry.FormLinkLabel, entry.FormLink, entry.LowerBody, entry.BackgroundImage, entry.Icon,
-                breadcrumbs, alerts,alertsInline).StripData(_httpContextAccessor);
+                breadcrumbs, alerts, alertsInline, entry.SunriseDate, entry.SunsetDate).StripData(_httpContextAccessor);
         }
     }
 }

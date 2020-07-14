@@ -8,6 +8,7 @@ using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
@@ -15,11 +16,13 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory;
         private readonly Contentful.Core.IContentfulClient _client;
+        private readonly DateComparer _dateComparer;
 
-        public StartPageRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory)
+        public StartPageRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory, ITimeProvider timeProvider)
         {
             _contentfulFactory = contentfulFactory;
             _client = contentfulClientManager.GetClient(config);
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public async Task<HttpResponse> GetStartPage(string startPageSlug)
@@ -37,6 +40,11 @@ namespace StockportContentApi.Repositories
             var startPageEntry = entries.FirstOrDefault();
             var startPage = _contentfulFactory.ToModel(startPageEntry);
 
+            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
+            {
+                startPage = new NullStartPage();
+            } 
+
             return startPage.GetType() == typeof(NullStartPage) ?
                 HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") : 
                 HttpResponse.Successful(startPage);
@@ -53,7 +61,8 @@ namespace StockportContentApi.Repositories
             if (!entries.Any())
                 return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-            var startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList();
+            var startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
+                .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
           
             return startPages == null || !startPages.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")

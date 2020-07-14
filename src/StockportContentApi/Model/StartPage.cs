@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Model
 {
@@ -17,10 +18,12 @@ namespace StockportContentApi.Model
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public List<Alert> Alerts { get; }
         public IEnumerable<Alert> AlertsInline { get; }
+        public DateTime SunriseDate { get; }
+        public DateTime SunsetDate { get; }
 
         public StartPage(
             string title, string slug, string teaser, string summary, string upperBody, string formLinkLabel,
-            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts,  IEnumerable<Alert> inlineAlerts)
+            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts,  IEnumerable<Alert> inlineAlerts, DateTime sunriseDate, DateTime sunsetDate)
         {
             Title = title;
             Slug = slug;
@@ -35,6 +38,8 @@ namespace StockportContentApi.Model
             Icon = icon;
             Alerts = alerts;
             AlertsInline = inlineAlerts;
+            SunriseDate = sunriseDate;
+            SunsetDate = sunsetDate;
         }
     }
 
@@ -43,6 +48,6 @@ namespace StockportContentApi.Model
         public NullStartPage()
             : base(
                 string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>(), new List<Alert>()) { }
+                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>(), new List<Alert>(), new DateTime(), new DateTime()) { }
     }
 }
