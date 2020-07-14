@@ -13,6 +13,7 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using Xunit;
 
@@ -22,6 +23,7 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly Mock<IContentfulFactory<ContentfulStartPage, StartPage>> _startPageFactory;
         private readonly Mock<IContentfulClient> _client;
+        private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly StartPageRepository _repository;
 
         public StartPageRepositoryTest()
@@ -36,10 +38,11 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _client = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
+            _mockTimeProvider = new Mock<ITimeProvider>();
 
             _startPageFactory = new Mock<IContentfulFactory<ContentfulStartPage, StartPage>>();
 
-            _repository = new StartPageRepository(config, contentfulClientManager.Object, _startPageFactory.Object);
+            _repository = new StartPageRepository(config, contentfulClientManager.Object, _startPageFactory.Object, _mockTimeProvider.Object);
         }
 
         [Fact]
@@ -59,7 +62,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false) };
 
-            var startPageItem = new StartPage("Start Page", "startPageSlug", "this is a teaser", "This is a summary", "An upper body", "Start now", "http://start.com", "Lower body", "image.jpg","icon", new List<Crumb> { new Crumb("title", "slug", "type") }, _alerts, _inlineAlerts);
+            var startPageItem = new StartPage("Start Page", "startPageSlug", "this is a teaser", "This is a summary", "An upper body", "Start now", "http://start.com", "Lower body", "image.jpg","icon", new List<Crumb> { new Crumb("title", "slug", "type") }, _alerts, _inlineAlerts, DateTime.MinValue, DateTime.MaxValue);
 
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
 
@@ -112,5 +115,38 @@ namespace StockportContentApiTests.Unit.Repositories
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
+        [Fact]
+        public void Gets404ForNewsOutsideOfSunriseDate()
+        {
+            const string slug = "unit-test-article";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 01, 01));
+
+            var collection = new ContentfulCollection<ContentfulStartPage>();
+            var rawArticle = new ContentfulStartPageBuilder().Slug(slug).Build();
+            collection.Items = new List<ContentfulStartPage>();
+
+            _client.Setup(o => o.GetEntries<ContentfulStartPage>(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("unit-test-article"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public void Gets404ForNewsOutsideOfSunsetDate()
+        {
+            const string slug = "unit-test-article";
+            _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 01));
+
+            var collection = new ContentfulCollection<ContentfulStartPage>();
+            var rawArticle = new ContentfulStartPageBuilder().Slug(slug).Build();
+            collection.Items = new List<ContentfulStartPage>();
+
+            _client.Setup(o => o.GetEntries<ContentfulStartPage>(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("unit-test-article"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
     }
 }
