@@ -246,6 +246,8 @@ namespace StockportContentApi.Extensions
                 });
             services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
                 p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
+            services.AddSingleton<Func<ContentfulConfig, ServicePayPaymentRepository>>(
+                p => { return x => new ServicePayPaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>()); });
             services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(
                 p => { return x => new GroupCategoryRepository(x, p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, EventCategoryRepository>>(
