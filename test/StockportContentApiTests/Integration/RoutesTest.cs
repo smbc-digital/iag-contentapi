@@ -405,7 +405,6 @@ namespace StockportContentApiTests.Integration
         [InlineData("GroupAdvisor", "/unittest/groups/advisors/testemail@notandomain.xyz")]
         [InlineData("GroupAdvisorList", "/unittest/groups/slug/advisors")]
         [InlineData("PrivacyNotice", "/unittest/privacy-notices/slug")]
-        [InlineData("PrivacyNotices", "/unittest/privacy-notices")]
         public async Task EndToEnd_ReturnsPageForASlug(string file, string path)
         {
             StartServer(DEFAULT_DATE);
