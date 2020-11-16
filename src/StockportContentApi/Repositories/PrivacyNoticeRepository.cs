@@ -56,8 +56,8 @@ namespace StockportContentApi.Repositories
         {
             var result = new List<T>();
 
-            var builderString = builder.Limit(100).Skip(99).Build();
-            builderString = builderString.Replace("skip=99", "skip=xx");
+            var builderString = builder.Limit(50).Skip(49).Build();
+            builderString = builderString.Replace("skip=49", "skip=xx");
 
             var totalItems = 0;
             var skip = 0;
@@ -73,7 +73,7 @@ namespace StockportContentApi.Repositories
                 result = result.Concat(entries.Items).ToList();
 
                 totalItems = entries.Total;
-                skip += 100;
+                skip += 50;
             } while (result.Count() < totalItems);
 
             return result;
