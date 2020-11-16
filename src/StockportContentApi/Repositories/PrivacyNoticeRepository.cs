@@ -43,13 +43,41 @@ namespace StockportContentApi.Repositories
 
         public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
         {
-            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6).Limit(1000);
+            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6);
 
-            var entries = await _client.GetEntries(builder);
+            var entries = GetAllEntries<ContentfulPrivacyNotice>("privacyNotice", builder);
 
             var convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 
             return convertedEntries;
         }
+
+        private List<T> GetAllEntries<T>(string contentType, QueryBuilder<T> builder)
+        {
+            var result = new List<T>();
+
+            var builderString = builder.Limit(100).Skip(99).Build();
+            builderString = builderString.Replace("skip=99", "skip=xx");
+
+            var totalItems = 0;
+            var skip = 0;
+
+            do
+            {
+                builderString = builderString.Replace("skip=xx", $"skip={skip}");
+
+                var entries = _client.GetEntries<T>(builderString).Result;
+
+                builderString = builderString.Replace($"skip={skip}", "skip=xx");
+
+                result = result.Concat(entries.Items).ToList();
+
+                totalItems = entries.Total;
+                skip += 100;
+            } while (result.Count() < totalItems);
+
+            return result;
+        }
+
     }
 }
