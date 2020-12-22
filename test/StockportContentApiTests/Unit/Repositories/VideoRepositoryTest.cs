@@ -84,8 +84,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var content = "Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}";
             var result = _videoRepository.Process(content);
             
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId1\" not found.");
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found.");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId1\" not found. Body Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}");
             result.Should().NotContain("{{VIDEO:VideoId1}}");
             result.Should().NotContain("{{VIDEO:VideoId2}}");
             result.Should().Contain("{{VIDEO:VideoId3}}");
@@ -110,8 +110,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}";
             var result = _videoRepository.Process(content);
 
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId1\" not found.");
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found.");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
             result.Should().NotContain("{{VIDEO:VideoId1;VideoToken1}}");
             result.Should().NotContain("{{VIDEO:VideoId2;VideoToken2}}");
             result.Should().Contain("{{VIDEO:VideoId3;VideoToken3}}");

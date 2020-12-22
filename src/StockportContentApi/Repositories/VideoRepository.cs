@@ -49,7 +49,7 @@ namespace StockportContentApi.Repositories
                         .Replace(StartTag, string.Empty)
                         .Replace(EndTag, string.Empty);
 
-                if (!VideoExists(videoId)) body = body.Replace(videoTag, string.Empty);
+                if (!VideoExists(videoId, body)) body = body.Replace(videoTag, string.Empty);
             }
 
             return body;
@@ -61,7 +61,7 @@ namespace StockportContentApi.Repositories
             return matches.Select(m => m.Value).ToList();
         }
 
-        private bool VideoExists(string videoId)
+        private bool VideoExists(string videoId, string body)
         {
             string url;
             var videoData = videoId.Split(';');
@@ -84,7 +84,7 @@ namespace StockportContentApi.Repositories
             }
 
             // video doesn't exist, log and return false
-            _logger.LogWarning("Buto video with id \"" + videoData[0] + "\" not found.");
+            _logger.LogWarning("Buto video with id \"" + videoData[0] + "\" not found. Body " + body);
             return false;
         }
     }
