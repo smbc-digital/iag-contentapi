@@ -147,6 +147,14 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<IHttpContextAccessor>()
                 ));
+            services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>
+            (p => new DocumentPageContentfulFactory(
+                p.GetService<IContentfulFactory<Asset, Document>>(),
+                p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+                p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
+                p.GetService<ITimeProvider>(),
+                p.GetService<IHttpContextAccessor>()
+                ));
             services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
                 (p => new TopicSiteMapContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulInformationList, InformationList>>
@@ -217,6 +225,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, IPrivacyNoticeRepository>>(p => { return x => new PrivacyNoticeRepository(x, p.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p => { return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<AssetRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
+            services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p => { return x => new DocumentPageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>()); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<ButoConfig>(), p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>(), p.GetService<ILogger<VideoRepository>>(), p.GetService<FeatureToggles>()));
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
