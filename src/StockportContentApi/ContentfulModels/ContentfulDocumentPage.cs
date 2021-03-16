@@ -6,8 +6,9 @@ namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulDocumentPage : ContentfulReference
     {
-        public string AboutThisDocument { get; set; } = string.Empty;
+        public string AboutTheDocument { get; set; } = string.Empty;
         public List<Asset> Documents { get; set; } = new List<Asset>();
+        public string AwsDocuments { get; set; } = string.Empty;
         public string RequestAnAccessibleFormatContactInformation { get; set; } = string.Empty;
         public string FurtherInformation { get; set; } = string.Empty;
         public List<ContentfulReference> RelatedDocuments { get; set; } = new List<ContentfulReference>();

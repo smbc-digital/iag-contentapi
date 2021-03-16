@@ -9,8 +9,9 @@ namespace StockportContentApi.Model
         public string Slug { get; }
         public string Teaser { get; }
         public string MetaDescription { get; }
-        public string AboutThisDocument { get; }
+        public string AboutTheDocument { get; }
         public List<Document> Documents { get; }
+        public string AwsDocuments { get; }
         public string RequestAnAccessibleFormatContactInformation { get;}
         public string FurtherInformation { get;}
         public List<SubItem> RelatedDocuments { get; }
@@ -24,8 +25,9 @@ namespace StockportContentApi.Model
             string slug,
             string teaser,
             string metaDescription,
-            string aboutThisDocument,
+            string aboutTheDocument,
             List<Document> documents,
+            string awsDocuments,
             string requestAnAccessibleFormatContactInformation,
             string furtherInformation,
             List<SubItem> relatedDocuments,
@@ -38,8 +40,9 @@ namespace StockportContentApi.Model
             Slug = slug;
             Teaser = teaser;
             MetaDescription = metaDescription;
-            AboutThisDocument = aboutThisDocument;
+            AboutTheDocument = aboutTheDocument;
             Documents = documents;
+            AwsDocuments = awsDocuments;
             RequestAnAccessibleFormatContactInformation = requestAnAccessibleFormatContactInformation;
             FurtherInformation = furtherInformation;
             RelatedDocuments = relatedDocuments;
@@ -58,8 +61,9 @@ namespace StockportContentApi.Model
             slug: string.Empty,
             teaser: string.Empty,
             metaDescription: string.Empty,
-            aboutThisDocument: string.Empty,
+            aboutTheDocument: string.Empty,
             documents: new List<Document>(),
+            awsDocuments: string.Empty,
             requestAnAccessibleFormatContactInformation: string.Empty,
             furtherInformation: string.Empty,
             relatedDocuments: new List<SubItem>(),
