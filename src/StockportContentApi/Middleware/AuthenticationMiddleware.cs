@@ -50,7 +50,9 @@ namespace StockportContentApi.Middleware
                 return;
             }
 
+            _logger.LogWarning($"Authentication request: {context.Request.Headers}");
             var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
+            _logger.LogWarning($"Authentication data: {authenticationData}");
 
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
