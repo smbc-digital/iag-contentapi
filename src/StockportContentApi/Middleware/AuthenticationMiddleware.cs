@@ -50,9 +50,12 @@ namespace StockportContentApi.Middleware
                 return;
             }
 
-            _logger.LogWarning($"Authentication request: {context.Request.Headers}");
             var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
-            _logger.LogWarning($"Authentication data: {authenticationData}");
+
+            if (context.Request.Path.Value.Equals("/redirects"))
+            {
+                _logger.LogWarning($"Request Headers: {context.Request.Headers}");
+            }
 
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
