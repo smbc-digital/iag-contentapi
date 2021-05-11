@@ -52,11 +52,6 @@ namespace StockportContentApi.Middleware
 
             var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
 
-            if (context.Request.Path.Value.Equals("/redirects"))
-            {
-                _logger.LogWarning($"Request Headers: {context.Request.Headers}");
-            }
-
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
                 _logger.LogError("API Authentication Key is either missing or wrong");
