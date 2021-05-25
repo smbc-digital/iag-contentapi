@@ -15,10 +15,12 @@ namespace StockportContentApi
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://0.0.0.0:5001")
-                .UseKestrel()
-                //.UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .ConfigureKestrel((context, options) =>
+                {
+                    // Set properties and call methods on options
+                })
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     config.Sources.Clear();

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using StockportContentApi.Middleware;
 using Swashbuckle.Swagger.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace StockportContentApi
 {
@@ -77,7 +78,7 @@ namespace StockportContentApi
             services.AddContentfulClients();
             services.AddContentfulFactories();
             services.AddRepositories();
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
             services.AddServices();
             services.AddBuilders();
