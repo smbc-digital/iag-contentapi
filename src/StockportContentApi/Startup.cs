@@ -12,10 +12,10 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
 using StockportContentApi.Middleware;
-using Swashbuckle.Swagger.Model;
-using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace StockportContentApi
 {
@@ -43,6 +43,7 @@ namespace StockportContentApi
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             // add other services
+            services.AddControllers().AddNewtonsoftJson();
             services.AddFeatureToggles(_contentRootPath, _appEnvironment);
             services.AddSingleton(new CurrentEnvironment(_appEnvironment));
             services.AddCache(_useRedisSession);
@@ -54,8 +55,9 @@ namespace StockportContentApi
             services.AddSingleton<ITimeProvider>(new TimeProvider());
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<ClientRateLimitOptions>(Configuration.GetSection("ClientRateLimiting"));
+            services.Configure<RateLimitConfiguration>(Configuration.GetSection("ClientRateLimiting"));
             services.Configure<ClientRateLimitPolicies>(Configuration.GetSection("ClientRateLimitPolicies"));
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
@@ -78,41 +80,58 @@ namespace StockportContentApi
             services.AddContentfulClients();
             services.AddContentfulFactories();
             services.AddRepositories();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
             services.AddServices();
             services.AddBuilders();
             services.AddSwaggerGen(c =>
             {
-                c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" });
-
+                //c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" });
                 c.DocumentFilter<SwaggerFilter>();
 
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\".",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    In = ParameterLocation.Header,
+                    Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\".",
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        },
+                        new List<string>()
+                    }
                 });
 
             });
         }
 
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             // add logging
             loggerFactory.AddSerilog();
 
             // swagger
             app.UseSwagger();
-            app.UseSwaggerUi(swaggerUrl: _appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json");
+            app.UseSwaggerUI( c =>
+            {
+                c.SwaggerEndpoint(_appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json", "Stockport Content API");
+            });
 
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseClientRateLimiting();
             
             app.UseStaticFiles();
-            app.UseMvc();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // close logger
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);

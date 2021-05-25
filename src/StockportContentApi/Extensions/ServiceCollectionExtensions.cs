@@ -196,7 +196,9 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession)
         {
-            services.AddSingleton<ICache>(p => new Utils.Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
+            services.AddDistributedMemoryCache();
+
+            services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
 
             return services;
         }
