@@ -15,8 +15,7 @@ namespace StockportContentApi.Utils
                 var path = item.Key;
                 if (path.ToString().Substring(0, pathLength) == pathStart)
                 {
-                    //Verify this
-                   swaggerDoc.Paths[path].Parameters = null;
+                    swaggerDoc.Paths[path] = null;
                 }
             } 
         }
