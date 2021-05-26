@@ -88,7 +88,7 @@ namespace StockportContentApi.Utils
 
         public void RemoveItemFromCache(string cacheKey)
         {
-            _memoryCache.Remove(cacheKey);
+            _memoryCache.RemoveAsync(cacheKey);
         }
 
         public void Set(string cacheKey, object cacheEntry, int minutes)

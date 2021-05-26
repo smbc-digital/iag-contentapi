@@ -29,6 +29,10 @@ using StockportContentApi.Services;
 using Document = StockportContentApi.Model.Document;
 using StockportContentApi.FeatureToggling;
 using StockportContentApi.Services.Profile;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.DataProtection;
+using System.Reflection;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace StockportContentApi.Extensions
 {
@@ -194,9 +198,41 @@ namespace StockportContentApi.Extensions
         /// <param name="services"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession)
+        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, ILogger logger)
         {
-            services.AddDistributedMemoryCache();
+            if (useRedisSession)
+            {
+                var redisUrl = configuration["TokenStoreUrl"];
+                var redisIp = redisUrl;
+                if (!_appEnvironment.Equals("local"))
+                {
+                    redisIp = GetHostEntryForUrl(redisUrl, logger);
+                }
+
+                var name = Assembly.GetEntryAssembly()?.GetName().Name;
+                logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.ConfigurationOptions = new ConfigurationOptions
+                    {
+                        EndPoints =
+                            {
+                                { redisIp }
+                            },
+                        ClientName = name,
+                        SyncTimeout = 30000,
+                        AsyncTimeout = 30000
+                    };
+                });
+
+                var redis = ConnectionMultiplexer.Connect(redisIp);
+                services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
+            } 
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
 
             services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
 
@@ -408,7 +444,7 @@ namespace StockportContentApi.Extensions
                 services.AddDataProtection().PersistKeysToRedis(redisIp);
 
                 services.AddSingleton<IDistributedCacheWrapper>(
-                    p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
+                    p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
             }
             else
             {
@@ -425,7 +461,7 @@ namespace StockportContentApi.Extensions
                 var redisIp = configuration["TokenStoreUrl"];
 
                 services.AddSingleton<IDistributedCacheWrapper>(
-                    p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
+                    p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
             }
             else
             {

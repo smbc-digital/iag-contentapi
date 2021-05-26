@@ -13,7 +13,6 @@ using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using StockportContentApi.Middleware;
-using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 
@@ -46,7 +45,7 @@ namespace StockportContentApi
             services.AddControllers().AddNewtonsoftJson();
             services.AddFeatureToggles(_contentRootPath, _appEnvironment);
             services.AddSingleton(new CurrentEnvironment(_appEnvironment));
-            services.AddCache(_useRedisSession);
+            services.AddCache(_useRedisSession, _appEnvironment, Configuration, logger);
             services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
             services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
@@ -61,17 +60,6 @@ namespace StockportContentApi
             services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
-            // add service extensions
-
-            if (_appEnvironment == "local")
-            {
-                services.AddRedisLocal(Configuration, _useRedisSession, logger);
-            }
-            else
-            {
-                services.AddRedis(Configuration, _useRedisSession, logger);
-            }
-
             services.AddGroupConfiguration(Configuration, logger);
             services.AddHelpers();
             services.AddRedirects(Configuration);
@@ -85,9 +73,8 @@ namespace StockportContentApi
             services.AddBuilders();
             services.AddSwaggerGen(c =>
             {
-                //c.SingleApiVersion(new Info { Title = "Stockport Content API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Stockport Content API", Version = "v1" });
                 c.DocumentFilter<SwaggerFilter>();
-
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
