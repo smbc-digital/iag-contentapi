@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Config;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using StockportContentApi.Middleware;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using Microsoft.Extensions.Hosting;
 
 namespace StockportContentApi
 {
@@ -25,7 +25,7 @@ namespace StockportContentApi
         private readonly bool _useRedisSession;
         public IConfiguration Configuration { get; set; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
             _contentRootPath = env.ContentRootPath;
@@ -97,7 +97,7 @@ namespace StockportContentApi
             });
         }
 
-        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public virtual void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostApplicationLifetime appLifetime)
         {
             // add logging
             loggerFactory.AddSerilog();
