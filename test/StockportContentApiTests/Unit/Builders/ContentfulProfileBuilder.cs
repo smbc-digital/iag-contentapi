@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Contentful.Core.Models;
-using SQLitePCL;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
