@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace StockportContentApi
 {
@@ -12,23 +12,25 @@ namespace StockportContentApi
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://0.0.0.0:5001")
-                .UseKestrel()
-                //.UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    config.Sources.Clear();
-                    config.SetBasePath(Directory.GetCurrentDirectory() + "/app-config");
-                    config
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json");
-                    var tempConfig = config.Build();
-                    config.AddJsonFile(
-                        $"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json");
-                });
+        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseUrls("http://0.0.0.0:5001")
+                    .UseIISIntegration()
+                    .UseStartup<Startup>()
+                    .ConfigureAppConfiguration((hostContext, config) =>
+                    {
+                        config.Sources.Clear();
+                        config.SetBasePath(Directory.GetCurrentDirectory() + "/app-config");
+                        config
+                            .AddJsonFile("appsettings.json")
+                            .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json");
+                        var tempConfig = config.Build();
+                        config.AddJsonFile(
+                            $"{tempConfig["secrets-location"]}/appsettings.{hostContext.HostingEnvironment.EnvironmentName}.secrets.json");
+                    });
+            });
+                
     }
 }

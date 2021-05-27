@@ -41,8 +41,6 @@ namespace StockportContentApi.Services
 
         public async Task<Healthcheck> Get()
         {
-            // Commented out because it was breaking prod.
-            //var keys = await _cacheWrapper.GetKeys();
             return await Task.FromResult(new Healthcheck(_appVersion, _sha, _environment, new List<RedisValueData>()));
         }
     }

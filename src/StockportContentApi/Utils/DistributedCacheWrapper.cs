@@ -1,107 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using StackExchange.Redis;
-using StockportContentApi.Exceptions;
-using StockportContentApi.Model;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace StockportContentApi.Utils
 {
     public interface IDistributedCacheWrapper
     {
-        void Remove(string key);
+        Task RemoveAsync(string key, CancellationToken token = default);
         void SetString(string key, string value, int minutes);
-        Task<string> GetString(string key);
-        Task<List<RedisValueData>> GetKeys();
+        Task<string> GetString(string key, CancellationToken token = default);
     }
 
     public class DistributedCacheWrapper : IDistributedCacheWrapper
     {
-        private readonly string _redisIp;
-        private readonly ILogger<IDistributedCacheWrapper> _logger;
-        private readonly List<ConnectionMultiplexer> _cachePool;
+        private readonly IDistributedCache _distributedCache;
 
-        public DistributedCacheWrapper(string redisIp, ILogger<IDistributedCacheWrapper> logger)
+        public DistributedCacheWrapper(IDistributedCache distributedCache) => _distributedCache = distributedCache;
+
+        public async Task<string> GetString(string key, CancellationToken token = default) 
+            => await _distributedCache.GetStringAsync(key, token);
+
+        public Task RemoveAsync(string key, CancellationToken token = default) => _distributedCache.RemoveAsync(key, token);
+
+        public void SetString(string key, string value, int expiration)
         {
-            _redisIp = redisIp;
-            _logger = logger;
-            _cachePool = new List<ConnectionMultiplexer>();
-            for (var i = 0; i < 5; i++)
+            var distributedCacheOptions = new DistributedCacheEntryOptions
             {
-                _cachePool.Add(ConnectionMultiplexer.Connect(redisIp + ",abortConnect=false"));
-            }
-        }
+                AbsoluteExpiration = DateTime.Now.AddMinutes(expiration)
+            };
 
-        public async Task<string> GetString(string key)
-        {
-            var db = GetLeastUsedConnection().GetDatabase();
-            return await db.StringGetAsync(key);
-        }
-
-        public async void Remove(string key)
-        {
-            var db = GetLeastUsedConnection().GetDatabase();
-            var successfulDelete = await db.KeyDeleteAsync(key);
-
-            if (successfulDelete == false)
-            {
-                throw new CacheException();
-            }
-        }
-        
-        public void SetString(string key, string value, int minutes)
-        {
-            var db = GetLeastUsedConnection().GetDatabase();
-            db.StringSet(key, value, TimeSpan.FromMinutes(minutes));
-        }
-
-        public async Task<List<RedisValueData>> GetKeys()
-        {
-            var cache = GetLeastUsedConnection();
-            var db = cache.GetDatabase();
-            var server = cache.GetServer(_redisIp, 6379);
-            var keys = server.Keys();
-
-            var result = await GetRedisDataValueFromKey(keys, db);
-            return result;
-        }
-
-        private async Task<List<RedisValueData>> GetRedisDataValueFromKey(IEnumerable<RedisKey> keys, IDatabase db)
-        {
-            var redisValueData = new List<RedisValueData>();
-
-            foreach (var k in keys)
-            {
-                var keyType = await db.KeyTypeAsync(k);
-
-                if (keyType != RedisType.String) continue;
-
-                var valueWithExpiry = await db.StringGetWithExpiryAsync(k);
-
-                var data = new RedisValueData
-                {
-                    NumberOfItems = 1,
-                    Expiry = valueWithExpiry.Expiry.ToString(),
-                    Key = k.ToString()
-                };
-
-                var jsonData = JsonConvert.DeserializeObject(valueWithExpiry.Value.ToString()) as JArray;
-
-                if (jsonData != null) data.NumberOfItems = jsonData.Count;
-
-                redisValueData.Add(data);
-            }
-
-            return redisValueData;
-        }
-        private ConnectionMultiplexer GetLeastUsedConnection()
-        {
-            var cache = _cachePool.OrderBy(c => c.GetCounters().TotalOutstanding).First();
-            return cache;
+            _distributedCache.SetString(key, value, distributedCacheOptions);
         }
     }
 }

@@ -16,7 +16,6 @@ using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Profile = StockportContentApi.Model.Profile;
 using Microsoft.Extensions.Configuration;
-using StockportWebapp.DataProtection;
 using Microsoft.AspNetCore.Http;
 using StockportContentApi.Builders;
 using StockportContentApi.ContentfulFactories.ArticleFactories;
@@ -29,6 +28,9 @@ using StockportContentApi.Services;
 using Document = StockportContentApi.Model.Document;
 using StockportContentApi.FeatureToggling;
 using StockportContentApi.Services.Profile;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.DataProtection;
+using System.Reflection;
 
 namespace StockportContentApi.Extensions
 {
@@ -194,9 +196,43 @@ namespace StockportContentApi.Extensions
         /// <param name="services"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession)
+        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, ILogger logger)
         {
-            services.AddSingleton<ICache>(p => new Utils.Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
+            if (useRedisSession)
+            {
+                var redisUrl = configuration["TokenStoreUrl"];
+                var redisIp = redisUrl;
+                if (!_appEnvironment.Equals("local"))
+                {
+                    redisIp = GetHostEntryForUrl(redisUrl, logger);
+                }
+
+                var name = Assembly.GetEntryAssembly()?.GetName().Name;
+                logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.ConfigurationOptions = new ConfigurationOptions
+                    {
+                        EndPoints =
+                            {
+                                { redisIp }
+                            },
+                        ClientName = name,
+                        SyncTimeout = 30000,
+                        AsyncTimeout = 30000
+                    };
+                });
+
+                var redis = ConnectionMultiplexer.Connect(redisIp);
+                services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
+            } 
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
+
+            services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
 
             return services;
         }
@@ -385,50 +421,6 @@ namespace StockportContentApi.Extensions
             var redirectBusinessIds = new List<string>();
             configuration.GetSection("RedirectBusinessIds").Bind(redirectBusinessIds);
             services.AddSingleton(new RedirectBusinessIds(redirectBusinessIds));
-
-            return services;
-        }
-
-        /// <summary>
-        /// Add redis for distributed cache
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <param name="useRedisSession"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, bool useRedisSession, ILogger logger)
-        {
-            if (useRedisSession)
-            {
-                var redisUrl = configuration["TokenStoreUrl"];
-                var redisIp = GetHostEntryForUrl(redisUrl, logger);
-                logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
-                services.AddDataProtection().PersistKeysToRedis(redisIp);
-
-                services.AddSingleton<IDistributedCacheWrapper>(
-                    p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
-            }
-            else
-            {
-                logger.LogInformation("Not using redis for session management!");
-            }
-
-            return services;
-        }
-
-        public static IServiceCollection AddRedisLocal(this IServiceCollection services, IConfiguration configuration, bool useRedisSession, ILogger logger)
-        {
-            if (useRedisSession)
-            {
-                var redisIp = configuration["TokenStoreUrl"];
-
-                services.AddSingleton<IDistributedCacheWrapper>(
-                    p => new DistributedCacheWrapper(redisIp, p.GetService<ILogger<IDistributedCacheWrapper>>()));
-            }
-            else
-            {
-                logger.LogInformation("Not using redis for session management!");
-            }
 
             return services;
         }

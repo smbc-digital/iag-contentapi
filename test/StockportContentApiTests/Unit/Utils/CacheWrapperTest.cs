@@ -4,6 +4,7 @@ using StockportContentApi.Utils;
 using Xunit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace StockportContentApiTests.Unit.Utils
 {
@@ -23,7 +24,7 @@ namespace StockportContentApiTests.Unit.Utils
         public void ShouldCallContentfulIfCacheIsEmpty()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"), It.IsAny<CancellationToken>())).ReturnsAsync("");
 
             // Act
             var valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -36,7 +37,7 @@ namespace StockportContentApiTests.Unit.Utils
         public void ShouldNotCallContentfulIfCacheIsFull()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("\"Cache Data\"");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"), It.IsAny<CancellationToken>())).ReturnsAsync("\"Cache Data\"");
 
             // Act
             var valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -54,7 +55,7 @@ namespace StockportContentApiTests.Unit.Utils
         public async void ShouldCallContentfulIfCacheIsEmptyAsync()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"), It.IsAny<CancellationToken>())).ReturnsAsync("");
 
             // Act
             var valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);
@@ -68,7 +69,7 @@ namespace StockportContentApiTests.Unit.Utils
         public async void ShouldNotCallContentfulIfCacheIsFullAsync()
         {
             // Arrange
-            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"))).ReturnsAsync("\"Cache Data\"");
+            _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s == "test-key"), It.IsAny<CancellationToken>())).ReturnsAsync("\"Cache Data\"");
 
             // Act
             var valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);

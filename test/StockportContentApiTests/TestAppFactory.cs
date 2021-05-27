@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 using StockportContentApi.Model;
+using Microsoft.Extensions.Hosting;
 
 namespace StockportContentApiTests
 {
@@ -53,7 +54,7 @@ namespace StockportContentApiTests
 
         public class FakeStartup : Startup
         {
-            public FakeStartup(IConfiguration config, IHostingEnvironment env) : base(config, env)
+            public FakeStartup(IConfiguration config, IWebHostEnvironment env) : base(config, env)
             {
             }
 
@@ -68,16 +69,6 @@ namespace StockportContentApiTests
                 services.AddSingleton(dateTime.Object);
 
                 var cache = new Mock<ICache>();
-
-                cache.Setup(_ => _.GetKeys()).ReturnsAsync(new List<RedisValueData>()
-                {
-                    new RedisValueData()
-                    {
-                        Expiry = "expiry",
-                        Key = "Key",
-                        NumberOfItems = 4
-                    }
-                });
 
                 var categories = new List<string> { "Arts and Crafts","Business Events","Sports","Museums","Charity","Council","Christmas","Dance","Education","Chadkirk Chapel",
                                                 "Community Group","Public Health","Fayre","Talk","Environment","Comedy","Family","Armed Forces","Antiques and Collectors","Excercise and Fitness",
@@ -131,10 +122,15 @@ namespace StockportContentApiTests
             }
 
             // used for removing middleware authentication
-            public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache, IApplicationLifetime appLifetime)
+            public override void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostApplicationLifetime appLifetime)
             {
                 app.UseStaticFiles();
-                app.UseMvc();
+
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
 
                 loggerFactory.AddSerilog();
             }

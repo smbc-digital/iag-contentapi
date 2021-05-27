@@ -26,15 +26,6 @@ namespace StockportContentApiTests.Unit.Services
             _fileWrapperMock = new Mock<IFileWrapper>();
             SetUpFakeFileSystem();
             _cacheWrapper = new Mock<ICache>();
-            _cacheWrapper.Setup(_ => _.GetKeys()).ReturnsAsync(new List<RedisValueData>
-            {
-                new RedisValueData
-                {
-                    Expiry = ExpiryTime,
-                    Key = Key,
-                    NumberOfItems = NumberOfItems
-                }
-            });
 
             _healthcheckService = CreateHealthcheckService(_appVersionPath, _shaPath);
         }
