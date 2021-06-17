@@ -31,6 +31,7 @@ using StockportContentApi.Services.Profile;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.DataProtection;
 using System.Reflection;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace StockportContentApi.Extensions
 {
@@ -224,8 +225,10 @@ namespace StockportContentApi.Extensions
                     };
                 });
 
+
                 var redis = ConnectionMultiplexer.Connect(redisIp);
                 services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
+                services.AddSingleton<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
             } 
             else
             {
