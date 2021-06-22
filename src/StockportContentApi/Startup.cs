@@ -46,7 +46,6 @@ namespace StockportContentApi
             services.AddFeatureToggles(_contentRootPath, _appEnvironment);
             services.AddSingleton(new CurrentEnvironment(_appEnvironment));
             services.AddCache(_useRedisSession, _appEnvironment, Configuration, logger);
-            services.AddSingleton(new ButoConfig(Configuration["ButoBaseUrl"]));
             services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
             services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
             services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));

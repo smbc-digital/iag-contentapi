@@ -3,7 +3,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Config;
-using StockportContentApi.FeatureToggling;
 using StockportContentApi.Http;
 using StockportContentApi.Repositories;
 using Xunit;
@@ -14,36 +13,14 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly VideoRepository _videoRepository;
         private readonly Mock<ILogger<VideoRepository>> _videoLogger;
-        private readonly Mock<FeatureToggles> _featureToggle = new Mock<FeatureToggles>();
         private readonly Mock<IHttpClient> _fakeHttpClient;
-        private const string MockButoApiUrl = "https://api.buto.tv/v2/";
         private const string MockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
 
         public VideoRepositoryTest()
         {
             _videoLogger = new Mock<ILogger<VideoRepository>>();
             _fakeHttpClient = new Mock<IHttpClient>();
-            _videoRepository = new VideoRepository(new ButoConfig(MockButoApiUrl), new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object, _videoLogger.Object, _featureToggle.Object);
-        }
-
-        /// <summary>
-        /// Nothing should be replaced as both videos exist
-        /// </summary>
-        [Fact]
-        public void KeepsVideoTagsForMultipleButoVideoTagsInContent()
-        {
-            _featureToggle.Object.TwentyThreeVideo = false;
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId1"))
-                .ReturnsAsync(HttpResponse.Successful(
-                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
-
-            _fakeHttpClient.Setup(o=>o.Get($"{MockButoApiUrl}video/VideoId2"))
-                .ReturnsAsync(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
-
-            var content = "Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text";
-            var response = _videoRepository.Process(content);
-
-            response.Should().Be(content);
+            _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object, _videoLogger.Object);
         }
 
         /// <summary>
@@ -52,13 +29,12 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void KeepsVideoTagsForMultipleTwentyThreeVideoTagsInContent()
         {
-            _featureToggle.Object.TwentyThreeVideo = true;
             _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
                 .ReturnsAsync(HttpResponse.Successful(
-                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
+                    GetStringResponseFromFile("StockportContentApiTests.Unit.MockVideoResponses.VideoExists.json")));
 
             _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId2&token=VideoToken2"))
-                .ReturnsAsync(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockButoResponses.VideoExists.json")));
+                .ReturnsAsync(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockVideoResponses.VideoExists.json")));
 
             var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text";
             var response = _videoRepository.Process(content);
@@ -70,34 +46,8 @@ namespace StockportContentApiTests.Unit.Repositories
         /// Test to check if multiple video tags will be removed if they don't exist and keep one existing video tag in the content
         /// </summary>
         [Fact]
-        public void RemovesVideoTagButoVideoDoesNotExistAndWillKeepOneTag()
-        {
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId1"))
-                .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.NotFound, "No video found"));
-
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId2"))
-                .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.NotFound, "No video found"));
-
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId3"))
-                .ReturnsAsync(HttpResponse.Successful("video exists"));
-
-            var content = "Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}";
-            var result = _videoRepository.Process(content);
-            
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId1\" not found. Body Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}");
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2}} Some more text. {{VIDEO:VideoId3}}");
-            result.Should().NotContain("{{VIDEO:VideoId1}}");
-            result.Should().NotContain("{{VIDEO:VideoId2}}");
-            result.Should().Contain("{{VIDEO:VideoId3}}");
-        }
-
-        /// <summary>
-        /// Test to check if multiple video tags will be removed if they don't exist and keep one existing video tag in the content
-        /// </summary>
-        [Fact]
         public void RemovesVideoTagTwentyThreeVideoDoesNotExistAndWillKeepOneTag()
         {
-            _featureToggle.Object.TwentyThreeVideo = true;
             _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
                 .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.NotFound, "No video found"));
 
@@ -110,39 +60,19 @@ namespace StockportContentApiTests.Unit.Repositories
             var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}";
             var result = _videoRepository.Process(content);
 
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
-            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Buto video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Twenty three video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
+            LogTesting.Assert(_videoLogger, LogLevel.Warning, "Twenty three video with id \"VideoId2\" not found. Body Some text , {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}");
             result.Should().NotContain("{{VIDEO:VideoId1;VideoToken1}}");
             result.Should().NotContain("{{VIDEO:VideoId2;VideoToken2}}");
             result.Should().Contain("{{VIDEO:VideoId3;VideoToken3}}");
         }
 
         /// <summary>
-        /// Test to check video tag gets removed if buto is down or the url is wrong (service unavailable)
-        /// </summary>
-        [Fact]
-        public void RemovesOneVideoTagIfButoReturnsServiceUnavailable()
-        {
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId1"))
-                .ReturnsAsync(HttpResponse.Successful("video exists"));
-
-            _fakeHttpClient.Setup(o => o.Get($"{MockButoApiUrl}video/VideoId2"))
-                .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.ServiceUnavailable, "Service unavailable"));
-
-            var content = "Some text {{VIDEO:VideoId1}}, {{VIDEO:VideoId2}} Some more text";
-
-            var response = _videoRepository.Process(content);
-
-            response.Should().Be("Some text {{VIDEO:VideoId1}},  Some more text");
-        }
-
-        /// <summary>
-        /// Test to check video tag gets removed if buto is down or the url is wrong (service unavailable)
+        /// Test to check video tag gets removed if video provider is down or the url is wrong (service unavailable)
         /// </summary>
         [Fact]
         public void RemovesOneVideoTagIfTwentyThreeReturnsServiceUnavailable()
         {
-            _featureToggle.Object.TwentyThreeVideo = true;
             _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
                 .ReturnsAsync(HttpResponse.Successful("video exists"));
 

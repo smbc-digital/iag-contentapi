@@ -5,7 +5,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Config;
-using StockportContentApi.FeatureToggling;
 using StockportContentApi.Http;
 
 namespace StockportContentApi.Repositories
@@ -17,21 +16,17 @@ namespace StockportContentApi.Repositories
 
     public class VideoRepository : IVideoRepository
     {
-        private readonly ButoConfig _butoConfig;
         private readonly TwentyThreeConfig _twentyThreeConfig;
         private readonly IHttpClient _httpClient;
         private readonly ILogger<VideoRepository> _logger;
-        private readonly FeatureToggles _featureToggles;
         private const string StartTag = "{{VIDEO:";
         private const string EndTag = "}}";
 
-        public VideoRepository(ButoConfig butoConfig, TwentyThreeConfig twentyThreeConfig, IHttpClient httpClient, ILogger<VideoRepository> logger, FeatureToggles featureToggles)
+        public VideoRepository(TwentyThreeConfig twentyThreeConfig, IHttpClient httpClient, ILogger<VideoRepository> logger)
         {
-            _butoConfig = butoConfig;
             _twentyThreeConfig = twentyThreeConfig;
             _httpClient = httpClient;
             _logger = logger;
-            _featureToggles = featureToggles;
         }
 
         public string Process(string content)
@@ -63,17 +58,8 @@ namespace StockportContentApi.Repositories
 
         private bool VideoExists(string videoId, string body)
         {
-            string url;
             var videoData = videoId.Split(';');
-
-            if (_featureToggles.TwentyThreeVideo && videoData.Length > 1)
-            {
-                url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
-            }
-            else
-            {
-                url = $"{_butoConfig.BaseUrl}video/{videoData[0]}";
-            }
+            string url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
             
             var response = _httpClient.Get(url);
             var result = response.Result;
@@ -84,7 +70,7 @@ namespace StockportContentApi.Repositories
             }
 
             // video doesn't exist, log and return false
-            _logger.LogWarning("Buto video with id \"" + videoData[0] + "\" not found. Body " + body);
+            _logger.LogWarning($"Twenty three video with id '{videoData[0]}' not found. Video URL: {url}. Body {body}");
             return false;
         }
     }

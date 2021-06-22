@@ -49,7 +49,6 @@
     <None Remove="Integration\ExpectedContentApiResponses\SmartAnswers.json" />
     <None Remove="Integration\ExpectedContentApiResponses\StartPage.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
-    <None Remove="Unit\MockButoResponses\VideoExists.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -83,7 +82,7 @@
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Showcase.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\StartPage.json" />
     <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
-    <EmbeddedResource Include="Unit\MockButoResponses\VideoExists.json" />
+    <EmbeddedResource Include="Unit\MockVideoResponses\VideoExists.json" />
   </ItemGroup>
 
   <ItemGroup>
