@@ -65,13 +65,7 @@ namespace StockportContentApi.Repositories
             
             var result = _httpClient.Get(url).Result;
 
-            if (result != null && result.StatusCode == HttpStatusCode.OK)
-            {
-                return true;
-            }
-
-            _logger.LogWarning($"Twenty three video with id '{videoData[0]}' not found. Video URL: {url}. Response {JsonConvert.SerializeObject(result)}");
-            return false;
+            return result != null && result.StatusCode == HttpStatusCode.OK;
         }
     }
 }
