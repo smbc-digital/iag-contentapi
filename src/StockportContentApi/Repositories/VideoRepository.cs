@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 
@@ -29,10 +31,8 @@ namespace StockportContentApi.Repositories
             _logger = logger;
         }
 
-        public string Process(string content)
-        {
-            return ReplaceVideoTagsWithVideoContent(content);
-        }
+        public string Process(string content) =>
+            ReplaceVideoTagsWithVideoContent(content);
 
         private string ReplaceVideoTagsWithVideoContent(string body)
         {
@@ -41,36 +41,36 @@ namespace StockportContentApi.Repositories
             foreach (var videoTag in videoTags)
             {
                 var videoId = videoTag
-                        .Replace(StartTag, string.Empty)
-                        .Replace(EndTag, string.Empty);
+                    .Replace(StartTag, string.Empty)
+                    .Replace(EndTag, string.Empty);
 
-                if (!VideoExists(videoId, body)) body = body.Replace(videoTag, string.Empty);
+                if (!VideoExists(videoId))
+                    body = body.Replace(videoTag, string.Empty);
             }
 
             return body;
         }
 
-        private static IEnumerable<string> GetVideosTags(string body)
-        {
-            var matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
-            return matches.Select(m => m.Value).ToList();
-        }
+        private static IEnumerable<string> GetVideosTags(string body) =>
+            Regex
+                .Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}")
+                .OfType<Match>()
+                .Select(match => match.Value)
+                .ToList();
 
-        private bool VideoExists(string videoId, string body)
+        private bool VideoExists(string videoId)
         {
             var videoData = videoId.Split(';');
             string url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
             
-            var response = _httpClient.Get(url);
-            var result = response.Result;
+            var result = _httpClient.Get(url).Result;
 
             if (result != null && result.StatusCode == HttpStatusCode.OK)
             {
                 return true;
             }
 
-            // video doesn't exist, log and return false
-            _logger.LogWarning($"Twenty three video with id '{videoData[0]}' not found. Video URL: {url}. Body {body}");
+            _logger.LogWarning($"Twenty three video with id '{videoData[0]}' not found. Video URL: {url}. Response {JsonConvert.SerializeObject(result)}");
             return false;
         }
     }
