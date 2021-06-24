@@ -44,8 +44,8 @@ namespace StockportContentApi.Repositories
                     .Replace(StartTag, string.Empty)
                     .Replace(EndTag, string.Empty);
 
-                if (!VideoExists(videoId))
-                    body = body.Replace(videoTag, string.Empty);
+                // if (!VideoExists(videoId)) we are removing this while we work out why /news is being spammed and we work on improving how we get the information for the news pages
+                body = body.Replace(videoTag, string.Empty);
             }
 
             return body;
