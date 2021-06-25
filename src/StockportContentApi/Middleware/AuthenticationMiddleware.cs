@@ -44,7 +44,6 @@ namespace StockportContentApi.Middleware
 
             if (string.IsNullOrEmpty(apiConfigurationkey))
             {
-                _logger.LogCritical("API Authentication Key is missing from the config");
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 await context.Response.WriteAsync("API Authentication Key is missing from the config");
                 return;
@@ -54,7 +53,6 @@ namespace StockportContentApi.Middleware
 
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
-                _logger.LogError("API Authentication Key is either missing or wrong");
                 context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
                 await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
                 return;
@@ -68,7 +66,6 @@ namespace StockportContentApi.Middleware
                 }
                 catch (AuthorizationException)
                 {
-                    _logger.LogError("Invalid attempt to access API from API Key without a version");
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     await context.Response.WriteAsync("API Authentication Key is either missing or wrong-");
                     return;
@@ -84,7 +81,6 @@ namespace StockportContentApi.Middleware
                 }
                 catch (AuthorizationException)
                 {
-                    _logger.LogError("API Authentication Key is either missing or wrong");
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     await context.Response.WriteAsync("API Authentication Key is either missing or wrong_");
                     return;
