@@ -40,8 +40,6 @@ namespace StockportContentApi.Repositories
                 var videoId = videoTag
                     .Replace(StartTag, string.Empty)
                     .Replace(EndTag, string.Empty);
-
-                body = body.Replace(videoTag, string.Empty);
             }
 
             return body;
