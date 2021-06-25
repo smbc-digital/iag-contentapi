@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 
@@ -20,19 +17,19 @@ namespace StockportContentApi.Repositories
     {
         private readonly TwentyThreeConfig _twentyThreeConfig;
         private readonly IHttpClient _httpClient;
-        private readonly ILogger<VideoRepository> _logger;
         private const string StartTag = "{{VIDEO:";
         private const string EndTag = "}}";
 
-        public VideoRepository(TwentyThreeConfig twentyThreeConfig, IHttpClient httpClient, ILogger<VideoRepository> logger)
+        public VideoRepository(TwentyThreeConfig twentyThreeConfig, IHttpClient httpClient)
         {
             _twentyThreeConfig = twentyThreeConfig;
             _httpClient = httpClient;
-            _logger = logger;
         }
 
-        public string Process(string content) =>
-            ReplaceVideoTagsWithVideoContent(content);
+        public string Process(string content)
+        {
+            return ReplaceVideoTagsWithVideoContent(content);
+        }
 
         private string ReplaceVideoTagsWithVideoContent(string body)
         {
@@ -44,19 +41,17 @@ namespace StockportContentApi.Repositories
                     .Replace(StartTag, string.Empty)
                     .Replace(EndTag, string.Empty);
 
-                // if (!VideoExists(videoId)) we are removing this while we work out why /news is being spammed and we work on improving how we get the information for the news pages
                 body = body.Replace(videoTag, string.Empty);
             }
 
             return body;
         }
 
-        private static IEnumerable<string> GetVideosTags(string body) =>
-            Regex
-                .Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}")
-                .OfType<Match>()
-                .Select(match => match.Value)
-                .ToList();
+        private static IEnumerable<string> GetVideosTags(string body)
+        {
+            var matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
+            return matches.Select(m => m.Value).ToList();
+        }
 
         private bool VideoExists(string videoId)
         {

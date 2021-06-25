@@ -12,15 +12,13 @@ namespace StockportContentApiTests.Unit.Repositories
     public class VideoRepositoryTest : TestingBaseClass
     {
         private readonly VideoRepository _videoRepository;
-        private readonly Mock<ILogger<VideoRepository>> _videoLogger;
         private readonly Mock<IHttpClient> _fakeHttpClient;
         private const string MockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
 
         public VideoRepositoryTest()
         {
-            _videoLogger = new Mock<ILogger<VideoRepository>>();
             _fakeHttpClient = new Mock<IHttpClient>();
-            _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object, _videoLogger.Object);
+            _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object);
         }
 
         // /// <summary>
