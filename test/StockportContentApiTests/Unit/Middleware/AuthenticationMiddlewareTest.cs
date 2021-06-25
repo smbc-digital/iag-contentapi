@@ -46,7 +46,6 @@ namespace StockportContentApiTests.Unit.Middleware
             await _middleware.Invoke(context);
 
             // Assert
-            LogTesting.Assert(_logger, LogLevel.Critical, "API Authentication Key is missing from the config");
             _authHelper.Verify(_ => _.ExtractAuthenticationDataFromContext(It.IsAny<HttpContext>()), Times.Never); 
         }
 
@@ -96,58 +95,6 @@ namespace StockportContentApiTests.Unit.Middleware
 
             // Assert
             _requestDelegate.Verify(_ => _(It.IsAny<HttpContext>()), Times.Once);
-        }
-
-        [Fact]
-        public async void Invoke_ShouldReturnIfNoVersionIsProvided()
-        {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var authData = new AuthenticationData()
-            {
-                AuthenticationKey = "key-not-matching",
-                BusinessId = "businessid",
-                Version = 1,
-                Endpoint = "endpoint",
-                Verb = "GET",
-                VersionText = "incorrectText"
-            };
-            _authHelper.Setup(_ => _.ExtractAuthenticationDataFromContext(It.IsAny<HttpContext>())).Returns(authData);
-            _configuration.Setup(_ => _["Authorization"]).Returns("key");
-            _authHelper.Setup(_ => _.CheckVersionIsProvided(It.IsAny<AuthenticationData>()))
-                .Throws<AuthorizationException>();
-
-            // Act
-            await _middleware.Invoke(context);
-
-            // Assert
-            LogTesting.Assert(_logger, LogLevel.Error, "Invalid attempt to access API from API Key without a version");
-        }
-
-        [Fact]
-        public async void Invoke_ShouldReturnIfKeyIsInvalid()
-        {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var authData = new AuthenticationData()
-            {
-                AuthenticationKey = "key-not-matching",
-                BusinessId = "businessid",
-                Version = 1,
-                Endpoint = "endpoint",
-                Verb = "GET",
-                VersionText = "incorrectText"
-            };
-            _authHelper.Setup(_ => _.ExtractAuthenticationDataFromContext(It.IsAny<HttpContext>())).Returns(authData);
-            _configuration.Setup(_ => _["Authorization"]).Returns("key");
-            _authHelper.Setup(_ => _.GetValidKey(It.IsAny<IApiKeyRepository>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())).Throws<AuthorizationException>();
-
-            // Act
-            await _middleware.Invoke(context);
-
-            // Assert
-            LogTesting.Assert(_logger, LogLevel.Error, "API Authentication Key is either missing or wrong");
         }
     }
 }
