@@ -38,9 +38,6 @@ namespace StockportContentApiTests.Unit.Builders
         private string _systemId = "id";
         private string _contentTypeSystemId = "id";
 
-        private ContentfulAdvertisement _advertisement =
-            new ContentfulAdvertisementBuilder().Build();
-
 
         public ContentfulTopic Build()
         {
@@ -66,7 +63,6 @@ namespace StockportContentApiTests.Unit.Builders
                 EventBanner = _eventBanner,
                 ExpandingLinkTitle = _expandingLinkTitle,
                 ExpandingLinkBoxes = _expandingLinkBox,
-                Advertisement =_advertisement,
                 DisplayContactUs = false,
                 Sys = new SystemProperties()
                 {
@@ -204,12 +200,6 @@ namespace StockportContentApiTests.Unit.Builders
         public ContentfulTopicBuilder SystemContentTypeId(string id)
         {
             _contentTypeSystemId = id;
-            return this;
-        }
-
-        public ContentfulTopicBuilder Advertisement(ContentfulAdvertisement advertisement)
-        {
-            _advertisement = advertisement;
             return this;
         }
     }

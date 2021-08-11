@@ -20,6 +20,5 @@ namespace StockportContentApi.ContentfulModels
       
         // references
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
-        public ContentfulAdvertisement Advertisement { get; set; } = null;
     }
 }

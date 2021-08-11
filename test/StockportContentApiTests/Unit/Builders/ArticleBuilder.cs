@@ -99,14 +99,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Subject = "subject"
             },
     };
-        private Advertisement _advertisement = new Advertisement("title",
-            "slug",
-            "teaser",
-            DateTime.MinValue,
-            DateTime.MaxValue,
-            true,
-            "url",
-            "image");
 
         private DateTime _updatedAt = DateTime.Now;
 
@@ -129,7 +121,6 @@ namespace StockportContentApiTests.Unit.Builders
             "id",
             new NullEventBanner(),
             "expandingLinkTitle",
-            new NullAdvertisement(),
             new List<ExpandingLinkBox>());
 
         public Article Build()
@@ -151,7 +142,6 @@ namespace StockportContentApiTests.Unit.Builders
                 _sunriseDate,
                 _sunsetDate,
                 _alertsInline,
-                _advertisement,
                 _updatedAt);
         }
 

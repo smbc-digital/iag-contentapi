@@ -29,7 +29,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-        private Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
         
         public ArticleContentfulFactoryTest()
         {
@@ -46,14 +45,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-            _advertisementFactory = new Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>>();
 
             _timeProvider = new Mock<ITimeProvider>();
 
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _advertisementFactory.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
+                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]

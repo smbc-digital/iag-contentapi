@@ -70,7 +70,6 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(p => new ContactUsIdContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(p => new CarouselContentContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(p => new AdvertisementContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>(), p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>>(p => new HomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                 p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
@@ -115,7 +114,6 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
                 p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
-                p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
@@ -146,7 +144,6 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<Asset, Document>>(),
                 p.GetService<IVideoRepository>(),
                 p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulAdvertisement, Advertisement>>(),
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<IHttpContextAccessor>()
                 ));

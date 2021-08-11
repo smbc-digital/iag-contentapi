@@ -18,7 +18,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
-        private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
         private readonly DateComparer _dateComparer;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -29,7 +28,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory,
             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -38,7 +36,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             _profileFactory = profileFactory;
             _documentFactory = documentFactory;
             _videoRepository = videoRepository;
-            _advertisementFactory = advertisementFactory;
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
@@ -77,17 +74,10 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
-            Advertisement advertisement = null;
-            if (entry.Advertisement != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
-                entry.Advertisement.SunsetDate))
-            {
-                advertisement = _advertisementFactory.ToModel(entry.Advertisement);
-            }
-
             var updatedAt = entry.Sys.UpdatedAt.Value;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
-                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, advertisement, updatedAt).StripData(_httpContextAccessor);
+                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt).StripData(_httpContextAccessor);
         }
     }
 }
