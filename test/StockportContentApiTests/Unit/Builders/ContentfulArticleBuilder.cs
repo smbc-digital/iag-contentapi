@@ -48,7 +48,6 @@ namespace StockportContentApiTests.Unit.Builders
             return new ContentfulArticle
             {
                 Alerts = _alerts,
-                Advertisement = new ContentfulAdvertisement(),
                 BackgroundImage = _backgroundImage,
                 Body = _body,
                 Breadcrumbs = _breadcrumbs,
