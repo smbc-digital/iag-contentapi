@@ -24,7 +24,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
         private readonly Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>> _expandingLinkBoxFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
-        private readonly Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>> _advertisementFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
 
         public TopicContentfulFactoryTest()
@@ -35,9 +34,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
-            _advertisementFactory = new Mock<IContentfulFactory<ContentfulAdvertisement, Advertisement>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _advertisementFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
         }
 
         [Fact]
@@ -46,10 +44,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             //Arrange
             var crumb = new Crumb("title", "slug", "type");
             _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
-
-            var advertisement = new Advertisement("Advert Title", "advert slug", "advert teaser", DateTime.MaxValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), true, "url", "image.jpg");
-            _advertisementFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAdvertisement>())).Returns(advertisement);
-
+         
             var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
@@ -73,7 +68,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var result = _topicContentfulFactory.ToModel(_contentfulTopic);
 
             //Assert
-            result.Advertisement.Should().BeEquivalentTo(advertisement);
             result.SubItems.Count().Should().Be(1);
             result.SubItems.First().Should().BeEquivalentTo(subItem);
             result.SecondaryItems.Count().Should().Be(1);

@@ -14,10 +14,9 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
-        private readonly IContentfulFactory<ContentfulAdvertisement, Advertisement> _advertisementFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulAdvertisement, Advertisement> advertisementFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
 
         {
             _subItemFactory = subItemFactory;
@@ -26,7 +25,6 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
-            _advertisementFactory = advertisementFactory;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -68,16 +66,9 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             var displayContactUs = entry.DisplayContactUs;
 
-            Advertisement advertisement = null;
-            if (entry.Advertisement != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.Advertisement.SunriseDate,
-                entry.Advertisement.SunsetDate))
-            {
-                advertisement = _advertisementFactory.ToModel(entry.Advertisement);
-            }
-
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, advertisement, 
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs).StripData(_httpContextAccessor);
         }
     }
