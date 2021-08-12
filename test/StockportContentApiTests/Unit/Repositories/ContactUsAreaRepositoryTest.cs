@@ -24,11 +24,10 @@ namespace StockportContentApiTests.Unit.Repositories
     {
         private readonly ContactUsAreaRepository _repository;
         private readonly Mock<IContentfulClient> _contentfulClient;
-        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        private readonly Mock<IContentfulFactory<ContentfulInsetText, InsetText>> _mockInsetTextFactory = new Mock<IContentfulFactory<ContentfulInsetText, InsetText>>();
-        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>();
+        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
+        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
 
         private readonly Mock<ITimeProvider> _timeprovider = new Mock<ITimeProvider>();
 
@@ -45,7 +44,12 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-            var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _timeprovider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object, _mockContactUsCategoryFactory.Object);
+            var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
+                HttpContextFake.GetHttpContextFake(), 
+                _mockCrumbFactory.Object, 
+                _timeprovider.Object, 
+                _mockAlertFactory.Object, 
+                _mockContactUsCategoryFactory.Object);
 
             _repository = new ContactUsAreaRepository(config, contentfulClientManager.Object, contentfulFactory);
         }

@@ -79,7 +79,6 @@ namespace StockportContentApi.Extensions
                 p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory(p.GetService<IHttpContextAccessor>()));
-            services.AddSingleton<IContentfulFactory<ContentfulInsetText, InsetText>>(p => new InsetTextContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p => new ContactUsCategoryContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
@@ -177,7 +176,7 @@ namespace StockportContentApi.Extensions
                 (p => new GroupBrandingContentfulFactory(p.GetService<IHttpContextAccessor>()));
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
             (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
-                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulInsetText, InsetText>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
+                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
             services.AddSingleton<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>(_ => new BasicLinkListContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ => new CommsContentfulFactory(
                 _.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
