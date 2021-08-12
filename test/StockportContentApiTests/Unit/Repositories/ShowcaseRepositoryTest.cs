@@ -60,9 +60,6 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockLogger = new Mock<ILogger<ShowcaseRepository>>();
             _timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var consultationFactory = new Mock<IContentfulFactory<ContentfulConsultation, Consultation>>();
-            consultationFactory.Setup(o => o.ToModel(It.IsAny<ContentfulConsultation>())).Returns(new Consultation("title", DateTime.Now, "https://www.stockport.gov.uk/link"));
-
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
@@ -89,7 +86,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, consultationFactory.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 
