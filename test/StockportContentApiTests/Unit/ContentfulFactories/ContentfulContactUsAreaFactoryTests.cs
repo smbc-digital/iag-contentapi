@@ -13,16 +13,20 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     public class ContentfulContactUsAreaFactoryTests
     {
         private readonly ContactUsAreaContentfulFactory _factory;
-        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
-        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        private readonly Mock<IContentfulFactory<ContentfulInsetText, InsetText>> _mockInsetTextFactory = new Mock<IContentfulFactory<ContentfulInsetText, InsetText>>();
-        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>();
+        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
+        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
+        private readonly Mock<ITimeProvider> _mockTimeProvider = new();
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
+        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
 
         public ContentfulContactUsAreaFactoryTests()
         {
-            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, HttpContextFake.GetHttpContextFake(), _mockCrumbFactory.Object, _mockTimeProvider.Object, _mockAlertFactory.Object, _mockInsetTextFactory.Object, _mockContactUsCategoryFactory.Object);
+            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, 
+                HttpContextFake.GetHttpContextFake(), 
+                _mockCrumbFactory.Object, 
+                _mockTimeProvider.Object, 
+                _mockAlertFactory.Object,
+                _mockContactUsCategoryFactory.Object);
         }
 
         [Fact]
@@ -35,7 +39,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             Assert.NotNull(result.Breadcrumbs);
             Assert.NotNull(result.Alerts);
-            Assert.NotNull(result.InsetTexts);
+            Assert.NotNull(result.InsetTextTitle);
+            Assert.NotNull(result.InsetTextBody);
             Assert.NotNull(result.PrimaryItems);
             Assert.NotNull(result.Slug);
             Assert.NotNull(result.Title);
@@ -44,6 +49,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.Equal("slug", result.Slug);
             Assert.NotNull(result.ContactUsCategories);
             Assert.Equal("metaDescription", result.MetaDescription);
+            Assert.Equal("insetTextTitle", result.InsetTextTitle);
+            Assert.Equal("insetTextBody", result.InsetTextBody);
         }
 
         [Fact]
@@ -65,7 +72,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             Assert.NotNull(result.Breadcrumbs);
             Assert.NotNull(result.Alerts);
-            Assert.NotNull(result.InsetTexts);
+            Assert.NotNull(result.InsetTextTitle);
+            Assert.NotNull(result.InsetTextBody);
             Assert.Single(result.PrimaryItems);
             Assert.NotNull(result.Slug);
             Assert.NotNull(result.Title);
@@ -90,11 +98,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 new ContentfulAlert()
             };
 
-            var insetTexts = new List<ContentfulInsetText>
-            {
-                new ContentfulInsetText()
-            };
-
             var contactUsCategories = new List<ContentfulContactUsCategory>
             {
                 new ContentfulContactUsCategory()
@@ -104,7 +107,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                 .PrimaryItems(primaryItems)
                                 .Breadcrumbs(breadcrumbs)
                                 .Alerts(alerts)
-                                .InsetTexts(insetTexts)
                                 .ContentfulContactUsCategories(contactUsCategories)
                                 .Build();
 
@@ -114,12 +116,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             Assert.Single(result.Breadcrumbs);
             Assert.Single(result.Alerts);
-            Assert.Single(result.InsetTexts);
             Assert.Single(result.PrimaryItems);
             Assert.Single(result.ContactUsCategories);
             Assert.NotNull(result.Slug);
             Assert.NotNull(result.Title);
             Assert.NotNull(result.CategoriesTitle);
+            Assert.NotNull(result.InsetTextTitle);
+            Assert.NotNull(result.InsetTextBody);
         }
     }
 }

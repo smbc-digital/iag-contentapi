@@ -10,6 +10,8 @@ namespace StockportContentApiTests.Builders
         private string _slug { get; set; } = "slug";
         private string _categoriesTitle { get; set; } = "categoriesTitle";
         private string _metaDescription { get; set; } = "metaDescription";
+        private string _insetTextTitle { get; set; } = "insetTextTitle";
+        private string _insetTextBody { get; set; } = "insetTextBody";
 
         private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
@@ -21,11 +23,6 @@ namespace StockportContentApiTests.Builders
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
         {
             new ContentfulAlertBuilder().Build()
-        };
-
-        private List<ContentfulInsetText> _insetTexts = new List<ContentfulInsetText>
-        {
-            new ContentfulInsetTextBuilder().Build()
         };
 
         private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
@@ -42,7 +39,8 @@ namespace StockportContentApiTests.Builders
                 CategoriesTitle = _categoriesTitle,
                 Breadcrumbs = _breadcrumbs,
                 Alerts = _alerts,
-                InsetText = _insetTexts,
+                InsetTextTitle = _insetTextTitle,
+                InsetTextBody = _insetTextBody,
                 PrimaryItems = _primaryItems,
                 ContactUsCategories = _contactUsCategories,
                 MetaDescription = _metaDescription
@@ -85,9 +83,15 @@ namespace StockportContentApiTests.Builders
             return this;
         }
 
-        public ContentfulContactUsAreaBuilder InsetTexts(List<ContentfulInsetText> insetTexts)
+        public ContentfulContactUsAreaBuilder InsetTextTitle(string insetTextTitle)
         {
-            _insetTexts = insetTexts;
+            _insetTextTitle = insetTextTitle;
+            return this;
+        }
+
+        public ContentfulContactUsAreaBuilder InsetTextBody(string insetTextBody)
+        {
+            _insetTextTitle = insetTextBody;
             return this;
         }
 

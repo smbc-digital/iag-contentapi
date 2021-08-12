@@ -12,19 +12,17 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IContentfulFactory<ContentfulInsetText, InsetText> _insetTextFactory;
         private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulInsetText, InsetText> insetTextFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
+        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
         {
             _httpContextAccessor = httpContextAccessor;
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
-            _insetTextFactory = insetTextFactory;
             _contactUsCategoryFactory = contactUsCategoryFactory;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -43,6 +41,14 @@ namespace StockportContentApi.ContentfulFactories
                 ? entry.CategoriesTitle
                 : "";
 
+            var insetTextTitle = !string.IsNullOrEmpty(entry.InsetTextTitle)
+                ? entry.InsetTextTitle
+                : "";
+
+            var insetTextBody = !string.IsNullOrEmpty(entry.InsetTextBody)
+                ? entry.InsetTextBody
+                : "";
+
             var breadcrumbs =
                 entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                     .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
@@ -56,14 +62,11 @@ namespace StockportContentApi.ContentfulFactories
                                                      _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            var insetTexts = entry.InsetText.Where(insetText => ContentfulHelpers.EntryIsNotALink(insetText.Sys))
-                .Select(insetText => _insetTextFactory.ToModel(insetText)).ToList();
-
             var contactUsCategories =
                 entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
                     .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
-            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, insetTexts, primaryItems, contactUsCategories, entry.MetaDescription).StripData(_httpContextAccessor);
+            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription).StripData(_httpContextAccessor);
         }
     }
 }
