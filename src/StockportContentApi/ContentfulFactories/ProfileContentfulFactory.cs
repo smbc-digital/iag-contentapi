@@ -51,19 +51,10 @@ namespace StockportContentApi.ContentfulFactories
 
             var inlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList();
 
-            var button = new Button
-            {
-                AnalyticsId = entry.Button.AnalyticsId,
-                Type = entry.Button.Type,
-                Link = entry.Button.Link,
-                Text = entry.Button.Text
-            };
-
             var eventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner);
 
             return new Profile
             {
-                Button = button,
                 Alerts = alerts,
                 Author = entry.Author,
                 Body = entry.Body,

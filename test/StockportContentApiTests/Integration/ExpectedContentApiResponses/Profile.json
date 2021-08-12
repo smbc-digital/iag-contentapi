@@ -32,12 +32,6 @@
   },
   "author": "author",
   "subject": "subject",
-  "button": {
-    "type": null,
-    "text": null,
-    "link": null,
-    "analyticsId": null
-  },
   "eventsBanner": {
     "title": "",
     "teaser": "",
