@@ -191,7 +191,6 @@ namespace StockportContentApiTests.Integration
                 showcaseCollection.Items = new List<ContentfulShowcase>
                 {
                     new ContentfulShowcaseBuilder().Slug("showcase_slug")
-                                        .Consultations(new List<ContentfulConsultation>() { new ContentfulConsultation() { Title = "title", ClosingDate = DateTime.MinValue, Link = "http://link.url" } })
                                         .SocialMediaLinks(new List<ContentfulSocialMediaLink>() { new ContentfulSocialMediaLink() { Title = "sm-link-title", Slug = "sm-link-slug", Url = "http://link.url" , Icon = "sm-link-icon" } })
                                         .Build()
                 };

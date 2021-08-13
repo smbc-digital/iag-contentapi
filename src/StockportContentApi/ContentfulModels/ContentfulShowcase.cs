@@ -12,7 +12,6 @@ namespace StockportContentApi.ContentfulModels
         public string Subheading { get; set; } = string.Empty;
         public string FeaturedItemsSubheading { get; set; } = string.Empty;
         public List<ContentfulReference> FeaturedItems { get; set; } = new List<ContentfulReference>();
-        public List<ContentfulConsultation> Consultations { get; set; } = new List<ContentfulConsultation>();
         public string SocialMediaLinksSubheading { get; set; } = string.Empty;
         public List<ContentfulSocialMediaLink> SocialMediaLinks { get; set; } = new List<ContentfulSocialMediaLink>();
         public string EventSubheading { get; set; } = string.Empty;

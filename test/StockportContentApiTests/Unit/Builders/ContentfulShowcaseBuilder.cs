@@ -26,7 +26,6 @@ namespace StockportContentApiTests.Builders
         private string _emailAlertsTopicId { get; set; } = "alertId";
         private string _emailAlertsText { get; set; } = "alertText";
         private string _typeformUrl { get; set; } = "typeformUrl";
-        private List<ContentfulConsultation> _consultations = new List<ContentfulConsultation>();
         private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         {
@@ -54,7 +53,6 @@ namespace StockportContentApiTests.Builders
                 NewsCategoryTag = _newsCategoryTag,
                 SecondaryItems = _secondaryItems,
                 Breadcrumbs = _breadcrumbs,
-                Consultations = _consultations,
                 SocialMediaLinks = _socialMediaLinks,
                 BodySubheading = _bodySubheading,
                 Body = _body,
@@ -145,12 +143,6 @@ namespace StockportContentApiTests.Builders
         public ContentfulShowcaseBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
         {
             _breadcrumbs = breadcrumbs;
-            return this;
-        }
-
-        public ContentfulShowcaseBuilder Consultations(List<ContentfulConsultation> consultations)
-        {
-            _consultations = consultations;
             return this;
         }
 

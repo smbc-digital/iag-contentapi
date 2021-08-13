@@ -12,7 +12,6 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IContentfulFactory<ContentfulConsultation, Consultation> _consultationFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
@@ -23,7 +22,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
         private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulConsultation, Consultation> consultationFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
             IHttpContextAccessor httpContextAccessor,
             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
@@ -32,7 +31,6 @@ namespace StockportContentApi.ContentfulFactories
         {
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
-            _consultationFactory = consultationFactory;
             _socialMediaFactory = socialMediaFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
@@ -65,10 +63,6 @@ namespace StockportContentApi.ContentfulFactories
                 entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
                                                       && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
-
-            var consultations =
-                entry.Consultations.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                    .Select(consult => _consultationFactory.ToModel(consult)).ToList();
 
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                 .Select(media => _socialMediaFactory.ToModel(media)).ToList();
@@ -122,7 +116,6 @@ namespace StockportContentApi.ContentfulFactories
                 SecondaryItems = secondaryItems,
                 FeaturedItemsSubheading = entry.FeaturedItemsSubheading,
                 FeaturedItems = featuredItems,
-                Consultations = consultations,
                 SocialMediaLinksSubheading = entry.SocialMediaLinksSubheading,
                 SocialMediaLinks = socialMediaLinks,
                 EventSubheading = entry.EventSubheading,
