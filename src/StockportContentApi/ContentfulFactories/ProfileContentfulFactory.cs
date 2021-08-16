@@ -59,7 +59,6 @@ namespace StockportContentApi.ContentfulFactories
                 Author = entry.Author,
                 Body = entry.Body,
                 Breadcrumbs = breadcrumbs,
-                FieldOrder = entry.FieldOrder,
                 Image = imageUrl,
                 InlineQuotes = inlineQuotes,
                 Quote = entry.Quote,
