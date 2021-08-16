@@ -31,7 +31,7 @@ namespace StockportContentApiTests.Unit.Builders
                 Author = "author",
                 FieldOrder = new FieldOrder(),
                 Subject = "subject",
-                TriviaSection = new List<ContentfulInformationList>(),
+                TriviaSection = new List<ContentfulTrivia>(),
                 TriviaSubheading = "trivia heading"
             };
         }

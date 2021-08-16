@@ -15,7 +15,7 @@ namespace StockportContentApi.Model
         public IEnumerable<Crumb> Breadcrumbs { get; set; }
         public List<Alert> Alerts { get; set; }
         public string TriviaSubheading { get; set; }
-        public List<InformationList> TriviaSection { get; set; }
+        public List<Trivia> TriviaSection { get; set; }
         public FieldOrder FieldOrder { get; set; }
         public string Author { get; set; }
         public string Subject { get; set; }

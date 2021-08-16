@@ -27,7 +27,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 _crumbFactory.Object, 
                 HttpContextFake.GetHttpContextFake(), 
                 new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, 
-                new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>().Object,
+                new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>().Object,
                 new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
                 _eventBannerFactory.Object);
         }

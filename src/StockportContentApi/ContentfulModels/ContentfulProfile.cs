@@ -17,7 +17,7 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public string TriviaSubheading { get; set; }
-        public List<ContentfulInformationList> TriviaSection { get; set; } = new List<ContentfulInformationList>();
+        public List<ContentfulTrivia> TriviaSection { get; set; } = new List<ContentfulTrivia>();
         public FieldOrder FieldOrder { get; set; } = new FieldOrder();
         public string Author { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;

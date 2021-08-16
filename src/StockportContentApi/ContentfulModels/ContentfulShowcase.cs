@@ -29,11 +29,9 @@ namespace StockportContentApi.ContentfulModels
         public FieldOrder FieldOrder { get; set; } = new FieldOrder();
         public string EmailAlertsTopicId { get; set; } = string.Empty;
         public string EmailAlertsText { get; set; } = string.Empty;
-        public string KeyFactSubheading { get; set; } = string.Empty;
-        public List<ContentfulKeyFact> KeyFacts { get; set; } = new List<ContentfulKeyFact>();
         public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         public string TriviaSubheading { get; set; } = string.Empty;
-        public List<ContentfulInformationList> TriviaSection { get; set; } = new List<ContentfulInformationList>();
+        public List<ContentfulTrivia> TriviaSection { get; set; } = new List<ContentfulTrivia>();
         public ContentfulCallToActionBanner CallToActionBanner { get; set; } = null;
         public ContentfulVideo Video { get; set; }
         public string TypeformUrl { get; set; } = string.Empty;

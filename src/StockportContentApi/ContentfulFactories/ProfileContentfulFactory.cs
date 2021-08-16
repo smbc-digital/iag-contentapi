@@ -12,7 +12,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
+        private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
         private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
 
@@ -20,14 +20,14 @@ namespace StockportContentApi.ContentfulFactories
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
             IHttpContextAccessor httpContextAccessor, 
             IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
-            IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
+            IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
             IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
             IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _crumbFactory = crumbFactory;
             _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
-            _informationListFactory = informationListFactory;
+            _triviaFactory = triviaFactory;
             _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
             _eventBannerFactory = eventBannerFactory;
         }
@@ -47,7 +47,7 @@ namespace StockportContentApi.ContentfulFactories
                 : "";
 
             var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                                    .Select(fact => _informationListFactory.ToModel(fact)).ToList();
+                                    .Select(fact => _triviaFactory.ToModel(fact)).ToList();
 
             var inlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList();
 
