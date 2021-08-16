@@ -34,7 +34,7 @@ namespace StockportContentApi.Model
             string instagramFeedTitle,
             string instagramLink,
             string facebookFeedTitle,
-            IEnumerable<BasicLink> usefullLinks,
+            IEnumerable<BasicLink> usefulLinks,
             Event whatsOnInStockportEvent,
             CallToActionBanner callToActionBanner,
             string emailAlertsTopicId
@@ -47,7 +47,7 @@ namespace StockportContentApi.Model
             InstagramFeedTitle = instagramFeedTitle;
             InstagramLink = instagramLink;
             FacebookFeedTitle = facebookFeedTitle;
-            UsefullLinks = usefullLinks;
+            UsefulLinks = usefulLinks;
             WhatsOnInStockportEvent = whatsOnInStockportEvent;
             CallToActionBanner = callToActionBanner;
             EmailAlertsTopicId = emailAlertsTopicId;

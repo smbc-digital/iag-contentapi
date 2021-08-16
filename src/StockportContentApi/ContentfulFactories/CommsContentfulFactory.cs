@@ -20,11 +20,11 @@ namespace StockportContentApi.ContentfulFactories
 
         public CommsHomepage ToModel(ContentfulCommsHomepage model)
         {
-            List<BasicLink> basicLinks = new();
+            List<BasicLink> usefulLinks = new();
             if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null && 
                 model.UsefulLinksText.Count.Equals(model.UsefulLinksURL.Count))
             {
-                basicLinks = model.UsefulLinksText.Zip(model.UsefulLinksURL, (text, url) => new BasicLink(url, text)).ToList();
+                usefulLinks = model.UsefulLinksText.Zip(model.UsefulLinksURL, (text, url) => new BasicLink(url, text)).ToList();
             }
 
             return new(
@@ -35,7 +35,7 @@ namespace StockportContentApi.ContentfulFactories
                 model.InstagramFeedTitle,
                 model.InstagramLink,
                 model.FacebookFeedTitle,
-                basicLinks,
+                usefulLinks,
                 _eventFactory.ToModel(model.WhatsOnInStockportEvent),
                 _callToActionFactory.ToModel(model.CallToActionBanner),
                 model.EmailAlertsTopicId
