@@ -20,7 +20,7 @@ namespace StockportContentApi.Model
 
         public string FacebookFeedTitle { get; }
 
-        public IEnumerable<BasicLink> UsefullLinks { get; }
+        public IEnumerable<BasicLink> UsefulLinks { get; }
 
         public Event WhatsOnInStockportEvent { get; }
 
