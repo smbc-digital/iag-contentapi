@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -8,28 +9,25 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
         private readonly IContentfulFactory<ContentfulEvent, Event> _eventFactory;
-        private readonly IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>> _basicLinkFactory;
 
         public CommsContentfulFactory(
             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-            IContentfulFactory<ContentfulEvent, Event> eventFactory,
-            IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>> basicLinkFactory)
+            IContentfulFactory<ContentfulEvent, Event> eventFactory)
         {
             _callToActionFactory = callToActionFactory;
             _eventFactory = eventFactory;
-            _basicLinkFactory = basicLinkFactory;
         }
 
         public CommsHomepage ToModel(ContentfulCommsHomepage model)
         {
+            List<BasicLink> usefulLinks = new();
+            if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null && 
+                model.UsefulLinksText.Count.Equals(model.UsefulLinksURL.Count))
+            {
+                usefulLinks = model.UsefulLinksText.Zip(model.UsefulLinksURL, (text, url) => new BasicLink(url, text)).ToList();
+            }
 
-            var callToActionBanner = model.CallToActionBanner != null 
-                ? _callToActionFactory.ToModel(model.CallToActionBanner)
-                : null;
-            var displayEvent = _eventFactory.ToModel(model.WhatsOnInStockportEvent);
-            var basicLinks = _basicLinkFactory.ToModel(model.UsefullLinks);
-
-            return new CommsHomepage(
+            return new(
                 model.Title,
                 model.MetaDescription,
                 model.LatestNewsHeader,
@@ -37,11 +35,11 @@ namespace StockportContentApi.ContentfulFactories
                 model.InstagramFeedTitle,
                 model.InstagramLink,
                 model.FacebookFeedTitle,
-                basicLinks,
-                displayEvent,
-                callToActionBanner,
+                usefulLinks,
+                _eventFactory.ToModel(model.WhatsOnInStockportEvent),
+                _callToActionFactory.ToModel(model.CallToActionBanner),
                 model.EmailAlertsTopicId
-                );
+            );
         }
     }
 }

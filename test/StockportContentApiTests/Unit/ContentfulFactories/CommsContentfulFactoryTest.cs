@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Amazon.Runtime.Internal;
+﻿using Amazon.Runtime.Internal;
 using Contentful.Core.Models;
 using Moq;
 using StockportContentApi.ContentfulFactories;
@@ -16,15 +13,13 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
     {
         private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
         private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-        private readonly Mock<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>> _basicLinkFactory = new Mock<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>();
         private readonly CommsContentfulFactory _factory;
 
         public CommsContentfulFactoryTest()
         {
             _factory = new CommsContentfulFactory(
                 _callToActionFactory.Object,
-                _eventFactory.Object,
-                _basicLinkFactory.Object
+                _eventFactory.Object
             );
         }
 
@@ -38,16 +33,14 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventFactory
                 .Setup(_ => _.ToModel(It.IsAny<ContentfulEvent>()))
                 .Returns(new EventBuilder().Build());
-            _basicLinkFactory
-                .Setup(_ => _.ToModel(It.IsAny<IEnumerable<ContentfulBasicLink>>()))
-                .Returns(new List<BasicLink>());
 
             var model = new ContentfulCommsHomepage
             {
                 WhatsOnInStockportEvent = new ContentfulEventBuilder().Build(),
                 MetaDescription = "meta description",
                 CallToActionBanner = new ContentfulCallToActionBanner(),
-                UsefullLinks = new AutoConstructedList<ContentfulBasicLink>(),
+                UsefulLinksText = new() { "Test Link" },
+                UsefulLinksURL = new() { "https://www.stockport.gov.uk/" },
                 TwitterFeedHeader = "twiiter",
                 InstagramFeedTitle = "instagram header",
                 FacebookFeedTitle = "facebook",
@@ -64,7 +57,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result);
             Assert.NotNull(result.WhatsOnInStockportEvent);
             Assert.NotNull(result.CallToActionBanner);
-            Assert.NotNull(result.UsefullLinks);
+            Assert.NotNull(result.UsefulLinks);
             Assert.Equal("twiiter", result.TwitterFeedHeader);
             Assert.Equal("meta description", result.MetaDescription);
             Assert.Equal("instagram header", result.InstagramFeedTitle);
