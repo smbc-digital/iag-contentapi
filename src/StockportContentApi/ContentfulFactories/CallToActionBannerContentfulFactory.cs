@@ -7,6 +7,9 @@ namespace StockportContentApi.ContentfulFactories
     {
         public CallToActionBanner ToModel(ContentfulCallToActionBanner entry)
         {
+            if (entry is null)
+                return null;
+
             return new CallToActionBanner()
             {
                 AltText = entry.AltText,
