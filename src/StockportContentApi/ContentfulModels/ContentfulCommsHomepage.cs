@@ -21,7 +21,8 @@ namespace StockportContentApi.ContentfulModels
 
         public string FacebookFeedTitle { get; set; } = string.Empty;
 
-        public List<ContentfulBasicLink> UsefullLinks { get; set; } = null;
+        public List<string> UsefulLinksText { get; set; }
+        public List<string> UsefulLinksURL { get; set; }
 
         public ContentfulEvent WhatsOnInStockportEvent { get; set; } = null;
 

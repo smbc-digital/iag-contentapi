@@ -23,13 +23,7 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/comms")]
         [Route("v1/{businessId}/comms")]
-        public async Task<IActionResult> Get(string businessId)
-        {
-            return await _handler.Get(() =>
-            {
-                var repository = _commsRepository(_createConfig(businessId));
-                return repository.Get();
-            });
-        }
+        public async Task<IActionResult> Get(string businessId) =>
+            await _handler.Get(() => _commsRepository(_createConfig(businessId)).Get());
     }
 }

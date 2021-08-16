@@ -175,11 +175,9 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
             (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IHttpContextAccessor>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
                  p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
-            services.AddSingleton<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>(_ => new BasicLinkListContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ => new CommsContentfulFactory(
                 _.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-                _.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
-                _.GetService<IContentfulFactory<IEnumerable<ContentfulBasicLink>, IEnumerable<BasicLink>>>()
+                _.GetService<IContentfulFactory<ContentfulEvent, Event>>()
                 ));
 
             return services;
