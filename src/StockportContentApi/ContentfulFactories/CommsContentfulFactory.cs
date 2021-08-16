@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -38,7 +37,7 @@ namespace StockportContentApi.ContentfulFactories
                 model.FacebookFeedTitle,
                 basicLinks,
                 _eventFactory.ToModel(model.WhatsOnInStockportEvent),
-                _callToActionFactory.ToModel(model?.CallToActionBanner),
+                _callToActionFactory.ToModel(model.CallToActionBanner),
                 model.EmailAlertsTopicId
             );
         }
