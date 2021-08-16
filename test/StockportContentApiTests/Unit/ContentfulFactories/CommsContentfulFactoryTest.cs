@@ -57,7 +57,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             Assert.NotNull(result);
             Assert.NotNull(result.WhatsOnInStockportEvent);
             Assert.NotNull(result.CallToActionBanner);
-            Assert.NotNull(result.UsefullLinks);
+            Assert.NotNull(result.UsefulLinks);
             Assert.Equal("twiiter", result.TwitterFeedHeader);
             Assert.Equal("meta description", result.MetaDescription);
             Assert.Equal("instagram header", result.InstagramFeedTitle);
