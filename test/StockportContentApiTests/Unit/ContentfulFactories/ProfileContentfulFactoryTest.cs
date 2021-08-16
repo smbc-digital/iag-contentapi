@@ -15,7 +15,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly ContentfulProfile _contentfulProfile;
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly ProfileContentfulFactory _profileContentfulFactory;
-        private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
 
         public ProfileContentfulFactoryTest()
