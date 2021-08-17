@@ -74,9 +74,8 @@ namespace StockportContentApiTests.Unit.Repositories
                         false)
                 },
                 TriviaSubheading = "trivia heading",
-                TriviaSection = new List<InformationList>(),
+                TriviaSection = new List<Trivia>(),
                 InlineQuotes = new List<InlineQuote>(),
-                FieldOrder = new FieldOrder(),
                 Author = "author",
                 Subject = "subject"
             };

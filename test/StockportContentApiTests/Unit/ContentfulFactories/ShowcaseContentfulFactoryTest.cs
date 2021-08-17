@@ -39,11 +39,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false));
 
-            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
 
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
@@ -51,7 +50,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url"));
 
-            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
 
@@ -72,7 +71,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, videoFactory.Object, spotlightBannerFactory.Object);
 
             var showcase = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -111,11 +110,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false));
 
-            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
-
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
 
@@ -132,7 +129,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -181,11 +178,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false));
 
-            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
-
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
             
@@ -202,7 +197,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 
@@ -251,11 +246,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false));
 
-            var _keyFactFactory = new Mock<IContentfulFactory<ContentfulKeyFact, KeyFact>>();
-
             var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-            var _informationListFactory = new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>();
+            var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
 
@@ -272,7 +265,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
             var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _keyFactFactory.Object, _profileFactory.Object, _informationListFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
             var model = contentfulFactory.ToModel(contentfulShowcase);
 

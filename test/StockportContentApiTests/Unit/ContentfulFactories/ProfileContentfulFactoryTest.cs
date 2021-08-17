@@ -15,7 +15,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly ContentfulProfile _contentfulProfile;
         private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
         private readonly ProfileContentfulFactory _profileContentfulFactory;
-        private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory;
         private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
 
         public ProfileContentfulFactoryTest()
@@ -27,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 _crumbFactory.Object, 
                 HttpContextFake.GetHttpContextFake(), 
                 new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, 
-                new Mock<IContentfulFactory<ContentfulInformationList, InformationList>>().Object,
+                new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>().Object,
                 new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
                 _eventBannerFactory.Object);
         }

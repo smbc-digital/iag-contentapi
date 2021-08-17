@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace StockportContentApi.Model
 {
-    public class InformationList
+    public class Trivia
     {
         public string Name { get; }
 
@@ -15,12 +15,12 @@ namespace StockportContentApi.Model
 
         public string Link { get; }
 
-        public InformationList()
+        public Trivia()
         {
 
         }
 
-        public InformationList(string name, string icon, string text, string link)
+        public Trivia(string name, string icon, string text, string link)
         {
             Name = name;
             Icon = icon;

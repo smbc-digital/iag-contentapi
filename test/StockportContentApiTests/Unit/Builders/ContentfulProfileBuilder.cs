@@ -29,9 +29,8 @@ namespace StockportContentApiTests.Unit.Builders
                 Sys = _sys,
                 Alerts = _alerts,
                 Author = "author",
-                FieldOrder = new FieldOrder(),
                 Subject = "subject",
-                TriviaSection = new List<ContentfulInformationList>(),
+                TriviaSection = new List<ContentfulTrivia>(),
                 TriviaSubheading = "trivia heading"
             };
         }

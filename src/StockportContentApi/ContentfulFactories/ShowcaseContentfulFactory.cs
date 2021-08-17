@@ -14,16 +14,20 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IContentfulFactory<ContentfulKeyFact, KeyFact> _keyFactFactory;
         private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IContentfulFactory<ContentfulInformationList, InformationList> _informationListFactory;
+        private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
         private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
         private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulKeyFact, KeyFact> keyFactFactory, IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-            IContentfulFactory<ContentfulInformationList, InformationList> informationListFactory,
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
+            ITimeProvider timeProvider, 
+            IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, 
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+            IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+            IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
             IHttpContextAccessor httpContextAccessor,
             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
             IContentfulFactory<ContentfulVideo, Video> videoFactory, 
@@ -34,11 +38,10 @@ namespace StockportContentApi.ContentfulFactories
             _socialMediaFactory = socialMediaFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
-            _keyFactFactory = keyFactFactory;
             _profileFactory = profileFactory;
             _httpContextAccessor = httpContextAccessor;
             _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
-            _informationListFactory = informationListFactory;
+            _triviaFactory = triviaFactory;
             _videoFactory = videoFactory;
             _spotlightBannerFactory = spotlightBannerFactory;
         }
@@ -78,9 +81,6 @@ namespace StockportContentApi.ContentfulFactories
             var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
                 .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
 
-            var keyFacts = entry.KeyFacts.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _keyFactFactory.ToModel(fact)).ToList();
-
             var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
                                                      _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
@@ -90,7 +90,7 @@ namespace StockportContentApi.ContentfulFactories
                 .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
 
             var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _informationListFactory.ToModel(fact)).ToList();
+                .Select(fact => _triviaFactory.ToModel(fact)).ToList();
 
             var callToActionBanner = entry.CallToActionBanner != null
                 ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
@@ -133,8 +133,6 @@ namespace StockportContentApi.ContentfulFactories
                 FieldOrder = entry.FieldOrder,
                 EmailAlertsTopicId = entry.EmailAlertsTopicId,
                 EmailAlertsText = entry.EmailAlertsText,
-                KeyFactSubheading = entry.KeyFactSubheading,
-                KeyFacts = keyFacts,
                 Alerts = alerts,
                 Icon = entry.Icon,
                 TertiaryItems = tertiaryItems,
