@@ -15,6 +15,7 @@ using StockportContentApi.Middleware;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
+using StockportContentApi.Model;
 
 namespace StockportContentApi
 {
@@ -58,6 +59,9 @@ namespace StockportContentApi
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+
+            services.AddSingleton(_ => new ShortUrlRedirects(new Dictionary<string, RedirectDictionary>()));
+            services.AddSingleton(_ => new LegacyUrlRedirects(new Dictionary<string, RedirectDictionary>()));
 
             services.AddGroupConfiguration(Configuration, logger);
             services.AddHelpers();

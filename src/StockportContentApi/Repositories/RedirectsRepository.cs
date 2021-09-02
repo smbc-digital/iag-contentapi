@@ -21,17 +21,30 @@ namespace StockportContentApi.Repositories
         private readonly RedirectBusinessIds _redirectBusinessIds;
         private Contentful.Core.IContentfulClient _client;
         private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory;
+        private readonly ShortUrlRedirects _shortUrlRedirects;
+        private readonly LegacyUrlRedirects _legacyUrlRedirects;
 
-        public RedirectsRepository(IContentfulClientManager clientManager, Func<string, ContentfulConfig> createConfig, RedirectBusinessIds redirectBusinessIds, IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> contenfulFactory)
+        public RedirectsRepository(IContentfulClientManager clientManager,         
+                Func<string, ContentfulConfig> createConfig, 
+                RedirectBusinessIds redirectBusinessIds, 
+                IContentfulFactory<ContentfulRedirect, 
+                BusinessIdToRedirects> contenfulFactory, 
+                ShortUrlRedirects shortUrlRedirects,
+                LegacyUrlRedirects legacyUrlRedirects)
         {
             _createConfig = createConfig;
             _redirectBusinessIds = redirectBusinessIds;
             ClientManager = clientManager;
             _contenfulFactory = contenfulFactory;
+            _shortUrlRedirects = shortUrlRedirects;
+            _legacyUrlRedirects = legacyUrlRedirects;
         }
 
         public async Task<HttpResponse> GetRedirects()
         {
+            if (_legacyUrlRedirects.Redirects.Count > 0 || _shortUrlRedirects.Redirects.Count > 0)
+                return HttpResponse.Successful(new Redirects(_shortUrlRedirects.Redirects, _legacyUrlRedirects.Redirects));
+
             var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
 
             foreach (var businessId in _redirectBusinessIds.BusinessIds)
@@ -42,6 +55,20 @@ namespace StockportContentApi.Repositories
             return !redirectPerBusinessId.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found")
                 : HttpResponse.Successful(GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId));
+        }
+
+        public async Task<Redirects> GetUpdatedRedirects()
+        {
+            var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
+
+            foreach (var businessId in _redirectBusinessIds.BusinessIds)
+            {
+                redirectPerBusinessId.Add(businessId, await GetRedirectForBusinessId(businessId));
+            }
+
+            return !redirectPerBusinessId.Any()
+                ? null
+                : GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId);
         }
 
         private Redirects GetRedirectsFromBusinessIdToRedirectsDictionary(Dictionary<string, BusinessIdToRedirects> redirects)
@@ -55,7 +82,10 @@ namespace StockportContentApi.Repositories
                 legacyUrlRedirects.Add(businessId, redirects[businessId].LegacyUrlRedirects);
             }
 
-            return new Redirects(shortUrlRedirects, legacyUrlRedirects);
+            _shortUrlRedirects.Redirects = shortUrlRedirects;
+            _legacyUrlRedirects.Redirects = legacyUrlRedirects;
+
+            return new Redirects(_shortUrlRedirects.Redirects, _legacyUrlRedirects.Redirects);
         }
 
         private async Task<BusinessIdToRedirects> GetRedirectForBusinessId(string businessId)

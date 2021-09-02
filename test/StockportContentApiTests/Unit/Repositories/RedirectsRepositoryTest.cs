@@ -26,6 +26,8 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClientManager> _contentfulClientManager;
         private readonly Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>> _contenfulFactory;
         private readonly Mock<IContentfulClient> _client;
+        private readonly ShortUrlRedirects _shortUrlRedirects = new ShortUrlRedirects(new Dictionary<string, RedirectDictionary>());
+        private readonly LegacyUrlRedirects _legacyUrlRedirects = new LegacyUrlRedirects(new Dictionary<string, RedirectDictionary>());
 
         public RedirectsRepositoryTest()
         {
@@ -58,7 +60,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object);
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
             _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
 
             var response = AsyncTestHelper.Resolve(repository.GetRedirects());
@@ -89,7 +91,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object);
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
             _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(new NullBusinessIdToRedirects());
 
             var response = AsyncTestHelper.Resolve(repository.GetRedirects());
@@ -117,7 +119,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object);
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
 
             var response = AsyncTestHelper.Resolve(repository.GetRedirects());
 

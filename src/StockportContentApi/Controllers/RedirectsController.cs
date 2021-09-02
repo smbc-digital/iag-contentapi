@@ -38,12 +38,13 @@ namespace StockportContentApi.Controllers
 
         [HttpPost]
         [Route("update-redirects")]
-        public async Task<IActionResult> UpdateRedirects([FromBody]ContentfulRedirect body)
+        public async Task<IActionResult> UpdateRedirects()
         {
-            var result = _contenfulFactory.ToModel(body);
+            var response = await _repository.GetUpdatedRedirects();
+            
 
             //_logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {JsonConvert.SerializeObject(body)}");
-            _logger.LogWarning($"RedirectsController:: UpdateRedirects converted model: {JsonConvert.SerializeObject(result)}");
+            _logger.LogWarning($"RedirectsController:: UpdateRedirects converted model: {JsonConvert.SerializeObject(response)}");
 
             return Ok();
         }
