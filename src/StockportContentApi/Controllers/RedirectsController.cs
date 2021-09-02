@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.Controllers
 {
@@ -13,14 +15,17 @@ namespace StockportContentApi.Controllers
         private readonly ResponseHandler _handler;
         private readonly RedirectsRepository _repository;
         private readonly ILogger<RedirectsController> _logger;
+        private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory;
 
         public RedirectsController(ResponseHandler handler,
             RedirectsRepository repository,
-            ILogger<RedirectsController> logger)
+            ILogger<RedirectsController> logger,
+            IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> contentfulFactory)
         {
             _handler = handler;
             _repository = repository;
             _logger = logger;
+            _contenfulFactory = contentfulFactory;
         }
 
         [HttpGet]
@@ -35,7 +40,11 @@ namespace StockportContentApi.Controllers
         [Route("update-redirects")]
         public async Task<IActionResult> UpdateRedirects([FromBody]ContentfulRedirect body)
         {
-            _logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {JsonConvert.SerializeObject(body)}");
+            var result = _contenfulFactory.ToModel(body);
+
+            //_logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {JsonConvert.SerializeObject(body)}");
+            _logger.LogWarning($"RedirectsController:: UpdateRedirects converted model: {JsonConvert.SerializeObject(result)}");
+
             return Ok();
         }
     }
