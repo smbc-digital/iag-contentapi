@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Controllers
@@ -34,7 +35,7 @@ namespace StockportContentApi.Controllers
         [Route("update-redirects")]
         public async Task<IActionResult> UpdateRedirects(ContentfulRedirect body)
         {
-            _logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {body}");
+            _logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {JsonConvert.SerializeObject(body)}");
             return Ok();
         }
     }
