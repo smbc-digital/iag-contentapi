@@ -125,5 +125,79 @@ namespace StockportContentApiTests.Unit.Repositories
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
+
+        [Fact]
+        public void GetRedirect_StatusCodeSuccessful_WhenLegacyOrShortUrlAreAvailable()
+        {
+            var shortItems = new Dictionary<string, RedirectDictionary> { { "unittest", new RedirectDictionary { { "/short-test", "short-redirect-url" } } } };
+            var legacyItems = new Dictionary<string, RedirectDictionary> { { "unittest", new RedirectDictionary { { "/legacy-test", "legacy-redirect-url" } } } };
+            _shortUrlRedirects.Redirects = shortItems;
+            _legacyUrlRedirects.Redirects = legacyItems;
+
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+
+            var response = AsyncTestHelper.Resolve(repository.GetRedirects());
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public void GetRedirect_ShouldNotCallClient_WhenLegacyOrShortUrlAreAvailable()
+        {
+            var shortItems = new Dictionary<string, RedirectDictionary> { { "unittest", new RedirectDictionary { { "/short-test", "short-redirect-url" } } } };
+            var legacyItems = new Dictionary<string, RedirectDictionary> { { "unittest", new RedirectDictionary { { "/legacy-test", "legacy-redirect-url" } } } };
+            _shortUrlRedirects.Redirects = shortItems;
+            _legacyUrlRedirects.Redirects = legacyItems;
+
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+
+            AsyncTestHelper.Resolve(repository.GetRedirects());
+            var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+
+            _client.Verify(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public void GetUpdatedRedirects_BusinessIdExist_ReturnSuccessful()
+        {
+            var ContentfulRedirects = new ContentfulRedirectBuilder().Build();
+            var collection = new ContentfulCollection<ContentfulRedirect>();
+            collection.Items = new List<ContentfulRedirect> { ContentfulRedirects };
+
+            var redirectItem = new BusinessIdToRedirects(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
+
+            var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+
+            _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+                It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+            _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
+
+            var response = AsyncTestHelper.Resolve(repository.GetUpdatedRedirects());
+
+            var redirects = response.Get<Redirects>();
+
+            var shortUrls = redirects.ShortUrlRedirects;
+            shortUrls.Count.Should().Be(1);
+            shortUrls.Keys.First().Should().Be("unittest");
+            shortUrls["unittest"].ContainsKey("a-url").Should().BeTrue();
+            var legacyUrls = redirects.LegacyUrlRedirects;
+            legacyUrls.Count.Should().Be(1);
+            legacyUrls.Keys.First().Should().Be("unittest");
+            legacyUrls["unittest"].ContainsKey("some-url").Should().BeTrue();
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public void GetUpdatedRedirects_NoBusinessId_ReturnNotFound()
+        {
+            var repository = new RedirectsRepository(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+
+            var response = AsyncTestHelper.Resolve(repository.GetUpdatedRedirects());
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
     }
 }
