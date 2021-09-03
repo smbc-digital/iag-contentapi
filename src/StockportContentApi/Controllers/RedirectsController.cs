@@ -31,22 +31,10 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("redirects")]
         [Route("v1/redirects")]
-        public async Task<IActionResult> GetRedirects(string businessId)
-        {
-            return await _handler.Get(() => _repository.GetRedirects());
-        }
+        public async Task<IActionResult> GetRedirects() => await _handler.Get(() => _repository.GetRedirects());
 
         [HttpPost]
         [Route("update-redirects")]
-        public async Task<IActionResult> UpdateRedirects()
-        {
-            var response = await _repository.GetUpdatedRedirects();
-            
-
-            //_logger.LogWarning($"RedirectsController:: UpdateRedirects body received: {JsonConvert.SerializeObject(body)}");
-            _logger.LogWarning($"RedirectsController:: UpdateRedirects converted model: {JsonConvert.SerializeObject(response)}");
-
-            return Ok();
-        }
+        public async Task<IActionResult> UpdateRedirects() => await _handler.Get(() => _repository.GetUpdatedRedirects());
     }
 }

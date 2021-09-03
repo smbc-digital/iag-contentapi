@@ -45,6 +45,11 @@ namespace StockportContentApi.Repositories
             if (_legacyUrlRedirects.Redirects.Count > 0 || _shortUrlRedirects.Redirects.Count > 0)
                 return HttpResponse.Successful(new Redirects(_shortUrlRedirects.Redirects, _legacyUrlRedirects.Redirects));
 
+            return await GetUpdatedRedirects();
+        }
+
+        public async Task<HttpResponse> GetUpdatedRedirects()
+        {
             var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
 
             foreach (var businessId in _redirectBusinessIds.BusinessIds)
@@ -55,20 +60,6 @@ namespace StockportContentApi.Repositories
             return !redirectPerBusinessId.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found")
                 : HttpResponse.Successful(GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId));
-        }
-
-        public async Task<Redirects> GetUpdatedRedirects()
-        {
-            var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
-
-            foreach (var businessId in _redirectBusinessIds.BusinessIds)
-            {
-                redirectPerBusinessId.Add(businessId, await GetRedirectForBusinessId(businessId));
-            }
-
-            return !redirectPerBusinessId.Any()
-                ? null
-                : GetRedirectsFromBusinessIdToRedirectsDictionary(redirectPerBusinessId);
         }
 
         private Redirects GetRedirectsFromBusinessIdToRedirectsDictionary(Dictionary<string, BusinessIdToRedirects> redirects)
