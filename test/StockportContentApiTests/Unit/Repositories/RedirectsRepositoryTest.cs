@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void ItGetsListOfRedirectsBack()
+        public void GetRedirects_ShouldGetsListOfRedirectsBack_ReturnSuccessful()
         {
             var ContentfulRedirects = new ContentfulRedirectBuilder().Build();
             var collection = new ContentfulCollection<ContentfulRedirect>();
@@ -80,7 +80,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void ItGetsAnEmptyListForBusinessIdIfNoRedirectsFound()
+        public void GetRedirects_BusinessIdExist_ShouldReturnSuccessful()
         {
             var ContentfulRedirects = new ContentfulRedirect();
             var collection = new ContentfulCollection<ContentfulRedirect>();
@@ -109,7 +109,7 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void ItGets404BackForRedirects()
+        public void GetRedirects_NoBusinessId_ShouldReturnNotFound()
         {
             var collection = new ContentfulCollection<ContentfulRedirect>();
             collection.Items = new List<ContentfulRedirect>();
