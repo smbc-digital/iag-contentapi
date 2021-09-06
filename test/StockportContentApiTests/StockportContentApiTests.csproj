@@ -45,7 +45,6 @@
     <None Remove="Integration\ExpectedContentApiResponses\Profile.json" />
     <None Remove="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Showcase.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\SmartAnswers.json" />
     <None Remove="Integration\ExpectedContentApiResponses\StartPage.json" />
     <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
   </ItemGroup>

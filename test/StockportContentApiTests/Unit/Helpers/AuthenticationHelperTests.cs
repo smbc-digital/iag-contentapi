@@ -129,7 +129,6 @@ namespace StockportContentApiTests.Unit.Helpers
         [InlineData("topic", "topics")]
         [InlineData("profile", "profiles")]
         [InlineData("start-page", "start pages")]
-        [InlineData("smart", "smart answers")]
         [InlineData("organisation", "organisations")]
         public void GetApiEndPoint_ShouldReturnCorrectEndpoint(string requestedEndpoint, string result)
         {
