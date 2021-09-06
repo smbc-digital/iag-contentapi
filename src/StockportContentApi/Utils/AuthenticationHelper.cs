@@ -104,8 +104,6 @@ namespace StockportContentApi.Utils
                 case "start-page":
                 case "start-pages":
                     return "start pages";
-                case "smart":
-                    return "smart answers";
                 case "showcase":
                 case "showcases":
                     return "showcase";

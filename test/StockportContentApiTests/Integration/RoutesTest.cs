@@ -237,17 +237,6 @@ namespace StockportContentApiTests.Integration
                                 It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == homepageBuilder.Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(homepageCollection);
 
-                var smartAnswer = new ContentfulCollection<ContentfulSmartAnswers>();
-                smartAnswer.Items = new List<ContentfulSmartAnswers>()
-                {
-                    new ContentfulSmartAnswerBuilder().Slug("smartAnswer_slug").Build()
-                };
-                httpClient.Setup(o => o.GetEntries(
-                    It.Is<QueryBuilder<ContentfulSmartAnswers>>(
-                        q => q.Build() == new QueryBuilder<ContentfulSmartAnswers>().ContentTypeIs("smartAnswers")
-                                 .FieldEquals("fields.slug", "smartAnswer_slug").Include(1).Build()),
-                    It.IsAny<CancellationToken>())).ReturnsAsync(smartAnswer);
-
                 var Redirects = new ContentfulCollection<ContentfulRedirect>();
                 Redirects.Items = new List<ContentfulRedirect>()
                 {
