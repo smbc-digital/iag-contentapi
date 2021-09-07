@@ -23,7 +23,7 @@ namespace StockportContentApi.Controllers
         public async Task<IActionResult> GetRedirects() => await _handler.Get(() => _repository.GetRedirects());
 
         [HttpPatch]
-        [Route("update-redirects")]
+        [Route("v1/redirects")]
         public async Task<IActionResult> UpdateRedirects() => await _handler.Get(() => _repository.GetUpdatedRedirects());
     }
 }
