@@ -10,7 +10,6 @@ using Xunit;
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulFactories.TopicFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -34,7 +33,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Returns(new DateTime(2017, 01, 02));
 
             // call constructor
-            _parentTopicContentfulFactory = new ParentTopicContentfulFactory(_subitemContentfulFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _parentTopicContentfulFactory = new ParentTopicContentfulFactory(_subitemContentfulFactory.Object, _timeProvider.Object);
         }
 
         [Fact]

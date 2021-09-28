@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -19,7 +18,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IVideoRepository _videoRepository;
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -28,8 +26,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-            IHttpContextAccessor httpContextAccessor)
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
@@ -39,7 +36,6 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             _parentTopicFactory = parentTopicFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public Article ToModel(ContentfulArticle entryContentfulArticle)
@@ -77,7 +73,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             var updatedAt = entry.Sys.UpdatedAt.Value;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
-                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt).StripData(_httpContextAccessor);
+                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt);
         }
     }
 }

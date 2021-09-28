@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -17,16 +16,14 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
         {
             _documentFactory = documentFactory;
             _groupFactory = groupFactory;
             _alertFactory = alertFactory;
             _eventCategoryFactory = eventCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public Event ToModel(ContentfulEvent entry)
@@ -54,7 +51,7 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
                 entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
                 new List<Crumb> { new Crumb("Events", string.Empty, "events") },
                 ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink, entry.MetaDescription).StripData(_httpContextAccessor);
+                entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink, entry.MetaDescription);
         }
     }
 }

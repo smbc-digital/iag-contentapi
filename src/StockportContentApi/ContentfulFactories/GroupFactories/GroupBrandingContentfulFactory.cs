@@ -1,18 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories.GroupFactories
 {
     public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulGroupBranding, GroupBranding>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public GroupBrandingContentfulFactory(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
         public GroupBranding ToModel(ContentfulGroupBranding entry)
         {
             var file = new MediaAsset();
@@ -26,7 +18,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
                 };
             }
 
-            return new GroupBranding(entry.Title, entry.Text, file, entry.Url).StripData(_httpContextAccessor);
+            return new GroupBranding(entry.Title, entry.Text, file, entry.Url);
         }
     }
 }

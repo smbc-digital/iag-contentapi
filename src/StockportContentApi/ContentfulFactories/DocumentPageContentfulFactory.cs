@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -14,20 +13,17 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DocumentPageContentfulFactory(
             IContentfulFactory<Asset, Document> documentFactory,
             IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
-            ITimeProvider timeProvider,
-            IHttpContextAccessor httpContextAccessor)
+            ITimeProvider timeProvider)
         {
             _documentFactory = documentFactory;
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public DocumentPage ToModel(ContentfulDocumentPage entryContentfulDocumentPage)
@@ -60,8 +56,7 @@ namespace StockportContentApi.ContentfulFactories
                 datePublished: entry.DatePublished,
                 lastUpdated: entry.LastUpdated,
                 breadcrumbs: breadcrumbs,
-                updatedAt: updatedAt)
-                .StripData(_httpContextAccessor);
+                updatedAt: updatedAt);
         }
     }
 }

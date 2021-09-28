@@ -1,11 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using StockportContentApi.Exceptions;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Utils
 {
@@ -13,8 +8,6 @@ namespace StockportContentApi.Utils
     {
         AuthenticationData ExtractAuthenticationDataFromContext(HttpContext context);
         string GetApiEndPoint(string endpoint);
-        Task<ApiKey> GetValidKey(IApiKeyRepository repository, string authenticationKey, string businessId, string endpoint, int version, string verb);
-        void HandleSensitiveData(HttpContext context, ApiKey validKey);
         void CheckVersionIsProvided(AuthenticationData authenticationData);
     }
 
@@ -47,32 +40,6 @@ namespace StockportContentApi.Utils
             authenticationData.Verb = context.Request.Method;
 
             return authenticationData;
-        }
-
-        public async Task<ApiKey> GetValidKey(IApiKeyRepository repository, string authenticationKey, string businessId, string endpoint, int version, string verb)
-        {
-            var keys = await repository.Get();
-
-            if (keys == null)
-            {
-                throw new AuthorizationException();
-            }
-
-            var validEndPoint = GetApiEndPoint(endpoint);
-
-            var validKey = keys.FirstOrDefault(k => "Bearer " + k.Key == authenticationKey.Trim()
-                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(k.ActiveFrom,
-                                                        k.ActiveTo)
-                                                    && k.EndPoints.Any(e => e.ToLower() == validEndPoint)
-                                                    && k.Version >= version
-                                                    && k.AllowedVerbs.Any(v => string.Equals(v, verb, StringComparison.CurrentCultureIgnoreCase)));
-
-            if (validKey == null)
-            {
-                throw new AuthorizationException();
-            }
-
-            return validKey;
         }
 
         public string GetApiEndPoint(string endpoint)
@@ -112,18 +79,6 @@ namespace StockportContentApi.Utils
                     return "organisations";
                 default:
                     return endpoint.ToLower();
-            }
-        }
-
-        public void HandleSensitiveData(HttpContext context, ApiKey validKey)
-        {
-            if (validKey.CanViewSensitive)
-            {
-                context.Request.Headers["cannotViewSensitive"] = "false";
-            }
-            else
-            {
-                context.Request.Headers["cannotViewSensitive"] = "true";
             }
         }
 

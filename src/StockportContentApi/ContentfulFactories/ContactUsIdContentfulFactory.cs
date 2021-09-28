@@ -1,18 +1,10 @@
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class ContactUsIdContentfulFactory : IContentfulFactory<ContentfulContactUsId, ContactUsId>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ContactUsIdContentfulFactory(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
         public ContactUsId ToModel(ContentfulContactUsId entry)
         {
             return new ContactUsId(
@@ -20,7 +12,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.Slug,
                 entry.EmailAddress,
                 entry.SuccessPageButtonText,
-                entry.SuccessPageReturnUrl).StripData(_httpContextAccessor);
+                entry.SuccessPageReturnUrl);
         }
     }
 }

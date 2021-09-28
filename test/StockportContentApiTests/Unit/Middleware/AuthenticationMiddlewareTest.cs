@@ -5,10 +5,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Config;
 using StockportContentApi.Middleware;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using Xunit;
-using StockportContentApi.Exceptions;
 
 namespace StockportContentApiTests.Unit.Middleware
 {
@@ -19,18 +17,16 @@ namespace StockportContentApiTests.Unit.Middleware
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ILogger<AuthenticationMiddleware>> _logger;
         private Mock<IAuthenticationHelper> _authHelper;
-        private readonly Mock<Func<ContentfulConfig, IApiKeyRepository>> _repository;
         private readonly Mock<Func<string, ContentfulConfig>> _createConfig;
 
         public AuthenticationMiddlewareTest()
         {
-            _repository = new Mock<Func<ContentfulConfig, IApiKeyRepository>>();
             _createConfig = new Mock<Func<string, ContentfulConfig>>();
             _configuration = new Mock<IConfiguration>();
             _requestDelegate = new Mock<RequestDelegate>();
             _logger = new Mock<ILogger<AuthenticationMiddleware>>();
             _authHelper = new Mock<IAuthenticationHelper>();
-            _middleware = new AuthenticationMiddleware(_requestDelegate.Object, _configuration.Object, _logger.Object, _authHelper.Object, _createConfig.Object, _repository.Object);
+            _middleware = new AuthenticationMiddleware(_requestDelegate.Object, _configuration.Object, _logger.Object, _authHelper.Object, _createConfig.Object);
         }
 
         [Fact]

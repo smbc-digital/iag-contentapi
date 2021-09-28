@@ -9,7 +9,6 @@ using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -22,7 +21,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var timeProvider = new Mock<ITimeProvider>();
             timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
-            _subItemContentfulFactory = new SubItemContentfulFactory(timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _subItemContentfulFactory = new SubItemContentfulFactory(timeProvider.Object);
         }
 
         [Fact]

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StockportContentApi.Attributes;
 
 namespace StockportContentApi.Model
 {
@@ -42,7 +41,6 @@ namespace StockportContentApi.Model
         public List<GroupBranding> GroupBranding { get; set; }
         public List<string> Tags { get; }
 
-        [SensitiveData]
         public string AdditionalInformation { get; set; }
         public List<Document> AdditionalDocuments { get; set; }
         public DateTime? DateLastModified { get; set; }

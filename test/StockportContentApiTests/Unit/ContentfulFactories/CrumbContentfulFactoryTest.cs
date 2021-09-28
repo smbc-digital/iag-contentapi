@@ -2,7 +2,6 @@
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -14,7 +13,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var ContentfulReference =
                 new ContentfulReferenceBuilder().Build();                    
  
-            var crumb = new CrumbContentfulFactory(HttpContextFake.GetHttpContextFake()).ToModel(ContentfulReference);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
             crumb.Slug.Should().Be(ContentfulReference.Slug);
             crumb.Title.Should().Be(ContentfulReference.Title);
@@ -27,7 +26,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var ContentfulReference =
                 new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
 
-            var crumb = new CrumbContentfulFactory(HttpContextFake.GetHttpContextFake()).ToModel(ContentfulReference);
+            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
             crumb.Title.Should().Be(ContentfulReference.Name);
         }

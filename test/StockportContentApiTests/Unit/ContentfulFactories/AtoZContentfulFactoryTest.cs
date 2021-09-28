@@ -2,7 +2,6 @@
 using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.ContentfulFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -15,7 +14,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var ContentfulReference =
                 new ContentfulAToZBuilder().Build();
 
-            var atoZ = new AtoZContentfulFactory(HttpContextFake.GetHttpContextFake()).ToModel(ContentfulReference);
+            var atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
 
             atoZ.Slug.Should().Be(ContentfulReference.Slug);
             atoZ.Title.Should().Be(ContentfulReference.Title);

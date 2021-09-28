@@ -1,22 +1,15 @@
 ﻿using System.Collections.Generic;
-using StockportContentApi.Attributes;
 using StockportContentApi.Enums;
 
 namespace StockportContentApi.Model
 {
     public class ServicePayPayment
     {
-        [SensitiveData]
         public string Title { get; set; }
-        [SensitiveData]
         public string Slug { get; set; }
-        [SensitiveData]
         public string Teaser { get; set; }
-        [SensitiveData]
         public string Description { get; set; }
-        [SensitiveData]
         public string PaymentDetailsText { get; set; }
-        [SensitiveData]
         public string ReferenceLabel { get; set; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public string Icon { get; set; }

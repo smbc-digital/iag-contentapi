@@ -11,7 +11,6 @@ using Xunit;
 using System.Collections.Generic;
 using StockportContentApi.Utils;
 using StockportContentApi.ContentfulFactories.EventFactories;
-using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -44,7 +43,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug", false));
 
-            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _timeProvider.Object);
             
         }
 

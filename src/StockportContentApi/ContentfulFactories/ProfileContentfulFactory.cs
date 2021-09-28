@@ -1,16 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Profile>
     {
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
         private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
@@ -18,14 +15,12 @@ namespace StockportContentApi.ContentfulFactories
 
         public ProfileContentfulFactory(
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
-            IHttpContextAccessor httpContextAccessor, 
             IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
             IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
             IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
             IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _crumbFactory = crumbFactory;
-            _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
             _triviaFactory = triviaFactory;
             _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
@@ -69,7 +64,7 @@ namespace StockportContentApi.ContentfulFactories
                 TriviaSection = triviaSection,
                 TriviaSubheading = triviaSubheading,
                 EventsBanner = eventsBanner
-            }.StripData(_httpContextAccessor);
+            };
         }
     }
 }

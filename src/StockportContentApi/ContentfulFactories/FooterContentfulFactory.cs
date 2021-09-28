@@ -2,7 +2,6 @@
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -10,13 +9,11 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
         private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, IHttpContextAccessor httpContextAccessor)
+        public FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
         {
             _subitemFactory = subitemFactory;
             _socialMediaFactory = socialMediaFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public Footer ToModel(ContentfulFooter entry)
@@ -40,7 +37,7 @@ namespace StockportContentApi.ContentfulFactories
             var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-            return new Footer(title, slug, links, socialMediaLinks).StripData(_httpContextAccessor);
+            return new Footer(title, slug, links, socialMediaLinks);
         }
     }
 }

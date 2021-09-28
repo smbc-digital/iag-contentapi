@@ -2,7 +2,6 @@
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Fakes;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
@@ -22,7 +21,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public ContentfulContactUsAreaFactoryTests()
         {
             _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, 
-                HttpContextFake.GetHttpContextFake(), 
                 _mockCrumbFactory.Object, 
                 _mockTimeProvider.Object, 
                 _mockAlertFactory.Object,

@@ -10,7 +10,6 @@ using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Fakes;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -46,7 +45,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
                 .Returns(new Crumb("title", "slug", "title"));
 
-            var contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
             _httpClient = new Mock<IHttpClient>();
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();

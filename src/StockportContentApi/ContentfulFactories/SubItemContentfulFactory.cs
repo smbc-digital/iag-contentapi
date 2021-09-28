@@ -4,19 +4,16 @@ using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
     public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
     {
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SubItemContentfulFactory(ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public SubItemContentfulFactory(ITimeProvider timeProvider)
         {
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public SubItem ToModel(ContentfulReference entry)
@@ -72,7 +69,7 @@ namespace StockportContentApi.ContentfulFactories
             var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
             return new SubItem(handledSlug, title, entry.Teaser, 
-                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems).StripData(_httpContextAccessor);
+                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
         }
 
         private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)

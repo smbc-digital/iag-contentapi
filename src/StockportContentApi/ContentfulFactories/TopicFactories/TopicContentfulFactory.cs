@@ -1,5 +1,4 @@
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -14,9 +13,8 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
 
         {
             _subItemFactory = subItemFactory;
@@ -25,7 +23,6 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -69,7 +66,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle,
-                expandingLinkBoxes, primaryItemTitle, displayContactUs).StripData(_httpContextAccessor);
+                expandingLinkBoxes, primaryItemTitle, displayContactUs);
         }
     }
 }

@@ -3,7 +3,6 @@ using FluentAssertions;
 using StockportContentApi.Model;
 using StockportContentApiTests.Builders;
 using StockportContentApi.ContentfulFactories.EventFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -19,7 +18,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Icon("icon")
                 .Build();
 
-            var contentfulFactory = new EventCategoryContentfulFactory(HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new EventCategoryContentfulFactory();
 
             var category = contentfulFactory.ToModel(contentfulShowcase);
 

@@ -10,7 +10,6 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.ContentfulFactories.TopicFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -35,7 +34,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake());
+            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object);
         }
 
         [Fact]

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StockportContentApi.Config;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using StockportContentApi.Exceptions;
 
@@ -14,7 +12,6 @@ namespace StockportContentApi.Middleware
 {
     public class AuthenticationMiddleware
     {
-        private readonly Func<ContentfulConfig, IApiKeyRepository> _repository;
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationMiddleware> _logger;
@@ -22,15 +19,12 @@ namespace StockportContentApi.Middleware
         private readonly Func<string, ContentfulConfig> _createConfig;
 
         public AuthenticationMiddleware(
-            RequestDelegate next, 
+            RequestDelegate next,
             IConfiguration configuration,
-            ILogger<AuthenticationMiddleware> logger, 
+            ILogger<AuthenticationMiddleware> logger,
             IAuthenticationHelper authHelper,
-            Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, 
-            IApiKeyRepository> repository)
+            Func<string, ContentfulConfig> createConfig)
         {
-            _repository = repository;
             _next = next;
             _configuration = configuration;
             _logger = logger;
@@ -53,7 +47,7 @@ namespace StockportContentApi.Middleware
 
             if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
             {
-                context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
                 return;
             }
@@ -71,26 +65,9 @@ namespace StockportContentApi.Middleware
                     return;
                 }
 
-                ApiKey validKey;
-
-                try
-                {
-                    var repo = _repository(_createConfig(authenticationData.BusinessId));
-                    validKey = await _authHelper.GetValidKey(repo, authenticationData.AuthenticationKey, authenticationData.BusinessId,
-                        authenticationData.Endpoint, authenticationData.Version, authenticationData.Verb);
-                }
-                catch (AuthorizationException)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("API Authentication Key is either missing or wrong_");
-                    return;
-                }
-
-                _authHelper.HandleSensitiveData(context, validKey);
-            }
-            else
-            {
-                context.Request.Headers["cannotViewSensitive"] = "false";
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
+                return;
             }
 
             await _next.Invoke(context);

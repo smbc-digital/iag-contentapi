@@ -1,5 +1,4 @@
 ﻿using GeoCoordinatePortable;
-using StockportContentApi.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,6 @@ namespace StockportContentApi.Model
         public string Description { get; }
         public string Fee { get; }
         public string Location { get; }
-        [SensitiveData]
         public string SubmittedBy { get; set; }
         public DateTime EventDate { get; }
         public string StartTime { get; }

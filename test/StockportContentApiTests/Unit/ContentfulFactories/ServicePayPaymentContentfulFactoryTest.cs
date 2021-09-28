@@ -2,7 +2,6 @@
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Fakes;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
@@ -30,7 +29,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _timeProvider = new Mock<ITimeProvider>();
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-            var contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
             var payment = contentfulFactory.ToModel(contentfulPayment);
 

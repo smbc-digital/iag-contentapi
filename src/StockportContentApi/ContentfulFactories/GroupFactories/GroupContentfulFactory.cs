@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -18,7 +16,6 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulOrganisationFactory;
         private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _contentfulGroupBrandingFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
         public GroupContentfulFactory(IContentfulFactory<ContentfulOrganisation,
@@ -28,7 +25,6 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             IContentfulFactory<ContentfulGroupSubCategory,
                 GroupSubCategory> contentfulGroupSubCategoryFactory,
             ITimeProvider timeProvider,
-            IHttpContextAccessor httpContextAccessor,
             IContentfulFactory<Asset, Document> documentFactory,
             IContentfulFactory<ContentfulGroupBranding,
             GroupBranding> groupBrandingFactory,
@@ -38,7 +34,6 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             _contentfulGroupCategoryFactory = contentfulGroupCategoryFactory;
             _contentfulGroupSubCategoryFactory = contentfulGroupSubCategoryFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
             _documentFactory = documentFactory;
             _contentfulGroupBrandingFactory = groupBrandingFactory;
             _alertFactory = alertFactory;
@@ -71,7 +66,6 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             }
 
             var administrators = entry.GroupAdministrators;
-            administrators.Items = administrators.Items.Select(i => i.StripData(_httpContextAccessor)).ToList();
 
             var cost = entry.Cost != null && entry.Cost.Any() ? entry.Cost : new List<string>();
 
@@ -85,7 +79,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
                 entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
                 categoriesReferences, subCategories, new List<Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
                 administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText,
-                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText, entry.DonationsUrl, alerts).StripData(_httpContextAccessor);
+                organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText, entry.DonationsUrl, alerts);
         }
     }
 }
