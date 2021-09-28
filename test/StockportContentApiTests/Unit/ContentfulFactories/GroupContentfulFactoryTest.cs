@@ -11,7 +11,6 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.ContentfulFactories.GroupFactories;
-using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -41,7 +40,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _contentfulGroupBrandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
             _contentfulGroup = new ContentfulGroupBuilder().Build();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, HttpContextFake.GetHttpContextFake(), _documentFactory.Object, _contentfulGroupBrandingFactory.Object, _alertFactory.Object);
+            _groupContentfulFactory = new GroupContentfulFactory(_contentfulOrganisationFactory.Object, _contentfulGroupCategoryFactory.Object, _contentfulGroupSubCategoryFactory.Object, _timeProvider.Object, _documentFactory.Object, _contentfulGroupBrandingFactory.Object, _alertFactory.Object);
         }
 
         [Fact]

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -12,17 +11,15 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
         private IContentfulFactory<ContentfulGroup, Group> _groupFactory;
         private IContentfulFactory<ContentfulGroupCategory, GroupCategory> _groupCategoryListFactory;
         private IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> _groupSubCategoryListFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
 
-        public GroupHomepageContentfulFactory(IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
+        public GroupHomepageContentfulFactory(IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryListFactory, IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory> groupSubCategoryListFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _groupFactory = groupFactory;
             _groupCategoryListFactory = groupCategoryListFactory;
             _groupSubCategoryListFactory = groupSubCategoryListFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
             _eventBannerFactory = eventBannerFactory;
         }
@@ -55,7 +52,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
             var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
-            return new GroupHomepage(entry.Title, entry.Slug, entry.MetaDescription, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner).StripData(_httpContextAccessor);
+            return new GroupHomepage(entry.Title, entry.Slug, entry.MetaDescription, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner);
         }
     }
 }

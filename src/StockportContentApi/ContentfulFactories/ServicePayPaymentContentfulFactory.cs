@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -11,14 +10,12 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ServicePayPaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IHttpContextAccessor httpContextAccessor)
+        public ServicePayPaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
         {
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
             _crumbFactory = crumbFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public ServicePayPayment ToModel(ContentfulServicePayPayment entry)
@@ -47,7 +44,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.PaymentDescription,
                 alerts,
                 entry.PaymentAmount
-                ).StripData(_httpContextAccessor);
+                );
         }
     }
 }

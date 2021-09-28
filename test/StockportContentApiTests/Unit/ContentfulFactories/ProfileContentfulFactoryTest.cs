@@ -6,7 +6,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -24,7 +23,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _profileContentfulFactory = new ProfileContentfulFactory(
                 _crumbFactory.Object, 
-                HttpContextFake.GetHttpContextFake(), 
                 new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, 
                 new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>().Object,
                 new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,

@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Fakes;
 using StockportContentApi.Model;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         {
             _contentfulContactUsId = new ContentfulContactUsId() {EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email"};
          
-            _contactUsIdContentfulFactory = new ContactUsIdContentfulFactory(HttpContextFake.GetHttpContextFake());
+            _contactUsIdContentfulFactory = new ContactUsIdContentfulFactory();
         }
 
         [Fact]

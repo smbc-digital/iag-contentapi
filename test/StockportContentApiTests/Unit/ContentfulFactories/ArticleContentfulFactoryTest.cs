@@ -12,7 +12,6 @@ using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using StockportContentApi.Utils;
 using StockportContentApi.ContentfulFactories.ArticleFactories;
-using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -51,7 +50,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
             _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, HttpContextFake.GetHttpContextFake());
+                _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
         }
 
         [Fact]

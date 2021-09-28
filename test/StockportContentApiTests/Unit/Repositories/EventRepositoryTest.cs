@@ -22,7 +22,6 @@ using StockportContentApiTests.Unit.Builders;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StockportContentApi.ContentfulFactories.EventFactories;
-using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -63,7 +62,7 @@ namespace StockportContentApiTests.Unit.Repositories
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false));
 
             // TODO: Make this into a mock instead of concrete class, will need refactor to tests with this also
-            var contentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
             var eventHomepageFactory = new EventHomepageContentfulFactory(_mockTimeProvider.Object);
 
             _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);

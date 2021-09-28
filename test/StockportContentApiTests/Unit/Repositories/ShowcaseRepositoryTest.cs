@@ -22,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using StockportContentApiTests.Unit.Builders;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -84,7 +83,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
 
-            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, HttpContextFake.GetHttpContextFake(), callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+            var contentfulFactory = new ShowcaseContentfulFactory(_topicFactory.Object, _crumbFactory.Object, _timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
             var newsListFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
 

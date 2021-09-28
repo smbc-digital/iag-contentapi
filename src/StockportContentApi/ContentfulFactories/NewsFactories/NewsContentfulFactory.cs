@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -15,14 +14,12 @@ namespace StockportContentApi.ContentfulFactories.NewsFactories
         private readonly IVideoRepository _videoRepository;
         private readonly IContentfulFactory<Asset, Document> _documentFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DateComparer _dateComparer;
 
-        public NewsContentfulFactory(IVideoRepository videoRepository, IContentfulFactory<Asset, Document> documentFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
+        public NewsContentfulFactory(IVideoRepository videoRepository, IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
         {
             _videoRepository = videoRepository;
             _documentFactory = documentFactory;
-            _httpContextAccessor = httpContextAccessor;
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
@@ -39,7 +36,7 @@ namespace StockportContentApi.ContentfulFactories.NewsFactories
 
             return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
                 _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, new List<Crumb> { new Crumb("News", string.Empty, "news") },
-                alerts.ToList(), entry.Tags, documents, entry.Categories).StripData(_httpContextAccessor);
+                alerts.ToList(), entry.Tags, documents, entry.Categories);
         }
     }
 }

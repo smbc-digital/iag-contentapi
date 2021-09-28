@@ -9,7 +9,6 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using StockportContentApi.Fakes;
 using StockportContentApi.Utils;
 using Document = StockportContentApi.Model.Document;
 
@@ -30,7 +29,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _videoRepository = new Mock<IVideoRepository>();
             _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
             _alertBuilder = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-            _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, HttpContextFake.GetHttpContextFake(), _alertBuilder.Object, _timeProvider.Object);
+            _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, _alertBuilder.Object, _timeProvider.Object);
         }
 
         [Fact]

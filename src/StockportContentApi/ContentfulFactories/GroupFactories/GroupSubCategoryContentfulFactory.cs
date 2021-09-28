@@ -1,19 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories.GroupFactories
 {
     public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public GroupSubCategoryContentfulFactory(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
-
         public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)
         {
             var name = !string.IsNullOrEmpty(entry.Name)
@@ -24,7 +15,7 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
                 ? entry.Slug
                 : "";
 
-            return new GroupSubCategory(name, slug).StripData(_httpContextAccessor);
+            return new GroupSubCategory(name, slug);
         }
     }
 }

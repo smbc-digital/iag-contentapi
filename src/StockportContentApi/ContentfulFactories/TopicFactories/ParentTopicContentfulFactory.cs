@@ -1,6 +1,5 @@
 using System.Linq;
 using Contentful.Core.Models;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -11,14 +10,12 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
     {
         private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
         private readonly DateComparer _dateComparer;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
-            ITimeProvider timeProvider, IHttpContextAccessor httpContextAccessor)
+            ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _dateComparer = new DateComparer(timeProvider);
-            _httpContextAccessor = httpContextAccessor;
         }
 
         private ContentfulArticle _entry;
@@ -46,7 +43,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
                 .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems).StripData(_httpContextAccessor);
+            return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems);
         }
 
         private ContentfulReference CheckCurrentArticle(ContentfulReference item)

@@ -7,7 +7,6 @@ using Moq;
 using StockportContentApi.Model;
 using System;
 using System.Collections.Generic;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -26,7 +25,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var ContentfulReference =
                 new ContentfulFooterBuilder().Build();                    
  
-            var footer = new FooterContentfulFactory(factory.Object, socialMediaFactory.Object, HttpContextFake.GetHttpContextFake()).ToModel(ContentfulReference);
+            var footer = new FooterContentfulFactory(factory.Object, socialMediaFactory.Object).ToModel(ContentfulReference);
 
             footer.Slug.Should().Be(ContentfulReference.Slug);
             footer.Title.Should().Be(ContentfulReference.Title);

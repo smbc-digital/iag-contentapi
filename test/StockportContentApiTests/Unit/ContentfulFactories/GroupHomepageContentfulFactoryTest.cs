@@ -9,7 +9,6 @@ using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using Xunit;
 using StockportContentApi.ContentfulFactories.GroupFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -34,7 +33,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
 
-        _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, HttpContextFake.GetHttpContextFake(), _alertFactory.Object, _eventBannerFactory.Object);
+        _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, _alertFactory.Object, _eventBannerFactory.Object);
         }
 
         [Fact]

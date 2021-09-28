@@ -4,7 +4,6 @@ using Contentful.Core.Models;
 using StockportContentApi.Model;
 using StockportContentApiTests.Builders;
 using StockportContentApi.ContentfulFactories.GroupFactories;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -21,7 +20,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Icon("icon")
                 .Build();
 
-            var contentfulFactory = new GroupCategoryContentfulFactory(HttpContextFake.GetHttpContextFake());
+            var contentfulFactory = new GroupCategoryContentfulFactory();
 
             var category = contentfulFactory.ToModel(contentfulShowcase);
 

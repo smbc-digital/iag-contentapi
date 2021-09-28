@@ -16,9 +16,6 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
 
         public EventHomepage ToModel(ContentfulEventHomepage entry)
         {
-
-
-
             var tags = new List<string>();
 
             tags.Add(entry.Tag1);

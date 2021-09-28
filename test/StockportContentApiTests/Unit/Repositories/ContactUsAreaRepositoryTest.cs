@@ -16,7 +16,6 @@ using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using StockportContentApi.Fakes;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -45,7 +44,6 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
             var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
-                HttpContextFake.GetHttpContextFake(), 
                 _mockCrumbFactory.Object, 
                 _timeprovider.Object, 
                 _mockAlertFactory.Object, 

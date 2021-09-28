@@ -2,7 +2,6 @@
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace StockportContentApi.ContentfulFactories
 {
@@ -14,17 +13,13 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IHttpContextAccessor httpContextAccessor, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
+        public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
         {
-            _httpContextAccessor = httpContextAccessor;
             _subitemFactory = subitemFactory;
             _crumbFactory = crumbFactory;
             _dateComparer = new DateComparer(timeProvider);
             _alertFactory = alertFactory;
             _contactUsCategoryFactory = contactUsCategoryFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public ContactUsArea ToModel(ContentfulContactUsArea entry)
@@ -66,7 +61,7 @@ namespace StockportContentApi.ContentfulFactories
                 entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
                     .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
-            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription).StripData(_httpContextAccessor);
+            return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription);
         }
     }
 }

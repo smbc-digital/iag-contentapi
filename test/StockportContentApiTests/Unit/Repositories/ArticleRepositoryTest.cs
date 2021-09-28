@@ -20,7 +20,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StockportContentApi.ContentfulFactories.ArticleFactories;
-using StockportContentApi.Fakes;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -47,7 +46,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_ACCESS_KEY", "KEY")
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
-            var documentFactory = new DocumentContentfulFactory(HttpContextFake.GetHttpContextFake());
+            var documentFactory = new DocumentContentfulFactory();
             _videoRepository = new Mock<IVideoRepository>();
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(string.Empty);
             _mockTimeProvider = new Mock<ITimeProvider>();
@@ -67,8 +66,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 documentFactory, 
                 _videoRepository.Object,
                 _mockTimeProvider.Object,
-                _alertFactory.Object,
-                HttpContextFake.GetHttpContextFake()
+                _alertFactory.Object
                 );
 
            var contentfulClientManager = new Mock<IContentfulClientManager>();
@@ -76,7 +74,7 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _configuration = new Mock<IConfiguration>();
             _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
-            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(HttpContextFake.GetHttpContextFake()), _videoRepository.Object, _cache.Object, _configuration.Object);
+            _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
         }
         
         [Fact]
