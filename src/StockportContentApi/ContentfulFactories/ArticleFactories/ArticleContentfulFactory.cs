@@ -70,6 +70,8 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
+            var sectionUpdatedAt = entry.Sections.OrderByDescending(s => s.Sys.UpdatedAt).FirstOrDefault();
+
             var updatedAt = entry.Sys.UpdatedAt.Value;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
