@@ -41,5 +41,10 @@ namespace StockportContentApiTests.Unit.Builders
                 Sys = _sys
             };
         }
+
+        public ContentfulSectionBuilder AddUpdatedAt(DateTime newTime) {
+            _sys.UpdatedAt = newTime;
+            return this;
+        }
     }
 }

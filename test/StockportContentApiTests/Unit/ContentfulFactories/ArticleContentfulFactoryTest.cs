@@ -16,8 +16,7 @@ using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
-    public class ArticleContentfulFactoryTest
-    {
+    public class ArticleContentfulFactoryTest {
         private readonly ContentfulArticle _contentfulArticle;
         private readonly Mock<IVideoRepository> _videoRepository;
         private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
@@ -28,9 +27,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
         private readonly Mock<ITimeProvider> _timeProvider;
         private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-        
-        public ArticleContentfulFactoryTest()
-        {
+
+        public ArticleContentfulFactoryTest() {
             _contentfulArticle = new ContentfulArticleBuilder().Build();
 
             // set to topic for mocking
@@ -54,8 +52,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks()
-        {
+        public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks() {
             _contentfulArticle.BackgroundImage.SystemProperties.Type = "Link";
             _contentfulArticle.Sections.First().Sys.Type = "Link";
             _contentfulArticle.Breadcrumbs.First().Sys.Type = "Link";
@@ -86,22 +83,19 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ItShouldRemoveAlertsInlineThatArePastSunsetDateOrBeforeSunriseDate()
-        {
-            ContentfulAlert _visibleAlert = new ContentfulAlert()
-            {
+        public void ItShouldRemoveAlertsInlineThatArePastSunsetDateOrBeforeSunriseDate() {
+            ContentfulAlert _visibleAlert = new ContentfulAlert() {
                 Title = "title",
                 SubHeading = "subHeading",
                 Body = "body",
                 Severity = "severity",
                 SunriseDate = new DateTime(2016, 12, 01),
                 SunsetDate = new DateTime(2017, 02, 01),
-                Sys = new SystemProperties() {Type = "Entry"}
+                Sys = new SystemProperties() { Type = "Entry" }
             };
 
             ContentfulAlert _invisibleAlert =
-                new ContentfulAlert()
-                {
+                new ContentfulAlert() {
                     Title = "title",
                     SubHeading = "subHeading",
                     Body = "body",
@@ -121,12 +115,10 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ItShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate()
-        {
-            
+        public void ItShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate() {
 
-            ContentfulAlert _visibleAlert = new ContentfulAlert()
-            {
+
+            ContentfulAlert _visibleAlert = new ContentfulAlert() {
                 Title = "title",
                 SubHeading = "subHeading",
                 Body = "body",
@@ -135,8 +127,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 SunsetDate = new DateTime(2017, 02, 01),
                 Sys = new SystemProperties() { Type = "Entry" }
             };
-            ContentfulAlert _invisibleAlert = new ContentfulAlert()
-            {
+            ContentfulAlert _invisibleAlert = new ContentfulAlert() {
                 Title = "title",
                 SubHeading = "subHeading",
                 Body = "body",
@@ -155,8 +146,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         }
 
         [Fact]
-        public void ShouldParseArticleIfBodyIsNull()
-        {
+        public void ShouldParseArticleIfBodyIsNull() {
             var contentfulArticle = new ContentfulArticleBuilder().Title("title").Body(null).Build();
 
             var article = _articleFactory.ToModel(contentfulArticle);
@@ -164,6 +154,17 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             article.Should().BeOfType<Article>();
             article.Body.Should().Be(string.Empty);
             article.Title.Should().Be("title");
+        }
+
+        [Fact]
+        public void ToModelShouldUpdateLastUpdatedAtWhenArticleSectionisUpdated() {
+            var time = DateTime.Now.AddHours(1);
+            var contentfulSection = new ContentfulSectionBuilder().AddUpdatedAt(time).Build();
+            var contentfulArticle = new ContentfulArticleBuilder().Title("title").WithOutSection().Section(contentfulSection).Build();
+
+            var model = _articleFactory.ToModel(contentfulArticle);
+
+            model.UpdatedAt.Should().Be(time);
         }
     }
 }

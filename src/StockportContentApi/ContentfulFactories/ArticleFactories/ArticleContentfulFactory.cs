@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -26,8 +27,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
-        {
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory) {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
             _profileFactory = profileFactory;
@@ -38,8 +38,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             _alertFactory = alertFactory;
         }
 
-        public Article ToModel(ContentfulArticle entryContentfulArticle)
-        {
+        public Article ToModel(ContentfulArticle entryContentfulArticle) {
             var entry = entryContentfulArticle;
 
             var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
@@ -70,12 +69,18 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
-            var sectionUpdatedAt = entry.Sections.OrderByDescending(s => s.Sys.UpdatedAt).FirstOrDefault();
+            var sectionUpdatedAt = entry.Sections
+                .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                .Where(section => section.Sys.UpdatedAt is not null)
+                .Select(section => section.Sys.UpdatedAt.Value)
+                .OrderByDescending(section => section)
+                .FirstOrDefault();
 
-            var updatedAt = entry.Sys.UpdatedAt.Value;
+            var updatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value ? sectionUpdatedAt : entry.Sys.UpdatedAt.Value;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
                 sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt);
+            
         }
     }
 }
