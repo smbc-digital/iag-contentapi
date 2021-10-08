@@ -89,6 +89,11 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
+        public ContentfulArticleBuilder Section(ContentfulSection section) {
+            _sections.Add(section);
+            return this;
+        }
+
         public ContentfulArticleBuilder WithOutSection()
         {
             _sections = new List<ContentfulSection>();
