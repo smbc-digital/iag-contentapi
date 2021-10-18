@@ -7,7 +7,7 @@ namespace StockportContentApi.ContentfulFactories
     {
         public SocialMediaLink ToModel(ContentfulSocialMediaLink link)
         {
-            return new SocialMediaLink(link.Title, link.Slug, link.Url, link.Icon, link.AccountName);
+            return new SocialMediaLink(link.Title, link.Slug, link.Url, link.Icon, link.AccountName, link.ScreenReader);
         }
     }
 }
