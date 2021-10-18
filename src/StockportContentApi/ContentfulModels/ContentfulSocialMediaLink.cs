@@ -9,6 +9,7 @@ namespace StockportContentApi.ContentfulModels
         public string Url { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public string AccountName { get; set; } = string.Empty;
+        public string ScreenReader { get; set; } = string.Empty;
         public SystemProperties Sys { get; set; } = new SystemProperties();
     }
 }
