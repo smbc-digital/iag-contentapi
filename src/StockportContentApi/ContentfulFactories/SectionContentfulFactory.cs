@@ -40,7 +40,7 @@ namespace StockportContentApi.ContentfulFactories
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
             return new Section(entry.Title, entry.Slug, entry.MetaDescription, body, profiles, documents, 
-                               entry.SunriseDate, entry.SunsetDate, alertsInline);
+                               entry.SunriseDate, entry.SunsetDate, alertsInline, entry.HideLastUpdated);
         }
     }
 }

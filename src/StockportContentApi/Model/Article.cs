@@ -24,10 +24,11 @@ namespace StockportContentApi.Model
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
         public DateTime UpdatedAt { get; }
-        
+        public bool ShowLastUpdated { get; set; }
+
         public Article(string body, string slug, string title, string teaser, string metaDescription, string icon, string backgroundImage, string image, List<Section> sections,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, IEnumerable<Profile> profiles, Topic parentTopic, List<Document> documents,
-            DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline, DateTime updatedAt)
+            DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline, DateTime updatedAt, bool showLastUpdated)
         {
             Body = body;
             Slug = slug;
@@ -47,6 +48,7 @@ namespace StockportContentApi.Model
             SunsetDate = sunsetDate;
             AlertsInline = alertsInline;
             UpdatedAt = updatedAt;
+            ShowLastUpdated = showLastUpdated;
         }
 
         public void ReplaceSection(Section oldSection, Section newSection)
@@ -66,7 +68,7 @@ namespace StockportContentApi.Model
         public NullArticle()
         : base(
             string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<Section>(), new List<Crumb>(),
-            new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), new List<Alert>(), new DateTime())
+            new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(), new DateTime(), new DateTime(), new List<Alert>(), new DateTime(), new bool())
         { }
     }
 }

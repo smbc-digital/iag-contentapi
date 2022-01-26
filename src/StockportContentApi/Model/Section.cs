@@ -14,9 +14,10 @@ namespace StockportContentApi.Model
         public List<Document> Documents { get; }
         public DateTime SunriseDate { get; }
         public DateTime SunsetDate { get; }
+        public bool HideLastUpdated { get; set; }
         public Section() { }
 
-        public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline)
+        public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline, bool hideLastUpdated)
         {
             Title = title;
             Slug = slug;
@@ -27,6 +28,7 @@ namespace StockportContentApi.Model
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
             AlertsInline = alertsInline;
+            HideLastUpdated = hideLastUpdated;
         }
     }
 }
