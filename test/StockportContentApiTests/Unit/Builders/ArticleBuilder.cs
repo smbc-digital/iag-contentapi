@@ -100,6 +100,7 @@ namespace StockportContentApiTests.Unit.Builders
     };
 
         private DateTime _updatedAt = DateTime.Now;
+        private bool _hideLastUpdated;
 
         private Topic _parentTopic = new Topic("slug",
             "name",
@@ -141,7 +142,8 @@ namespace StockportContentApiTests.Unit.Builders
                 _sunriseDate,
                 _sunsetDate,
                 _alertsInline,
-                _updatedAt);
+                _updatedAt,
+                _hideLastUpdated);
         }
 
         public ArticleBuilder SunriseDate(DateTime sunriseDate)

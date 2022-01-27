@@ -234,7 +234,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             return new Article("", "", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
                 new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
-                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), new List<Alert>(), DateTime.Now);
+                new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), new List<Alert>(), DateTime.Now, new bool());
         }
     }
 }

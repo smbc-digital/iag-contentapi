@@ -17,6 +17,7 @@ namespace StockportContentApi.ContentfulModels
         public string Icon { get; set; } = string.Empty;
         public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
         public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
+        public bool HideLastUpdated { get; set; } = false;
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public List<ContentfulReference> SubItems { get; set; } = new List<ContentfulReference>();
         public List<ContentfulReference> SecondaryItems { get; set; } = new List<ContentfulReference>();
