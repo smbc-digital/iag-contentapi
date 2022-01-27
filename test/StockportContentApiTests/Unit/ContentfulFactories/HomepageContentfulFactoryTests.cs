@@ -83,8 +83,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldNotFailIfNoGroupsCanBeUsed()
         {
             var contentfulHomepage = new ContentfulHomepageBuilder()
-                .FeaturedGroups(new List<ContentfulGroup>(){})
-                .Build();
+                .FeaturedGroups(new List<ContentfulGroup>()
+                {
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build(),
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build(),
+                    new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build()
+                }).Build();
 
             var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
