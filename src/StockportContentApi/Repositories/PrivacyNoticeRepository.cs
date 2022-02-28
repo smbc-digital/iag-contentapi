@@ -36,9 +36,7 @@ namespace StockportContentApi.Repositories
 
             var entry = entries.FirstOrDefault();
 
-            var privacyNotice = _contentfulFactory.ToModel(entry);
-
-            return privacyNotice;
+            return entry is not null ? _contentfulFactory.ToModel(entry) : null;
         }
 
         public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
