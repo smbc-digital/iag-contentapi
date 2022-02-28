@@ -32,14 +32,10 @@ namespace StockportContentApi.Controllers
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
                 var privacyNotice = await repository.GetPrivacyNotice(slug);
 
-                if (privacyNotice == null)
-                {
+                if (privacyNotice is null)
                     return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notice not found");
-                }
-                else
-                {
-                    return HttpResponse.Successful(privacyNotice);
-                }
+
+                return HttpResponse.Successful(privacyNotice);
             });
         }
 
