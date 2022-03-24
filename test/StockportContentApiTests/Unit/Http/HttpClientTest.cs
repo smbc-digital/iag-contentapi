@@ -47,7 +47,7 @@ namespace StockportContentApiTests.Unit.Http
             var response = AsyncTestHelper.Resolve(_httpClient.Get("http://www.nourl.com"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("500");
+            response.Error.Should().Be("404");
         }
 
         [Fact]
