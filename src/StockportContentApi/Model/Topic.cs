@@ -30,6 +30,7 @@ namespace StockportContentApi.Model
         public string PrimaryItemTitle { get; set; }
 
         public bool DisplayContactUs { get; }
+        public string Body { get; set; }
 
         public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
             IEnumerable<SubItem> tertiaryItems)
@@ -45,7 +46,7 @@ namespace StockportContentApi.Model
             string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, 
             string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle,
-            IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null, bool displayContactUs = true)
+            IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null, bool displayContactUs = true, string body = null)
         {
             Slug = slug;
             Name = name;
@@ -69,6 +70,7 @@ namespace StockportContentApi.Model
             ExpandingLinkBoxes = expandingLinkBoxes;
             PrimaryItemTitle = primaryItemTitle;
             DisplayContactUs = displayContactUs;
+            Body = body;
         }
     }
 
@@ -96,7 +98,8 @@ namespace StockportContentApi.Model
             string.Empty,
             new List<ExpandingLinkBox>(),
             string.Empty,
-            true
+            true,
+            String.Empty
             )
         {
         }
