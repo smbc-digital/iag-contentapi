@@ -95,5 +95,6 @@
     }
   ],
   "primaryItemTitle": null,
-  "displayContactUs": false
+  "displayContactUs": false,
+  "body": "body"
 }
