@@ -59,6 +59,8 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<Contentful.Core.IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
+            _videoRepository = new Mock<IVideoRepository>();
+
             _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object, _topicSiteMapFactory.Object, _videoRepository.Object);
         }
 

@@ -37,6 +37,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
+            _videoRepository = new Mock<IVideoRepository>();
             _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object, _videoRepository.Object);
         }
 
@@ -97,6 +98,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Teaser.Should().BeEquivalentTo("teaser");
             result.MetaDescription.Should().BeEquivalentTo("metaDescription");
             result.DisplayContactUs.Should().Be(false);
+            result.Body.Should().Be(null);
         }
 
         [Fact]
