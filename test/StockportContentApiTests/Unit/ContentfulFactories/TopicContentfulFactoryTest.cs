@@ -10,6 +10,7 @@ using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using StockportContentApi.ContentfulFactories.TopicFactories;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -24,6 +25,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>> _expandingLinkBoxFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
+        private readonly Mock<IVideoRepository> _videoRepository;
+
 
         public TopicContentfulFactoryTest()
         {
@@ -34,7 +37,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object);
+            _videoRepository = new Mock<IVideoRepository>();
+            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object, _timeProvider.Object, _videoRepository.Object);
         }
 
         [Fact]
@@ -94,6 +98,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Teaser.Should().BeEquivalentTo("teaser");
             result.MetaDescription.Should().BeEquivalentTo("metaDescription");
             result.DisplayContactUs.Should().Be(false);
+            result.Body.Should().Be(null);
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories.TopicFactories
@@ -13,8 +14,9 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
+        private readonly IVideoRepository _videoRepository;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider, IVideoRepository videoRepository)
 
         {
             _subItemFactory = subItemFactory;
@@ -23,6 +25,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
+            _videoRepository = videoRepository;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -63,10 +66,12 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             var displayContactUs = entry.DisplayContactUs;
 
+            var body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty;
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle,
-                expandingLinkBoxes, primaryItemTitle, displayContactUs);
+                expandingLinkBoxes, primaryItemTitle, displayContactUs, body);
         }
     }
 }
