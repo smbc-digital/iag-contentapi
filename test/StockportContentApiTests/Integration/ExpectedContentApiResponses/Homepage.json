@@ -170,5 +170,14 @@
     "alerts": []
   },
   "eventCategory": "",
-  "metaDescription":  "meta description" 
+  "metaDescription": "meta description",
+  "campaignBanner": {
+    "title": "title",
+    "slug": "slug",
+    "teaser": "teaser",
+    "image": "image.jpg",
+    "sunriseDate": "2016-09-01T00:00:00Z",
+    "sunsetDate": "2016-09-30T00:00:00Z",
+    "url": "url"
+  } 
 }

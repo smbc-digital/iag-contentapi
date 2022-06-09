@@ -39,6 +39,8 @@ namespace StockportContentApiTests.Unit.Builders
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
 
+        private readonly ContentfulCarouselContent _campaignBanner = new ContentfulCarouselContentBuilder().Build();
+
         public ContentfulHomepage Build()
         {
             return new ContentfulHomepage
@@ -54,7 +56,8 @@ namespace StockportContentApiTests.Unit.Builders
                 FreeText = _freeText,
                 FeaturedGroups = _featuredGroups,
                 Sys = _sys,
-                MetaDescription = _metaDescription
+                MetaDescription = _metaDescription,
+                CampaignBanner = _campaignBanner
             };
         }
 

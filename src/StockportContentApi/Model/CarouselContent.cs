@@ -12,6 +12,17 @@ namespace StockportContentApi.Model
         public DateTime SunsetDate { get; }
         public string Url { get; }
 
+        public CarouselContent()
+        {
+            Title = string.Empty;
+            Slug = string.Empty;
+            Teaser = string.Empty;
+            Image = string.Empty;
+            SunriseDate = new DateTime();
+            SunsetDate = new DateTime();
+            Url = string.Empty;
+        }
+
         public CarouselContent(string title, string slug, string teaser, string image, DateTime sunriseDate, DateTime sunsetDate, string url)
         {
             Title = title;

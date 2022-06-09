@@ -27,7 +27,7 @@ namespace StockportContentApi
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(0), ex, "An unexpected error occured while performing the get operation");
+                _logger.LogError(new EventId(0), ex, "An unexpected error occurred while performing the get operation");
                 return new StatusCodeResult(500);
             }
 
