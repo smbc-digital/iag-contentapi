@@ -18,5 +18,6 @@ namespace StockportContentApi.ContentfulModels
         public string EventCategory { get; set; } = string.Empty;
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public string MetaDescription { get; set; } = string.Empty;
+        public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
     }
 }

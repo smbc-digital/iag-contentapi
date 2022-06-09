@@ -50,13 +50,15 @@ namespace StockportContentApi.ContentfulFactories
                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                     .Select(item => _carouselFactory.ToModel(item)).ToList();
 
+            var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
+
             var featuredGroup = entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
                                                                     && _dateComparer.DateNowIsNotBetweenHiddenRange(
                                                                         group.DateHiddenFrom, group.DateHiddenTo))
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
             return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, 
-                featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription);
+                featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner);
         }
     }
 }

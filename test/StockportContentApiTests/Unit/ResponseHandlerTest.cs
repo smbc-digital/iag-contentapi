@@ -18,7 +18,7 @@ namespace StockportContentApiTests.Unit
             {
                 throw new Exception("error");
             }));
-            Assert.Equal("An unexpected error occured while performing the get operation", 
+            Assert.Equal("An unexpected error occurred while performing the get operation", 
                         _fakeLogger.ErrorMessage);
             Assert.Equal(500, (result as StatusCodeResult).StatusCode);
         }
