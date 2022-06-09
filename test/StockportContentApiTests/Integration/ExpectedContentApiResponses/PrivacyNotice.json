@@ -47,6 +47,7 @@
     "expandingLinkBoxes": [
     ],
     "primaryItemTitle": "",
-    "displayContactUs": true
+    "displayContactUs": true,
+    "body":  ""
   }
 }
