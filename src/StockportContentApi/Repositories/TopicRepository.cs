@@ -17,17 +17,14 @@ namespace StockportContentApi.Repositories
         private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
         private readonly IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> _topicSiteMapFactory;
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly IVideoRepository _videoRepository;
 
         public TopicRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                    IContentfulFactory<ContentfulTopic, Topic> topicFactory,
-                   IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> topicSiteMapFactory,
-                   IVideoRepository videoRepository)
+                   IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> topicSiteMapFactory)
         {
             _client = clientManager.GetClient(config);
             _topicFactory = topicFactory;
             _topicSiteMapFactory = topicSiteMapFactory;
-            _videoRepository = videoRepository;
         }
 
         public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
@@ -40,8 +37,6 @@ namespace StockportContentApi.Repositories
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
 
             var model = _topicFactory.ToModel(entry);
-
-            model.Body = _videoRepository.Process(model.Body);
 
             return HttpResponse.Successful(model);
         }
