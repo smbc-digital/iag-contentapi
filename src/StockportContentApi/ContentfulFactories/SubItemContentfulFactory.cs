@@ -20,12 +20,17 @@ namespace StockportContentApi.ContentfulFactories
         {
             var type = GetEntryType(entry);
             var image = GetEntryImage(entry);
+            if (string.IsNullOrEmpty(image))
+            {
+                image = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
+                            ? entry.BackgroundImage.File.Url : string.Empty;
+            }
+
             var title = GetEntryTitle(entry);
 
             // build all of the sub items (only avaliable for topics)
-            var subItems = new List<SubItem>();
-
-            if (entry.SubItems != null)
+            List<SubItem> subItems = new();
+            if (entry.SubItems is not null)
             {
                 foreach (var item in entry.SubItems.Where(EntryIsValid))
                 {
@@ -68,8 +73,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
-            return new SubItem(handledSlug, title, entry.Teaser, 
-                entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
+            return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
         }
 
         private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)
