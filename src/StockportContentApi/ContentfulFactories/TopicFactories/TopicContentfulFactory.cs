@@ -14,12 +14,14 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, ITimeProvider timeProvider)
+        private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
 
+        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
             _alertFactory = alertFactory;
+            _carouselFactory = carouselFactory;
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
@@ -63,9 +65,11 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             var displayContactUs = entry.DisplayContactUs;
 
+            var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle,
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs);
         }
     }

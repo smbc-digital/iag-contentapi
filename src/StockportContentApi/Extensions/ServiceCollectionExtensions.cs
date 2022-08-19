@@ -104,6 +104,7 @@ namespace StockportContentApi.Extensions
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
                 p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
+                p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
                 p.GetService<ITimeProvider>()));
             services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
             services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
