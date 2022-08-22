@@ -95,5 +95,14 @@
     }
   ],
   "primaryItemTitle": null,
-  "displayContactUs": false
+  "displayContactUs": false,
+  "campaignBanner": {
+    "title": "",
+    "slug": "",
+    "teaser": "",
+    "image": "",
+    "sunriseDate": "0001-01-01T00:00:00Z",
+    "sunsetDate": "0001-01-01T00:00:00Z",
+    "url": ""
+  }
 }
