@@ -68,9 +68,12 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
-                subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, 
+                subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner,
-                expandingLinkBoxes, primaryItemTitle, displayContactUs);
+                expandingLinkBoxes, primaryItemTitle, displayContactUs)
+            {
+                CallToAction = entry.CallToAction
+            };
         }
     }
 }
