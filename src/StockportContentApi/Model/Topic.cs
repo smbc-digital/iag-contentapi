@@ -33,6 +33,8 @@ namespace StockportContentApi.Model
 
         public CarouselContent CampaignBanner { get; set; }
 
+        public CallToAction CallToAction { get; init; }
+
         public string Tag { get; set; }
 
 

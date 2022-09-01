@@ -56,6 +56,8 @@
       "sunriseDate": "0001-01-01T00:00:00Z",
       "sunsetDate": "0001-01-01T00:00:00Z",
       "url": ""
-    }
+    },
+    "callToAction": null,
+    "tag": ""
   }
 }
