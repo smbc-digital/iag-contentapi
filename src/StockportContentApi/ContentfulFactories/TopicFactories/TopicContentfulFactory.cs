@@ -69,7 +69,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
-                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.Category,
+                entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs)
             {
                 CallToAction = entry.CallToAction
