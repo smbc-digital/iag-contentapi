@@ -122,7 +122,7 @@ namespace StockportContentApiTests.Unit.Builders
             new NullEventBanner(),
             "expandingLinkTitle",
             new CarouselContent(),
-            "tag",
+            null,
             new List<ExpandingLinkBox>());
 
         public Article Build()
