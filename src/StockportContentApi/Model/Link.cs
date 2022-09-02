@@ -1,4 +1,4 @@
 ﻿namespace StockportContentApi.Model
 {
-    public record Link(string Url, string Text, bool External);
+    public record Link(string Url, string Text, bool IsExternal);
 }
