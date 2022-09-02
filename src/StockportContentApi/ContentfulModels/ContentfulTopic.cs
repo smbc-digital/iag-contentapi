@@ -20,7 +20,7 @@ namespace StockportContentApi.ContentfulModels
         };
         public string PrimaryItemTitle { get; set; }
         public bool DisplayContactUs { get; set; } = true;
-        public string Tag { get; set; }
+        public string EventCategory { get; set; }
 
         public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
     }

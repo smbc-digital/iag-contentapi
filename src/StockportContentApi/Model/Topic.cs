@@ -35,7 +35,7 @@ namespace StockportContentApi.Model
 
         public CallToAction CallToAction { get; init; }
 
-        public string Tag { get; set; }
+        public string EventCategory { get; set; }
 
 
         public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
@@ -51,7 +51,7 @@ namespace StockportContentApi.Model
         public Topic(string slug, string name, string teaser, string metaDescription, string summary, string icon, string backgroundImage,
             string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
             IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts, 
-            string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string tag,
+            string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string eventCategory,
             IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
             bool displayContactUs = true)
         {
@@ -73,7 +73,7 @@ namespace StockportContentApi.Model
             EmailAlerts = emailAlerts;
             EmailAlertsTopicId = emailAlertsTopicId;
             EventBanner = eventBanner;
-            Tag = tag;
+            EventCategory = eventCategory;
             ExpandingLinkTitle = expandingLinkTitle;
             ExpandingLinkBoxes = expandingLinkBoxes;
             PrimaryItemTitle = primaryItemTitle;
