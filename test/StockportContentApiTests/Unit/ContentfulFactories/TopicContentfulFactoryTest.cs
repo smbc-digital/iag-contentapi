@@ -25,6 +25,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
         private readonly TopicContentfulFactory _topicContentfulFactory;
         private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
+        private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionFactory = new();
 
         public TopicContentfulFactoryTest()
         {
@@ -36,7 +37,16 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
             _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-            _topicContentfulFactory = new TopicContentfulFactory(_subItemFactory.Object, _crumbFactory.Object, _alertFactory.Object, _eventBannerFactory.Object, _expandingLinkBoxFactory.Object,_carouselContentFactory.Object, _timeProvider.Object);
+            _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(nameof(CallToAction), null, null, null));
+            _topicContentfulFactory = new TopicContentfulFactory(
+                _subItemFactory.Object, 
+                _crumbFactory.Object, 
+                _alertFactory.Object, 
+                _eventBannerFactory.Object, 
+                _expandingLinkBoxFactory.Object,
+                _carouselContentFactory.Object, 
+                _timeProvider.Object,
+                _callToActionFactory.Object);
         }
 
         [Fact]
@@ -100,6 +110,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.Teaser.Should().BeEquivalentTo("teaser");
             result.MetaDescription.Should().BeEquivalentTo("metaDescription");
             result.DisplayContactUs.Should().Be(false);
+            result.CallToAction.Should().NotBeNull();
         }
 
         [Fact]

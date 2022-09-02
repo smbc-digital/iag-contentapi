@@ -13,10 +13,18 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
-
         private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
+        private readonly IContentfulFactory<ContentfulCallToAction, CallToAction> _callToActionFactory;
 
-        public TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory, IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider)
+        public TopicContentfulFactory(
+            IContentfulFactory<ContentfulReference, SubItem> subItemFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+            IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
+            IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory,
+            IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
+            ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulCallToAction, CallToAction> callToActionFactory)
         {
             _subItemFactory = subItemFactory;
             _crumbFactory = crumbFactory;
@@ -25,6 +33,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
             _dateComparer = new DateComparer(timeProvider);
             _eventBannerFactory = eventBannerFactory;
             _expandingLinkBoxFactory = expandingLinkBoxFactory;
+            _callToActionFactory = callToActionFactory;
         }
 
         public Topic ToModel(ContentfulTopic entry)
@@ -72,7 +81,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.Tag,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs)
             {
-                CallToAction = entry.CallToAction
+                CallToAction = _callToActionFactory.ToModel(entry.CallToAction)
             };
         }
     }
