@@ -81,7 +81,8 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs)
             {
-                CallToAction = _callToActionFactory.ToModel(entry.CallToAction)
+                CallToAction = _callToActionFactory.ToModel(entry.CallToAction),
+                Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag)
             };
         }
     }

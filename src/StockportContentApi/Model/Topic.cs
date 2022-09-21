@@ -15,6 +15,7 @@ namespace StockportContentApi.Model
         public string Icon { get; }
         public string BackgroundImage { get; }
         public string Image { get; set; }
+        public Video Video { get; init; }
         public IEnumerable<SubItem> SubItems { get; }
         public IEnumerable<SubItem> SecondaryItems { get; }
         public IEnumerable<SubItem> TertiaryItems { get; }
