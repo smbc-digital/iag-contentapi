@@ -7,6 +7,11 @@
   "icon": "icon",
   "backgroundImage": "background-image-url.jpg",
   "image": "background-image-url.jpg",
+  "video": {
+    "heading": null,
+    "text": null,
+    "videoEmbedCode": null
+  },
   "subItems": [
     {
       "slug": "sub-slug",
