@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApi.Model
 {
@@ -8,12 +9,11 @@ namespace StockportContentApi.Model
         public string Slug { get; }
         public string Name { get; }
         public string Teaser { get; }
-
         public string MetaDescription { get;  }
-
         public string Summary { get;}
         public string Icon { get; }
         public string BackgroundImage { get; }
+        public TriviaSection TriviaSection { get; init; }
         public string Image { get; set; }
         public Video Video { get; init; }
         public IEnumerable<SubItem> SubItems { get; }

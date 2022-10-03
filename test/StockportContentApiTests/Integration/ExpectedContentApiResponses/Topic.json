@@ -6,6 +6,10 @@
   "summary": "summary",
   "icon": "icon",
   "backgroundImage": "background-image-url.jpg",
+  "triviaSection": {
+    "heading": "",
+    "trivia": []
+  },
   "image": "background-image-url.jpg",
   "video": {
     "heading": null,

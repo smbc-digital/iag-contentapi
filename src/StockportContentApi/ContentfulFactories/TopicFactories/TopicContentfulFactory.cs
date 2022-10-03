@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -76,13 +77,18 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
 
             var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
+            IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() ?
+                entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))
+                : new List<Trivia>();
+
             return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
                 subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
                 entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
                 expandingLinkBoxes, primaryItemTitle, displayContactUs)
             {
-                CallToAction = _callToActionFactory.ToModel(entry.CallToAction),
-                Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag)
+                TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
+                Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
+                CallToAction = _callToActionFactory.ToModel(entry.CallToAction)
             };
         }
     }
