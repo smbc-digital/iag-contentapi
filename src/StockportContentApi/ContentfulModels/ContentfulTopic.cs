@@ -11,6 +11,8 @@ namespace StockportContentApi.ContentfulModels
         public string VideoTitle { get; init; }
         public string VideoTeaser { get; init; }
         public string VideoTag { get; init; }
+        public string TriviaSubheading { get; set; } = string.Empty;
+        public List<ContentfulTrivia> TriviaSection { get; init; }
         public ContentfulCallToAction CallToAction { get; init; }
         public bool EmailAlerts { get; set; } = false;
         public string EmailAlertsTopicId { get; set; } = string.Empty;
