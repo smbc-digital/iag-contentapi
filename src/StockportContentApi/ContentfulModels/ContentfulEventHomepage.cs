@@ -1,4 +1,6 @@
 ﻿using Contentful.Core.Models;
+using StockportContentApi.Model;
+using System.Collections.Generic;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -17,5 +19,8 @@ namespace StockportContentApi.ContentfulModels
         public SystemProperties Sys { get; set; } = new SystemProperties();
 
         public string MetaDescription { get; set; } = string.Empty;
+
+        public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+
     }
 }

@@ -49,6 +49,7 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
 
             var eventHomePage =  new EventHomepage(rows);
             eventHomePage.MetaDescription = entry.MetaDescription;
+            eventHomePage.Alerts = entry.Alerts;
 
             return eventHomePage;
         }

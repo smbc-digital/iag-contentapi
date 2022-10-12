@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StockportContentApi.ContentfulModels;
+using System.Collections.Generic;
 
 namespace StockportContentApi.Model
 {
@@ -13,6 +14,7 @@ namespace StockportContentApi.Model
     {
         public IEnumerable<EventHomepageRow> Rows { get; }
         public IEnumerable<EventCategory> Categories { get; set; }
+        public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
 
         public string MetaDescription { get; set; }
 
