@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Unit.Builders;
 

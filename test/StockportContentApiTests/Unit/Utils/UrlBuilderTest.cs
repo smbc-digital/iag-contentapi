@@ -1,10 +1,10 @@
-﻿using StockportContentApi.Utils;
-using FluentAssertions;
+﻿using FluentAssertions;
+using StockportContentApi.Utils;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Utils
 {
-    
+
 
     public class UrlBuilderTest
     {
@@ -14,19 +14,19 @@ namespace StockportContentApiTests.Unit.Utils
 
         public UrlBuilderTest()
         {
-           _urlBuilder = new UrlBuilder(ENTRIES_BASE_URL);
+            _urlBuilder = new UrlBuilder(ENTRIES_BASE_URL);
         }
 
         [Fact]
         public void ShouldGetUrlForAtoZRepository()
         {
-            _urlBuilder.UrlFor(type: "AtoZ", displayOnAtoZ:true).Should().Be(ENTRIES_BASE_URL + "&content_type=AtoZ&fields.displayOnAZ=true");
+            _urlBuilder.UrlFor(type: "AtoZ", displayOnAtoZ: true).Should().Be(ENTRIES_BASE_URL + "&content_type=AtoZ&fields.displayOnAZ=true");
         }
 
         [Fact]
         public void ShouldGetUrlForHomeRepository()
         {
-            _urlBuilder.UrlFor(type:"home", referenceLevel:2, slug:"slug").Should().Be(ENTRIES_BASE_URL + "&content_type=home&include=2&fields.slug=slug");
+            _urlBuilder.UrlFor(type: "home", referenceLevel: 2, slug: "slug").Should().Be(ENTRIES_BASE_URL + "&content_type=home&include=2&fields.slug=slug");
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace StockportContentApiTests.Unit.Utils
 
         [Fact]
         public void ShouldGetUrlForNewsRepository()
-        {           
+        {
             _urlBuilder.UrlFor(type: "news", referenceLevel: 2).Should().Be(ENTRIES_BASE_URL + "&content_type=news&include=2");
             _urlBuilder.UrlFor(type: "news", referenceLevel: 2, slug: "slug").Should().Be(ENTRIES_BASE_URL + "&content_type=news&include=2&fields.slug=slug");
             _urlBuilder.UrlFor(type: "news", referenceLevel: 2, slug: "slug", tag: "tag").Should().Be(ENTRIES_BASE_URL + "&content_type=news&include=2&fields.slug=slug&fields.tags[in]=tag");

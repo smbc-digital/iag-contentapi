@@ -1,16 +1,13 @@
-﻿using System;
-using System.Linq;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using System.Collections.Generic;
-using StockportContentApi.Utils;
-using StockportContentApi.ContentfulFactories.EventFactories;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -44,11 +41,11 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                                                                  new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug", false));
 
             _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object, _groupFactory.Object, _eventCategoryFactory.Object, _alertFactory.Object, _timeProvider.Object);
-            
+
         }
 
         [Fact]
-        public void ShouldNotAddDocumentsOrImageIfTheyAreLinks() 
+        public void ShouldNotAddDocumentsOrImageIfTheyAreLinks()
         {
             _contentfulEvent.Documents.First().SystemProperties.Type = "Link";
             _contentfulEvent.Image.SystemProperties.Type = "Link";

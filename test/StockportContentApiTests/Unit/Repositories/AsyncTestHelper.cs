@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 public static class AsyncTestHelper
 {
     private const int Timeout = 50;

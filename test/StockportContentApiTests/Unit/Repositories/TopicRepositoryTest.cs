@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
@@ -13,7 +11,6 @@ using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -37,7 +34,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Build();
 
             _topic = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
-                new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id",new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new List<ExpandingLinkBox>());
+                new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new List<ExpandingLinkBox>());
 
             var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
                 new DateTime(2017, 01, 02), string.Empty, false);
@@ -46,11 +43,11 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
                 new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
-                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory",  new List<ExpandingLinkBox>());
+                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new List<ExpandingLinkBox>());
 
-            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", 
-                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside }, 
-                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle",  new CarouselContent() , "eventCategory", new List<ExpandingLinkBox>());
+            _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
+                new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside },
+                DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new List<ExpandingLinkBox>());
 
             _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
             _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();
@@ -70,7 +67,7 @@ namespace StockportContentApiTests.Unit.Repositories
             collection.Items = new List<ContentfulTopic> { contentfulTopic };
 
             var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-            _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()), 
+            _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
             _topicFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(_topic);

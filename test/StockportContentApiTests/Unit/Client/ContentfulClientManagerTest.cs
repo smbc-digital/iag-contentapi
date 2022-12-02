@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;

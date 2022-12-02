@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
-using Newtonsoft.Json;
-using Xunit;
-using HttpClient = System.Net.Http.HttpClient;
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
 using StockportContentApiTests.Unit.Builders;
-using Microsoft.Extensions.Configuration;
+using Xunit;
+using HttpClient = System.Net.Http.HttpClient;
 
 namespace StockportContentApiTests.Integration
 {
@@ -105,7 +100,7 @@ namespace StockportContentApiTests.Integration
                         }
                     }
                 };
-               
+
                 httpClient.Setup(o => o.GetContentType("news", It.IsAny<CancellationToken>()))
                     .ReturnsAsync(newsContent);
 
@@ -120,7 +115,7 @@ namespace StockportContentApiTests.Integration
                                It.Is<QueryBuilder<ContentfulNewsRoom>>(q => q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1).Build()),
                                It.IsAny<CancellationToken>())).ReturnsAsync(newsroomCollection);
 
-               var topicCollection = new ContentfulCollection<ContentfulTopic>();
+                var topicCollection = new ContentfulCollection<ContentfulTopic>();
                 topicCollection.Items = new List<ContentfulTopic>
                 {
                     new ContentfulTopicBuilder().Slug("topic_slug").Breadcrumbs(new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("id").Build()}).Build()
@@ -204,9 +199,9 @@ namespace StockportContentApiTests.Integration
                    new ContentfulFooterBuilder().Build()
                 };
 
-               httpClient.Setup(o => o.GetEntries(
-                                It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
-                                It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
+                httpClient.Setup(o => o.GetEntries(
+                                 It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build() == new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build()),
+                                 It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
                 var catGroupCollection = new ContentfulCollection<ContentfulGroupCategory>();
                 catGroupCollection.Items = new List<ContentfulGroupCategory>
@@ -225,7 +220,7 @@ namespace StockportContentApiTests.Integration
                 httpClient.Setup(o => o.GetEntries(
                                 It.Is<QueryBuilder<ContentfulEvent>>(q => q.Build() == new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.group.sys.contentType.sys.id", "group").FieldEquals("fields.group.fields.slug", "zumba-fitness").Include(2).Build()),
                                 It.IsAny<CancellationToken>())).ReturnsAsync(eventCollection);
-                
+
                 var homepageCollection = new ContentfulCollection<ContentfulHomepage>();
                 homepageCollection.Items = new List<ContentfulHomepage>
                 {
@@ -256,7 +251,7 @@ namespace StockportContentApiTests.Integration
                     It.Is<QueryBuilder<ContentfulStartPage>>(
                         q => q.Build() == new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", "new-start-page").Include(3).Build()),
                     It.IsAny<CancellationToken>())).ReturnsAsync(startPages);
-                
+
                 var organisations = new ContentfulCollection<ContentfulOrganisation>();
                 organisations.Items = new List<ContentfulOrganisation>()
                 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.Model;
-using System;
+﻿using StockportContentApi.Model;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApiTests.Unit.Builders

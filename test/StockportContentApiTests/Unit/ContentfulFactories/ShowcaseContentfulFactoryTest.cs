@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
-using StockportContentApi.ContentfulModels;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulFactories;
 using Moq;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -182,7 +179,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
 
             var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
-            
+
             var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
             callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
                 new CallToActionBanner

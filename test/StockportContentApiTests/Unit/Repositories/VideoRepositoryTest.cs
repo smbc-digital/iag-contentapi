@@ -1,11 +1,7 @@
-﻿using System.Net;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
+﻿using Moq;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 using StockportContentApi.Repositories;
-using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {

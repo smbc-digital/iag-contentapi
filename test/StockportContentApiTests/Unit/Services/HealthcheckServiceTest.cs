@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
 using Xunit;
-using FluentAssertions;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Services
 {
@@ -100,7 +98,7 @@ namespace StockportContentApiTests.Unit.Services
         {
             string newFile = "newFile";
             _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
-            _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new [] { "" });
+            _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new[] { "" });
 
             var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
             var check = await healthCheckServiceWithNotFoundVersion.Get();

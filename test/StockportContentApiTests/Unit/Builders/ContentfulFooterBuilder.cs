@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -24,6 +23,6 @@ namespace StockportContentApiTests.Unit.Builders
                 Links = _links,
                 SocialMediaLinks = _socialMediaLinks
             };
-        }      
+        }
     }
 }

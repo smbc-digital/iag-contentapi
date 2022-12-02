@@ -13,8 +13,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
         public ContactUsIdContentfulFactoryTest()
         {
-            _contentfulContactUsId = new ContentfulContactUsId() {EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email"};
-         
+            _contentfulContactUsId = new ContentfulContactUsId() { EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email" };
+
             _contactUsIdContentfulFactory = new ContactUsIdContentfulFactory();
         }
 

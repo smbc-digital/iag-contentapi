@@ -3,7 +3,6 @@ using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
-using System;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -23,9 +22,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             var contentfulExpandingLinkBox = new ContentfulExpandingLinkBoxBuilder().Build();
             var subItemFactory = new SubItemContentfulFactory(_timeProvider.Object);
             var factory = new ExpandingLinkBoxContentfulfactory(subItemFactory, _timeProvider.Object);
-           
+
             var expandingLinkBox = factory.ToModel(contentfulExpandingLinkBox);
-          
+
             expandingLinkBox.Title.Should().Be(contentfulExpandingLinkBox.Title);
             expandingLinkBox.Links[0].Slug.Should().Be(contentfulExpandingLinkBox.Links[0].Slug);
         }

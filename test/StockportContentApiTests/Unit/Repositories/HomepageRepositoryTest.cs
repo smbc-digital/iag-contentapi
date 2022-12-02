@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
+using Contentful.Core.Models;
+using Contentful.Core.Search;
+using Moq;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using Xunit;
-using Moq;
-using StockportContentApi.Client;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using Contentful.Core.Search;
-using System.Threading;
-using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Repositories
 {

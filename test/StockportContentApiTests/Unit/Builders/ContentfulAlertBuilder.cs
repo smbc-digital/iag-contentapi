@@ -1,5 +1,4 @@
-﻿using System;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -16,7 +15,7 @@ namespace StockportContentApiTests.Unit.Builders
 
         private SystemProperties _sys = new SystemProperties
         {
-            ContentType = new ContentType {SystemProperties = new SystemProperties {Id = "id"}},
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
             Id = "id"
         };
 

@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Http;
 using Xunit;

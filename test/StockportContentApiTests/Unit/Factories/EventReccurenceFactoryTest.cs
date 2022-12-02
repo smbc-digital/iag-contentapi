@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StockportContentApi.Factories;
 using StockportContentApi.Model;
 using StockportContentApiTests.Unit.Builders;

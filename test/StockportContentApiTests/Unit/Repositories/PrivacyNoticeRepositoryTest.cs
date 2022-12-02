@@ -9,8 +9,6 @@ using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using System.Collections.Generic;
-using System.Threading;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -36,7 +34,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _contentfulClient = new Mock<IContentfulClient>();
 
             contentfulClientManager
-                .Setup(o => o.GetClient(config))   
+                .Setup(o => o.GetClient(config))
                 .Returns(_contentfulClient.Object);
 
             _repository = new PrivacyNoticeRepository(config, _contentfulFactory.Object, contentfulClientManager.Object);

@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using Xunit;
-using StockportContentApi.Client;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
+using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -36,7 +32,7 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Add("TEST_MANAGEMENT_KEY", "KEY")
                 .Build();
 
-            _httpClient = new Mock<IHttpClient>();           
+            _httpClient = new Mock<IHttpClient>();
 
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();

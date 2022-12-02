@@ -1,18 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using Xunit;
-using StockportContentApi.Client;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -70,7 +68,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "test-slug";
-            var rawContactUs = new ContentfulContactUsId() {Slug = slug};
+            var rawContactUs = new ContentfulContactUsId() { Slug = slug };
             var collection = new ContentfulCollection<ContentfulContactUsId>();
             collection.Items = new List<ContentfulContactUsId> { rawContactUs };
 

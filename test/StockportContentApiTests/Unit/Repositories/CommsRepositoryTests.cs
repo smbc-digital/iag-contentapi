@@ -1,20 +1,16 @@
-﻿using Moq;
+﻿using System.Net;
+using Contentful.Core;
+using Contentful.Core.Models;
+using Contentful.Core.Search;
+using Moq;
+using StockportContentApi.Client;
+using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using System.Collections.Generic;
-using System.Threading;
-using StockportContentApi.Config;
-using Xunit;
-using StockportContentApi.Client;
-using System.Threading.Tasks;
-using Contentful.Core;
-using Microsoft.AspNetCore.Http.Extensions;
-using Contentful.Core.Search;
-using System.Net;
-using Contentful.Core.Models;
 using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -50,13 +46,13 @@ namespace StockportContentApiTests.Unit.Repositories
                 .Returns(new CommsHomepage(
                     string.Empty,
                     string.Empty,
-                    string.Empty, 
-                    string.Empty, 
-                    string.Empty, 
-                    string.Empty, 
-                    string.Empty, 
-                    new List<BasicLink>(), 
-                    new EventBuilder().Build(), 
+                    string.Empty,
+                    string.Empty,
+                    string.Empty,
+                    string.Empty,
+                    string.Empty,
+                    new List<BasicLink>(),
+                    new EventBuilder().Build(),
                     new CallToActionBanner(),
                     string.Empty
                 ));
@@ -64,12 +60,12 @@ namespace StockportContentApiTests.Unit.Repositories
             _mockClient
                 .Setup(_ =>
                     _.GetEntries(
-                        It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), 
+                        It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     new ContentfulCollection<ContentfulCommsHomepage>
                     {
-                        Items =  new List<ContentfulCommsHomepage>
+                        Items = new List<ContentfulCommsHomepage>
                         {
                             new ContentfulCommsHomepage
                             {
@@ -85,7 +81,7 @@ namespace StockportContentApiTests.Unit.Repositories
             // Assert
             _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
             _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
-            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.IsType<CommsHomepage>(parsedResult);
         }
 

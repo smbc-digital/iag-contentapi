@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -21,10 +19,10 @@ namespace StockportContentApiTests.Unit.Builders
         private string _endTime = "17:00";
         private int _occurences = -1;
         private EventFrequency _eventFrequency = EventFrequency.None;
-        private List<Crumb> _breadcrumbs = new List<Crumb> {new Crumb("Events", "", "events")};
+        private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
         private List<Document> _documents = new List<Document> { new DocumentBuilder().Build() };
-        private List<string> _categories = new List<string> {"Category 1", "Category 2"};
-        private MapPosition _mapPosition = new MapPosition() {Lat = 53.47, Lon = -2.2};
+        private List<string> _categories = new List<string> { "Category 1", "Category 2" };
+        private MapPosition _mapPosition = new MapPosition() { Lat = 53.47, Lon = -2.2 };
         private string _bookingInformation = "booking information";
         private bool _featured = true;
         private DateTime _updatedAt = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
@@ -38,8 +36,8 @@ namespace StockportContentApiTests.Unit.Builders
         public Event Build()
         {
             return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
-                _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs, _thumbnailImage, 
-                _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts, _eventCategories, null, null,null, _metaDescription);
+                _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs, _thumbnailImage,
+                _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts, _eventCategories, null, null, null, _metaDescription);
         }
 
         public EventBuilder Slug(string slug)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using Microsoft.Extensions.Logging;
-
-namespace StockportContentApiTests.Unit.Fakes
+﻿namespace StockportContentApiTests.Unit.Fakes
 {
     public class FakeLogger<T> : ILogger<T>
     {

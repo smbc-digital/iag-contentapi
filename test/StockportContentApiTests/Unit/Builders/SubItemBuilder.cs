@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -19,6 +17,6 @@ namespace StockportContentApiTests.Unit.Builders
         public SubItem Build()
         {
             return new SubItem(_slug, _title, _teaser, _icon, _type, _sunriseDate, _sunsetDate, _image, _subItems);
-        }     
+        }
     }
 }

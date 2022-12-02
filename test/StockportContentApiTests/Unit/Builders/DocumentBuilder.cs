@@ -1,5 +1,4 @@
 ﻿using StockportContentApi.Model;
-using System;
 
 namespace StockportContentApiTests.Unit.Builders
 {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using Contentful.Core.Models;
 
 namespace StockportContentApiTests.Unit.Builders
 {

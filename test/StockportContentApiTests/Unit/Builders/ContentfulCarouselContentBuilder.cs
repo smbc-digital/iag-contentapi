@@ -1,6 +1,5 @@
 ﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using System;
 
 namespace StockportContentApiTests.Unit.Builders
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -31,12 +29,12 @@ namespace StockportContentApiTests.Unit.Builders
                 Purpose = _purpose,
                 Image = new ContentfulAssetBuilder().Url(_imageUrl).Build(),
                 Body = _body,
-                SunriseDate  = _sunriseDate,
-                SunsetDate  = _sunsetDate,
+                SunriseDate = _sunriseDate,
+                SunsetDate = _sunsetDate,
                 Tags = _tags,
-                Alerts  = _alerts,
-                Documents  = _documents,
-                Categories  = _categories
+                Alerts = _alerts,
+                Documents = _documents,
+                Categories = _categories
             };
         }
 

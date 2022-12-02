@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using StockportContentApi.Http;
+﻿using StockportContentApi.Http;
 using StockportContentApiTests.Unit.Fakes;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.Http
 {
-    public class LoggingHttpClientTest 
+    public class LoggingHttpClientTest
     {
         private readonly FakeHttpClient _fakeHttpClient = new FakeHttpClient();
         private readonly FakeLogger<LoggingHttpClient> _fakeLogger = new FakeLogger<LoggingHttpClient>();
@@ -33,7 +32,7 @@ namespace StockportContentApiTests.Unit.Http
 
             var httpClient = new LoggingHttpClient(_fakeHttpClient, _fakeLogger);
             await httpClient.Get(urlWithKey);
-            
+
             Assert.DoesNotContain("KEY", _fakeLogger.InfoMessage);
             Assert.Contains("access_token=*****", _fakeLogger.InfoMessage);
             Assert.Equal("Querying: https://fake.url/spaces/SPACE/entries?access_token=*****&content_type=topic",

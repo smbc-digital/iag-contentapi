@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
-using StockportContentApiTests.Unit.Builders;
-using StockportContentApi.ContentfulModels;
-using Contentful.Core.Models;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

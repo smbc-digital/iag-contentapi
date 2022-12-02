@@ -14,7 +14,7 @@ namespace StockportContentApiTests.Unit.Builders
             ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
         };
 
-        public  ContentfulEventBanner Build()
+        public ContentfulEventBanner Build()
         {
             return new ContentfulEventBanner
             {

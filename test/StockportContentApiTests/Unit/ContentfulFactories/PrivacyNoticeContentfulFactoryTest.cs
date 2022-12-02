@@ -1,10 +1,8 @@
 ﻿using FluentAssertions;
+using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
@@ -56,7 +54,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 UrlOne = "test-url-1",
                 UrlTwo = "test-url-2",
                 UrlThree = "test-url-3",
-                Breadcrumbs= new List<ContentfulReference>()
+                Breadcrumbs = new List<ContentfulReference>()
             };
 
             // Act

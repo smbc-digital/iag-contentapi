@@ -1,12 +1,10 @@
-﻿using Xunit;
-using FluentAssertions;
-using StockportContentApiTests.Unit.Builders;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.ContentfulFactories;
+﻿using FluentAssertions;
 using Moq;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using System;
-using System.Collections.Generic;
+using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -23,12 +21,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
             var ContentfulReference =
-                new ContentfulFooterBuilder().Build();                    
- 
+                new ContentfulFooterBuilder().Build();
+
             var footer = new FooterContentfulFactory(factory.Object, socialMediaFactory.Object).ToModel(ContentfulReference);
 
             footer.Slug.Should().Be(ContentfulReference.Slug);
             footer.Title.Should().Be(ContentfulReference.Title);
-        }      
+        }
     }
 }

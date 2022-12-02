@@ -1,9 +1,9 @@
-﻿using Xunit;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
-using Contentful.Core.Models;
+using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.Model;
 using StockportContentApiTests.Builders;
-using StockportContentApi.ContentfulFactories.GroupFactories;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

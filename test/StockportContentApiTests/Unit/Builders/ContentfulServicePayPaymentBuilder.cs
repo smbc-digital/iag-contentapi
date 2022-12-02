@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
 {

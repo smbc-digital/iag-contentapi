@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
 
 namespace StockportContentApiTests.Unit.Builders
 {
@@ -89,7 +86,8 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulArticleBuilder Section(ContentfulSection section) {
+        public ContentfulArticleBuilder Section(ContentfulSection section)
+        {
             _sections.Add(section);
             return this;
         }

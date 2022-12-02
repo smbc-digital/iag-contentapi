@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using StockportContentApi.ContentfulFactories.TopicFactories;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -39,12 +36,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
             _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(nameof(CallToAction), null, null, null));
             _topicContentfulFactory = new TopicContentfulFactory(
-                _subItemFactory.Object, 
-                _crumbFactory.Object, 
-                _alertFactory.Object, 
-                _eventBannerFactory.Object, 
+                _subItemFactory.Object,
+                _crumbFactory.Object,
+                _alertFactory.Object,
+                _eventBannerFactory.Object,
                 _expandingLinkBoxFactory.Object,
-                _carouselContentFactory.Object, 
+                _carouselContentFactory.Object,
                 _timeProvider.Object,
                 _callToActionFactory.Object);
         }
@@ -55,7 +52,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             //Arrange
             var crumb = new Crumb("title", "slug", "type");
             _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
-         
+
             var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
             _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 

@@ -1,15 +1,13 @@
-﻿using System.Threading;
-using Contentful.Core;
+﻿using Contentful.Core;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
-using Xunit;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -33,7 +31,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var assetRepository = new AssetRepository(new ContentfulConfig("", "", ""), _contentfulClientManager.Object,
                 _logger.Object);
-            
+
             var asset = await assetRepository.Get("asset");
 
             asset.Should().NotBeNull();

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -35,8 +33,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _carouselContentFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCarouselContent>())).Returns(new CarouselContent("", "", "", "", DateTime.MinValue, DateTime.MaxValue, ""));
             _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
-            _homepageContentfulFactory = new HomepageContentfulFactory(_subitemFactory.Object, 
-                _groupFactory.Object, 
+            _homepageContentfulFactory = new HomepageContentfulFactory(_subitemFactory.Object,
+                _groupFactory.Object,
                 _alertFactory.Object,
                 _carouselContentFactory.Object,
                 _timeProvider.Object);

@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.TestHost;
 using Moq;
+using Serilog;
 using StockportContentApi;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
-using StockportContentApi.Http;
-using StockportContentApi.Utils;
-using StockportContentApiTests.Unit.Fakes;
 using StockportContentApi.ContentfulModels;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using StockportContentApiTests.Unit.Builders;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
-using Serilog;
+using StockportContentApi.Http;
 using StockportContentApi.Model;
-using Microsoft.Extensions.Hosting;
+using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
+using StockportContentApiTests.Unit.Fakes;
 
 namespace StockportContentApiTests
 {
@@ -34,7 +22,7 @@ namespace StockportContentApiTests
                 .UseUrls("http://localhost:5001")
                 .UseKestrel()
                 .UseEnvironment("test")
-                .UseContentRoot(Path.GetFullPath(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                .UseContentRoot(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
                     "..", "..", "..")))
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {

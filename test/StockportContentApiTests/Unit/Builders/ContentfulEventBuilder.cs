@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -23,13 +21,13 @@ namespace StockportContentApiTests.Unit.Builders
         private EventFrequency _eventFrequency = EventFrequency.None;
         private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
         private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-        private List<string> _categories = new List<string> {"category 1", "category 2"};
+        private List<string> _categories = new List<string> { "category 1", "category 2" };
         private List<ContentfulEventCategory> _eventCategories = new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" }, new ContentfulEventCategory { Name = "Event Category", Slug = "event-category" } };
-        private MapPosition _mapPosition = new MapPosition() {Lat=53.5, Lon = -2.5};
+        private MapPosition _mapPosition = new MapPosition() { Lat = 53.5, Lon = -2.5 };
         private string _bookingInformation = "booking information";
         private bool _featured = false;
         public SystemProperties _sys = new SystemProperties();
-        private List<string> _tags = new List<string>{"tag 1", "tag 2"};
+        private List<string> _tags = new List<string> { "tag 1", "tag 2" };
         private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
             new ContentfulAlertBuilder().Build()};
 
@@ -119,14 +117,15 @@ namespace StockportContentApiTests.Unit.Builders
             return this;
         }
 
-        public ContentfulEventBuilder Tags(List<string> tags )
+        public ContentfulEventBuilder Tags(List<string> tags)
         {
             _tags = tags;
             return this;
         }
 
         public ContentfulEventBuilder Group(ContentfulGroup group)
-        {   _group = group;
+        {
+            _group = group;
             return this;
         }
     }

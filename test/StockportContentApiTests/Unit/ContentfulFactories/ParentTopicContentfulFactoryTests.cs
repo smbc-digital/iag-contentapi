@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.TopicFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using Xunit;
-using FluentAssertions;
 using StockportContentApiTests.Unit.Builders;
-using StockportContentApi.ContentfulFactories.TopicFactories;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -52,7 +49,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .Build();
 
             var contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference>() { ContentfulReferences }).Build();
-           
+
 
             var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
@@ -51,7 +49,7 @@ namespace StockportContentApiTests.Unit.Builders
         private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
         private SystemProperties _sys = new SystemProperties
         {
-            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id"} },
+            ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
             UpdatedAt = DateTime.MinValue
         };
         private GroupAdministrators _groupAdministrators = new GroupAdministrators()
@@ -73,7 +71,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             "people"
         };
-        private List<string> _ageRanges = new List<string>(){"15-20"};
+        private List<string> _ageRanges = new List<string>() { "15-20" };
         private bool _volunteering = true;
         private string _volunteeringText = "text";
         private List<Asset> _additionalDocuments = new List<Asset>
@@ -146,7 +144,7 @@ namespace StockportContentApiTests.Unit.Builders
                 DonationsText = _donationsText,
                 DonationsUrl = _donationsUrl,
                 SubCategories = _subCategories
-                
+
             };
         }
 
