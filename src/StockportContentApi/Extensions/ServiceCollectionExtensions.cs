@@ -1,42 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
+using System.Reflection;
 using AutoMapper;
 using Contentful.Core.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
+using StockportContentApi.Builders;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
-using StockportContentApi.Utils;
-using Profile = StockportContentApi.Model.Profile;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
-using StockportContentApi.Builders;
 using StockportContentApi.ContentfulFactories.ArticleFactories;
 using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.ContentfulFactories.GroupFactories;
 using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.ContentfulFactories.TopicFactories;
-using StockportContentApi.Services;
-using Document = StockportContentApi.Model.Document;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.FeatureToggling;
+using StockportContentApi.Http;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
+using StockportContentApi.Services;
 using StockportContentApi.Services.Profile;
-using StackExchange.Redis;
-using Microsoft.AspNetCore.DataProtection;
-using System.Reflection;
-using Microsoft.Extensions.Caching.Distributed;
+using StockportContentApi.Utils;
+using Document = StockportContentApi.Model.Document;
+using Profile = StockportContentApi.Model.Profile;
 
 namespace StockportContentApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-
         public static IServiceCollection AddFeatureToggles(this IServiceCollection services, string contentRootPath, string appEnvironment)
         {
             services.AddTransient(p =>
@@ -97,7 +89,7 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
             services.AddSingleton<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>(p => new ServicePayPaymentContentfulFactory(
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<ITimeProvider>(), 
+                p.GetService<ITimeProvider>(),
                 p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
             services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(
                 p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
@@ -181,7 +173,7 @@ namespace StockportContentApi.Extensions
         /// <param name="services"></param>
         /// <param name="useRedisSession"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, ILogger logger)
+        public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger)
         {
             if (useRedisSession)
             {
@@ -193,7 +185,7 @@ namespace StockportContentApi.Extensions
                 }
 
                 var name = Assembly.GetEntryAssembly()?.GetName().Name;
-                logger.LogInformation($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+                logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -212,7 +204,7 @@ namespace StockportContentApi.Extensions
                 var redis = ConnectionMultiplexer.Connect(redisIp);
                 services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
                 services.AddSingleton<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
-            } 
+            }
             else
             {
                 services.AddDistributedMemoryCache();
@@ -224,13 +216,34 @@ namespace StockportContentApi.Extensions
         }
 
         /// <summary>
+        /// Add custom contentful configuration
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddContentfulConfig(this IServiceCollection services, IConfiguration configuration)
+        {
+            Func<string, ContentfulConfig> createConfig = businessId =>
+                new ContentfulConfig(businessId)
+                    .Add("DELIVERY_URL", configuration["Contentful:DeliveryUrl"])
+                    .Add($"{businessId.ToUpper()}_SPACE", configuration[$"{businessId}:Space"])
+                    .Add($"{businessId.ToUpper()}_ACCESS_KEY", configuration[$"{businessId}:AccessKey"])
+                    .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", configuration[$"{businessId}:ManagementKey"])
+                    .Build();
+
+            services.AddTransient(_ => createConfig);
+
+            return services;
+        }
+
+        /// <summary>
         /// Add contentful clients
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
         public static IServiceCollection AddContentfulClients(this IServiceCollection services)
         {
-            services.AddSingleton<IContentfulClientManager>(p => new ContentfulClientManager(new System.Net.Http.HttpClient(), p.GetService<IConfiguration>()));
+            services.AddHttpClient<IContentfulClientManager, ContentfulClientManager>();
 
             return services;
         }
@@ -242,13 +255,42 @@ namespace StockportContentApi.Extensions
         /// <returns></returns>
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
+            services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(p =>
+                config => 
+                    new AtoZRepository(
+                        config,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(),
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<ICache>(),
+                        p.GetService<IConfiguration>(),
+                        p.GetService<Microsoft.Extensions.Logging.ILogger>()));
+
             services.AddSingleton<Func<ContentfulConfig, IPrivacyNoticeRepository>>(p => { return x => new PrivacyNoticeRepository(x, p.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(), p.GetService<IContentfulClientManager>()); });
             services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p => { return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<AssetRepository>>()); });
             services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p => { return x => new ArticleRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulArticle, Article>>(), p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(), p.GetService<IVideoRepository>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
             services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p => { return x => new DocumentPageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>()); });
             services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
-            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
-            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p => { return x => new EventRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulEvent, Event>>(), p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(), p.GetService<ICache>(), p.GetService<ILogger<EventRepository>>(), p.GetService<IConfiguration>()); });
+
+            services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p =>
+                config => 
+                    new EventRepository(
+                        config,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                        p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
+                        p.GetService<ICache>(),
+                        p.GetService<ILogger<EventRepository>>(),
+                        p.GetService<IConfiguration>()));
+
+            services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(p =>
+                config =>
+                    new ManagementRepository(
+                        config,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<ILogger<EventRepository>>()));
+
             services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
                 p =>
                 {
@@ -289,8 +331,8 @@ namespace StockportContentApi.Extensions
                 p => { return x => new FooterRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulFooter, Footer>>()); });
             services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
                 p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
-            services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(
-                p => { return x => new AtoZRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(), p.GetService<ITimeProvider>(), p.GetService<ICache>(), p.GetService<IConfiguration>(), p.GetService<ILogger>()); });
+
+
             services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
                 p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
             services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
@@ -318,8 +360,6 @@ namespace StockportContentApi.Extensions
             services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
                 p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
 
-            services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(
-                p => { return x => new ManagementRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ILogger<HttpClient>>()); });
             services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(
                 p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>().Invoke(x)); });
 
@@ -363,27 +403,6 @@ namespace StockportContentApi.Extensions
         }
 
         /// <summary>
-        /// Add custom contentful configuration
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddContentfulConfig(this IServiceCollection services, IConfiguration configuration)
-        {
-            Func<string, ContentfulConfig> createConfig = businessId =>
-                new ContentfulConfig(businessId)
-                    .Add("DELIVERY_URL", configuration["Contentful:DeliveryUrl"])
-                    .Add($"{businessId.ToUpper()}_SPACE", configuration[$"{businessId}:Space"])
-                    .Add($"{businessId.ToUpper()}_ACCESS_KEY", configuration[$"{businessId}:AccessKey"])
-                    .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", configuration[$"{businessId}:ManagementKey"])
-                    .Build();
-
-            services.AddTransient(_ => createConfig);
-
-            return services;
-        }
-
-        /// <summary>
         /// Add redirects
         /// </summary>
         /// <param name="services"></param>
@@ -414,7 +433,7 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddGroupConfiguration(this IServiceCollection services, IConfiguration configuration, ILogger logger)
+        public static IServiceCollection AddGroupConfiguration(this IServiceCollection services, IConfiguration configuration, Serilog.ILogger logger)
         {
             if (!string.IsNullOrEmpty(configuration["group:authenticationKey"]))
             {
@@ -425,7 +444,7 @@ namespace StockportContentApi.Extensions
             }
             else
             {
-                logger.LogInformation("Group authenticationKey not found.");
+                logger.Information("Group authenticationKey not found.");
             }
 
             return services;
@@ -438,19 +457,19 @@ namespace StockportContentApi.Extensions
             return services;
         }
 
-        private static string GetHostEntryForUrl(string host, ILogger logger)
+        private static string GetHostEntryForUrl(string host, Serilog.ILogger logger)
         {
             var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
 
             if (!addresses.Any())
             {
-                logger.LogError($"Could not resolve IP address for redis instance : {host}");
+                logger.Error($"Could not resolve IP address for redis instance : {host}");
                 throw new Exception($"No redis instance could be found for host {host}");
             }
 
             if (addresses.Length > 1)
             {
-                logger.LogWarning($"Multple IP address for redis instance : {host} attempting to use first");
+                logger.Warning($"Multple IP address for redis instance : {host} attempting to use first");
             }
 
             return addresses.First().ToString();
