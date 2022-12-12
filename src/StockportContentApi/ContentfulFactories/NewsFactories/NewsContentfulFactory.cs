@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -34,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories.NewsFactories
                                       && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                       .Select(alert => _alertFactory.ToModel(alert));
 
-            return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl), 
+            return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
                 _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, new List<Crumb> { new Crumb("News", string.Empty, "news") },
                 alerts.ToList(), entry.Tags, documents, entry.Categories);
         }

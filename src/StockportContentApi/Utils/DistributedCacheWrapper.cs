@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 
 namespace StockportContentApi.Utils
 {
@@ -18,7 +15,7 @@ namespace StockportContentApi.Utils
 
         public DistributedCacheWrapper(IDistributedCache distributedCache) => _distributedCache = distributedCache;
 
-        public async Task<string> GetString(string key, CancellationToken token = default) 
+        public async Task<string> GetString(string key, CancellationToken token = default)
             => await _distributedCache.GetStringAsync(key, token);
 
         public Task RemoveAsync(string key, CancellationToken token = default) => _distributedCache.RemoveAsync(key, token);

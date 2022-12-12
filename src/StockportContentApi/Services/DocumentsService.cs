@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.Builders;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
@@ -11,10 +9,10 @@ using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.Services
 {
-     public interface IDocumentService
-     {
-         Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug);
-     }
+    public interface IDocumentService
+    {
+        Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug);
+    }
 
     public class DocumentsService : IDocumentService
     {
@@ -43,9 +41,9 @@ namespace StockportContentApi.Services
             var hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
 
             if (!hasPermission) return null;
-            
+
             var asset = await GetDocumentAsAsset(assetId, config);
-            
+
             return asset == null || !await DoesGroupReferenceAsset(groupSlug, config, asset)
                 ? null
                 : _documentFactory.ToModel(asset);

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Footer
     {

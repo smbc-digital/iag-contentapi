@@ -20,6 +20,6 @@
 
     public class NullContactUsId : ContactUsId
     {
-         public NullContactUsId() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) { }
+        public NullContactUsId() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) { }
     }
 }

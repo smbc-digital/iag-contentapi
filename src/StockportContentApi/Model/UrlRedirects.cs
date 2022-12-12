@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace StockportContentApi.Model
 {
     public class RedirectDictionary : Dictionary<string, string>

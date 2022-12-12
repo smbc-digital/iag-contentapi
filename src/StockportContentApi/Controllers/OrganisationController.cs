@@ -1,8 +1,6 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
@@ -24,7 +22,7 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/organisations/{organisationSlug}")]
         [Route("v1/{businessId}/organisations/{organisationSlug}")]
-        public async Task<IActionResult> GetOrganisation(string organisationSlug, string  businessId)
+        public async Task<IActionResult> GetOrganisation(string organisationSlug, string businessId)
         {
             return await _handler.Get(() =>
             {

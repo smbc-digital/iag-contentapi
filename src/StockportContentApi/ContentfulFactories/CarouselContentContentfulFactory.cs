@@ -1,7 +1,6 @@
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using System;
 
 namespace StockportContentApi.ContentfulFactories
 {

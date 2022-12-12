@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
 using StockportContentApi.Config;
 using StockportContentApi.Http;
 
@@ -55,7 +52,7 @@ namespace StockportContentApi.Repositories
         {
             var videoData = videoId.Split(';');
             string url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
-            
+
             var result = _httpClient.Get(url).Result;
 
             return result != null && result.StatusCode == HttpStatusCode.OK;

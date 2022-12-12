@@ -1,10 +1,6 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using StockportContentApi.Config;
-using StockportContentApi.Services.Profile;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.FeatureToggling;
+using StockportContentApi.Services.Profile;
 
 namespace StockportContentApi.Controllers
 {

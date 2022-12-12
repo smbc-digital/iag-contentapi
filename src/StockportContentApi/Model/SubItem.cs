@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class SubItem
     {
@@ -9,7 +6,7 @@ namespace StockportContentApi.Model
         public readonly string Title;
         public readonly string Teaser;
         public readonly string Icon;
-        public readonly string Type;        
+        public readonly string Type;
         public readonly DateTime SunriseDate;
         public readonly DateTime SunsetDate;
         public readonly string Image;
@@ -17,7 +14,7 @@ namespace StockportContentApi.Model
 
         public SubItem()
         {
-            
+
         }
 
         public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems)

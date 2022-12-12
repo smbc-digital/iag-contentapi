@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Contentful.Core.Models;
-using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulModels
 {
@@ -10,7 +8,7 @@ namespace StockportContentApi.ContentfulModels
         public string Slug { get; set; } = string.Empty;
         public string Subtitle { get; set; } = string.Empty;
         public string Quote { get; set; } = string.Empty;
-        public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new List<ContentfulInlineQuote>(); 
+        public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new List<ContentfulInlineQuote>();
         public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public string Body { get; set; } = string.Empty;
         public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
@@ -20,6 +18,6 @@ namespace StockportContentApi.ContentfulModels
         public List<ContentfulTrivia> TriviaSection { get; set; } = new List<ContentfulTrivia>();
         public string Author { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
-        public ContentfulEventBanner EventsBanner {get; set; } = new ContentfulEventBanner();
+        public ContentfulEventBanner EventsBanner { get; set; } = new ContentfulEventBanner();
     }
 }

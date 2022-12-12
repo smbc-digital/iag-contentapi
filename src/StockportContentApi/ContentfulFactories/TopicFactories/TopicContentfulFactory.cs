@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -18,7 +16,7 @@ namespace StockportContentApi.ContentfulFactories.TopicFactories
         private readonly IContentfulFactory<ContentfulCallToAction, CallToAction> _callToActionFactory;
 
         public TopicContentfulFactory(
-            IContentfulFactory<ContentfulReference, SubItem> subItemFactory, 
+            IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
             IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
             IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,

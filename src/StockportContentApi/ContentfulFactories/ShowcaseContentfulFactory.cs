@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
@@ -18,15 +17,15 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
         private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
 
-        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, 
-            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
-            ITimeProvider timeProvider, 
-            IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory, 
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+        public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+            ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory,
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
             IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
-            IContentfulFactory<ContentfulVideo, Video> videoFactory, 
+            IContentfulFactory<ContentfulVideo, Video> videoFactory,
             IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> spotlightBannerFactory)
         {
             _subitemFactory = subitemFactory;

@@ -1,5 +1,4 @@
 ﻿using Contentful.Core;
-using Microsoft.Extensions.Configuration;
 using StockportContentApi.Config;
 
 namespace StockportContentApi.Client
@@ -12,10 +11,10 @@ namespace StockportContentApi.Client
 
     public class ContentfulClientManager : IContentfulClientManager
     {
-        private readonly System.Net.Http.HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
-        public ContentfulClientManager(System.Net.Http.HttpClient httpClient, IConfiguration configuration)
+        public ContentfulClientManager(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _configuration = configuration;
@@ -31,7 +30,7 @@ namespace StockportContentApi.Client
 
             return client;
         }
-            
+
         public IContentfulManagementClient GetManagementClient(ContentfulConfig config)
         {
             var client = new ContentfulManagementClient(_httpClient, config.ManagementKey, config.SpaceKey);

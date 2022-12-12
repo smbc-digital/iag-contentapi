@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.Repositories
@@ -24,11 +19,11 @@ namespace StockportContentApi.Repositories
         private readonly ShortUrlRedirects _shortUrlRedirects;
         private readonly LegacyUrlRedirects _legacyUrlRedirects;
 
-        public RedirectsRepository(IContentfulClientManager clientManager,         
-                Func<string, ContentfulConfig> createConfig, 
-                RedirectBusinessIds redirectBusinessIds, 
-                IContentfulFactory<ContentfulRedirect, 
-                BusinessIdToRedirects> contenfulFactory, 
+        public RedirectsRepository(IContentfulClientManager clientManager,
+                Func<string, ContentfulConfig> createConfig,
+                RedirectBusinessIds redirectBusinessIds,
+                IContentfulFactory<ContentfulRedirect,
+                BusinessIdToRedirects> contenfulFactory,
                 ShortUrlRedirects shortUrlRedirects,
                 LegacyUrlRedirects legacyUrlRedirects)
         {
@@ -87,7 +82,7 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
             var entries = await _client.GetEntries(builder);
 
-            return !entries.Any() 
+            return !entries.Any()
                 ? new NullBusinessIdToRedirects()
                 : _contenfulFactory.ToModel(entries.FirstOrDefault());
         }

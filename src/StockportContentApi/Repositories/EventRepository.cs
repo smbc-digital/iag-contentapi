@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
-using Microsoft.Extensions.Logging;
+using GeoCoordinatePortable;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Factories;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using GeoCoordinatePortable;
-using Contentful.Core.Models;
-using Microsoft.Extensions.Configuration;
 using Document = StockportContentApi.Model.Document;
 
 namespace StockportContentApi.Repositories

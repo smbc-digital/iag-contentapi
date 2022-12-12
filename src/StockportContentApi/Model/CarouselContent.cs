@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class CarouselContent
     {
         public string Title { get; }
-        public string Slug { get;}
+        public string Slug { get; }
         public string Teaser { get; }
         public string Image { get; }
         public DateTime SunriseDate { get; }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
 
@@ -20,12 +18,12 @@ namespace StockportContentApi.Controllers
             _createConfig = createConfig;
             _createRepository = createRepository;
         }
-        
+
         [HttpGet]
         [Route("{businessId}/articles/{articleSlug}")]
         [Route("v1/{businessId}/articles/{articleSlug}")]
         [Route("v2/{businessId}/articles/{articleSlug}")]
-        public async Task<IActionResult> GetArticle(string articleSlug,string  businessId)
+        public async Task<IActionResult> GetArticle(string articleSlug, string businessId)
         {
             return await _handler.Get(() =>
             {

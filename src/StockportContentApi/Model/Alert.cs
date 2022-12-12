@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Alert
     {
@@ -29,7 +27,7 @@ namespace StockportContentApi.Model
 
     public class NullAlert : Alert
     {
-        public NullAlert() : base(string.Empty,string.Empty,string.Empty,string.Empty, DateTime.MinValue, DateTime.MinValue,string.Empty, false) { }
+        public NullAlert() : base(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MinValue, string.Empty, false) { }
     }
 
 }

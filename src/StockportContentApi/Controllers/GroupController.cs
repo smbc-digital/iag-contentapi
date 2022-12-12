@@ -1,15 +1,10 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using AutoMapper;
 using StockportContentApi.ManagementModels;
-using StockportContentApi.Http;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {

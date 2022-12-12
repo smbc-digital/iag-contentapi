@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.Repositories
@@ -29,8 +25,8 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulCommsHomepage>().ContentTypeIs("commsHomepage").Include(1);
             var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
-            
-            if(entry != null && entry.WhatsOnInStockportEvent == null)
+
+            if (entry != null && entry.WhatsOnInStockportEvent == null)
             {
                 var sortOrder = SortOrderBuilder<ContentfulEvent>.New(f => f.EventDate);
                 var eventQueryBuilder = new QueryBuilder<ContentfulEvent>()

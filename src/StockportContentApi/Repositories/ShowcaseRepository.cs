@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {
@@ -55,13 +50,15 @@ namespace StockportContentApi.Repositories
 
             var entry = entries.FirstOrDefault();
 
-            if (entry == null) {
+            if (entry == null)
+            {
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
             }
 
             Showcase showcase = new Showcase();
 
-            try {
+            try
+            {
                 showcase = _contentfulFactory.ToModel(entry);
             }
             catch (Exception ex)

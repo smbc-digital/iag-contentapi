@@ -1,7 +1,7 @@
 ﻿namespace StockportContentApi.Model
 {
     public class Crumb
-    {     
+    {
         public string Title { get; }
         public string Slug { get; }
         public string Type { get; }
@@ -16,6 +16,6 @@
 
     public class NullCrumb : Crumb
     {
-        public NullCrumb():base(string.Empty, string.Empty, string.Empty) {}
+        public NullCrumb() : base(string.Empty, string.Empty, string.Empty) { }
     }
 }

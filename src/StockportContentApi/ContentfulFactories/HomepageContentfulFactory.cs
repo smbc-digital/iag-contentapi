@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
@@ -21,7 +20,7 @@ namespace StockportContentApi.ContentfulFactories
             _carouselFactory = carouselFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
-        
+
         public Homepage ToModel(ContentfulHomepage entry)
         {
             var featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
@@ -31,7 +30,7 @@ namespace StockportContentApi.ContentfulFactories
 
             var popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
 
-            var featuredTasks = 
+            var featuredTasks =
                 entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                     .Select(item => _subitemFactory.ToModel(item)).ToList();
@@ -57,7 +56,7 @@ namespace StockportContentApi.ContentfulFactories
                                                                         group.DateHiddenFrom, group.DateHiddenTo))
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
-            return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks, 
+            return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
                 featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner);
         }
     }

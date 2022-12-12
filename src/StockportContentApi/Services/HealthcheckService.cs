@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockportContentApi.Services
 {

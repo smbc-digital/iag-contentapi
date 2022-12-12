@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;

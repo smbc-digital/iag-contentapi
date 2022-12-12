@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using StockportContentApi.Exceptions;
 using StockportContentApi.Utils;
 
@@ -27,7 +26,7 @@ namespace StockportContentApi.Controllers
             {
                 _cache.RemoveItemFromCache(cacheKey);
             }
-            catch(CacheException)
+            catch (CacheException)
             {
                 _logger.LogError("Error deleting key from cache");
                 return StatusCode(500);

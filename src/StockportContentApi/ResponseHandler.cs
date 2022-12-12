@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using StockportContentApi.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace StockportContentApi
 {

@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
@@ -23,7 +19,7 @@ namespace StockportContentApi.FeatureToggling
 
         public T Build<T>() where T : new()
         {
-            if (!File.Exists(_path))
+            if (!System.IO.File.Exists(_path))
             {
                 _logger.LogWarning($"No feature toggle configuration file found ({_path}). Setting all features to false.");
                 return new T();
@@ -74,7 +70,7 @@ namespace StockportContentApi.FeatureToggling
 
         private IParser ReadYaml()
         {
-            var yaml = File.ReadAllText(_path);
+            var yaml = System.IO.File.ReadAllText(_path);
             var innerParser = new Parser(new StringReader(yaml));
             return new MergingParser(innerParser);
         }

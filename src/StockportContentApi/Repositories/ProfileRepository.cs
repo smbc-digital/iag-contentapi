@@ -1,13 +1,10 @@
 ﻿using System.Net;
-using System.Threading.Tasks;
 using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Linq;
-using StockportContentApi.Client;
 
 namespace StockportContentApi.Repositories
 {
@@ -24,10 +21,10 @@ namespace StockportContentApi.Repositories
 
         public ProfileRepository()
         {
-            
+
         }
 
-        public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager, 
+        public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager,
                                  IContentfulFactory<ContentfulProfile, Profile> profileFactory)
         {
             _client = clientManager.GetClient(config);
@@ -40,8 +37,8 @@ namespace StockportContentApi.Repositories
             var entries = await _client.GetEntries(builder);
             var entry = entries.FirstOrDefault();
 
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'") 
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'")
                 : HttpResponse.Successful(_profileFactory.ToModel(entry));
         }
 

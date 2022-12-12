@@ -1,4 +1,3 @@
-using System.Linq;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -14,8 +13,8 @@ namespace StockportContentApi.ContentfulFactories
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
 
         public ProfileContentfulFactory(
-            IContentfulFactory<ContentfulReference, Crumb> crumbFactory, 
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+            IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
             IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
             IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
             IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)

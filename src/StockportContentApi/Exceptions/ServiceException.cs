@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StockportContentApi.Exceptions
+﻿namespace StockportContentApi.Exceptions
 {
     public class ServiceException : Exception
     {

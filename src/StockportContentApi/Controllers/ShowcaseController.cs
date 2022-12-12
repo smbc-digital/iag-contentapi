@@ -1,14 +1,12 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
     public class ShowcaseController : Controller
     {
-        
+
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, ShowcaseRepository> _createRepository;
@@ -25,7 +23,7 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/showcases/{showcaseSlug}")]
         [Route("v1/{businessId}/showcases/{showcaseSlug}")]
-        public async Task<IActionResult> GetShowcase(string showcaseSlug, string  businessId)
+        public async Task<IActionResult> GetShowcase(string showcaseSlug, string businessId)
         {
             return await _handler.Get(() =>
             {

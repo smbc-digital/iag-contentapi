@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Linq;
-using Contentful.Core.Models;
-using Microsoft.Extensions.Configuration;
-using StockportContentApi.Client;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories

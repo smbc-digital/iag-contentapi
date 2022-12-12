@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.Enums;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Enums;
 
 namespace StockportContentApi.ContentfulModels
 {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
-using System.Linq;
-using Microsoft.Extensions.Logging;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.ContentfulFactories

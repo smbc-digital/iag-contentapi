@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace StockportContentApi.Http
+﻿namespace StockportContentApi.Http
 {
     public interface IMsHttpClientWrapper
     {

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using StockportContentApi.Config;
+﻿using StockportContentApi.Config;
 
 namespace StockportContentApi.Builders
 {
@@ -20,8 +19,8 @@ namespace StockportContentApi.Builders
         public ContentfulConfig Build(string businessId)
         {
             return new ContentfulConfig(
-                _configuration[$"{businessId}:Space"], 
-                _configuration[$"{businessId}:AccessKey"], 
+                _configuration[$"{businessId}:Space"],
+                _configuration[$"{businessId}:AccessKey"],
                 _configuration[$"{businessId}:ManagementKey"]);
         }
     }

@@ -1,14 +1,10 @@
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Collections.Generic;
 
 namespace StockportContentApi.Repositories
 {

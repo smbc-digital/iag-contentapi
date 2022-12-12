@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
@@ -47,7 +46,7 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
                 });
             }
 
-            var eventHomePage =  new EventHomepage(rows);
+            var eventHomePage = new EventHomepage(rows);
             eventHomePage.MetaDescription = entry.MetaDescription;
             eventHomePage.Alerts = entry.Alerts;
 

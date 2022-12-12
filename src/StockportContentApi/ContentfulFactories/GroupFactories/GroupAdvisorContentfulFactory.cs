@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories.GroupFactories

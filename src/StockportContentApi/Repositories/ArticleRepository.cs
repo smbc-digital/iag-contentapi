@@ -1,21 +1,16 @@
-﻿using StockportContentApi.Config;
-using StockportContentApi.Model;
-using StockportContentApi.Http;
-using System.Net;
-using System.Threading.Tasks;
-using StockportContentApi.Utils;
+﻿using System.Net;
+using Contentful.Core.Search;
+using StockportContentApi.Client;
+using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Client;
-using Contentful.Core.Search;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using StockportContentApi.Model;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
 {
     public class ArticleRepository : BaseRepository
-    {        
+    {
         private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
         private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
         private readonly DateComparer _dateComparer;
@@ -26,7 +21,7 @@ namespace StockportContentApi.Repositories
         private readonly int _articleTimeout;
 
         public ArticleRepository(ContentfulConfig config,
-            IContentfulClientManager contentfulClientManager, 
+            IContentfulClientManager contentfulClientManager,
             ITimeProvider timeProvider,
             IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
             IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
@@ -60,7 +55,7 @@ namespace StockportContentApi.Repositories
         public async Task<HttpResponse> GetArticle(string articleSlug)
         {
             var entry = await _cache.GetFromCacheOrDirectlyAsync("article-" + articleSlug, () => GetArticleEntry(articleSlug), _articleTimeout);
-            
+
             var articleItem = entry == null
                             ? null
                             : _contentfulFactory.ToModel(entry);
@@ -78,12 +73,12 @@ namespace StockportContentApi.Repositories
                 if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(articleItem.SunriseDate, articleItem.SunsetDate))
                 {
                     articleItem = null;
-                }         
+                }
             }
 
             return articleItem == null
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'")
-                : HttpResponse.Successful(articleItem);          
+                : HttpResponse.Successful(articleItem);
         }
 
         private IEnumerable<ArticleSiteMap> GetAllArticles(List<ContentfulArticleForSiteMap> entries)
@@ -111,5 +106,5 @@ namespace StockportContentApi.Repositories
             return entry;
         }
     }
-   
+
 }

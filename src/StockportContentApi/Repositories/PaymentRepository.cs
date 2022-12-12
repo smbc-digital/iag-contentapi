@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Linq;
-using StockportContentApi.Client;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -18,8 +14,8 @@ namespace StockportContentApi.Repositories
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IContentfulFactory<ContentfulPayment, Payment> _paymentFactory;
 
-        public PaymentRepository(ContentfulConfig config, 
-                                 IContentfulClientManager clientManager, 
+        public PaymentRepository(ContentfulConfig config,
+                                 IContentfulClientManager clientManager,
                                  IContentfulFactory<ContentfulPayment, Payment> paymentFactory)
         {
             _client = clientManager.GetClient(config);
@@ -42,8 +38,8 @@ namespace StockportContentApi.Repositories
         {
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
             var entries = await _client.GetEntries(builder);
-            var contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();          
-            
+            var contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();
+
             var payments = GetAllPayments(contentfulPayments);
             return entries == null || !contentfulPayments.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No payments found")

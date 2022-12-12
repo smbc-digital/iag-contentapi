@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace StockportContentApi.Model
 {
     public class ContactUsArea
@@ -18,16 +16,16 @@ namespace StockportContentApi.Model
 
         public string MetaDescription { get; set; }
 
-        public ContactUsArea(string slug, 
-            string title, 
-            string categoriesTitle, 
-            IEnumerable<Crumb> breadcrumbs, 
-            IEnumerable<Alert> alerts, 
-            IEnumerable<SubItem> primaryItems, 
-            IEnumerable<ContactUsCategory> contactUsCategories, 
-            string insetTextTitle, 
-            string insetTextBody, 
-            string metaDescription) 
+        public ContactUsArea(string slug,
+            string title,
+            string categoriesTitle,
+            IEnumerable<Crumb> breadcrumbs,
+            IEnumerable<Alert> alerts,
+            IEnumerable<SubItem> primaryItems,
+            IEnumerable<ContactUsCategory> contactUsCategories,
+            string insetTextTitle,
+            string insetTextBody,
+            string metaDescription)
         {
             Title = title;
             Slug = slug;
