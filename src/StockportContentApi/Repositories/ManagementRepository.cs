@@ -1,24 +1,19 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
+﻿using System.Net;
 using Contentful.Core;
 using Contentful.Core.Models;
-using StockportContentApi.Http;
-using Microsoft.Extensions.Logging;
+using StockportContentApi.Client;
+using StockportContentApi.Config;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace StockportContentApi.Repositories
 {
     public class ManagementRepository
     {
-        private readonly ContentfulConfig _config;
         private readonly IContentfulManagementClient _client;
-        private readonly ILogger<HttpClient> _logger;
+        private readonly ILogger _logger;
 
-        public ManagementRepository(ContentfulConfig config, IContentfulClientManager client, ILogger<HttpClient> logger)
+        public ManagementRepository(ContentfulConfig config, IContentfulClientManager client, ILogger logger)
         {
-            _config = config;
             _client = client.GetManagementClient(config);
             _logger = logger;
         }
@@ -28,7 +23,7 @@ namespace StockportContentApi.Repositories
             var entry = new Entry<dynamic>
             {
                 Fields = content,
-                SystemProperties = systemProperties 
+                SystemProperties = systemProperties
             };
 
             try

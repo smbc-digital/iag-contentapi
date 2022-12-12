@@ -1,24 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using StockportContentApi.Config;
-using StockportContentApi.Http;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
-using System;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
-using StockportContentApi.ContentfulModels;
+using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
+using StockportContentApi.Utils;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace StockportContentApi.Repositories
 {
     public class AtoZRepository : BaseRepository
     {
-        private readonly string _contentfulApiUrl;
         private readonly DateComparer _dateComparer;
         private readonly Contentful.Core.IContentfulClient _client;
         private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
@@ -27,12 +20,16 @@ namespace StockportContentApi.Repositories
         private readonly ILogger _logger;
         private IConfiguration _configuration;
 
-        public AtoZRepository(ContentfulConfig config, IContentfulClientManager clientManager,
+        public AtoZRepository(
+            ContentfulConfig config,
+            IContentfulClientManager clientManager,
             IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
-            ITimeProvider timeProvider, ICache cache, IConfiguration configuration, ILogger logger)
+            ITimeProvider timeProvider,
+            ICache cache,
+            IConfiguration configuration,
+            ILogger logger)
         {
             _client = clientManager.GetClient(config);
-            _contentfulApiUrl = config.ContentfulUrl.ToString();
             _contentfulAtoZFactory = contentfulAtoZFactory;
             _dateComparer = new DateComparer(timeProvider);
             _cache = cache;
