@@ -1,21 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.OpenApi.Models;
 using StockportContentApi.Config;
+using StockportContentApi.Extensions;
 using StockportContentApi.Http;
+using StockportContentApi.Model;
 using StockportContentApi.Services;
 using StockportContentApi.Utils;
-using StockportContentApi.Extensions;
-using Serilog;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-using AspNetCoreRateLimit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using StockportContentApi.Middleware;
-using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
-using Microsoft.Extensions.Hosting;
-using StockportContentApi.Model;
+using HttpClient = StockportContentApi.Http.HttpClient;
 
 namespace StockportContentApi
 {
@@ -24,29 +14,24 @@ namespace StockportContentApi
         private readonly string _contentRootPath;
         private readonly string _appEnvironment;
         private readonly bool _useRedisSession;
+        private readonly Serilog.ILogger _logger;
         public IConfiguration Configuration { get; set; }
 
-        public Startup(IConfiguration configuration, IHostEnvironment env)
+        public Startup(IConfiguration configuration, IHostEnvironment env, Serilog.ILogger logger)
         {
             Configuration = configuration;
             _contentRootPath = env.ContentRootPath;
             _appEnvironment = env.EnvironmentName;
-            _useRedisSession = Configuration["UseRedisSessions"]?.ToLower() == "true";
+            _useRedisSession = Configuration["UseRedisSessions"].Equals("true", StringComparison.OrdinalIgnoreCase);
+            _logger = logger;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            ConfigureSerilog();
-
-            var loggerFactory = new LoggerFactory().AddSerilog();
-            ILogger logger = loggerFactory.CreateLogger<Startup>();
-
-            // add other services
             services.AddControllers().AddNewtonsoftJson();
             services.AddFeatureToggles(_contentRootPath, _appEnvironment);
             services.AddSingleton(new CurrentEnvironment(_appEnvironment));
-            services.AddCache(_useRedisSession, _appEnvironment, Configuration, logger);
+            services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger);
             services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
             services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
             services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));
@@ -63,7 +48,7 @@ namespace StockportContentApi
             services.AddSingleton(_ => new ShortUrlRedirects(new Dictionary<string, RedirectDictionary>()));
             services.AddSingleton(_ => new LegacyUrlRedirects(new Dictionary<string, RedirectDictionary>()));
 
-            services.AddGroupConfiguration(Configuration, logger);
+            services.AddGroupConfiguration(Configuration, _logger);
             services.AddHelpers();
             services.AddRedirects(Configuration);
             services.AddContentfulConfig(Configuration);
@@ -98,46 +83,6 @@ namespace StockportContentApi
                 });
 
             });
-        }
-
-        public virtual void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostApplicationLifetime appLifetime)
-        {
-            // add logging
-            loggerFactory.AddSerilog();
-
-            // swagger
-            app.UseSwagger();
-            app.UseSwaggerUI( c =>
-            {
-                c.SwaggerEndpoint(_appEnvironment == "local" ? "/swagger/v1/swagger.json" : "/api/swagger/v1/swagger.json", "Stockport Content API");
-            });
-
-            app.UseMiddleware<AuthenticationMiddleware>();
-            app.UseClientRateLimiting();
-            
-            app.UseStaticFiles();
-
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            // close logger
-            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
-        }
-       
-        private void ConfigureSerilog()
-        {
-            var logConfig = new LoggerConfiguration()
-                .ReadFrom
-                .Configuration(Configuration);
-
-            var esLogConfig = new ElasticSearchLogConfigurator(Configuration);
-            esLogConfig.Configure(logConfig);
-
-            Log.Logger = logConfig.CreateLogger();
-            Log.Logger.Information("Completed logging configuration...");
         }
     }
 }
