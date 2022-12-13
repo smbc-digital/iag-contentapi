@@ -193,9 +193,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            _contentfulClient.Setup(o => o.GetEntries<ContentfulEvent>(
-                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Build())),
-                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+            _contentfulClient
+                .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newsListCollection);
 
             var contentfulEvents = AsyncTestHelper.Resolve(_repository.GetAllEvents());
 

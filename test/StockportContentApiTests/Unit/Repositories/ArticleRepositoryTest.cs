@@ -87,14 +87,43 @@ namespace StockportContentApiTests.Unit.Repositories
         }
 
         [Fact]
-        public void GetAllArticleSlugForSitemap()
+        public async void GetAllArticleSlugForSitemap()
         {
-            var collection = new ContentfulCollection<ContentfulArticleForSiteMap>();
-            collection.Items = new List<ContentfulArticleForSiteMap> { new ContentfulArticleForSiteMap() { Slug = "slug1", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue }, new ContentfulArticleForSiteMap() { Slug = "slug2", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue }, new ContentfulArticleForSiteMap() { Slug = "slug3", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue } };
-            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Build();
-            _contentfulClient.Setup(o => o.GetEntries<ContentfulArticleForSiteMap>(It.Is<string>(q => q.Contains(builder)), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+            ContentfulCollection<ContentfulArticleForSiteMap> collection = new()
+            {
+                Items = new List<ContentfulArticleForSiteMap>()
+                {
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug1",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    },
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug2",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    },
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug3",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    }
+                }
+            };
 
-            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>()
+                .ContentTypeIs("article")
+                .Include(2)
+                .Build();
+
+            _contentfulClient
+                .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticleForSiteMap>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
+
+            var response = await _repository.Get();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseArticle = response.Get<IEnumerable<ArticleSiteMap>>();
             responseArticle.ToList().Count.Should().Be(collection.Items.Count());

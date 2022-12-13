@@ -160,15 +160,16 @@ namespace StockportContentApi.Repositories
         {
             var groupResults = new GroupResults();
 
-
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             if (groupSearch.Longitude != 0 && groupSearch.Latitude != 0)
+            {
                 builder = builder.FieldEquals("fields.mapPosition[near]",
                     groupSearch.Latitude +
                     "," +
                     groupSearch.Longitude +
                     (groupSearch.Location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
+            }
 
             var subCategoriesArray = groupSearch.SubCategories.Split(',');
             var subCategoriesList = subCategoriesArray.Where(c => !string.IsNullOrWhiteSpace(c));
