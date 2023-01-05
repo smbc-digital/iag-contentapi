@@ -1,12 +1,7 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using System.Net;
 using StockportContentApi.Config;
-using StockportContentApi.Utils;
 using StockportContentApi.Exceptions;
+using StockportContentApi.Utils;
 
 namespace StockportContentApi.Middleware
 {

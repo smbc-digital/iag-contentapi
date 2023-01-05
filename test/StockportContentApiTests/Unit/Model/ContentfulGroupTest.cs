@@ -1,8 +1,8 @@
 ﻿using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
-using Xunit;
 using FluentAssertions;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
 {

@@ -1,4 +1,3 @@
-using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -16,7 +15,7 @@ namespace StockportContentApi.ContentfulFactories
         private readonly DateComparer _dateComparer;
         private IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory, 
+        public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
             IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
             ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory)
         {
@@ -39,7 +38,7 @@ namespace StockportContentApi.ContentfulFactories
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            return new Section(entry.Title, entry.Slug, entry.MetaDescription, body, profiles, documents, 
+            return new Section(entry.Title, entry.Slug, entry.MetaDescription, body, profiles, documents,
                                entry.SunriseDate, entry.SunsetDate, alertsInline);
         }
     }

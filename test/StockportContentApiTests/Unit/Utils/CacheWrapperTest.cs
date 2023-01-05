@@ -2,9 +2,6 @@
 using Moq;
 using StockportContentApi.Utils;
 using Xunit;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System.Threading;
 
 namespace StockportContentApiTests.Unit.Utils
 {

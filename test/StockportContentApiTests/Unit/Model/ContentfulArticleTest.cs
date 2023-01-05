@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
-using Xunit;
-using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Model
 {

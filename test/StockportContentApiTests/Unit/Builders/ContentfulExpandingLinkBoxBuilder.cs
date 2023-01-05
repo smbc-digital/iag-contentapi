@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
 {
     public class ContentfulExpandingLinkBoxBuilder
-    {      
-        private string _title = "title";               
+    {
+        private string _title = "title";
         private List<ContentfulReference> _links = new List<ContentfulReference> {
             new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
 
         public ContentfulExpandingLinkBox Build()
         {
             return new ContentfulExpandingLinkBox
-            {             
+            {
                 Title = _title,
                 Links = _links
             };

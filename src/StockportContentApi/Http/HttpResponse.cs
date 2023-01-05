@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace StockportContentApi.Http
 {
@@ -26,7 +25,7 @@ namespace StockportContentApi.Http
         {
             return new HttpResponse(statusCode, null, error);
         }
-        
+
         public IActionResult CreateResult()
         {
             switch (StatusCode)
@@ -38,7 +37,7 @@ namespace StockportContentApi.Http
                 case HttpStatusCode.NotFound:
                     return new NotFoundObjectResult(Error);
                 case HttpStatusCode.InternalServerError:
-                    return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                    return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
                 case HttpStatusCode.BadGateway:
                     return new StatusCodeResult((int)HttpStatusCode.BadGateway);
                 default:
@@ -54,7 +53,7 @@ namespace StockportContentApi.Http
 
         public T Get<T>()
         {
-            return (T) _content;
+            return (T)_content;
         }
     }
 }

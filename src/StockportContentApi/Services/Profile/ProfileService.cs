@@ -1,12 +1,6 @@
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using StockportContentApi.Config;
 using System.Net;
-using System.Collections.Generic;
-using System.Linq;
+using StockportContentApi.Config;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Services.Profile
 {

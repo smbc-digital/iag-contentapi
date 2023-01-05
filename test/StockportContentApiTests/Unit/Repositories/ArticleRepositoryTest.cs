@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using Contentful.Core.Models;
+using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.ArticleFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
-using Xunit;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Client;
 using StockportContentApiTests.Unit.Builders;
-using IContentfulClient = Contentful.Core.IContentfulClient;
-using Contentful.Core.Search;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using StockportContentApi.ContentfulFactories.ArticleFactories;
+using Xunit;
 using Document = StockportContentApi.Model.Document;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
     public class ArticleRepositoryTest
-    {       
+    {
         private readonly ArticleRepository _repository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IContentfulClient> _contentfulClient;
@@ -55,28 +49,28 @@ namespace StockportContentApiTests.Unit.Repositories
             _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
             _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-            
+
             _cache = new Mock<ICache>();
 
             var contentfulFactory = new ArticleContentfulFactory(
-                _sectionFactory.Object, 
-                _crumbFactory.Object, 
-                _profileFactory.Object, 
+                _sectionFactory.Object,
+                _crumbFactory.Object,
+                _profileFactory.Object,
                 _parentTopicFactory.Object,
-                documentFactory, 
+                documentFactory,
                 _videoRepository.Object,
                 _mockTimeProvider.Object,
                 _alertFactory.Object
                 );
 
-           var contentfulClientManager = new Mock<IContentfulClientManager>();
+            var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _configuration = new Mock<IConfiguration>();
             _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
             _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
         }
-        
+
         [Fact]
         public void GetsArticle()
         {
@@ -87,20 +81,49 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
-            var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));           
-           
+            var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
-        public void GetAllArticleSlugForSitemap()
+        public async void GetAllArticleSlugForSitemap()
         {
-            var collection = new ContentfulCollection<ContentfulArticleForSiteMap>();
-            collection.Items = new List<ContentfulArticleForSiteMap> {new ContentfulArticleForSiteMap() {Slug = "slug1", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue }, new ContentfulArticleForSiteMap() { Slug = "slug2", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue}, new ContentfulArticleForSiteMap() { Slug = "slug3", SunriseDate = DateTime.MinValue, SunsetDate = DateTime.MaxValue } };
-            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Build();
-            _contentfulClient.Setup(o => o.GetEntries<ContentfulArticleForSiteMap>(It.Is<string>(q => q.Contains(builder)), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+            ContentfulCollection<ContentfulArticleForSiteMap> collection = new()
+            {
+                Items = new List<ContentfulArticleForSiteMap>()
+                {
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug1",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    },
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug2",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    },
+                    new ContentfulArticleForSiteMap()
+                    {
+                        Slug = "slug3",
+                        SunriseDate = DateTime.MinValue,
+                        SunsetDate = DateTime.MaxValue
+                    }
+                }
+            };
 
-            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>()
+                .ContentTypeIs("article")
+                .Include(2)
+                .Build();
+
+            _contentfulClient
+                .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticleForSiteMap>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
+
+            var response = await _repository.Get();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseArticle = response.Get<IEnumerable<ArticleSiteMap>>();
             responseArticle.ToList().Count.Should().Be(collection.Items.Count());
@@ -108,14 +131,14 @@ namespace StockportContentApiTests.Unit.Repositories
 
         [Fact]
         public void GetsNotFoundForAnArticleThatDoesNotExist()
-        {           
+        {
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
 
             var collection = new ContentfulCollection<ContentfulArticle>();
             collection.Items = new List<ContentfulArticle>();
 
             _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-            var response = AsyncTestHelper.Resolve(_repository.GetArticle("blah"));           
+            var response = AsyncTestHelper.Resolve(_repository.GetArticle("blah"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("No article found for 'blah'");
@@ -133,7 +156,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulClient.Setup(o => o.GetEntries<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -150,7 +173,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _contentfulClient.Setup(o => o.GetEntries<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -165,14 +188,14 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
 
-            StockportContentApi.Http.HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+            HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
         public void ReturnsArticleWithInlineAlerts()
-        {            
+        {
             // Arrange
             const string slug = "unit-test-article-with-inline-alerts";
             _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));

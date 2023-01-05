@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace StockportContentApi.Config
+﻿namespace StockportContentApi.Config
 {
     public class RedirectBusinessIds
     {

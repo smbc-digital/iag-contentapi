@@ -1,10 +1,7 @@
-using System;
 using System.Net;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.Config;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Services.Profile;
@@ -27,9 +24,10 @@ namespace StockportContentApiTests.Unit.Services
 
             profileService = new ProfileService(_createConfig.Object, _createRepository.Object);
         }
- 
+
         [Fact]
-        public async Task GetProfile_ShouldReturnProfileIfResponseIsOK(){
+        public async Task GetProfile_ShouldReturnProfileIfResponseIsOK()
+        {
             // Arrange
             var response = HttpResponse.Successful(new Profile());
             _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);
@@ -42,7 +40,8 @@ namespace StockportContentApiTests.Unit.Services
         }
 
         [Fact]
-        public async Task GetProfile_ShouldReturnNullIfResponseIsError(){
+        public async Task GetProfile_ShouldReturnNullIfResponseIsError()
+        {
             // Arrange
             var response = HttpResponse.Failure(HttpStatusCode.InternalServerError, "Error");
             _profileRepository.Setup(_ => _.GetProfile(It.IsAny<string>())).ReturnsAsync(response);

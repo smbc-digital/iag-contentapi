@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class GroupHomepage
     {
@@ -19,7 +17,7 @@ namespace StockportContentApi.Model
         public string SecondaryBody { get; set; }
         public EventBanner EventBanner { get; }
 
-        public GroupHomepage(string title, string slug, string metaDescription, string backgroundImage, string featuredGroupsHeading, List<Group> featuredGroups, 
+        public GroupHomepage(string title, string slug, string metaDescription, string backgroundImage, string featuredGroupsHeading, List<Group> featuredGroups,
             GroupCategory featuredGroupsCategory, GroupSubCategory featuredGroupsSubCategory, IEnumerable<Alert> alerts, string bodyHeading, string body, string secondaryBodyHeading, string secondaryBody, EventBanner eventBanner)
         {
             Title = title;

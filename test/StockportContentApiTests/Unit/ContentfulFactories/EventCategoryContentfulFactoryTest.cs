@@ -1,8 +1,8 @@
-﻿using Xunit;
-using FluentAssertions;
+﻿using FluentAssertions;
+using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.Model;
 using StockportContentApiTests.Builders;
-using StockportContentApi.ContentfulFactories.EventFactories;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {

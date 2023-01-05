@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;

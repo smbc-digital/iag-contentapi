@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -34,7 +32,7 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
 
             var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                 ? entry.Image?.File?.Url
-                : string.Empty; 
+                : string.Empty;
 
             var group = _groupFactory.ToModel(entry.Group);
 

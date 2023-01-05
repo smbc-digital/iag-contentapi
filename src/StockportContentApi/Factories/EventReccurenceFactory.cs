@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 
 namespace StockportContentApi.Factories
 {
@@ -35,7 +33,7 @@ namespace StockportContentApi.Factories
             return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
                              entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences,
                              entry.EventFrequency, entry.Breadcrumbs, entry.ThumbnailImageUrl, entry.Documents, entry.Categories,
-                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts, entry.EventCategories, entry.Free, entry.Paid,entry.AccessibleTransportLink, entry.MetaDescription);
+                             entry.MapPosition, entry.Featured, entry.BookingInformation, entry.UpdatedAt, entry.Tags, entry.Group, entry.Alerts, entry.EventCategories, entry.Free, entry.Paid, entry.AccessibleTransportLink, entry.MetaDescription);
         }
 
         private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

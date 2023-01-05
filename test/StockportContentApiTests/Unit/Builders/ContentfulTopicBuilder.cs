@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -43,7 +41,7 @@ namespace StockportContentApiTests.Unit.Builders
         {
             return new ContentfulTopic
             {
-                Slug =  _slug,
+                Slug = _slug,
                 Name = _name,
                 Teaser = _teaser,
                 MetaDescription = _metaDescription,
@@ -53,13 +51,13 @@ namespace StockportContentApiTests.Unit.Builders
                 Image = _image,
                 SubItems = _subItems,
                 SecondaryItems = _secondaryItems,
-                TertiaryItems  = _tertiaryItems,
-                Breadcrumbs  = _breadcrumbs,
+                TertiaryItems = _tertiaryItems,
+                Breadcrumbs = _breadcrumbs,
                 Alerts = _alerts,
                 SunriseDate = _sunriseDate,
                 SunsetDate = _sunsetDate,
-                EmailAlerts  = _emailAlerts,
-                EmailAlertsTopicId  = _emailAlertsTopicId,
+                EmailAlerts = _emailAlerts,
+                EmailAlertsTopicId = _emailAlertsTopicId,
                 EventBanner = _eventBanner,
                 ExpandingLinkTitle = _expandingLinkTitle,
                 ExpandingLinkBoxes = _expandingLinkBox,

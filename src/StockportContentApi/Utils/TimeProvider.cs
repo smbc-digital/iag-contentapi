@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StockportContentApi.Utils
+﻿namespace StockportContentApi.Utils
 {
     public interface ITimeProvider
     {

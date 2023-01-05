@@ -1,12 +1,12 @@
 ﻿namespace StockportContentApi.Model
 {
-   public class EventBanner
+    public class EventBanner
     {
         public string Title { get; }
         public string Teaser { get; }
         public string Icon { get; }
-        public string Link { get; }         
-       
+        public string Link { get; }
+
         public EventBanner(string title, string teaser, string icon, string link)
         {
             Title = title;
@@ -18,7 +18,7 @@
 
     public class NullEventBanner : EventBanner
     {
-        public NullEventBanner() : base(string.Empty,string.Empty,string.Empty,string.Empty) { }
+        public NullEventBanner() : base(string.Empty, string.Empty, string.Empty, string.Empty) { }
     }
 
 }

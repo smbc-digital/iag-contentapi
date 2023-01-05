@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace StockportContentApi.Utils
+﻿namespace StockportContentApi.Utils
 {
     public interface IFileWrapper
     {
@@ -12,12 +10,12 @@ namespace StockportContentApi.Utils
     {
         public bool Exists(string path)
         {
-            return File.Exists(path);
+            return System.IO.File.Exists(path);
         }
 
         public string[] ReadAllLines(string path)
         {
-            return File.ReadAllLines(path);
+            return System.IO.File.ReadAllLines(path);
         }
     }
 }

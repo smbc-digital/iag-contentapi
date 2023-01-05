@@ -1,12 +1,9 @@
-﻿using StockportContentApi.ContentfulFactories;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.Repositories
@@ -31,7 +28,7 @@ namespace StockportContentApi.Repositories
 
             if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
 
-            var contactUsId = _contentfulFactory.ToModel(entry);        
+            var contactUsId = _contentfulFactory.ToModel(entry);
 
             return HttpResponse.Successful(contactUsId);
         }

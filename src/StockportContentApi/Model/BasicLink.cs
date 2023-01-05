@@ -15,6 +15,6 @@
 
     public class NullBasicLink : BasicLink
     {
-        public NullBasicLink() : base(string.Empty, string.Empty) {}
+        public NullBasicLink() : base(string.Empty, string.Empty) { }
     }
 }

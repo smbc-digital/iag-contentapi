@@ -1,11 +1,9 @@
-﻿using Xunit;
-using FluentAssertions;
-using StockportContentApi.Extensions;
-using System.Collections.Generic;
-using StockportContentApi.Model;
-using System;
+﻿using FluentAssertions;
 using Moq;
+using StockportContentApi.Extensions;
+using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.Extensions
 {

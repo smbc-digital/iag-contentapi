@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>StockportContentApiTests</AssemblyName>
     <PackageId>StockportContentApiTests</PackageId>
+	<ImplicitUsings>enable</ImplicitUsings>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <AssetTargetFallback>$(AssetTargetFallback);dotnet5.6</AssetTargetFallback>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -20,65 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Integration\ExpectedContentApiResponses\Article.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\ArticleWithParentTopic.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\AtoZ.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\AtoZArticleAndTopic.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\ContactUsId.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Event.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\GroupAdvisor.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\GroupHomePage.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\EventsLatest.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\FeaturedContent.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Footer.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Group.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\GroupCategory.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Homepage.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\News.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\NewsListing.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\NewsListingFilteredByDate.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Payment.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\PrivacyNotice.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Profile.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Showcase.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\StartPage.json" />
-    <None Remove="Integration\ExpectedContentApiResponses\Topic.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Article.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ArticleWithoutSections.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ArticleWithParentTopic.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZ.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZArticleAndTopic.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\AtoZTopic.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\ContactUsId.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupAdvisorList.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupAdvisor.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Organisation.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Event.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\EventsCalendar.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\EventsLatest.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\FeaturedContent.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Footer.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Group.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupCategory.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\GroupHomePage.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Homepage.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\News.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\NewsListing.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\NewsListingFilteredByDate.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Payment.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\PrivacyNotice.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Profile.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\RedirectDictionary.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Showcase.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\StartPage.json" />
-    <EmbeddedResource Include="Integration\ExpectedContentApiResponses\Topic.json" />
     <EmbeddedResource Include="Unit\MockVideoResponses\VideoExists.json" />
   </ItemGroup>
 
@@ -93,17 +35,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="contentful.csharp" Version="6.0.7" />
-    <PackageReference Include="FluentAssertions" Version="5.5.0" />
+    <PackageReference Include="contentful.csharp" Version="7.2.2" />
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.8" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.11" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageReference Include="Moq" Version="4.18.2" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

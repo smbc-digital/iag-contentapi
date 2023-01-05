@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.ManagementModels;
@@ -91,7 +88,7 @@ namespace StockportContentApi
                 destination = new ManagementGroup();
             }
 
-            destination.AdditionalInformation = new Dictionary<string, string> {{"en-GB", source.AdditionalInformation}};
+            destination.AdditionalInformation = new Dictionary<string, string> { { "en-GB", source.AdditionalInformation } };
             destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
             destination.Address = new Dictionary<string, string> { { "en-GB", source.Address } };
             destination.Description = new Dictionary<string, string> { { "en-GB", source.Description } };
@@ -129,13 +126,13 @@ namespace StockportContentApi
             destination.VolunteeringText = new Dictionary<string, string> { { "en-GB", source.VolunteeringText } };
             if (destination.Organisation != null)
             {
-                destination.Organisation = new Dictionary<string, ManagementReference>() {{"en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } }};    
+                destination.Organisation = new Dictionary<string, ManagementReference>() { { "en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } } };
             }
-            
+
             destination.SubCategories = new Dictionary<string, List<ManagementReference>>()
             {
                 {
-                    "en-GB", 
+                    "en-GB",
                     source.SubCategories.Select(sc => new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
                 }
             };
@@ -146,8 +143,8 @@ namespace StockportContentApi
             destination.DonationsUrl = new Dictionary<string, string> { { "en-GB", source.DonationsUrl } };
             destination.GroupBranding = new Dictionary<string, List<ManagementReference>>
             {
-                { 
-                    "en-GB", 
+                {
+                    "en-GB",
                     source.GroupBranding.Select(sc => new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
                 }
             };
@@ -188,7 +185,7 @@ namespace StockportContentApi
             destination.Location = new Dictionary<string, string> { { "en-GB", source.Location } };
             destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
             destination.Paid = new Dictionary<string, bool?> { { "en-GB", source.Paid } };
-            destination.Slug = new Dictionary<string, string>(){{"en-GB",source.Slug } };
+            destination.Slug = new Dictionary<string, string>() { { "en-GB", source.Slug } };
             destination.StartTime = new Dictionary<string, string> { { "en-GB", source.StartTime } };
             destination.SubmittedBy = new Dictionary<string, string> { { "en-GB", source.SubmittedBy } };
             destination.Tags = new Dictionary<string, List<string>> { { "en-GB", source.Tags } };

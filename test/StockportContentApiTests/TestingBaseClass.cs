@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using StockportContentApi.Http;
+﻿using System.Reflection;
 
 namespace StockportContentApiTests
 {

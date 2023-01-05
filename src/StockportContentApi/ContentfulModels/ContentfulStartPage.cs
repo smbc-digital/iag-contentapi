@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulStartPage : ContentfulReference

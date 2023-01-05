@@ -1,7 +1,4 @@
 ﻿using GeoCoordinatePortable;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 namespace StockportContentApi.Model
 {
     public class Event
@@ -34,10 +31,10 @@ namespace StockportContentApi.Model
         public bool? Free { get; }
         public bool? Paid { get; }
         public GeoCoordinate Coord { get; }
-        public string AccessibleTransportLink { get; } 
+        public string AccessibleTransportLink { get; }
 
         public string MetaDescription { get; }
-       
+
 
         public Event(string title, string slug, string teaser, string imageUrl, string description, string fee,
                      string location, string submittedBy, DateTime eventDate, string startTime, string endTime,

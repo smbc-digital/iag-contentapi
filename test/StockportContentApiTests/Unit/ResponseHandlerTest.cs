@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi;
 using StockportContentApiTests.Unit.Fakes;
 using Xunit;
@@ -18,7 +17,7 @@ namespace StockportContentApiTests.Unit
             {
                 throw new Exception("error");
             }));
-            Assert.Equal("An unexpected error occurred while performing the get operation", 
+            Assert.Equal("An unexpected error occurred while performing the get operation",
                         _fakeLogger.ErrorMessage);
             Assert.Equal(500, (result as StatusCodeResult).StatusCode);
         }

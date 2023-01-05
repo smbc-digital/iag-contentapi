@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.Builders;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Services;
@@ -51,7 +48,7 @@ namespace StockportContentApiTests.Unit.Services
                 .ReturnsAsync(new Asset()
                 {
                     Description = "description",
-                    DescriptionLocalized = new Dictionary<string, string>{{ "en-GB", "description"}},
+                    DescriptionLocalized = new Dictionary<string, string> { { "en-GB", "description" } },
                     File = new File()
                     {
                         Url = "url",
@@ -60,23 +57,23 @@ namespace StockportContentApiTests.Unit.Services
                             Size = 22
                         }
                     },
-                    FilesLocalized = new Dictionary<string, File> { {"en-GB", new File() } },
+                    FilesLocalized = new Dictionary<string, File> { { "en-GB", new File() } },
                     SystemProperties = new SystemProperties()
                     {
                         Id = "asset id"
                     },
                     Title = "title",
-                    TitleLocalized = new Dictionary<string, string>{{ "en-GB", "title" } }
+                    TitleLocalized = new Dictionary<string, string> { { "en-GB", "title" } }
                 });
 
             _mockGroupAdvisorRepository.Setup(o => o.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
-            
+
             _mockGroupRepository.Setup(o => o.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document>{ expectedResult }).Build()));
+                .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document> { expectedResult }).Build()));
 
             _mockDocumentFactory.Setup(o => o.ToModel(It.IsAny<Asset>())).Returns(expectedResult);
 
-            _mockContentfulConfigBuilder.Setup(o => o.Build(It.IsAny<string>())).Returns(new ContentfulConfig("","",""));
+            _mockContentfulConfigBuilder.Setup(o => o.Build(It.IsAny<string>())).Returns(new ContentfulConfig("", "", ""));
 
             _mockLoggedInHelper.Setup(o => o.GetLoggedInPerson()).Returns(new LoggedInPerson()
             {
@@ -85,7 +82,7 @@ namespace StockportContentApiTests.Unit.Services
             });
 
             var documentsService = new DocumentsService(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
-            
+
             // Act
             var result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
@@ -167,7 +164,7 @@ namespace StockportContentApiTests.Unit.Services
         {
             // Arrange
             var document = new DocumentBuilder().Build();
-            
+
             _mockDocumentRepository.Setup(o => o.Get(It.IsAny<string>()))
                 .ReturnsAsync((Asset)null);
 

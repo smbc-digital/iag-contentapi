@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using StockportContentApi.Model;
-
-namespace StockportContentApi.Utils
+﻿namespace StockportContentApi.Utils
 {
     public enum CacheDurationMins
     {
@@ -110,7 +103,7 @@ namespace StockportContentApi.Utils
             }
 
             var returnData = string.Empty;
-            
+
             try
             {
                 returnData = _memoryCache.GetString(key.ToString()).Result;
@@ -127,7 +120,7 @@ namespace StockportContentApi.Utils
                 _logger.LogInformation("Key found in cache:" + key + " of type:" + typeof(T));
                 output = value != null;
             }
-            
+
             return output;
         }
     }

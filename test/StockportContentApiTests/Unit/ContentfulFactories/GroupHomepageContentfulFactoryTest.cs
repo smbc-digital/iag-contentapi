@@ -1,14 +1,12 @@
 ﻿using FluentAssertions;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApiTests.Unit.Builders;
-using System;
-using System.Linq;
 using Moq;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.GroupFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using StockportContentApi.ContentfulFactories.GroupFactories;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -33,7 +31,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
 
-        _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, _alertFactory.Object, _eventBannerFactory.Object);
+            _groupHomepageContentfulFactory = new GroupHomepageContentfulFactory(_groupFactory.Object, _groupCategoryFactory.Object, _groupSubCategoryFactory.Object, _mockTimeProvider.Object, _alertFactory.Object, _eventBannerFactory.Object);
         }
 
         [Fact]
@@ -78,6 +76,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             result.SecondaryBody.Should().Be("secondaryBody");
             result.EventBanner.Should().BeEquivalentTo(eventBanner);
         }
-        
+
     }
 }

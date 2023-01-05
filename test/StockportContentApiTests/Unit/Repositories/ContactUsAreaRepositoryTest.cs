@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
-using StockportContentApi.Config;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
-using Xunit;
 using StockportContentApi.Client;
+using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
+using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
@@ -44,9 +41,9 @@ namespace StockportContentApiTests.Unit.Repositories
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
             var contentfulFactory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
-                _mockCrumbFactory.Object, 
-                _timeprovider.Object, 
-                _mockAlertFactory.Object, 
+                _mockCrumbFactory.Object,
+                _timeprovider.Object,
+                _mockAlertFactory.Object,
                 _mockContactUsCategoryFactory.Object);
 
             _repository = new ContactUsAreaRepository(config, contentfulClientManager.Object, contentfulFactory);

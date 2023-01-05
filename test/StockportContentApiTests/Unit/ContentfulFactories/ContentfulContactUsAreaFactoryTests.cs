@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Moq;
+﻿using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
@@ -20,9 +19,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
 
         public ContentfulContactUsAreaFactoryTests()
         {
-            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object, 
-                _mockCrumbFactory.Object, 
-                _mockTimeProvider.Object, 
+            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
+                _mockCrumbFactory.Object,
+                _mockTimeProvider.Object,
                 _mockAlertFactory.Object,
                 _mockContactUsCategoryFactory.Object);
         }

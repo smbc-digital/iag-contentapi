@@ -1,11 +1,9 @@
 ﻿using Contentful.Core;
+using Contentful.Core.Errors;
+using Contentful.Core.Models;
+using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
-using System.Threading.Tasks;
-using Contentful.Core.Errors;
-using Contentful.Core.Search;
-using Contentful.Core.Models;
-using Microsoft.Extensions.Logging;
 
 namespace StockportContentApi.Repositories
 {

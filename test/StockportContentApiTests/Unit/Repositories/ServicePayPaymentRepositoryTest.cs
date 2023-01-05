@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
@@ -68,7 +65,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawPayment = new ContentfulServicePayPaymentBuilder().Slug(slug).AccountReference("accountRef").CatalogueId("catId").Build();
             var collection = new ContentfulCollection<ContentfulServicePayPayment>
             {
-                Items = new List<ContentfulServicePayPayment> {rawPayment}
+                Items = new List<ContentfulServicePayPayment> { rawPayment }
             };
 
             var builder = new QueryBuilder<ContentfulServicePayPayment>().ContentTypeIs("servicePayPayment").FieldEquals("fields.slug", slug).Include(1);

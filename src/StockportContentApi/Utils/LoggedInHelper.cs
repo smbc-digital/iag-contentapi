@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using StockportContentApi.Config;
+﻿using StockportContentApi.Config;
 using StockportContentApi.Model;
-using System;
 
 namespace StockportContentApi.Utils
 {

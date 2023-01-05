@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class ArticleSiteMap
     {
@@ -13,6 +11,6 @@ namespace StockportContentApi.Model
             Slug = slug;
             SunriseDate = sunriseDate;
             SunsetDate = sunsetDate;
-        }       
+        }
     }
 }

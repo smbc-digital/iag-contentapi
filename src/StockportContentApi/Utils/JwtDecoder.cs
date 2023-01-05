@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using StockportContentApi.Model;
-using System;
-using System.Text;
+﻿using System.Text;
 using Jose;
-using Newtonsoft.Json;
 using StockportContentApi.Exceptions;
+using StockportContentApi.Model;
 
 namespace StockportContentApi.Utils
 {

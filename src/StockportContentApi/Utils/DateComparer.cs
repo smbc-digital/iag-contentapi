@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace StockportContentApi.Utils
 {
@@ -14,13 +13,13 @@ namespace StockportContentApi.Utils
 
         public static DateTime DateFieldToDate(dynamic date)
         {
-            return !IsValidDateTime(date) 
+            return !IsValidDateTime(date)
                 ? DateTime.MinValue.ToUniversalTime()
                 : ((DateTimeOffset)DateTimeOffset.Parse(date.ToString("u"), CultureInfo.InvariantCulture)).UtcDateTime;
         }
 
         public bool DateNowIsWithinSunriseAndSunsetDates(
-            DateTime sunriseDate, 
+            DateTime sunriseDate,
             DateTime? sunsetDate = null)
         {
             sunsetDate = sunsetDate ?? DateTime.MaxValue;
@@ -53,9 +52,9 @@ namespace StockportContentApi.Utils
         }
 
         public bool EventDateIsBetweenTodayAndLater(DateTime eventDate)
-        {           
+        {
             return eventDate.Date >= _timeProvider.Now().Date;
-        }    
+        }
 
         private static bool IsValidDateTime(dynamic date)
         {

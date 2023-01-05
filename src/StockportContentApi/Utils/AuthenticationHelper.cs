@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
 using StockportContentApi.Exceptions;
 
 namespace StockportContentApi.Utils

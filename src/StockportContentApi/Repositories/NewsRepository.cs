@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
-using Microsoft.Extensions.Configuration;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
+using StockportContentApi.Extensions;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
-using StockportContentApi.Extensions;
 
 namespace StockportContentApi.Repositories
 {
@@ -70,8 +64,8 @@ namespace StockportContentApi.Repositories
 
             if (entry != null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate)) entry = null;
 
-            return entry == null 
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'") 
+            return entry == null
+                ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
                 : HttpResponse.Successful(_newsContentfulFactory.ToModel(entry));
         }
 
@@ -87,7 +81,7 @@ namespace StockportContentApi.Repositories
             {
                 newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
             }
-           
+
             var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
             var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => t == tag));
 
@@ -114,8 +108,8 @@ namespace StockportContentApi.Repositories
 
         private bool CheckDates(DateTime? startDate, DateTime? endDate, News news)
         {
-            return startDate.HasValue && endDate.HasValue 
-                ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) 
+            return startDate.HasValue && endDate.HasValue
+                ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value)
                 : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
         }
 
@@ -134,10 +128,10 @@ namespace StockportContentApi.Repositories
             return !newsArticles.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No news found")
                 : HttpResponse.Successful(newsArticles);
-        }        
+        }
 
         private static string GetSearchTypeForTag(ref string tag)
-        {            
+        {
             if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) return "in";
             tag = tag.Remove(0, 1);
 

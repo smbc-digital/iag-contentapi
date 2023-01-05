@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Homepage
     {
@@ -19,7 +16,7 @@ namespace StockportContentApi.Model
         public string MetaDescription { get; set; }
         public CarouselContent CampaignBanner { get; set; }
 
-        public Homepage(IEnumerable<string> popularSearchTerms , string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,
+        public Homepage(IEnumerable<string> popularSearchTerms, string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,
             IEnumerable<CarouselContent> carouselContents, string backgroundImage, string freeText, Group featuredGroup, string eventCategory, string metaDescription, CarouselContent campaignBanner)
         {
             PopularSearchTerms = popularSearchTerms;

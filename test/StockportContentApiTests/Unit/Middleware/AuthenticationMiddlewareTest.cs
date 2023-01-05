@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
+﻿using Moq;
 using StockportContentApi.Config;
 using StockportContentApi.Middleware;
 using StockportContentApi.Utils;
@@ -42,7 +38,7 @@ namespace StockportContentApiTests.Unit.Middleware
             await _middleware.Invoke(context);
 
             // Assert
-            _authHelper.Verify(_ => _.ExtractAuthenticationDataFromContext(It.IsAny<HttpContext>()), Times.Never); 
+            _authHelper.Verify(_ => _.ExtractAuthenticationDataFromContext(It.IsAny<HttpContext>()), Times.Never);
         }
 
         [Fact]

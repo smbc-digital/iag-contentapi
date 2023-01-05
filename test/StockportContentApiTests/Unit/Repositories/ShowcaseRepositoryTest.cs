@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
+using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
-using Xunit;
-using StockportContentApi.Client;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Builders;
-using IContentfulClient = Contentful.Core.IContentfulClient;
-using Microsoft.Extensions.Logging;
 using StockportContentApiTests.Unit.Builders;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Xunit;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -112,7 +105,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
             var events = new List<ContentfulEvent> { rawEvent };
 
-            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None,  null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null, new List<EventCategory> { new EventCategory("event", "slug", "icon") }, null, null,null,null);
+            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None, null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null, new List<EventCategory> { new EventCategory("event", "slug", "icon") }, null, null, null, null);
             _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
             var collection = new ContentfulCollection<ContentfulShowcase>();
@@ -156,7 +149,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new DateTime(2017, 4, 1)).Build();
             var events = new List<ContentfulEvent> { rawEvent };
             _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
-            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None, null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null, new List<EventCategory> { new EventCategory("event","slug", "icon")}, null, null,null, null);
+            var modelledEvent = new Event("title", "event-slug", "", "", "", "", "", "", DateTime.MaxValue, "", "", 1, EventFrequency.None, null, "", null, new List<string>(), null, false, "", DateTime.MinValue, new List<string>(), null, null, new List<EventCategory> { new EventCategory("event", "slug", "icon") }, null, null, null, null);
             _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
             // Act

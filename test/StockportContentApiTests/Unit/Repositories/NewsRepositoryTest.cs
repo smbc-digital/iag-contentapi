@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.NewsFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
 using StockportContentApiTests.Unit.Builders;
 using Xunit;
-using IContentfulClient = Contentful.Core.IContentfulClient;
-using Contentful.Core.Models.Management;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using StockportContentApi.ContentfulFactories.NewsFactories;
 using Document = StockportContentApi.Model.Document;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -85,7 +79,7 @@ namespace StockportContentApiTests.Unit.Repositories
                     }
                 }
             };
-            
+
             _newsroomContentfulCollection = new ContentfulCollection<ContentfulNewsRoom>();
             _newsroomContentfulCollection.Items = new List<ContentfulNewsRoom>
             {
@@ -107,12 +101,12 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
             _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
-           
+
             _configuration = new Mock<IConfiguration>();
             _configuration.Setup(_ => _["redisExpiryTimes:News"]).Returns("60");
             _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object, _cacheWrapper.Object, _configuration.Object);
         }
-        
+
         [Fact]
         public void GetsANewsItemFromASlug()
         {
@@ -120,7 +114,7 @@ namespace StockportContentApiTests.Unit.Repositories
             const string slug = "news-of-the-century";
             List<Alert> alerts = new List<Alert> { new AlertBuilder().Build() };
             _mockTimeProvider.Setup(o => o.Now()).Returns(DateTime.Now);
-           
+
             var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();
             var collection = new ContentfulCollection<ContentfulNews>();
             collection.Items = new List<ContentfulNews> { contentfulNews };
@@ -148,7 +142,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var news = response.Get<News>();        
+            var news = response.Get<News>();
         }
 
         [Fact]
@@ -180,8 +174,8 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
 
-            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);          
-                
+            _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
+
             var newsListCollection = new ContentfulCollection<ContentfulNews>();
             newsListCollection.Items = new List<ContentfulNews>
             {
@@ -198,7 +192,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(null, null,null,null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var newsroom = response.Get<Newsroom>();
@@ -307,7 +301,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsListCollection.Items.ToList());
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate:null, endDate: null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -346,7 +340,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsListCollection.Items.ToList());
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
-            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1",startDate:null, endDate: null));
+            var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1", startDate: null, endDate: null));
             var newsroom = response.Get<Newsroom>();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -505,7 +499,7 @@ namespace StockportContentApiTests.Unit.Repositories
             var newsRoom = new Newsroom(_alerts, true, "test-id");
             _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() {"tag1", "tag2" }, new List<Document>(), _newsCategories);
+            var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _crumbs, _alerts, new List<string>() { "tag1", "tag2" }, new List<Document>(), _newsCategories);
 
             _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -519,7 +513,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsListCollection.Items.ToList());
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
-            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null,null));
+            var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null, null));
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -660,7 +654,7 @@ namespace StockportContentApiTests.Unit.Repositories
             _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(newsWithSunriseDateInFuture.Body);
 
             _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(collection.Items.ToList());
-            
+
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
@@ -695,7 +689,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
-            
+
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }

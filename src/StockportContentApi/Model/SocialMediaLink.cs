@@ -9,7 +9,7 @@
         public string AccountName { get; }
         public string ScreenReader { get; }
 
-        public SocialMediaLink(string title, string slug, string url, string icon, string accountName,  string screenReader)
+        public SocialMediaLink(string title, string slug, string url, string icon, string accountName, string screenReader)
         {
             Title = title;
             Slug = slug;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -17,7 +16,7 @@ namespace StockportContentApiTests.Unit.Builders
             return new ContentfulNewsRoom
             {
                 Title = _title,
-                Alerts  = _alerts,
+                Alerts = _alerts,
                 EmailAlertsTopicId = _emailAlertsTopicId,
                 EmailAlerts = _emailAlerts,
                 Sys = _sys

@@ -1,14 +1,12 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
     public class DocumentPageController : Controller
     {
-        
+
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, DocumentPageRepository> _createRepository;
@@ -21,12 +19,12 @@ namespace StockportContentApi.Controllers
             _createConfig = createConfig;
             _createRepository = createRepository;
         }
-        
-        [HttpGet] 
+
+        [HttpGet]
         [Route("{businessId}/document-page/{documentPageSlug}")]
         [Route("v1/{businessId}/document-page/{documentPageSlug}")]
         [Route("v2/{businessId}/document-page/{documentPageSlug}")]
-        public async Task<IActionResult> GetDocumentPage(string documentPageSlug,string  businessId)
+        public async Task<IActionResult> GetDocumentPage(string documentPageSlug, string businessId)
         {
             return await _handler.Get(() =>
             {

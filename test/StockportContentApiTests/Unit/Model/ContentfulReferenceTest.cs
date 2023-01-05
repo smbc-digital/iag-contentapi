@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StockportContentApi.ContentfulModels;
 using Xunit;
 
@@ -13,13 +12,13 @@ namespace StockportContentApiTests.Unit.Model
             var actual = new ContentfulReference();
             var expected = new ContentfulReference
             {
-               Slug = string.Empty,
-               Title = string.Empty,
-               Name = string.Empty,
-               Teaser = string.Empty,
-               Icon = string.Empty,
-               SunriseDate = DateTime.MinValue.ToUniversalTime(),
-               SunsetDate = DateTime.MaxValue.ToUniversalTime()
+                Slug = string.Empty,
+                Title = string.Empty,
+                Name = string.Empty,
+                Teaser = string.Empty,
+                Icon = string.Empty,
+                SunriseDate = DateTime.MinValue.ToUniversalTime(),
+                SunsetDate = DateTime.MaxValue.ToUniversalTime()
             };
             actual.Should().BeEquivalentTo(expected);
         }

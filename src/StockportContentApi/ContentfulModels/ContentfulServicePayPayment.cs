@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StockportContentApi.Enums;
+﻿using StockportContentApi.Enums;
 
 namespace StockportContentApi.ContentfulModels
 {

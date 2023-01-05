@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Organisation
     {
@@ -20,7 +18,7 @@ namespace StockportContentApi.Model
         public Organisation() { }
 
         public Organisation(string title, string slug, string imageUrl, string aboutUs, string phone,
-            string email, bool volunteering, string volunteeringText, bool donations,string donationsText,string donationsUrl)
+            string email, bool volunteering, string volunteeringText, bool donations, string donationsText, string donationsUrl)
         {
             Title = title;
             Slug = slug;

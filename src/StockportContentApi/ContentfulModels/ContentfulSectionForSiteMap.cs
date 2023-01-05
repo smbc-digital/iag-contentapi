@@ -1,5 +1,4 @@
-﻿using System;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 
 namespace StockportContentApi.ContentfulModels
 {

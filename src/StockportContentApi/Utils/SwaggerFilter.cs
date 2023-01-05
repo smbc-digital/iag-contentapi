@@ -17,7 +17,7 @@ namespace StockportContentApi.Utils
                 {
                     swaggerDoc.Paths[path] = null;
                 }
-            } 
+            }
         }
     }
 }

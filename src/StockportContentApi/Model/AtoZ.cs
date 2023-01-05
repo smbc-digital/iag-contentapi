@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class AtoZ
     {
@@ -29,7 +26,7 @@ namespace StockportContentApi.Model
 
             if (Title.ToLower().StartsWith(letterToLower)) matchingItems.Add(this);
 
-            if(AlternativeTitles != null)
+            if (AlternativeTitles != null)
             {
                 foreach (var atozAlternativeTitle in AlternativeTitles)
                 {

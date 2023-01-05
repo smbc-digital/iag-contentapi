@@ -1,6 +1,3 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 namespace StockportContentApi.Services.Profile
 {
     public interface IProfileService

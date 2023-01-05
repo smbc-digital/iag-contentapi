@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
     public class RedirectsController : Controller
-    {     
+    {
         private readonly ResponseHandler _handler;
         private readonly RedirectsRepository _repository;
 

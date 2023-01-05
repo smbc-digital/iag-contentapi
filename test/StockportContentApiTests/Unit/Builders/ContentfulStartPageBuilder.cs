@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using StockportContentApi.ContentfulModels;
 using StockportContentApiTests.Unit.Builders;
 
@@ -16,7 +15,7 @@ namespace StockportContentApiTests.Builders
         private string _lowerBody { get; set; } = "Lower body";
         private string _backgroundImage { get; set; } = "image.jpg";
         private string _icon { get; set; } = "icon";
-       
+
         private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
         {
           new ContentfulReferenceBuilder().Build()
@@ -27,7 +26,7 @@ namespace StockportContentApiTests.Builders
             new ContentfulAlertBuilder().Build()
         };
 
-       public ContentfulStartPage Build()
+        public ContentfulStartPage Build()
         {
             return new ContentfulStartPage()
             {

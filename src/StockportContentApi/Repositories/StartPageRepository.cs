@@ -1,13 +1,10 @@
-﻿using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using StockportContentApi.Config;
-using StockportContentApi.Http;
-using StockportContentApi.Model;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
+using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -43,10 +40,10 @@ namespace StockportContentApi.Repositories
             if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
             {
                 startPage = new NullStartPage();
-            } 
+            }
 
             return startPage.GetType() == typeof(NullStartPage) ?
-                HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") : 
+                HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") :
                 HttpResponse.Successful(startPage);
         }
 
@@ -63,7 +60,7 @@ namespace StockportContentApi.Repositories
 
             var startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
                 .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
-          
+
             return startPages == null || !startPages.Any()
                 ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
                 : HttpResponse.Successful(startPages);

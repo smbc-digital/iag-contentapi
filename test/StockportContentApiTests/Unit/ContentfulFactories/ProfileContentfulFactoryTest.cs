@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
@@ -22,8 +21,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
             _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
             _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
             _profileContentfulFactory = new ProfileContentfulFactory(
-                _crumbFactory.Object, 
-                new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object, 
+                _crumbFactory.Object,
+                new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
                 new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>().Object,
                 new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
                 _eventBannerFactory.Object);

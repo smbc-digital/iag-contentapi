@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Contentful.Core.Models;
 using FluentAssertions;
+using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using Xunit;
-using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Model
 {
@@ -20,7 +18,7 @@ namespace StockportContentApiTests.Unit.Model
                 Title = string.Empty,
                 Slug = string.Empty,
                 Teaser = string.Empty,
-                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" }},
+                Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
                 Description = string.Empty,
                 Fee = string.Empty,
                 Location = string.Empty,

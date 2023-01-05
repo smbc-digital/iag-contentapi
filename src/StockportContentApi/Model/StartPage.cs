@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class StartPage
     {
@@ -23,7 +20,7 @@ namespace StockportContentApi.Model
 
         public StartPage(
             string title, string slug, string teaser, string summary, string upperBody, string formLinkLabel,
-            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts,  IEnumerable<Alert> inlineAlerts, DateTime sunriseDate, DateTime sunsetDate)
+            string formLink, string lowerBody, string backgroundImage, string icon, IEnumerable<Crumb> breadcrumbs, List<Alert> alerts, IEnumerable<Alert> inlineAlerts, DateTime sunriseDate, DateTime sunsetDate)
         {
             Title = title;
             Slug = slug;
@@ -48,6 +45,7 @@ namespace StockportContentApi.Model
         public NullStartPage()
             : base(
                 string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>(), new List<Alert>(), new DateTime(), new DateTime()) { }
+                string.Empty, string.Empty, new List<Crumb>(), new List<Alert>(), new List<Alert>(), new DateTime(), new DateTime())
+        { }
     }
 }

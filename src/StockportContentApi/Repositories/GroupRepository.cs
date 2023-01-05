@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
+using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Linq;
-using Contentful.Core.Models;
-using Microsoft.Extensions.Configuration;
-using StockportContentApi.Client;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -166,15 +160,16 @@ namespace StockportContentApi.Repositories
         {
             var groupResults = new GroupResults();
 
-
             var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
             if (groupSearch.Longitude != 0 && groupSearch.Latitude != 0)
+            {
                 builder = builder.FieldEquals("fields.mapPosition[near]",
                     groupSearch.Latitude +
                     "," +
                     groupSearch.Longitude +
                     (groupSearch.Location.ToLower() == Defaults.Groups.Location ? ",10" : ",3.2"));
+            }
 
             var subCategoriesArray = groupSearch.SubCategories.Split(',');
             var subCategoriesList = subCategoriesArray.Where(c => !string.IsNullOrWhiteSpace(c));

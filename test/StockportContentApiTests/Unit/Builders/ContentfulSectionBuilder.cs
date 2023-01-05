@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 
 namespace StockportContentApiTests.Unit.Builders
@@ -42,7 +40,8 @@ namespace StockportContentApiTests.Unit.Builders
             };
         }
 
-        public ContentfulSectionBuilder AddUpdatedAt(DateTime newTime) {
+        public ContentfulSectionBuilder AddUpdatedAt(DateTime newTime)
+        {
             _sys.UpdatedAt = newTime;
             return this;
         }

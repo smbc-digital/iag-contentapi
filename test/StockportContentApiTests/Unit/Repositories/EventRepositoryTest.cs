@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApi.ContentfulFactories.EventFactories;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
-using Xunit;
-using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApiTests.Unit.Builders;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using StockportContentApi.ContentfulFactories.EventFactories;
+using Xunit;
 using Document = StockportContentApi.Model.Document;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -200,9 +193,9 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
 
-            _contentfulClient.Setup(o => o.GetEntries<ContentfulEvent>(
-                 It.Is<string>(q => q.Contains(new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2).Build())),
-                 It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+            _contentfulClient
+                .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newsListCollection);
 
             var contentfulEvents = AsyncTestHelper.Resolve(_repository.GetAllEvents());
 

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
-using StockportContentApi.Repositories;
-using StockportContentApi.Model;
-using System.Collections.Generic;
-using System.Linq;
 using StockportContentApi.ContentfulModels;
-using AutoMapper;
 using StockportContentApi.ManagementModels;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
@@ -24,7 +18,8 @@ namespace StockportContentApi.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<EventController> _logger;
 
-        public EventController(ResponseHandler handler,
+        public EventController(
+            ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, EventRepository> eventRepository,
             Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
@@ -112,7 +107,7 @@ namespace StockportContentApi.Controllers
         [Route("v1/{businessId}/events")]
         [Route("v1/{businessId}/events/latest/{limit}")]
         public async Task<IActionResult> Index(
-            string businessId, 
+            string businessId,
             int limit = 0,
             [FromQuery] DateTime? dateFrom = null,
             [FromQuery] DateTime? dateTo = null,

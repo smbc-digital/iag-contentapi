@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using StockportContentApi.Http;
+﻿using StockportContentApi.Http;
 
 namespace StockportContentApiTests.Unit.Fakes
 {
@@ -38,7 +35,7 @@ namespace StockportContentApiTests.Unit.Fakes
             if (exception != null)
                 throw exception;
 
-            return Task.FromResult((HttpResponse) _responses[url]);
+            return Task.FromResult((HttpResponse)_responses[url]);
         }
     }
 }

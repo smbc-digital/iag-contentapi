@@ -1,7 +1,7 @@
-﻿using Xunit;
-using FluentAssertions;
-using StockportContentApiTests.Unit.Builders;
+﻿using FluentAssertions;
 using StockportContentApi.ContentfulFactories;
+using StockportContentApiTests.Unit.Builders;
+using Xunit;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories
 {
@@ -11,8 +11,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldCreateACrumbFromAContentfulReference()
         {
             var ContentfulReference =
-                new ContentfulReferenceBuilder().Build();                    
- 
+                new ContentfulReferenceBuilder().Build();
+
             var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
             crumb.Slug.Should().Be(ContentfulReference.Slug);

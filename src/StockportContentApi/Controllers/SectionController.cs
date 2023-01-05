@@ -1,8 +1,6 @@
-﻿using StockportContentApi.Repositories;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Repositories;
 
 namespace StockportContentApi.Controllers
 {
@@ -24,7 +22,7 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/sections/{sectionSlug}")]
         [Route("v1/{businessId}/sections/{sectionSlug}")]
-        public async Task<IActionResult> GetSection(string sectionSlug, string  businessId)
+        public async Task<IActionResult> GetSection(string sectionSlug, string businessId)
         {
             return await _handler.Get(() =>
             {

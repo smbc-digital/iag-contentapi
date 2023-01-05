@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
-using StockportContentApi.Model;
-using StockportContentApi.Repositories;
-using Xunit;
-using IContentfulClient = Contentful.Core.IContentfulClient;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
+using StockportContentApi.Model;
+using StockportContentApi.Repositories;
 using StockportContentApiTests.Unit.Builders;
+using Xunit;
+using IContentfulClient = Contentful.Core.IContentfulClient;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -46,7 +44,7 @@ namespace StockportContentApiTests.Unit.Repositories
         [Fact]
         public void ShouldReturnAFooter()
         {
-           var mockFooter = new Footer("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>());
+            var mockFooter = new Footer("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>());
 
             var footerCollection = new ContentfulCollection<ContentfulFooter>();
             footerCollection.Items = new List<ContentfulFooter>
@@ -59,7 +57,7 @@ namespace StockportContentApiTests.Unit.Repositories
                                 It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
 
             _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulFooter>()))
-                .Returns(new Footer("Title", "a-slug", new List<SubItem>(), 
+                .Returns(new Footer("Title", "a-slug", new List<SubItem>(),
                     new List<SocialMediaLink>()));
             var footer = AsyncTestHelper.Resolve(_repository.GetFooter());
             footer.Get<Footer>().Title.Should().Be(mockFooter.Title);

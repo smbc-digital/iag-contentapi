@@ -18,7 +18,7 @@
 
     public class NullContactUsCategory : ContactUsCategory
     {
-        public NullContactUsCategory() : base(string.Empty,string.Empty,string.Empty,string.Empty) { }
+        public NullContactUsCategory() : base(string.Empty, string.Empty, string.Empty, string.Empty) { }
     }
 
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace StockportContentApi.Config
 {
     public class ContentfulConfig
@@ -57,7 +54,7 @@ namespace StockportContentApi.Config
             string value;
             if (_config.TryGetValue(key, out value))
                 return value;
-             throw new ArgumentException($"No value found for '{key}' in the contentful config.");
+            throw new ArgumentException($"No value found for '{key}' in the contentful config.");
         }
     }
 }

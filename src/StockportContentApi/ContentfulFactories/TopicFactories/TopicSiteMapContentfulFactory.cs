@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories.TopicFactories

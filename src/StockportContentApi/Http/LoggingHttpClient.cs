@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-
-namespace StockportContentApi.Http
+﻿namespace StockportContentApi.Http
 {
     public class LoggingHttpClient : IHttpClient
     {

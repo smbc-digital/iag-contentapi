@@ -1,6 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions;
 using Moq;
 using StockportContentApi.Exceptions;
 using StockportContentApi.Utils;

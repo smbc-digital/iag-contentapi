@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
 
@@ -11,7 +9,7 @@ namespace StockportContentApi.Controllers
         private readonly ResponseHandler _handler;
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, NewsRepository> _newsRepository;
-         
+
         public NewsController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
             Func<ContentfulConfig, NewsRepository> newsRepository)
@@ -24,8 +22,8 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/news")]
         [Route("v1/{businessId}/news")]
-        public async Task<IActionResult> Index(string businessId, 
-                                            [FromQuery] string tag = null, 
+        public async Task<IActionResult> Index(string businessId,
+                                            [FromQuery] string tag = null,
                                             [FromQuery] string category = null,
                                             [FromQuery] DateTime? dateFrom = null,
                                             [FromQuery] DateTime? dateTo = null)

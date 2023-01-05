@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
@@ -27,7 +25,8 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             IContentfulFactory<Asset, Document> documentFactory,
             IVideoRepository videoRepository,
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulAlert, Alert> alertFactory) {
+            IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        {
             _sectionFactory = sectionFactory;
             _crumbFactory = crumbFactory;
             _profileFactory = profileFactory;
@@ -38,12 +37,13 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             _alertFactory = alertFactory;
         }
 
-        public Article ToModel(ContentfulArticle entryContentfulArticle) {
+        public Article ToModel(ContentfulArticle entryContentfulArticle)
+        {
             var entry = entryContentfulArticle;
 
             var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                          .Select(section => _sectionFactory.ToModel(section)).ToList();
-            
+
             var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
@@ -67,7 +67,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
 
             var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                         ? entry.BackgroundImage.File.Url : string.Empty;
-            
+
             var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
@@ -83,7 +83,7 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
             var hideLastUpdated = entry.HideLastUpdated;
 
             return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
-                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt, hideLastUpdated);   
+                sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt, hideLastUpdated);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using StockportContentApi.ContentfulModels;
+﻿using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 
 namespace StockportContentApi.ContentfulFactories
@@ -21,7 +19,7 @@ namespace StockportContentApi.ContentfulFactories
         public CommsHomepage ToModel(ContentfulCommsHomepage model)
         {
             List<BasicLink> usefulLinks = new();
-            if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null && 
+            if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null &&
                 model.UsefulLinksText.Count.Equals(model.UsefulLinksURL.Count))
             {
                 usefulLinks = model.UsefulLinksText.Zip(model.UsefulLinksURL, (text, url) => new BasicLink(url, text)).ToList();

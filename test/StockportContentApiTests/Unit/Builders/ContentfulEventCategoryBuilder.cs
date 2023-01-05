@@ -26,7 +26,7 @@ namespace StockportContentApiTests.Builders
 
         public ContentfulEventCategoryBuilder Slug(string slug)
         {
-            _slug = slug; 
+            _slug = slug;
             return this;
         }
 

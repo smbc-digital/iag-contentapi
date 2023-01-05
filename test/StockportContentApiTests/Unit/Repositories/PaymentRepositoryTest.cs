@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Net;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using FluentAssertions;
@@ -14,9 +11,9 @@ using StockportContentApi.Http;
 using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 using StockportContentApi.Utils;
+using StockportContentApiTests.Unit.Builders;
 using Xunit;
 using IContentfulClient = Contentful.Core.IContentfulClient;
-using StockportContentApiTests.Unit.Builders;
 
 namespace StockportContentApiTests.Unit.Repositories
 {
@@ -47,13 +44,13 @@ namespace StockportContentApiTests.Unit.Repositories
 
             var contentfulFactory = new PaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
             _httpClient = new Mock<IHttpClient>();
-            
+
             var contentfulClientManager = new Mock<IContentfulClientManager>();
             _contentfulClient = new Mock<IContentfulClient>();
             contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
             _repository = new PaymentRepository
             (
-                config, 
+                config,
                 contentfulClientManager.Object,
                 contentfulFactory
             );
@@ -78,8 +75,8 @@ namespace StockportContentApiTests.Unit.Repositories
                 .ReturnsAsync(collection);
 
             // Act
-             var response = AsyncTestHelper.Resolve(_repository.Get());
-            var payments = response.Get<List<Payment>>();          
+            var response = AsyncTestHelper.Resolve(_repository.Get());
+            var payments = response.Get<List<Payment>>();
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -94,7 +91,7 @@ namespace StockportContentApiTests.Unit.Repositories
         {
             // Arrange
             const string slug = "any-payment";
-            
+
             var rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
             var collection = new ContentfulCollection<ContentfulPayment>();
             collection.Items = new List<ContentfulPayment> { rawPayment };
@@ -102,12 +99,12 @@ namespace StockportContentApiTests.Unit.Repositories
             var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
             _contentfulClient.Setup(o => o.GetEntries(
                 It.Is<QueryBuilder<ContentfulPayment>>(
-                     q => q.Build() == builder.Build()),     
+                     q => q.Build() == builder.Build()),
                      It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
             // Act
-            var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));           
+            var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
             var paymentItem = response.Get<Payment>();
 
             // Assert
@@ -138,7 +135,7 @@ namespace StockportContentApiTests.Unit.Repositories
 
             // Act
             var response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
-            
+
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

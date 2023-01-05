@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StockportContentApi
+﻿namespace StockportContentApi
 {
     public static class Ensure
     {
@@ -12,7 +10,7 @@ namespace StockportContentApi
 
         public static void ArgumentNotNull(object variable, string name)
         {
-            if(variable == null)
+            if (variable == null)
                 throw new ArgumentNullException($"'{name}' cannot be null or empty.");
         }
     }

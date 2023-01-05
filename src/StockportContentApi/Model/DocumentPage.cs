@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class DocumentPage
     {
@@ -12,14 +9,14 @@ namespace StockportContentApi.Model
         public string AboutTheDocument { get; }
         public List<Document> Documents { get; }
         public string AwsDocuments { get; }
-        public string RequestAnAccessibleFormatContactInformation { get;}
-        public string FurtherInformation { get;}
+        public string RequestAnAccessibleFormatContactInformation { get; }
+        public string FurtherInformation { get; }
         public List<SubItem> RelatedDocuments { get; }
         public DateTime DatePublished { get; }
         public DateTime LastUpdated { get; }
         public IEnumerable<Crumb> Breadcrumbs { get; }
         public DateTime UpdatedAt { get; }
-        
+
         public DocumentPage(
             string title,
             string slug,

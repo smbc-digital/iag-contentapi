@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿using StockportContentApi.Model;
 
 namespace StockportContentApi.ManagementModels
 {
@@ -27,7 +25,7 @@ namespace StockportContentApi.ManagementModels
         public Dictionary<string, string> CostText { get; set; }
         public Dictionary<string, string> AbilityLevel { get; set; }
         public Dictionary<string, string> VolunteeringText { get; set; }
-        public Dictionary<string, string>DonationsText { get; set; }
+        public Dictionary<string, string> DonationsText { get; set; }
         public Dictionary<string, string> DonationsUrl { get; set; }
         public Dictionary<string, ManagementReference> Organisation { get; set; }
         public Dictionary<string, List<ManagementReference>> SubCategories { get; set; }

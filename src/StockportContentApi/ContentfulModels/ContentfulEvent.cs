@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Contentful.Core.Models;
 using StockportContentApi.Model;
 
@@ -11,8 +9,8 @@ namespace StockportContentApi.ContentfulModels
         public string Slug { get; set; } = string.Empty;
 
         public string MetaDescription { get; set; } = string.Empty;
-        public string Teaser { get; set; } = string.Empty;      
-        public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };             
+        public string Teaser { get; set; } = string.Empty;
+        public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
         public string Description { get; set; } = string.Empty;
         public string Fee { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
@@ -30,7 +28,7 @@ namespace StockportContentApi.ContentfulModels
         public SystemProperties Sys { get; set; } = new SystemProperties();
         public List<string> Tags { get; set; } = new List<string>();
         public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
-        public ContentfulGroup  Group { get; set; } = new ContentfulGroup();
+        public ContentfulGroup Group { get; set; } = new ContentfulGroup();
         public List<ContentfulEventCategory> EventCategories { get; set; } = new List<ContentfulEventCategory>();
         public bool? Free { get; set; } = null;
         public bool? Paid { get; set; } = null;

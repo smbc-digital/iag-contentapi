@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Services;
-using System.Threading.Tasks;
 
 namespace StockportContentApi.Controllers
 {
@@ -18,7 +17,7 @@ namespace StockportContentApi.Controllers
         [Route("/_healthcheck")]
         public async Task<IActionResult> Index(string articleSlug, string businessId)
         {
-            return await Task.Run(async () =>Json(await _healthcheckService.Get()));
+            return await Task.Run(async () => Json(await _healthcheckService.Get()));
         }
     }
 }

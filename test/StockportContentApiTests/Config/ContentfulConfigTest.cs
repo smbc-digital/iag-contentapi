@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StockportContentApi.Config;
 using Xunit;
 
@@ -26,7 +25,7 @@ namespace StockportContentApiTests.Config
 
             Assert.Equal(config.ContentfulUrl.ToString(), expectedResult);
         }
-        
+
         [Fact]
         public void FailsIfDeliveryUrlIsMissing()
         {

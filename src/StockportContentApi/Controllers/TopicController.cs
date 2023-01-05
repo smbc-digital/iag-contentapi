@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
 using StockportContentApi.Repositories;
 
@@ -12,9 +10,9 @@ namespace StockportContentApi.Controllers
         private readonly Func<string, ContentfulConfig> _createConfig;
         private readonly Func<ContentfulConfig, TopicRepository> _createRepository;
 
-        public TopicController(ResponseHandler handler, 
+        public TopicController(ResponseHandler handler,
             Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, TopicRepository>  createRepository)
+            Func<ContentfulConfig, TopicRepository> createRepository)
         {
             _handler = handler;
             _createConfig = createConfig;

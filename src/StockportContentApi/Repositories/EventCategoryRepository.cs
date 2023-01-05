@@ -1,15 +1,10 @@
-﻿using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Contentful.Core.Search;
 using StockportContentApi.Client;
 using StockportContentApi.Config;
 using StockportContentApi.ContentfulFactories;
 using StockportContentApi.ContentfulModels;
-using StockportContentApi.Http;
 using StockportContentApi.Model;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
 using StockportContentApi.Utils;
 
 namespace StockportContentApi.Repositories
@@ -35,7 +30,7 @@ namespace StockportContentApi.Repositories
         {
             var categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect, _eventsCategoryTimeout);
 
-            if(categories != null && !categories.Any())
+            if (categories != null && !categories.Any())
             {
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
             }
