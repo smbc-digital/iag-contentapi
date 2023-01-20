@@ -35,8 +35,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         public void ShouldNotAddDocumentsOrImageIfTheyAreLinks()
         {
             // Arrange
-            _contentfulNews.Documents.First().SystemProperties.Type = "Link";
-            _contentfulNews.Image.SystemProperties.Type = "Link";
+            _contentfulNews.Documents.First().SystemProperties.LinkType = "Link";
+            _contentfulNews.Image.SystemProperties.LinkType = "Link";
 
             // Mock
             _videoRepository.Setup(o => o.Process(_contentfulNews.Body)).Returns(_contentfulNews.Body);

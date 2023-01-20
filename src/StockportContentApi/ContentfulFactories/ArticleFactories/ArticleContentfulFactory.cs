@@ -65,10 +65,10 @@ namespace StockportContentApi.ContentfulFactories.ArticleFactories
                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                      .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-            var backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
+            var backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                         ? entry.BackgroundImage.File.Url : string.Empty;
 
-            var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+            var image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                         ? entry.Image.File.Url : string.Empty;
 
             var sectionUpdatedAt = entry.Sections

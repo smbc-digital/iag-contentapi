@@ -47,8 +47,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddDocumentsOrImageIfTheyAreLinks()
         {
-            _contentfulEvent.Documents.First().SystemProperties.Type = "Link";
-            _contentfulEvent.Image.SystemProperties.Type = "Link";
+            _contentfulEvent.Documents.First().SystemProperties.LinkType = "Link";
+            _contentfulEvent.Image.SystemProperties.LinkType = "Link";
 
             var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 

@@ -31,9 +31,9 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddBreadcrumbsOrAlertsOrImageIfTheyAreLinks()
         {
-            _contentfulProfile.Image.SystemProperties.Type = "Link";
-            _contentfulProfile.Breadcrumbs.First().Sys.Type = "Link";
-            _contentfulProfile.Alerts.First().Sys.Type = "Link";
+            _contentfulProfile.Image.SystemProperties.LinkType = "Link";
+            _contentfulProfile.Breadcrumbs.First().Sys.LinkType = "Link";
+            _contentfulProfile.Alerts.First().Sys.LinkType = "Link";
 
             var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 

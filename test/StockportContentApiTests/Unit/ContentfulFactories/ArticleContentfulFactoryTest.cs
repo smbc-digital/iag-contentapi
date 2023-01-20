@@ -53,12 +53,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks()
         {
-            _contentfulArticle.BackgroundImage.SystemProperties.Type = "Link";
-            _contentfulArticle.Sections.First().Sys.Type = "Link";
-            _contentfulArticle.Breadcrumbs.First().Sys.Type = "Link";
-            _contentfulArticle.Alerts.First().Sys.Type = "Link";
-            _contentfulArticle.Profiles.First().Sys.Type = "Link";
-            _contentfulArticle.Documents.First().SystemProperties.Type = "Link";
+            _contentfulArticle.BackgroundImage.SystemProperties.LinkType = "Link";
+            _contentfulArticle.Sections.First().Sys.LinkType = "Link";
+            _contentfulArticle.Breadcrumbs.First().Sys.LinkType = "Link";
+            _contentfulArticle.Alerts.First().Sys.LinkType = "Link";
+            _contentfulArticle.Profiles.First().Sys.LinkType = "Link";
+            _contentfulArticle.Documents.First().SystemProperties.LinkType = "Link";
 
             var article = _articleFactory.ToModel(_contentfulArticle);
 

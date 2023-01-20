@@ -102,8 +102,8 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddDocumentsOrProfilesIfTheyAreLinks()
         {
-            _contentfulSection.Documents.First().SystemProperties.Type = "Link";
-            _contentfulSection.Profiles.First().Sys.Type = "Link";
+            _contentfulSection.Documents.First().SystemProperties.LinkType = "Link";
+            _contentfulSection.Profiles.First().Sys.LinkType = "Link";
             _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(_contentfulSection.Body);
 
             var section = _sectionFactory.ToModel(_contentfulSection);
