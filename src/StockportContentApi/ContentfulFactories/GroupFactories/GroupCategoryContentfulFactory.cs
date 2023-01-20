@@ -20,9 +20,8 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
                 ? entry.Icon
                 : "";
 
-            var image = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                ? entry.Image.File.Url
-                : string.Empty;
+            var image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                entry.Image.File.Url : string.Empty;
 
             return new GroupCategory(name, slug, icon, image);
         }

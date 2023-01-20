@@ -1,4 +1,5 @@
-﻿using Contentful.Core.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using Contentful.Core.Models;
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Model;
 using StockportContentApi.Utils;
@@ -18,10 +19,11 @@ namespace StockportContentApi.ContentfulFactories
         {
             var type = GetEntryType(entry);
             var image = GetEntryImage(entry);
-            if (string.IsNullOrEmpty(image))
+            if (string.IsNullOrEmpty(image) &&
+                entry.BackgroundImage?.SystemProperties is not null &&
+                ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
             {
-                image = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
-                            ? entry.BackgroundImage.File.Url : string.Empty;
+                image = entry.BackgroundImage.File.Url;
             }
 
             var title = GetEntryTitle(entry);
@@ -86,7 +88,8 @@ namespace StockportContentApi.ContentfulFactories
 
         private string GetEntryImage(ContentfulReference entry)
         {
-            return ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            return entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? 
+                entry.Image.File.Url : string.Empty;
         }
 
         private string GetEntryTitle(ContentfulReference entry)

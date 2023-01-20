@@ -6,7 +6,7 @@ namespace StockportContentApi.Utils
     {
         public static bool EntryIsNotALink(SystemProperties sys)
         {
-            return sys.Type != "Link";
+            return sys.LinkType is null;
         }
 
         public static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)

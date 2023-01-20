@@ -25,7 +25,7 @@ namespace StockportContentApi.ContentfulFactories
         {
             var featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
             var featuredTasksSummary = !string.IsNullOrEmpty(entry.FeaturedTasksSummary) ? entry.FeaturedTasksSummary : string.Empty;
-            var backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
+            var backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage?.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
             var freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
 
             var popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
@@ -45,7 +45,7 @@ namespace StockportContentApi.ContentfulFactories
                                             .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
             var carouselContents =
-                entry.CarouselContents.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                entry.CarouselContents.Where(subItem => subItem.Sys is not null && ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                     .Select(item => _carouselFactory.ToModel(item)).ToList();
 

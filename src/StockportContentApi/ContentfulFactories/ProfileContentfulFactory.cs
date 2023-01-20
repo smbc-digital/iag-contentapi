@@ -34,7 +34,8 @@ namespace StockportContentApi.ContentfulFactories
             var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                                      .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                entry.Image.File.Url : string.Empty;
 
             var triviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                 ? entry.TriviaSubheading

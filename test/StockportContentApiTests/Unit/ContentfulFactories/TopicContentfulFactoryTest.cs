@@ -113,12 +113,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
         [Fact]
         public void ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrTertiaryItemsOrImageOrAlertsIfTheyAreLinks()
         {
-            _contentfulTopic.Breadcrumbs.First().Sys.Type = "Link";
-            _contentfulTopic.SubItems.First().Sys.Type = "Link";
-            _contentfulTopic.SecondaryItems.First().Sys.Type = "Link";
-            _contentfulTopic.TertiaryItems.First().Sys.Type = "Link";
-            _contentfulTopic.Alerts.First().Sys.Type = "Link";
-            _contentfulTopic.BackgroundImage.SystemProperties.Type = "Link";
+            _contentfulTopic.Breadcrumbs.First().Sys.LinkType = "Link";
+            _contentfulTopic.SubItems.First().Sys.LinkType = "Link";
+            _contentfulTopic.SecondaryItems.First().Sys.LinkType = "Link";
+            _contentfulTopic.TertiaryItems.First().Sys.LinkType = "Link";
+            _contentfulTopic.Alerts.First().Sys.LinkType = "Link";
+            _contentfulTopic.BackgroundImage.SystemProperties.LinkType = "Link";
 
             var topic = _topicContentfulFactory.ToModel(_contentfulTopic);
 

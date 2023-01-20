@@ -39,11 +39,8 @@ namespace StockportContentApi.ContentfulFactories.GroupFactories
 
         public Group ToModel(ContentfulGroup entry)
         {
-            var imageUrl = entry.Image != null
-                ? ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                    ? entry.Image.File.Url
-                    : string.Empty
-                : string.Empty;
+            var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                entry.Image.File.Url : string.Empty;
 
             var categoriesReferences = entry.CategoriesReference != null
                 ? entry.CategoriesReference.Where(o => o != null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory)).ToList()
