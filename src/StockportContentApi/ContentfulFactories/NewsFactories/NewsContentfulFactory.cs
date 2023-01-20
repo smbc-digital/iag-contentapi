@@ -24,9 +24,13 @@ namespace StockportContentApi.ContentfulFactories.NewsFactories
 
         public News ToModel(ContentfulNews entry)
         {
-            var documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                           .Select(document => _documentFactory.ToModel(document)).ToList();
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+            var documents = entry.Documents
+                .Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                .Select(document => _documentFactory.ToModel(document))
+                .ToList();
+
+            var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                entry.Image.File.Url : string.Empty;
 
             var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                       && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))

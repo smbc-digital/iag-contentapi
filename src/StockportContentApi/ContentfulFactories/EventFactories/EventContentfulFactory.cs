@@ -30,9 +30,8 @@ namespace StockportContentApi.ContentfulFactories.EventFactories
                 entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
                     .Select(document => _documentFactory.ToModel(document)).ToList();
 
-            var imageUrl = ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                ? entry.Image?.File?.Url
-                : string.Empty;
+            var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                entry.Image?.File?.Url : string.Empty;
 
             var group = _groupFactory.ToModel(entry.Group);
 

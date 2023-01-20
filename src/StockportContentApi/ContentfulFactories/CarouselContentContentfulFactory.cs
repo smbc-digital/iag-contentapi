@@ -11,7 +11,8 @@ namespace StockportContentApi.ContentfulFactories
             var title = carousel.Title ?? string.Empty;
             var slug = carousel.Slug ?? string.Empty;
             var teaser = carousel.Teaser ?? string.Empty;
-            var image = ContentfulHelpers.EntryIsNotALink(carousel.Image.SystemProperties) ? carousel.Image.File.Url : string.Empty;
+            var image = carousel.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(carousel.Image.SystemProperties) ? 
+                carousel.Image.File.Url : string.Empty;
 
             var url = carousel.Url ?? string.Empty;
 

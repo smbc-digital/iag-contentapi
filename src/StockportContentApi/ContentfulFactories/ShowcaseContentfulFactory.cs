@@ -42,9 +42,8 @@ namespace StockportContentApi.ContentfulFactories
 
         public Showcase ToModel(ContentfulShowcase entry)
         {
-            var heroImage = ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties)
-                ? entry.HeroImage.File.Url
-                : string.Empty;
+            var heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
+                entry.HeroImage.File.Url : string.Empty;
 
             var primaryItems =
                 entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
