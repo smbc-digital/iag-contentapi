@@ -49,7 +49,7 @@ namespace StockportContentApi.Repositories
 
         private async Task<IEnumerable<T>> GetAllEntries<T>(string contentType, QueryBuilder<T> builder)
         {
-            var entries = await _client.GetEntries(builder.Limit(50).Skip(0));
+            var entries = await _client.GetEntries(builder.Limit(300).Skip(0));
 
             return entries.Items;
         }
