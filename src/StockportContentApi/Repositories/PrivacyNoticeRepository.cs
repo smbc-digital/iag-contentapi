@@ -11,6 +11,7 @@ namespace StockportContentApi.Repositories
     {
         Task<PrivacyNotice> GetPrivacyNotice(string slug);
         Task<List<PrivacyNotice>> GetAllPrivacyNotices();
+        Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title);
     }
 
     public class PrivacyNoticeRepository : IPrivacyNoticeRepository
@@ -27,7 +28,10 @@ namespace StockportContentApi.Repositories
 
         public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
         {
-            var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug).Include(3);
+            var builder = new QueryBuilder<ContentfulPrivacyNotice>()
+                .ContentTypeIs("privacyNotice")
+                .FieldEquals("fields.slug", slug)
+                .Include(3);
 
             var entries = await _client.GetEntries(builder);
 
@@ -41,6 +45,20 @@ namespace StockportContentApi.Repositories
             var builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(6);
 
             var entries = await GetAllEntries<ContentfulPrivacyNotice>("privacyNotice", builder);
+
+            var convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
+
+            return convertedEntries;
+        }
+
+        public async Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title)
+        {
+            var builder = new QueryBuilder<ContentfulPrivacyNotice>()
+                .ContentTypeIs("privacyNotice")
+                .FullTextSearch("fields.title", title)
+                .Include(6);
+
+            var entries = await GetAllEntries("privacyNotice", builder);
 
             var convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 
