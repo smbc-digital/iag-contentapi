@@ -50,7 +50,6 @@ namespace StockportContentApi.Controllers
 
                 privacyNotices = await repository.GetAllPrivacyNotices();
             
-
                 if (privacyNotices is null)
                 {
                     return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notices not found");
