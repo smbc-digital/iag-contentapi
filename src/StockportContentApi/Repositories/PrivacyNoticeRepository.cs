@@ -20,16 +20,14 @@ namespace StockportContentApi.Repositories
     {
         private readonly IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> _contentfulFactory;
         private readonly Contentful.Core.IContentfulClient _client;
-        private readonly ICache _cache;
 
         public PrivacyNoticeRepository(ContentfulConfig config, IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> contentfulFactory,
-            IContentfulClientManager contentfulClientManager, ICache cache)
+            IContentfulClientManager contentfulClientManager)
         {
             _contentfulFactory = contentfulFactory;
             _client = contentfulClientManager.GetClient(config);
-            _cache = cache;
         }
-
+        
         public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
         {
             var builder = new QueryBuilder<ContentfulPrivacyNotice>()
@@ -70,11 +68,6 @@ namespace StockportContentApi.Repositories
         }
 
         private async Task<IEnumerable<T>> GetAllEntries<T>(QueryBuilder<T> builder)
-        {
-            return await _cache.GetFromCacheOrDirectlyAsync("all-privacy-notices" , () => GetAllEntriesFromSource<T>(builder), 60);
-        }
-
-        private async Task<IEnumerable<T>> GetAllEntriesFromSource<T>(QueryBuilder<T> builder)
         {
             var entries = await _client.GetEntries(builder.Limit(ContentfulQueryValues.LIMIT_MAX));
             return entries.Items;
