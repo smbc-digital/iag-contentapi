@@ -40,21 +40,16 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/privacy-notices")]
         [Route("v1/{businessId}/privacy-notices")]
-        public async Task<IActionResult> GetAllPrivacyNotices([FromRoute]string businessId, [FromQuery]string title)
+        public async Task<IActionResult> GetAllPrivacyNotices([FromRoute]string businessId)
         {
+
             return await _handler.Get(async () =>
             {
                 List<PrivacyNotice> privacyNotices;
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
 
-                if (!string.IsNullOrEmpty(title))
-                {
-                    privacyNotices = await repository.GetPrivacyNoticesByTitle(title);
-                }
-                else
-                {
-                    privacyNotices = await repository.GetAllPrivacyNotices();
-                }
+                privacyNotices = await repository.GetAllPrivacyNotices();
+            
 
                 if (privacyNotices is null)
                 {
