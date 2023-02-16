@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StockportContentApi.Config;
+using StockportContentApi.Model;
 using StockportContentApi.Repositories;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -39,20 +40,22 @@ namespace StockportContentApi.Controllers
         [HttpGet]
         [Route("{businessId}/privacy-notices")]
         [Route("v1/{businessId}/privacy-notices")]
-        public async Task<IActionResult> GetAllPrivacyNotices(string businessId)
+        public async Task<IActionResult> GetAllPrivacyNotices([FromRoute]string businessId)
         {
+
             return await _handler.Get(async () =>
             {
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
-                var allPrivacyNotices = await repository.GetAllPrivacyNotices();
 
-                if (allPrivacyNotices == null)
+                List<PrivacyNotice> privacyNotices = await repository.GetAllPrivacyNotices();
+            
+                if (!privacyNotices.Any() ||privacyNotices is null)
                 {
                     return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notices not found");
                 }
                 else
                 {
-                    return HttpResponse.Successful(allPrivacyNotices);
+                    return HttpResponse.Successful(privacyNotices);
                 }
             });
         }
