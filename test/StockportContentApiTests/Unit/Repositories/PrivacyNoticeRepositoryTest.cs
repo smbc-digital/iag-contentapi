@@ -19,6 +19,7 @@ namespace StockportContentApiTests.Unit.Repositories
         private readonly Mock<IContentfulClient> _contentfulClient;
         private readonly Mock<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>> _contentfulFactory;
 
+
         public PrivacyNoticeRepositoryTest()
         {
             var config = new ContentfulConfig("test")
@@ -56,8 +57,8 @@ namespace StockportContentApiTests.Unit.Repositories
             var contentfulCollection = new ContentfulCollection<ContentfulPrivacyNotice>()
             {
                 Items = new List<ContentfulPrivacyNotice> { contentfulPrivacyNotice }
-            };
-
+            };            
+            
             _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
             _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
             // Act

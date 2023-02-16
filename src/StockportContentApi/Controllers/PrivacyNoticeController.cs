@@ -45,12 +45,11 @@ namespace StockportContentApi.Controllers
 
             return await _handler.Get(async () =>
             {
-                List<PrivacyNotice> privacyNotices;
                 var repository = _privacyNoticeRepository(_createConfig(businessId));
 
-                privacyNotices = await repository.GetAllPrivacyNotices();
+                List<PrivacyNotice> privacyNotices = await repository.GetAllPrivacyNotices();
             
-                if (privacyNotices is null)
+                if (!privacyNotices.Any() ||privacyNotices is null)
                 {
                     return HttpResponse.Failure(System.Net.HttpStatusCode.NotFound, "Privacy notices not found");
                 }
