@@ -244,7 +244,7 @@ public class GroupRepositoryTest
         var listOfGroupCategories = new List<GroupCategory> { new GroupCategory("name", testCategorySlug, "icon", "image-url.jpg") };
 
         // Act
-        var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).FieldEquals("fields.mapPosition[near]", Constants.Groups.StockportLatitude + "," + Constants.Groups.StockportLongitude + ",10");
+        var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).FieldEquals("fields.mapPosition[near]", StockportContentApi.Constants.Groups.StockportLatitude + "," + StockportContentApi.Constants.Groups.StockportLongitude + ",10");
         _client
             .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulGroup>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
@@ -332,7 +332,7 @@ public class GroupRepositoryTest
         var rawContentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
         var rawGroupCategory = new GroupCategory("name", slug, "icon", "imageUrl");
 
-        var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).FieldEquals("fields.mapPosition[near]", Constants.Groups.StockportLatitude + "," + Constants.Groups.StockportLongitude + ",10").Build();
+        var builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1).FieldEquals("fields.mapPosition[near]", StockportContentApi.Constants.Groups.StockportLatitude + "," + StockportContentApi.Constants.Groups.StockportLongitude + ",10").Build();
         _client.Setup(o => o.GetEntries<ContentfulGroup>(It.Is<string>(q => q.Contains(builder)),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
         _cacheWrapper.Setup(o =>
