@@ -39,11 +39,6 @@ namespace StockportContentApi
             services.AddSingleton<ITimeProvider>(new TimeProvider());
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<RateLimitConfiguration>(Configuration.GetSection("ClientRateLimiting"));
-            services.Configure<ClientRateLimitPolicies>(Configuration.GetSection("ClientRateLimitPolicies"));
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            services.AddSingleton<IClientPolicyStore, DistributedCacheClientPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
             services.AddSingleton(_ => new ShortUrlRedirects(new Dictionary<string, RedirectDictionary>()));
             services.AddSingleton(_ => new LegacyUrlRedirects(new Dictionary<string, RedirectDictionary>()));
