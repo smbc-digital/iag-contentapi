@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using StockportContentApi.Utils;
-using Xunit;
-
-namespace StockportContentApiTests.Unit.Utils
+﻿namespace StockportContentApiTests.Unit.Utils
 {
 
 

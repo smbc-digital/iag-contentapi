@@ -1,125 +1,116 @@
-﻿using Moq;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
-using StockportContentApiTests.Builders;
-using Xunit;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-namespace StockportContentApiTests.Unit.ContentfulFactories
+public class ContentfulContactUsAreaFactoryTests
 {
-    public class ContentfulContactUsAreaFactoryTests
+    private readonly ContactUsAreaContentfulFactory _factory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
+    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
+
+    public ContentfulContactUsAreaFactoryTests()
     {
-        private readonly ContactUsAreaContentfulFactory _factory;
-        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
-        private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
-        private readonly Mock<ITimeProvider> _mockTimeProvider = new();
-        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
-        private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
+        _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
+            _mockCrumbFactory.Object,
+            _mockTimeProvider.Object,
+            _mockAlertFactory.Object,
+            _mockContactUsCategoryFactory.Object);
+    }
 
-        public ContentfulContactUsAreaFactoryTests()
+    [Fact]
+    public void ShouldCreate_ValidContentfulContactUsAreModel()
+    {
+        var entry = new ContentfulContactUsAreaBuilder()
+                            .Build();
+
+        var result = _factory.ToModel(entry);
+
+        Assert.NotNull(result.Breadcrumbs);
+        Assert.NotNull(result.Alerts);
+        Assert.NotNull(result.InsetTextTitle);
+        Assert.NotNull(result.InsetTextBody);
+        Assert.NotNull(result.PrimaryItems);
+        Assert.NotNull(result.Slug);
+        Assert.NotNull(result.Title);
+        Assert.NotNull(result.CategoriesTitle);
+        Assert.Equal("title", result.Title);
+        Assert.Equal("slug", result.Slug);
+        Assert.NotNull(result.ContactUsCategories);
+        Assert.Equal("metaDescription", result.MetaDescription);
+        Assert.Equal("insetTextTitle", result.InsetTextTitle);
+        Assert.Equal("insetTextBody", result.InsetTextBody);
+    }
+
+    [Fact]
+    public void ShouldCreate_ValidContentfulContactUsAreModel_WithPrimaryItems()
+    {
+        var primaryItems = new List<ContentfulReference>
         {
-            _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
-                _mockCrumbFactory.Object,
-                _mockTimeProvider.Object,
-                _mockAlertFactory.Object,
-                _mockContactUsCategoryFactory.Object);
-        }
+            new ContentfulReference
+            {
+            }
+        };
+        var entry = new ContentfulContactUsAreaBuilder()
+                            .PrimaryItems(primaryItems)
+                            .Build();
 
-        [Fact]
-        public void ShouldCreate_ValidContentfulContactUsAreModel()
+        _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
+
+        var result = _factory.ToModel(entry);
+
+        Assert.NotNull(result.Breadcrumbs);
+        Assert.NotNull(result.Alerts);
+        Assert.NotNull(result.InsetTextTitle);
+        Assert.NotNull(result.InsetTextBody);
+        Assert.Single(result.PrimaryItems);
+        Assert.NotNull(result.Slug);
+        Assert.NotNull(result.Title);
+        Assert.NotNull(result.CategoriesTitle);
+    }
+
+    [Fact]
+    public void ShouldCreate_ValidContentfulContactUsAreModel_WithAllItems()
+    {
+        var primaryItems = new List<ContentfulReference>
         {
-            var entry = new ContentfulContactUsAreaBuilder()
-                                .Build();
+            new ContentfulReference()
+        };
 
-            var result = _factory.ToModel(entry);
-
-            Assert.NotNull(result.Breadcrumbs);
-            Assert.NotNull(result.Alerts);
-            Assert.NotNull(result.InsetTextTitle);
-            Assert.NotNull(result.InsetTextBody);
-            Assert.NotNull(result.PrimaryItems);
-            Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Title);
-            Assert.NotNull(result.CategoriesTitle);
-            Assert.Equal("title", result.Title);
-            Assert.Equal("slug", result.Slug);
-            Assert.NotNull(result.ContactUsCategories);
-            Assert.Equal("metaDescription", result.MetaDescription);
-            Assert.Equal("insetTextTitle", result.InsetTextTitle);
-            Assert.Equal("insetTextBody", result.InsetTextBody);
-        }
-
-        [Fact]
-        public void ShouldCreate_ValidContentfulContactUsAreModel_WithPrimaryItems()
+        var breadcrumbs = new List<ContentfulReference>
         {
-            var primaryItems = new List<ContentfulReference>
-            {
-                new ContentfulReference
-                {
-                }
-            };
-            var entry = new ContentfulContactUsAreaBuilder()
-                                .PrimaryItems(primaryItems)
-                                .Build();
+            new ContentfulReference()
+        };
 
-            _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
-
-            var result = _factory.ToModel(entry);
-
-            Assert.NotNull(result.Breadcrumbs);
-            Assert.NotNull(result.Alerts);
-            Assert.NotNull(result.InsetTextTitle);
-            Assert.NotNull(result.InsetTextBody);
-            Assert.Single(result.PrimaryItems);
-            Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Title);
-            Assert.NotNull(result.CategoriesTitle);
-        }
-
-        [Fact]
-        public void ShouldCreate_ValidContentfulContactUsAreModel_WithAllItems()
+        var alerts = new List<ContentfulAlert>
         {
-            var primaryItems = new List<ContentfulReference>
-            {
-                new ContentfulReference()
-            };
+            new ContentfulAlert()
+        };
 
-            var breadcrumbs = new List<ContentfulReference>
-            {
-                new ContentfulReference()
-            };
+        var contactUsCategories = new List<ContentfulContactUsCategory>
+        {
+            new ContentfulContactUsCategory()
+        };
 
-            var alerts = new List<ContentfulAlert>
-            {
-                new ContentfulAlert()
-            };
+        var entry = new ContentfulContactUsAreaBuilder()
+                            .PrimaryItems(primaryItems)
+                            .Breadcrumbs(breadcrumbs)
+                            .Alerts(alerts)
+                            .ContentfulContactUsCategories(contactUsCategories)
+                            .Build();
 
-            var contactUsCategories = new List<ContentfulContactUsCategory>
-            {
-                new ContentfulContactUsCategory()
-            };
+        _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
-            var entry = new ContentfulContactUsAreaBuilder()
-                                .PrimaryItems(primaryItems)
-                                .Breadcrumbs(breadcrumbs)
-                                .Alerts(alerts)
-                                .ContentfulContactUsCategories(contactUsCategories)
-                                .Build();
+        var result = _factory.ToModel(entry);
 
-            _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
-
-            var result = _factory.ToModel(entry);
-
-            Assert.Single(result.Breadcrumbs);
-            Assert.Single(result.Alerts);
-            Assert.Single(result.PrimaryItems);
-            Assert.Single(result.ContactUsCategories);
-            Assert.NotNull(result.Slug);
-            Assert.NotNull(result.Title);
-            Assert.NotNull(result.CategoriesTitle);
-            Assert.NotNull(result.InsetTextTitle);
-            Assert.NotNull(result.InsetTextBody);
-        }
+        Assert.Single(result.Breadcrumbs);
+        Assert.Single(result.Alerts);
+        Assert.Single(result.PrimaryItems);
+        Assert.Single(result.ContactUsCategories);
+        Assert.NotNull(result.Slug);
+        Assert.NotNull(result.Title);
+        Assert.NotNull(result.CategoriesTitle);
+        Assert.NotNull(result.InsetTextTitle);
+        Assert.NotNull(result.InsetTextBody);
     }
 }

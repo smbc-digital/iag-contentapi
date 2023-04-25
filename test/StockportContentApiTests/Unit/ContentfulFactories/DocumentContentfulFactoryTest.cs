@@ -1,24 +1,18 @@
-﻿using FluentAssertions;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApiTests.Unit.Builders;
-using Xunit;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-namespace StockportContentApiTests.Unit.ContentfulFactories
+public class DocumentContentfulFactoryTest
 {
-    public class DocumentContentfulFactoryTest
+    [Fact]
+    public void ShouldCreateADocumentFromAContentfulDocument()
     {
-        [Fact]
-        public void ShouldCreateADocumentFromAContentfulDocument()
-        {
-            var contentfulDocument = new ContentfulDocumentBuilder().Build();
+        var contentfulDocument = new ContentfulDocumentBuilder().Build();
 
-            var document = new DocumentContentfulFactory().ToModel(contentfulDocument);
+        var document = new DocumentContentfulFactory().ToModel(contentfulDocument);
 
-            document.FileName.Should().Be(contentfulDocument.File.FileName);
-            document.Title.Should().Be(contentfulDocument.Description);
-            document.LastUpdated.Should().Be(contentfulDocument.SystemProperties.UpdatedAt.Value);
-            document.Size.Should().Be((int)contentfulDocument.File.Details.Size);
-            document.Url.Should().Be(contentfulDocument.File.Url);
-        }
+        document.FileName.Should().Be(contentfulDocument.File.FileName);
+        document.Title.Should().Be(contentfulDocument.Description);
+        document.LastUpdated.Should().Be(contentfulDocument.SystemProperties.UpdatedAt.Value);
+        document.Size.Should().Be((int)contentfulDocument.File.Details.Size);
+        document.Url.Should().Be(contentfulDocument.File.Url);
     }
 }

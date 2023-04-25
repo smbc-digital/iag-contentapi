@@ -1,34 +1,28 @@
-﻿using FluentAssertions;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApiTests.Unit.Builders;
-using Xunit;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-namespace StockportContentApiTests.Unit.ContentfulFactories
+public class CrumbContentfulFactoryTest
 {
-    public class CrumbContentfulFactoryTest
+    [Fact]
+    public void ShouldCreateACrumbFromAContentfulReference()
     {
-        [Fact]
-        public void ShouldCreateACrumbFromAContentfulReference()
-        {
-            var ContentfulReference =
-                new ContentfulReferenceBuilder().Build();
+        var ContentfulReference =
+            new ContentfulReferenceBuilder().Build();
 
-            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
+        var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Slug.Should().Be(ContentfulReference.Slug);
-            crumb.Title.Should().Be(ContentfulReference.Title);
-            crumb.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
-        }
+        crumb.Slug.Should().Be(ContentfulReference.Slug);
+        crumb.Title.Should().Be(ContentfulReference.Title);
+        crumb.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
+    }
 
-        [Fact]
-        public void ShouldCreateACrumbWithNameIfSet()
-        {
-            var ContentfulReference =
-                new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
+    [Fact]
+    public void ShouldCreateACrumbWithNameIfSet()
+    {
+        var ContentfulReference =
+            new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
 
-            var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
+        var crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
-            crumb.Title.Should().Be(ContentfulReference.Name);
-        }
+        crumb.Title.Should().Be(ContentfulReference.Name);
     }
 }

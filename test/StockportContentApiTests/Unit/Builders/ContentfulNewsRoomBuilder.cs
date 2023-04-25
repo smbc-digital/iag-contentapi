@@ -1,26 +1,22 @@
-﻿using Contentful.Core.Models;
-using StockportContentApi.ContentfulModels;
+﻿namespace StockportContentApiTests.Unit.Builders;
 
-namespace StockportContentApiTests.Unit.Builders
+public class ContentfulNewsRoomBuilder
 {
-    public class ContentfulNewsRoomBuilder
-    {
-        private string _title = "title";
-        private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
-        private bool _emailAlerts = true;
-        private string _emailAlertsTopicId = "test-id";
-        private SystemProperties _sys = new SystemProperties { Type = "Entry" };
+    private string _title = "title";
+    private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
+    private bool _emailAlerts = true;
+    private string _emailAlertsTopicId = "test-id";
+    private SystemProperties _sys = new SystemProperties { Type = "Entry" };
 
-        public ContentfulNewsRoom Build()
+    public ContentfulNewsRoom Build()
+    {
+        return new ContentfulNewsRoom
         {
-            return new ContentfulNewsRoom
-            {
-                Title = _title,
-                Alerts = _alerts,
-                EmailAlertsTopicId = _emailAlertsTopicId,
-                EmailAlerts = _emailAlerts,
-                Sys = _sys
-            };
-        }
+            Title = _title,
+            Alerts = _alerts,
+            EmailAlertsTopicId = _emailAlertsTopicId,
+            EmailAlerts = _emailAlerts,
+            Sys = _sys
+        };
     }
 }
