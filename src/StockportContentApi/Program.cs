@@ -33,7 +33,6 @@ try
             "Stockport Content API");
     });
     app.UseMiddleware<AuthenticationMiddleware>();
-    app.UseClientRateLimiting();
     app.UseStaticFiles();
     app.UseRouting();
     app.UseEndpoints(endpoints =>

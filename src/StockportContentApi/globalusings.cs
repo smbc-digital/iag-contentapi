@@ -1,5 +1,4 @@
-﻿global using AspNetCoreRateLimit;
-global using Newtonsoft.Json;
+﻿global using Newtonsoft.Json;
 global using Serilog;
 global using StockportContentApi;
 global using StockportContentApi.Middleware;
