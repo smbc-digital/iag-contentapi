@@ -1,69 +1,59 @@
-﻿using System.Net;
-using Contentful.Core.Search;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories
+public class StartPageRepository
 {
-    public class StartPageRepository
+    private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory;
+    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly DateComparer _dateComparer;
+
+    public StartPageRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory, ITimeProvider timeProvider)
     {
-        private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory;
-        private readonly Contentful.Core.IContentfulClient _client;
-        private readonly DateComparer _dateComparer;
+        _contentfulFactory = contentfulFactory;
+        _client = contentfulClientManager.GetClient(config);
+        _dateComparer = new DateComparer(timeProvider);
+    }
 
-        public StartPageRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory, ITimeProvider timeProvider)
+    public async Task<HttpResponse> GetStartPage(string startPageSlug)
+    {
+        var builder = new QueryBuilder<ContentfulStartPage>()
+            .ContentTypeIs("startPage")
+            .FieldEquals("fields.slug", startPageSlug)
+            .Include(3);
+
+        var entries = await _client.GetEntries(builder);
+
+        if (!entries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'");
+
+        var startPageEntry = entries.FirstOrDefault();
+        var startPage = _contentfulFactory.ToModel(startPageEntry);
+
+        if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
         {
-            _contentfulFactory = contentfulFactory;
-            _client = contentfulClientManager.GetClient(config);
-            _dateComparer = new DateComparer(timeProvider);
+            startPage = new NullStartPage();
         }
 
-        public async Task<HttpResponse> GetStartPage(string startPageSlug)
-        {
-            var builder = new QueryBuilder<ContentfulStartPage>()
-                .ContentTypeIs("startPage")
-                .FieldEquals("fields.slug", startPageSlug)
-                .Include(3);
+        return startPage.GetType() == typeof(NullStartPage) ?
+            HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") :
+            HttpResponse.Successful(startPage);
+    }
 
-            var entries = await _client.GetEntries(builder);
+    public async Task<HttpResponse> Get()
+    {
+        var builder = new QueryBuilder<ContentfulStartPage>()
+            .ContentTypeIs("startPage")
+            .Include(3);
 
-            if (!entries.Any())
-                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'");
+        var entries = await _client.GetEntries(builder);
 
-            var startPageEntry = entries.FirstOrDefault();
-            var startPage = _contentfulFactory.ToModel(startPageEntry);
+        if (!entries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
-            {
-                startPage = new NullStartPage();
-            }
+        var startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
+            .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
 
-            return startPage.GetType() == typeof(NullStartPage) ?
-                HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") :
-                HttpResponse.Successful(startPage);
-        }
-
-        public async Task<HttpResponse> Get()
-        {
-            var builder = new QueryBuilder<ContentfulStartPage>()
-                .ContentTypeIs("startPage")
-                .Include(3);
-
-            var entries = await _client.GetEntries(builder);
-
-            if (!entries.Any())
-                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
-
-            var startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
-                .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
-
-            return startPages == null || !startPages.Any()
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
-                : HttpResponse.Successful(startPages);
-        }
+        return startPages == null || !startPages.Any()
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
+            : HttpResponse.Successful(startPages);
     }
 }

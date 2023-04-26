@@ -1,40 +1,35 @@
-﻿using Contentful.Core;
-using StockportContentApi.Config;
+﻿namespace StockportContentApi.Client;
 
-namespace StockportContentApi.Client
+public interface IContentfulClientManager
 {
-    public interface IContentfulClientManager
+    IContentfulClient GetClient(ContentfulConfig config);
+    IContentfulManagementClient GetManagementClient(ContentfulConfig config);
+}
+
+public class ContentfulClientManager : IContentfulClientManager
+{
+    private readonly System.Net.Http.HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
+
+    public ContentfulClientManager(
+        System.Net.Http.HttpClient httpClient,
+        IConfiguration configuration)
     {
-        IContentfulClient GetClient(ContentfulConfig config);
-        IContentfulManagementClient GetManagementClient(ContentfulConfig config);
+        _httpClient = httpClient;
+        _configuration = configuration;
     }
 
-    public class ContentfulClientManager : IContentfulClientManager
+    public IContentfulClient GetClient(ContentfulConfig config)
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-
-        public ContentfulClientManager(HttpClient httpClient, IConfiguration configuration)
+        bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
+        var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey, usePreviewApi)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
-        }
+            ResolveEntriesSelectively = true
+        };
 
-        public IContentfulClient GetClient(ContentfulConfig config)
-        {
-            bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
-            var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey, usePreviewApi)
-            {
-                ResolveEntriesSelectively = true
-            };
-
-            return client;
-        }
-
-        public IContentfulManagementClient GetManagementClient(ContentfulConfig config)
-        {
-            var client = new ContentfulManagementClient(_httpClient, config.ManagementKey, config.SpaceKey);
-            return client;
-        }
+        return client;
     }
+
+    public IContentfulManagementClient GetManagementClient(ContentfulConfig config)
+        => new ContentfulManagementClient(_httpClient, config.ManagementKey, config.SpaceKey);
 }

@@ -1,21 +1,17 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulFactories.GroupFactories;
 
-namespace StockportContentApi.ContentfulFactories.GroupFactories
+public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>
 {
-    public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>
+    public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)
     {
-        public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)
-        {
-            var name = !string.IsNullOrEmpty(entry.Name)
-                ? entry.Name
-                : "";
+        var name = !string.IsNullOrEmpty(entry.Name)
+            ? entry.Name
+            : "";
 
-            var slug = !string.IsNullOrEmpty(entry.Slug)
-                ? entry.Slug
-                : "";
+        var slug = !string.IsNullOrEmpty(entry.Slug)
+            ? entry.Slug
+            : "";
 
-            return new GroupSubCategory(name, slug);
-        }
+        return new GroupSubCategory(name, slug);
     }
 }

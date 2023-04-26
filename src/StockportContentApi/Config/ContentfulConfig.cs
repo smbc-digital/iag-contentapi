@@ -1,60 +1,59 @@
-namespace StockportContentApi.Config
+namespace StockportContentApi.Config;
+
+public class ContentfulConfig
 {
-    public class ContentfulConfig
+    public readonly string BusinessId;
+    private readonly Dictionary<string, string> _config = new Dictionary<string, string>();
+    public string SpaceKey;
+    public string AccessKey;
+    public string ManagementKey;
+
+    // NEW
+    public ContentfulConfig(string spaceKey, string accessKey, string managementKey)
     {
-        public readonly string BusinessId;
-        private readonly Dictionary<string, string> _config = new Dictionary<string, string>();
-        public string SpaceKey;
-        public string AccessKey;
-        public string ManagementKey;
+        SpaceKey = spaceKey;
+        AccessKey = accessKey;
+        ManagementKey = managementKey;
+    }
 
-        // NEW
-        public ContentfulConfig(string spaceKey, string accessKey, string managementKey)
-        {
-            SpaceKey = spaceKey;
-            AccessKey = accessKey;
-            ManagementKey = managementKey;
-        }
+    // OLD (FUNC)
+    public ContentfulConfig(string businessId)
+    {
+        Utils.Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
+        BusinessId = businessId;
+    }
 
-        // OLD (FUNC)
-        public ContentfulConfig(string businessId)
-        {
-            Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
-            BusinessId = businessId;
-        }
+    public Uri ContentfulUrl { get; private set; }
+    public Uri ContentfulContentTypesUrl { get; private set; }
 
-        public Uri ContentfulUrl { get; private set; }
-        public Uri ContentfulContentTypesUrl { get; private set; }
+    public ContentfulConfig Add(string key, string value)
+    {
+        _config.Add(key, value);
+        return this;
+    }
 
-        public ContentfulConfig Add(string key, string value)
-        {
-            _config.Add(key, value);
-            return this;
-        }
+    public ContentfulConfig Build()
+    {
+        SpaceKey = GetConfigValue($"{BusinessId.ToUpper()}_SPACE");
+        AccessKey = GetConfigValue($"{BusinessId.ToUpper()}_ACCESS_KEY");
+        ManagementKey = GetConfigValue($"{BusinessId.ToUpper()}_MANAGEMENT_KEY");
 
-        public ContentfulConfig Build()
-        {
-            SpaceKey = GetConfigValue($"{BusinessId.ToUpper()}_SPACE");
-            AccessKey = GetConfigValue($"{BusinessId.ToUpper()}_ACCESS_KEY");
-            ManagementKey = GetConfigValue($"{BusinessId.ToUpper()}_MANAGEMENT_KEY");
+        ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
+                                $"spaces/{SpaceKey}/" +
+                                $"entries?access_token={AccessKey}");
 
-            ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
-                                    $"spaces/{SpaceKey}/" +
-                                    $"entries?access_token={AccessKey}");
+        ContentfulContentTypesUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
+                                $"spaces/{SpaceKey}/" +
+                                $"content_types?access_token={AccessKey}");
 
-            ContentfulContentTypesUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
-                                    $"spaces/{SpaceKey}/" +
-                                    $"content_types?access_token={AccessKey}");
+        return this;
+    }
 
-            return this;
-        }
-
-        private string GetConfigValue(string key)
-        {
-            string value;
-            if (_config.TryGetValue(key, out value))
-                return value;
-            throw new ArgumentException($"No value found for '{key}' in the contentful config.");
-        }
+    private string GetConfigValue(string key)
+    {
+        string value;
+        if (_config.TryGetValue(key, out value))
+            return value;
+        throw new ArgumentException($"No value found for '{key}' in the contentful config.");
     }
 }

@@ -1,13 +1,9 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class SpotlightBannerContentfulFactory : IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>
 {
-    public class SpotlightBannerContentfulFactory : IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>
+    public SpotlightBanner ToModel(ContentfulSpotlightBanner entry)
     {
-        public SpotlightBanner ToModel(ContentfulSpotlightBanner entry)
-        {
-            return new SpotlightBanner(entry.Title, entry.Teaser, entry.Link);
-        }
+        return new SpotlightBanner(entry.Title, entry.Teaser, entry.Link);
     }
 }

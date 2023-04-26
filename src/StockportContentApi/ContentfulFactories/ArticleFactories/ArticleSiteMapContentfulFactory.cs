@@ -1,13 +1,9 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulFactories.ArticleFactories;
 
-namespace StockportContentApi.ContentfulFactories.ArticleFactories
+public class ArticleSiteMapContentfulFactory : IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>
 {
-    public class ArticleSiteMapContentfulFactory : IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>
+    public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
     {
-        public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
-        {
-            return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate);
-        }
+        return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate);
     }
 }

@@ -1,7 +1,3 @@
-﻿using Contentful.Core.Models;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulModels;
 
-namespace StockportContentApi.ContentfulModels
-{
-    public record ContentfulCallToAction(string Title, string Text, Link Link, Asset Image);
-}
+public record ContentfulCallToAction(string Title, string Text, Link Link, Asset Image);

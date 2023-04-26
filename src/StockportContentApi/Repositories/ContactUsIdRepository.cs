@@ -1,36 +1,27 @@
-﻿using System.Net;
-using Contentful.Core.Search;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories
+public class ContactUsIdRepository
 {
-    public class ContactUsIdRepository
+    private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory;
+    private readonly Contentful.Core.IContentfulClient _client;
+
+    public ContactUsIdRepository(ContentfulConfig config, IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory, IContentfulClientManager contentfulClientManager)
     {
-        private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory;
-        private readonly Contentful.Core.IContentfulClient _client;
+        _contentfulFactory = contentfulFactory;
+        _client = contentfulClientManager.GetClient(config);
+    }
 
-        public ContactUsIdRepository(ContentfulConfig config, IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory, IContentfulClientManager contentfulClientManager)
-        {
-            _contentfulFactory = contentfulFactory;
-            _client = contentfulClientManager.GetClient(config);
-        }
+    public async Task<HttpResponse> GetContactUsIds(string slug)
+    {
+        var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
 
-        public async Task<HttpResponse> GetContactUsIds(string slug)
-        {
-            var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
+        var entries = await _client.GetEntries(builder);
+        var entry = entries.FirstOrDefault();
 
-            var entries = await _client.GetEntries(builder);
-            var entry = entries.FirstOrDefault();
+        if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
 
-            if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
+        var contactUsId = _contentfulFactory.ToModel(entry);
 
-            var contactUsId = _contentfulFactory.ToModel(entry);
-
-            return HttpResponse.Successful(contactUsId);
-        }
+        return HttpResponse.Successful(contactUsId);
     }
 }

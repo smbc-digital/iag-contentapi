@@ -1,13 +1,9 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class VideoContentfulFactory : IContentfulFactory<ContentfulVideo, Video>
 {
-    public class VideoContentfulFactory : IContentfulFactory<ContentfulVideo, Video>
+    public Video ToModel(ContentfulVideo entry)
     {
-        public Video ToModel(ContentfulVideo entry)
-        {
-            return new Video(entry.Heading, entry.Text, entry.VideoEmbedCode);
-        }
+        return new Video(entry.Heading, entry.Text, entry.VideoEmbedCode);
     }
 }

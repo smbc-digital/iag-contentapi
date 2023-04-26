@@ -1,7 +1,6 @@
-﻿namespace StockportContentApi.ManagementModels
+﻿namespace StockportContentApi.ManagementModels;
+
+public class ManagementAlert
 {
-    public class ManagementAlert
-    {
-        public ManagementSystemProperties Sys { get; set; }
-    }
+    public ManagementSystemProperties Sys { get; set; }
 }

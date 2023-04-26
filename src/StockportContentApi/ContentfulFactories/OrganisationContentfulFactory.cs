@@ -1,18 +1,13 @@
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
+namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class OrganisationContentfulFactory : IContentfulFactory<ContentfulOrganisation, Organisation>
 {
-    public class OrganisationContentfulFactory : IContentfulFactory<ContentfulOrganisation, Organisation>
+    public Organisation ToModel(ContentfulOrganisation entry)
     {
-        public Organisation ToModel(ContentfulOrganisation entry)
-        {
-            var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-                entry.Image.File.Url : string.Empty;
+        var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+            entry.Image.File.Url : string.Empty;
 
-            return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
-                entry.Volunteering, entry.VolunteeringText, entry.Donations, entry.DonationsText, entry.DonationsUrl);
-        }
+        return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
+            entry.Volunteering, entry.VolunteeringText, entry.Donations, entry.DonationsText, entry.DonationsUrl);
     }
 }

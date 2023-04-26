@@ -1,14 +1,13 @@
-﻿namespace StockportContentApi.Config
+﻿namespace StockportContentApi.Config;
+
+public class TwentyThreeConfig
 {
-    public class TwentyThreeConfig
+    public TwentyThreeConfig(string baseUrl)
     {
-        public TwentyThreeConfig(string baseUrl)
-        {
-            Ensure.ArgumentNotNullOrEmpty(baseUrl, "TWENTY_THREE_BASEURL");
+        Utils.Ensure.ArgumentNotNullOrEmpty(baseUrl, "TWENTY_THREE_BASEURL");
 
-            BaseUrl = baseUrl;
-        }
-
-        public string BaseUrl { get; set; }
+        BaseUrl = baseUrl;
     }
+
+    public string BaseUrl { get; set; }
 }

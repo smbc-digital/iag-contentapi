@@ -1,13 +1,9 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Trivia>
 {
-    public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Trivia>
+    public Trivia ToModel(ContentfulTrivia entry)
     {
-        public Trivia ToModel(ContentfulTrivia entry)
-        {
-            return new Trivia(entry.Name, entry.Icon, entry.Text, entry.Link);
-        }
+        return new Trivia(entry.Name, entry.Icon, entry.Text, entry.Link);
     }
 }

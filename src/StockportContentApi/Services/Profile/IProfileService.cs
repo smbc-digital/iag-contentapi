@@ -1,9 +1,8 @@
-namespace StockportContentApi.Services.Profile
-{
-    public interface IProfileService
-    {
-        Task<StockportContentApi.Model.Profile> GetProfile(string slug, string businessId);
+namespace StockportContentApi.Services.Profile;
 
-        Task<List<StockportContentApi.Model.Profile>> GetProfiles(string businessId);
-    }
+public interface IProfileService
+{
+    Task<Model.Profile> GetProfile(string slug, string businessId);
+
+    Task<List<Model.Profile>> GetProfiles(string businessId);
 }

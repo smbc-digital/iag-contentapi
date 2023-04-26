@@ -1,15 +1,14 @@
-﻿namespace StockportContentApi.Utils
-{
-    public interface ITimeProvider
-    {
-        DateTime Now();
-    }
+﻿namespace StockportContentApi.Utils;
 
-    public class TimeProvider : ITimeProvider
+public interface ITimeProvider
+{
+    DateTime Now();
+}
+
+public class TimeProvider : ITimeProvider
+{
+    public DateTime Now()
     {
-        public DateTime Now()
-        {
-            return DateTime.UtcNow;
-        }
+        return DateTime.UtcNow;
     }
 }

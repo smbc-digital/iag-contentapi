@@ -1,68 +1,59 @@
-﻿using Contentful.Core;
-using Contentful.Core.Search;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories
+public interface IGroupAdvisorRepository
 {
-    public interface IGroupAdvisorRepository
+    Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug);
+    Task<GroupAdvisor> Get(string email);
+    Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email);
+}
+
+public class GroupAdvisorRepository : IGroupAdvisorRepository
+{
+    readonly IContentfulClient _client;
+    readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory;
+
+    public GroupAdvisorRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory)
     {
-        Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug);
-        Task<GroupAdvisor> Get(string email);
-        Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email);
+        _client = contentfulClientManager.GetClient(config);
+        _contentfulFactory = contentfulFactory;
     }
 
-    public class GroupAdvisorRepository : IGroupAdvisorRepository
+    public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
     {
-        readonly IContentfulClient _client;
-        readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory;
+        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
 
-        public GroupAdvisorRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory)
-        {
-            _client = contentfulClientManager.GetClient(config);
-            _contentfulFactory = contentfulFactory;
-        }
+        var entries = await _client.GetEntries(builder);
 
-        public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
-        {
-            var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
+        if (entries == null) return new List<GroupAdvisor>();
 
-            var entries = await _client.GetEntries(builder);
+        var result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
 
-            if (entries == null) return new List<GroupAdvisor>();
+        return result.Where(item => item.Groups.Contains(slug)).ToList();
+    }
 
-            var result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
+    public async Task<GroupAdvisor> Get(string email)
+    {
+        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
 
-            return result.Where(item => item.Groups.Contains(slug)).ToList();
-        }
+        var entries = await _client.GetEntries(builder);
 
-        public async Task<GroupAdvisor> Get(string email)
-        {
-            var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        if (entries == null) return null;
 
-            var entries = await _client.GetEntries(builder);
+        return entries.Select(item => _contentfulFactory.ToModel(item)).FirstOrDefault();
+    }
 
-            if (entries == null) return null;
+    public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)
+    {
+        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
 
-            return entries.Select(item => _contentfulFactory.ToModel(item)).FirstOrDefault();
-        }
+        var entries = await _client.GetEntries(builder);
 
-        public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)
-        {
-            var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        if (entries == null) return false;
 
-            var entries = await _client.GetEntries(builder);
+        var result = _contentfulFactory.ToModel(entries.FirstOrDefault());
 
-            if (entries == null) return false;
+        if (result.HasGlobalAccess || result.Groups.Contains(slug)) return true;
 
-            var result = _contentfulFactory.ToModel(entries.FirstOrDefault());
-
-            if (result.HasGlobalAccess || result.Groups.Contains(slug)) return true;
-
-            return false;
-        }
+        return false;
     }
 }

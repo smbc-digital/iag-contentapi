@@ -1,38 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StockportContentApi.Exceptions;
-using StockportContentApi.Utils;
+﻿namespace StockportContentApi.Controllers;
 
-namespace StockportContentApi.Controllers
+[ApiExplorerSettings(IgnoreApi = true)]
+public class CacheController : Controller
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public class CacheController : Controller
+    private readonly ICache _cache;
+    private readonly ILogger<CacheController> _logger;
+
+    public CacheController(ICache cache, ILogger<CacheController> logger)
     {
-        private readonly ICache _cache;
-        private readonly ILogger<CacheController> _logger;
+        _cache = cache;
+        _logger = logger;
+    }
 
-        public CacheController(ICache cache, ILogger<CacheController> logger)
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [HttpGet]
+    [Route("{businessId}/clearcache/{cacheKey}")]
+    [Route("v1/{businessId}/clearcache/{cacheKey}")]
+    public IActionResult ClearCache(string cacheKey)
+    {
+        try
         {
-            _cache = cache;
-            _logger = logger;
+            _cache.RemoveItemFromCache(cacheKey);
+        }
+        catch (CacheException)
+        {
+            _logger.LogError("Error deleting key from cache");
+            return StatusCode(500);
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet]
-        [Route("{businessId}/clearcache/{cacheKey}")]
-        [Route("v1/{businessId}/clearcache/{cacheKey}")]
-        public IActionResult ClearCache(string cacheKey)
-        {
-            try
-            {
-                _cache.RemoveItemFromCache(cacheKey);
-            }
-            catch (CacheException)
-            {
-                _logger.LogError("Error deleting key from cache");
-                return StatusCode(500);
-            }
-
-            return Ok();
-        }
+        return Ok();
     }
 }

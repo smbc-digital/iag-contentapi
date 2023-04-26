@@ -37,7 +37,6 @@
   <ItemGroup>
     <PackageReference Include="contentful.csharp" Version="7.2.2" />
     <PackageReference Include="FluentAssertions" Version="6.8.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.11" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.11" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />

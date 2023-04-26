@@ -1,21 +1,20 @@
-﻿namespace StockportContentApi.Utils
+﻿namespace StockportContentApi.Utils;
+
+public interface IFileWrapper
 {
-    public interface IFileWrapper
+    bool Exists(string path);
+    string[] ReadAllLines(string path);
+}
+
+public class FileWrapper : IFileWrapper
+{
+    public bool Exists(string path)
     {
-        bool Exists(string path);
-        string[] ReadAllLines(string path);
+        return System.IO.File.Exists(path);
     }
 
-    public class FileWrapper : IFileWrapper
+    public string[] ReadAllLines(string path)
     {
-        public bool Exists(string path)
-        {
-            return System.IO.File.Exists(path);
-        }
-
-        public string[] ReadAllLines(string path)
-        {
-            return System.IO.File.ReadAllLines(path);
-        }
+        return System.IO.File.ReadAllLines(path);
     }
 }

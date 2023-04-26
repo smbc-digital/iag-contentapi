@@ -1,17 +1,16 @@
-﻿namespace StockportContentApi.Http
+﻿namespace StockportContentApi.Http;
+
+public interface IMsHttpClientWrapper
 {
-    public interface IMsHttpClientWrapper
-    {
-        Task<HttpResponseMessage> GetAsync(string url);
-    }
+    Task<HttpResponseMessage> GetAsync(string url);
+}
 
-    public class MsHttpClientWrapper : IMsHttpClientWrapper
-    {
-        private readonly System.Net.Http.HttpClient _client = new System.Net.Http.HttpClient();
+public class MsHttpClientWrapper : IMsHttpClientWrapper
+{
+    private readonly System.Net.Http.HttpClient _client = new System.Net.Http.HttpClient();
 
-        public Task<HttpResponseMessage> GetAsync(string url)
-        {
-            return _client.GetAsync(url);
-        }
+    public Task<HttpResponseMessage> GetAsync(string url)
+    {
+        return _client.GetAsync(url);
     }
 }
