@@ -1,59 +1,55 @@
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
+namespace StockportContentApi.Http;
 
-namespace StockportContentApi.Http
+public class HttpResponse
 {
-    public class HttpResponse
+    public readonly HttpStatusCode StatusCode;
+    private readonly object _content;
+    public readonly string Error;
+
+    private HttpResponse(HttpStatusCode statusCode, object content, string error)
     {
-        public readonly HttpStatusCode StatusCode;
-        private readonly object _content;
-        public readonly string Error;
+        StatusCode = statusCode;
+        _content = content;
+        Error = error;
+    }
 
-        private HttpResponse(HttpStatusCode statusCode, object content, string error)
+    public static HttpResponse Successful(object content)
+    {
+        return new HttpResponse(HttpStatusCode.OK, content, string.Empty);
+    }
+
+    public static HttpResponse Failure(HttpStatusCode statusCode, string error)
+    {
+        return new HttpResponse(statusCode, null, error);
+    }
+
+    public IActionResult CreateResult()
+    {
+        switch (StatusCode)
         {
-            StatusCode = statusCode;
-            _content = content;
-            Error = error;
+            case HttpStatusCode.OK:
+                return new ObjectResult(_content);
+            case HttpStatusCode.BadRequest:
+                return new BadRequestObjectResult(Error);
+            case HttpStatusCode.NotFound:
+                return new NotFoundObjectResult(Error);
+            case HttpStatusCode.InternalServerError:
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            case HttpStatusCode.BadGateway:
+                return new StatusCodeResult((int)HttpStatusCode.BadGateway);
+            default:
+                return new EmptyResult();
         }
 
-        public static HttpResponse Successful(object content)
-        {
-            return new HttpResponse(HttpStatusCode.OK, content, string.Empty);
-        }
+    }
 
-        public static HttpResponse Failure(HttpStatusCode statusCode, string error)
-        {
-            return new HttpResponse(statusCode, null, error);
-        }
+    public override string ToString()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 
-        public IActionResult CreateResult()
-        {
-            switch (StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return new ObjectResult(_content);
-                case HttpStatusCode.BadRequest:
-                    return new BadRequestObjectResult(Error);
-                case HttpStatusCode.NotFound:
-                    return new NotFoundObjectResult(Error);
-                case HttpStatusCode.InternalServerError:
-                    return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-                case HttpStatusCode.BadGateway:
-                    return new StatusCodeResult((int)HttpStatusCode.BadGateway);
-                default:
-                    return new EmptyResult();
-            }
-
-        }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public T Get<T>()
-        {
-            return (T)_content;
-        }
+    public T Get<T>()
+    {
+        return (T)_content;
     }
 }

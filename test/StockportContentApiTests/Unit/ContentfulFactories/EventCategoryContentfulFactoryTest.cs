@@ -1,31 +1,24 @@
-﻿using FluentAssertions;
-using StockportContentApi.ContentfulFactories.EventFactories;
-using StockportContentApi.Model;
-using StockportContentApiTests.Builders;
-using Xunit;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-namespace StockportContentApiTests.Unit.ContentfulFactories
+public class EventCategoryContentfulFactoryTest
 {
-    public class EventCategoryContentfulFactoryTest
+    [Fact]
+    public void ShouldCreateAEventCategoryFromAContentfulEventCategory()
     {
-        [Fact]
-        public void ShouldCreateAEventCategoryFromAContentfulEventCategory()
-        {
 
-            var contentfulShowcase = new ContentfulEventCategoryBuilder()
-                .Name("category name")
-                .Slug("category-slug")
-                .Icon("icon")
-                .Build();
+        var contentfulShowcase = new ContentfulEventCategoryBuilder()
+            .Name("category name")
+            .Slug("category-slug")
+            .Icon("icon")
+            .Build();
 
-            var contentfulFactory = new EventCategoryContentfulFactory();
+        var contentfulFactory = new EventCategoryContentfulFactory();
 
-            var category = contentfulFactory.ToModel(contentfulShowcase);
+        var category = contentfulFactory.ToModel(contentfulShowcase);
 
-            category.Should().BeOfType<EventCategory>();
-            category.Name.Should().Be("category name");
-            category.Slug.Should().Be("category-slug");
-            category.Icon.Should().Be("icon");
-        }
+        category.Should().BeOfType<EventCategory>();
+        category.Name.Should().Be("category name");
+        category.Slug.Should().Be("category-slug");
+        category.Icon.Should().Be("icon");
     }
 }

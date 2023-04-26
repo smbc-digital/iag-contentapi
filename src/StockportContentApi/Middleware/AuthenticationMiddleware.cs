@@ -1,71 +1,65 @@
-﻿using System.Net;
-using StockportContentApi.Config;
-using StockportContentApi.Exceptions;
-using StockportContentApi.Utils;
+﻿namespace StockportContentApi.Middleware;
 
-namespace StockportContentApi.Middleware
+public class AuthenticationMiddleware
 {
-    public class AuthenticationMiddleware
+    private readonly RequestDelegate _next;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthenticationMiddleware> _logger;
+    private readonly IAuthenticationHelper _authHelper;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+
+    public AuthenticationMiddleware(
+        RequestDelegate next,
+        IConfiguration configuration,
+        ILogger<AuthenticationMiddleware> logger,
+        IAuthenticationHelper authHelper,
+        Func<string, ContentfulConfig> createConfig)
     {
-        private readonly RequestDelegate _next;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthenticationMiddleware> _logger;
-        private readonly IAuthenticationHelper _authHelper;
-        private readonly Func<string, ContentfulConfig> _createConfig;
+        _next = next;
+        _configuration = configuration;
+        _logger = logger;
+        _authHelper = authHelper;
+        _createConfig = createConfig;
+    }
 
-        public AuthenticationMiddleware(
-            RequestDelegate next,
-            IConfiguration configuration,
-            ILogger<AuthenticationMiddleware> logger,
-            IAuthenticationHelper authHelper,
-            Func<string, ContentfulConfig> createConfig)
+    public async Task Invoke(HttpContext context)
+    {
+        var apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
+
+        if (string.IsNullOrEmpty(apiConfigurationkey))
         {
-            _next = next;
-            _configuration = configuration;
-            _logger = logger;
-            _authHelper = authHelper;
-            _createConfig = createConfig;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await context.Response.WriteAsync("API Authentication Key is missing from the config");
+            return;
         }
 
-        public async Task Invoke(HttpContext context)
+        var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
+
+        if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
         {
-            var apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
-
-            if (string.IsNullOrEmpty(apiConfigurationkey))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync("API Authentication Key is missing from the config");
-                return;
-            }
-
-            var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
-
-            if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
-                return;
-            }
-
-            if (authenticationData.AuthenticationKey != apiConfigurationkey)
-            {
-                try
-                {
-                    _authHelper.CheckVersionIsProvided(authenticationData);
-                }
-                catch (AuthorizationException)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("API Authentication Key is either missing or wrong-");
-                    return;
-                }
-
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
-                return;
-            }
-
-            await _next.Invoke(context);
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
+            return;
         }
+
+        if (authenticationData.AuthenticationKey != apiConfigurationkey)
+        {
+            try
+            {
+                _authHelper.CheckVersionIsProvided(authenticationData);
+            }
+            catch (AuthorizationException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync("API Authentication Key is either missing or wrong-");
+                return;
+            }
+
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            await context.Response.WriteAsync("API Authentication Key is either missing or wrong.");
+            return;
+        }
+
+        await _next.Invoke(context);
     }
 }

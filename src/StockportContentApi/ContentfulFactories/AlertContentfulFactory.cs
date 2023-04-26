@@ -1,13 +1,9 @@
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class AlertContentfulFactory : IContentfulFactory<ContentfulAlert, Alert>
 {
-    public class AlertContentfulFactory : IContentfulFactory<ContentfulAlert, Alert>
+    public Alert ToModel(ContentfulAlert entry)
     {
-        public Alert ToModel(ContentfulAlert entry)
-        {
-            return new Alert(entry.Title, entry.SubHeading, entry.Body, entry.Severity, entry.SunriseDate, entry.SunsetDate, entry.Slug, entry.IsStatic);
-        }
+        return new Alert(entry.Title, entry.SubHeading, entry.Body, entry.Severity, entry.SunriseDate, entry.SunsetDate, entry.Slug, entry.IsStatic);
     }
 }

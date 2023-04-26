@@ -1,7 +1,6 @@
-﻿namespace StockportContentApi.ManagementModels
+﻿namespace StockportContentApi.ManagementModels;
+
+public class ManagementGroupCategory
 {
-    public class ManagementGroupCategory
-    {
-        public ManagementSystemProperties Sys { get; set; }
-    }
+    public ManagementSystemProperties Sys { get; set; }
 }

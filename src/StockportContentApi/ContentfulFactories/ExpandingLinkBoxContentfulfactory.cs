@@ -1,27 +1,22 @@
-﻿using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
-using StockportContentApi.Utils;
+﻿namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class ExpandingLinkBoxContentfulfactory : IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>
 {
-    public class ExpandingLinkBoxContentfulfactory : IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>
+    private IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
+    private readonly DateComparer _dateComparer;
+
+    public ExpandingLinkBoxContentfulfactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, ITimeProvider timeProvider)
     {
-        private IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-        private readonly DateComparer _dateComparer;
+        _subitemFactory = subitemFactory;
+        _dateComparer = new DateComparer(timeProvider);
+    }
 
-        public ExpandingLinkBoxContentfulfactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, ITimeProvider timeProvider)
-        {
-            _subitemFactory = subitemFactory;
-            _dateComparer = new DateComparer(timeProvider);
-        }
-
-        public ExpandingLinkBox ToModel(ContentfulExpandingLinkBox entry)
-        {
-            return new ExpandingLinkBox(entry.Title,
-                entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys)
-                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(link.SunriseDate, link.SunsetDate))
-                                         .Select(e => _subitemFactory.ToModel(e)).ToList());
-        }
+    public ExpandingLinkBox ToModel(ContentfulExpandingLinkBox entry)
+    {
+        return new ExpandingLinkBox(entry.Title,
+            entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys)
+                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(link.SunriseDate, link.SunsetDate))
+                                     .Select(e => _subitemFactory.ToModel(e)).ToList());
     }
 }
 

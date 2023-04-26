@@ -1,36 +1,27 @@
-﻿using System.Net;
-using Contentful.Core.Search;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories
+public class FooterRepository
 {
-    public class FooterRepository
+    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulFooter, Footer> _contentfulFactory;
+
+    public FooterRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulFooter, Footer> contentfulFactory)
     {
-        private readonly Contentful.Core.IContentfulClient _client;
-        private readonly IContentfulFactory<ContentfulFooter, Footer> _contentfulFactory;
+        _client = clientManager.GetClient(config);
+        _contentfulFactory = contentfulFactory;
+    }
 
-        public FooterRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulFooter, Footer> contentfulFactory)
-        {
-            _client = clientManager.GetClient(config);
-            _contentfulFactory = contentfulFactory;
-        }
+    public async Task<HttpResponse> GetFooter()
+    {
 
-        public async Task<HttpResponse> GetFooter()
-        {
+        var builder = new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1);
 
-            var builder = new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1);
+        var entries = await _client.GetEntries(builder);
+        var entry = entries.FirstOrDefault();
 
-            var entries = await _client.GetEntries(builder);
-            var entry = entries.FirstOrDefault();
+        var footer = _contentfulFactory.ToModel(entry);
+        if (footer == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No footer found");
 
-            var footer = _contentfulFactory.ToModel(entry);
-            if (footer == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No footer found");
-
-            return HttpResponse.Successful(footer);
-        }
+        return HttpResponse.Successful(footer);
     }
 }

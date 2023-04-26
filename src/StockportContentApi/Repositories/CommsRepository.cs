@@ -1,46 +1,36 @@
-﻿using System.Net;
-using Contentful.Core;
-using Contentful.Core.Search;
-using StockportContentApi.Client;
-using StockportContentApi.Config;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories
+public class CommsRepository
 {
-    public class CommsRepository
+    private readonly IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulCommsHomepage, CommsHomepage> _commsHomepageFactory;
+
+    public CommsRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulCommsHomepage, CommsHomepage> commsHomepageFactory)
     {
-        private readonly IContentfulClient _client;
-        private readonly IContentfulFactory<ContentfulCommsHomepage, CommsHomepage> _commsHomepageFactory;
+        _client = clientManager.GetClient(config);
+        _commsHomepageFactory = commsHomepageFactory;
+    }
 
-        public CommsRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulCommsHomepage, CommsHomepage> commsHomepageFactory)
+    public async Task<HttpResponse> Get()
+    {
+        var builder = new QueryBuilder<ContentfulCommsHomepage>().ContentTypeIs("commsHomepage").Include(1);
+        var entries = await _client.GetEntries(builder);
+        var entry = entries.FirstOrDefault();
+
+        if (entry != null && entry.WhatsOnInStockportEvent == null)
         {
-            _client = clientManager.GetClient(config);
-            _commsHomepageFactory = commsHomepageFactory;
+            var sortOrder = SortOrderBuilder<ContentfulEvent>.New(f => f.EventDate);
+            var eventQueryBuilder = new QueryBuilder<ContentfulEvent>()
+                .FieldGreaterThan(f => f.EventDate, DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))
+                .ContentTypeIs("events")
+                .OrderBy(sortOrder.Build())
+                .Limit(1);
+            var eventEntry = await _client.GetEntries(eventQueryBuilder);
+            entry.WhatsOnInStockportEvent = eventEntry.FirstOrDefault();
         }
 
-        public async Task<HttpResponse> Get()
-        {
-            var builder = new QueryBuilder<ContentfulCommsHomepage>().ContentTypeIs("commsHomepage").Include(1);
-            var entries = await _client.GetEntries(builder);
-            var entry = entries.FirstOrDefault();
-
-            if (entry != null && entry.WhatsOnInStockportEvent == null)
-            {
-                var sortOrder = SortOrderBuilder<ContentfulEvent>.New(f => f.EventDate);
-                var eventQueryBuilder = new QueryBuilder<ContentfulEvent>()
-                    .FieldGreaterThan(f => f.EventDate, DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))
-                    .ContentTypeIs("events")
-                    .OrderBy(sortOrder.Build())
-                    .Limit(1);
-                var eventEntry = await _client.GetEntries(eventQueryBuilder);
-                entry.WhatsOnInStockportEvent = eventEntry.FirstOrDefault();
-            }
-
-            return entry == null
-                ? HttpResponse.Failure(HttpStatusCode.NotFound, "No comms homepage found")
-                : HttpResponse.Successful(_commsHomepageFactory.ToModel(entry));
-        }
+        return entry == null
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No comms homepage found")
+            : HttpResponse.Successful(_commsHomepageFactory.ToModel(entry));
     }
 }

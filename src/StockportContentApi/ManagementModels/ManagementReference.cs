@@ -1,7 +1,6 @@
-﻿namespace StockportContentApi.ManagementModels
+﻿namespace StockportContentApi.ManagementModels;
+
+public class ManagementReference
 {
-    public class ManagementReference
-    {
-        public ManagementSystemProperties Sys { get; set; }
-    }
+    public ManagementSystemProperties Sys { get; set; }
 }

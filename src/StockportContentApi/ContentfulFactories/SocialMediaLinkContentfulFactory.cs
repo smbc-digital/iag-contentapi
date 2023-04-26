@@ -1,13 +1,9 @@
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class SocialMediaLinkContentfulFactory : IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>
 {
-    public class SocialMediaLinkContentfulFactory : IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>
+    public SocialMediaLink ToModel(ContentfulSocialMediaLink link)
     {
-        public SocialMediaLink ToModel(ContentfulSocialMediaLink link)
-        {
-            return new SocialMediaLink(link.Title, link.Slug, link.Url, link.Icon, link.AccountName, link.ScreenReader);
-        }
+        return new SocialMediaLink(link.Title, link.Slug, link.Url, link.Icon, link.AccountName, link.ScreenReader);
     }
 }

@@ -1,13 +1,10 @@
-﻿using Contentful.Core.Models;
+﻿namespace StockportContentApi.ContentfulModels;
 
-namespace StockportContentApi.ContentfulModels
+public class ContentfulEventBanner : IContentfulModel
 {
-    public class ContentfulEventBanner : IContentfulModel
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Teaser { get; set; } = string.Empty;
-        public string Icon { get; set; } = string.Empty;
-        public string Link { get; set; } = string.Empty;
-        public SystemProperties Sys { get; set; } = new SystemProperties();
-    }
+    public string Title { get; set; } = string.Empty;
+    public string Teaser { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
+    public string Link { get; set; } = string.Empty;
+    public SystemProperties Sys { get; set; } = new SystemProperties();
 }

@@ -1,24 +1,18 @@
-﻿using FluentAssertions;
-using StockportContentApi.ContentfulFactories;
-using StockportContentApiTests.Unit.Builders;
-using Xunit;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-namespace StockportContentApiTests.Unit.ContentfulFactories
+public class AtoZContentfulFactoryTest
 {
-    public class AtoZContentfulFactoryTest
+
+    [Fact]
+    public void ShouldCreateAAtoZFromAContentfulReference()
     {
+        var ContentfulReference =
+            new ContentfulAToZBuilder().Build();
 
-        [Fact]
-        public void ShouldCreateAAtoZFromAContentfulReference()
-        {
-            var ContentfulReference =
-                new ContentfulAToZBuilder().Build();
+        var atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
 
-            var atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
-
-            atoZ.Slug.Should().Be(ContentfulReference.Slug);
-            atoZ.Title.Should().Be(ContentfulReference.Title);
-            atoZ.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
-        }
+        atoZ.Slug.Should().Be(ContentfulReference.Slug);
+        atoZ.Title.Should().Be(ContentfulReference.Title);
+        atoZ.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
     }
 }

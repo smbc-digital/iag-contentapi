@@ -1,103 +1,99 @@
-using StockportContentApi.ContentfulModels;
-using StockportContentApiTests.Unit.Builders;
+namespace StockportContentApiTests.Builders;
 
-namespace StockportContentApiTests.Builders
+public class ContentfulContactUsAreaBuilder
 {
-    public class ContentfulContactUsAreaBuilder
+    private string _title { get; set; } = "title";
+    private string _slug { get; set; } = "slug";
+    private string _categoriesTitle { get; set; } = "categoriesTitle";
+    private string _metaDescription { get; set; } = "metaDescription";
+    private string _insetTextTitle { get; set; } = "insetTextTitle";
+    private string _insetTextBody { get; set; } = "insetTextBody";
+
+    private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
+
+    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
     {
-        private string _title { get; set; } = "title";
-        private string _slug { get; set; } = "slug";
-        private string _categoriesTitle { get; set; } = "categoriesTitle";
-        private string _metaDescription { get; set; } = "metaDescription";
-        private string _insetTextTitle { get; set; } = "insetTextTitle";
-        private string _insetTextBody { get; set; } = "insetTextBody";
+      new ContentfulReferenceBuilder().Build()
+    };
 
-        private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
+    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+    {
+        new ContentfulAlertBuilder().Build()
+    };
 
-        private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+    private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
+    {
+        new ContentfulContactUsCategoryBuilder().Build()
+    };
+
+    public ContentfulContactUsArea Build()
+    {
+        return new ContentfulContactUsArea()
         {
-          new ContentfulReferenceBuilder().Build()
+            Title = _title,
+            Slug = _slug,
+            CategoriesTitle = _categoriesTitle,
+            Breadcrumbs = _breadcrumbs,
+            Alerts = _alerts,
+            InsetTextTitle = _insetTextTitle,
+            InsetTextBody = _insetTextBody,
+            PrimaryItems = _primaryItems,
+            ContactUsCategories = _contactUsCategories,
+            MetaDescription = _metaDescription
         };
+    }
 
-        private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
-        {
-            new ContentfulAlertBuilder().Build()
-        };
+    public ContentfulContactUsAreaBuilder Slug(string slug)
+    {
+        _slug = slug;
+        return this;
+    }
 
-        private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
-        {
-            new ContentfulContactUsCategoryBuilder().Build()
-        };
+    public ContentfulContactUsAreaBuilder Title(string title)
+    {
+        _title = title;
+        return this;
+    }
 
-        public ContentfulContactUsArea Build()
-        {
-            return new ContentfulContactUsArea()
-            {
-                Title = _title,
-                Slug = _slug,
-                CategoriesTitle = _categoriesTitle,
-                Breadcrumbs = _breadcrumbs,
-                Alerts = _alerts,
-                InsetTextTitle = _insetTextTitle,
-                InsetTextBody = _insetTextBody,
-                PrimaryItems = _primaryItems,
-                ContactUsCategories = _contactUsCategories,
-                MetaDescription = _metaDescription
-            };
-        }
+    public ContentfulContactUsAreaBuilder CategoriesTitle(string categoriesTitle)
+    {
+        _categoriesTitle = categoriesTitle;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder Slug(string slug)
-        {
-            _slug = slug;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
+    {
+        _breadcrumbs = breadcrumbs;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder Title(string title)
-        {
-            _title = title;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder PrimaryItems(List<ContentfulReference> primaryItems)
+    {
+        _primaryItems = primaryItems;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder CategoriesTitle(string categoriesTitle)
-        {
-            _categoriesTitle = categoriesTitle;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder Alerts(List<ContentfulAlert> alerts)
+    {
+        _alerts = alerts;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
-        {
-            _breadcrumbs = breadcrumbs;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder InsetTextTitle(string insetTextTitle)
+    {
+        _insetTextTitle = insetTextTitle;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder PrimaryItems(List<ContentfulReference> primaryItems)
-        {
-            _primaryItems = primaryItems;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder InsetTextBody(string insetTextBody)
+    {
+        _insetTextTitle = insetTextBody;
+        return this;
+    }
 
-        public ContentfulContactUsAreaBuilder Alerts(List<ContentfulAlert> alerts)
-        {
-            _alerts = alerts;
-            return this;
-        }
-
-        public ContentfulContactUsAreaBuilder InsetTextTitle(string insetTextTitle)
-        {
-            _insetTextTitle = insetTextTitle;
-            return this;
-        }
-
-        public ContentfulContactUsAreaBuilder InsetTextBody(string insetTextBody)
-        {
-            _insetTextTitle = insetTextBody;
-            return this;
-        }
-
-        public ContentfulContactUsAreaBuilder ContentfulContactUsCategories(List<ContentfulContactUsCategory> contactUsCategories)
-        {
-            _contactUsCategories = contactUsCategories;
-            return this;
-        }
+    public ContentfulContactUsAreaBuilder ContentfulContactUsCategories(List<ContentfulContactUsCategory> contactUsCategories)
+    {
+        _contactUsCategories = contactUsCategories;
+        return this;
     }
 }

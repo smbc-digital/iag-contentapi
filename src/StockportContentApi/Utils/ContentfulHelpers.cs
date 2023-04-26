@@ -1,17 +1,14 @@
-using Contentful.Core.Models;
+namespace StockportContentApi.Utils;
 
-namespace StockportContentApi.Utils
+public class ContentfulHelpers
 {
-    public class ContentfulHelpers
+    public static bool EntryIsNotALink(SystemProperties sys)
     {
-        public static bool EntryIsNotALink(SystemProperties sys)
-        {
-            return sys.LinkType is null;
-        }
+        return sys.LinkType is null;
+    }
 
-        public static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)
-        {
-            return term.Cast<string>().ToList();
-        }
+    public static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)
+    {
+        return term.Cast<string>().ToList();
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace StockportContentApi.Utils
+﻿namespace StockportContentApi.Utils;
+
+public class ContentfulQueryValues
 {
-    public class ContentfulQueryValues
-    {
-        public const int LIMIT_MAX = 1000;
-    }
+    public const int LIMIT_MAX = 1000;
 }

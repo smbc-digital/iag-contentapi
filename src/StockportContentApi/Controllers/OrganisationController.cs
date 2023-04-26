@@ -1,36 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StockportContentApi.Config;
-using StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Controllers;
 
-namespace StockportContentApi.Controllers
+public class OrganisationController : Controller
 {
-    public class OrganisationController : Controller
+    private readonly ResponseHandler _handler;
+    private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+
+    public OrganisationController(ResponseHandler handler,
+        Func<string, ContentfulConfig> createConfig,
+        Func<ContentfulConfig, OrganisationRepository> organisationRepository)
     {
-        private readonly ResponseHandler _handler;
-        private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository;
-        private readonly Func<string, ContentfulConfig> _createConfig;
+        _handler = handler;
+        _createConfig = createConfig;
+        _organisationRepository = organisationRepository;
+    }
 
-        public OrganisationController(ResponseHandler handler,
-            Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, OrganisationRepository> organisationRepository)
+    [HttpGet]
+    [Route("{businessId}/organisations/{organisationSlug}")]
+    [Route("v1/{businessId}/organisations/{organisationSlug}")]
+    public async Task<IActionResult> GetOrganisation(string organisationSlug, string businessId)
+    {
+        return await _handler.Get(() =>
         {
-            _handler = handler;
-            _createConfig = createConfig;
-            _organisationRepository = organisationRepository;
-        }
+            var repository = _organisationRepository(_createConfig(businessId));
+            var article = repository.GetOrganisation(organisationSlug);
 
-        [HttpGet]
-        [Route("{businessId}/organisations/{organisationSlug}")]
-        [Route("v1/{businessId}/organisations/{organisationSlug}")]
-        public async Task<IActionResult> GetOrganisation(string organisationSlug, string businessId)
-        {
-            return await _handler.Get(() =>
-            {
-                var repository = _organisationRepository(_createConfig(businessId));
-                var article = repository.GetOrganisation(organisationSlug);
-
-                return article;
-            });
-        }
+            return article;
+        });
     }
 }

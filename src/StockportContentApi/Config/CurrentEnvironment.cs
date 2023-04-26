@@ -1,12 +1,11 @@
-﻿namespace StockportContentApi.Config
-{
-    public class CurrentEnvironment
-    {
-        public string Name { get; }
+﻿namespace StockportContentApi.Config;
 
-        public CurrentEnvironment(string name)
-        {
-            Name = name;
-        }
+public class CurrentEnvironment
+{
+    public string Name { get; }
+
+    public CurrentEnvironment(string name)
+    {
+        Name = name;
     }
 }

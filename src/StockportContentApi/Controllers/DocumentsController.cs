@@ -1,36 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StockportContentApi.Services;
+﻿namespace StockportContentApi.Controllers;
 
-namespace StockportContentApi.Controllers
+public class DocumentsController : Controller
 {
-    public class DocumentsController : Controller
+    private readonly IDocumentService _documentService;
+    private readonly ILogger<DocumentsController> _logger;
+
+    public DocumentsController(IDocumentService documentService, ILogger<DocumentsController> logger)
     {
-        private readonly IDocumentService _documentService;
-        private readonly ILogger<DocumentsController> _logger;
+        _documentService = documentService;
+        _logger = logger;
+    }
 
-        public DocumentsController(IDocumentService documentService, ILogger<DocumentsController> logger)
+    [HttpGet]
+    [Route("{businessId}/documents/{groupSlug}/{assetId}")]
+    public async Task<IActionResult> GetSecureDocument(string businessId, string groupSlug, string assetId)
+    {
+        try
         {
-            _documentService = documentService;
-            _logger = logger;
+            var result = await _documentService.GetSecureDocumentByAssetId(businessId, assetId, groupSlug);
+
+            if (result == null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
+
+            return new OkObjectResult(result);
         }
-
-        [HttpGet]
-        [Route("{businessId}/documents/{groupSlug}/{assetId}")]
-        public async Task<IActionResult> GetSecureDocument(string businessId, string groupSlug, string assetId)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _documentService.GetSecureDocumentByAssetId(businessId, assetId, groupSlug);
-
-                if (result == null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
-
-                return new OkObjectResult(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error getting secrure document with assetId: {assetId} with exception: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            _logger.LogError($"Error getting secrure document with assetId: {assetId} with exception: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }

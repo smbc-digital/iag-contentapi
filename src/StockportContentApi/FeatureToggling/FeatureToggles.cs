@@ -1,6 +1,5 @@
-namespace StockportContentApi.FeatureToggling
+namespace StockportContentApi.FeatureToggling;
+
+public class FeatureToggles
 {
-    public class FeatureToggles
-    {
-    }
 }

@@ -1,12 +1,11 @@
-﻿namespace StockportContentApi.Config
-{
-    public class RedirectBusinessIds
-    {
-        public List<string> BusinessIds { get; }
+﻿namespace StockportContentApi.Config;
 
-        public RedirectBusinessIds(List<string> businessIds)
-        {
-            BusinessIds = businessIds;
-        }
+public class RedirectBusinessIds
+{
+    public List<string> BusinessIds { get; }
+
+    public RedirectBusinessIds(List<string> businessIds)
+    {
+        BusinessIds = businessIds;
     }
 }

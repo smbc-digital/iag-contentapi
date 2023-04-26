@@ -1,18 +1,14 @@
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Model;
+namespace StockportContentApi.ContentfulFactories;
 
-namespace StockportContentApi.ContentfulFactories
+public class ContactUsIdContentfulFactory : IContentfulFactory<ContentfulContactUsId, ContactUsId>
 {
-    public class ContactUsIdContentfulFactory : IContentfulFactory<ContentfulContactUsId, ContactUsId>
+    public ContactUsId ToModel(ContentfulContactUsId entry)
     {
-        public ContactUsId ToModel(ContentfulContactUsId entry)
-        {
-            return new ContactUsId(
-                entry.Name,
-                entry.Slug,
-                entry.EmailAddress,
-                entry.SuccessPageButtonText,
-                entry.SuccessPageReturnUrl);
-        }
+        return new ContactUsId(
+            entry.Name,
+            entry.Slug,
+            entry.EmailAddress,
+            entry.SuccessPageButtonText,
+            entry.SuccessPageReturnUrl);
     }
 }
