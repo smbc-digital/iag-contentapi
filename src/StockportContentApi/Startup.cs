@@ -20,7 +20,6 @@ public class Startup
     public virtual void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers().AddNewtonsoftJson();
-        services.AddFeatureToggles(_contentRootPath, _appEnvironment);
         services.AddSingleton(new CurrentEnvironment(_appEnvironment));
         services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger);
         services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));

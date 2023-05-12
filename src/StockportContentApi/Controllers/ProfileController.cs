@@ -3,13 +3,9 @@
 public class ProfileController : Controller
 {
     private readonly IProfileService _profileService;
-    private readonly FeatureToggles _featureToggles;
 
-    public ProfileController(IProfileService profileService, FeatureToggles featureToggles)
-    {
-        _profileService = profileService;
-        _featureToggles = featureToggles;
-    }
+    public ProfileController(IProfileService profileService)
+        => _profileService = profileService;
 
     [HttpGet]
     [Route("{businessId}/profiles/{profileSlug}")]

@@ -2,18 +2,6 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddFeatureToggles(this IServiceCollection services, string contentRootPath, string appEnvironment)
-    {
-        services.AddTransient(p =>
-        {
-            var featureTogglesReader = new FeatureTogglesReader($"{contentRootPath}/featureToggles.yml", appEnvironment,
-                p.GetService<ILogger<FeatureTogglesReader>>());
-            return featureTogglesReader.Build<FeatureToggles>();
-        });
-
-        return services;
-    }
-
     /// <summary>
     /// Add all custom contentful factories
     /// </summary>
