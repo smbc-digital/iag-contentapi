@@ -50,7 +50,7 @@ public class SectionContentfulFactoryTest
                     DateTime.MinValue,
                     DateTime.MaxValue,
                     "slug",
-                    false)
+                    false, string.Empty)
             },
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),
@@ -67,7 +67,7 @@ public class SectionContentfulFactoryTest
         const string processedBody = "this is processed body";
         _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-        var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false);
+        var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
         _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act

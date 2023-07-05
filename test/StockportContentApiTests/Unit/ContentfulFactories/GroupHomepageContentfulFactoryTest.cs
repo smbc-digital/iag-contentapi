@@ -33,7 +33,7 @@ public class GroupHomepageContentfulFactoryTest
         var category = new GroupCategory("title", "slug", "icon", "image");
         var subCategory = new GroupSubCategory("title", "slug");
         var alert = new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MinValue,
-            "slug", false);
+            "slug", false, string.Empty);
 
         _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(featuredGroup);
         _groupCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupCategory>())).Returns(category);
