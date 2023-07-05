@@ -16,7 +16,7 @@ public class NewsRepositoryTest
     private const string ThumbnailImage = "thumbnail.jpg";
     private readonly List<Crumb> _crumbs = new List<Crumb>() { new Crumb("title", "slug", "type") };
     private readonly List<Alert> _alerts = new List<Alert>() {
-            new Alert("title", "subheading", "body", "severity", new DateTime(2016, 08, 5), new DateTime(2016, 08, 11), string.Empty, false) };
+            new Alert("title", "subheading", "body", "severity", new DateTime(2016, 08, 5), new DateTime(2016, 08, 11), string.Empty, false, string.Empty) };
     private readonly List<string> _newsCategories = new List<string>() { "news-category-1", "news-category-2" };
 
     private readonly ContentfulConfig _config = new ContentfulConfig("test")

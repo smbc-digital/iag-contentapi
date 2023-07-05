@@ -47,7 +47,8 @@ public class ArticleBuilder
             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
             "slug",
-            false)
+            false,
+            string.Empty)
     };
 
     private List<Alert> _alertsInline = new List<Alert>
@@ -59,7 +60,7 @@ public class ArticleBuilder
             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
             "slug",
-            false)
+            false, string.Empty)
     };
 
     private List<Profile> _profiles = new List<Profile>
@@ -85,7 +86,7 @@ public class ArticleBuilder
                     DateTime.MinValue,
                     DateTime.MaxValue,
                     "slug",
-                    false)
+                    false, string.Empty)
             },
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),

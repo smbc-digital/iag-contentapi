@@ -52,7 +52,7 @@ public class ProfileRepositoryTest
                     DateTime.MinValue,
                     DateTime.MaxValue,
                     "slug",
-                    false)
+                    false, string.Empty)
             },
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),

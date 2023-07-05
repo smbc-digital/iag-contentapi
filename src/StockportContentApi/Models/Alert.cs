@@ -10,9 +10,10 @@ public class Alert
     public DateTime SunsetDate { get; }
     public string Slug { get; set; }
     public bool IsStatic { get; set; }
+    public string ImageUrl { get; }
 
     public Alert(string title, string subHeading, string body, string severity, DateTime sunriseDate,
-        DateTime sunsetDate, string slug, bool isStatic)
+        DateTime sunsetDate, string slug, bool isStatic, string imageUrl)
     {
         Title = title;
         SubHeading = subHeading;
@@ -22,10 +23,11 @@ public class Alert
         SunsetDate = sunsetDate;
         Slug = slug;
         IsStatic = isStatic;
+        ImageUrl = imageUrl;
     }
 }
 
 public class NullAlert : Alert
 {
-    public NullAlert() : base(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MinValue, string.Empty, false) { }
+    public NullAlert() : base(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MinValue, string.Empty, false, string.Empty) { }
 }

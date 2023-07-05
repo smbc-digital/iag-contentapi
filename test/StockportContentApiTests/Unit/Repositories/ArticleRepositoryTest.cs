@@ -211,7 +211,7 @@ public class ArticleRepositoryTest
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
         var alert = new Alert("title", "subHeading", "body", "severity",
                     new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false);
+                    new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false, string.Empty);
         var collection = new ContentfulCollection<ContentfulArticle>();
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
         collection.Items = new List<ContentfulArticle> { rawArticle };

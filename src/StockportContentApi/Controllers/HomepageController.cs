@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
+[ApiExplorerSettings(IgnoreApi = false)]
 public class HomepageController : Controller
 {
 
