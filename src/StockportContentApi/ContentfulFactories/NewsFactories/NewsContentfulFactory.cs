@@ -29,8 +29,10 @@ public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
                                   && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                   .Select(alert => _alertFactory.ToModel(alert));
 
+        var updatedAt = entry.Sys.UpdatedAt is not null ? entry.Sys.UpdatedAt : entry.SunriseDate;
+
         return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
-            _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, new List<Crumb> { new Crumb("News", string.Empty, "news") },
+            _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, entry.Sys.UpdatedAt.Value, new List<Crumb> { new Crumb("News", string.Empty, "news") },
             alerts.ToList(), entry.Tags, documents, entry.Categories);
     }
 }
