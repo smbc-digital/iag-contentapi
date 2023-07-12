@@ -24,7 +24,8 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
-            p.GetService<ITimeProvider>()));
+            p.GetService<ITimeProvider>(),
+            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>()));
         services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p => new ContactUsCategoryContentfulFactory());

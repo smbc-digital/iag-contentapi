@@ -7,14 +7,16 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
     private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
 
-    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider)
+    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
     {
         _subitemFactory = subitemFactory;
         _groupFactory = groupFactory;
         _alertFactory = alertFactory;
         _carouselFactory = carouselFactory;
         _dateComparer = new DateComparer(timeProvider);
+        _callToActionFactory = callToActionFactory;
     }
 
     public Homepage ToModel(ContentfulHomepage entry)
@@ -52,7 +54,9 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
                                                                     group.DateHiddenFrom, group.DateHiddenTo))
             .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
+        var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner);
+            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction);
     }
 }
