@@ -11,13 +11,14 @@ public class News
     public string Body { get; }
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
+    public DateTime UpdatedAt { get; }
     public List<Crumb> Breadcrumbs { get; }
     public List<string> Tags { get; set; }
     public List<Alert> Alerts { get; }
     public List<Document> Documents { get; }
     public List<string> Categories { get; }
 
-    public News(string title, string slug, string teaser, string purpose, string image, string thumbnailImage, string body, DateTime sunriseDate, DateTime sunsetDate, List<Crumb> breadcrumbs, List<Alert> alerts, List<string> tags, List<Document> documents, List<string> categories)
+    public News(string title, string slug, string teaser, string purpose, string image, string thumbnailImage, string body, DateTime sunriseDate, DateTime sunsetDate, DateTime updatedAt, List<Crumb> breadcrumbs, List<Alert> alerts, List<string> tags, List<Document> documents, List<string> categories)
     {
         Title = title;
         Slug = slug;
@@ -28,6 +29,7 @@ public class News
         Body = body;
         SunriseDate = sunriseDate;
         SunsetDate = sunsetDate;
+        UpdatedAt = updatedAt;
         Breadcrumbs = breadcrumbs;
         Alerts = alerts;
         Tags = tags;
