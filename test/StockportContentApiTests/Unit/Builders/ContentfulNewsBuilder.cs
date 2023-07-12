@@ -10,6 +10,7 @@ public class ContentfulNewsBuilder
     private string _body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
     private DateTime _sunriseDate = new DateTime(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
     private DateTime _sunsetDate = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
+    private DateTime _updatedAt = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new List<string> { "Bramall Hall", "Events" };
     private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
     private List<Asset> _documents = new List<Asset>();
@@ -31,7 +32,11 @@ public class ContentfulNewsBuilder
             Tags = _tags,
             Alerts = _alerts,
             Documents = _documents,
-            Categories = _categories
+            Categories = _categories,
+            Sys =
+            {
+                UpdatedAt = _updatedAt,
+            }
         };
     }
 
