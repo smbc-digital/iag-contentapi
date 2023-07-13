@@ -21,7 +21,7 @@ public class ContentfulNewsTest
             Title = string.Empty,
             Sys =
             {
-                UpdatedAt = DateTime.MaxValue.ToUniversalTime();
+                UpdatedAt = DateTime.MaxValue.ToUniversalTime()
             }
         };
         actual.Should().BeEquivalentTo(expected);
