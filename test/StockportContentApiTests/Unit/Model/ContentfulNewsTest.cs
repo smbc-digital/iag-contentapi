@@ -18,7 +18,11 @@ public class ContentfulNewsTest
             SunsetDate = DateTime.MaxValue.ToUniversalTime(),
             Tags = new List<string>(),
             Teaser = string.Empty,
-            Title = string.Empty
+            Title = string.Empty,
+            Sys =
+            {
+                UpdatedAt = DateTime.MaxValue.ToUniversalTime()
+            }
         };
         actual.Should().BeEquivalentTo(expected);
     }
