@@ -70,6 +70,12 @@ public class ContentfulNewsBuilder
         return this;
     }
 
+    public ContentfulNewsBuilder UpdatedAt(DateTime updatedAt)
+    {
+        _updatedAt = updatedAt;
+        return this;
+    }
+
     public ContentfulNewsBuilder Body(string body)
     {
         _body = body;

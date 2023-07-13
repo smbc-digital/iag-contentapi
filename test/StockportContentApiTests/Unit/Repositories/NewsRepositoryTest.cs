@@ -199,6 +199,7 @@ public class NewsRepositoryTest
         firstNews.Teaser.Should().Be(Teaser);
         firstNews.SunriseDate.Should().Be(_sunriseDate);
         firstNews.SunsetDate.Should().Be(_sunsetDate);
+        firstNews.UpdatedAt.Should().Be(_updatedAt);
         firstNews.Image.Should().Be(Image);
         firstNews.ThumbnailImage.Should().Be(ThumbnailImage);
         firstNews.Breadcrumbs.Should().BeEquivalentTo(_crumbs);
@@ -249,6 +250,7 @@ public class NewsRepositoryTest
         newsroom.News.First().Teaser.Should().Be(Teaser);
         newsroom.News.First().SunriseDate.Should().Be(_sunriseDate);
         newsroom.News.First().SunsetDate.Should().Be(_sunsetDate);
+        newsRoom.News.First().UpdatedAt.Should().Be(_updatedAt);
         newsroom.News.First().Image.Should().Be(Image);
         newsroom.News.First().ThumbnailImage.Should().Be(ThumbnailImage);
         newsroom.News.First().Breadcrumbs.Should().BeEquivalentTo(_crumbs);
@@ -608,6 +610,7 @@ public class NewsRepositoryTest
         newsList.First().Teaser.Should().Be(Teaser);
         newsList.First().SunriseDate.Should().Be(_sunriseDate);
         newsList.First().SunsetDate.Should().Be(_sunsetDate);
+        newsList.First().UpdatedAt.Should().Be(_updatedAt);
         newsList.First().Image.Should().Be(Image);
         newsList.First().ThumbnailImage.Should().Be(ThumbnailImage);
         newsList.First().Breadcrumbs.Should().BeEquivalentTo(_crumbs);
