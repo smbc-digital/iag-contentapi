@@ -243,3 +243,6 @@ src/StockportContentApi/app-config/appsettings.dev-local.json
 
 # Deploy packages
 iag-contentapi.zip
+
+/test/StockportContentApiTests/TestCoverageResults
+/test/StockportContentApiTests/TestResults
