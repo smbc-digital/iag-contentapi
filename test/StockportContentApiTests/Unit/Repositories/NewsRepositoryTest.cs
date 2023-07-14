@@ -716,8 +716,8 @@ public class NewsRepositoryTest
 
 
         newsroom.News.Count.Should().Be(3);
-        newsroom.News[0].Slug.Should().Equals("new-news");
-        newsroom.News[1].Slug.Should().Equals("middle-news");
-        newsroom.News[2].Slug.Should().Equals("old-news");
+        newsroom.News[0].Slug.Equals("new-news");
+        newsroom.News[1].Slug.Equals("middle-news");
+        newsroom.News[2].Slug.Equals("old-news");
     }
 }
