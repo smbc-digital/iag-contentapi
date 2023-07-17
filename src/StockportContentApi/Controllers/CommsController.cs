@@ -1,6 +1,5 @@
 ﻿namespace StockportContentApi.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
 public class CommsController : Controller
 {
     private readonly ResponseHandler _handler;

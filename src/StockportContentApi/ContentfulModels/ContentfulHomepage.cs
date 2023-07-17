@@ -16,4 +16,5 @@ public class ContentfulHomepage : IContentfulModel
     public SystemProperties Sys { get; set; } = new SystemProperties();
     public string MetaDescription { get; set; } = string.Empty;
     public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
+    public ContentfulCallToActionBanner CallToAction { get; set; } = null;
 }

@@ -13,7 +13,8 @@ public class CallToActionBannerContentfulFactory : IContentfulFactory<Contentful
             ButtonText = entry.ButtonText,
             Image = entry.Image.File.Url,
             Link = entry.Link,
-            Title = entry.Title
+            Title = entry.Title,
+            Teaser = entry.Teaser
         };
     }
 }
