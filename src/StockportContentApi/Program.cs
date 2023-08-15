@@ -5,11 +5,12 @@
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.AddSecrets();
+
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
     builder.Configuration
         .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
-        .AddJsonFile($"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json");
+        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
