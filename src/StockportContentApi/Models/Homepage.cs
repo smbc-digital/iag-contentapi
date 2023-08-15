@@ -16,9 +16,10 @@ public class Homepage
     public string MetaDescription { get; set; }
     public CarouselContent CampaignBanner { get; set; }
     public CallToActionBanner CallToAction {get;set;}
+    public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; }
 
     public Homepage(IEnumerable<string> popularSearchTerms, string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,
-        IEnumerable<CarouselContent> carouselContents, string backgroundImage, string freeText, Group featuredGroup, string eventCategory, string metaDescription, CarouselContent campaignBanner, CallToActionBanner callToAction)
+        IEnumerable<CarouselContent> carouselContents, string backgroundImage, string freeText, Group featuredGroup, string eventCategory, string metaDescription, CarouselContent campaignBanner, CallToActionBanner callToAction, IEnumerable<SpotlightOnBanner> spotlightOnBanner)
     {
         PopularSearchTerms = popularSearchTerms;
         FeaturedTasksHeading = featuredTasksHeading;
@@ -34,6 +35,7 @@ public class Homepage
         MetaDescription = metaDescription;
         CampaignBanner = campaignBanner;
         CallToAction = callToAction;
+        SpotlightOnBanner = spotlightOnBanner;
     }
 }
 
@@ -41,7 +43,7 @@ public class NullHomepage : Homepage
 {
     public NullHomepage() : base(Enumerable.Empty<string>(), string.Empty, string.Empty, new List<SubItem>(),
         new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), "", "", null, string.Empty,
-        string.Empty, new CarouselContent(), new CallToActionBanner())
+        string.Empty, new CarouselContent(), new CallToActionBanner(), null)
     {
     }
 }
