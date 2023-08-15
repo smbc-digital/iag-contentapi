@@ -9,6 +9,7 @@ public class HomepageContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly Mock<ITimeProvider> _timeProvider;
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory;
+    private readonly Mock<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>> _spotlightOnFactory;
 
     public HomepageContentfulFactoryTests()
     {
@@ -32,7 +33,8 @@ public class HomepageContentfulFactoryTests
             _alertFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
-            _callToActionFactory.Object);
+            _callToActionFactory.Object,
+            _spotlightOnFactory.Object);
     }
 
     [Fact]
