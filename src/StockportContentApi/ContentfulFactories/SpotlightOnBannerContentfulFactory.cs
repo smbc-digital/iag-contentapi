@@ -4,6 +4,9 @@ public class SpotlightOnBannerContentfulFactory : IContentfulFactory<IEnumerable
 {
     public IEnumerable<SpotlightOnBanner> ToModel(IEnumerable<ContentfulSpotlightOnBanner> entry)
     {
-        return entry.Select(_ => new SpotlightOnBanner(_.Title, _.Image.File.Url, _.AltText, _.Teaser, _.Link, _.Sys.UpdatedAt is not null ? _.Sys.UpdatedAt.Value : _.Sys.PublishedAt.Value));
+        if (entry is not null && entry.Any())
+            return entry.Select(_ => new SpotlightOnBanner(_.Title, _.Image.File.Url, _.AltText, _.Teaser, _.Link, _.Sys.UpdatedAt is not null ? _.Sys.UpdatedAt.Value : _.Sys.PublishedAt.Value));
+
+        return Enumerable.Empty<SpotlightOnBanner>();
     }
 }
