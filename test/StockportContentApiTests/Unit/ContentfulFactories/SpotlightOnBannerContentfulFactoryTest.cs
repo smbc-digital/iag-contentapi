@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace StockportContentApiTests.Unit.ContentfulFactories;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class SpotlightOnBannerContentfulFactoryTest
 {
@@ -11,8 +9,9 @@ public class SpotlightOnBannerContentfulFactoryTest
     }
 
     [Fact]
-    public void ShouldCreateSpotlightOnListFromAContentfulSpotlightOnList()
+    public void ToModel_ShouldCreateSpotlightOnListFromAContentfulSpotlightOnList()
     {
+        // Arrange
         List<ContentfulSpotlightOnBanner> entry = new List<ContentfulSpotlightOnBanner>{
             new ContentfulSpotlightOnBanner {
                 Title = "Spotlight title",
@@ -30,20 +29,24 @@ public class SpotlightOnBannerContentfulFactoryTest
             }
         };
 
+        // Act
         var result = _spotlightOnBannerContentfulFactory.ToModel(entry);
 
-        result.Count().Should().Be(1);
-        result.First().Title.Should().Be(entry.First().Title);
-        result.First().Image.Should().Be(entry.First().Image.File.Url);
-        result.First().AltText.Should().Be(entry.First().AltText);
-        result.First().Link.Should().Be(entry.First().Link);
-        result.First().LastUpdated.Should().Be(entry.First().Sys.UpdatedAt);
+        // Assert
+        Assert.Single(result);
+        Assert.Equal(entry.First().Title, result.First().Title);
+        Assert.Equal(entry.First().Image.File.Url, result.First().Image);
+        Assert.Equal(entry.First().AltText, result.First().AltText);
+        Assert.Equal(entry.First().Link, result.First().Link);
+        Assert.Equal(entry.First().Sys.UpdatedAt, result.First().LastUpdated); ;
     }
 
     [Fact]
-    public void LastUpdatedShouldUsePublishDateIfLastUpdatedNotFound()
+    public void ToModel_LastUpdatedShouldUsePublishDate_If_LastUpdatedNotFound()
     {
-        List<ContentfulSpotlightOnBanner> entry = new List<ContentfulSpotlightOnBanner>{
+        // Arrange
+        List<ContentfulSpotlightOnBanner> entry = new()
+        {
             new ContentfulSpotlightOnBanner {
                 Title = "Spotlight title",
                 Image = new Asset() {
@@ -59,17 +62,21 @@ public class SpotlightOnBannerContentfulFactoryTest
             }
         };
 
+        // Act
         var result = _spotlightOnBannerContentfulFactory.ToModel(entry);
 
-        result.First().LastUpdated.Should().Be(entry.First().Sys.PublishedAt);
+        // Assert
+        Assert.Equal(entry.First().Sys.PublishedAt, result.First().LastUpdated);
     }
 
     [Fact]
-    public void ToModelShouldReturnEmptyListIfContentfulListIsNull()
+    public void ToModel_ShouldReturnEmptyList_If_ContentfulListIsNull()
     {
+        // Act
         var result = _spotlightOnBannerContentfulFactory.ToModel(null);
 
-        result.Should().NotBeNull();
-        result.Count().Should().Be(0);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Empty(result);
     }
 }
