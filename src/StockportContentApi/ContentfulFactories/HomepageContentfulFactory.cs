@@ -8,8 +8,9 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
+    private readonly IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> _spotlightOnBanner;
 
-    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory, IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> spotlightOnBanner)
     {
         _subitemFactory = subitemFactory;
         _groupFactory = groupFactory;
@@ -17,6 +18,7 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         _carouselFactory = carouselFactory;
         _dateComparer = new DateComparer(timeProvider);
         _callToActionFactory = callToActionFactory;
+        _spotlightOnBanner = spotlightOnBanner;
     }
 
     public Homepage ToModel(ContentfulHomepage entry)
@@ -56,7 +58,9 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
+        var spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
+
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction);
+            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, spotlightOnBanner);
     }
 }
