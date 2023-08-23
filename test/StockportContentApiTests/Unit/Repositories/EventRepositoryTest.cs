@@ -700,7 +700,7 @@ public class EventRepositoryTest
     }
 
     [Fact]
-    public void EventsShoudReturnInOrderOfStartDate()
+    public void EventsShouldReturnInOrderOfStartDate()
     {
 
         //Arrange 
