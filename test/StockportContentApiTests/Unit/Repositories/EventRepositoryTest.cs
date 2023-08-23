@@ -698,5 +698,35 @@ public class EventRepositoryTest
         var eventResponse = result.Get<List<Event>>();
         eventResponse.Count.Should().Be(3);
     }
+
+    [Fact]
+    public void EventsShourReturnInOrderOfStartDate()
+    {
+
+        //Arrange 
+        var firstEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 01)).Build();
+        var secondEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 02)).StartTime("8:00").Build();
+        var thirdEvent = new ContentfulEventBuilder().Featured(false).EventDate(new DateTime(2017, 09, 02)).StartTime("8:30").Build();
+        var events = new List<ContentfulEvent> { firstEvent, secondEvent, thirdEvent };
+
+        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "event-all"), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(events);
+
+        // Act
+        var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 3, true, null, null, 0, 0));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var eventsCalendar = response.Get<EventCalender>();
+
+        // Assert
+        Assert.Equal(eventsCalendar.Events[0].EventDate, firstEvent.EventDate);
+        Assert.Equal(eventsCalendar.Events[0].StartTime, firstEvent.StartTime);
+
+        Assert.Equal(eventsCalendar.Events[1].EventDate, secondEvent.EventDate);
+        Assert.Equal(eventsCalendar.Events[1].StartTime, secondEvent.StartTime);
+
+        Assert.Equal(eventsCalendar.Events[2].EventDate, thirdEvent.EventDate);
+        Assert.Equal(eventsCalendar.Events[2].StartTime, thirdEvent.StartTime);
+    }
 }
 
