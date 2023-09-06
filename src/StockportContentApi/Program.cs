@@ -5,12 +5,17 @@
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    builder.AddSecrets();
-
+    
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
     builder.Configuration
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
+
+    builder.AddSecrets();
+
+    Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                    .CreateLogger();
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
