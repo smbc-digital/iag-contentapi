@@ -8,4 +8,5 @@ public class CallToActionBanner
     public string ButtonText { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
 }
