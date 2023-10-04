@@ -58,7 +58,7 @@ public class TopicContentfulFactoryTest
         {
             AltText = "altText",
             ButtonText = "buttonText",
-            Color = "Pink",
+            Colour = "Pink",
             Image = "image",
             Link = "link",
             Teaser = "teaser",

@@ -7,7 +7,7 @@ public class ContentfulCallToActionBannerBuilder
     private string _link = "link";
     private string _altText = "altText";
     private string _buttonText = "buttonText";
-    private string _color = "color";
+    private string _colour = "colour";
     private Asset _image = new Asset();
 
     public ContentfulCallToActionBanner Build()
@@ -19,7 +19,7 @@ public class ContentfulCallToActionBannerBuilder
             Link = _link,
             AltText = _altText,
             ButtonText = _buttonText,
-            Color = _color,
+            Colour = _colour,
             Image = _image  
         };
     }
