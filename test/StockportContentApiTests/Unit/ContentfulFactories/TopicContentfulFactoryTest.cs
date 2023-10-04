@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
+﻿using StockportContentApi.Model;
+
+namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class TopicContentfulFactoryTest
 {
@@ -12,7 +14,7 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
-    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionBannerFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -24,7 +26,7 @@ public class TopicContentfulFactoryTest
         _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(nameof(CallToAction), null, null, null));
+        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
         _topicContentfulFactory = new TopicContentfulFactory(
             _subItemFactory.Object,
             _crumbFactory.Object,
@@ -33,7 +35,7 @@ public class TopicContentfulFactoryTest
             _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
-            _callToActionFactory.Object);
+            _callToActionBannerFactory.Object);
     }
 
     [Fact]
@@ -51,6 +53,18 @@ public class TopicContentfulFactoryTest
 
         var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.TertiaryItems.First())).Returns(tertiaryItem);
+
+        var callToAction = new CallToActionBanner()
+        {
+            AltText = "altText",
+            ButtonText = "buttonText",
+            Color = "Pink",
+            Image = "image",
+            Link = "link",
+            Teaser = "teaser",
+            Title = "title"
+        };
+        _callToActionBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
         var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
@@ -76,6 +90,7 @@ public class TopicContentfulFactoryTest
         result.SecondaryItems.First().Should().BeEquivalentTo(secondaryItem);
         result.TertiaryItems.Count().Should().Be(1);
         result.TertiaryItems.First().Should().BeEquivalentTo(tertiaryItem);
+        result.CallToAction.Should().BeEquivalentTo(callToAction);
         result.EventBanner.Should().BeEquivalentTo(eventBanner);
         result.Alerts.Count().Should().Be(1);
         result.Alerts.First().Should().BeEquivalentTo(alert);
