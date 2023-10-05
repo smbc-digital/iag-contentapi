@@ -8,4 +8,8 @@ public class ContentfulCallToActionBanner
     public string ButtonText { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
+<<<<<<< HEAD
+=======
+    public string Color { get; set; } = string.Empty;
+>>>>>>> parent of e60e1b3 (chore(callToActionBanner): change spelling)
 }
