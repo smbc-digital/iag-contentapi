@@ -25,10 +25,15 @@ public class Topic
     public string ExpandingLinkTitle { get; }
     public IEnumerable<ExpandingLinkBox> ExpandingLinkBoxes { get; }
     public string PrimaryItemTitle { get; set; }
+
     public bool DisplayContactUs { get; }
+
     public CarouselContent CampaignBanner { get; set; }
-    public CallToActionBanner CallToAction { get; init; }
+
+    public CallToAction CallToAction { get; init; }
+
     public string EventCategory { get; set; }
+
 
     public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
         IEnumerable<SubItem> tertiaryItems)
@@ -44,7 +49,7 @@ public class Topic
         string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
         IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string eventCategory,
-        CallToActionBanner callToAction, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
+        IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
         bool displayContactUs = true)
     {
         Slug = slug;
@@ -71,7 +76,6 @@ public class Topic
         PrimaryItemTitle = primaryItemTitle;
         DisplayContactUs = displayContactUs;
         CampaignBanner = campaignBanner;
-        CallToAction = callToAction;
     }
 }
 
@@ -99,7 +103,6 @@ public class NullTopic : Topic
         string.Empty,
         new CarouselContent(),
         string.Empty,
-        null,
         new List<ExpandingLinkBox>(),
         string.Empty,
         true
