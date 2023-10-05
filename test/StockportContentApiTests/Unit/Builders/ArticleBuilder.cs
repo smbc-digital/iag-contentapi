@@ -120,7 +120,6 @@ public class ArticleBuilder
         "expandingLinkTitle",
         new CarouselContent(),
         null,
-        null,
         new List<ExpandingLinkBox>());
 
     public Article Build()
