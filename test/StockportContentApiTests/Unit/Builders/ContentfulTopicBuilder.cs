@@ -26,6 +26,7 @@ public class ContentfulTopicBuilder
         new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
     private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> {
         new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
+    private ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
     private ContentfulEventBanner _eventBanner =
        new ContentfulEventBannerBuilder().Build();
     private List<ContentfulExpandingLinkBox> _expandingLinkBox = new List<ContentfulExpandingLinkBox> {
@@ -49,6 +50,7 @@ public class ContentfulTopicBuilder
             SubItems = _subItems,
             SecondaryItems = _secondaryItems,
             TertiaryItems = _tertiaryItems,
+            CallToAction = _callToActionBanner,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
             SunriseDate = _sunriseDate,
@@ -129,6 +131,12 @@ public class ContentfulTopicBuilder
     public ContentfulTopicBuilder TertiaryItems(List<ContentfulReference> items)
     {
         _tertiaryItems = items;
+        return this;
+    }
+
+    public ContentfulTopicBuilder CallToActionBanner(ContentfulCallToActionBanner callToAction)
+    {
+        _callToActionBanner = callToAction;
         return this;
     }
 
