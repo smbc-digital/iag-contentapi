@@ -20,5 +20,6 @@ public class ContentfulHomepage : IContentfulModel
     public string MetaDescription { get; set; } = string.Empty;
     public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
     public ContentfulCallToActionBanner CallToAction { get; set; } = null;
+    public ContentfulCallToActionBanner CallToActionPrimary { get; set; } = null;
     public IEnumerable<ContentfulSpotlightOnBanner> SpotlightOnBanner { get; set; } = null;
 }
