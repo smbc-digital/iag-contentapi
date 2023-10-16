@@ -26,6 +26,11 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         var featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
         var featuredTasksSummary = !string.IsNullOrEmpty(entry.FeaturedTasksSummary) ? entry.FeaturedTasksSummary : string.Empty;
         var backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage?.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
+        var foregroundImage = !string.IsNullOrEmpty(entry.ForegroundImage?.File?.Url) ? entry.ForegroundImage.File.Url : string.Empty;
+        var foregroundImageLocation = !string.IsNullOrEmpty(entry.ForegroundImageLocation) ? entry.ForegroundImageLocation : string.Empty;
+        var foregroundImageLink = !string.IsNullOrEmpty(entry.ForegroundImageLink) ? entry.ForegroundImageLink : string.Empty;
+        var foregroundImageAlt = !string.IsNullOrEmpty(entry.ForegroundImage.Description) ? entry.ForegroundImage.Description : string.Empty;
+
         var freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
 
         var popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
@@ -61,6 +66,6 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         var spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
 
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, spotlightOnBanner);
+            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, spotlightOnBanner);
     }
 }
