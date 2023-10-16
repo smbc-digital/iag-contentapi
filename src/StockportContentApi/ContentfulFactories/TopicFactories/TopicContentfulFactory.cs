@@ -9,7 +9,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
-    private readonly IContentfulFactory<ContentfulCallToAction, CallToAction> _callToActionFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
 
     public TopicContentfulFactory(
         IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
@@ -19,7 +19,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory,
         IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulCallToAction, CallToAction> callToActionFactory)
+        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
     {
         _subItemFactory = subItemFactory;
         _crumbFactory = crumbFactory;
@@ -71,6 +71,9 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
         var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
+        var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+
+
         IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() ?
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))
             : new List<Trivia>();
@@ -78,7 +81,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
             subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
             entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
-            expandingLinkBoxes, primaryItemTitle, displayContactUs)
+            callToAction, expandingLinkBoxes, primaryItemTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
