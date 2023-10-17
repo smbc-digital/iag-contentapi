@@ -63,9 +63,11 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
+        var callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
+
         var spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
 
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, spotlightOnBanner);
+            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner);
     }
 }
