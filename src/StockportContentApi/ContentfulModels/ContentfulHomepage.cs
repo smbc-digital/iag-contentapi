@@ -10,6 +10,9 @@ public class ContentfulHomepage : IContentfulModel
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public IEnumerable<ContentfulCarouselContent> CarouselContents { get; set; } = new List<ContentfulCarouselContent>();
     public Asset BackgroundImage { get; set; } = new Asset();
+    public Asset ForegroundImage { get; set; } = new Asset();
+    public string ForegroundImageLocation { get; set; } = string.Empty;
+    public string ForegroundImageLink { get; set; } = string.Empty;
     public string FreeText { get; set; } = string.Empty;
     public IEnumerable<ContentfulGroup> FeaturedGroups { get; set; } = new List<ContentfulGroup>();
     public string EventCategory { get; set; } = string.Empty;
@@ -17,5 +20,6 @@ public class ContentfulHomepage : IContentfulModel
     public string MetaDescription { get; set; } = string.Empty;
     public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
     public ContentfulCallToActionBanner CallToAction { get; set; } = null;
+    public ContentfulCallToActionBanner CallToActionPrimary { get; set; } = null;
     public IEnumerable<ContentfulSpotlightOnBanner> SpotlightOnBanner { get; set; } = null;
 }

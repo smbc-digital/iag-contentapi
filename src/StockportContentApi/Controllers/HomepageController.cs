@@ -22,10 +22,12 @@ public class HomepageController : Controller
     [Route("v1/{businessId}/homepage")]
     public async Task<IActionResult> Get(string businessId)
     {
-        return await _handler.Get(() =>
+        var result = await _handler.Get(() =>
         {
             var repository = _createRepository(_createConfig(businessId));
             return repository.Get();
         });
+
+        return result;
     }
 }

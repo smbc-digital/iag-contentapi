@@ -1,6 +1,4 @@
-﻿using StockportContentApi.Model;
-
-namespace StockportContentApiTests.Unit.ContentfulFactories;
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class TopicContentfulFactoryTest
 {

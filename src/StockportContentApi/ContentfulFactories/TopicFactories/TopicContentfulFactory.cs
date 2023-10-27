@@ -70,8 +70,9 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         var displayContactUs = entry.DisplayContactUs;
 
         var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
-        
+
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+
 
         IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() ?
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))

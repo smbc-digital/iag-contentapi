@@ -20,7 +20,7 @@ public class ContentfulCallToActionBannerBuilder
             AltText = _altText,
             ButtonText = _buttonText,
             Colour = _colour,
-            Image = _image  
+            Image = _image
         };
     }
 
