@@ -4,6 +4,6 @@ public class EventBannerContentfulFactory : IContentfulFactory<ContentfulEventBa
 {
     public EventBanner ToModel(ContentfulEventBanner entry)
     {
-        return new EventBanner(entry.Title, entry.Teaser, entry.Icon, entry.Link);
+        return new EventBanner(entry.Title, entry.Teaser, entry.Icon, entry.Link, entry.Colour);
     }
 }
