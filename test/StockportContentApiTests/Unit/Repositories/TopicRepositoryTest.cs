@@ -20,7 +20,7 @@ public class TopicRepositoryTest
             .Build();
 
         _topic = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
-            new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), new List<ExpandingLinkBox>());
+            new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
 
         var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
             new DateTime(2017, 01, 02), string.Empty, false, string.Empty);
@@ -29,11 +29,11 @@ public class TopicRepositoryTest
 
         _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
             new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
-            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), new List<ExpandingLinkBox>());
+            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
 
         _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
             new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside },
-            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), new List<ExpandingLinkBox>());
+            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
 
         _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
         _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();

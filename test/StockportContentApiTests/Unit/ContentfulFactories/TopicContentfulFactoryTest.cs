@@ -13,6 +13,7 @@ public class TopicContentfulFactoryTest
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionBannerFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -33,7 +34,8 @@ public class TopicContentfulFactoryTest
             _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
-            _callToActionBannerFactory.Object);
+            _callToActionBannerFactory.Object,
+            _topicBrandingFactory.Object);
     }
 
     [Fact]

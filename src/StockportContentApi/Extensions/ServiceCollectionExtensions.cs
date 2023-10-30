@@ -63,7 +63,8 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
             p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
             p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>()
+            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
+            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()
             )
         );
         services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());

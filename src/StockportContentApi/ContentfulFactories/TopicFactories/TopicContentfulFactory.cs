@@ -10,6 +10,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _topicBrandingFactory;
 
     public TopicContentfulFactory(
         IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
@@ -19,7 +20,8 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory,
         IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+        IContentfulFactory<ContentfulGroupBranding, GroupBranding> topicBrandingFactory)
     {
         _subItemFactory = subItemFactory;
         _crumbFactory = crumbFactory;
@@ -29,6 +31,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         _eventBannerFactory = eventBannerFactory;
         _expandingLinkBoxFactory = expandingLinkBoxFactory;
         _callToActionFactory = callToActionFactory;
+        _topicBrandingFactory = topicBrandingFactory;
     }
 
     public Topic ToModel(ContentfulTopic entry)
@@ -73,6 +76,9 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
+        var topicBranding = entry.TopicBranding != null ? entry.TopicBranding.Where(o => o != null).Select(branding => _topicBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
+
+        var logoAreaTitle = entry.LogoAreaTitle;
 
         IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() ?
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))
@@ -81,7 +87,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
             subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
             entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
-            callToAction, expandingLinkBoxes, primaryItemTitle, displayContactUs)
+            callToAction, topicBranding, logoAreaTitle, expandingLinkBoxes, primaryItemTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
