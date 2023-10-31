@@ -7,7 +7,6 @@ public class ContentfulStartPage : ContentfulReference
     public string FormLinkLabel { get; set; } = string.Empty;
     public string FormLink { get; set; } = string.Empty;
     public string LowerBody { get; set; } = string.Empty;
-    public string BackgroundImage { get; set; } = string.Empty;
     public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
     public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public IEnumerable<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
