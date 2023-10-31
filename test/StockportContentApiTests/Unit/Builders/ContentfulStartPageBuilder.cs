@@ -10,7 +10,7 @@ public class ContentfulStartPageBuilder
     private string _formLinkLabel { get; set; } = "Start now";
     private string _formLink { get; set; } = "http://start.com";
     private string _lowerBody { get; set; } = "Lower body";
-    private string _backgroundImage { get; set; } = "image.jpg";
+    private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private string _icon { get; set; } = "icon";
 
     private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
@@ -35,7 +35,7 @@ public class ContentfulStartPageBuilder
             FormLinkLabel = _formLinkLabel,
             FormLink = _formLink,
             LowerBody = _lowerBody,
-            BackgroundImage = _backgroundImage,
+            BackgroundImage = _image,
             Icon = _icon,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts
