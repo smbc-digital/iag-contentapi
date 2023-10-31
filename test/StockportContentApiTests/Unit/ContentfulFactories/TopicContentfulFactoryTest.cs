@@ -64,7 +64,7 @@ public class TopicContentfulFactoryTest
         };
         _callToActionBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
-        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
+        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link", "Colour");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
         var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);

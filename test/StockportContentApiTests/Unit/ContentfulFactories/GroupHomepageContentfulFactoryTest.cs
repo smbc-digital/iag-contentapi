@@ -28,7 +28,7 @@ public class GroupHomepageContentfulFactoryTest
     public void ShouldReturnGroupHomepage()
     {
         // Arrange
-        var eventBanner = new EventBanner("title", "teaser", "icon", "link");
+        var eventBanner = new EventBanner("title", "teaser", "icon", "link", "colour");
         var featuredGroup = new GroupBuilder().Build();
         var category = new GroupCategory("title", "slug", "icon", "image");
         var subCategory = new GroupSubCategory("title", "slug");
