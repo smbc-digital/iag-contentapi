@@ -50,7 +50,9 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
         var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                  .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                 
 
         var backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                     ? entry.BackgroundImage.File.Url : string.Empty;
