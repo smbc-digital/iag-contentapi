@@ -150,6 +150,21 @@ public class TopicContentfulFactoryTest
     }
 
     [Fact]
+    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithSeverityOfCondolence()
+    {
+        var contentfulAlerts = new List<ContentfulAlert> {
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Information").Build(),
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Condolence").Build()
+        };
+
+        var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
+
+        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+
+        topic.Alerts.Should().HaveCount(1);
+    }
+
+    [Fact]
     public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllInsideOfDates()
     {
         var alerts = new List<ContentfulAlert>{
