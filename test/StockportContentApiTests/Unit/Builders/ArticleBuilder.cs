@@ -121,6 +121,7 @@ public class ArticleBuilder
         new CarouselContent(),
         null,
         null,
+        null,
         new List<ExpandingLinkBox>());
 
     public Article Build()

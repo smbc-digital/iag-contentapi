@@ -10,6 +10,8 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
+    //02/11/23 hotfix CTA backwards compatibility for HealthyStockport
+    private readonly IContentfulFactory<ContentfulCallToAction, CallToAction> _callToActionBannerFactory;
 
     public TopicContentfulFactory(
         IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
@@ -19,7 +21,8 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory,
         IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+        IContentfulFactory<ContentfulCallToAction, CallToAction> callToActionBannerFactory)
     {
         _subItemFactory = subItemFactory;
         _crumbFactory = crumbFactory;
@@ -29,6 +32,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         _eventBannerFactory = eventBannerFactory;
         _expandingLinkBoxFactory = expandingLinkBoxFactory;
         _callToActionFactory = callToActionFactory;
+        _callToActionBannerFactory = callToActionBannerFactory;
     }
 
     public Topic ToModel(ContentfulTopic entry)
@@ -75,6 +79,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
+        var callToActionBanner = _callToActionBannerFactory.ToModel(entry.CallToActionBanner);
 
         IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() ?
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))
@@ -83,11 +88,12 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
             subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
             entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
-            callToAction, expandingLinkBoxes, primaryItemTitle, displayContactUs)
+            callToActionBanner, callToAction, expandingLinkBoxes, primaryItemTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
-            CallToAction = _callToActionFactory.ToModel(entry.CallToAction)
+            CallToAction = _callToActionFactory.ToModel(entry.CallToAction),
+            CallToActionBanner = _callToActionBannerFactory.ToModel(entry.CallToActionBanner)
         };
     }
 }

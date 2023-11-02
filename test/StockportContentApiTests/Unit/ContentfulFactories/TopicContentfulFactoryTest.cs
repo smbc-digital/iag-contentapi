@@ -12,7 +12,8 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
-    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionBannerFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionBannerFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -24,7 +25,8 @@ public class TopicContentfulFactoryTest
         _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
+        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
+        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(string.Empty, string.Empty, null, string.Empty));
         _topicContentfulFactory = new TopicContentfulFactory(
             _subItemFactory.Object,
             _crumbFactory.Object,
@@ -33,6 +35,7 @@ public class TopicContentfulFactoryTest
             _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
+            _callToActionFactory.Object,
             _callToActionBannerFactory.Object);
     }
 
@@ -62,7 +65,7 @@ public class TopicContentfulFactoryTest
             Teaser = "teaser",
             Title = "title"
         };
-        _callToActionBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
+        _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
         var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link", "Colour");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
