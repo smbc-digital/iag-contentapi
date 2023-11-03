@@ -81,7 +81,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
-        var topicBranding = entry.TopicBranding != null ? entry.TopicBranding.Where(o => o != null).Select(branding => _topicBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
+        var topicBranding = entry.TopicBranding is not null ? entry.TopicBranding.Where(_ => _ is not null).Select(branding => _topicBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
 
         var logoAreaTitle = entry.LogoAreaTitle;
         var callToActionBanner = _callToActionBannerFactory.ToModel(entry.CallToActionBanner);
