@@ -11,6 +11,7 @@ public class ContentfulTopic : ContentfulReference
     public string TriviaSubheading { get; set; } = string.Empty;
     public List<ContentfulTrivia> TriviaSection { get; init; }
     public ContentfulCallToActionBanner CallToAction { get; init; }
+    public ContentfulCallToAction CallToActionBanner { get; init; }
     public bool EmailAlerts { get; set; } = false;
     public string EmailAlertsTopicId { get; set; } = string.Empty;
     public string ExpandingLinkTitle { get; set; } = string.Empty;
