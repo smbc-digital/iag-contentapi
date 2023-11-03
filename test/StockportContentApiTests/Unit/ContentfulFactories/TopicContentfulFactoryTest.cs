@@ -11,8 +11,9 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
-    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionBannerFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionBannerFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -24,7 +25,8 @@ public class TopicContentfulFactoryTest
         _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
+        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
+        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(string.Empty, string.Empty, null, string.Empty));
         _topicContentfulFactory = new TopicContentfulFactory(
             _subItemFactory.Object,
             _crumbFactory.Object,
@@ -33,8 +35,10 @@ public class TopicContentfulFactoryTest
             _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
-            _callToActionBannerFactory.Object,
-            _topicBrandingFactory.Object);
+            _callToActionFactory.Object,
+            _topicBrandingFactory.Object,
+            _callToActionBannerFactory.Object
+            );
     }
 
     [Fact]
@@ -63,9 +67,9 @@ public class TopicContentfulFactoryTest
             Teaser = "teaser",
             Title = "title"
         };
-        _callToActionBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
+        _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
-        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
+        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link", "Colour");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
         var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
@@ -154,6 +158,21 @@ public class TopicContentfulFactoryTest
 
         // Arrange
         Assert.Single(topic.Alerts);
+    }
+
+    [Fact]
+    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithSeverityOfCondolence()
+    {
+        var contentfulAlerts = new List<ContentfulAlert> {
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Information").Build(),
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Condolence").Build()
+        };
+
+        var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
+
+        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+
+        topic.Alerts.Should().HaveCount(1);
     }
 
     [Fact]

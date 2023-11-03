@@ -122,6 +122,7 @@ public class ArticleBuilder
         null,
         null,
         null,
+        null,
         string.Empty,
         new List<ExpandingLinkBox>());
 
