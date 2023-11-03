@@ -30,6 +30,9 @@ public class Topic
     public CallToActionBanner CallToAction { get; init; }
     public CallToAction CallToActionBanner { get; init; }
     public string EventCategory { get; set; }
+    public List<GroupBranding> TopicBranding { get; set; }
+
+    public string LogoAreaTitle { get; set; }
 
     public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
         IEnumerable<SubItem> tertiaryItems)
@@ -45,7 +48,7 @@ public class Topic
         string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
         IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string eventCategory,
-        CallToAction callToActionBanner, CallToActionBanner callToAction, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
+        CallToAction callToActionBanner, CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
         bool displayContactUs = true)
     {
         Slug = slug;
@@ -73,6 +76,8 @@ public class Topic
         DisplayContactUs = displayContactUs;
         CampaignBanner = campaignBanner;
         CallToAction = callToAction;
+        TopicBranding = topicBranding;
+        LogoAreaTitle = logoAreaTitle;
         CallToActionBanner = callToActionBanner;
     }
 }
@@ -103,6 +108,8 @@ public class NullTopic : Topic
         string.Empty,
         null,
         null,
+        null,
+        string.Empty,
         new List<ExpandingLinkBox>(),
         string.Empty,
         true

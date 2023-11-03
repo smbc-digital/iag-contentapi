@@ -99,7 +99,7 @@ public class ArticleBuilder
     private DateTime _updatedAt = DateTime.Now;
     private bool _hideLastUpdated;
 
-    private Topic _parentTopic = new Topic("slug",
+    private Topic _parentTopic = new("slug",
         "name",
         "teaser",
         "metaDescription",
@@ -122,6 +122,8 @@ public class ArticleBuilder
         null,
         null,
         null,
+        null,
+        string.Empty,
         new List<ExpandingLinkBox>());
 
     public Article Build()

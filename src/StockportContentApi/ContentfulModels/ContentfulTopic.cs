@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.ContentfulModels;
+﻿using Elasticsearch.Net;
+
+namespace StockportContentApi.ContentfulModels;
 
 public class ContentfulTopic : ContentfulReference
 {
@@ -25,4 +27,7 @@ public class ContentfulTopic : ContentfulReference
     public string EventCategory { get; set; }
 
     public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
+
+    public List<ContentfulGroupBranding> TopicBranding { get; set; } = new List<ContentfulGroupBranding>();
+    public string LogoAreaTitle { get; set;}
 }
