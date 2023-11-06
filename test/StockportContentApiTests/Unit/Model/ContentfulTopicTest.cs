@@ -5,8 +5,9 @@ public class ContentfulTopicTest
     [Fact]
     public void ShouldSetDefaultsOnModel()
     {
-        var actual = new ContentfulTopic();
-        var expected = new ContentfulTopic
+        // Arrange & Act
+        ContentfulTopic actual = new();
+        ContentfulTopic expected = new()
         {
             Slug = string.Empty,
             Name = string.Empty,
@@ -25,6 +26,8 @@ public class ContentfulTopicTest
             EmailAlerts = false,
             EmailAlertsTopicId = string.Empty
         };
-        actual.Should().BeEquivalentTo(expected);
+
+        // Assert
+        Assert.Equivalent(expected, actual);
     }
 }
