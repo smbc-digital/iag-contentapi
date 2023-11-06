@@ -1,6 +1,4 @@
-﻿using Elasticsearch.Net;
-
-namespace StockportContentApi.ContentfulModels;
+﻿namespace StockportContentApi.ContentfulModels;
 
 public class ContentfulTopic : ContentfulReference
 {

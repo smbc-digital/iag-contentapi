@@ -4,8 +4,6 @@ public class TopicRepositoryTest
 {
     private readonly TopicRepository _repository;
     private readonly Topic _topic;
-    private readonly Topic _topicWithAlertsOutsideSunsetDate;
-    private readonly Topic _topicWithAlertsInsideSunsetDate;
     private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
     private readonly Mock<IContentfulClient> _contentfulClient;
     private readonly Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>> _topicSiteMapFactory;
@@ -22,21 +20,9 @@ public class TopicRepositoryTest
         _topic = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
             new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", null, new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
 
-        var alertOutside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
-            new DateTime(2017, 01, 02), string.Empty, false, string.Empty);
-        var alertInside = new Alert("title", "subheading", "body", "warning", new DateTime(2017, 01, 01),
-            new DateTime(2017, 02, 03), string.Empty, false, string.Empty);
-
-        _topicWithAlertsOutsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
-            new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside },
-            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", null, new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
-
-        _topicWithAlertsInsideSunsetDate = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image",
-            new List<SubItem>(), new List<SubItem>(), new List<SubItem>(), new List<Crumb>(), new List<Alert> { alertOutside, alertInside },
-            DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), "expandingLinkTitle", new CarouselContent(), "eventCategory", null, new CallToActionBanner(), null, string.Empty, new List<ExpandingLinkBox>());
-
         _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
         _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();
+
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);

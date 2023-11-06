@@ -139,7 +139,7 @@ public class TopicContentfulFactoryTest
         Assert.Empty(topic.TertiaryItems);
         Assert.Empty(topic.BackgroundImage);
         _crumbFactory.Verify(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
-        _subItemFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 
     [Fact]
@@ -161,47 +161,56 @@ public class TopicContentfulFactoryTest
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithSeverityOfCondolence()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithSeverityOfCondolence()
     {
-        var contentfulAlerts = new List<ContentfulAlert> {
+        // Arrange
+        List<ContentfulAlert> contentfulAlerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Information").Build(),
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Condolence").Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(1);
+        // Assert
+        Assert.Single(topic.Alerts);
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllInsideOfDates()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithAllInsideOfDates()
     {
-        var alerts = new List<ContentfulAlert>{
+        // Arrange
+        List<ContentfulAlert> alerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 02, 03)).SunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(2);
+        // Assert
+        Assert.Equal(2, topic.Alerts.Count());
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllOutsideOfDates()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithAllOutsideOfDates()
     {
-        var alerts = new List<ContentfulAlert> {
+        // Arrange
+        List<ContentfulAlert> alerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 03, 01)).Build(),
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 10, 03)).SunriseDate(new DateTime(2017, 03, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(0);
+        // Assert
+        Assert.Empty(topic.Alerts);
     }
 }
