@@ -23,7 +23,7 @@ public class TopicRepository
 
         var entry = entries.FirstOrDefault();
 
-        if (entry == null) 
+        if (entry is null) 
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
 
         var model = _topicFactory.ToModel(entry);
@@ -38,7 +38,7 @@ public class TopicRepository
         var contentfulTopics = entries as IEnumerable<ContentfulTopicForSiteMap> ?? entries.ToList();
 
         var topics = GetAllTopics(contentfulTopics.ToList());
-        return entries == null || !contentfulTopics.Any()
+        return entries is null || !contentfulTopics.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
             : HttpResponse.Successful(topics);
     }
