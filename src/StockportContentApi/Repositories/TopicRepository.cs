@@ -23,7 +23,8 @@ public class TopicRepository
 
         var entry = entries.FirstOrDefault();
 
-        if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
+        if (entry == null) 
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
 
         var model = _topicFactory.ToModel(entry);
 
