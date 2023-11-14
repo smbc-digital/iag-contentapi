@@ -124,4 +124,10 @@ public class ContentfulEventBuilder
         _group = group;
         return this;
     }
+
+    public ContentfulEventBuilder StartTime(string startTime)
+    {
+        _startTime = startTime;
+        return this;
+    }
 }

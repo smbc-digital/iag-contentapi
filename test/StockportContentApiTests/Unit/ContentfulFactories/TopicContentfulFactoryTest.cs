@@ -3,7 +3,6 @@
 public class TopicContentfulFactoryTest
 {
     private readonly ContentfulTopic _contentfulTopic;
-
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
@@ -11,8 +10,10 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>> _expandingLinkBoxFactory;
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
-    private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
-    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionBannerFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -24,7 +25,8 @@ public class TopicContentfulFactoryTest
         _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(nameof(CallToAction), null, null, null));
+        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
+        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(string.Empty, string.Empty, null, string.Empty));
         _topicContentfulFactory = new TopicContentfulFactory(
             _subItemFactory.Object,
             _crumbFactory.Object,
@@ -33,11 +35,14 @@ public class TopicContentfulFactoryTest
             _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
-            _callToActionFactory.Object);
+            _callToActionFactory.Object,
+            _topicBrandingFactory.Object,
+            _callToActionBannerFactory.Object
+            );
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopic()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic()
     {
         //Arrange
         var crumb = new Crumb("title", "slug", "type");
@@ -52,7 +57,19 @@ public class TopicContentfulFactoryTest
         var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.TertiaryItems.First())).Returns(tertiaryItem);
 
-        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link");
+        var callToAction = new CallToActionBanner()
+        {
+            AltText = "altText",
+            ButtonText = "buttonText",
+            Colour = "Pink",
+            Image = "image",
+            Link = "link",
+            Teaser = "teaser",
+            Title = "title"
+        };
+        _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
+
+        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link", "Colour");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
         var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
@@ -70,39 +87,41 @@ public class TopicContentfulFactoryTest
         var result = _topicContentfulFactory.ToModel(_contentfulTopic);
 
         //Assert
-        result.SubItems.Count().Should().Be(1);
-        result.SubItems.First().Should().BeEquivalentTo(subItem);
-        result.SecondaryItems.Count().Should().Be(1);
-        result.SecondaryItems.First().Should().BeEquivalentTo(secondaryItem);
-        result.TertiaryItems.Count().Should().Be(1);
-        result.TertiaryItems.First().Should().BeEquivalentTo(tertiaryItem);
-        result.EventBanner.Should().BeEquivalentTo(eventBanner);
-        result.Alerts.Count().Should().Be(1);
-        result.Alerts.First().Should().BeEquivalentTo(alert);
-        result.BackgroundImage.Should().BeEquivalentTo("background-image-url.jpg");
-        result.Breadcrumbs.Count().Should().Be(1);
-        result.Breadcrumbs.First().Should().BeEquivalentTo(crumb);
-        result.EmailAlerts.Should().Be(false);
-        result.EmailAlertsTopicId.Should().BeEquivalentTo("id");
-        result.ExpandingLinkBoxes.Count().Should().Be(1);
-        result.ExpandingLinkBoxes.First().Should().BeEquivalentTo(expandingLinkBox);
-        result.ExpandingLinkTitle.Should().BeEquivalentTo("expandingLinkTitle");
-        result.Icon.Should().BeEquivalentTo("icon");
-        result.Image.Should().BeEquivalentTo("background-image-url.jpg");
-        result.Slug.Should().BeEquivalentTo("slug");
-        result.Name.Should().BeEquivalentTo("name");
-        result.Summary.Should().BeEquivalentTo("summary");
-        result.SunriseDate.Should().Be(DateTime.MinValue);
-        result.SunsetDate.Should().Be(DateTime.MaxValue);
-        result.Teaser.Should().BeEquivalentTo("teaser");
-        result.MetaDescription.Should().BeEquivalentTo("metaDescription");
-        result.DisplayContactUs.Should().Be(false);
-        result.CallToAction.Should().NotBeNull();
+        Assert.Single(result.SubItems);
+        Assert.Equal(subItem, result.SubItems.First());
+        Assert.Single(result.SecondaryItems);
+        Assert.Equal(secondaryItem, result.SecondaryItems.First());
+        Assert.Single(result.TertiaryItems);
+        Assert.Equal(tertiaryItem, result.TertiaryItems.First());
+        Assert.Equal(callToAction, result.CallToAction);
+        Assert.Equal(eventBanner, result.EventBanner);
+        Assert.Single(result.Alerts);
+        Assert.Equal(alert, result.Alerts.First());
+        Assert.Equal("background-image-url.jpg", result.BackgroundImage);
+        Assert.Single(result.Breadcrumbs);
+        Assert.Equal(crumb, result.Breadcrumbs.First());
+        Assert.False(result.EmailAlerts);
+        Assert.Equal("id", result.EmailAlertsTopicId);
+        Assert.Single(result.ExpandingLinkBoxes);
+        Assert.Equal(expandingLinkBox, result.ExpandingLinkBoxes.First());
+        Assert.Equal("expandingLinkTitle", result.ExpandingLinkTitle);
+        Assert.Equal("icon", result.Icon);
+        Assert.Equal("background-image-url.jpg", result.Image);
+        Assert.Equal("slug", result.Slug);
+        Assert.Equal("name", result.Name);
+        Assert.Equal("summary", result.Summary);
+        Assert.Equal(DateTime.MinValue, result.SunriseDate);
+        Assert.Equal(DateTime.MaxValue, result.SunsetDate);
+        Assert.Equal("teaser", result.Teaser);
+        Assert.Equal("metaDescription", result.MetaDescription);
+        Assert.False(result.DisplayContactUs);
+        Assert.NotNull(result.CallToAction);
     }
 
     [Fact]
-    public void ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrTertiaryItemsOrImageOrAlertsIfTheyAreLinks()
+    public void ToModel_ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrTertiaryItemsOrImageOrAlerts_If_TheyAreLinks()
     {
+        // Arrange
         _contentfulTopic.Breadcrumbs.First().Sys.LinkType = "Link";
         _contentfulTopic.SubItems.First().Sys.LinkType = "Link";
         _contentfulTopic.SecondaryItems.First().Sys.LinkType = "Link";
@@ -110,59 +129,88 @@ public class TopicContentfulFactoryTest
         _contentfulTopic.Alerts.First().Sys.LinkType = "Link";
         _contentfulTopic.BackgroundImage.SystemProperties.LinkType = "Link";
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(_contentfulTopic);
 
-        topic.Breadcrumbs.Count().Should().Be(0);
-        _crumbFactory.Verify(o => o.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
-        topic.SubItems.Count().Should().Be(0);
-        topic.SecondaryItems.Count().Should().Be(0);
-        topic.TertiaryItems.Count().Should().Be(0);
-        _subItemFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        topic.BackgroundImage.Should().BeEmpty();
+        // Assert
+        Assert.Empty(topic.Breadcrumbs);
+        Assert.Empty(topic.SubItems);
+        Assert.Empty(topic.SecondaryItems);
+        Assert.Empty(topic.TertiaryItems);
+        Assert.Empty(topic.BackgroundImage);
+        _crumbFactory.Verify(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
+        _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithOneOutsdieOfDates()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithOneOutsideOfDates()
     {
-        var alerts = new List<ContentfulAlert> {
+        // Arrange
+        List<ContentfulAlert> alerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
-        new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 01, 04)).SunriseDate(new DateTime(2017, 01, 01)).Build()
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 01, 04)).SunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
-
+        
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(1);
+        // Arrange
+        Assert.Single(topic.Alerts);
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllInsideOfDates()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithSeverityOfCondolence()
     {
-        var alerts = new List<ContentfulAlert>{
+        // Arrange
+        List<ContentfulAlert> contentfulAlerts = new() {
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Information").Build(),
+            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Condolence").Build()
+        };
+
+        var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
+
+        // Act
+        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+
+        // Assert
+        Assert.Single(topic.Alerts);
+    }
+
+    [Fact]
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithAllInsideOfDates()
+    {
+        // Arrange
+        List<ContentfulAlert> alerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 02, 03)).SunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(2);
+        // Assert
+        Assert.Equal(2, topic.Alerts.Count());
     }
 
     [Fact]
-    public void ShouldCreateATopicFromAContentfulTopicAndFilterAlertsWithAllOutsideOfDates()
+    public void ToModel_ShouldCreateATopicFromAContentfulTopic_And_FilterAlertsWithAllOutsideOfDates()
     {
-        var alerts = new List<ContentfulAlert> {
+        // Arrange
+        List<ContentfulAlert> alerts = new() {
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 03, 01)).Build(),
             new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 10, 03)).SunriseDate(new DateTime(2017, 03, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
+        // Act
         var topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
-        topic.Alerts.Should().HaveCount(0);
+        // Assert
+        Assert.Empty(topic.Alerts);
     }
 }

@@ -8,8 +8,9 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
+    private readonly IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> _spotlightOnBanner;
 
-    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory, IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> spotlightOnBanner)
     {
         _subitemFactory = subitemFactory;
         _groupFactory = groupFactory;
@@ -17,6 +18,7 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         _carouselFactory = carouselFactory;
         _dateComparer = new DateComparer(timeProvider);
         _callToActionFactory = callToActionFactory;
+        _spotlightOnBanner = spotlightOnBanner;
     }
 
     public Homepage ToModel(ContentfulHomepage entry)
@@ -24,6 +26,11 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         var featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
         var featuredTasksSummary = !string.IsNullOrEmpty(entry.FeaturedTasksSummary) ? entry.FeaturedTasksSummary : string.Empty;
         var backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage?.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
+        var foregroundImage = !string.IsNullOrEmpty(entry.ForegroundImage?.File?.Url) ? entry.ForegroundImage.File.Url : string.Empty;
+        var foregroundImageLocation = !string.IsNullOrEmpty(entry.ForegroundImageLocation) ? entry.ForegroundImageLocation : string.Empty;
+        var foregroundImageLink = !string.IsNullOrEmpty(entry.ForegroundImageLink) ? entry.ForegroundImageLink : string.Empty;
+        var foregroundImageAlt = !string.IsNullOrEmpty(entry.ForegroundImage.Description) ? entry.ForegroundImage.Description : string.Empty;
+
         var freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
 
         var popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
@@ -56,7 +63,11 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
+        var callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
+
+        var spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
+
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction);
+            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner);
     }
 }

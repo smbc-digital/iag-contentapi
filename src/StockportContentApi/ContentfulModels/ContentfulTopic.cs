@@ -10,7 +10,8 @@ public class ContentfulTopic : ContentfulReference
     public string VideoTag { get; init; }
     public string TriviaSubheading { get; set; } = string.Empty;
     public List<ContentfulTrivia> TriviaSection { get; init; }
-    public ContentfulCallToAction CallToAction { get; init; }
+    public ContentfulCallToActionBanner CallToAction { get; init; }
+    public ContentfulCallToAction CallToActionBanner { get; init; }
     public bool EmailAlerts { get; set; } = false;
     public string EmailAlertsTopicId { get; set; } = string.Empty;
     public string ExpandingLinkTitle { get; set; } = string.Empty;
@@ -24,4 +25,7 @@ public class ContentfulTopic : ContentfulReference
     public string EventCategory { get; set; }
 
     public ContentfulCarouselContent CampaignBanner { get; set; } = new ContentfulCarouselContent();
+
+    public List<ContentfulGroupBranding> TopicBranding { get; set; } = new List<ContentfulGroupBranding>();
+    public string LogoAreaTitle { get; set;}
 }

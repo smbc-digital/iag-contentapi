@@ -36,7 +36,7 @@ public class HomepageRepositoryTest
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _homepageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulHomepage>()))
-            .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, null, string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner()));
+            .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null));
 
         var response = AsyncTestHelper.Resolve(_repository.Get());
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

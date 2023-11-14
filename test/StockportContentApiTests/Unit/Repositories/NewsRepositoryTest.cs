@@ -571,6 +571,49 @@ public class NewsRepositoryTest
     }
 
     [Fact]
+    public void GetsTheTopNewsItems()
+    {
+        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2020, 08, 5));
+
+        var newsRoom = new Newsroom(_alerts, true, "test-id");
+        _newsRoomContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+        _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns<ContentfulNews>(_ => new News(_.Title, _.Slug, _.Teaser, null, null, null, null, _.SunriseDate, _.SunsetDate, DateTime.MinValue, null, null, null, new List<Document>(), null));
+
+        var newsListCollection = new ContentfulCollection<ContentfulNews>();
+
+        var earliestNewsItem = new ContentfulNewsBuilder().Title("This is the first news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
+        var middleNewsItem = new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2017, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build();
+        var latestNewsItem = new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2018, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
+        newsListCollection.Items = new List<ContentfulNews>
+        {
+            earliestNewsItem,
+            middleNewsItem, 
+            latestNewsItem
+        };
+
+        _client.Setup(o => o.GetEntries(
+            It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000).Build()),
+            It.IsAny<CancellationToken>())).ReturnsAsync(newsListCollection);
+
+        _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns("The news");
+        _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsListCollection.Items.ToList());
+        _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
+
+
+        var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(1));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var newsList = response.Get<List<News>>();
+
+        Assert.Single(newsList);
+        Assert.Equal(latestNewsItem.Title, newsList.First().Title);
+        Assert.Equal(latestNewsItem.Slug, newsList.First().Slug);
+        Assert.Equal(latestNewsItem.Teaser, newsList.First().Teaser);
+        Assert.Equal(latestNewsItem.SunriseDate, newsList.First().SunriseDate);
+        Assert.Equal(latestNewsItem.SunsetDate, newsList.First().SunsetDate);
+    }
+
+    [Fact]
     public void GetsTheTopTwoNewsItems()
     {
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));

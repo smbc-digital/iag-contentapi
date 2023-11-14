@@ -13,26 +13,26 @@ public class ContentfulTopicBuilder
     private DateTime _sunsetDate = DateTime.MaxValue;
     private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
     private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
+    private List<ContentfulReference> _breadcrumbs = new() {
         new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
     private bool _emailAlerts = false;
     private string _emailAlertsTopicId = "id";
 
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
+    private List<ContentfulAlert> _alerts = new(){
         new ContentfulAlertBuilder().Build()};
-    private List<ContentfulReference> _subItems = new List<ContentfulReference> {
+    private List<ContentfulReference> _subItems = new() {
        new ContentfulReferenceBuilder().Slug("sub-slug").Build()};
-    private List<ContentfulReference> _secondaryItems = new List<ContentfulReference> {
+    private List<ContentfulReference> _secondaryItems = new() {
         new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
-    private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference> {
+    private List<ContentfulReference> _tertiaryItems = new() {
         new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
+    private ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
     private ContentfulEventBanner _eventBanner =
        new ContentfulEventBannerBuilder().Build();
-    private List<ContentfulExpandingLinkBox> _expandingLinkBox = new List<ContentfulExpandingLinkBox> {
+    private List<ContentfulExpandingLinkBox> _expandingLinkBox = new() {
         new ContentfulExpandingLinkBoxBuilder().Title("title").Build() };
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
-
 
     public ContentfulTopic Build()
     {
@@ -49,6 +49,7 @@ public class ContentfulTopicBuilder
             SubItems = _subItems,
             SecondaryItems = _secondaryItems,
             TertiaryItems = _tertiaryItems,
+            CallToAction = _callToActionBanner,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
             SunriseDate = _sunriseDate,
@@ -129,6 +130,12 @@ public class ContentfulTopicBuilder
     public ContentfulTopicBuilder TertiaryItems(List<ContentfulReference> items)
     {
         _tertiaryItems = items;
+        return this;
+    }
+
+    public ContentfulTopicBuilder CallToActionBanner(ContentfulCallToActionBanner callToAction)
+    {
+        _callToActionBanner = callToAction;
         return this;
     }
 

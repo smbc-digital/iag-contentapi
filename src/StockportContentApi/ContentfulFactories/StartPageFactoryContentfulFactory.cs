@@ -27,8 +27,11 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Select(alertInline => _alertFactory.ToModel(alertInline));
 
+        var backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
+                            ? entry.BackgroundImage.File.Url : string.Empty;
+
         return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,
-            entry.FormLinkLabel, entry.FormLink, entry.LowerBody, entry.BackgroundImage, entry.Icon,
+            entry.FormLinkLabel, entry.FormLink, entry.LowerBody, backgroundImage, entry.Icon,
             breadcrumbs, alerts, alertsInline, entry.SunriseDate, entry.SunsetDate);
     }
 }
