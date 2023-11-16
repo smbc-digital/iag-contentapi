@@ -13,7 +13,6 @@ public class TopicContentfulFactoryTest
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulCallToAction, CallToAction>> _callToActionBannerFactory = new();
 
     public TopicContentfulFactoryTest()
     {
@@ -26,7 +25,6 @@ public class TopicContentfulFactoryTest
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
         _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
-        _callToActionBannerFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToAction>())).Returns(new CallToAction(string.Empty, string.Empty, null, string.Empty));
         _topicContentfulFactory = new TopicContentfulFactory(
             _subItemFactory.Object,
             _crumbFactory.Object,
@@ -36,8 +34,7 @@ public class TopicContentfulFactoryTest
             _carouselContentFactory.Object,
             _timeProvider.Object,
             _callToActionFactory.Object,
-            _topicBrandingFactory.Object,
-            _callToActionBannerFactory.Object
+            _topicBrandingFactory.Object
             );
     }
 

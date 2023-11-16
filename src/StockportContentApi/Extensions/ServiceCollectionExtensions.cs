@@ -64,12 +64,10 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
             p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-            p.GetService<IContentfulFactory<ContentfulCallToAction, CallToAction>>()
+            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()
             )
         );
         services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulCallToAction, CallToAction>>(p => new CallToActionContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
         (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
