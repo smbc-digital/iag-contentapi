@@ -30,7 +30,6 @@ public class Topic
     public CallToActionBanner CallToAction { get; init; }
     public string EventCategory { get; set; }
     public List<GroupBranding> TopicBranding { get; set; }
-
     public string LogoAreaTitle { get; set; }
 
     public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,

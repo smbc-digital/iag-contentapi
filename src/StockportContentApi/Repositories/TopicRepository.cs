@@ -43,15 +43,5 @@ public class TopicRepository
             : HttpResponse.Successful(topics);
     }
 
-    private IEnumerable<TopicSiteMap> GetAllTopics(List<ContentfulTopicForSiteMap> entries)
-    {
-        var entriesList = new List<TopicSiteMap>();
-        foreach (var entry in entries)
-        {
-            var topicItem = _topicSiteMapFactory.ToModel(entry);
-            entriesList.Add(topicItem);
-        }
-
-        return entriesList;
-    }
+    private IEnumerable<TopicSiteMap> GetAllTopics(List<ContentfulTopicForSiteMap> entries) => entries.Select(entry => _topicSiteMapFactory.ToModel(entry)).ToList();
 }
