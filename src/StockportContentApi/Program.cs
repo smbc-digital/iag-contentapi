@@ -5,11 +5,26 @@
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
     builder.Configuration
         .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
-        .AddJsonFile($"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json");
+        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
+
+    bool useAwsSecretManager = builder.Configuration.GetSection("UseAWSSecretManager").Value is null ? false : bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+
+    if (useAwsSecretManager)
+    {
+        builder.AddSecrets();
+    }
+    else
+    {
+        builder.Configuration.AddJsonFile($"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json");
+    }
+
+    Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                    .CreateLogger();
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
