@@ -11,7 +11,8 @@ try
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
-    var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+    bool useAwsSecretManager = builder.Configuration.GetSection("UseAWSSecretManager").Value is null ? false : bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+
     if (useAwsSecretManager)
     {
         builder.AddSecrets();
