@@ -8,7 +8,6 @@ public class ContentfulTopicBuilder
     private string _summary = "summary";
     private string _teaser = "teaser";
     private string _metaDescription = "metaDescription";
-    private string _expandingLinkTitle = "expandingLinkTitle";
     private DateTime _sunriseDate = DateTime.MinValue;
     private DateTime _sunsetDate = DateTime.MaxValue;
     private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
@@ -27,8 +26,6 @@ public class ContentfulTopicBuilder
     private ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
     private ContentfulEventBanner _eventBanner =
        new ContentfulEventBannerBuilder().Build();
-    private List<ContentfulExpandingLinkBox> _expandingLinkBox = new() {
-        new ContentfulExpandingLinkBoxBuilder().Title("title").Build() };
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
 
@@ -54,8 +51,6 @@ public class ContentfulTopicBuilder
             EmailAlerts = _emailAlerts,
             EmailAlertsTopicId = _emailAlertsTopicId,
             EventBanner = _eventBanner,
-            ExpandingLinkTitle = _expandingLinkTitle,
-            ExpandingLinkBoxes = _expandingLinkBox,
             DisplayContactUs = false,
             Sys = new SystemProperties()
             {
@@ -169,18 +164,6 @@ public class ContentfulTopicBuilder
     public ContentfulTopicBuilder EventBanner(ContentfulEventBanner banner)
     {
         _eventBanner = banner;
-        return this;
-    }
-
-    public ContentfulTopicBuilder ExpandingLinkTitle(string title)
-    {
-        _expandingLinkTitle = title;
-        return this;
-    }
-
-    public ContentfulTopicBuilder ExpandingLinkBoxes(List<ContentfulExpandingLinkBox> boxes)
-    {
-        _expandingLinkBox = boxes;
         return this;
     }
 

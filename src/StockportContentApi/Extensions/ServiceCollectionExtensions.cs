@@ -27,7 +27,6 @@ public static class ServiceCollectionExtensions
             p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
             p.GetService<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(p => new ExpandingLinkBoxContentfulfactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p => new ContactUsCategoryContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory());
@@ -60,7 +59,6 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
-            p.GetService<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>(),
             p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
             p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),

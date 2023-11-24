@@ -116,13 +116,11 @@ public class ArticleBuilder
         false,
         "id",
         new NullEventBanner(),
-        "expandingLinkTitle",
         new CarouselContent(),
         null,
         null,
         null,
-        string.Empty,
-        new List<ExpandingLinkBox>());
+        string.Empty);
 
     public Article Build()
     {

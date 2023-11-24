@@ -7,7 +7,6 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
-    private readonly Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>> _expandingLinkBoxFactory;
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
@@ -21,7 +20,6 @@ public class TopicContentfulFactoryTest
         _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
-        _expandingLinkBoxFactory = new Mock<IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
         _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
@@ -30,7 +28,6 @@ public class TopicContentfulFactoryTest
             _crumbFactory.Object,
             _alertFactory.Object,
             _eventBannerFactory.Object,
-            _expandingLinkBoxFactory.Object,
             _carouselContentFactory.Object,
             _timeProvider.Object,
             _callToActionFactory.Object,
@@ -75,10 +72,6 @@ public class TopicContentfulFactoryTest
         _carouselContentFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCarouselContent>()))
             .Returns(carouselContent);
 
-        var expandingLinkBox = new ExpandingLinkBox("title", new List<SubItem>());
-        _expandingLinkBoxFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulExpandingLinkBox>()))
-            .Returns(expandingLinkBox);
-
         //Act
         var result = _topicContentfulFactory.ToModel(_contentfulTopic);
 
@@ -96,9 +89,6 @@ public class TopicContentfulFactoryTest
         Assert.Equal(crumb, result.Breadcrumbs.First());
         Assert.False(result.EmailAlerts);
         Assert.Equal("id", result.EmailAlertsTopicId);
-        Assert.Single(result.ExpandingLinkBoxes);
-        Assert.Equal(expandingLinkBox, result.ExpandingLinkBoxes.First());
-        Assert.Equal("expandingLinkTitle", result.ExpandingLinkTitle);
         Assert.Equal("icon", result.Icon);
         Assert.Equal("background-image-url.jpg", result.Image);
         Assert.Equal("slug", result.Slug);

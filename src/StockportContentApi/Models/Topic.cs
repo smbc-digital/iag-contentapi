@@ -21,9 +21,6 @@ public class Topic
     public bool EmailAlerts { get; }
     public string EmailAlertsTopicId { get; }
     public EventBanner EventBanner { get; }
-    public string ExpandingLinkTitle { get; }
-    public IEnumerable<ExpandingLinkBox> ExpandingLinkBoxes { get; }
-    public string PrimaryItemTitle { get; set; }
     public bool DisplayContactUs { get; }
     public CarouselContent CampaignBanner { get; set; }
     public CallToActionBanner CallToAction { get; init; }
@@ -42,8 +39,8 @@ public class Topic
     public Topic(string slug, string name, string teaser, string metaDescription, string summary, string icon, string backgroundImage,
         string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
         IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
-        string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string eventCategory,
-        CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
+        string emailAlertsTopicId, EventBanner eventBanner, CarouselContent campaignBanner, string eventCategory,
+        CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle,
         bool displayContactUs = true)
     {
         Slug = slug;
@@ -64,9 +61,6 @@ public class Topic
         EmailAlertsTopicId = emailAlertsTopicId;
         EventBanner = eventBanner;
         EventCategory = eventCategory;
-        ExpandingLinkTitle = expandingLinkTitle;
-        ExpandingLinkBoxes = expandingLinkBoxes;
-        PrimaryItemTitle = primaryItemTitle;
         DisplayContactUs = displayContactUs;
         CampaignBanner = campaignBanner;
         CallToAction = callToAction;
@@ -95,13 +89,10 @@ public class NullTopic : Topic
         false,
         string.Empty,
         new NullEventBanner(),
-        string.Empty,
         new CarouselContent(),
         string.Empty,
         null,
         null,
-        string.Empty,
-        new List<ExpandingLinkBox>(),
         string.Empty,
         true
         )
