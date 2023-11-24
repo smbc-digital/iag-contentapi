@@ -24,8 +24,6 @@ public class ContentfulTopicBuilder
        new ContentfulReferenceBuilder().Slug("sub-slug").Build()};
     private List<ContentfulReference> _secondaryItems = new() {
         new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
-    private List<ContentfulReference> _tertiaryItems = new() {
-        new ContentfulReferenceBuilder().Slug("tertiary-slug").Build() };
     private ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
     private ContentfulEventBanner _eventBanner =
        new ContentfulEventBannerBuilder().Build();
@@ -48,7 +46,6 @@ public class ContentfulTopicBuilder
             Image = _image,
             SubItems = _subItems,
             SecondaryItems = _secondaryItems,
-            TertiaryItems = _tertiaryItems,
             CallToAction = _callToActionBanner,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
@@ -124,12 +121,6 @@ public class ContentfulTopicBuilder
     public ContentfulTopicBuilder SecondaryItems(List<ContentfulReference> items)
     {
         _secondaryItems = items;
-        return this;
-    }
-
-    public ContentfulTopicBuilder TertiaryItems(List<ContentfulReference> items)
-    {
-        _tertiaryItems = items;
         return this;
     }
 

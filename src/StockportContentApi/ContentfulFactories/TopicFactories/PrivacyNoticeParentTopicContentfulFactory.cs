@@ -32,12 +32,7 @@ public class PrivacyNoticeParentTopicContentfulFactory : IContentfulFactory<Cont
             .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        var tertiaryItems = topicInBreadcrumb.TertiaryItems
-            .Select(CheckCurrentPrivacyNotice)
-            .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-
-        return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems, tertiaryItems);
+        return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
     }
 
     private ContentfulReference CheckCurrentPrivacyNotice(ContentfulReference item)

@@ -44,10 +44,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                     .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-
         var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
@@ -86,7 +82,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             : new List<Trivia>();
 
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
-            subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
+            subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
             entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
             callToAction, topicBranding, logoAreaTitle, expandingLinkBoxes, primaryItemTitle, displayContactUs)
         {

@@ -52,7 +52,6 @@ public class TopicContentfulFactoryTest
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
         var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
-        _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.TertiaryItems.First())).Returns(tertiaryItem);
 
         var callToAction = new CallToActionBanner()
         {
@@ -88,8 +87,6 @@ public class TopicContentfulFactoryTest
         Assert.Equal(subItem, result.SubItems.First());
         Assert.Single(result.SecondaryItems);
         Assert.Equal(secondaryItem, result.SecondaryItems.First());
-        Assert.Single(result.TertiaryItems);
-        Assert.Equal(tertiaryItem, result.TertiaryItems.First());
         Assert.Equal(callToAction, result.CallToAction);
         Assert.Equal(eventBanner, result.EventBanner);
         Assert.Single(result.Alerts);
@@ -116,13 +113,12 @@ public class TopicContentfulFactoryTest
     }
 
     [Fact]
-    public void ToModel_ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrTertiaryItemsOrImageOrAlerts_If_TheyAreLinks()
+    public void ToModel_ShouldNotAddBreadcrumbsOrSubItemsOrSecondaryItemsOrImageOrAlerts_If_TheyAreLinks()
     {
         // Arrange
         _contentfulTopic.Breadcrumbs.First().Sys.LinkType = "Link";
         _contentfulTopic.SubItems.First().Sys.LinkType = "Link";
         _contentfulTopic.SecondaryItems.First().Sys.LinkType = "Link";
-        _contentfulTopic.TertiaryItems.First().Sys.LinkType = "Link";
         _contentfulTopic.Alerts.First().Sys.LinkType = "Link";
         _contentfulTopic.BackgroundImage.SystemProperties.LinkType = "Link";
 
@@ -133,7 +129,6 @@ public class TopicContentfulFactoryTest
         Assert.Empty(topic.Breadcrumbs);
         Assert.Empty(topic.SubItems);
         Assert.Empty(topic.SecondaryItems);
-        Assert.Empty(topic.TertiaryItems);
         Assert.Empty(topic.BackgroundImage);
         _crumbFactory.Verify(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
         _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);

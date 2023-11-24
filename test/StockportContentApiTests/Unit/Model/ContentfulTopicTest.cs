@@ -18,7 +18,6 @@ public class ContentfulTopicTest
             Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
             SubItems = new List<ContentfulReference>(),
             SecondaryItems = new List<ContentfulReference>(),
-            TertiaryItems = new List<ContentfulReference>(),
             Breadcrumbs = new List<ContentfulReference>(),
             Alerts = new List<ContentfulAlert>(),
             SunriseDate = DateTime.MinValue.ToUniversalTime(),

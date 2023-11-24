@@ -14,7 +14,6 @@ public class Topic
     public Video Video { get; init; }
     public IEnumerable<SubItem> SubItems { get; }
     public IEnumerable<SubItem> SecondaryItems { get; }
-    public IEnumerable<SubItem> TertiaryItems { get; }
     public IEnumerable<Crumb> Breadcrumbs { get; }
     public IEnumerable<Alert> Alerts { get; private set; }
     public DateTime SunriseDate { get; }
@@ -32,19 +31,17 @@ public class Topic
     public List<GroupBranding> TopicBranding { get; set; }
     public string LogoAreaTitle { get; set; }
 
-    public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems,
-        IEnumerable<SubItem> tertiaryItems)
+    public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems)
     {
         Name = title;
         Slug = slug;
         SubItems = subItems;
         SecondaryItems = secondayItems;
-        TertiaryItems = tertiaryItems;
     }
 
     public Topic(string slug, string name, string teaser, string metaDescription, string summary, string icon, string backgroundImage,
-        string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<SubItem> tertiaryItems,
-        IEnumerable<Crumb> breadcrumbs, IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
+        string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
+        IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, string expandingLinkTitle, CarouselContent campaignBanner, string eventCategory,
         CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle, IEnumerable<ExpandingLinkBox> expandingLinkBoxes = null, string primaryItemTitle = null,
         bool displayContactUs = true)
@@ -59,7 +56,6 @@ public class Topic
         Image = image;
         SubItems = subItems;
         SecondaryItems = secondayItems;
-        TertiaryItems = tertiaryItems;
         Breadcrumbs = breadcrumbs;
         Alerts = alerts;
         SunriseDate = sunriseDate;
@@ -90,7 +86,6 @@ public class NullTopic : Topic
         string.Empty,
         string.Empty,
         string.Empty,
-        new List<SubItem>(),
         new List<SubItem>(),
         new List<SubItem>(),
         new List<Crumb>(),
