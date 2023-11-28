@@ -15,4 +15,5 @@ public class ContentfulNews : IContentfulModel
     public List<Asset> Documents { get; set; } = new List<Asset>();
     public List<string> Categories { get; set; } = new List<string>();
     public SystemProperties Sys { get; set; } = new SystemProperties();
+    public List<ContentfulProfile> Profiles { get; set; } = new List<ContentfulProfile>();
 }
