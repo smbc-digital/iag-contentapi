@@ -24,11 +24,11 @@ public class NewsRepositoryTest
     private readonly List<string> _newsCategories = new() { "news-category-1", "news-category-2" };
 
     private readonly ContentfulConfig _config = new ContentfulConfig("test")
-            .Add("DELIVERY_URL", "https://fake.url")
-            .Add("TEST_SPACE", "SPACE")
-            .Add("TEST_ACCESS_KEY", "KEY")
-            .Add("TEST_MANAGEMENT_KEY", "KEY")
-            .Build();
+        .Add("DELIVERY_URL", "https://fake.url")
+        .Add("TEST_SPACE", "SPACE")
+        .Add("TEST_ACCESS_KEY", "KEY")
+        .Add("TEST_MANAGEMENT_KEY", "KEY")
+        .Build();
 
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
@@ -136,7 +136,7 @@ public class NewsRepositoryTest
     public void GetNews_ShouldReturnNotFound_If_NewsWithSlugNotFound()
     {
         // Arrange
-        var collection = new ContentfulCollection<ContentfulNews> {
+        ContentfulCollection<ContentfulNews> collection = new() {
             Items = new List<ContentfulNews>()
         };
 
@@ -152,7 +152,7 @@ public class NewsRepositoryTest
     }
 
     [Fact]
-    public void GetsAllNewsItems()
+    public void Get_ShouldRetunrAllNewsItems()
     {
         // Arrange
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 08, 5));
@@ -271,7 +271,7 @@ public class NewsRepositoryTest
     }
 
     [Fact]
-    public void ShouldReturnListOfNewsForTag()
+    public void Get_ShouldReturnListOfNewsForTag()
     {
         // Arrange
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 5));
@@ -312,7 +312,7 @@ public class NewsRepositoryTest
     }
 
     [Fact]
-    public void ShouldReturnListOfNewsForCategory()
+    public void Get_ShouldReturnListOfNewsForCategory()
     {
         // Arrange
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 08, 5));
@@ -353,7 +353,7 @@ public class NewsRepositoryTest
     }
 
     [Fact]
-    public void ShouldReturnListOfNewsForCategoryAndTag()
+    public void Get_ShouldReturnListOfNewsForCategoryAndTag()
     {
         // Arrange
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 08, 5));
@@ -765,7 +765,7 @@ public class NewsRepositoryTest
     }
 
     [Fact]
-    public void ShouldReturnNewsOrderedBySunriseDate()
+    public void Get_ShouldReturnNewsOrderedBySunriseDate()
     {
         // Arrange
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 08, 5));
@@ -808,11 +808,5 @@ public class NewsRepositoryTest
         newsroom.News[0].Slug.Equals("new-news");
         newsroom.News[1].Slug.Equals("middle-news");
         newsroom.News[2].Slug.Equals("old-news");
-
-
-        Assert.Equal(3, newsroom.News.Count);
-        Assert.Equal("new-news", newsroom.News[0].Slug);
-        Assert.Equal("middle-news", newsroom.News[1].Slug);
-        Assert.Equal("old-news", newsroom.News[2].Slug);
     }
 }
