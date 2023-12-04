@@ -11,20 +11,21 @@ try
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
-    bool useAwsSecretManager = builder.Configuration.GetSection("UseAWSSecretManager").Value is null ? false : bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+    var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+    Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(builder.Configuration)
+                    .CreateLogger();
 
     if (useAwsSecretManager)
     {
         builder.AddSecrets();
+        Log.Logger.Information($"INITIALISE SECRETS CONTENTAPI: AWS Secrets Manager");
     }
     else
     {
         builder.Configuration.AddJsonFile($"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json");
+        Log.Logger.Information($"INITIALISE SECRETS CONTENTAPI: Load JSON Secrets from file system");
     }
-
-    Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration)
-                    .CreateLogger();
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
