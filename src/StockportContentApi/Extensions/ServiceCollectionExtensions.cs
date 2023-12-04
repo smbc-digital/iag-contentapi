@@ -171,7 +171,7 @@ public static class ServiceCollectionExtensions
             var redis = ConnectionMultiplexer.Connect(redisIp);
             logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
-            services.AddSingleton<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
+            services.AddScoped<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
         }
         else
         {
