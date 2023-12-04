@@ -163,7 +163,8 @@ public static class ServiceCollectionExtensions
                         },
                     ClientName = name,
                     SyncTimeout = 30000,
-                    AsyncTimeout = 30000
+                    AsyncTimeout = 30000,
+                    SocketManager = SocketManager.ThreadPool                    
                 };
             });
 
