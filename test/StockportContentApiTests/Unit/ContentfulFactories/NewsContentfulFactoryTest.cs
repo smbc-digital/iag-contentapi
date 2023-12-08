@@ -8,6 +8,7 @@ public class NewsContentfulFactoryTest
     private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
     private readonly NewsContentfulFactory _newsContentfulFactory;
     private readonly ContentfulNews _contentfulNews;
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
 
     public NewsContentfulFactoryTest()
     {
@@ -15,7 +16,9 @@ public class NewsContentfulFactoryTest
         _videoRepository = new Mock<IVideoRepository>();
         _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
         _alertBuilder = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, _alertBuilder.Object, _timeProvider.Object);
+        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+
+        _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, _alertBuilder.Object, _timeProvider.Object, _profileFactory.Object);
     }
 
     [Fact]
