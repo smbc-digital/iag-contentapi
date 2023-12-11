@@ -68,6 +68,18 @@ public static class ServiceCollectionExtensions
             )
         );
         services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
+        services.AddSingleton<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(p => new DirectoryContentfulFactory(
+            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), 
+            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(), 
+            p.GetService<ITimeProvider>()));
+
+        services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p => new DirectoryEntryContentfulFactory(
+            p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>()));
+
+        //services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
+
+        //services.AddSingleton<IContentfulFactory<ContentfulFilter, Filter>>(p => new FilterContentfulFactory());
+
         services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
         (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
@@ -252,6 +264,20 @@ public static class ServiceCollectionExtensions
                     p.GetService<ICache>(),
                     p.GetService<ILogger<EventRepository>>(),
                     p.GetService<IConfiguration>()));
+
+        services.AddSingleton<Func<ContentfulConfig, DirectoryRepository>>(p =>
+            config =>
+                new DirectoryRepository(
+                    config,
+                    p.GetService<IContentfulClientManager>(),
+                    p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>()));
+
+        services.AddSingleton<Func<ContentfulConfig, DirectoryEntryRepository>>(p =>
+            config =>
+                new DirectoryEntryRepository(
+                    config,
+                    p.GetService<IContentfulClientManager>(),
+                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>()));
 
         services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(p =>
             config =>
