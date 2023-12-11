@@ -270,14 +270,8 @@ public static class ServiceCollectionExtensions
                 new DirectoryRepository(
                     config,
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>()));
-
-        services.AddSingleton<Func<ContentfulConfig, DirectoryEntryRepository>>(p =>
-            config =>
-                new DirectoryEntryRepository(
-                    config,
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>()));
+                    p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
+                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, StockportContentApi.Model.DirectoryEntry>>()));
 
         services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(p =>
             config =>

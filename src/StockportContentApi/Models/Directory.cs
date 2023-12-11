@@ -11,9 +11,6 @@
         public string Body { get; set; } = string.Empty;
         public CallToActionBanner CallToAction { get; init; }
         public IEnumerable<Alert> Alerts { get; set; }
-
-        public IEnumerable<DirectoryEntry> DirectoryEntries { get; set; }
-
-
+        public IEnumerable<DirectoryEntry> Entries { get; set; }
     }
 }
