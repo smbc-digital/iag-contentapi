@@ -11,20 +11,13 @@ namespace StockportContentApi.Model
         public string MetaDescription { get; set; }
         public IEnumerable<FilterTheme> Themes { get; set; }
         public IEnumerable<Directory> Directories { get; set; }
-
-
-        public DirectoryEntry() { } 
-
-        public DirectoryEntry(ContentfulDirectoryEntry contentfulDirectoryEntry)
-        {
-            Slug = contentfulDirectoryEntry.Slug;
-            Title = contentfulDirectoryEntry.Title;
-            Body = contentfulDirectoryEntry.Body;
-            Teaser = contentfulDirectoryEntry.Teaser;
-            MetaDescription = contentfulDirectoryEntry.MetaDescription;
-            
-        }
-                
+        public MapPosition MapPosition { get; set; } = new MapPosition();
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Website { get; set; } = string.Empty;
+        public string Twitter { get; set; } = string.Empty;
+        public string Facebook { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public IEnumerable<Alert> Alerts { get; }
     }
-
 }

@@ -2,6 +2,7 @@
 using StockportContentApi.ContentfulModels;
 using StockportContentApi.Models;
 using StockportContentApi.Utils;
+using System.Net;
 using Directory = StockportContentApi.Model.Directory;
 
 namespace StockportContentApi.ContentfulFactories
@@ -27,6 +28,13 @@ namespace StockportContentApi.ContentfulFactories
                 Body = entry.Body,
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
+                MapPosition = entry.MapPosition,
+                PhoneNumber = entry.PhoneNumber,
+                Email = entry.Email,
+                Website = entry.Website,
+                Twitter = entry.Twitter,
+                Facebook = entry.Facebook,
+                Address = entry.Address,
                 Directories = entry.Directories.Select(contentfulDirectory => _directoryFactory.ToModel(contentfulDirectory))
             };
 
