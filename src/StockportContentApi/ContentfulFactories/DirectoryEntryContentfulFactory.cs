@@ -38,13 +38,16 @@ namespace StockportContentApi.ContentfulFactories
                 Directories = entry.Directories.Select(contentfulDirectory => _directoryFactory.ToModel(contentfulDirectory))
             };
 
-            var themes = entry.Filters.Select(filter => filter.Theme).Distinct();
-            directoryEntry.Themes = themes.Select(theme => new FilterTheme() { 
-                Title = theme,
-                Filters = entry.Filters
-                            .Where(filter => filter.Theme.Equals(theme))
-                            .Select(filter => new Filter(filter))
-            });
+            directoryEntry.Themes = entry
+                .Filters?
+                .Select(filter => filter.Theme)
+                .Distinct()
+                .Select(theme => new FilterTheme() { 
+                    Title = theme,
+                    Filters = entry.Filters
+                        .Where(filter => filter.Theme.Equals(theme))
+                        .Select(filter => new Filter(filter))
+                });
             
             return directoryEntry;
         }
