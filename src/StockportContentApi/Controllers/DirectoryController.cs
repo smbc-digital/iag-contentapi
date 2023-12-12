@@ -9,18 +9,26 @@
         private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
 
         public DirectoryController(ResponseHandler handler,
-                                        Func<string, ContentfulConfig> createConfig,
-                                        Func<ContentfulConfig, DirectoryRepository> createDirectoryRepository)
+            Func<string, ContentfulConfig> createConfig,
+            Func<ContentfulConfig, DirectoryRepository> createDirectoryRepository)
         {
             _handler = handler;
             _createConfig = createConfig;
             _createDirectoryRepository = createDirectoryRepository;
-            
         }
 
+        [HttpGet]
+        [Route("v2/{businessId}/directories")]
+        public async Task<IActionResult> GetDirectories(string businessId)
+        {
+            return await _handler.Get(() =>
+            {
+                var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+                return directoryRepository.GetAllDirectories();
+            });
+        }
 
         [HttpGet]
-        
         [Route("v2/{businessId}/directory/{slug}")]
         public async Task<IActionResult> GetDirectory(string slug, string businessId)
         {

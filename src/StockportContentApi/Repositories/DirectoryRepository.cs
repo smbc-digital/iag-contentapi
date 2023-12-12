@@ -4,25 +4,48 @@ namespace StockportContentApi.Repositories;
 
 public interface IDirectoryRepository
 {
+    Task<HttpResponse> GetAllDirectories();
     Task<HttpResponse> Get(string slug);
     Task<HttpResponse> GetEntry(string slug);
 }
 
 public class DirectoryRepository : BaseRepository, IDirectoryRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
 
     public DirectoryRepository(ContentfulConfig config, 
-                                IContentfulClientManager clientManager,
-                                IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
-                                IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory)
+        IContentfulClientManager clientManager,
+        IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
+        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory)
     {
         _client = clientManager.GetClient(config);
         _directoryFactory = directoryFactory;
         _directoryEntryFactory = directoryEntryFactory;
     }
+
+    public async Task<HttpResponse> GetAllDirectories()
+    {
+        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);
+        var entries = await GetAllEntriesAsync(_client, builder);
+
+        if (entries == null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No entries found");
+
+        var contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
+        var directoriesList = contentfulDirectories.Select(directory => _directoryFactory.ToModel(directory)).ToList();
+        
+        foreach (Directory directory in directoriesList)
+        {
+            directory.Entries = await GetEntriesInDirectory(directory.ContentfulId);
+        }
+
+        return !directoriesList.Any()
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No directories found")
+            : HttpResponse.Successful(directoriesList);
+    }
+
 
     public async Task<HttpResponse> Get(string slug)
     {
@@ -49,8 +72,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
             : HttpResponse.Successful(directoryEntry.ToList());
     }
-
-    private async Task<IEnumerable<Model.DirectoryEntry>> GetEntriesInDirectory(string id)
+    
+    private async Task<IEnumerable<DirectoryEntry>> GetEntriesInDirectory(string id)
     {
         var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").LinksToEntry(id).Include(2);
         var entries = await GetAllEntriesAsync(_client, builder);
