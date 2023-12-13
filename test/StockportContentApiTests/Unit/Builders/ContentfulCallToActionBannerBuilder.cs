@@ -8,7 +8,13 @@ public class ContentfulCallToActionBannerBuilder
     private string _altText = "altText";
     private string _buttonText = "buttonText";
     private string _colour = "colour";
-    private Asset _image = new Asset();
+    private Asset _image = new Asset()
+    {
+        File = new File
+        {
+            Url = "//TESTCTAIMAGE.JPG"
+        }
+    };
 
     public ContentfulCallToActionBanner Build()
     {

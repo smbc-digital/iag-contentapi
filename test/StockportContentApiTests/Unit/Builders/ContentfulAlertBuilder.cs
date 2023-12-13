@@ -30,38 +30,43 @@ public class ContentfulAlertBuilder
             Slug = _slug
         };
     }
+    public ContentfulAlertBuilder WithSlug(string slug)
+    {
+        _slug = slug;
+        return this;
+    }
 
-    public ContentfulAlertBuilder Title(string title)
+    public ContentfulAlertBuilder WithTitle(string title)
     {
         _title = title;
         return this;
     }
 
-    public ContentfulAlertBuilder Body(string body)
+    public ContentfulAlertBuilder WithBody(string body)
     {
         _body = body;
         return this;
     }
 
-    public ContentfulAlertBuilder Severity(string severity)
+    public ContentfulAlertBuilder WithSeverity(string severity)
     {
         _severity = severity;
         return this;
     }
 
-    public ContentfulAlertBuilder SeverSubHeadingity(string subHeading)
+    public ContentfulAlertBuilder WithSubHeading(string subHeading)
     {
         _subHeading = subHeading;
         return this;
     }
 
-    public ContentfulAlertBuilder SunriseDate(DateTime sunriseDate)
+    public ContentfulAlertBuilder WithSunriseDate(DateTime sunriseDate)
     {
         _sunriseDate = sunriseDate;
         return this;
     }
 
-    public ContentfulAlertBuilder SunsetDate(DateTime sunsetDate)
+    public ContentfulAlertBuilder WithSunsetDate(DateTime sunsetDate)
     {
         _sunsetDate = sunsetDate;
         return this;
