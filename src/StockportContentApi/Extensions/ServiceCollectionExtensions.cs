@@ -74,7 +74,10 @@ public static class ServiceCollectionExtensions
             p.GetService<ITimeProvider>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p => new DirectoryEntryContentfulFactory(
-            p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>()));
+            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
+            p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
+            p.GetService<ITimeProvider>()));
+        
 
         //services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
 

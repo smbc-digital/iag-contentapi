@@ -9,7 +9,7 @@
         public string MetaDescription { get; set; }
         public string BackgroundImage { get; set; }
         public string Body { get; set; } = string.Empty;
-        public CallToActionBanner CallToAction { get; init; }
+        public CallToActionBanner CallToAction { get; set; }
         public IEnumerable<Alert> Alerts { get; set; }
         public IEnumerable<DirectoryEntry> Entries { get; set; }
     }

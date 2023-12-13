@@ -10,10 +10,15 @@ namespace StockportContentApi.ContentfulFactories
     public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
     {
         private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
+        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
-        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulDirectory, Directory> directoryFactory)
+        private readonly DateComparer _dateComparer;
+
+        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDirectory, Directory> directoryFactory, ITimeProvider timeProvider)
         {
             _directoryFactory = directoryFactory;
+            _alertFactory = alertFactory;
+            _dateComparer = new DateComparer(timeProvider);
         }
 
         public DirectoryEntry ToModel(ContentfulDirectoryEntry entry)
@@ -35,20 +40,24 @@ namespace StockportContentApi.ContentfulFactories
                 Twitter = entry.Twitter,
                 Facebook = entry.Facebook,
                 Address = entry.Address,
-                Directories = entry.Directories.Select(contentfulDirectory => _directoryFactory.ToModel(contentfulDirectory))
+                Directories = entry.Directories?.Select(contentfulDirectory => _directoryFactory.ToModel(contentfulDirectory)),
+                Alerts = entry.Alerts?
+                            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Select(alert => _alertFactory.ToModel(alert)),
+                Themes = entry
+                    .Filters?
+                    .Select(filter => filter.Theme)
+                    .Distinct()
+                    .Select(theme => new FilterTheme()
+                    {
+                        Title = theme,
+                        Filters = entry.Filters
+                            .Where(filter => filter.Theme.Equals(theme))
+                            .Select(filter => new Filter(filter))
+                    })
             };
 
-            directoryEntry.Themes = entry
-                .Filters?
-                .Select(filter => filter.Theme)
-                .Distinct()
-                .Select(theme => new FilterTheme() { 
-                    Title = theme,
-                    Filters = entry.Filters
-                        .Where(filter => filter.Theme.Equals(theme))
-                        .Select(filter => new Filter(filter))
-                });
-            
             return directoryEntry;
         }
     }

@@ -12,7 +12,7 @@ namespace StockportContentApi.ContentfulFactories
         {
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
-
+            _callToActionFactory = callToActionFactory;
         }
 
         public Directory ToModel(ContentfulDirectory entry)
@@ -20,19 +20,20 @@ namespace StockportContentApi.ContentfulFactories
             if (entry is null)
                 return null;
 
-            return new Directory
+            return new()
             {
                 Slug = entry.Slug,
                 Title = entry.Title,
                 Body = entry.Body,
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
-                Alerts = entry.Alerts?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alert => _alertFactory.ToModel(alert)),
+                Alerts = entry.Alerts?
+                            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Select(alert => _alertFactory.ToModel(alert)),
                 CallToAction = entry.CallToAction is null ? null : _callToActionFactory.ToModel(entry.CallToAction),
                 BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
-                                    ? entry.BackgroundImage.File.Url : string.Empty,
+                                ? entry.BackgroundImage.File.Url : string.Empty,
                 ContentfulId = entry.Sys.Id
             };
         }
