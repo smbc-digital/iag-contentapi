@@ -18,6 +18,6 @@ namespace StockportContentApi.Model
         public string Twitter { get; set; } = string.Empty;
         public string Facebook { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public IEnumerable<Alert> Alerts { get; }
+        public IEnumerable<Alert> Alerts { get; set; }
     }
 }
