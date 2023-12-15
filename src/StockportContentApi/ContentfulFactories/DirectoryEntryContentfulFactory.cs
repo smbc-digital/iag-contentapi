@@ -1,8 +1,4 @@
-﻿using StackExchange.Redis;
-using StockportContentApi.ContentfulModels;
-using StockportContentApi.Models;
-using StockportContentApi.Utils;
-using System.Net;
+﻿using StockportContentApi.Models;
 using Directory = StockportContentApi.Model.Directory;
 
 namespace StockportContentApi.ContentfulFactories

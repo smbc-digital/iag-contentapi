@@ -1,7 +1,5 @@
 ﻿namespace StockportContentApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class DirectoryController : Controller
     {
         private readonly ResponseHandler _handler;
@@ -29,6 +27,7 @@
         }
 
         [HttpGet]
+        [Route("{businessId}/directory/{slug}")]
         [Route("v2/{businessId}/directory/{slug}")]
         public async Task<IActionResult> GetDirectory(string slug, string businessId)
         {
