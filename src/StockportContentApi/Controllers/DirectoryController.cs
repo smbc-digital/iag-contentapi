@@ -39,8 +39,9 @@
         }
 
         [HttpGet]
-        [Route("v2/{businessId}/directory/{directorySlug}/directory-entry/{directoryEntrySlug}")]
-        public async Task<IActionResult> GetDirectoryEntry(string directorySlug, string directoryEntrySlug, string businessId)
+        [Route("/{businessId}/directory-entry/{directoryEntrySlug}")]
+        [Route("v2/{businessId}/directory-entry/{directoryEntrySlug}")]
+        public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId)
         {
             return await _handler.Get(() =>
             {
