@@ -15,15 +15,7 @@ namespace StockportContentApi.Model
         public IEnumerable<Alert> Alerts { get; set; }
         public IEnumerable<DirectoryEntry> Entries { get; set; } = new List<DirectoryEntry>();
         public IEnumerable<Directory> SubDirectories { get; set; } = new List<Directory>();
-        public IEnumerable<DirectoryEntry> AllEntries
-        {
-            get
-            {
-                return SubDirectories.Any() ? Entries?.Concat(SubDirectories.SelectMany(sub => sub.AllEntries)).Distinct() : Entries;
-                
-            }
-        }
-
+        public IEnumerable<DirectoryEntry> AllEntries => SubDirectories.Any() ? Entries?.Concat(SubDirectories.SelectMany(sub => sub.AllEntries)).Distinct() : Entries;
         public IEnumerable<FilterTheme> AllFilterThemes =>  AllEntries.Where(entry => entry.Themes is not null).SelectMany(entry => entry.Themes).OrderBy(theme => theme.Title);
             
     }
