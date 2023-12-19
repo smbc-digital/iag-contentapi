@@ -7,13 +7,15 @@ namespace StockportContentApi.ContentfulFactories
     {
         private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+        private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
 
         private readonly DateComparer _dateComparer;
 
-        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDirectory, Directory> directoryFactory, ITimeProvider timeProvider)
+        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDirectory, Directory> directoryFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)
         {
             _directoryFactory = directoryFactory;
             _alertFactory = alertFactory;
+            _brandingFactory = brandingFactory;
             _dateComparer = new DateComparer(timeProvider);
         }
 
@@ -25,8 +27,8 @@ namespace StockportContentApi.ContentfulFactories
             var directoryEntry = new DirectoryEntry
             {
                 Slug = entry.Slug,
-                Title = entry.Title,
-                Body = entry.Body,
+                Name = entry.Name,
+                Body = entry.Description,
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
                 MapPosition = entry.MapPosition,
@@ -51,7 +53,8 @@ namespace StockportContentApi.ContentfulFactories
                         Filters = entry.Filters
                             .Where(filter => filter.Theme.Equals(theme))
                             .Select(filter => new Filter(filter))
-                    })
+                    }),
+                Branding = entry.GroupBranding.Select(branding => _brandingFactory.ToModel(branding))
             };
 
             return directoryEntry;
