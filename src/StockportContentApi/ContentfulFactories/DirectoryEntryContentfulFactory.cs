@@ -53,10 +53,9 @@ namespace StockportContentApi.ContentfulFactories
                         Filters = entry.Filters
                             .Where(filter => filter.Theme.Equals(theme))
                             .Select(filter => new Filter(filter))
-                    })
+                    }),
+                Branding = entry.GroupBranding?.Select(branding => _brandingFactory.ToModel(branding))
             };
-
-            directoryEntry.Branding = entry.GroupBranding?.Select(branding => _brandingFactory.ToModel(branding));
 
             return directoryEntry;
         }
