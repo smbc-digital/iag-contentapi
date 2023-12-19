@@ -13,6 +13,5 @@
         public string Facebook { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public IEnumerable<ContentfulAlert> Alerts { get; set; }
-
     }
 }

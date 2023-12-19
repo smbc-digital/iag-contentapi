@@ -1,10 +1,11 @@
-﻿using Directory = StockportContentApi.Model.Directory;
+﻿using Microsoft.Extensions.Options;
+using Directory = StockportContentApi.Model.Directory;
 
 namespace StockportContentApi.Repositories;
 
 public interface IDirectoryRepository
 {
-    Task<HttpResponse> GetAllDirectories();
+    Task<HttpResponse> Get();
     Task<HttpResponse> Get(string slug);
     Task<HttpResponse> GetEntry(string slug);
 }
@@ -14,18 +15,38 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
+    private readonly ICache _cache;
+    private readonly ILogger<DirectoryRepository> _logger;
+    private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
+    private  int DepthLimit { get; } = 5;
+    
 
     public DirectoryRepository(ContentfulConfig config, 
         IContentfulClientManager clientManager,
         IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
-        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory)
+        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
+        ICache cache,
+        IOptions<RedisExpiryConfiguration> redisExpiryConfiguration,
+        ILogger<DirectoryRepository> logger)
     {
         _client = clientManager.GetClient(config);
         _directoryFactory = directoryFactory;
         _directoryEntryFactory = directoryEntryFactory;
+        _cache = cache;
+        _redisExpiryConfiguration = redisExpiryConfiguration.Value;
+        _logger = logger;
     }
 
-    public async Task<HttpResponse> GetAllDirectories()
+    public async Task<HttpResponse> Get(string slug)
+    {
+        var directory = await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(slug, 0), _redisExpiryConfiguration.Directory);
+
+        return directory is null
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
+            : HttpResponse.Successful(directory);
+    }
+
+    public async Task<HttpResponse> Get()
     {
         var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);
         var entries = await GetAllEntriesAsync(_client, builder);
@@ -38,7 +59,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         
         foreach (Directory directory in directoriesList)
         {
-            directory.Entries = await GetEntriesInDirectory(directory.ContentfulId);
+            directory.Entries = (await GetAllDirectoryEntries()).Where(direcotryEntry => direcotryEntry.Directories.Any(dir => dir.Slug == directory.Slug));
         }
 
         return !directoriesList.Any()
@@ -46,41 +67,54 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             : HttpResponse.Successful(directoriesList);
     }
 
-
-    public async Task<HttpResponse> Get(string slug)
-    {
-        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(1);
-        var entries = await GetAllEntriesAsync(_client, builder);
-        var contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
-
-        var directory = contentfulDirectories.Select(g => _directoryFactory.ToModel(g)).SingleOrDefault();
-        directory.Entries = await GetEntriesInDirectory(directory.ContentfulId);
-
-        return entries is null || directory is null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
-            : HttpResponse.Successful(directory);
-    }
     public async Task<HttpResponse> GetEntry(string slug)
     {
-        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(2);
-        var entries = await GetAllEntriesAsync(_client, builder);
-        var contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
+        var directoryEntries = await GetAllDirectoryEntries();
+        var directoryEntry = directoryEntries?.SingleOrDefault(directoryEntry => directoryEntry.Slug == slug);
 
-        var directoryEntry = contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
-
-        return entries == null || !directoryEntry.Any()
+        return directoryEntry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
-            : HttpResponse.Successful(directoryEntry.FirstOrDefault());
+            : HttpResponse.Successful(directoryEntry);  
     }
-    
-    private async Task<IEnumerable<DirectoryEntry>> GetEntriesInDirectory(string id)
+
+    private async Task<Directory> GetDirectoryFromSource(string slug, int depth)
     {
-        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").LinksToEntry(id).Include(2);
+        if (depth >= DepthLimit)
+            return null;
+
+        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(1);
+        var contentfulDirectories = (await GetAllEntriesAsync(_client, builder)).ToList();
+
+        if (!contentfulDirectories.Any())
+            return null;
+
+        var contentfulDirectory = contentfulDirectories.SingleOrDefault();
+        var directory = _directoryFactory.ToModel(contentfulDirectory);
+        directory.Entries = await GetDirectoryEntriesForDirectory(directory.Slug);
+
+        var contentfulSubDirectoriesTasks = contentfulDirectory
+                                .SubDirectories?
+                                    .Select(async subDirectory => await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
+
+        if (contentfulSubDirectoriesTasks is not null)
+        {
+            Task.WaitAll(contentfulSubDirectoriesTasks);
+            directory.SubDirectories = contentfulSubDirectoriesTasks.Select(tsk => tsk.Result);
+        }
+            
+        return directory;
+    }
+
+    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() => await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
+
+    private async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => (await GetAllDirectoryEntries())
+                                                                        .Where(directoryEntry => directoryEntry.Directories is not null
+                                                                            && directoryEntry.Directories.Any(directory => directory.Slug == slug));
+    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
+    {
+        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(2);
         var entries = await GetAllEntriesAsync(_client, builder);
         var contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
-
-        var directoryEntries = contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
-
-        return directoryEntries;
+        return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
     }
 }

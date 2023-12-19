@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Model
+﻿using System.Security.Cryptography.Xml;
+
+namespace StockportContentApi.Model
 {
     public class Directory
     {
@@ -11,6 +13,18 @@
         public string Body { get; set; } = string.Empty;
         public CallToActionBanner CallToAction { get; set; }
         public IEnumerable<Alert> Alerts { get; set; }
-        public IEnumerable<DirectoryEntry> Entries { get; set; }
+        public IEnumerable<DirectoryEntry> Entries { get; set; } = new List<DirectoryEntry>();
+        public IEnumerable<Directory> SubDirectories { get; set; } = new List<Directory>();
+        public IEnumerable<DirectoryEntry> AllEntries
+        {
+            get
+            {
+                return SubDirectories.Any() ? Entries?.Concat(SubDirectories.SelectMany(sub => sub.AllEntries)).Distinct() : Entries;
+                
+            }
+        }
+
+        public IEnumerable<FilterTheme> AllFilterThemes =>  AllEntries.Where(entry => entry.Themes is not null).SelectMany(entry => entry.Themes).OrderBy(theme => theme.Title);
+            
     }
 }

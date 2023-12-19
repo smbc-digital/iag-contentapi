@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Models
+﻿namespace StockportContentApi.Model
 {
     public class FilterTheme
     {

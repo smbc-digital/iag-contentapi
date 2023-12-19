@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Controllers
 {
+    [ApiController]
     public class DirectoryController : Controller
     {
         private readonly ResponseHandler _handler;
@@ -16,13 +17,14 @@
         }
 
         [HttpGet]
+        [Route("{businessId}/directories")]
         [Route("v2/{businessId}/directories")]
         public async Task<IActionResult> GetDirectories(string businessId)
         {
             return await _handler.Get(() =>
             {
                 var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-                return directoryRepository.GetAllDirectories();
+                return directoryRepository.Get();
             });
         }
 
@@ -31,15 +33,20 @@
         [Route("v2/{businessId}/directory/{slug}")]
         public async Task<IActionResult> GetDirectory(string slug, string businessId)
         {
-            return await _handler.Get(() =>
+            try
             {
                 var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-                return directoryRepository.Get(slug);
-            });
+                HttpResponse response =  await directoryRepository.Get(slug);
+                return response.CreateResult();
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
         }
 
         [HttpGet]
-        [Route("/{businessId}/directory-entry/{directoryEntrySlug}")]
+        [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
         [Route("v2/{businessId}/directory-entry/{directoryEntrySlug}")]
         public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId)
         {

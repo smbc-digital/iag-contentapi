@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Extensions;
+﻿using Microsoft.Extensions.Options;
+
+namespace StockportContentApi.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -274,7 +276,11 @@ public static class ServiceCollectionExtensions
                     config,
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
-                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, StockportContentApi.Model.DirectoryEntry>>()));
+                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, StockportContentApi.Model.DirectoryEntry>>(),
+                    p.GetService<ICache>(),
+                    p.GetService<IOptions<RedisExpiryConfiguration>>(),
+                    p.GetService<ILogger<DirectoryRepository>>()
+                    ));
 
         services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(p =>
             config =>
