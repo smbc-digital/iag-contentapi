@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace StockportContentApi.Extensions;
 
@@ -78,6 +79,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p => new DirectoryEntryContentfulFactory(
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
+            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
             p.GetService<ITimeProvider>()));
         
 
