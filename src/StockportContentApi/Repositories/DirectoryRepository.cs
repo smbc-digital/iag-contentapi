@@ -70,7 +70,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
         return entries == null || !directoryEntry.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
-            : HttpResponse.Successful(directoryEntry.ToList());
+            : HttpResponse.Successful(directoryEntry.FirstOrDefault());
     }
     
     private async Task<IEnumerable<DirectoryEntry>> GetEntriesInDirectory(string id)
