@@ -1,6 +1,4 @@
-﻿using StockportContentApi.Model;
-
-namespace StockportContentApiTests.Unit.ContentfulFactories
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class DirectoryEntryContentfulFactoryTests
     {       
@@ -12,7 +10,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                 .WithSlug("test-directory-entry")
                 .WithTitle("Test Directory Entry")
                 .WithTeaser("Test entry teaser text")
-                .WithBody("Test entry body text")
+                .WithDescription("Test entry body text")
                 .WithMetaDescription("Test entry meta description")
                 .WithPhoneNumber("01625 444 4444")
                 .WithEmail("test@email.com")
@@ -38,12 +36,12 @@ namespace StockportContentApiTests.Unit.ContentfulFactories
                     .Build())
                 .Build();
 
-            var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new DirectoryContentfulFactory(new AlertContentfulFactory(), new CallToActionBannerContentfulFactory(), new TimeProvider()), new TimeProvider()).ToModel(contentfulReference);
+            var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new DirectoryContentfulFactory(new AlertContentfulFactory(), new CallToActionBannerContentfulFactory(), new TimeProvider()), new GroupBrandingContentfulFactory(), new TimeProvider()).ToModel(contentfulReference);
 
             directoryEntry.Slug.Should().Be(contentfulReference.Slug);
-            directoryEntry.Title.Should().Be(contentfulReference.Title);
+            directoryEntry.Name.Should().Be(contentfulReference.Name);
             directoryEntry.Teaser.Should().Be(contentfulReference.Teaser);
-            directoryEntry.Body.Should().Be(contentfulReference.Body);
+            directoryEntry.MetaDescription.Should().Be(contentfulReference.Description);
             directoryEntry.MetaDescription.Should().Be(contentfulReference.MetaDescription);
             directoryEntry.PhoneNumber.Should().Be(contentfulReference.PhoneNumber);
             directoryEntry.Email.Should().Be(contentfulReference.Email);

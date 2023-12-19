@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Directory = StockportContentApi.Model.Directory;
 
 namespace StockportContentApiTests.Unit.Repositories;
@@ -10,6 +11,9 @@ public class DirectoryRepositoryTests
     private readonly Mock<IContentfulClient> _contentfulClient;
     private readonly Mock<IContentfulFactory<ContentfulDirectory, Directory>> _mockDirectoryContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>> _mockDirectoryEntryContentfulFactory;
+    private readonly Mock<ICache> _mockCache;
+    private readonly Mock<ILogger<DirectoryRepository>> _mockLogger;
+    private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions;
 
     public DirectoryRepositoryTests()
     {
@@ -35,10 +39,10 @@ public class DirectoryRepositoryTests
         _directoryEntry = new DirectoryEntry{
             Alerts = null,
             Slug = "directory-entry-slug",
-            Body = "Directory entry body",
+            Description = "Directory entry body",
             Teaser = "Directory entry teaser",
             MetaDescription = "Directory entry MetaDescription",
-            Title = "Directory entry title"
+            Name = "Directory entry name"
         };
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
@@ -47,11 +51,18 @@ public class DirectoryRepositoryTests
 
         _mockDirectoryContentfulFactory = new Mock<IContentfulFactory<ContentfulDirectory, Directory>>();
         _mockDirectoryEntryContentfulFactory = new Mock<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>();
+        _mockCache = new Mock<ICache>();
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulDirectory>>>>(), It.IsAny<int>())).ReturnsAsync((IList<ContentfulDirectory>)null);
 
-        _repository  = new DirectoryRepository(config, contentfulClientManager.Object, _mockDirectoryContentfulFactory.Object, _mockDirectoryEntryContentfulFactory.Object );
+
+        _mockLogger = new Mock<ILogger<DirectoryRepository>>();
+        _mockOptions = new Mock<IOptions<RedisExpiryConfiguration>>();
+        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration {  Directory = 1 });
+
+        _repository  = new DirectoryRepository(config, contentfulClientManager.Object, _mockDirectoryContentfulFactory.Object, _mockDirectoryEntryContentfulFactory.Object, _mockCache.Object, _mockOptions.Object, _mockLogger.Object);
     }
 
-    [Fact]
+    [Fact]  
     public async void Get_WithSlug_Should_ReturnSuccess()
     {
         const string slug = "a-slug";
@@ -130,24 +141,15 @@ public class DirectoryRepositoryTests
         [Fact]
     public async void GetEntry_WithSlug_Should_ReturnSuccess()
     {
-        const string slug = "a-slug";
-        var contentfulDirectoryEntry = new DirectoryEntryBuilder().WithSlug(slug).Build();
-        ContentfulCollection<ContentfulDirectoryEntry> collection = new()
-        {
-            Items = new List<ContentfulDirectoryEntry> { contentfulDirectoryEntry }
-        };
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulDirectoryEntry>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-        _mockDirectoryEntryContentfulFactory.Setup(_ => _.ToModel(contentfulDirectoryEntry)).Returns(_directoryEntry);
-
-        var response = await _repository.GetEntry(slug);
+        var response = await _repository.GetEntry("directory-entry-slug");
 
         // Arrange
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(response.Get<DirectoryEntry>(), _directoryEntry);
     }
+    
 
         [Fact]
     public async void GetEntry_WithSlug_Should_Return_NotFound_If_DirectoryEntryDoesNotExist()

@@ -28,7 +28,7 @@ namespace StockportContentApi.ContentfulFactories
             {
                 Slug = entry.Slug,
                 Name = entry.Name,
-                Body = entry.Description,
+                Description = entry.Description,
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
                 MapPosition = entry.MapPosition,

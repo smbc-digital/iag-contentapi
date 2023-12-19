@@ -4,7 +4,7 @@
     {
         string Slug { get; set; }
         string Title { get; set; }
-        string Body { get; set; }
+        string Description { get; set; }
         string Teaser { get; set; }
         string MetaDescription { get; set; }
         string PhoneNumber { get; set; }
@@ -21,7 +21,7 @@
         {
             Slug = this.Slug,
             Title = this.Title,
-            Body = this.Body,
+            Description = this.Description,
             MetaDescription = this.MetaDescription,
             Teaser = this.Teaser,
             PhoneNumber = this.PhoneNumber,
@@ -47,9 +47,9 @@
             return this;
         }
 
-        public DirectoryEntryBuilder WithBody(string body)
+        public DirectoryEntryBuilder WithDescription(string description)
         {
-            Body = body;
+            Description = description;
             return this;
         }
 

@@ -105,7 +105,10 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         return directory;
     }
 
-    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() => await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
+    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() {
+        var allDirectories = await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
+        return allDirectories;
+    }
 
     private async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => (await GetAllDirectoryEntries())
                                                                         .Where(directoryEntry => directoryEntry.Directories is not null
