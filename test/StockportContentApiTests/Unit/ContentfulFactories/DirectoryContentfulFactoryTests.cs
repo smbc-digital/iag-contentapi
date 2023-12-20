@@ -1,8 +1,4 @@
-﻿using StockportContentApi.Model;
-using System.Drawing;
-using System.Security.Policy;
-
-namespace StockportContentApiTests.Unit.ContentfulFactories
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class DirectoryContentfulFactoryTests
     {

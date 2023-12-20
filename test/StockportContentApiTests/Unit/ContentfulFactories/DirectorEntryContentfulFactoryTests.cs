@@ -41,7 +41,7 @@
             directoryEntry.Slug.Should().Be(contentfulReference.Slug);
             directoryEntry.Name.Should().Be(contentfulReference.Name);
             directoryEntry.Teaser.Should().Be(contentfulReference.Teaser);
-            directoryEntry.MetaDescription.Should().Be(contentfulReference.Description);
+            directoryEntry.Description.Should().Be(contentfulReference.Description);
             directoryEntry.MetaDescription.Should().Be(contentfulReference.MetaDescription);
             directoryEntry.PhoneNumber.Should().Be(contentfulReference.PhoneNumber);
             directoryEntry.Email.Should().Be(contentfulReference.Email);
