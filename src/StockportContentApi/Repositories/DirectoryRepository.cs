@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Directory = StockportContentApi.Model.Directory;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public interface IDirectoryRepository
 {
@@ -20,7 +17,6 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
     private  int DepthLimit { get; } = 5;
     
-
     public DirectoryRepository(ContentfulConfig config, 
         IContentfulClientManager clientManager,
         IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
@@ -59,7 +55,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         
         foreach (Directory directory in directoriesList)
         {
-            directory.Entries = (await GetAllDirectoryEntries()).Where(direcotryEntry => direcotryEntry.Directories.Any(dir => dir.Slug == directory.Slug));
+            directory.Entries = (await GetAllDirectoryEntries()).Where(directoryEntry => directoryEntry.Directories is not null &&
+                directoryEntry.Directories.Any(dir => dir.Slug == directory.Slug));
         }
 
         return !directoriesList.Any()
@@ -93,8 +90,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         directory.Entries = await GetDirectoryEntriesForDirectory(directory.Slug);
 
         var contentfulSubDirectoriesTasks = contentfulDirectory
-                                .SubDirectories?
-                                    .Select(async subDirectory => await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
+            .SubDirectories?.Select(async subDirectory => 
+                await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
 
         if (contentfulSubDirectoriesTasks is not null)
         {
@@ -105,14 +102,14 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         return directory;
     }
 
-    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() {
-        var allDirectories = await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
-        return allDirectories;
-    }
+    private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() =>
+        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
 
-    private async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => (await GetAllDirectoryEntries())
-                                                                        .Where(directoryEntry => directoryEntry.Directories is not null
-                                                                            && directoryEntry.Directories.Any(directory => directory.Slug == slug));
+    private async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => 
+        (await GetAllDirectoryEntries())
+            .Where(directoryEntry => directoryEntry.Directories is not null
+                && directoryEntry.Directories.Any(directory => directory.Slug == slug));
+    
     private async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
     {
         var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(2);

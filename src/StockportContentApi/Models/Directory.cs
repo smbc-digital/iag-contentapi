@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.Xml;
-
-namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model
 {
     public class Directory
     {
