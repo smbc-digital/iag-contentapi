@@ -121,7 +121,7 @@ public class DirectoryRepositoryTests
     } 
 
     [Fact]
-    public async void Get_WithSlug_Should_GetDirecotryEntries()
+    public async void Get_WithSlug_Should_GetDirectoryEntries()
     {
         _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync( _directory );
 
