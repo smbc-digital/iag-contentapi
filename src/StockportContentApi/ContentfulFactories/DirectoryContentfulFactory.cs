@@ -1,6 +1,4 @@
-﻿using Directory = StockportContentApi.Model.Directory;
-
-namespace StockportContentApi.ContentfulFactories
+﻿namespace StockportContentApi.ContentfulFactories
 {
     public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory, Directory>
     {
