@@ -1,11 +1,13 @@
-﻿namespace StockportContentApi.Repositories;
+﻿using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("StockportContentApiTests")] 
+
+namespace StockportContentApi.Repositories;
 
 public interface IDirectoryRepository
 {
     Task<HttpResponse> Get();
     Task<HttpResponse> Get(string slug);
     Task<HttpResponse> GetEntry(string slug);
-    Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries();
 }
 
 public class DirectoryRepository : BaseRepository, IDirectoryRepository
@@ -34,7 +36,6 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         _logger = logger;
     }
 
-    // Tested
     public async Task<HttpResponse> Get(string slug)
     {
         var directory = await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(slug, 0), _redisExpiryConfiguration.Directory);
@@ -44,6 +45,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             : HttpResponse.Successful(directory);
     }
 
+    // TODO: Tests
     public async Task<HttpResponse> Get()
     {
         var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);
@@ -66,7 +68,6 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             : HttpResponse.Successful(directoriesList);
     }
 
-    // Tested
     public async Task<HttpResponse> GetEntry(string slug)
     {
         var directoryEntries = await GetAllDirectoryEntries();
@@ -77,8 +78,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             : HttpResponse.Successful(directoryEntry);  
     }
 
-    // Tested
-    public async Task<Directory> GetDirectoryFromSource(string slug, int depth)
+    internal async Task<Directory> GetDirectoryFromSource(string slug, int depth)
     {
         if (depth >= DepthLimit)
             return null;
@@ -106,15 +106,15 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         return directory;
     }
 
-    public async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() =>
+    internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() =>
         await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
 
-    public async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => 
+    internal async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) => 
         (await GetAllDirectoryEntries())
             .Where(directoryEntry => directoryEntry.Directories is not null
                 && directoryEntry.Directories.Any(directory => directory.Slug == slug));
     
-    public async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
+    internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
     {
         var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(2);
         var entries = await GetAllEntriesAsync(_client, builder);
