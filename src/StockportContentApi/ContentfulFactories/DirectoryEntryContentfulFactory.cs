@@ -35,7 +35,7 @@
                 Twitter = entry.Twitter,
                 Facebook = entry.Facebook,
                 Address = entry.Address,
-                Directories = entry.Directories?.Select(contentfulDirectory => new DirectoryEntry.MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
+                Directories = entry.Directories?.Select(contentfulDirectory => new MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
                 Alerts = entry.Alerts?
                             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))

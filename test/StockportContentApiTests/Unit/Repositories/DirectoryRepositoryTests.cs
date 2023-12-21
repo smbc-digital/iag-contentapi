@@ -43,8 +43,8 @@ public class DirectoryRepositoryTests
             Teaser = "Directory entry teaser",
             MetaDescription = "Directory entry MetaDescription",
             Name = "Directory entry name",
-            Directories = new List<DirectoryEntry.MinimalDirectory>{
-                new DirectoryEntry.MinimalDirectory("test-directory", "Test")
+            Directories = new List<MinimalDirectory>{
+                new MinimalDirectory("test-directory", "Test")
             }
         };
 
