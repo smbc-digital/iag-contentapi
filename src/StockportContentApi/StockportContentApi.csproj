@@ -3,18 +3,21 @@
     <TargetFramework>net6.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>StockportContentApi</AssemblyName>
-	<ImplicitUsings>enable</ImplicitUsings>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
     <PackageId>StockportContentApi</PackageId>
     <AssetTargetFallback>$(AssetTargetFallback);dotnet5.6</AssetTargetFallback>
     <DefaultItemExcludes>$(DefaultItemExcludes);publish/**/*</DefaultItemExcludes>
+    <UserSecretsId>4e8e9e1f-11e4-47f2-85ed-275781ef8d92</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.201.2" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
     <PackageReference Include="jose-jwt" Version="4.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.11" />
+    <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.25" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.4.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />

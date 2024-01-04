@@ -8,7 +8,7 @@ public class NewsRepository : BaseRepository
     private readonly IContentfulFactory<ContentfulNewsRoom, Newsroom> _newsRoomContentfulFactory;
     private readonly DateComparer _dateComparer;
     private readonly ICache _cache;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private IConfiguration _configuration;
     private readonly int _newsTimeout;
 

@@ -78,7 +78,8 @@ public static class ServiceCollectionExtensions
             SocialMediaLink>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(p.GetService<IVideoRepository>(),
-            p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>()));
+            p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>(),
+            p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(p => new NewsRoomContentfulFactory(p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(p => new GroupCategoryContentfulFactory());
@@ -137,6 +138,8 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger)
     {
+        logger.Information($"Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
+
         if (useRedisSession)
         {
             var redisUrl = configuration["TokenStoreUrl"];
@@ -147,7 +150,7 @@ public static class ServiceCollectionExtensions
             }
 
             var name = Assembly.GetEntryAssembly()?.GetName().Name;
-            logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+            logger.Information($"ContentApi:ServiceCollectionExtensions:Using redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -159,16 +162,19 @@ public static class ServiceCollectionExtensions
                         },
                     ClientName = name,
                     SyncTimeout = 30000,
-                    AsyncTimeout = 30000
+                    AsyncTimeout = 30000,
+                    SocketManager = SocketManager.ThreadPool                    
                 };
             });
 
             var redis = ConnectionMultiplexer.Connect(redisIp);
+            logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
-            services.AddSingleton<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
+            services.AddScoped<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
         }
         else
         {
+            logger.Information("Not using redis for session management!");
             services.AddDistributedMemoryCache();
         }
 
