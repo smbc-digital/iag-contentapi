@@ -56,10 +56,10 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
-        var featuredGroup = entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
-                                                                && _dateComparer.DateNowIsNotBetweenHiddenRange(
-                                                                    group.DateHiddenFrom, group.DateHiddenTo))
-            .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
+        var featuredGroup = 
+            entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
+                && _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
+                .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
         var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 

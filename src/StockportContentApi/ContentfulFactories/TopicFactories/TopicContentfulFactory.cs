@@ -7,7 +7,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
     private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> _expandingLinkBoxFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _topicBrandingFactory;
@@ -17,7 +16,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
         IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
-        IContentfulFactory<ContentfulExpandingLinkBox, ExpandingLinkBox> expandingLinkBoxFactory,
         IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
@@ -29,7 +27,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         _carouselFactory = carouselFactory;
         _dateComparer = new DateComparer(timeProvider);
         _eventBannerFactory = eventBannerFactory;
-        _expandingLinkBoxFactory = expandingLinkBoxFactory;
         _callToActionFactory = callToActionFactory;
         _topicBrandingFactory = topicBrandingFactory;
     }
@@ -41,10 +38,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         var secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                     .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
-
-        var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
@@ -65,12 +58,6 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                             ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
-        var expandingLinkBoxes =
-            entry.ExpandingLinkBoxes.Where(e => ContentfulHelpers.EntryIsNotALink(e.Sys))
-                .Select(e => _expandingLinkBoxFactory.ToModel(e)).ToList();
-
-        var primaryItemTitle = entry.PrimaryItemTitle;
-
         var displayContactUs = entry.DisplayContactUs;
 
         var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
@@ -86,9 +73,9 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             : new List<Trivia>();
 
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
-            subItems, secondaryItems, tertiaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
-            entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, entry.ExpandingLinkTitle, campaignBanner, entry.EventCategory,
-            callToAction, topicBranding, logoAreaTitle, expandingLinkBoxes, primaryItemTitle, displayContactUs)
+            subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
+            entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner, entry.EventCategory,
+            callToAction, topicBranding, logoAreaTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),

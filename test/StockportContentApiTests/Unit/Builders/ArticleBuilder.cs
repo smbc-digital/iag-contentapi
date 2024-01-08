@@ -109,7 +109,6 @@ public class ArticleBuilder
         "image",
         new List<SubItem>(),
         new List<SubItem>(),
-        new List<SubItem>(),
         new List<Crumb>(),
         new List<Alert>(),
         new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -117,13 +116,11 @@ public class ArticleBuilder
         false,
         "id",
         new NullEventBanner(),
-        "expandingLinkTitle",
         new CarouselContent(),
         null,
         null,
         null,
-        string.Empty,
-        new List<ExpandingLinkBox>());
+        string.Empty);
 
     public Article Build()
     {

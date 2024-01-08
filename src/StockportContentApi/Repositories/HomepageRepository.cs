@@ -2,9 +2,8 @@
 
 public class HomepageRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory;
-
 
     public HomepageRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory)
     {

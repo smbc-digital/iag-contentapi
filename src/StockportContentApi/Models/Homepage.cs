@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Models;
-
-namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Model;
 
 public class Homepage
 {
@@ -23,7 +21,6 @@ public class Homepage
     public CarouselContent CampaignBanner { get; set; }
     public CallToActionBanner CallToAction {get;set;}
     public CallToActionBanner CallToActionPrimary { get; set; }
-
     public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; }
 
     public Homepage(IEnumerable<string> popularSearchTerms, string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,

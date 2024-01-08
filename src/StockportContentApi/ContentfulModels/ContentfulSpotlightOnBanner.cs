@@ -7,5 +7,5 @@ public class ContentfulSpotlightOnBanner : IContentfulModel
     public string AltText { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
-    public SystemProperties Sys { get; set; } = new SystemProperties();
+    public SystemProperties Sys { get; set; } = new();
 }
