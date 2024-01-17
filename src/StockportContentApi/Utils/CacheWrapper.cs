@@ -45,6 +45,8 @@ public class Cache : ICache
 
         if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
+            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
+
             result = fallbackMethod();
 
             if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
@@ -67,7 +69,7 @@ public class Cache : ICache
 
         if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
-            _logger.LogInformation("Key not found in cache:" + cacheKey + " of type:" + typeof(T));
+            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
             result = await fallbackMethod();
 
             if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
@@ -86,9 +88,15 @@ public class Cache : ICache
 
     public void Set(string cacheKey, object cacheEntry, int minutes)
     {
+        _logger.LogInformation($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
+        
         var data = JsonConvert.SerializeObject(cacheEntry, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-
-        _memoryCache.SetString(cacheKey, data, minutes);
+        try{
+            _memoryCache.SetString(cacheKey, data, minutes);
+        }
+        catch(Exception ex){
+            _logger.LogError(ex, $"CacheWrapper : Set : Error setting key {cacheKey}");
+        }
     }
 
     public bool TryGetValue<T>(object key, out T value)
@@ -98,7 +106,7 @@ public class Cache : ICache
 
         if (_memoryCache == null)
         {
-            _logger.LogInformation("Cache is missing");
+            _logger.LogWarning("CacheWrapper : TryGetValue<T> : Cache is missing");
             return false;
         }
 
@@ -110,15 +118,29 @@ public class Cache : ICache
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(new EventId(), ex, "An error occurred trying to read from Redis");
+            _logger.LogCritical(new EventId(), ex, "CacheWrapper : TryGetValue<T> : An error occurred trying to read from Redis");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(returnData))
+        {
+            _logger.LogWarning($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
             return false;
         }
 
         if (returnData != null)
         {
-            value = JsonConvert.DeserializeObject<T>(returnData);
-            _logger.LogInformation("Key found in cache:" + key + " of type:" + typeof(T));
-            output = value != null;
+            try
+            {
+                value = JsonConvert.DeserializeObject<T>(returnData);
+                _logger.LogInformation($"CacheWrapper : TryGetValue<T> : Key {key} found in cache of type: {typeof(T)}");
+                output = value != null;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogCritical(new EventId(), ex, $"CacheWrapper : TryGetValue<T> : error deserilizing cached data for key '{key}' with value {returnData}");
+                return false;
+            }
         }
 
         return output;
