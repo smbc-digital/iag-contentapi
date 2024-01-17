@@ -129,8 +129,8 @@ public class TopicContentfulFactoryTest
     {
         // Arrange
         List<ContentfulAlert> alerts = new() {
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 01, 04)).SunriseDate(new DateTime(2017, 01, 01)).Build()
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 01, 01)).Build(),
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 01, 04)).WithSunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
@@ -147,8 +147,8 @@ public class TopicContentfulFactoryTest
     {
         // Arrange
         List<ContentfulAlert> contentfulAlerts = new() {
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Information").Build(),
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Severity("Condolence").Build()
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 01, 01)).WithSeverity("Information").Build(),
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 01, 01)).WithSeverity("Condolence").Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
@@ -165,8 +165,8 @@ public class TopicContentfulFactoryTest
     {
         // Arrange
         List<ContentfulAlert> alerts = new() {
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 01, 01)).Build(),
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 02, 03)).SunriseDate(new DateTime(2017, 01, 01)).Build()
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 01, 01)).Build(),
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 02, 03)).WithSunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
@@ -183,8 +183,8 @@ public class TopicContentfulFactoryTest
     {
         // Arrange
         List<ContentfulAlert> alerts = new() {
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 04, 10)).SunriseDate(new DateTime(2017, 03, 01)).Build(),
-            new ContentfulAlertBuilder().SunsetDate(new DateTime(2017, 10, 03)).SunriseDate(new DateTime(2017, 03, 01)).Build()
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 03, 01)).Build(),
+            new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 10, 03)).WithSunriseDate(new DateTime(2017, 03, 01)).Build()
         };
 
         var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();

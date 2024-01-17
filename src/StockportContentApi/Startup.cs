@@ -44,6 +44,7 @@ public class Startup
         services.AddAutoMapper();
         services.AddServices();
         services.AddBuilders();
+        services.Configure<RedisExpiryConfiguration>(Configuration.GetSection("redisExpiryTimes"));
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Stockport Content API", Version = "v1" });
