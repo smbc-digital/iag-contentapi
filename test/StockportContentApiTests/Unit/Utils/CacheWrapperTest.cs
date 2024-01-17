@@ -54,7 +54,7 @@ public class CacheTest
 
         // Assert
         valueFromCall.Should().Be("Contentful Data");
-        LogTesting.Assert(_logger, LogLevel.Information, "Key not found in cache:test-key of type:System.String");
+        LogTesting.Assert(_logger, LogLevel.Information, "Key 'test-key' not found in cache of type: System.String");
     }
 
     [Fact]
