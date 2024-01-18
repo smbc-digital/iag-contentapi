@@ -45,7 +45,6 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             : HttpResponse.Successful(directory);
     }
 
-    // TODO: Tests
     public async Task<HttpResponse> Get()
     {
         var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);

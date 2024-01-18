@@ -26,12 +26,15 @@ public class Cache : ICache
     private readonly IDistributedCacheWrapper _memoryCache;
     private readonly ILogger<ICache> _logger;
     private readonly bool _useRedisCache;
+    private readonly bool _useLocalCache;
 
-    public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache)
+    public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache, bool useLocalCache = true)
     {
         _memoryCache = memoryCache;
         _logger = logger;
         _useRedisCache = useRedisCache;
+        _useLocalCache = useLocalCache;
+
     }
 
     public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod)
@@ -43,7 +46,7 @@ public class Cache : ICache
     {
         T result;
 
-        if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
+        if ((!_useRedisCache && !_useLocalCache) || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
             _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
 
@@ -67,12 +70,12 @@ public class Cache : ICache
     {
         T result;
 
-        if (!_useRedisCache || minutes == 0 || TryGetValue(cacheKey, out result) == false)
+        if ((!_useRedisCache && !_useLocalCache) || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
             _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
             result = await fallbackMethod();
 
-            if (_useRedisCache && minutes > 0 && _memoryCache != null && result != null)
+            if ((_useRedisCache || _useLocalCache) && minutes > 0 && _memoryCache != null && result != null)
             {
                 Set(cacheKey, result, minutes);
             }

@@ -5,6 +5,7 @@ public class Startup
     private readonly string _contentRootPath;
     private readonly string _appEnvironment;
     private readonly bool _useRedisSession;
+    private readonly bool _useLocalCache;
     private readonly Serilog.ILogger _logger;
     public IConfiguration Configuration { get; set; }
 
@@ -14,6 +15,7 @@ public class Startup
         _contentRootPath = env.ContentRootPath;
         _appEnvironment = env.EnvironmentName;
         _useRedisSession = Configuration["UseRedisSessions"].Equals("true", StringComparison.OrdinalIgnoreCase);
+        _useLocalCache = Configuration["UseLocalCache"].Equals("true", StringComparison.OrdinalIgnoreCase);
         _logger = logger;
     }
 
@@ -21,7 +23,7 @@ public class Startup
     {
         services.AddControllers().AddNewtonsoftJson();
         services.AddSingleton(new CurrentEnvironment(_appEnvironment));
-        services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger);
+        services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger, _useLocalCache);
         services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
         services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
         services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));

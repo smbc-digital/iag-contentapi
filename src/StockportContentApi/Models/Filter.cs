@@ -9,10 +9,13 @@
 
         public Filter(ContentfulFilter contentfulFilter)
         {
-            Slug = contentfulFilter.Slug;
-            Title = contentfulFilter.Title;
-            DisplayName = contentfulFilter.DisplayName;
-            Theme = contentfulFilter.Theme;
+            if(contentfulFilter !=null)
+            {
+                Slug = contentfulFilter.Slug;
+                Title = contentfulFilter.Title;
+                DisplayName = contentfulFilter.DisplayName;
+                Theme = contentfulFilter.Theme;
+            }
         }
     }
 }
