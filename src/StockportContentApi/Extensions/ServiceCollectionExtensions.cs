@@ -155,7 +155,7 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="useRedisSession"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger)
+    public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger, bool useLocalCache = true)
     {
         logger.Information($"Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
 
@@ -182,14 +182,14 @@ public static class ServiceCollectionExtensions
                     ClientName = name,
                     SyncTimeout = 30000,
                     AsyncTimeout = 30000,
-                    SocketManager = SocketManager.ThreadPool                    
+                    SocketManager = SocketManager.ThreadPool
                 };
             });
 
             var redis = ConnectionMultiplexer.Connect(redisIp);
             logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
-            services.AddScoped<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
+
         }
         else
         {
@@ -197,7 +197,12 @@ public static class ServiceCollectionExtensions
             services.AddDistributedMemoryCache();
         }
 
-        services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession));
+        if (useRedisSession || useLocalCache)
+        { 
+            services.AddScoped<IDistributedCacheWrapper>(p => new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
+        }
+
+        services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(), p.GetService<ILogger<ICache>>(), useRedisSession, useLocalCache));
 
         return services;
     }
