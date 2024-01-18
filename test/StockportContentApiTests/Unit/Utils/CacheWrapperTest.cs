@@ -38,10 +38,7 @@ public class CacheTest
         valueFromCall.Should().Be("Cache Data");
     }
 
-    private string testFallbackMethod()
-    {
-        return "Contentful Data";
-    }
+    private string testFallbackMethod() => "Contentful Data";    
 
     [Fact]
     public async void ShouldCallContentfulIfCacheIsEmptyAsync()

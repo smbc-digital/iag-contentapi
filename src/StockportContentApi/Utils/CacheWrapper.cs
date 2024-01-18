@@ -48,7 +48,7 @@ public class Cache : ICache
 
         if ((!_useRedisCache && !_useLocalCache) || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
-            _logger.LogWarning($"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
+            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
 
             result = fallbackMethod();
 
@@ -88,7 +88,7 @@ public class Cache : ICache
 
     public void Set(string cacheKey, object cacheEntry, int minutes)
     {
-        _logger.LogWarning($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
+        _logger.LogInformation($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
         
         var data = JsonConvert.SerializeObject(cacheEntry, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         try
@@ -108,7 +108,7 @@ public class Cache : ICache
 
         if (_memoryCache == null)
         {
-            _logger.LogWarning("CacheWrapper : TryGetValue<T> : Cache is missing");
+            _logger.LogError("CacheWrapper : TryGetValue<T> : Cache is missing");
             return false;
         }
 
@@ -120,7 +120,7 @@ public class Cache : ICache
 
             if (string.IsNullOrEmpty(returnData))
             {
-                _logger.LogWarning($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
+                _logger.LogInformation($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
                 return false;
             }
         }
@@ -133,7 +133,7 @@ public class Cache : ICache
         try
         {
             value = JsonConvert.DeserializeObject<T>(returnData);
-            _logger.LogWarning($"CacheWrapper : TryGetValue<T> : Key {key} found in cache of type: {typeof(T)}");
+            _logger.LogInformation($"CacheWrapper : TryGetValue<T> : Key {key} found in cache of type: {typeof(T)}");
             output = value != null;
         }
         catch(Exception ex)
@@ -141,7 +141,6 @@ public class Cache : ICache
             _logger.LogCritical(new EventId(), ex, $"CacheWrapper : TryGetValue<T> : error deserilizing cached data for key '{key}' with value {returnData}");
             return false;
         }
-        
 
         return output;
     }
