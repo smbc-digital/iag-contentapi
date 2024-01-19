@@ -4,6 +4,7 @@
     {
         string Slug { get; set; }
         string Title { get; set; }
+        string Provider { get; set; }
         string Description { get; set; }
         string Teaser { get; set; }
         string MetaDescription { get; set; }
@@ -14,13 +15,14 @@
         string Facebook { get; set; }
         string Address { get; set; }
         MapPosition MapPosition { get; set; }
-        List<ContentfulAlert> Alerts { get; set; }=  new List<ContentfulAlert>();
-        List<ContentfulFilter> Filters { get; set; } = new List<ContentfulFilter>();
+        List<ContentfulAlert> Alerts { get; set; }=  new();
+        List<ContentfulFilter> Filters { get; set; } = new();
 
-        public ContentfulDirectoryEntry Build() => new ContentfulDirectoryEntry()
+        public ContentfulDirectoryEntry Build() => new()
         {
             Slug = this.Slug,
             Title = this.Title,
+            Provider = this.Provider,
             Description = this.Description,
             MetaDescription = this.MetaDescription,
             Teaser = this.Teaser,
@@ -40,6 +42,13 @@
             Title = title;
             return this;
         }
+
+        public DirectoryEntryBuilder WithProvider(string provider)
+        {
+            Provider = provider;
+            return this;
+        }
+
 
         public DirectoryEntryBuilder WithSlug(string slug)
         {
