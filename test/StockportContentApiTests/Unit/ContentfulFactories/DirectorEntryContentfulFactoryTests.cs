@@ -9,6 +9,7 @@
                 new DirectoryEntryBuilder()
                 .WithSlug("test-directory-entry")
                 .WithTitle("Test Directory Entry")
+                .WithProvider("Test Directory")
                 .WithTeaser("Test entry teaser text")
                 .WithDescription("Test entry body text")
                 .WithMetaDescription("Test entry meta description")
@@ -40,6 +41,7 @@
 
             directoryEntry.Slug.Should().Be(contentfulReference.Slug);
             directoryEntry.Name.Should().Be(contentfulReference.Name);
+            directoryEntry.Provider.Should().Be(contentfulReference.Provider);
             directoryEntry.Teaser.Should().Be(contentfulReference.Teaser);
             directoryEntry.Description.Should().Be(contentfulReference.Description);
             directoryEntry.MetaDescription.Should().Be(contentfulReference.MetaDescription);

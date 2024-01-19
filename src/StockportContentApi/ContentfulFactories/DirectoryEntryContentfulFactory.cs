@@ -24,6 +24,7 @@
             var directoryEntry = new DirectoryEntry
             {
                 Slug = entry.Slug,
+                Provider = entry.Provider,
                 Name = entry.Name,
                 Description = entry.Description,
                 Teaser = entry.Teaser,
