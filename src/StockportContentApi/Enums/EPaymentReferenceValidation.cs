@@ -11,6 +11,6 @@
         Applications,
         ParkingPermit,
         FPN4or5,
-        BRS
+        StockportBereavementInvoice
     }
 }
