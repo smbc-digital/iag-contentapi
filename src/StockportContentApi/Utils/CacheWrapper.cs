@@ -72,7 +72,7 @@ public class Cache : ICache
 
         if ((!_useRedisCache && !_useLocalCache) || minutes == 0 || TryGetValue(cacheKey, out result) == false)
         {
-            _logger.LogWarning($"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
+            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
             result = await fallbackMethod();
 
             if ((_useRedisCache || _useLocalCache) && minutes > 0 && _memoryCache != null && result != null)
@@ -88,7 +88,7 @@ public class Cache : ICache
 
     public void Set(string cacheKey, object cacheEntry, int minutes)
     {
-        _logger.LogInformation($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
+        _logger.LogDebug($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
         
         var data = JsonConvert.SerializeObject(cacheEntry, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         try
@@ -120,7 +120,7 @@ public class Cache : ICache
 
             if (string.IsNullOrEmpty(returnData))
             {
-                _logger.LogInformation($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
+                _logger.LogDebug($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
                 return false;
             }
         }
@@ -133,7 +133,7 @@ public class Cache : ICache
         try
         {
             value = JsonConvert.DeserializeObject<T>(returnData);
-            _logger.LogInformation($"CacheWrapper : TryGetValue<T> : Key {key} found in cache of type: {typeof(T)}");
+            _logger.LogDebug($"CacheWrapper : TryGetValue<T> : Key {key} found in cache of type: {typeof(T)}");
             output = value != null;
         }
         catch(Exception ex)
