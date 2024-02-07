@@ -6,15 +6,17 @@
         public string Title { get; set; }
         public string DisplayName { get; set; }
         public string Theme { get; set; }
+        public bool Highlight { get; set; }
 
         public Filter(ContentfulFilter contentfulFilter)
         {
-            if(contentfulFilter !=null)
+            if (contentfulFilter is not null)
             {
                 Slug = contentfulFilter.Slug;
                 Title = contentfulFilter.Title;
                 DisplayName = contentfulFilter.DisplayName;
                 Theme = contentfulFilter.Theme;
+                Highlight = contentfulFilter.Highlight;
             }
         }
     }
