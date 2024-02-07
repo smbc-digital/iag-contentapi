@@ -10,7 +10,7 @@
 
         public Filter(ContentfulFilter contentfulFilter)
         {
-            if (contentfulFilter != null)
+            if (contentfulFilter is not null)
             {
                 Slug = contentfulFilter.Slug;
                 Title = contentfulFilter.Title;
