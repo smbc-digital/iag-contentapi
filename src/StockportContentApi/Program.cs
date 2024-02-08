@@ -6,6 +6,8 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
     
+    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
+
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
     builder.Configuration
         .AddJsonFile("appsettings.json")
@@ -19,12 +21,13 @@ try
     if (useAwsSecretManager)
     {
         builder.AddSecrets();
-        Log.Logger.Information($"INITIALISE SECRETS CONTENTAPI: AWS Secrets Manager");
+        Log.Logger.Information($"CONTENTAPI : INITIALISE SECRETS  {builder.Environment.EnvironmentName} : AWS Secrets Manager");
     }
     else
     {
-        builder.Configuration.AddJsonFile($"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json");
-        Log.Logger.Information($"INITIALISE SECRETS CONTENTAPI: Load JSON Secrets from file system");
+        var location  = $"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json";
+        builder.Configuration.AddJsonFile(location);
+        Log.Logger.Information($"CONTENTAPI : INITIALISE SECRETS {builder.Environment.EnvironmentName}: Load JSON Secrets from file system, {location}");
     }
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -60,7 +63,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Application terminated unexpectedly");
+    Log.Fatal(ex, "CONTENTAPI : FAILURE : Application terminated unexpectedly");
 }
 finally
 {
