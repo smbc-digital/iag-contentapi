@@ -1,13 +1,13 @@
-﻿Log.Logger = new LoggerConfiguration()
-    .WriteTo.File("C:\\Program Files\\Amazon\\ElasticBeanstalk\\logs\\ContentAPIStartupLog.log")
-    .CreateBootstrapLogger();
-
-try
+﻿try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
+    if(!builder.Environment.EnvironmentName.Equals("local"))
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("C:\\Program Files\\Amazon\\ElasticBeanstalk\\logs\\ContentAPIStartupLog.log")
+            .CreateBootstrapLogger();
 
+    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
 
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
     builder.Configuration
