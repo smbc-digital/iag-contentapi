@@ -157,19 +157,22 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession, string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger, bool useLocalCache = true)
     {
-        logger.Information($"Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
+        logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
 
         if (useRedisSession)
         {
             var redisUrl = configuration["TokenStoreUrl"];
+            logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis URL {redisUrl}");
+
             var redisIp = redisUrl;
             if (!_appEnvironment.Equals("local"))
             {
                 redisIp = GetHostEntryForUrl(redisUrl, logger);
+                logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis IP {redisIp}");
+
             }
 
             var name = Assembly.GetEntryAssembly()?.GetName().Name;
-            logger.Information($"ContentApi:ServiceCollectionExtensions:Using redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -187,13 +190,13 @@ public static class ServiceCollectionExtensions
             });
 
             var redis = ConnectionMultiplexer.Connect(redisIp);
-            logger.Information($"Using redis for session management - url {redisUrl}, ip {redisIp}");
+            logger.Information($"CONTENTAPI : ServiceCollectionExtensions : Add Cache : Using Redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
 
         }
         else
         {
-            logger.Information("Not using redis for session management!");
+            logger.Information("CONTENTAPI : ServiceCollectionExtensions : Add Cache : Not using redis for session management, falling back to memory cache");
             services.AddDistributedMemoryCache();
         }
 

@@ -21,6 +21,9 @@ public class Startup
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
+        _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Env = {_appEnvironment}, UseRedisSession = {_useRedisSession}, UseLocalCache = {_useLocalCache}, ContentRoot = {_contentRootPath}  ");
+
+
         services.AddControllers().AddNewtonsoftJson();
         services.AddSingleton(new CurrentEnvironment(_appEnvironment));
         services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger, _useLocalCache);
