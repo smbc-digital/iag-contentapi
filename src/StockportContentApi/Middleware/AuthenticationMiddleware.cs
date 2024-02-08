@@ -24,6 +24,9 @@ public class AuthenticationMiddleware
 
     public async Task Invoke(HttpContext context)
     {
+        if( context.Request.Path.Value.EndsWith("_healthcheck"))
+            await _next.Invoke(context);
+
         var apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
 
         if (string.IsNullOrEmpty(apiConfigurationkey))
