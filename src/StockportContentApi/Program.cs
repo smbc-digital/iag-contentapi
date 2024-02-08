@@ -13,6 +13,8 @@ try
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
+    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
+
     var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
     Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(builder.Configuration)
