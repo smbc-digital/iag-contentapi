@@ -1,11 +1,12 @@
-﻿Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
-
-try
+﻿try
 {
     var builder = WebApplication.CreateBuilder(args);
-    
+
+    if(!builder.Environment.EnvironmentName.Equals("local"))
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("C:\\Program Files\\Amazon\\ElasticBeanstalk\\logs\\ContentAPIStartupLog.log")
+            .CreateBootstrapLogger();
+
     Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
 
     builder.Configuration.SetBasePath(builder.Environment.ContentRootPath + "/app-config");
@@ -13,13 +14,13 @@ try
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
-    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
-
     var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
     Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(builder.Configuration)
                     .CreateLogger();
 
+    Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
+    
     if (useAwsSecretManager)
     {
         builder.AddSecrets();
