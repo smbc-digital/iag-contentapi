@@ -1,4 +1,6 @@
-﻿try
+﻿using Contentful.Core.Models;
+
+try
 {
     var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
     var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+    
     Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(builder.Configuration)
                     .CreateLogger();
@@ -37,9 +40,11 @@
         .ReadFrom.Configuration(context.Configuration)
         .WriteToElasticsearchAws(builder.Configuration));
 
+    Log.Logger.Information($"CONTENTAPI : STARTING APPLICATION");
     var startup = new Startup(builder.Configuration, builder.Environment, Log.Logger);
     startup.ConfigureServices(builder.Services);
-
+    
+    Log.Logger.Information($"CONTENTAPI : BUILDING APPLICATION");
     var app = builder.Build();
 
     if (!app.Environment.IsEnvironment("prod") && !app.Environment.IsEnvironment("stage"))

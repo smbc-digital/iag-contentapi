@@ -24,8 +24,11 @@ public class Startup
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Env = {_appEnvironment}, UseRedisSession = {_useRedisSession}, UseLocalCache = {_useLocalCache}, ContentRoot = {_contentRootPath}  ");
 
 
+
         services.AddControllers().AddNewtonsoftJson();
         services.AddSingleton(new CurrentEnvironment(_appEnvironment));
+        
+        _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Cache");
         services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger, _useLocalCache);
         services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
         services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
