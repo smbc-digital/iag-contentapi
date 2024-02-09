@@ -17,10 +17,6 @@ try
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
     var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
-    
-    Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(builder.Configuration)
-                    .CreateLogger();
 
     Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
     
@@ -40,7 +36,7 @@ try
         .ReadFrom.Configuration(context.Configuration)
         .WriteToElasticsearchAws(builder.Configuration));
 
-    Log.Logger.Information($"CONTENTAPI : STARTING APPLICATION");
+    Log.Logger.Information($"CONTENTAPI : CONFIGURE APPLICATION START");
     var startup = new Startup(builder.Configuration, builder.Environment, Log.Logger);
     startup.ConfigureServices(builder.Services);
     
@@ -66,6 +62,10 @@ try
     {
         endpoints.MapControllers();
     });
+
+    Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
 
     app.Run();
 }
