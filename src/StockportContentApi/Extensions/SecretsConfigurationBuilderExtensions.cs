@@ -72,6 +72,7 @@ namespace StockportContentApi.Extensions
 
             return allowedPrefixes;
         }
+        
         // Only load entries that start with any of the allowed prefixes
         private static bool HasPrefix(List<string> allowedPrefixes, SecretListEntry entry)
         {
