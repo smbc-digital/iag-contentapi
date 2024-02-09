@@ -36,6 +36,9 @@
                 Twitter = entry.Twitter,
                 Facebook = entry.Facebook,
                 Address = entry.Address,
+                Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                                    ? entry.Image.File.Url : string.Empty,
+
                 Directories = entry.Directories?.Select(contentfulDirectory => new MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
                 Alerts = entry.Alerts?
                             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
