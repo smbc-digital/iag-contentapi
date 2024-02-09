@@ -49,7 +49,7 @@
                     {
                         Title = theme,
                         Filters = entry.Filters
-                            .Where(filter => string.IsNullOrEmpty(filter.Theme) 
+                            .Where(filter => !string.IsNullOrEmpty(filter.Theme) 
                                     && filter.Theme.Equals(theme))
                             .Select(filter => new Filter(filter))
                     }),
