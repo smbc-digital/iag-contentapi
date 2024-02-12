@@ -35,6 +35,9 @@
                 Website = entry.Website,
                 Twitter = entry.Twitter,
                 Facebook = entry.Facebook,
+                Youtube = entry.Youtube,
+                Instagram = entry.Instagram,
+                LinkedIn = entry.LinkedIn,
                 Address = entry.Address,
                 Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                     ? entry.Image.File.Url : string.Empty,
