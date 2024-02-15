@@ -36,7 +36,7 @@ public class Startup
         services.AddSingleton(new TwentyThreeConfig(Configuration["TwentyThreeBaseUrl"]));
 
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding HTTP Clients");
-        services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
+        services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(bool.Parse(Configuration["RequiresProxy"])), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
 
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Healthchecks");
         services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));
