@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Models;
-
-try
+﻿try
 {
     var builder = WebApplication.CreateBuilder(args);
 
