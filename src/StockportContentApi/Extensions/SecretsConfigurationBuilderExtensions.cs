@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Kralizek.Extensions.Configuration.Internal;
-using Amazon.SecretsManager.Model;
+﻿using Amazon.SecretsManager.Model;
 
 
 namespace StockportContentApi.Extensions
@@ -70,6 +67,8 @@ namespace StockportContentApi.Extensions
             if (!string.IsNullOrEmpty(secretConfig.GlobalSecretPrefix))
                 allowedPrefixes.Add($"{secretConfig.GlobalSecretPrefix}/");
 
+            allowedPrefixes.ForEach(prefix => Log.Logger.Information($"SecretsConfigurationBuilderExtensions : GetSecretPrefixes : ALLOWED PREFIX : {prefix}"));
+
             return allowedPrefixes;
         }
         
@@ -87,9 +86,13 @@ namespace StockportContentApi.Extensions
             var prefix = prefixes.First(secretValue.StartsWith);
 
             // Strip the prefix, and replace "__" with ":"
-            return secretValue
-                .Substring(prefix.Length)
-                .Replace("__", ":");
+            var key = secretValue
+                        .Substring(prefix.Length)
+                        .Replace("__", ":");
+
+            Log.Logger.Information($"SecretsConfigurationBuilderExtensions : GenerateKey : Key : {key}");
+
+            return key;
         }
     }
 }
