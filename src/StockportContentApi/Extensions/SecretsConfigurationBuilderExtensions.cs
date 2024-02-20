@@ -11,12 +11,15 @@ namespace StockportContentApi.Extensions
             {
                 if (hostingContext.HostingEnvironment.IsDevelopment() || hostingContext.HostingEnvironment.EnvironmentName.Equals("local"))
                 {
+                    Log.Logger.Information($"USING LOCAL SECRETS");
+                    
                     // Use local secrets for development - need to work out what the difference is between the name/format of local json secrets string
                     configBuilder.AddUserSecrets<Program>();
                 }
                 else
                 {
-                    // In AWS
+                    Log.Logger.Information($"USING AWS SECRETS MANAGER");
+
                     // secrets will take the form of {env}/{group}/{secret__name} e.g. int/iag/MySecret__AccessKey = MySecret:AccessKey in dev secrets
                     configBuilder.AddAwsSecrets(hostingContext);
                 }
@@ -48,27 +51,34 @@ namespace StockportContentApi.Extensions
 
         public static List<string> GetSecretPrefixes(AWSSecretsManagerConfiguration secretConfig, string env)
         {
-            // Gets a list of required prefixes for this env based on the value in the appsettings e.g. "int/iag/", "int/shared/"
+            // Gets a list of required prefixes for this env based on the value in the appsettings e.g. "int/iag/",
             // i.e. secrets that are specific to the env and group/application
             var allowedPrefixes = secretConfig.SecretGroups
                                     .Select(grp => $"{env}/{grp}/").ToList();
 
-            // Gets a list of shared prefixes for this group based on the value in the appsettings e.g. "iag/shared" 
+            // The intention for this is to allow secrets to be shared between groups of environments
+            // e.g. pre-prod/iag - could be secrets shared between int/qa
+            if (!string.IsNullOrEmpty(secretConfig.EnvironmentGroupPrefix))
+                secretConfig.SecretGroups.ToList().ForEach(grp => allowedPrefixes.Add($"{secretConfig.EnvironmentGroupPrefix}/{grp}/"));
+
+            // Gets a list of shared prefixes for this group based on the value in the appsettings 
             // i.e. secrets that are universal to all envs of that app/group
+            // e.g. "iag/shared" 
             if (!string.IsNullOrEmpty(secretConfig.SharedSecretPrefix))
                 secretConfig.SecretGroups.ToList().ForEach(grp => allowedPrefixes.Add($"{grp}/{secretConfig.SharedSecretPrefix}/"));
 
-            // Gets a list of shared prefixes for this group based on the value in the appsettings e.g. "int/shared" 
+            // Gets a list of shared prefixes for this group based on the value in the appsettings  
             // i.e. secrets that are universal to all apps in that environment
+            // e.g. "int/shared"
             if (!string.IsNullOrEmpty(secretConfig.SharedSecretPrefix))
                 allowedPrefixes.Add($"{env}/{secretConfig.SharedSecretPrefix}/");
 
-            // Adds global secrets to the list of allowed prefixes
+                // Adds global secrets to the list of allowed prefixes
+                // E.G. global/
             if (!string.IsNullOrEmpty(secretConfig.GlobalSecretPrefix))
                 allowedPrefixes.Add($"{secretConfig.GlobalSecretPrefix}/");
 
             allowedPrefixes.ForEach(prefix => Log.Logger.Information($"SecretsConfigurationBuilderExtensions : GetSecretPrefixes : ALLOWED PREFIX : {prefix}"));
-
             return allowedPrefixes;
         }
         
