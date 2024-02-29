@@ -6,4 +6,5 @@ public class ContentfulDirectory : ContentfulReference
     public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public ContentfulCallToActionBanner CallToAction { get; set; }
     public List<ContentfulDirectory> SubDirectories { get; set; }
+    public string ColourScheme { get; set; } = string.Empty;
 }
