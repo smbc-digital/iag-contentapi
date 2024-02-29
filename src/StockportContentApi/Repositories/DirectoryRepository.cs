@@ -94,7 +94,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
         var contentfulSubDirectoriesTasks = contentfulDirectory
             .SubDirectories?.Select(async subDirectory => 
-                await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
+                await _cache.GetFromCacheOrDirectlyAsync(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
 
         if (contentfulSubDirectoriesTasks is not null)
         {
