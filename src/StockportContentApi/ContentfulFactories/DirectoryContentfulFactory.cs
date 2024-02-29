@@ -33,7 +33,8 @@
                 BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                 ? entry.BackgroundImage.File.Url : string.Empty,
                 ContentfulId = entry.Sys.Id,
-                ColourScheme = entry.ColourScheme
+                ColourScheme = entry.ColourScheme,
+                Icon = entry.Icon
             };
         }
     }
