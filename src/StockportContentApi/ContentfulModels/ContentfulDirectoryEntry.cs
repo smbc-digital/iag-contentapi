@@ -8,6 +8,7 @@
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public IEnumerable<ContentfulAlert> Alerts { get; set; }
         public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>(); // TODO : This should be renamed at some point to just "Branding" or "Logo"
+        public List<string> Tags { get; set; } = new List<string>();
         public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Website { get; set; } = string.Empty;
