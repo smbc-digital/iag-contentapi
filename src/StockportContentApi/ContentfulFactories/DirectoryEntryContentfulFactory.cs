@@ -30,6 +30,7 @@
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
                 MapPosition = entry.MapPosition,
+                Tags = entry.Tags,
                 PhoneNumber = entry.PhoneNumber,
                 Email = entry.Email,
                 Website = entry.Website,
