@@ -12,6 +12,8 @@
         public CallToActionBanner CallToAction { get; set; }
         public IEnumerable<Alert> Alerts { get; set; }
         public IEnumerable<DirectoryEntry> Entries { get; set; } = new List<DirectoryEntry>();
-        public IEnumerable<Directory> SubDirectories { get; set; } = new List<Directory>();            
+        public IEnumerable<Directory> SubDirectories { get; set; } = new List<Directory>();
+        public string ColourScheme { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
     }
 }
