@@ -72,7 +72,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(p => new DirectoryContentfulFactory(
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), 
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(), 
-            p.GetService<ITimeProvider>()));
+            p.GetService<ITimeProvider>(),
+            p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p => new DirectoryEntryContentfulFactory(
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
@@ -80,11 +81,6 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
             p.GetService<ITimeProvider>()));
         
-
-        //services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
-
-        //services.AddSingleton<IContentfulFactory<ContentfulFilter, Filter>>(p => new FilterContentfulFactory());
-
         services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
         (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
