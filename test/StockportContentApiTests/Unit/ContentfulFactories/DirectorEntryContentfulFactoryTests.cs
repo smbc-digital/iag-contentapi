@@ -37,7 +37,15 @@
                     .Build())
                 .Build();
 
-            var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new DirectoryContentfulFactory(new AlertContentfulFactory(), new CallToActionBannerContentfulFactory(), new TimeProvider()), new GroupBrandingContentfulFactory(), new TimeProvider()).ToModel(contentfulReference);
+            var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), 
+                new DirectoryContentfulFactory(
+                    new AlertContentfulFactory(), 
+                    new CallToActionBannerContentfulFactory(),
+                    new TimeProvider(),
+                    new EventBannerContentfulFactory()
+                ),
+                new GroupBrandingContentfulFactory(),
+                new TimeProvider() ).ToModel(contentfulReference);
 
             directoryEntry.Slug.Should().Be(contentfulReference.Slug);
             directoryEntry.Name.Should().Be(contentfulReference.Name);

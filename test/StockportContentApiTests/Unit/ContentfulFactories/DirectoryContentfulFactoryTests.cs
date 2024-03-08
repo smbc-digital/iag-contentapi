@@ -5,6 +5,7 @@
         private IContentfulFactory<ContentfulAlert, Alert> _alertFactory = new AlertContentfulFactory() ;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = new CallToActionBannerContentfulFactory();
         private readonly ITimeProvider _timeProvider = new TimeProvider();
+        private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
 
         [Fact]
         public void ShouldCreateADirectoryFromAContentfulReference()
@@ -31,7 +32,7 @@
                 .Build();
                 
 
-            var directory = new DirectoryContentfulFactory(_alertFactory, _callToActionFactory, _timeProvider).ToModel(ContentfulReference);
+            var directory = new DirectoryContentfulFactory(_alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory).ToModel(ContentfulReference);
 
             directory.Slug.Should().Be(ContentfulReference.Slug);
             directory.Title.Should().Be(ContentfulReference.Title);
