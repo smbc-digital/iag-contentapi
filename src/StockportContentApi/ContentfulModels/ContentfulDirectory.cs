@@ -7,5 +7,7 @@ public class ContentfulDirectory : ContentfulReference
     public ContentfulCallToActionBanner CallToAction { get; set; }
     public List<ContentfulDirectory> SubDirectories { get; set; }
     public string ColourScheme { get; set; } = string.Empty;
-    public string Icon { get; set; } = string.Empty;
-}
+    public ContentfulEventBanner EventBanner { get; set; } = new()
+    {
+        Sys = new SystemProperties { Type = "Entry" }
+    };}

@@ -5,18 +5,27 @@
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
         private readonly DateComparer _dateComparer;
+        private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
         
-        public DirectoryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory, ITimeProvider timeProvider)
+        public DirectoryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+            IContentfulFactory<ContentfulCallToActionBanner,
+            CallToActionBanner> callToActionFactory,
+            ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
         {
             _alertFactory = alertFactory;
             _dateComparer = new DateComparer(timeProvider);
             _callToActionFactory = callToActionFactory;
+            _eventBannerFactory = eventBannerFactory;
         }
 
         public Directory ToModel(ContentfulDirectory entry)
         {
             if (entry is null)
                 return null;
+
+            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
+                            ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
 
             return new()
             {
@@ -34,7 +43,8 @@
                                 ? entry.BackgroundImage.File.Url : string.Empty,
                 ContentfulId = entry.Sys.Id,
                 ColourScheme = entry.ColourScheme,
-                Icon = entry.Icon
+                Icon = entry.Icon,
+                EventBanner = eventBanner,
             };
         }
     }
