@@ -45,7 +45,6 @@
                 ColourScheme = entry.ColourScheme,
                 Icon = entry.Icon,
                 EventBanner = eventBanner,
-                
             };
         }
     }
