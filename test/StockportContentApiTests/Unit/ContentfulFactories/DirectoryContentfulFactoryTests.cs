@@ -2,7 +2,9 @@
 {
     public class DirectoryContentfulFactoryTests
     {
-        private IContentfulFactory<ContentfulAlert, Alert> _alertFactory = new AlertContentfulFactory() ;
+        private IContentfulFactory<ContentfulAlert, Alert> _alertFactory = new AlertContentfulFactory();
+        private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory = new ExternalLinkContentfulFactory();
+        private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = new SubItemContentfulFactory(new TimeProvider());
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = new CallToActionBannerContentfulFactory();
         private readonly ITimeProvider _timeProvider = new TimeProvider();
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
@@ -32,7 +34,7 @@
                 .Build();
                 
 
-            var directory = new DirectoryContentfulFactory(_alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory).ToModel(ContentfulReference);
+            var directory = new DirectoryContentfulFactory(_subItemFactory, _externalLinkFactory, _alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory).ToModel(ContentfulReference);
 
             directory.Slug.Should().Be(ContentfulReference.Slug);
             directory.Title.Should().Be(ContentfulReference.Title);

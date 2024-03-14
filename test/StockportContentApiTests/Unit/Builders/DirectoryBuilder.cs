@@ -10,7 +10,7 @@
         string Id { get; set; }
         string BackgroundImageUrl { get; set; }
         List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
-        ContentfulCallToActionBanner CallToActionBanner { get; set; }   
+        ContentfulCallToActionBanner CallToActionBanner { get; set; }
 
         public ContentfulDirectory Build() => new ContentfulDirectory()
         {
@@ -90,6 +90,6 @@
         {
             Alerts.Add(alert);
             return this;
-        }           
+        }
     }
 }

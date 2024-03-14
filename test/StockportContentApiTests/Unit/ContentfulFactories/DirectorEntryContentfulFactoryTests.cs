@@ -39,6 +39,8 @@
 
             var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), 
                 new DirectoryContentfulFactory(
+                    new SubItemContentfulFactory(new TimeProvider()),
+                    new ExternalLinkContentfulFactory(),
                     new AlertContentfulFactory(), 
                     new CallToActionBannerContentfulFactory(),
                     new TimeProvider(),

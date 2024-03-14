@@ -10,4 +10,7 @@ public class ContentfulDirectory : ContentfulReference
     public ContentfulEventBanner EventBanner { get; set; } = new()
     {
         Sys = new SystemProperties { Type = "Entry" }
-    };}
+    };
+    public List<ContentfulReference> RelatedContent { get; set; } = new List<ContentfulReference>();
+    public List<ContentfulExternalLink> ExternalLinks { get; set; } = new List<ContentfulExternalLink>();
+}
