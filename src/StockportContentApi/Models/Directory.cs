@@ -17,6 +17,6 @@
         public string Icon { get; set; } = string.Empty;
         public EventBanner EventBanner { get; set; }
         public IEnumerable<SubItem> RelatedContent { get; set; }
-        public IEnumerable<ExternalLink> ExternalLinks { get; set; } = new List<ExternalLink>();
+        public IEnumerable<ExternalLink> ExternalLinks { get; set; }
     }
 }
