@@ -12,7 +12,6 @@
         List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         ContentfulCallToActionBanner CallToActionBanner { get; set; }
 
-
         public ContentfulDirectory Build() => new ContentfulDirectory()
         {
             Slug = this.Slug,
@@ -84,6 +83,12 @@
         public DirectoryBuilder WithCallToAction(ContentfulCallToActionBanner banner)
         {
             CallToActionBanner = banner;
+            return this;
+        }
+
+        public DirectoryBuilder WithAlert(ContentfulAlert alert) //string slug, string body,string title)
+        {
+            Alerts.Add(alert);
             return this;
         }
     }
