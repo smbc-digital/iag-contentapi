@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p => new ContactUsCategoryContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p => new RedirectContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p => new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
+        services.AddSingleton<IContentfulFactory<ContentfulExternalLink, ExternalLink>>(p => new ExternalLinkContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p => new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
         services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p => new EventBannerContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>(p => new SpotlightBannerContentfulFactory());
@@ -69,7 +70,9 @@ public static class ServiceCollectionExtensions
             )
         );
         services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p => new CallToActionBannerContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(p => new DirectoryContentfulFactory(
+        services.AddSingleton<IContentfulFactory<ContentfulDirectory, Directory>>(p => new DirectoryContentfulFactory(
+            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+            p.GetService<IContentfulFactory<ContentfulExternalLink, ExternalLink>>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), 
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(), 
             p.GetService<ITimeProvider>(),
