@@ -16,7 +16,7 @@
         public string ColourScheme { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public EventBanner EventBanner { get; set; }
-        public IEnumerable<SubItem> RelatedContent { get; set; }
+        public IEnumerable<SubItem> RelatedContent { get; set; } = new List<SubItem>();
         public IEnumerable<ExternalLink> ExternalLinks { get; set; }
     }
 }
