@@ -2,15 +2,15 @@
 
 public class SubItem
 {
-    public readonly string Slug;
-    public readonly string Title;
-    public readonly string Teaser;
-    public readonly string Icon;
-    public readonly string Type;
-    public readonly DateTime SunriseDate;
-    public readonly DateTime SunsetDate;
-    public readonly string Image;
-    public readonly List<SubItem> SubItems;
+    public string Slug { get; set; }
+    public string Title { get; set; }
+    public string Teaser { get; set; }
+    public string Icon { get; set; }
+    public string Type { get; set; }
+    public DateTime SunriseDate { get; set; }
+    public DateTime SunsetDate { get; set; }
+    public string Image { get; set; }
+    public List<SubItem> SubItems { get; set; }
 
     public SubItem()
     {
