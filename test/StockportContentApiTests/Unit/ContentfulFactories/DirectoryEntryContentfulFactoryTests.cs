@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace StockportContentApiTests.Unit.ContentfulFactories
+﻿namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class DirectoryEntryContentfulFactoryTests
     {       
