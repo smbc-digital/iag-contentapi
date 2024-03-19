@@ -31,6 +31,12 @@
                     .WithSunsetDate(DateTime.Now.AddDays(1))
                     .WithSeverity("Warning")
                     .Build())
+                .WithRelatedContent(new List<ContentfulReference>(){
+                    new ContentfulReferenceBuilder().Build()
+                })
+                .WithExternalLinks(new List<ContentfulExternalLink>(){
+                    new()
+                })
                 .Build();
                 
 

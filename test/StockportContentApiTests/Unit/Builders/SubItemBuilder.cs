@@ -2,15 +2,15 @@
 
 public class SubItemBuilder
 {
-    private string _slug = "slug";
-    private string _title = "title";
-    private string _teaser = "teaser";
-    private string _icon = "icon";
-    private string _type = "type";
-    private DateTime _sunriseDate = DateTime.MinValue;
-    private DateTime _sunsetDate = DateTime.MaxValue;
-    private string _image = "image";
-    private List<SubItem> _subItems = new List<SubItem>();
+    private readonly string _slug = "slug";
+    private readonly string _title = "title";
+    private readonly string _teaser = "teaser";
+    private readonly string _icon = "icon";
+    private readonly string _type = "type";
+    private readonly DateTime _sunriseDate = DateTime.MinValue;
+    private readonly DateTime _sunsetDate = DateTime.MaxValue;
+    private readonly string _image = "image";
+    private readonly List<SubItem> _subItems = new List<SubItem>();
 
     public SubItem Build()
     {
