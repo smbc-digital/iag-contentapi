@@ -17,7 +17,8 @@
         MapPosition MapPosition { get; set; }
         List<ContentfulAlert> Alerts { get; set; }=  new();
         List<ContentfulFilter> Filters { get; set; } = new();
-
+        List<ContentfulGroupBranding> Branding { get; set; } = new();
+        List<ContentfulDirectory> Directories { get; set; } = new();
         public ContentfulDirectoryEntry Build() => new()
         {
             Slug = this.Slug,
@@ -34,7 +35,9 @@
             Address = this.Address,
             Filters = this.Filters,
             Alerts = this.Alerts,
-            MapPosition = this.MapPosition
+            MapPosition = this.MapPosition,
+            GroupBranding = Branding,
+            Directories = Directories,
         };
 
         public DirectoryEntryBuilder WithTitle(string title)
@@ -132,6 +135,18 @@
         public DirectoryEntryBuilder WithAlert(ContentfulAlert alert)
         {
             Alerts.Add(alert);
+            return this;
+        }
+
+        public DirectoryEntryBuilder WithBranding(List<ContentfulGroupBranding> branding)
+        {
+            Branding = branding;
+            return this;
+        }
+
+        public DirectoryEntryBuilder WithDirectories(List<ContentfulDirectory> directories)
+        {
+            Directories = directories;
             return this;
         }
     }
