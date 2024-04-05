@@ -32,18 +32,6 @@
             if (entry is null)
                 return null;
 
-            //var pinnedEntries = entry.PinnedEntries is not null
-            //? entry.PinnedEntries.Where(_ => _ is not null).Select(entry => _directoryEntryFactory.ToModel(entry))
-            //: new List<DirectoryEntry>();
-            // var pinnedEntries = new List<DirectoryEntry>();
-            // foreach(var t in entry.PinnedEntries)
-            // {
-            //     if(t is not null && !string.IsNullOrEmpty(t.Slug))
-            //     {
-            //         pinnedEntries.Add(_directoryEntryFactory.ToModel(t));
-            //     }
-            // }
-
             return new()
             {
                 Slug = entry.Slug,

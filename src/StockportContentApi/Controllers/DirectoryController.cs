@@ -31,7 +31,7 @@
         [HttpGet]
         [Route("{businessId}/directory/{slug}")]
         [Route("v2/{businessId}/directory/{slug}")]
-        public async Task<IActionResult> GetDirectory(string slug="test", string businessId="stockportgov")
+        public async Task<IActionResult> GetDirectory(string slug, string businessId)
         {
             try
             {
