@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories
+﻿using StockportContentApi.ContentfulFactories;
+
+namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class DirectoryEntryContentfulFactoryTests
     {       
@@ -54,14 +56,6 @@
                 .Build();
 
             var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), 
-                new DirectoryContentfulFactory(
-                    new SubItemContentfulFactory(new TimeProvider()),
-                    new ExternalLinkContentfulFactory(),
-                    new AlertContentfulFactory(), 
-                    new CallToActionBannerContentfulFactory(),
-                    new TimeProvider(),
-                    new EventBannerContentfulFactory()
-                ),
                 new GroupBrandingContentfulFactory(),
                 new TimeProvider() ).ToModel(contentfulReference);
 

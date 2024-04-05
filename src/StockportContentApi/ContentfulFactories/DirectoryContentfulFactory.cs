@@ -8,14 +8,15 @@
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
         private readonly DateComparer _dateComparer;
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
+        private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
         
         public DirectoryContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
             IContentfulFactory<ContentfulExternalLink, ExternalLink> externalLinkFactory,
             IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
-            IContentfulFactory<ContentfulCallToActionBanner,
-            CallToActionBanner> callToActionFactory,
+            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
             ITimeProvider timeProvider,
-            IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
+            IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
+            IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory)
         {
             _subitemFactory = subitemFactory;
             _externalLinkFactory = externalLinkFactory;
@@ -23,6 +24,7 @@
             _dateComparer = new DateComparer(timeProvider);
             _callToActionFactory = callToActionFactory;
             _eventBannerFactory = eventBannerFactory;
+            _directoryEntryFactory = directoryEntryFactory;
         }
 
         public Directory ToModel(ContentfulDirectory entry)
@@ -30,8 +32,17 @@
             if (entry is null)
                 return null;
 
-            var eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
-                            ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
+            //var pinnedEntries = entry.PinnedEntries is not null
+            //? entry.PinnedEntries.Where(_ => _ is not null).Select(entry => _directoryEntryFactory.ToModel(entry))
+            //: new List<DirectoryEntry>();
+            // var pinnedEntries = new List<DirectoryEntry>();
+            // foreach(var t in entry.PinnedEntries)
+            // {
+            //     if(t is not null && !string.IsNullOrEmpty(t.Slug))
+            //     {
+            //         pinnedEntries.Add(_directoryEntryFactory.ToModel(t));
+            //     }
+            // }
 
             return new()
             {
@@ -50,12 +61,14 @@
                 ContentfulId = entry.Sys.Id,
                 ColourScheme = entry.ColourScheme,
                 Icon = entry.Icon,
-                EventBanner = eventBanner,
+                EventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
+                                ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner(),
                 RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                                     .Select(item => _subitemFactory.ToModel(item)).ToList(),
                 ExternalLinks = entry.ExternalLinks.Where(el => ContentfulHelpers.EntryIsNotALink(el.Sys))
                                     .Select(link => _externalLinkFactory.ToModel(link)).ToList(),
+                PinnedEntries = entry.PinnedEntries?.Select(entry => _directoryEntryFactory.ToModel(entry)).ToList()
             };
         }
     }

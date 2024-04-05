@@ -37,10 +37,13 @@
                 .WithExternalLinks(new List<ContentfulExternalLink>(){
                     new()
                 })
+                .WithPinnedEntries(new List<ContentfulDirectoryEntry>(){
+                    new()
+                })
                 .Build();
                 
 
-            var directory = new DirectoryContentfulFactory(_subItemFactory, _externalLinkFactory, _alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory).ToModel(ContentfulReference);
+            var directory = new DirectoryContentfulFactory(_subItemFactory, _externalLinkFactory, _alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory, null).ToModel(ContentfulReference);
 
             directory.Slug.Should().Be(ContentfulReference.Slug);
             directory.Title.Should().Be(ContentfulReference.Title);
@@ -52,6 +55,7 @@
             directory.BackgroundImage.Should().Be(ContentfulReference.BackgroundImage.File.Url);
             directory.Alerts.Should().NotBeNull();
             directory.Alerts.Count().Should().Be(1);
+            directory.PinnedEntries.Count().Should().Be(0);
         }
     }
 }

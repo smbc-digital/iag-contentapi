@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace StockportContentApi.ContentfulModels
+﻿namespace StockportContentApi.ContentfulModels
 {
     public class ContentfulFilter : ContentfulReference
     {
