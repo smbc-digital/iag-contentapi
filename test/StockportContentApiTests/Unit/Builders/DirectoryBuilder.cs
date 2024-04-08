@@ -17,6 +17,10 @@
         private List<ContentfulExternalLink> _externalLinks = new() {
             new ContentfulExternalLink()
         };
+
+        private List<ContentfulDirectoryEntry> _pinnedEntries = new() {
+            new ContentfulDirectoryEntry()
+        };
         public ContentfulDirectory Build() => new()
         {
             Slug = Slug,
@@ -43,6 +47,7 @@
             Alerts = Alerts,
             RelatedContent = _relatedContent,
             ExternalLinks = _externalLinks,
+            PinnedEntries = _pinnedEntries,
         };
 
         public DirectoryBuilder WithTitle(string title)
@@ -105,9 +110,15 @@
             return this;
         }
 
-         public DirectoryBuilder WithExternalLinks(List<ContentfulExternalLink> externalLinks)
+        public DirectoryBuilder WithExternalLinks(List<ContentfulExternalLink> externalLinks)
         {
             _externalLinks = externalLinks;
+            return this;
+        }
+
+        public DirectoryBuilder WithPinnedEntries(List<ContentfulDirectoryEntry> pinnedEntries)
+        {
+            _pinnedEntries = pinnedEntries;
             return this;
         }
     }

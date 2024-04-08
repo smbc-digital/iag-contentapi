@@ -2,15 +2,13 @@
 {
     public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
     {
-        private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
         private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
         private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
 
         private readonly DateComparer _dateComparer;
 
-        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulDirectory, Directory> directoryFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)
+        public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)
         {
-            _directoryFactory = directoryFactory;
             _alertFactory = alertFactory;
             _brandingFactory = brandingFactory;
             _dateComparer = new DateComparer(timeProvider);
@@ -42,24 +40,23 @@
                 Address = entry.Address,
                 Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                                     ? entry.Image.File.Url : string.Empty,
-
                 Directories = entry.Directories?.Select(contentfulDirectory => new MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
                 Alerts = entry.Alerts?
                             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Select(alert => _alertFactory.ToModel(alert)),
                 Themes = entry
-                    .Filters?
-                    .Select(filter => filter.Theme)
-                    .Distinct()
-                    .Select(theme => new FilterTheme()
-                    {
-                        Title = theme,
-                        Filters = entry.Filters
-                            .Where(filter => !string.IsNullOrEmpty(filter.Theme) 
-                                    && filter.Theme.Equals(theme))
-                            .Select(filter => new Filter(filter))
-                    }),
+                            .Filters?
+                            .Select(filter => filter.Theme)
+                            .Distinct()
+                            .Select(theme => new FilterTheme()
+                            {
+                                Title = theme,
+                                Filters = entry.Filters
+                                    .Where(filter => !string.IsNullOrEmpty(filter.Theme)
+                                            && filter.Theme.Equals(theme))
+                                    .Select(filter => new Filter(filter))
+                            }),
                 Branding = entry.GroupBranding?.Select(branding => _brandingFactory.ToModel(branding))
             };
 

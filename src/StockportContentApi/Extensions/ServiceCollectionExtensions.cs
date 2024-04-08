@@ -76,11 +76,11 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), 
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(), 
             p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
+            p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
+            p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p => new DirectoryEntryContentfulFactory(
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
             p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
             p.GetService<ITimeProvider>()));
         
@@ -283,8 +283,8 @@ public static class ServiceCollectionExtensions
                 new DirectoryRepository(
                     config,
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulDirectory, StockportContentApi.Model.Directory>>(),
-                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, StockportContentApi.Model.DirectoryEntry>>(),
+                    p.GetService<IContentfulFactory<ContentfulDirectory, Directory>>(),
+                    p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(),
                     p.GetService<ICache>(),
                     p.GetService<IOptions<RedisExpiryConfiguration>>(),
                     p.GetService<ILogger<DirectoryRepository>>()

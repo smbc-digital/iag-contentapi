@@ -33,7 +33,8 @@ public class DirectoryRepositoryTests
             Teaser = "Directory teaser",
             MetaDescription = "Directory MetaDescription",
             ContentfulId = "XXX123456",
-            Title = "Directory title"
+            Title = "Directory title",
+            PinnedEntries = null
         };
 
         _directoryEntry = new DirectoryEntry{
