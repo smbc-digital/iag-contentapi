@@ -18,6 +18,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     private readonly ICache _cache;
     private readonly ILogger<DirectoryRepository> _logger;
     private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
+    
+    // TODO Move this to config!!
     private  int DepthLimit { get; } = 5;
     
     public DirectoryRepository(ContentfulConfig config, 

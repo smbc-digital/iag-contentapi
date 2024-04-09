@@ -49,6 +49,7 @@
                                 ? entry.BackgroundImage.File.Url : string.Empty,
                 ContentfulId = entry.Sys.Id,
                 ColourScheme = entry.ColourScheme,
+                SearchBranding = entry.SearchBranding,
                 Icon = entry.Icon,
                 EventBanner = eventBanner,
                 RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
