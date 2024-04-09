@@ -14,4 +14,5 @@ public class ContentfulDirectory : ContentfulReference
     };
     public List<ContentfulReference> RelatedContent { get; set; } = new List<ContentfulReference>();
     public List<ContentfulExternalLink> ExternalLinks { get; set; } = new List<ContentfulExternalLink>();
+    public List<ContentfulDirectoryEntry> PinnedEntries { get; set; } = new List<ContentfulDirectoryEntry>();
 }

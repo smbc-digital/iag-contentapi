@@ -2,7 +2,7 @@
 
 public abstract class BaseRepository
 {
-    public async Task<ContentfulCollection<T>> GetAllEntriesAsync<T>(Contentful.Core.IContentfulClient _client, QueryBuilder<T> builder, Microsoft.Extensions.Logging.ILogger logger = null)
+    public async Task<ContentfulCollection<T>> GetAllEntriesAsync<T>(IContentfulClient _client, QueryBuilder<T> builder, Microsoft.Extensions.Logging.ILogger logger = null)
     {
         if (!BuilderHasProperty(builder, "limit"))
         {

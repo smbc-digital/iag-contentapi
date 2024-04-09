@@ -11,17 +11,26 @@
         string BackgroundImageUrl { get; set; }
         List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
         ContentfulCallToActionBanner CallToActionBanner { get; set; }
+        private List<ContentfulReference> _relatedContent = new() {
+            new ContentfulReferenceBuilder().Slug("sub-slug").Build()
+        };
+        private List<ContentfulExternalLink> _externalLinks = new() {
+            new ContentfulExternalLink()
+        };
 
-        public ContentfulDirectory Build() => new ContentfulDirectory()
+        private List<ContentfulDirectoryEntry> _pinnedEntries = new() {
+            new ContentfulDirectoryEntry()
+        };
+        public ContentfulDirectory Build() => new()
         {
-            Slug = this.Slug,
-            Title = this.Title,
-            Body = this.Body,
-            MetaDescription = this.MetaDescription,
-            Teaser = this.Teaser,
+            Slug = Slug,
+            Title = Title,
+            Body = Body,
+            MetaDescription = MetaDescription,
+            Teaser = Teaser,
             Sys = new SystemProperties()
             {
-                Id = this.Id
+                Id = Id
             },
             BackgroundImage = new Asset()
             {
@@ -34,8 +43,11 @@
                     Type = "Image"
                 }
             },
-            CallToAction = this.CallToActionBanner,
-            Alerts = this.Alerts
+            CallToAction = CallToActionBanner,
+            Alerts = Alerts,
+            RelatedContent = _relatedContent,
+            ExternalLinks = _externalLinks,
+            PinnedEntries = _pinnedEntries,
         };
 
         public DirectoryBuilder WithTitle(string title)
@@ -89,6 +101,24 @@
         public DirectoryBuilder WithAlert(ContentfulAlert alert) //string slug, string body,string title)
         {
             Alerts.Add(alert);
+            return this;
+        }
+
+        public DirectoryBuilder WithRelatedContent(List<ContentfulReference> relatedContent)
+        {
+            _relatedContent = relatedContent;
+            return this;
+        }
+
+        public DirectoryBuilder WithExternalLinks(List<ContentfulExternalLink> externalLinks)
+        {
+            _externalLinks = externalLinks;
+            return this;
+        }
+
+        public DirectoryBuilder WithPinnedEntries(List<ContentfulDirectoryEntry> pinnedEntries)
+        {
+            _pinnedEntries = pinnedEntries;
             return this;
         }
     }

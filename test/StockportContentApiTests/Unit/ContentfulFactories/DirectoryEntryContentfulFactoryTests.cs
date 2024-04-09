@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories
+﻿using StockportContentApi.ContentfulFactories;
+
+namespace StockportContentApiTests.Unit.ContentfulFactories
 {
     public class DirectoryEntryContentfulFactoryTests
     {       
@@ -35,17 +37,25 @@
                     .WithSunsetDate(DateTime.Now.AddDays(1))
                     .WithSeverity("Warning")
                     .Build())
+                .WithBranding(new List<ContentfulGroupBranding>() {
+                    new() {
+                        File = new Asset(),
+                        Sys = new SystemProperties(),
+                        Text = "test",
+                        Title = "test",
+                        Url = "test"
+                    }
+                })
+                .WithDirectories(new List<ContentfulDirectory>() {
+                    new DirectoryBuilder()
+                    .WithSlug("test-alert")
+                    .WithTitle("Test Alert")
+                    .WithBody("Test Alert Body")
+                    .Build()
+                })
                 .Build();
 
             var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), 
-                new DirectoryContentfulFactory(
-                    new SubItemContentfulFactory(new TimeProvider()),
-                    new ExternalLinkContentfulFactory(),
-                    new AlertContentfulFactory(), 
-                    new CallToActionBannerContentfulFactory(),
-                    new TimeProvider(),
-                    new EventBannerContentfulFactory()
-                ),
                 new GroupBrandingContentfulFactory(),
                 new TimeProvider() ).ToModel(contentfulReference);
 
@@ -65,6 +75,7 @@
             directoryEntry.MapPosition.Lon.Should().Be(contentfulReference.MapPosition.Lon);
             directoryEntry.Themes.Count().Should().Be(2);
             directoryEntry.Alerts.Count().Should().Be(1);
+            directoryEntry.Branding.Count().Should().Be(1);
         }
     }
 }

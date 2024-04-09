@@ -19,5 +19,6 @@
         public EventBanner EventBanner { get; set; }
         public IEnumerable<SubItem> RelatedContent { get; set; } = new List<SubItem>();
         public IEnumerable<ExternalLink> ExternalLinks { get; set; }
+        public IEnumerable<DirectoryEntry> PinnedEntries { get; set; } = new List<DirectoryEntry>();
     }
 }

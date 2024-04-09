@@ -84,7 +84,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         if (depth >= DepthLimit)
             return null;
 
-        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(1);
+        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(2);
         var contentfulDirectories = await GetAllEntriesAsync(_client, builder);
 
         if (!contentfulDirectories.Any())
