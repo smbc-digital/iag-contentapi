@@ -48,6 +48,7 @@
                                 ? entry.BackgroundImage.File.Url : string.Empty,
                 ContentfulId = entry.Sys.Id,
                 ColourScheme = entry.ColourScheme,
+                SearchBranding = entry.SearchBranding,
                 Icon = entry.Icon,
                 EventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner(),
