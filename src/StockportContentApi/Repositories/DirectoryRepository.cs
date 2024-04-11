@@ -81,7 +81,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
     internal async Task<Directory> GetDirectoryFromSource(string slug, int depth)
     {
-        if (depth >= DepthLimit)
+        if (depth > DepthLimit)
             return null;
 
         var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(2);
