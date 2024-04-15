@@ -52,6 +52,11 @@
                 Icon = entry.Icon,
                 EventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner(),
+                
+                SubItems = entry.SubItems.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                                    .Select(item => _subitemFactory.ToModel(item)).ToList(),
+
                 RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                                     .Select(item => _subitemFactory.ToModel(item)).ToList(),
