@@ -117,7 +117,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
     {
-        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(2);
+        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(1);
         var entries = await GetAllEntriesAsync(_client, builder);
         var contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
         return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
