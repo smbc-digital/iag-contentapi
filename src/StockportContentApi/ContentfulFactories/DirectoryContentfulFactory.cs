@@ -32,6 +32,21 @@
             if (entry is null)
                 return null;
 
+
+            var subItems = entry.SubDirectories is not null
+                    ? entry.SubDirectories?
+                        .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
+                        .Select(item => _subitemFactory.ToModel(item))
+                    : Enumerable.Empty<SubItem>();            
+
+            var directorySubItems = entry.SubItems?
+                                .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                                .Select(item => _subitemFactory.ToModel(item));
+
+            subItems = directorySubItems is not null ? subItems.Concat(directorySubItems) : subItems;
+            subItems = subItems.OrderBy(item => item.Title);
+
             return new()
             {
                 Slug = entry.Slug,
@@ -50,6 +65,7 @@
                 ColourScheme = entry.ColourScheme,
                 SearchBranding = entry.SearchBranding,
                 Icon = entry.Icon,
+                SubItems = subItems,
                 EventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
                                 ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner(),
                 RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)

@@ -28,7 +28,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (var item in entry.SubItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -37,7 +37,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (var item in entry.SecondaryItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -46,7 +46,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (var item in entry.TertiaryItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>());
+                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -55,7 +55,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (var section in entry.Sections.Where(EntryIsValid))
             {
-                var newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>());
+                var newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
                 subItems.Add(newSection);
             }
         }
@@ -67,7 +67,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
 
         var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
-        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems);
+        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
     }
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)
