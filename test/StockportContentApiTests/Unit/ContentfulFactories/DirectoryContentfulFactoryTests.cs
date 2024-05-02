@@ -2,16 +2,23 @@
 {
     public class DirectoryContentfulFactoryTests
     {
-        private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = new AlertContentfulFactory();
+        private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
         private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory = new ExternalLinkContentfulFactory();
-        private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = new SubItemContentfulFactory(new TimeProvider());
+        private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
         private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = new CallToActionBannerContentfulFactory();
         private readonly ITimeProvider _timeProvider = new TimeProvider();
         private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
         private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
+        private readonly ContentfulDirectory _contentfulDirectory;
+
+        public DirectoryContentfulFactoryTests(){
+            _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+            _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+            _contentfulDirectory = new DirectoryBuilder().Build();
+        }
 
         [Fact]
-        public void ShouldCreateADirectoryFromAContentfulReference()
+        public void ToModel_ShouldCreateADirectoryFromAContentfulReference()
         {
             // Arrange
             var ContentfulReference =
@@ -42,10 +49,16 @@
                 .WithPinnedEntries(new List<ContentfulDirectoryEntry>() {
                     new DirectoryEntryBuilder().Build()
                 })
+                .WithSubItems(new List<ContentfulReference>() {
+                    new ContentfulReferenceBuilder().Build()
+                })
                 .Build();
+
+            var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+            _subItemFactory.Setup(_ => _.ToModel(ContentfulReference.SubItems.First())).Returns(subItem);
                 
             // Act
-            var directory = new DirectoryContentfulFactory(_subItemFactory, _externalLinkFactory, _alertFactory, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(ContentfulReference);
+            var directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(ContentfulReference);
 
             // Assert
             Assert.Equal(ContentfulReference.Slug, directory.Slug);
@@ -56,8 +69,38 @@
             Assert.Equal(ContentfulReference.Sys.Id, directory.ContentfulId);
             Assert.NotNull(directory.CallToAction);
             Assert.Equal(ContentfulReference.BackgroundImage.File.Url, directory.BackgroundImage);
-            Assert.NotNull(directory.Alerts);
-            Assert.NotNull(directory.PinnedEntries);
+            Assert.Equal(2, directory.Alerts.Count());
+            Assert.Single(directory.PinnedEntries);
+            Assert.Equal(2, directory.SubItems.Count());
+        }
+
+        [Fact]
+        public void ToModel_ShouldReturnNull_IfNullEntry(){
+            // Act
+            var directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(null);
+
+            // Assert
+            Assert.Null(directory);
+        }
+
+        [Fact]
+        public void ToModel_ShouldNotAddSubItems_Alerts_SubDirectories_RelatedContent_IfTheyAreLinks()
+        {
+            // Arrange
+            var directory = new DirectoryBuilder().Build();
+            directory.SubItems.First().Sys.LinkType = "Link";
+            directory.Alerts.First().Sys.LinkType = "Link";
+            directory.SubDirectories.First().Sys.LinkType = "Link";
+            directory.RelatedContent.First().Sys.LinkType = "Link";
+
+            // Act
+            var result = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(directory);
+
+            // Assert
+            Assert.Empty(result.SubItems);
+            Assert.Empty(result.Alerts);
+            _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+            _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
         }
     }
 }

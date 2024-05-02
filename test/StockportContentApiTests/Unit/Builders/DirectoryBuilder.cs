@@ -9,7 +9,9 @@
         string MetaDescription { get; set; }
         string Id { get; set; }
         string BackgroundImageUrl { get; set; }
-        List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+        private List<ContentfulAlert> _alerts = new() {
+            new ContentfulAlertBuilder().Build()
+        };
         ContentfulCallToActionBanner CallToActionBanner { get; set; }
         private List<ContentfulReference> _relatedContent = new() {
             new ContentfulReferenceBuilder().Slug("sub-slug").Build()
@@ -21,6 +23,15 @@
         private List<ContentfulDirectoryEntry> _pinnedEntries = new() {
             new ContentfulDirectoryEntry()
         };
+
+        private List<ContentfulReference> _subItems = new() {
+            new ContentfulReference()
+        };
+
+        private List<ContentfulDirectory> _subDirectories = new() {
+            new ContentfulDirectory()
+        };
+
         public ContentfulDirectory Build() => new()
         {
             Slug = Slug,
@@ -44,10 +55,12 @@
                 }
             },
             CallToAction = CallToActionBanner,
-            Alerts = Alerts,
+            Alerts = _alerts,
             RelatedContent = _relatedContent,
             ExternalLinks = _externalLinks,
             PinnedEntries = _pinnedEntries,
+            SubItems = _subItems,
+            SubDirectories = _subDirectories
         };
 
         public DirectoryBuilder WithTitle(string title)
@@ -100,7 +113,7 @@
 
         public DirectoryBuilder WithAlert(ContentfulAlert alert) //string slug, string body,string title)
         {
-            Alerts.Add(alert);
+            _alerts.Add(alert);
             return this;
         }
 
@@ -119,6 +132,12 @@
         public DirectoryBuilder WithPinnedEntries(List<ContentfulDirectoryEntry> pinnedEntries)
         {
             _pinnedEntries = pinnedEntries;
+            return this;
+        }
+
+        public DirectoryBuilder WithSubItems(List<ContentfulReference> subItems)
+        {
+            _subItems = subItems;
             return this;
         }
     }
