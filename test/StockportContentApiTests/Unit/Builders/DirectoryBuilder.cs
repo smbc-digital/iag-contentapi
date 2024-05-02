@@ -9,7 +9,7 @@
         string MetaDescription { get; set; }
         string Id { get; set; }
         string BackgroundImageUrl { get; set; }
-        List<ContentfulAlert> _alerts { get; set; } = new(){
+        private List<ContentfulAlert> _alerts = new() {
             new ContentfulAlertBuilder().Build()
         };
         ContentfulCallToActionBanner CallToActionBanner { get; set; }
@@ -26,6 +26,10 @@
 
         private List<ContentfulReference> _subItems = new() {
             new ContentfulReference()
+        };
+
+        private List<ContentfulDirectory> _subDirectories = new() {
+            new ContentfulDirectory()
         };
 
         public ContentfulDirectory Build() => new()
@@ -56,6 +60,7 @@
             ExternalLinks = _externalLinks,
             PinnedEntries = _pinnedEntries,
             SubItems = _subItems,
+            SubDirectories = _subDirectories
         };
 
         public DirectoryBuilder WithTitle(string title)
