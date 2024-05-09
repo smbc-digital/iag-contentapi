@@ -74,6 +74,9 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         var directoryEntries = await GetAllDirectoryEntries();
         var directoryEntry = directoryEntries?.SingleOrDefault(directoryEntry => directoryEntry.Slug == slug);
 
+        if (directoryEntry is null)
+            directoryEntry = await GetDirectoryEntryFromSource(slug);
+
         return directoryEntry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
             : HttpResponse.Successful(directoryEntry);  
@@ -121,5 +124,17 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         var entries = await GetAllEntriesAsync(_client, builder);
         var contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
         return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
+    }
+
+    internal async Task<DirectoryEntry> GetDirectoryEntryFromSource(string slug)
+    {
+        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
+        var entries = await GetAllEntriesAsync(_client, builder);
+
+        if (!entries.Any())
+            return null;
+
+        var contentfulDirectoryEntry = entries.FirstOrDefault();
+        return _directoryEntryFactory.ToModel(contentfulDirectoryEntry);
     }
 }
