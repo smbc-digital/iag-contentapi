@@ -58,6 +58,11 @@
                             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                 .Select(alert => _alertFactory.ToModel(alert)),
+
+                AlertsInline = entry.AlertsInline?
+                            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Select(alert => _alertFactory.ToModel(alert)),
                 CallToAction = entry.CallToAction is null ? null : _callToActionFactory.ToModel(entry.CallToAction),
                 BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                 ? entry.BackgroundImage.File.Url : string.Empty,

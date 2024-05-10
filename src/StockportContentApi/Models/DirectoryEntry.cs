@@ -11,6 +11,7 @@
         public IEnumerable<FilterTheme> Themes { get; set; } = new List<FilterTheme>();
         public IEnumerable<MinimalDirectory> Directories { get; set; }
         public IEnumerable<Alert> Alerts { get; set; }
+        public IEnumerable<Alert> AlertsInline { get; set; }
         public IEnumerable<GroupBranding> Branding { get; set; } = new List<GroupBranding>();
         public IEnumerable<string> Tags { get; set; } = new List<string>();
         public string Image { get; set; }

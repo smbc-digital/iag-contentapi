@@ -37,4 +37,5 @@ public class ContentfulGroup : IContentfulModel
     public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>();
     public List<string> Tags { get; set; } = new List<string>();
     public List<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+    public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
 }
