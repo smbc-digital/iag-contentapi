@@ -12,6 +12,7 @@ public class Topic
     public TriviaSection TriviaSection { get; init; }
     public string Image { get; set; }
     public Video Video { get; init; }
+    public IEnumerable<SubItem> FeaturedTasks { get; }
     public IEnumerable<SubItem> SubItems { get; }
     public IEnumerable<SubItem> SecondaryItems { get; }
     public IEnumerable<Crumb> Breadcrumbs { get; }
@@ -37,7 +38,7 @@ public class Topic
     }
 
     public Topic(string slug, string name, string teaser, string metaDescription, string summary, string icon, string backgroundImage,
-        string image, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
+        string image, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
         IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, CarouselContent campaignBanner, string eventCategory,
         CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle,
@@ -51,6 +52,7 @@ public class Topic
         Icon = icon;
         BackgroundImage = backgroundImage;
         Image = image;
+        FeaturedTasks = featuredTasks;
         SubItems = subItems;
         SecondaryItems = secondayItems;
         Breadcrumbs = breadcrumbs;
@@ -80,6 +82,7 @@ public class NullTopic : Topic
         string.Empty,
         string.Empty,
         string.Empty,
+        new List<SubItem>(),
         new List<SubItem>(),
         new List<SubItem>(),
         new List<Crumb>(),

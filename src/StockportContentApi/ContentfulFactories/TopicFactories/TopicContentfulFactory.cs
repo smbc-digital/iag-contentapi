@@ -33,6 +33,11 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
 
     public Topic ToModel(ContentfulTopic entry)
     {
+        var featuredTasks =
+            entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                .Select(item => _subItemFactory.ToModel(item)).ToList();
+
         var subItems = entry.SubItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                      && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                      .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
@@ -72,10 +77,8 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Text, trivia.Link))
             : new List<Trivia>();
 
-        return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image,
-            subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate,
-            entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner, entry.EventCategory,
-            callToAction, topicBranding, logoAreaTitle, displayContactUs)
+        return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image, featuredTasks, subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner, 
+        entry.EventCategory, callToAction, topicBranding, logoAreaTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
