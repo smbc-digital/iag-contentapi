@@ -7,6 +7,7 @@
         public IEnumerable<ContentfulDirectory> Directories { get; set; }
         public MapPosition MapPosition { get; set; } = new MapPosition();
         public IEnumerable<ContentfulAlert> Alerts { get; set; }
+        public IEnumerable<ContentfulAlert> AlertsInline { get; set; }
         public List<ContentfulGroupBranding> GroupBranding { get; set; } = new List<ContentfulGroupBranding>(); // TODO : This should be renamed at some point to just "Branding" or "Logo"
         public List<string> Tags { get; set; } = new List<string>();
         public string PhoneNumber { get; set; } = string.Empty;

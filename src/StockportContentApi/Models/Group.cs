@@ -43,6 +43,7 @@ public class Group
     public List<string> SuitableFor { get; set; }
     public List<string> AgeRange { get; set; }
     public IEnumerable<Alert> Alerts { get; }
+    public IEnumerable<Alert> AlertsInline { get; }
     public Group() { }
 
     public Group(string name, string slug, string metaDescription, string phoneNumber, string email, string website,
@@ -51,7 +52,7 @@ public class Group
         MapPosition mapPosition, bool volunteering, GroupAdministrators groupAdministrators,
         DateTime? dateHiddenFrom, DateTime? dateHiddenTo, string status, List<string> cost, string costText, string abilityLevel, string volunteeringText,
         Organisation organisation, bool donations, string accessibleTransportLink, List<GroupBranding> groupBranding, List<string> tags, string additionalInformation, List<Document> additionalDocuments,
-        DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange, string donationsText, string donationsUrl, IEnumerable<Alert> alerts)
+        DateTime? dateLastModified, List<string> suitableFor, List<string> ageRange, string donationsText, string donationsUrl, IEnumerable<Alert> alerts, IEnumerable<Alert> alertsInline)
     {
         Name = name;
         Slug = slug;
@@ -91,6 +92,7 @@ public class Group
         DonationsText = donationsText;
         DonationsUrl = donationsUrl;
         Alerts = alerts;
+        AlertsInline = alertsInline;
     }
 
     public void SetEvents(List<Event> events)
