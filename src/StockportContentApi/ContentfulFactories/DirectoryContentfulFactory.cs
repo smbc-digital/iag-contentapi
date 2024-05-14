@@ -45,7 +45,6 @@
                                 .Select(item => _subitemFactory.ToModel(item));
 
             subItems = directorySubItems is not null ? subItems.Concat(directorySubItems) : subItems;
-            subItems = subItems.OrderBy(item => item.Title);
 
             return new()
             {
