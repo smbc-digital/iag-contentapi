@@ -51,7 +51,7 @@ public class DirectoryRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+        contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
 
         _mockDirectoryContentfulFactory = new Mock<IContentfulFactory<ContentfulDirectory, Directory>>();
         _mockDirectoryEntryContentfulFactory = new Mock<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>();

@@ -1,11 +1,13 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using Microsoft.Extensions.Options;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class ArticleRepositoryTest
 {
     private readonly ArticleRepository _repository;
     private readonly Mock<ITimeProvider> _mockTimeProvider;
     private readonly Mock<IContentfulClient> _contentfulClient;
-    private Mock<IVideoRepository> _videoRepository;
+    private readonly Mock<IVideoRepository> _videoRepository;
     private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
@@ -13,6 +15,7 @@ public class ArticleRepositoryTest
     private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
     private Mock<ICache> _cache;
     private readonly Mock<IConfiguration> _configuration;
+    private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions;
 
     public ArticleRepositoryTest()
     {
@@ -33,6 +36,8 @@ public class ArticleRepositoryTest
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
         _cache = new Mock<ICache>();
+        _mockOptions = new Mock<IOptions<RedisExpiryConfiguration>>();
+        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration {  Articles = 60 });
 
         var contentfulFactory = new ArticleContentfulFactory(
             _sectionFactory.Object,
@@ -50,7 +55,7 @@ public class ArticleRepositoryTest
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
         _configuration = new Mock<IConfiguration>();
         _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
-        _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
+        _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _mockOptions.Object);
     }
 
     [Fact]
@@ -75,19 +80,19 @@ public class ArticleRepositoryTest
         {
             Items = new List<ContentfulArticleForSiteMap>()
             {
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug1",
                     SunriseDate = DateTime.MinValue,
                     SunsetDate = DateTime.MaxValue
                 },
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug2",
                     SunriseDate = DateTime.MinValue,
                     SunsetDate = DateTime.MaxValue
                 },
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug3",
                     SunriseDate = DateTime.MinValue,
@@ -116,8 +121,10 @@ public class ArticleRepositoryTest
     {
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
 
-        var collection = new ContentfulCollection<ContentfulArticle>();
-        collection.Items = new List<ContentfulArticle>();
+        ContentfulCollection<ContentfulArticle> collection = new()
+        {
+            Items = new List<ContentfulArticle>()
+        };
 
         _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
         var response = AsyncTestHelper.Resolve(_repository.GetArticle("blah"));
