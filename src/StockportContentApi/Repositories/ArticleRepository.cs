@@ -31,11 +31,14 @@
         public async Task<HttpResponse> Get()
         {
             var articles = await GetArticlesFromContentful();
-            var entries = articles.Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
             
-            return articles.Any()
+            if (articles is null)
+                return HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
+
+            var entries = articles.Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
+            return entries.Any()
                 ? HttpResponse.Successful(entries)
-                : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
+                : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found within sunrise and sunset dates");
         }
 
         public async Task<HttpResponse> GetArticle(string articleSlug)
