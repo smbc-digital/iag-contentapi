@@ -109,6 +109,7 @@ public class ArticleBuilder
         "image",
         new List<SubItem>(),
         new List<SubItem>(),
+        new List<SubItem>(),
         new List<Crumb>(),
         new List<Alert>(),
         new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
