@@ -64,10 +64,14 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
                                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                 .Select(alert => _alertFactory.ToModel(alert));
 
+        var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                           && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Select(alert => _alertFactory.ToModel(alert));
+
         return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,
             entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
             categoriesReferences, subCategories, new List<Crumb> { new Crumb("Stockport Local", string.Empty, "groups") }, entry.MapPosition, entry.Volunteering,
             administrators, entry.DateHiddenFrom, entry.DateHiddenTo, status, cost, entry.CostText, entry.AbilityLevel, entry.VolunteeringText,
-            organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText, entry.DonationsUrl, alerts);
+            organisation, entry.Donations, entry.AccessibleTransportLink, groupBranding, entry.Tags, entry.AdditionalInformation, groupDocuments, entry.Sys.UpdatedAt, entry.SuitableFor, entry.AgeRange, entry.DonationsText, entry.DonationsUrl, alerts, alertsInline);
     }
 }

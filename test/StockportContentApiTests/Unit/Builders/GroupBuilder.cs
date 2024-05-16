@@ -45,10 +45,21 @@ public class GroupBuilder
             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
             "slug", false, string.Empty)
     };
+
+    private List<Alert> _alertsInline = new List<Alert>
+    {
+        new Alert("title",
+            "subHeading",
+            "body",
+            "severity",
+            new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+            "slug", false, string.Empty)
+    };
     public Group Build()
     {
         return new Group(_name, _slug, _metaDescription, _phoneNumber, _email, _website, _twitter, _facebook, _address, _description,
-            _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false, string.Empty, _groupBranding, new List<string>(), _additionalInformation, _additionalDocuments, _dateLastModified, _suitableFor, _ageRanges, _donationsText, _donationsUrl, _alerts);
+            _image, _thumbnail, _categoriesReference, _subCategories, _crumbs, _mapPosition, _volunteering, _groupAdministrators, _dateHiddenFrom, _dateHiddenTo, "published", new List<string>(), string.Empty, string.Empty, string.Empty, _organisation, false, string.Empty, _groupBranding, new List<string>(), _additionalInformation, _additionalDocuments, _dateLastModified, _suitableFor, _ageRanges, _donationsText, _donationsUrl, _alerts, _alertsInline);
     }
 
     public GroupBuilder Slug(string slug)
@@ -160,3 +171,4 @@ public class GroupBuilder
         return this;
     }
 }
+

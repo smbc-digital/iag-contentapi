@@ -45,7 +45,6 @@
                                 .Select(item => _subitemFactory.ToModel(item));
 
             subItems = directorySubItems is not null ? subItems.Concat(directorySubItems) : subItems;
-            subItems = subItems.OrderBy(item => item.Title);
 
             return new()
             {
@@ -55,6 +54,11 @@
                 Teaser = entry.Teaser,
                 MetaDescription = entry.MetaDescription,
                 Alerts = entry.Alerts?
+                            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Select(alert => _alertFactory.ToModel(alert)),
+
+                AlertsInline = entry.AlertsInline?
                             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                 .Select(alert => _alertFactory.ToModel(alert)),
