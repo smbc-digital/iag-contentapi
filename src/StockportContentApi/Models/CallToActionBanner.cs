@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class CallToActionBanner
 {
     public string Title { get; set; } = string.Empty;

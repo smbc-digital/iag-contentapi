@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class Alert
 {
     public string Title { get; }
@@ -25,9 +25,4 @@ public class Alert
         IsStatic = isStatic;
         ImageUrl = imageUrl;
     }
-}
-
-public class NullAlert : Alert
-{
-    public NullAlert() : base(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MinValue, string.Empty, false, string.Empty) { }
 }

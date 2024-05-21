@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class Homepage
 {
     public IEnumerable<string> PopularSearchTerms { get; }
