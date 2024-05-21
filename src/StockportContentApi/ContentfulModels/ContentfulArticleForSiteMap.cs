@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.ContentfulModels;
-
+[ExcludeFromCodeCoverage]
 public class ContentfulArticleForSiteMap : IContentfulModel
 {
     public string Slug { get; set; } = string.Empty;

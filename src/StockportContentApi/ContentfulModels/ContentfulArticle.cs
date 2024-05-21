@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulArticle : ContentfulReference
 {
     public string Body { get; set; } = string.Empty;

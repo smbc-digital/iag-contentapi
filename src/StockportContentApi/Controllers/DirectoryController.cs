@@ -1,60 +1,58 @@
-﻿namespace StockportContentApi.Controllers
+﻿namespace StockportContentApi.Controllers;
+[ApiController]
+public class DirectoryController : Controller
 {
-    [ApiController]
-    public class DirectoryController : Controller
+    private readonly ResponseHandler _handler;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
+
+    public DirectoryController(ResponseHandler handler,
+        Func<string, ContentfulConfig> createConfig,
+        Func<ContentfulConfig, DirectoryRepository> createDirectoryRepository)
     {
-        private readonly ResponseHandler _handler;
-        private readonly Func<string, ContentfulConfig> _createConfig;
-        private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
+        _handler = handler;
+        _createConfig = createConfig;
+        _createDirectoryRepository = createDirectoryRepository;
+    }
 
-        public DirectoryController(ResponseHandler handler,
-            Func<string, ContentfulConfig> createConfig,
-            Func<ContentfulConfig, DirectoryRepository> createDirectoryRepository)
+    [HttpGet]
+    [Route("{businessId}/directories")]
+    [Route("v2/{businessId}/directories")]
+    public async Task<IActionResult> GetDirectories(string businessId)
+    {
+        return await _handler.Get(() =>
         {
-            _handler = handler;
-            _createConfig = createConfig;
-            _createDirectoryRepository = createDirectoryRepository;
-        }
+            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            return directoryRepository.Get();
+        });
+    }
 
-        [HttpGet]
-        [Route("{businessId}/directories")]
-        [Route("v2/{businessId}/directories")]
-        public async Task<IActionResult> GetDirectories(string businessId)
+    [HttpGet]
+    [Route("{businessId}/directory/{slug}")]
+    [Route("v2/{businessId}/directory/{slug}")]
+    public async Task<IActionResult> GetDirectory(string slug, string businessId)
+    {
+        try
         {
-            return await _handler.Get(() =>
-            {
-                var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-                return directoryRepository.Get();
-            });
+            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            HttpResponse response =  await directoryRepository.Get(slug);
+            return response.CreateResult();
         }
+        catch
+        {
+            return new StatusCodeResult(500);
+        }
+    }
 
-        [HttpGet]
-        [Route("{businessId}/directory/{slug}")]
-        [Route("v2/{businessId}/directory/{slug}")]
-        public async Task<IActionResult> GetDirectory(string slug, string businessId)
+    [HttpGet]
+    [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
+    [Route("v2/{businessId}/directory-entry/{directoryEntrySlug}")]
+    public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId)
+    {
+        return await _handler.Get(() =>
         {
-            try
-            {
-                var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-                HttpResponse response =  await directoryRepository.Get(slug);
-                return response.CreateResult();
-            }
-            catch
-            {
-                return new StatusCodeResult(500);
-            }
-        }
-
-        [HttpGet]
-        [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
-        [Route("v2/{businessId}/directory-entry/{directoryEntrySlug}")]
-        public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId)
-        {
-            return await _handler.Get(() =>
-            {
-                var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-                return directoryRepository.GetEntry(directoryEntrySlug);
-            });
-        }
+            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            return directoryRepository.GetEntry(directoryEntrySlug);
+        });
     }
 }

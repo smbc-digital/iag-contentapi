@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("StockportContentApiTests")] 
-
 namespace StockportContentApi.Repositories;
 
 public interface IDirectoryRepository

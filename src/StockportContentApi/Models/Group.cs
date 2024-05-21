@@ -105,5 +105,3 @@ public class Group
         LinkedGroups = linkedGroups;
     }
 }
-
-
