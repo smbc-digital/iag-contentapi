@@ -32,7 +32,6 @@
             if (entry is null)
                 return null;
 
-
             var subItems = entry.SubDirectories is not null
                     ? entry.SubDirectories?
                         .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))

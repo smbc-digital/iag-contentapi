@@ -6,9 +6,7 @@ public class ArticleController : Controller
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, ArticleRepository> _createRepository;
 
-    public ArticleController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, ArticleRepository> createRepository)
+    public ArticleController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig, Func<ContentfulConfig, ArticleRepository> createRepository)
     {
         _handler = handler;
         _createConfig = createConfig;

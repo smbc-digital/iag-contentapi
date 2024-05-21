@@ -30,40 +30,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _alertFactory = alertFactory;
     }
 
-    public Article ToModel(ContentfulArticle entryContentfulArticle)
+    public Article ToModel(ContentfulArticle entry)
     {
-        var entry = entryContentfulArticle;
-
-        var sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                     .Select(section => _sectionFactory.ToModel(section)).ToList();
-
-        var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                           .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-
-        var profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                     .Select(profile => _profileFactory.ToModel(profile)).ToList();
-
-        var topic = _parentTopicFactory.ToModel(entryContentfulArticle) ?? new NullTopic();
-
-        var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
-                                       .Select(document => _documentFactory.ToModel(document)).ToList();
-
-        var body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty;
-
-        var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alert => _alertFactory.ToModel(alert));
-
-        var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alertInline => _alertFactory.ToModel(alertInline));
-
-        var backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
-                                    ? entry.BackgroundImage.File.Url : string.Empty;
-
-        var image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                                    ? entry.Image.File.Url : string.Empty;
-
         var sectionUpdatedAt = entry.Sections
             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
             .Where(section => section.Sys.UpdatedAt is not null)
@@ -71,11 +39,36 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             .OrderByDescending(section => section)
             .FirstOrDefault();
 
-        var updatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value ? sectionUpdatedAt : entry.Sys.UpdatedAt.Value;
-
-        var hideLastUpdated = entry.HideLastUpdated;
-
-        return new Article(body, entry.Slug, entry.Title, entry.Teaser, entry.MetaDescription, entry.Icon, backgroundImage, image,
-            sections, breadcrumbs, alerts, profiles, topic, documents, entry.SunriseDate, entry.SunsetDate, alertsInline, updatedAt, hideLastUpdated);
+        return new(){
+            Body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty,
+            Slug = entry.Slug,
+            Title = entry.Title,
+            Teaser = entry.Teaser,
+            MetaDescription = entry.MetaDescription,
+            Icon = entry.Icon,
+            BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
+                                ? entry.BackgroundImage.File.Url : string.Empty,
+            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                        ? entry.Image.File.Url : string.Empty,
+            Sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Select(section => _sectionFactory.ToModel(section)).ToList(),
+            Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+            Alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Select(alert => _alertFactory.ToModel(alert)),
+            Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                            .Select(profile => _profileFactory.ToModel(profile)).ToList(),
+            ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
+            Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                            .Select(document => _documentFactory.ToModel(document)).ToList(),
+            SunriseDate = entry.SunriseDate,
+            SunsetDate = entry.SunsetDate,
+            AlertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Select(alertInline => _alertFactory.ToModel(alertInline)),
+            UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value ? sectionUpdatedAt : entry.Sys.UpdatedAt.Value,
+            HideLastUpdated = entry.HideLastUpdated
+        };
     }
 }

@@ -160,7 +160,6 @@ public class ArticleRepositoryTest
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));
 
-
         _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"article-{slug}")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(rawArticle);
         
         // Act

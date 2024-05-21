@@ -4,38 +4,28 @@ public class ContentfulArticleBuilder
 {
     private string _title = "title";
     private string _slug = "slug";
-    private string _teaser = "teaser";
-    private string _icon = "icon";
-    private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private readonly string _teaser = "teaser";
+    private readonly string _icon = "icon";
+    private readonly Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private string _body = "body";
-    private DateTime _sunriseDate = new DateTime(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
-    private DateTime _sunsetDate = new DateTime(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
+    private readonly DateTime _sunriseDate = new(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
+    private readonly DateTime _sunsetDate = new(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
 
-    private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
-    {
-        new ContentfulAlertBuilder().Build()
-    };
+    private List<ContentfulAlert> _alertsInline = new() { new ContentfulAlertBuilder().Build() };
 
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
-    {
-        new ContentfulReferenceBuilder().Build()
-    };
+    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
 
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
-    {
-        new ContentfulAlertBuilder().Build()
-    };
+    private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
 
-    private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-    private ContentfulTopic _topic = new ContentfulParentTopicBuilder().SystemId("topic").SystemContentTypeId("topic").Build();
-    private List<ContentfulProfile> _profiles = new List<ContentfulProfile> {
-                                new ContentfulProfileBuilder().Build() };
-    private List<ContentfulSection> _sections = new List<ContentfulSection>{
-                               (new ContentfulSectionBuilder().Build()) };
+    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
+    private readonly List<ContentfulProfile> _profiles = new() { new ContentfulProfileBuilder().Build() };
+    private List<ContentfulSection> _sections = new(){ new ContentfulSectionBuilder().Build() };
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
-    private DateTime _updatedAt = DateTime.Now;
+    private readonly DateTime _updatedAt = DateTime.Now;
+
+    public Asset Image { get => _image; set => _image = value; }
 
     public ContentfulArticle Build()
     {
@@ -54,7 +44,7 @@ public class ContentfulArticleBuilder
             Sections = _sections,
             SunriseDate = _sunriseDate,
             SunsetDate = _sunsetDate,
-            Image = _image,
+            Image = Image,
             AlertsInline = _alertsInline,
             Sys = new SystemProperties
             {
@@ -122,6 +112,15 @@ public class ContentfulArticleBuilder
     public ContentfulArticleBuilder SystemContentTypeId(string id)
     {
         _contentTypeSystemId = id;
+        return this;
+    }
+
+    public ContentfulArticleBuilder WithBreadcrumbContentType(string contentType)
+    {
+        if (_breadcrumbs.Any())
+        {
+            _breadcrumbs[0].Sys.ContentType.SystemProperties.Id = contentType;
+        }
         return this;
     }
 }
