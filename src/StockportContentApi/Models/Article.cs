@@ -11,6 +11,7 @@ public class Article
     public string Icon { get; set; }
     public string BackgroundImage { get; set; }
     public string Image { get; set; }
+    public string AltText { get; set; }
     public List<Section> Sections { get; set; }
     public IEnumerable<Crumb> Breadcrumbs { get; set; }
     public IEnumerable<Alert> Alerts { get; set; }
