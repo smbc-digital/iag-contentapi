@@ -118,9 +118,8 @@ public class ContentfulArticleBuilder
     public ContentfulArticleBuilder WithBreadcrumbContentType(string contentType)
     {
         if (_breadcrumbs.Any())
-        {
             _breadcrumbs[0].Sys.ContentType.SystemProperties.Id = contentType;
-        }
+
         return this;
     }
 }

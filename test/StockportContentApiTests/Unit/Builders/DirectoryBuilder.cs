@@ -110,7 +110,7 @@ public class DirectoryBuilder
         return this;
     }
 
-    public DirectoryBuilder WithAlert(ContentfulAlert alert) //string slug, string body,string title)
+    public DirectoryBuilder WithAlert(ContentfulAlert alert)
     {
         _alerts.Add(alert);
         return this;
