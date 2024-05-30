@@ -1,99 +1,93 @@
-﻿namespace StockportContentApi.Repositories;
-
-public class ArticleRepository : BaseRepository
+﻿namespace StockportContentApi.Repositories
 {
-    private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
-    private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
-    private readonly DateComparer _dateComparer;
-    private readonly ICache _cache;
-    private readonly Contentful.Core.IContentfulClient _client;
-    private readonly IVideoRepository _videoRepository;
-    private IConfiguration _configuration;
-    private readonly int _articleTimeout;
-
-    public ArticleRepository(ContentfulConfig config,
-        IContentfulClientManager contentfulClientManager,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
-        IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
-        IVideoRepository videoRepository,
-        ICache cache,
-        IConfiguration configuration)
+    public class ArticleRepository : BaseRepository
     {
-        _contentfulFactory = contentfulFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _client = contentfulClientManager.GetClient(config);
-        _videoRepository = videoRepository;
-        _contentfulFactoryArticle = contentfulFactoryArticle;
-        _cache = cache;
-        _configuration = configuration;
-        int.TryParse(_configuration["redisExpiryTimes:Articles"], out _articleTimeout);
-    }
+        private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
+        private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
+        private readonly DateComparer _dateComparer;
+        private readonly ICache _cache;
+        private readonly IContentfulClient _client;
+        private readonly IVideoRepository _videoRepository;
+        private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
 
-    public async Task<HttpResponse> Get()
-    {
-        var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
-        var entries = await GetAllEntriesAsync(_client, builder);
-        var contentfulArticles = entries as IEnumerable<ContentfulArticleForSiteMap> ?? entries.ToList();
-
-        var articles = GetAllArticles(contentfulArticles.ToList())
-            .Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
-        return entries == null || !contentfulArticles.Any()
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Articles found")
-            : HttpResponse.Successful(articles);
-    }
-
-    public async Task<HttpResponse> GetArticle(string articleSlug)
-    {
-        var entry = await _cache.GetFromCacheOrDirectlyAsync("article-" + articleSlug, () => GetArticleEntry(articleSlug), _articleTimeout);
-
-        var articleItem = entry == null
-                        ? null
-                        : _contentfulFactory.ToModel(entry);
-
-        if (articleItem != null)
+        public ArticleRepository(ContentfulConfig config,
+            IContentfulClientManager contentfulClientManager,
+            ITimeProvider timeProvider,
+            IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
+            IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
+            IVideoRepository videoRepository,
+            ICache cache,
+            IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
         {
-            foreach (var section in articleItem.Sections)
+            _contentfulFactory = contentfulFactory;
+            _contentfulFactoryArticle = contentfulFactoryArticle;
+            _videoRepository = videoRepository;
+            _cache = cache;
+            _redisExpiryConfiguration = redisExpiryConfiguration.Value;
+            _dateComparer = new DateComparer(timeProvider);
+            _client = contentfulClientManager.GetClient(config);
+        }
+
+        public async Task<HttpResponse> Get()
+        {
+            var articles = await GetArticlesFromContentful();
+            
+            if (articles is null)
+                return HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
+
+            var entries = articles.Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
+            return entries.Any()
+                ? HttpResponse.Successful(entries)
+                : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found within sunrise and sunset dates");
+        }
+
+        public async Task<HttpResponse> GetArticle(string articleSlug)
+        {
+            var article = await GetArticleFromCacheOrContentful(articleSlug);
+
+            if (article is null)
+                return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+
+            ProcessArticleContent(article);
+            return HttpResponse.Successful(article);
+        }
+
+        private async Task<IEnumerable<ArticleSiteMap>> GetArticlesFromContentful()
+        {
+            var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
+            var entries = await GetAllEntriesAsync(_client, builder);
+            return entries?.Select(entry => _contentfulFactoryArticle.ToModel(entry));
+        }
+
+        private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
+        {
+            var entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug), _redisExpiryConfiguration.Articles);
+
+            if (entry is null)
+                return null;
+
+            return _contentfulFactory.ToModel(entry);
+        }
+
+        private async Task<ContentfulArticle> GetArticleEntry(string articleSlug)
+        {
+            var builder = new QueryBuilder<ContentfulArticle>()
+                .ContentTypeIs("article")
+                .FieldEquals("fields.slug", articleSlug)
+                .Include(3);
+
+            var entries = await _client.GetEntries(builder);
+            return entries.FirstOrDefault();
+        }
+
+        private void ProcessArticleContent(Article article)
+        {
+            article.Body = _videoRepository.Process(article.Body);
+            foreach (var section in article.Sections)
             {
-                if (section != null)
+                if (section is not null)
                     section.Body = _videoRepository.Process(section.Body);
             }
-
-            articleItem.Body = _videoRepository.Process(articleItem.Body);
-
-            if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(articleItem.SunriseDate, articleItem.SunsetDate))
-            {
-                articleItem = null;
-            }
         }
-
-        return articleItem == null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'")
-            : HttpResponse.Successful(articleItem);
-    }
-
-    private IEnumerable<ArticleSiteMap> GetAllArticles(List<ContentfulArticleForSiteMap> entries)
-    {
-        var entriesList = new List<ArticleSiteMap>();
-        foreach (var entry in entries)
-        {
-            var articleItem = _contentfulFactoryArticle.ToModel(entry);
-            entriesList.Add(articleItem);
-        }
-
-        return entriesList;
-    }
-
-    private async Task<ContentfulArticle> GetArticleEntry(string articleSlug)
-    {
-        var builder = new QueryBuilder<ContentfulArticle>()
-            .ContentTypeIs("article")
-            .FieldEquals("fields.slug", articleSlug)
-            .Include(3);
-
-        var entries = await _client.GetEntries(builder);
-
-        var entry = entries.FirstOrDefault();
-        return entry;
     }
 }

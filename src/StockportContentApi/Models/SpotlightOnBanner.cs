@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class SpotlightOnBanner
 {
     public string Title { get; }

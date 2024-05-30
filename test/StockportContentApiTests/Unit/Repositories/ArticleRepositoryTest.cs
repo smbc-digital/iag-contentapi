@@ -1,18 +1,16 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using Microsoft.Extensions.Options;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class ArticleRepositoryTest
 {
     private readonly ArticleRepository _repository;
     private readonly Mock<ITimeProvider> _mockTimeProvider;
     private readonly Mock<IContentfulClient> _contentfulClient;
-    private Mock<IVideoRepository> _videoRepository;
+    private readonly Mock<IVideoRepository> _videoRepository;
     private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
-    private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private Mock<ICache> _cache;
-    private readonly Mock<IConfiguration> _configuration;
+    private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions;
+    private readonly Mock<ICache> _cache;
 
     public ArticleRepositoryTest()
     {
@@ -22,72 +20,54 @@ public class ArticleRepositoryTest
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Build();
-        var documentFactory = new DocumentContentfulFactory();
+        
         _videoRepository = new Mock<IVideoRepository>();
-        _videoRepository.Setup(o => o.Process(It.IsAny<string>())).Returns(string.Empty);
+        _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns(string.Empty);
         _mockTimeProvider = new Mock<ITimeProvider>();
         _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-        _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
 
         _cache = new Mock<ICache>();
+        _mockOptions = new Mock<IOptions<RedisExpiryConfiguration>>();
+        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration {  Articles = 60 });
 
         var contentfulFactory = new ArticleContentfulFactory(
             _sectionFactory.Object,
-            _crumbFactory.Object,
-            _profileFactory.Object,
-            _parentTopicFactory.Object,
-            documentFactory,
+            new Mock<IContentfulFactory<ContentfulReference, Crumb>>().Object,
+            new Mock<IContentfulFactory<ContentfulProfile, Profile>>().Object,
+            new Mock<IContentfulFactory<ContentfulArticle, Topic>>().Object,
+            new DocumentContentfulFactory(),
             _videoRepository.Object,
             _mockTimeProvider.Object,
-            _alertFactory.Object
-            );
+            new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object
+        );
 
         var contentfulClientManager = new Mock<IContentfulClientManager>();
         _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-        _configuration = new Mock<IConfiguration>();
-        _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
-        _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _configuration.Object);
+        contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
+        _repository = new ArticleRepository(config, contentfulClientManager.Object, _mockTimeProvider.Object, contentfulFactory, new ArticleSiteMapContentfulFactory(), _videoRepository.Object, _cache.Object, _mockOptions.Object);
     }
 
     [Fact]
-    public void GetsArticle()
+    public async void Get_ShouldReturnSuccessfulResponse()
     {
-        const string slug = "unit-test-article";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
-
-        var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
-
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
-
-        var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-    }
-
-    [Fact]
-    public async void GetAllArticleSlugForSitemap()
-    {
+        // Arrange
         ContentfulCollection<ContentfulArticleForSiteMap> collection = new()
         {
             Items = new List<ContentfulArticleForSiteMap>()
             {
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug1",
                     SunriseDate = DateTime.MinValue,
                     SunsetDate = DateTime.MaxValue
                 },
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug2",
                     SunriseDate = DateTime.MinValue,
                     SunsetDate = DateTime.MaxValue
                 },
-                new ContentfulArticleForSiteMap()
+                new()
                 {
                     Slug = "slug3",
                     SunriseDate = DateTime.MinValue,
@@ -102,98 +82,196 @@ public class ArticleRepositoryTest
             .Build();
 
         _contentfulClient
-            .Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticleForSiteMap>>(), It.IsAny<CancellationToken>()))
+            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticleForSiteMap>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
+        // Act
         var response = await _repository.Get();
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseArticle = response.Get<IEnumerable<ArticleSiteMap>>();
-        responseArticle.ToList().Count.Should().Be(collection.Items.Count());
+        
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(collection.Items.Count(), responseArticle.ToList().Count);
     }
 
     [Fact]
-    public void GetsNotFoundForAnArticleThatDoesNotExist()
-    {
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
+    public async Task Get_ShouldReturnNotFoundResponse_IfArticleDoesNotExist(){
+        // Arrange
+        ContentfulCollection<ContentfulArticle> collection = new()
+        {
+            Items = new List<ContentfulArticle>()
+        };
 
-        var collection = new ContentfulCollection<ContentfulArticle>();
-        collection.Items = new List<ContentfulArticle>();
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-        _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-        var response = AsyncTestHelper.Resolve(_repository.GetArticle("blah"));
+        // Act
+        var response = await _repository.Get();
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        response.Error.Should().Be("No article found for 'blah'");
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void Gets404ForNewsOutsideOfSunriseDate()
+    public async Task Get_ShouldReturnNotFoundResponse_IfArticleNotWithinDates(){
+        // Arrange
+        ContentfulCollection<ContentfulArticleForSiteMap> collection = new()
+        {
+            Items = new List<ContentfulArticleForSiteMap>()
+            {
+                new()
+                {
+                    Slug = "slug1",
+                    SunriseDate = DateTime.Now.AddDays(-1),
+                    SunsetDate = DateTime.Now.AddDays(2)
+                },
+                new()
+                {
+                    Slug = "slug2",
+                    SunriseDate = DateTime.Now.AddDays(2),
+                    SunsetDate = DateTime.Now.AddDays(5)
+                },
+                new()
+                {
+                    Slug = "slug3",
+                    SunriseDate = DateTime.Now.AddDays(-2),
+                    SunsetDate = DateTime.Now.AddDays(3)
+                }
+            }
+        };
+
+        _contentfulClient
+            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticleForSiteMap>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+
+        // Act
+        var response = await _repository.Get();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.NotNull(response.Error);
+        Assert.Contains("No articles found within sunrise and sunset dates", response.Error);
+    }
+
+    [Fact]
+    public void GetArticle_ShouldReturnSuccessfulResponse()
     {
+        // Arrange
         const string slug = "unit-test-article";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 01, 01));
-
-        var collection = new ContentfulCollection<ContentfulArticle>();
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
-        collection.Items = new List<ContentfulArticle> { rawArticle };
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));
 
-        _contentfulClient.Setup(o => o.GetEntries<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"article-{slug}")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(rawArticle);
+        
+        // Act
+        var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
 
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public void GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
+    {
+        // Arrange
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));
+
+        ContentfulCollection<ContentfulArticle> collection = new()
+        {
+            Items = new List<ContentfulArticle>()
+        };
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        
+        // Act
+        var response = AsyncTestHelper.Resolve(_repository.GetArticle("slug"));
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.Error.Should().Be("No article found for 'slug'");
+    }
+
+    [Fact]
+    public void GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunriseDate()
+    {
+        // Arrange
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 01, 01));
+
+        var rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article").Build();
+
+        ContentfulCollection<ContentfulArticle> collection = new()
+        {
+            Items = new List<ContentfulArticle> { rawArticle }
+        };
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public void GetArticle_ShouldRetunNotFoundResponse_ForNewsOutsideOfSunsetDate()
+    {
+        // Arrange
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 08, 01));
+        var rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article").Build();
+
+        ContentfulCollection<ContentfulArticle> collection = new()
+        {
+            Items = new List<ContentfulArticle> { rawArticle }
+        };
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+        // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
+        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
-    public void Gets404ForNewsOutsideOfSunsetDate()
+    public void GetArticle_ShouldReturnValidSunsetAndSunriseDateWhenDateInRange()
     {
-        const string slug = "unit-test-article";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 01));
-
-        var collection = new ContentfulCollection<ContentfulArticle>();
-        var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
-        collection.Items = new List<ContentfulArticle> { rawArticle };
-
-        _contentfulClient.Setup(o => o.GetEntries<ContentfulArticle>(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    [Fact]
-    public void ReturnsValidSunsetAndSunriseDateWhenDateInRange()
-    {
+        // Arrange
         const string slug = "unit-test-article";
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 01));
 
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
 
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
+        _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"article-{slug}")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(rawArticle);
 
+        // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
+        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
-    public void ReturnsArticleWithInlineAlerts()
+    public void GetArticle_ShouldReturnArticleWithInlineAlerts()
     {
         // Arrange
         const string slug = "unit-test-article-with-inline-alerts";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 10, 15));
-        List<ContentfulAlert> alertsInline = new List<ContentfulAlert> { new ContentfulAlert()
-        {
-            Title = "title",
-            SubHeading = "subHeading",
-            Body = "body",
-            Severity = "severity",
-            SunriseDate = new DateTime(2017, 05, 01),
-            SunsetDate = new DateTime(2017, 07, 01),
-            Sys = new SystemProperties() { Type = "Entry" }
-        }
-    };
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));
+        List<ContentfulAlert> alertsInline = new(){ 
+            new()
+            {
+                Title = "title",
+                SubHeading = "subHeading",
+                Body = "body",
+                Severity = "severity",
+                SunriseDate = new DateTime(2017, 05, 01),
+                SunsetDate = new DateTime(2017, 07, 01),
+                Sys = new SystemProperties() { Type = "Entry" }
+            }
+        };
+
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).AlertsInline(alertsInline).Build();
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
+        _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"article-{slug}")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(rawArticle);
 
         // Act
         var response = AsyncTestHelper.Resolve(_repository.GetArticle(slug));
@@ -204,7 +282,7 @@ public class ArticleRepositoryTest
     }
 
     [Fact]
-    public void ReturnsArticleWithASectionThatHasAnInlineAlert()
+    public void GetArticle_ShouldReturnArticleWithASectionThatHasAnInlineAlert()
     {
         // Arrange
         const string slug = "unit-test-article-with-section-with-inline-alerts";
@@ -215,8 +293,8 @@ public class ArticleRepositoryTest
         var collection = new ContentfulCollection<ContentfulArticle>();
         var rawArticle = new ContentfulArticleBuilder().Slug(slug).Build();
         collection.Items = new List<ContentfulArticle> { rawArticle };
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == $"article-{slug}"), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(rawArticle);
-        _sectionFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
+        _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"article-{slug}")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(rawArticle);
+        _sectionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulSection>())).Returns(new Section(
             "title",
             "section-with-inline-alerts",
             "metaDescription",
@@ -233,12 +311,5 @@ public class ArticleRepositoryTest
         // Assert
         var article = response.Get<Article>();
         article.Sections[0].AlertsInline.Should().Equal(alert);
-    }
-
-    private static Article EmptyArticle()
-    {
-        return new Article("", "", "", "", "", "", "", "", new List<Section>(), new List<Crumb>(),
-            new List<Alert>(), new List<Profile>(), new NullTopic(), new List<Document>(),
-            new DateTime(2016, 10, 1), new DateTime(2016, 10, 31), new List<Alert>(), DateTime.Now, new bool());
     }
 }

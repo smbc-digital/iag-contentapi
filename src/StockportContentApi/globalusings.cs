@@ -39,6 +39,7 @@ global using StockportContentApi.Services.Profile;
 global using StockportContentApi.Utils;
 global using StockportGovUK.AspNetCore.Logging.Elasticsearch.Aws;
 global using Swashbuckle.AspNetCore.SwaggerGen;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Net;
 global using System.Reflection;

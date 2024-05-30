@@ -39,11 +39,3 @@ public class AtoZ
         return matchingItems;
     }
 }
-
-public class NullAtoZ : AtoZ
-{
-    public NullAtoZ()
-        : base(
-            string.Empty, string.Empty, string.Empty, string.Empty, new List<string>())
-    { }
-}

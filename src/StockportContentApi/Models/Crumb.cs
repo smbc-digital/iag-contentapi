@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class Crumb
 {
     public string Title { get; }
@@ -12,9 +12,4 @@ public class Crumb
         Slug = slug;
         Type = type;
     }
-}
-
-public class NullCrumb : Crumb
-{
-    public NullCrumb() : base(string.Empty, string.Empty, string.Empty) { }
 }

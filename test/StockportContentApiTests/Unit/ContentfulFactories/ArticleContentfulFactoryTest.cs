@@ -3,43 +3,32 @@
 public class ArticleContentfulFactoryTest
 {
     private readonly ContentfulArticle _contentfulArticle;
-    private readonly Mock<IVideoRepository> _videoRepository;
-    private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+    private readonly Mock<IVideoRepository> _videoRepository = new();
+    private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
     private readonly ArticleContentfulFactory _articleFactory;
-    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
-    private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory;
-    private readonly Mock<ITimeProvider> _timeProvider;
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulArticle, Topic>> _parentTopicFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
 
     public ArticleContentfulFactoryTest()
     {
-        _contentfulArticle = new ContentfulArticleBuilder().Build();
+        _contentfulArticle = new ContentfulArticleBuilder()
+            .WithBreadcrumbContentType("topic")
+            .Build();
 
-        // set to topic for mocking
-        // TODO: Refactor into builder
-        _contentfulArticle.Breadcrumbs[0].Sys.ContentType.SystemProperties.Id = "topic";
+        _timeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 01, 01));
 
-        _videoRepository = new Mock<IVideoRepository>();
-        _sectionFactory = new Mock<IContentfulFactory<ContentfulSection, Section>>();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-        _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-        _parentTopicFactory = new Mock<IContentfulFactory<ContentfulArticle, Topic>>();
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-
-        _timeProvider = new Mock<ITimeProvider>();
-
-        _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-
-        _articleFactory = new ArticleContentfulFactory(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
+        _articleFactory = new(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
             _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
     }
 
     [Fact]
-    public void ShouldNotAddBackgroundImageOrSectionsOrBreadcrumbsOrAlertsOrProfilesOrParentTopicOrDocumentsOrLiveChatIfTheyAreLinks()
+    public void ToModel_ShouldNotAddLinks()
     {
+        // Arrange
         _contentfulArticle.BackgroundImage.SystemProperties.LinkType = "Link";
         _contentfulArticle.Sections.First().Sys.LinkType = "Link";
         _contentfulArticle.Breadcrumbs.First().Sys.LinkType = "Link";
@@ -47,32 +36,30 @@ public class ArticleContentfulFactoryTest
         _contentfulArticle.Profiles.First().Sys.LinkType = "Link";
         _contentfulArticle.Documents.First().SystemProperties.LinkType = "Link";
 
+        // Act
         var article = _articleFactory.ToModel(_contentfulArticle);
 
-        article.BackgroundImage.Should().BeEmpty();
+        // Assert
+        Assert.Empty(article.BackgroundImage);
+        Assert.Empty(article.Sections);
+        Assert.Empty(article.Breadcrumbs);
+        Assert.Empty(article.Alerts);
+        Assert.Empty(article.Profiles);
+        Assert.Equivalent(new NullTopic(), article.ParentTopic);
+        Assert.Empty(article.Documents);
 
-        article.Sections.Count.Should().Be(0);
-        _sectionFactory.Verify(o => o.ToModel(It.IsAny<ContentfulSection>()), Times.Never);
-
-        article.Breadcrumbs.Count().Should().Be(0);
-        _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-
-        article.Alerts.Count().Should().Be(0);
-        _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-
-        article.Profiles.Count().Should().Be(0);
-        _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-
-        article.ParentTopic.Should().BeEquivalentTo(new NullTopic());
-
-        article.Documents.Count.Should().Be(0);
-        _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _sectionFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulSection>()), Times.Never);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 
     [Fact]
-    public void ItShouldRemoveAlertsInlineThatArePastSunsetDateOrBeforeSunriseDate()
+    public void ToModel_ShouldRemoveAlertsInlineThatArePastSunsetDateOrBeforeSunriseDate()
     {
-        ContentfulAlert _visibleAlert = new ContentfulAlert()
+        // Arrange
+        ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
             SubHeading = "subHeading",
@@ -84,7 +71,7 @@ public class ArticleContentfulFactoryTest
         };
 
         ContentfulAlert _invisibleAlert =
-            new ContentfulAlert()
+            new()
             {
                 Title = "title",
                 SubHeading = "subHeading",
@@ -95,21 +82,22 @@ public class ArticleContentfulFactoryTest
                 Sys = new SystemProperties() { Type = "Entry" }
             };
 
-        var contentfulArticle =
-            new ContentfulArticleBuilder().AlertsInline(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert })
-                .Build();
+        var contentfulArticle = new ContentfulArticleBuilder()
+            .AlertsInline(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert })
+            .Build();
 
+        // Act
         var article = _articleFactory.ToModel(contentfulArticle);
 
-        article.AlertsInline.Count().Should().Be(1);
+        // Assert
+        Assert.Single(article.AlertsInline);
     }
 
     [Fact]
-    public void ItShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate()
+    public void ToModel_ShouldRemoveAlertsThatArePastSunsetDateOrBeforeSunriseDate()
     {
-
-
-        ContentfulAlert _visibleAlert = new ContentfulAlert()
+        // Arrange
+        ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
             SubHeading = "subHeading",
@@ -119,7 +107,8 @@ public class ArticleContentfulFactoryTest
             SunsetDate = new DateTime(2017, 02, 01),
             Sys = new SystemProperties() { Type = "Entry" }
         };
-        ContentfulAlert _invisibleAlert = new ContentfulAlert()
+
+        ContentfulAlert _invisibleAlert = new()
         {
             Title = "title",
             SubHeading = "subHeading",
@@ -130,36 +119,44 @@ public class ArticleContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        var contentfulArticle =
-            new ContentfulArticleBuilder().Alerts(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert }).Build();
+        var contentfulArticle = new ContentfulArticleBuilder()
+            .Alerts(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert })
+            .Build();
 
+        // Act
         var article = _articleFactory.ToModel(contentfulArticle);
 
-        article.Alerts.Count().Should().Be(1);
+        // Arrange
+        Assert.Single(article.Alerts);
     }
 
     [Fact]
-    public void ShouldParseArticleIfBodyIsNull()
+    public void ToModel_ShouldParseArticleIfBodyIsNull()
     {
+        // Arrange
         var contentfulArticle = new ContentfulArticleBuilder().Title("title").Body(null).Build();
 
+        // Act
         var article = _articleFactory.ToModel(contentfulArticle);
 
-        article.Should().BeOfType<Article>();
-        article.Body.Should().Be(string.Empty);
-        article.Title.Should().Be("title");
+        // Assert
+        Assert.IsType<Article>(article);
+        Assert.Empty(article.Body);
+        Assert.Equal("title", article.Title);
     }
 
     [Fact]
-    public void ToModelShouldUpdateLastUpdatedAtWhenArticleSectionisUpdated()
+    public void ToModel_ShouldUpdateLastUpdatedAtWhenArticleSectionIsUpdated()
     {
+        // Arrange
         var time = DateTime.Now.AddHours(1);
         var contentfulSection = new ContentfulSectionBuilder().AddUpdatedAt(time).Build();
         var contentfulArticle = new ContentfulArticleBuilder().Title("title").WithOutSection().Section(contentfulSection).Build();
-
+        
+        // Act
         var model = _articleFactory.ToModel(contentfulArticle);
 
-        model.UpdatedAt.Should().Be(time);
+        // Assert
+        Assert.Equal(time, model.UpdatedAt);
     }
 }
-

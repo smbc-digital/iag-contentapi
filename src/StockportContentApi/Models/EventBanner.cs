@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class EventBanner
 {
     public string Title { get; }
