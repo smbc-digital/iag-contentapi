@@ -10,6 +10,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IVideoRepository _videoRepository;
     private readonly DateComparer _dateComparer;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
 
     public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -18,7 +19,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IContentfulFactory<Asset, Document> documentFactory,
         IVideoRepository videoRepository,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+        IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory)
     {
         _sectionFactory = sectionFactory;
         _crumbFactory = crumbFactory;
@@ -28,6 +30,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _parentTopicFactory = parentTopicFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
+        _articleBrandingFactory = articleBrandingFactory;
     }
 
     public Article ToModel(ContentfulArticle entry)
@@ -61,6 +64,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                         .Select(alert => _alertFactory.ToModel(alert)),
             Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                             .Select(profile => _profileFactory.ToModel(profile)).ToList(),
+            ArticleBranding = entry.ArticleBranding is not null ? entry.ArticleBranding.Where(_ => _ is not null).Select(branding => _articleBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>(),
+            LogoAreaTitle = entry.LogoAreaTitle,
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
             Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                             .Select(document => _documentFactory.ToModel(document)).ToList(),
