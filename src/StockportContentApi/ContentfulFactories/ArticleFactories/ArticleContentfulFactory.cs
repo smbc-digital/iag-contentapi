@@ -50,6 +50,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                                 ? entry.BackgroundImage.File.Url : string.Empty,
             Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                         ? entry.Image.File.Url : string.Empty,
+            AltText = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                        ? entry.Image.Description : string.Empty,
             Sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Select(section => _sectionFactory.ToModel(section)).ToList(),
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))

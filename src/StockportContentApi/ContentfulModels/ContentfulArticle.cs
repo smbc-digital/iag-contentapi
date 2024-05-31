@@ -4,6 +4,7 @@
 public class ContentfulArticle : ContentfulReference
 {
     public string Body { get; set; } = string.Empty;
+    public string AltText { get; set; }
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public List<ContentfulProfile> Profiles { get; set; } = new();
     public List<Asset> Documents { get; set; } = new();
