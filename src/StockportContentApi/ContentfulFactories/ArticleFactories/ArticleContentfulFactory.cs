@@ -10,6 +10,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IVideoRepository _videoRepository;
     private readonly DateComparer _dateComparer;
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
+
 
     public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -18,7 +20,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IContentfulFactory<Asset, Document> documentFactory,
         IVideoRepository videoRepository,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+        IContentfulFactory<ContentfulReference, SubItem> subitemFactory)
     {
         _sectionFactory = sectionFactory;
         _crumbFactory = crumbFactory;
@@ -28,6 +31,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _parentTopicFactory = parentTopicFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
+        _subitemFactory = subitemFactory;
     }
 
     public Article ToModel(ContentfulArticle entry)
@@ -62,6 +66,9 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
             Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                             .Select(document => _documentFactory.ToModel(document)).ToList(),
+            RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
+                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                            .Select(item => _subitemFactory.ToModel(item)).ToList(),
             SunriseDate = entry.SunriseDate,
             SunsetDate = entry.SunsetDate,
             AlertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
