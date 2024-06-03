@@ -11,7 +11,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IVideoRepository _videoRepository;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
 
     public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -21,6 +21,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IVideoRepository videoRepository,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+        IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory,
         IContentfulFactory<ContentfulReference, SubItem> subitemFactory)
     {
         _sectionFactory = sectionFactory;
@@ -31,6 +32,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _parentTopicFactory = parentTopicFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
+        _articleBrandingFactory = articleBrandingFactory;
         _subitemFactory = subitemFactory;
     }
 
@@ -54,6 +56,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                                 ? entry.BackgroundImage.File.Url : string.Empty,
             Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
                         ? entry.Image.File.Url : string.Empty,
+            AltText = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+                        ? entry.Image.Description : string.Empty,
             Sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Select(section => _sectionFactory.ToModel(section)).ToList(),
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
@@ -63,6 +67,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                         .Select(alert => _alertFactory.ToModel(alert)),
             Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                             .Select(profile => _profileFactory.ToModel(profile)).ToList(),
+            ArticleBranding = entry.ArticleBranding is not null ? entry.ArticleBranding.Where(_ => _ is not null).Select(branding => _articleBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>(),
+            LogoAreaTitle = entry.LogoAreaTitle,
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
             Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
                             .Select(document => _documentFactory.ToModel(document)).ToList(),
