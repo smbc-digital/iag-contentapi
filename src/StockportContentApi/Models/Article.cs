@@ -23,6 +23,7 @@ public class Article
     public List<Document> Documents { get; set; }
     public DateTime SunriseDate { get; set; }
     public DateTime SunsetDate { get; set; }
+    public List<SubItem> RelatedContent { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool HideLastUpdated { get; set; }
 }

@@ -39,7 +39,8 @@ public class ArticleRepositoryTest
             _videoRepository.Object,
             _mockTimeProvider.Object,
             new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
-            new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>().Object
+            new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>().Object,
+            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object
         );
 
         var contentfulClientManager = new Mock<IContentfulClientManager>();

@@ -111,7 +111,8 @@ public static class ServiceCollectionExtensions
             p.GetService<IVideoRepository>(),
             p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()
+            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
+            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
             ));
         services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>
         (p => new DocumentPageContentfulFactory(
