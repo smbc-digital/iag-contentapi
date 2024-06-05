@@ -10,7 +10,7 @@ public class ContentfulArticle : ContentfulReference
     public List<Asset> Documents { get; set; } = new();
     public List<ContentfulAlert> AlertsInline { get; set; } = new();
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
-    public List<ContentfulReference> RelatedContent { get; set; }
+    public List<ContentfulReference> RelatedContent { get; set; } = new();
     public List<ContentfulGroupBranding> ArticleBranding { get; set; } = new();
     public string LogoAreaTitle { get; set;}
 }
