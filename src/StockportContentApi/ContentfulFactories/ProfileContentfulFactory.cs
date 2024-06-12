@@ -24,42 +24,31 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
 
     public Profile ToModel(ContentfulProfile entry)
     {
-        var breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
-                                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
-                                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
-
-        var imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-            entry.Image.File.Url : string.Empty;
-
-        var triviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
-            ? entry.TriviaSubheading
-            : "";
-
-        var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                                .Select(fact => _triviaFactory.ToModel(fact)).ToList();
-
-        var inlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList();
-
-        var eventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner);
-
-        return new Profile
+        if(entry is null)
+            return null;
+        
+        return new()
         {
-            Alerts = alerts,
+            Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
+                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             Author = entry.Author,
             Body = entry.Body,
-            Breadcrumbs = breadcrumbs,
-            Image = imageUrl,
-            InlineQuotes = inlineQuotes,
+            Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
+                                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+                            entry.Image.File.Url : string.Empty,
+            InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
             Quote = entry.Quote,
             Slug = entry.Slug,
             Subject = entry.Subject,
             Subtitle = entry.Subtitle,
             Title = entry.Title,
-            TriviaSection = triviaSection,
-            TriviaSubheading = triviaSubheading,
-            EventsBanner = eventsBanner
+            TriviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                                .Select(fact => _triviaFactory.ToModel(fact)).ToList(),
+            TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
+                                ? entry.TriviaSubheading
+                                : string.Empty,
+            EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner)
         };
     }
 }

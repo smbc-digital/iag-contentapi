@@ -13,25 +13,23 @@ public class ProfileService : IProfileService
 
     public async Task<Model.Profile> GetProfile(string slug, string businessId)
     {
-        var profileRepository = _createRepository(_createConfig(businessId));
-        var response = await profileRepository.GetProfile(slug);
+        IProfileRepository profileRepository = _createRepository(_createConfig(businessId));
+        HttpResponse response = await profileRepository.GetProfile(slug);
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
+        if (response.StatusCode.Equals(HttpStatusCode.OK))
             return response.Get<Model.Profile>();
-        }
 
         return null;
     }
 
     public async Task<List<Model.Profile>> GetProfiles(string businessId)
     {
-        var profileRepository = _createRepository(_createConfig(businessId));
-        var response = await profileRepository.Get();
+        IProfileRepository profileRepository = _createRepository(_createConfig(businessId));
+        HttpResponse response = await profileRepository.Get();
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        if (response.StatusCode.Equals(HttpStatusCode.OK))
         {
-            var profiles = response.Get<IEnumerable<Model.Profile>>();
+            IEnumerable<Model.Profile> profiles = response.Get<IEnumerable<Model.Profile>>();
             return profiles.ToList();
         }
 
