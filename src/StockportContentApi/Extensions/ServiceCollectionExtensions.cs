@@ -44,7 +44,8 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<Asset, Document>>(),
             p.GetService<IVideoRepository>(),
             p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
+            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
+            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()));
         services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p => new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
             p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
             p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
