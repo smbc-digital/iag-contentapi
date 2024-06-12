@@ -437,7 +437,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IAssetRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>(), p.GetService<ILoggedInHelper>()));
-        services.AddTransient<IProfileService>(p => new ProfileService(p.GetService<Func<string, ContentfulConfig>>(), p.GetService<Func<ContentfulConfig, IProfileRepository>>()));
 
         return services;
     }

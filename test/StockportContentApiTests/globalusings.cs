@@ -23,7 +23,6 @@ global using StockportContentApi.Model;
 global using StockportContentApi.Models.Exceptions;
 global using StockportContentApi.Repositories;
 global using StockportContentApi.Services;
-global using StockportContentApi.Services.Profile;
 global using StockportContentApi.Utils;
 global using StockportContentApiTests.Builders;
 global using StockportContentApiTests.Unit.Builders;
