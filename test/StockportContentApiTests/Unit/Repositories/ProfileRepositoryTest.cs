@@ -3,35 +3,35 @@
 public class ProfileRepositoryTest
 {
     private readonly ProfileRepository _repository;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
     private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
 
     public ProfileRepositoryTest()
     {
-        var config = new ContentfulConfig("test")
+        ContentfulConfig config = new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Build();
 
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-        var contentfulClientManager = new Mock<IContentfulClientManager>();
         _client = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
-
-        _repository = new ProfileRepository(config, contentfulClientManager.Object, _profileFactory.Object);
+        _contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_client.Object);
+        _repository = new ProfileRepository(config, _contentfulClientManager.Object, _profileFactory.Object);
     }
 
     [Fact]
     public void GetsProfileForProfileSlug()
     {
-        const string slug = "a-slug";
-        var contentfulTopic = new ContentfulProfileBuilder().Slug(slug).Build();
-        var collection = new ContentfulCollection<ContentfulProfile>();
-        collection.Items = new List<ContentfulProfile> { contentfulTopic };
+        // Arrange
+        ContentfulProfile contentfulProfile = new ContentfulProfileBuilder().Slug("a-slug").Build();
+        ContentfulCollection<ContentfulProfile> collection = new()
+        {
+            Items = new List<ContentfulProfile> { contentfulProfile }
+        };
 
-        var profile = new Profile
+        Profile profile = new()
         {
             Title = "title",
             Slug = "slug",
@@ -41,11 +41,11 @@ public class ProfileRepositoryTest
             Body = "body",
             Breadcrumbs = new List<Crumb>
             {
-                new Crumb("title", "slug", "type")
+                new("title", "slug", "type")
             },
             Alerts = new List<Alert>
             {
-                new Alert("title",
+                new("title",
                     "subheading",
                     "body",
                     "severity",
@@ -61,49 +61,52 @@ public class ProfileRepositoryTest
             Subject = "subject"
         };
 
-        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(1);
 
+        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
+        _profileFactory.Setup(_ => _.ToModel(contentfulProfile)).Returns(profile);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-        _profileFactory.Setup(o => o.ToModel(contentfulTopic)).Returns(profile);
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetProfile("a-slug"));
+        Profile responseProfile = response.Get<Profile>();
 
-        var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseProfile = response.Get<Profile>();
-        responseProfile.Should().BeEquivalentTo(profile);
-
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(profile, responseProfile);
     }
 
     [Fact]
     public void Return404WhenProfileWhenItemsDontExist()
     {
-        const string slug = "not-found";
+        // Arrange
+        ContentfulCollection<ContentfulProfile> collection = new()
+        {
+            Items = new List<ContentfulProfile>()
+        };
 
-        var collection = new ContentfulCollection<ContentfulProfile>();
-        collection.Items = new List<ContentfulProfile>();
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "not-found").Include(1);
+        _client.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
 
-        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
-        _client.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetProfile("not-found"));
 
-        var response = AsyncTestHelper.Resolve(_repository.GetProfile(slug));
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        response.Error.Should().Be($"No profile found for '{slug}'");
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("No profile found for 'not-found'", response.Error);
     }
 
     [Fact]
     public async Task GetProfile_ShouldGetEntries()
     {
         // Arrange
-        _client
-            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
-            {
-                Items = new List<ContentfulProfile>()
-            });
+        _client.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
+                {
+                    Items = new List<ContentfulProfile>()
+                });
+
         // Act
         await _repository.GetProfile("fake slug");
 
@@ -115,37 +118,80 @@ public class ProfileRepositoryTest
     public async Task GetProfile_ShouldReturnFailureWhenNoEntries()
     {
         // Arrange
-        _client
-            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
-            {
-                Items = new List<ContentfulProfile>()
-            });
+        _client.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
+                {
+                    Items = new List<ContentfulProfile>()
+                });
+            
         // Act
-        var response = await _repository.GetProfile("fake slug");
+        HttpResponse response = await _repository.GetProfile("fake slug");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
     public async Task GetProfile_ShouldReturnSuccessWhenEntriesExist()
     {
         // Arrange
-        _client
-            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
-            {
-                Items = new List<ContentfulProfile>(){
-                    new ContentfulProfile(){
-                        Slug = "slug"
+        _client.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
+                {
+                    Items = new List<ContentfulProfile>(){
+                        new(){
+                            Slug = "slug"
+                        }
                     }
-                }
-            });
+                });
+        
         // Act
-        var response = await _repository.GetProfile("fake slug");
+        HttpResponse response = await _repository.GetProfile("fake slug");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async void Get_ShouldReturnSuccessfulResponse()
+    {
+        // Arrange
+        ContentfulProfile contentfulProfileA = new ContentfulProfileBuilder().Slug("a-slug").Build();
+        ContentfulProfile contentfulProfileB = new ContentfulProfileBuilder().Slug("b-slug").Build();
+        ContentfulProfile contentfulProfileC = new ContentfulProfileBuilder().Slug("c-slug").Build();
+        ContentfulCollection<ContentfulProfile> collection = new()
+        {
+            Items = new List<ContentfulProfile> { contentfulProfileA, contentfulProfileB, contentfulProfileC }
+        };
+
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
+
+        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collection);
+
+        // Act
+        var response = await _repository.Get();
+        var responseProfile = response.Get<IEnumerable<Profile>>();
+        
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(collection.Items.Count(), responseProfile.ToList().Count);
+    }
+
+    [Fact]
+    public async Task Get_ShouldReturnNotFoundResponse_IfProfileADoesNotExist(){
+        // Arrange
+        ContentfulCollection<ContentfulProfile> collection = new()
+        {
+            Items = new List<ContentfulProfile>()
+        };
+
+        _client.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+
+        // Act
+        var response = await _repository.Get();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

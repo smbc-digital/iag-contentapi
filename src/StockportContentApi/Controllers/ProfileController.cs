@@ -2,18 +2,29 @@
 
 public class ProfileController : Controller
 {
-    private readonly IProfileService _profileService;
+    private readonly ResponseHandler _handler;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<ContentfulConfig, IProfileRepository> _createRepository;
 
-    public ProfileController(IProfileService profileService)
-        => _profileService = profileService;
+    public ProfileController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig, Func<ContentfulConfig, IProfileRepository> createRepository)
+    {
+        _handler = handler;
+        _createConfig = createConfig;
+        _createRepository = createRepository;
+    }
 
     [HttpGet]
     [Route("{businessId}/profiles/{profileSlug}")]
     [Route("v1/{businessId}/profiles/{profileSlug}")]
     public async Task<IActionResult> GetProfile(string profileSlug, string businessId)
     {
-        var profile = await _profileService.GetProfile(profileSlug, businessId);
-        return new OkObjectResult(profile);
+        return await _handler.Get(() =>
+        {
+            var repository = _createRepository(_createConfig(businessId));
+            var profile = repository.GetProfile(profileSlug);
+
+            return profile;
+        });
     }
 
     [HttpGet]
@@ -21,8 +32,12 @@ public class ProfileController : Controller
     [Route("v1/{businessId}/profiles/")]
     public async Task<IActionResult> Get(string businessId)
     {
-        var profiles = await _profileService.GetProfiles(businessId);
+        return await _handler.Get(() =>
+        {
+            var repository = _createRepository(_createConfig(businessId));
+            var profile = repository.Get();
 
-        return new OkObjectResult(profiles);
+            return profile;
+        });
     }
 }

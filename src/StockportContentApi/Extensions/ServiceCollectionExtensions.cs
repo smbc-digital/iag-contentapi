@@ -310,8 +310,7 @@ public static class ServiceCollectionExtensions
                     p.GetService<ILogger<EventRepository>>()));
 
         services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
-            p =>
-            {
+            p => {
                 return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulNews, News>>(),
@@ -326,13 +325,9 @@ public static class ServiceCollectionExtensions
                     p.GetService<ILogger<ShowcaseRepository>>()
                 );
             });
+        
         services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
-            p =>
-            {
-                return x => new ProfileRepository(x,
-             p.GetService<IContentfulClientManager>(),
-             p.GetService<IContentfulFactory<ContentfulProfile, Profile>>());
-            });
+            p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
         services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(
             p => { return x => new PaymentRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()); });
         services.AddSingleton<Func<ContentfulConfig, ServicePayPaymentRepository>>(
@@ -350,7 +345,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
             p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
 
-
         services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
             p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
         services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
@@ -358,8 +352,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<RedirectsRepository>();
         services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper(p.GetService<ITimeProvider>()));
         services.AddSingleton<Func<ContentfulConfig, IGroupRepository>>(
-            p =>
-            {
+            p => {
                 return x => new GroupRepository(x, p.GetService<IContentfulClientManager>(),
                     p.GetService<ITimeProvider>(),
                     p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
@@ -375,6 +368,7 @@ public static class ServiceCollectionExtensions
                     p.GetService<ICache>(),
                     p.GetService<IConfiguration>());
             });
+        
         services.AddSingleton<Func<ContentfulConfig, ContactUsIdRepository>>(
             p => { return x => new ContactUsIdRepository(x, p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(), p.GetService<IContentfulClientManager>()); });
 
@@ -382,23 +376,22 @@ public static class ServiceCollectionExtensions
             p => { return x => new OrganisationRepository(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulClientManager>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>().Invoke(x)); });
 
         services.AddSingleton<Func<ContentfulConfig, IGroupAdvisorRepository>>(
-            p =>
-            {
+            p => {
                 return x => new GroupAdvisorRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>());
             });
 
         services.AddSingleton<Func<ContentfulConfig, ContactUsAreaRepository>>(
             p => { return x => new ContactUsAreaRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()); });
 
-        services.AddSingleton<Func<ContentfulConfig, CommsRepository>>(_ =>
-        {
-            return config =>
-                new CommsRepository(
-                    config,
-                    _.GetService<IContentfulClientManager>(),
-                    _.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()
-                );
-        });
+        services.AddSingleton<Func<ContentfulConfig, CommsRepository>>(
+            p => {
+                return config =>
+                    new CommsRepository(
+                        config,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()
+                    );
+                });
 
         return services;
     }
@@ -438,7 +431,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<IDocumentService>(p => new DocumentsService(p.GetService<Func<ContentfulConfig, IAssetRepository>>(), p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(), p.GetService<Func<ContentfulConfig, IGroupRepository>>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>(), p.GetService<ILoggedInHelper>()));
-        services.AddTransient<IProfileService>(p => new ProfileService(p.GetService<Func<string, ContentfulConfig>>(), p.GetService<Func<ContentfulConfig, IProfileRepository>>()));
 
         return services;
     }

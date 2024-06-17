@@ -8,12 +8,10 @@ public class DirectoryContentfulFactoryTests
     private readonly ITimeProvider _timeProvider = new TimeProvider();
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
-    private readonly ContentfulDirectory _contentfulDirectory;
 
     public DirectoryContentfulFactoryTests(){
         _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _contentfulDirectory = new DirectoryBuilder().Build();
     }
 
     [Fact]

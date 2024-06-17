@@ -8,16 +8,10 @@ public interface IProfileRepository
 
 public class ProfileRepository : IProfileRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
-    public ProfileRepository()
-    {
-
-    }
-
-    public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager,
-                             IContentfulFactory<ContentfulProfile, Profile> profileFactory)
+    public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulProfile, Profile> profileFactory)
     {
         _client = clientManager.GetClient(config);
         _profileFactory = profileFactory;
@@ -29,7 +23,7 @@ public class ProfileRepository : IProfileRepository
         var entries = await _client.GetEntries(builder);
         var entry = entries.FirstOrDefault();
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'")
             : HttpResponse.Successful(_profileFactory.ToModel(entry));
     }
@@ -39,9 +33,10 @@ public class ProfileRepository : IProfileRepository
         var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
         var entries = await _client.GetEntries(builder);
 
-        if (entries == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
+        if (!entries.Any() || entries is null) 
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
 
-        var models = entries.Select(e => _profileFactory.ToModel(e));
+        var models = entries.Select(_ => _profileFactory.ToModel(_));
 
         return HttpResponse.Successful(models);
     }

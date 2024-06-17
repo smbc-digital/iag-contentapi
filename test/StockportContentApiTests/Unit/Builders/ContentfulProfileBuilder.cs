@@ -3,32 +3,45 @@
 public class ContentfulProfileBuilder
 {
     private string _slug = "slug";
-    private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
-    private readonly SystemProperties _sys = new SystemProperties
+    private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
+    private readonly SystemProperties _sys = new()
     {
-        ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
-
+        ContentType = new() { SystemProperties = new() { Id = "id" } }
     };
 
-    public ContentfulProfile Build()
+    public ContentfulProfile Build() => new()
     {
-        return new ContentfulProfile
-        {
-            Title = "title",
-            Slug = _slug,
-            Subtitle = "subtitle",
-            Quote = "quote",
-            Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
-            Body = "body",
-            Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
-            Sys = _sys,
-            Alerts = _alerts,
-            Author = "author",
-            Subject = "subject",
-            TriviaSection = new List<ContentfulTrivia>(),
-            TriviaSubheading = "trivia heading"
-        };
-    }
+        Title = "title",
+        Slug = _slug,
+        Subtitle = "subtitle",
+        Quote = "quote",
+        Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
+        Body = "body",
+        Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
+        Sys = _sys,
+        Alerts = _alerts,
+        Author = "author",
+        Subject = "subject",
+        TriviaSection = new List<ContentfulTrivia>() {
+            new() {
+                Name = "trivia name",
+                Icon = "trivia icon",
+                Link = "trivia link",
+                Sys = new SystemProperties(),
+                Text = "trivia text"
+            }
+        },
+        TriviaSubheading = "trivia heading",
+        InlineQuotes = new List<ContentfulInlineQuote>(){
+            new(){
+                Author = "inline quote author",
+                Image = new ContentfulAssetBuilder().Url("inline-quote.jpg").Build(),
+                ImageAltText = "inline quote image alt text",
+                Quote = "inline quote",
+                Slug = "inline-quote-url"
+            }
+        }
+    };
 
     public ContentfulProfileBuilder Slug(string slug)
     {

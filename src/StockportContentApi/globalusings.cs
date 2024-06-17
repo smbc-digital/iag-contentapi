@@ -35,7 +35,6 @@ global using StockportContentApi.Models.Enums;
 global using StockportContentApi.Models.Exceptions;
 global using StockportContentApi.Repositories;
 global using StockportContentApi.Services;
-global using StockportContentApi.Services.Profile;
 global using StockportContentApi.Utils;
 global using StockportGovUK.AspNetCore.Logging.Elasticsearch.Aws;
 global using Swashbuckle.AspNetCore.SwaggerGen;

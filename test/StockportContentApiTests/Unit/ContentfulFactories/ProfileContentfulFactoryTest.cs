@@ -3,35 +3,74 @@
 public class ProfileContentfulFactoryTest
 {
     private readonly ContentfulProfile _contentfulProfile;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly ProfileContentfulFactory _profileContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
+    private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory = new();
 
     public ProfileContentfulFactoryTest()
     {
         _contentfulProfile = new ContentfulProfileBuilder().Build();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
         _profileContentfulFactory = new ProfileContentfulFactory(
             _crumbFactory.Object,
-            new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
-            new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>().Object,
-            new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
-            _eventBannerFactory.Object);
+            _alertFactory.Object,
+            _triviaFactory.Object,
+            _inlineQuoteFactory.Object,
+            _eventBannerFactory.Object
+        );
     }
 
     [Fact]
-    public void ShouldNotAddBreadcrumbsOrAlertsOrImageIfTheyAreLinks()
+    public void ToModel_ShouldNotAddLinks()
     {
+        // Arrange
         _contentfulProfile.Image.SystemProperties.LinkType = "Link";
         _contentfulProfile.Breadcrumbs.First().Sys.LinkType = "Link";
         _contentfulProfile.Alerts.First().Sys.LinkType = "Link";
+        _contentfulProfile.TriviaSection.First().Sys.LinkType = "Link";
 
+        // Act
         var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
-        _crumbFactory.Verify(o => o.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        profile.Breadcrumbs.Count().Should().Be(0);
-        profile.Image.Should().BeEmpty();
-        profile.Alerts.Should().BeEmpty();
+        // Assert
+        Assert.Empty(profile.Image);
+        Assert.Empty(profile.Breadcrumbs);
+        Assert.Empty(profile.Alerts);
+        Assert.Empty(profile.TriviaSection);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Never);
+    }
+
+    [Fact]
+    public void ToModel_ShouldReturnNull()
+    {
+        // Act
+        var profile = _profileContentfulFactory.ToModel(null);
+
+        // Assert
+        Assert.Null(profile);
+    }
+
+    [Fact]
+    public void ToModel_ShouldReturnProfile()
+    {
+        // Act
+        var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
+
+        // Assert
+        Assert.NotEmpty(profile.Image);
+        Assert.NotEmpty(profile.Breadcrumbs);
+        Assert.NotEmpty(profile.Alerts);
+        Assert.NotEmpty(profile.TriviaSection);
+        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
+        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
+        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
+        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Once);
+        _inlineQuoteFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulInlineQuote>()), Times.Once);
+        _eventBannerFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulEventBanner>()), Times.Once);
     }
 }

@@ -1,5 +1,6 @@
 namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Profile
 {
     public string Title { get; set; }
