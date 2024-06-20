@@ -75,7 +75,7 @@ public class ShowcaseRepositoryTest
 
         var eventRepository = new EventRepository(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
 
-        _repository = new ShowcaseRepository(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object, eventRepository, _mockLogger.Object);
+        _repository = new ShowcaseRepository(config, contentfulFactory, null, contentfulClientManager.Object, newsListFactory.Object, eventRepository, _mockLogger.Object);
     }
 
     [Fact]

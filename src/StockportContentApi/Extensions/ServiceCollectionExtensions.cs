@@ -92,6 +92,11 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
             p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
             p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
+        
+
+        services.AddSingleton<IContentfulFactory<ContentfulEntry, Entry>>
+        (p => new EntryContentfulFactory());
+
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
             (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink,
             SocialMediaLink>>()));
@@ -312,6 +317,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
             p => {
                 return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
+                    p.GetService<IContentfulFactory<ContentfulEntry, Entry>>(),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulNews, News>>(),
                     new EventRepository(x,
@@ -325,7 +331,7 @@ public static class ServiceCollectionExtensions
                     p.GetService<ILogger<ShowcaseRepository>>()
                 );
             });
-        
+
         services.AddSingleton<Func<ContentfulConfig, IProfileRepository>>(
             p => { return x => new ProfileRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()); });
         services.AddSingleton<Func<ContentfulConfig, PaymentRepository>>(

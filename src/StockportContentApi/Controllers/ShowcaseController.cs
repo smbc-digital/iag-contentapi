@@ -24,7 +24,8 @@ public class ShowcaseController : Controller
         return await _handler.Get(() =>
         {
             var repository = _createRepository(_createConfig(businessId));
-            var showcase = repository.GetShowcases(showcaseSlug);
+            // var showcase = repository.GetShowcases(showcaseSlug);
+            var showcase = repository.GetEntry(showcaseSlug);
 
             return showcase;
         });

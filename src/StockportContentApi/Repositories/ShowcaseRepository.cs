@@ -3,24 +3,28 @@
 public class ShowcaseRepository
 {
     private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
+    private readonly IContentfulFactory<ContentfulEntry, Entry> _entryFactory;
     private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly EventRepository _eventRepository;
     private readonly ILogger<ShowcaseRepository> _logger;
 
     public ShowcaseRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
+        IContentfulFactory<ContentfulEntry, Entry> entryBuilder,
         IContentfulClientManager contentfulClientManager,
         IContentfulFactory<ContentfulNews, News> newsBuilder,
         EventRepository eventRepository,
         ILogger<ShowcaseRepository> logger)
     {
         _contentfulFactory = showcaseBuilder;
+        _entryFactory = entryBuilder;
         _newsFactory = newsBuilder;
         _client = contentfulClientManager.GetClient(config);
         _eventRepository = eventRepository;
         _logger = logger;
     }
+
     public async Task<HttpResponse> Get()
     {
         var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
@@ -36,7 +40,6 @@ public class ShowcaseRepository
     public async Task<HttpResponse> GetShowcases(string slug)
     {
         var builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
-
 
         var entries = await _client.GetEntries(builder);
 
@@ -137,5 +140,32 @@ public class ShowcaseRepository
         }
 
         return new ShowcaseNews() { News = result, Type = type };
+    }
+
+    public async Task<HttpResponse> GetEntry(string slug)
+    {
+        var builder = new QueryBuilder<ContentfulEntry>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(1);
+
+        var entries = await _client.GetEntries(builder);
+
+        var entry = entries.FirstOrDefault();
+
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
+
+        Entry showcase = new();
+
+        try
+        {
+            showcase = _entryFactory.ToModel(entry);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unable to serialize Showcase {slug}: {ex.Message}");
+        }
+
+        return showcase.GetType() == typeof(NullHomepage)
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found")
+            : HttpResponse.Successful(showcase);
     }
 }
