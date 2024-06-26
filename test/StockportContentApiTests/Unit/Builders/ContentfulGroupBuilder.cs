@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Builders;
+﻿using FileDetails = Contentful.Core.Models.FileDetails;
+
+namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulGroupBuilder
 {

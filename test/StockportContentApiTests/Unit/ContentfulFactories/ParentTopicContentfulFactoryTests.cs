@@ -14,7 +14,7 @@ public class ParentTopicContentfulFactoryTests
 
         // setup mocks
         _subitemContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "content-type", DateTime.MinValue, DateTime.MaxValue,
                 "image", new List<SubItem>()));
         _timeProvider.Setup(o => o.Now())
             .Returns(new DateTime(2017, 01, 02));
@@ -119,7 +119,7 @@ public class ParentTopicContentfulFactoryTests
             .Build();
 
         _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug == "article-slug")))
-            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
+            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, "content-type", DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
 
         var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 

@@ -42,13 +42,13 @@ public class TopicContentfulFactoryTest
         var crumb = new Crumb("title", "slug", "type");
         _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
 
-        var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", "content-type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
-        var secondaryItem = new SubItem("slug2", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        var secondaryItem = new SubItem("slug2", "title", "teaser", "icon", "type", "content-type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
-        var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", "content-type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
 
         var callToAction = new CallToActionBanner()
         {

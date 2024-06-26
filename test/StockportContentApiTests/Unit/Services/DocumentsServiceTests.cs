@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Services;
+﻿using FileDetails = Contentful.Core.Models.FileDetails;
+
+namespace StockportContentApiTests.Unit.Services;
 
 public class DocumentsServiceTests
 {

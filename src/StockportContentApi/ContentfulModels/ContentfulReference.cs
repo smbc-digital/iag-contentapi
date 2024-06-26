@@ -23,4 +23,5 @@ public class ContentfulReference : IContentfulModel
     public List<ContentfulReference> TertiaryItems { get; set; } = new List<ContentfulReference>();
     public List<ContentfulSection> Sections { get; set; } = new List<ContentfulSection>();
     public SystemProperties Sys { get; set; } = new SystemProperties();
+    public string ContentType = string.Empty;
 }

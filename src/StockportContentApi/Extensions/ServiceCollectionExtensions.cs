@@ -93,10 +93,6 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
             p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
         
-
-        services.AddSingleton<IContentfulFactory<ContentfulEntry, Entry>>
-        (p => new EntryContentfulFactory());
-
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
             (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink,
             SocialMediaLink>>()));
@@ -317,9 +313,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<Func<ContentfulConfig, ShowcaseRepository>>(
             p => {
                 return x => new ShowcaseRepository(x, p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
-                    p.GetService<IContentfulFactory<ContentfulEntry, Entry>>(),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                    p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
                     new EventRepository(x,
                         p.GetService<IContentfulClientManager>(),
                         p.GetService<ITimeProvider>(),

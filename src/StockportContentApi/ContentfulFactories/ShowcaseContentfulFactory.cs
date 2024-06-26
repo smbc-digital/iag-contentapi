@@ -39,98 +39,68 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
     public Showcase ToModel(ContentfulShowcase entry)
     {
         var heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
-            entry.HeroImage.File.Url : string.Empty;
+           entry.HeroImage.File.Url : string.Empty;
 
-        var primaryItems =
-            entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
-                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        //var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+        //    .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-        var secondaryItems =
-            entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        // var breadcrumbs =
+        //    entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+        //        .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var featuredItems =
-            entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
-                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        //var profile = entry.Profile != null
+        //    ? _profileFactory.ToModel(entry.Profile)
+        //    : null;
 
-        var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
-            .Select(media => _socialMediaFactory.ToModel(media)).ToList();
+        //var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
+        //    .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
 
-        var breadcrumbs =
-            entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        //var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
+        //                                         _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+        //    .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var profile = entry.Profile != null
-            ? _profileFactory.ToModel(entry.Profile)
-            : null;
+        //var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+        //    .Select(fact => _triviaFactory.ToModel(fact)).ToList();
 
-        var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
-            .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
+        //var callToActionBanner = entry.CallToActionBanner != null
+        //    ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
+        //    : null;
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
-                                                 _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        //var video = entry.Video != null
+        //    ? _videoFactory.ToModel(entry.Video)
+        //    : null;
 
-        var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
-
-        var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-            .Select(fact => _triviaFactory.ToModel(fact)).ToList();
-
-        var callToActionBanner = entry.CallToActionBanner != null
-            ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
-            : null;
-
-        var video = entry.Video != null
-            ? _videoFactory.ToModel(entry.Video)
-            : null;
-
-        var spotlightBanner = entry.SpotlightBanner != null
-            ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
-            : null;
+        //var spotlightBanner = entry.SpotlightBanner != null
+        //    ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
+        //    : null;
 
         return new Showcase
         {
             Title = entry.Title,
             Slug = entry.Slug,
             HeroImageUrl = heroImage,
-            PrimaryItems = primaryItems,
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
             Subheading = entry.Subheading,
-            SecondaryItems = secondaryItems,
             FeaturedItemsSubheading = entry.FeaturedItemsSubheading,
-            FeaturedItems = featuredItems,
             SocialMediaLinksSubheading = entry.SocialMediaLinksSubheading,
-            SocialMediaLinks = socialMediaLinks,
             EventSubheading = entry.EventSubheading,
             EventCategory = entry.EventCategory,
             EventsReadMoreText = entry.EventsReadMoreText,
             NewsSubheading = entry.NewsSubheading,
             NewsCategoryTag = entry.NewsCategoryTag,
-            Breadcrumbs = breadcrumbs,
+            //Breadcrumbs = breadcrumbs,
             BodySubheading = entry.BodySubheading,
             Body = entry.Body,
-            Profile = profile,
             ProfileHeading = entry.ProfileHeading,
             ProfileLink = entry.ProfileLink,
-            Profiles = profiles,
-            FieldOrder = entry.FieldOrder,
             EmailAlertsTopicId = entry.EmailAlertsTopicId,
             EmailAlertsText = entry.EmailAlertsText,
-            Alerts = alerts,
             Icon = entry.Icon,
-            TertiaryItems = tertiaryItems,
             TriviaSubheading = entry.TriviaSubheading,
-            TriviaSection = triviaSection,
-            CallToActionBanner = callToActionBanner,
-            Video = video,
             TypeformUrl = entry.TypeformUrl,
-            SpotlightBanner = spotlightBanner
+            Content = entry.Content,
+            SubItems = entry.SubItems
         };
     }
 }
