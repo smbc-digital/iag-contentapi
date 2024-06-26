@@ -38,7 +38,5 @@ public class Data
 
 public class ContentItem
 {
-    public string NodeType { get; set; }
     public Data Data { get; set; }
-    public List<object> Content { get; set; }
 }
