@@ -41,39 +41,6 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
         var heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
            entry.HeroImage.File.Url : string.Empty;
 
-        //var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
-        //    .Select(media => _socialMediaFactory.ToModel(media)).ToList();
-
-        // var breadcrumbs =
-        //    entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-        //        .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-
-        //var profile = entry.Profile != null
-        //    ? _profileFactory.ToModel(entry.Profile)
-        //    : null;
-
-        //var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
-        //    .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
-
-        //var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
-        //                                         _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-        //    .Select(alert => _alertFactory.ToModel(alert)).ToList();
-
-        //var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-        //    .Select(fact => _triviaFactory.ToModel(fact)).ToList();
-
-        //var callToActionBanner = entry.CallToActionBanner != null
-        //    ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
-        //    : null;
-
-        //var video = entry.Video != null
-        //    ? _videoFactory.ToModel(entry.Video)
-        //    : null;
-
-        //var spotlightBanner = entry.SpotlightBanner != null
-        //    ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
-        //    : null;
-
         return new Showcase
         {
             Title = entry.Title,

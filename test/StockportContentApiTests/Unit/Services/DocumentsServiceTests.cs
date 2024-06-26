@@ -1,6 +1,4 @@
-﻿using FileDetails = Contentful.Core.Models.FileDetails;
-
-namespace StockportContentApiTests.Unit.Services;
+﻿namespace StockportContentApiTests.Unit.Services;
 
 public class DocumentsServiceTests
 {
