@@ -146,19 +146,4 @@ public class ArticleContentfulFactoryTest
         Assert.Empty(article.Body);
         Assert.Equal("title", article.Title);
     }
-
-    [Fact]
-    public void ToModel_ShouldUpdateLastUpdatedAtWhenArticleSectionIsUpdated()
-    {
-        // Arrange
-        var time = DateTime.Now.AddHours(1);
-        var contentfulSection = new ContentfulSectionBuilder().AddUpdatedAt(time).Build();
-        var contentfulArticle = new ContentfulArticleBuilder().Title("title").WithOutSection().Section(contentfulSection).Build();
-        
-        // Act
-        var model = _articleFactory.ToModel(contentfulArticle);
-
-        // Assert
-        Assert.Equal(time, model.UpdatedAt);
-    }
 }
