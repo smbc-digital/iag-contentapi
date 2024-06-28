@@ -307,6 +307,7 @@ public class ArticleRepositoryTest
             new List<GroupBranding>(),
             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2023, 9, 9, 0, 0, 0, DateTimeKind.Utc),
             new List<Alert> { alert }));
 
         // Act

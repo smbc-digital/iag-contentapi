@@ -36,8 +36,10 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
         
         var sectionBranding = entry.SectionBranding is not null ? entry.SectionBranding.Where(_ => _ is not null).Select(branding => _sectionBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
 
+        var updatedAt = entry.Sys.UpdatedAt.Value;
+
         return new Section(entry.Title, entry.Slug, entry.MetaDescription,
             body, profiles, documents, entry.LogoAreaTitle, sectionBranding,
-            entry.SunriseDate, entry.SunsetDate, alertsInline);
+            entry.SunriseDate, entry.SunsetDate, updatedAt, alertsInline);
     }
 }

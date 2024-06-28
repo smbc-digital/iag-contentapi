@@ -8,4 +8,5 @@ public class ContentfulSection : ContentfulReference
     public List<ContentfulAlert> AlertsInline { get; set; } = new List<ContentfulAlert>();
     public List<ContentfulGroupBranding> SectionBranding { get; set; } = new();
     public string LogoAreaTitle { get; set;}
+    public DateTime UpdatedAt { get; set; }
 }
