@@ -39,6 +39,7 @@ public class ProfileRepositoryTest
             Quote = "quote",
             Image = "image",
             Body = "body",
+            ImageCaption = "imageCaption",
             Breadcrumbs = new List<Crumb>
             {
                 new("title", "slug", "type")
@@ -58,7 +59,8 @@ public class ProfileRepositoryTest
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
-            Subject = "subject"
+            Subject = "subject",
+            Colour = "pink"
         };
 
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(1);

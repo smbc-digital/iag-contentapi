@@ -31,21 +31,22 @@ public class SectionContentfulFactoryTest
     public void ShouldCreateASectionFromAContentfulSection()
     {
         // Arrange
-        var profile = new Profile
+        Profile profile = new()
         {
             Title = "title",
             Slug = "slug",
             Subtitle = "subtitle",
             Quote = "quote",
             Image = "image",
+            ImageCaption = "imageCaption",
             Body = "body",
             Breadcrumbs = new List<Crumb>
             {
-                new Crumb("title", "slug", "type")
+                new("title", "slug", "type")
             },
             Alerts = new List<Alert>
             {
-                new Alert("title",
+                new("title",
                     "subheading",
                     "body",
                     "severity",
@@ -58,7 +59,8 @@ public class SectionContentfulFactoryTest
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
-            Subject = "subject"
+            Subject = "subject",
+            Colour = "orange"
         };
 
         _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);

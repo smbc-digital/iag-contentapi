@@ -9,6 +9,7 @@ public class Profile
     public string Quote { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
     public string Image { get; set; }
+    public string ImageCaption { get; set; }
     public string Body { get; set; }
     public IEnumerable<Crumb> Breadcrumbs { get; set; }
     public List<Alert> Alerts { get; set; }
@@ -17,6 +18,7 @@ public class Profile
     public string Author { get; set; }
     public string Subject { get; set; }
     public EventBanner EventsBanner { get; set; }
+    public string Colour { get; set; }
 
     public Profile()
     {
