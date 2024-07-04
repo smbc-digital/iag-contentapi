@@ -50,7 +50,9 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
                                 ? entry.TriviaSubheading
                                 : string.Empty,
             EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner),
-            Colour = entry.Colour
+            Colour = entry.Colour,
+            InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
+                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
         };
     }
 }

@@ -11,6 +11,7 @@ public class ContentfulProfile : IContentfulModel
     public string ImageCaption { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
+    public List<ContentfulAlert> InlineAlerts { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
     public string TriviaSubheading { get; set; }
