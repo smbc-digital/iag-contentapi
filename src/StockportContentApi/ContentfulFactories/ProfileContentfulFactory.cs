@@ -37,6 +37,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
                                 .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
             Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
                             entry.Image.File.Url : string.Empty,
+            ImageCaption = entry.ImageCaption,
             InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
             Quote = entry.Quote,
             Slug = entry.Slug,
@@ -48,7 +49,10 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                                 ? entry.TriviaSubheading
                                 : string.Empty,
-            EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner)
+            EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner),
+            Colour = entry.Colour,
+            InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
+                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
         };
     }
 }

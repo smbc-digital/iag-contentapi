@@ -9,6 +9,7 @@ public class SectionContentfulFactoryTest
     private readonly SectionContentfulFactory _sectionFactory;
     private readonly Mock<ITimeProvider> _timeProvider;
     private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+    private Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory;
 
     public SectionContentfulFactoryTest()
     {
@@ -18,32 +19,34 @@ public class SectionContentfulFactoryTest
         _videoRepository = new Mock<IVideoRepository>();
         _timeProvider = new Mock<ITimeProvider>();
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+        _brandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
 
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
         _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
-            _videoRepository.Object, _timeProvider.Object, _alertFactory.Object);
+            _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, _brandingFactory.Object);
     }
 
     [Fact]
     public void ShouldCreateASectionFromAContentfulSection()
     {
         // Arrange
-        var profile = new Profile
+        Profile profile = new()
         {
             Title = "title",
             Slug = "slug",
             Subtitle = "subtitle",
             Quote = "quote",
             Image = "image",
+            ImageCaption = "imageCaption",
             Body = "body",
             Breadcrumbs = new List<Crumb>
             {
-                new Crumb("title", "slug", "type")
+                new("title", "slug", "type")
             },
             Alerts = new List<Alert>
             {
-                new Alert("title",
+                new("title",
                     "subheading",
                     "body",
                     "severity",
@@ -56,7 +59,8 @@ public class SectionContentfulFactoryTest
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
-            Subject = "subject"
+            Subject = "subject",
+            Colour = "orange"
         };
 
         _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
