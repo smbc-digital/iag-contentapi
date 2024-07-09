@@ -10,7 +10,8 @@ public class InlineQuoteContentfulFactory : IContentfulFactory<ContentfulInlineQ
             ImageAltText = entry.ImageAltText,
             Quote = entry.Quote,
             Author = entry.Author,
-            Slug = entry.Slug
+            Slug = entry.Slug,
+            Theme = entry.Theme
         };
     }
 }

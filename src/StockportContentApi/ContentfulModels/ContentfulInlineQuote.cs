@@ -12,4 +12,5 @@ public class ContentfulInlineQuote
 
     public string Slug { get; set; } = string.Empty;
 
+    public string Theme { get; set; } = string.Empty;
 }
