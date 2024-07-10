@@ -6,7 +6,7 @@ public class Profile
     public string Title { get; set; }
     public string Slug { get; set; }
     public string Subtitle { get; set; }
-    public string Quote { get; set; }
+    public string Teaser { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
     public string Image { get; set; }
     public string ImageCaption { get; set; }
