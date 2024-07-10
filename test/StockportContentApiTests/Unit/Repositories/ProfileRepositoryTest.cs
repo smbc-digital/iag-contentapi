@@ -36,7 +36,7 @@ public class ProfileRepositoryTest
             Title = "title",
             Slug = "slug",
             Subtitle = "subtitle",
-            Quote = "quote",
+            Teaser = "teaser",
             Image = "image",
             Body = "body",
             ImageCaption = "imageCaption",

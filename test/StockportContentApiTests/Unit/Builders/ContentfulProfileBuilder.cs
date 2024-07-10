@@ -14,7 +14,7 @@ public class ContentfulProfileBuilder
         Title = "title",
         Slug = _slug,
         Subtitle = "subtitle",
-        Quote = "quote",
+        Teaser = "teaser",
         Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
         Body = "body",
         Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },

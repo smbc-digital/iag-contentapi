@@ -39,7 +39,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
                             entry.Image.File.Url : string.Empty,
             ImageCaption = entry.ImageCaption,
             InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
-            Quote = entry.Quote,
+            Teaser = entry.Teaser,
             Slug = entry.Slug,
             Subject = entry.Subject,
             Subtitle = entry.Subtitle,
