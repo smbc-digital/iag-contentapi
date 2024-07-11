@@ -37,7 +37,7 @@ public class SectionContentfulFactoryTest
             Slug = "slug",
             Subtitle = "subtitle",
             Teaser = "teaser",
-            Image = "image",
+            Image = new MediaAsset(),
             ImageCaption = "imageCaption",
             Body = "body",
             Breadcrumbs = new List<Crumb>

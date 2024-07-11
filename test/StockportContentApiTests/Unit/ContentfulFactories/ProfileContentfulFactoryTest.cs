@@ -26,7 +26,6 @@ public class ProfileContentfulFactoryTest
     public void ToModel_ShouldNotAddLinks()
     {
         // Arrange
-        _contentfulProfile.Image.SystemProperties.LinkType = "Link";
         _contentfulProfile.Breadcrumbs.First().Sys.LinkType = "Link";
         _contentfulProfile.Alerts.First().Sys.LinkType = "Link";
         _contentfulProfile.TriviaSection.First().Sys.LinkType = "Link";
@@ -35,12 +34,10 @@ public class ProfileContentfulFactoryTest
         var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
         // Assert
-        Assert.Empty(profile.Image);
         Assert.Empty(profile.Breadcrumbs);
         Assert.Empty(profile.Alerts);
         Assert.Empty(profile.TriviaSection);
         _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
         _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Never);
     }
@@ -62,7 +59,7 @@ public class ProfileContentfulFactoryTest
         var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
         // Assert
-        Assert.NotEmpty(profile.Image);
+        Assert.NotEmpty(profile.Image.Url);
         Assert.NotEmpty(profile.Breadcrumbs);
         Assert.NotEmpty(profile.Alerts);
         Assert.NotEmpty(profile.TriviaSection);
