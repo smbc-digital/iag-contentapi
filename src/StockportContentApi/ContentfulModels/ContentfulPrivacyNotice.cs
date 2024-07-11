@@ -16,7 +16,7 @@ public class ContentfulPrivacyNotice : ContentfulReference
     public string UrlOne { get; set; }
     public string UrlTwo { get; set; }
     public string UrlThree { get; set; }
-    public List<ContentfulReference> Breadcrumbs { get; set; } = new List<ContentfulReference>();
+    public List<ContentfulReference> Breadcrumbs { get; set; } = new();
     public new SystemProperties Sys { get; set; }
 
     public ContentfulPrivacyNotice() { }

@@ -18,16 +18,16 @@ public class PrivacyNoticeParentTopicContentfulFactory : IContentfulFactory<Cont
     {
         _entry = entry;
 
-        var topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id == "topic");
+        ContentfulReference topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(_ => _.Sys.ContentType.SystemProperties.Id.Equals("topic"));
 
-        if (topicInBreadcrumb == null) return new NullTopic();
+        if (topicInBreadcrumb is null) return new NullTopic();
 
-        var subItems = topicInBreadcrumb.SubItems
+        List<SubItem> subItems = topicInBreadcrumb.SubItems
             .Select(CheckCurrentPrivacyNotice)
             .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        var secondaryItems = topicInBreadcrumb.SecondaryItems
+        List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems
             .Select(CheckCurrentPrivacyNotice)
             .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
