@@ -7,7 +7,7 @@ public class ContentfulProfile : IContentfulModel
     public string Subtitle { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
-    public Asset Image { get; set; } = new() { File = new() { Url = string.Empty }, SystemProperties = new() { Type = "Asset" } };
+    public Asset Image { get; set; } = new();
     public string ImageCaption { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();

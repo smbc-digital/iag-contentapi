@@ -37,7 +37,7 @@ public class ProfileRepositoryTest
             Slug = "slug",
             Subtitle = "subtitle",
             Teaser = "teaser",
-            Image = "image",
+            Image = new MediaAsset(),
             Body = "body",
             ImageCaption = "imageCaption",
             Breadcrumbs = new List<Crumb>

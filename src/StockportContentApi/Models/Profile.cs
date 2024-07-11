@@ -8,7 +8,7 @@ public class Profile
     public string Subtitle { get; set; }
     public string Teaser { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
-    public string Image { get; set; }
+    public MediaAsset Image { get; set; }
     public string ImageCaption { get; set; }
     public string Body { get; set; }
     public IEnumerable<Crumb> Breadcrumbs { get; set; }

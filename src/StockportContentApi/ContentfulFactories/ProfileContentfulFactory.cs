@@ -26,7 +26,17 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
     {
         if(entry is null)
             return null;
-        
+
+        MediaAsset image = new();
+        if (entry.Image is not null && entry.Image.File is not null)
+        {
+            image = new MediaAsset
+            {
+                Url = entry.Image.File.Url,
+                Description = entry.Image.Description
+            };
+        }
+
         return new()
         {
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
@@ -35,8 +45,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                 .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
-            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-                            entry.Image.File.Url : string.Empty,
+            Image = image,
             ImageCaption = entry.ImageCaption,
             InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
             Teaser = entry.Teaser,
