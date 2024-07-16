@@ -22,6 +22,7 @@ public class DirectoryContentfulFactoryTests
             new DirectoryBuilder()
             .WithSlug("test-directory")
             .WithTitle("Test-Directory")
+            .WithNavigationTitle("Test-Directory")
             .WithTeaser("Test teaser text")
             .WithBody("Test Body Text")
             .WithMetaDescription("Test Meta Description")

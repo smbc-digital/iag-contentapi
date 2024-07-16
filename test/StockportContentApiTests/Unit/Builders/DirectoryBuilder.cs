@@ -3,6 +3,7 @@ public class DirectoryBuilder
 {
     string Slug { get; set; }
     string Title { get; set; }
+    string NavigationTitle { get; set; }
     string Body { get; set; }
     string Teaser { get; set; }
     string MetaDescription { get; set; }
@@ -35,6 +36,7 @@ public class DirectoryBuilder
     {
         Slug = Slug,
         Title = Title,
+        NavigationTitle = NavigationTitle,
         Body = Body,
         MetaDescription = MetaDescription,
         Teaser = Teaser,
@@ -65,6 +67,12 @@ public class DirectoryBuilder
     public DirectoryBuilder WithTitle(string title)
     {
         Title = title;
+        return this;
+    }
+
+    public DirectoryBuilder WithNavigationTitle(string navigationTitle)
+    {
+        NavigationTitle = navigationTitle;
         return this;
     }
 
