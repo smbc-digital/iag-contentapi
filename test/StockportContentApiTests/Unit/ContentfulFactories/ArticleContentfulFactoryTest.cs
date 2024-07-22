@@ -72,24 +72,23 @@ public class ArticleContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        ContentfulAlert _invisibleAlert =
-            new()
-            {
-                Title = "title",
-                SubHeading = "subHeading",
-                Body = "body",
-                Severity = "severity",
-                SunriseDate = new DateTime(2017, 05, 01),
-                SunsetDate = new DateTime(2017, 07, 01),
-                Sys = new SystemProperties() { Type = "Entry" }
-            };
+        ContentfulAlert _invisibleAlert = new()
+        {
+            Title = "title",
+            SubHeading = "subHeading",
+            Body = "body",
+            Severity = "severity",
+            SunriseDate = new DateTime(2017, 05, 01),
+            SunsetDate = new DateTime(2017, 07, 01),
+            Sys = new SystemProperties() { Type = "Entry" }
+        };
 
-        var contentfulArticle = new ContentfulArticleBuilder()
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder()
             .AlertsInline(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert })
             .Build();
 
         // Act
-        var article = _articleFactory.ToModel(contentfulArticle);
+        Article article = _articleFactory.ToModel(contentfulArticle);
 
         // Assert
         Assert.Single(article.AlertsInline);
@@ -121,12 +120,12 @@ public class ArticleContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        var contentfulArticle = new ContentfulArticleBuilder()
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder()
             .Alerts(new List<ContentfulAlert> { _visibleAlert, _invisibleAlert })
             .Build();
 
         // Act
-        var article = _articleFactory.ToModel(contentfulArticle);
+        Article article = _articleFactory.ToModel(contentfulArticle);
 
         // Arrange
         Assert.Single(article.Alerts);
@@ -136,10 +135,10 @@ public class ArticleContentfulFactoryTest
     public void ToModel_ShouldParseArticleIfBodyIsNull()
     {
         // Arrange
-        var contentfulArticle = new ContentfulArticleBuilder().Title("title").Body(null).Build();
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder().Title("title").Body(null).Build();
 
         // Act
-        var article = _articleFactory.ToModel(contentfulArticle);
+        Article article = _articleFactory.ToModel(contentfulArticle);
 
         // Assert
         Assert.IsType<Article>(article);
