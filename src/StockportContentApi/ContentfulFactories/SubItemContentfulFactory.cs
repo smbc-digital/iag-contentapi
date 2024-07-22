@@ -86,10 +86,12 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
             entry.Image.File.Url : string.Empty;
     }
 
-    private string GetEntryTitle(ContentfulReference entry)
-    {
-        return !string.IsNullOrEmpty(entry.Title) ? entry.Title : entry.Name;
-    }
+    private static string GetEntryTitle(ContentfulReference entry) => 
+        !string.IsNullOrEmpty(entry.NavigationTitle) 
+            ? entry.NavigationTitle 
+            : !string.IsNullOrEmpty(entry.Title) 
+                ? entry.Title 
+                : entry.Name;
 
     private bool EntryIsValid(ContentfulReference entry)
     {
