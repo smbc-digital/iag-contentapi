@@ -13,25 +13,8 @@ public class PrivacyNotice
     public string Obtained { get; set; }
     public string ExternallyShared { get; set; }
     public string RetentionPeriod { get; set; }
-    public IEnumerable<Crumb> Breadcrumbs { get; }
+    public IEnumerable<Crumb> Breadcrumbs { get; set; }
     public Topic ParentTopic { get; set; }
 
     public PrivacyNotice() { }
-
-    public PrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, IEnumerable<Crumb> breadcrumbs, Topic parentTopic)
-    {
-        Slug = slug;
-        Title = title;
-        Category = category;
-        OutsideEu = outsideEu;
-        AutomatedDecision = automatedDecision;
-        Purpose = purpose;
-        TypeOfData = typeOfData;
-        Legislation = legislation;
-        Obtained = obtained;
-        ExternallyShared = externallyShared;
-        RetentionPeriod = retentionPeriod;
-        Breadcrumbs = breadcrumbs;
-        ParentTopic = parentTopic;
-    }
 }

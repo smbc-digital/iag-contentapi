@@ -17,21 +17,4 @@ public class ContentfulPrivacyNotice : ContentfulReference
     public new SystemProperties Sys { get; set; }
 
     public ContentfulPrivacyNotice() { }
-
-    public ContentfulPrivacyNotice(string slug, string title, string category, bool outsideEu, bool automatedDecision, string purpose, string typeOfData, string legislation, string obtained, string externallyShared, string retentionPeriod, List<ContentfulReference> breadcrumbs, SystemProperties sys)
-    {
-        Slug = slug;
-        Title = title;
-        Category = category;
-        OutsideEu = outsideEu;
-        AutomatedDecision = automatedDecision;
-        Purpose = purpose;
-        TypeOfData = typeOfData;
-        Legislation = legislation;
-        Obtained = obtained;
-        ExternallyShared = externallyShared;
-        RetentionPeriod = retentionPeriod;
-        Breadcrumbs = breadcrumbs;
-        Sys = sys;
-    }
 }
