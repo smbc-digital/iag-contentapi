@@ -15,21 +15,30 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
 
     public PrivacyNotice ToModel(ContentfulPrivacyNotice entry)
     {
-        var breadcrumbs = new List<Crumb>();
-        try
-        {
-            breadcrumbs = entry.Breadcrumbs
-                .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Could not get breadcrumbs for Privacy Notice: {ex.Message}");
-        }
+        if(entry is null)
+            return null;
 
-        var topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs
+            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var privacyNotice = new PrivacyNotice(entry.Slug, entry.Title, entry.Category, entry.OutsideEu, entry.AutomatedDecision, entry.Purpose, entry.TypeOfData, entry.Legislation, entry.Obtained, entry.ExternallyShared, entry.RetentionPeriod, entry.UrlOne, entry.UrlTwo, entry.UrlThree, breadcrumbs, topic);
+        Topic topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
+
+        PrivacyNotice privacyNotice = new() {
+            Slug = entry.Slug,
+            Title = entry.Title,
+            Category = entry.Category,
+            OutsideEu = entry.OutsideEu,
+            AutomatedDecision = entry.AutomatedDecision,
+            Purpose = entry.Purpose,
+            TypeOfData = entry.TypeOfData,
+            Legislation = entry.Legislation,
+            Obtained = entry.Obtained,
+            ExternallyShared = entry.ExternallyShared,
+            RetentionPeriod = entry.RetentionPeriod,
+            Breadcrumbs = breadcrumbs,
+            ParentTopic = topic
+        };
 
         return privacyNotice;
     }
