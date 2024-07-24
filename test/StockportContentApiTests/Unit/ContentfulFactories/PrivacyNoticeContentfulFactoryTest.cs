@@ -43,9 +43,6 @@ public class PrivacyNoticeContentfulFactoryTest
             RetentionPeriod = "test-retention-period",
             OutsideEu = false,
             AutomatedDecision = false,
-            UrlOne = "test-url-1",
-            UrlTwo = "test-url-2",
-            UrlThree = "test-url-3",
             Breadcrumbs = new List<ContentfulReference>()
         };
         
@@ -76,9 +73,6 @@ public class PrivacyNoticeContentfulFactoryTest
             RetentionPeriod = "test-retention-period",
             OutsideEu = false,
             AutomatedDecision = false,
-            UrlOne = "test-url-1",
-            UrlTwo = "test-url-2",
-            UrlThree = "test-url-3",
             Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
         };
 

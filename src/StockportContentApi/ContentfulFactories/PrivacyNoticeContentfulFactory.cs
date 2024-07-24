@@ -24,7 +24,7 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
 
         Topic topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
 
-        PrivacyNotice privacyNotice = new(entry.Slug, entry.Title, entry.Category, entry.OutsideEu, entry.AutomatedDecision, entry.Purpose, entry.TypeOfData, entry.Legislation, entry.Obtained, entry.ExternallyShared, entry.RetentionPeriod, entry.UrlOne, entry.UrlTwo, entry.UrlThree, breadcrumbs, topic);
+        PrivacyNotice privacyNotice = new(entry.Slug, entry.Title, entry.Category, entry.OutsideEu, entry.AutomatedDecision, entry.Purpose, entry.TypeOfData, entry.Legislation, entry.Obtained, entry.ExternallyShared, entry.RetentionPeriod, breadcrumbs, topic);
 
         return privacyNotice;
     }
