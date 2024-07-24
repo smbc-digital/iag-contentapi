@@ -48,7 +48,6 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
         {
             Slug = entry.Slug,
             Title = entry.Title,
-            NavigationTitle = entry.NavigationTitle,
             Body = entry.Body,
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
