@@ -56,10 +56,10 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)),
-
             AlertsInline = entry.AlertsInline?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)),
             CallToAction = entry.CallToAction is null ? null : _callToActionFactory.ToModel(entry.CallToAction),
             BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)

@@ -17,5 +17,4 @@ public class ContentfulEventHomepage : IContentfulModel
     public string MetaDescription { get; set; } = string.Empty;
 
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
-
 }

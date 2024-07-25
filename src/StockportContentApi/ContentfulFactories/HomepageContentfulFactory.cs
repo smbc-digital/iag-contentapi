@@ -23,49 +23,49 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
     public Homepage ToModel(ContentfulHomepage entry)
     {
-        var featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
-        var featuredTasksSummary = !string.IsNullOrEmpty(entry.FeaturedTasksSummary) ? entry.FeaturedTasksSummary : string.Empty;
-        var backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage?.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
-        var foregroundImage = !string.IsNullOrEmpty(entry.ForegroundImage?.File?.Url) ? entry.ForegroundImage.File.Url : string.Empty;
-        var foregroundImageLocation = !string.IsNullOrEmpty(entry.ForegroundImageLocation) ? entry.ForegroundImageLocation : string.Empty;
-        var foregroundImageLink = !string.IsNullOrEmpty(entry.ForegroundImageLink) ? entry.ForegroundImageLink : string.Empty;
-        var foregroundImageAlt = !string.IsNullOrEmpty(entry.ForegroundImage.Description) ? entry.ForegroundImage.Description : string.Empty;
+        string featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading) ? entry.FeaturedTasksHeading : string.Empty;
+        string featuredTasksSummary = !string.IsNullOrEmpty(entry.FeaturedTasksSummary) ? entry.FeaturedTasksSummary : string.Empty;
+        string backgroundImage = !string.IsNullOrEmpty(entry.BackgroundImage?.File?.Url) ? entry.BackgroundImage.File.Url : string.Empty;
+        string foregroundImage = !string.IsNullOrEmpty(entry.ForegroundImage?.File?.Url) ? entry.ForegroundImage.File.Url : string.Empty;
+        string foregroundImageLocation = !string.IsNullOrEmpty(entry.ForegroundImageLocation) ? entry.ForegroundImageLocation : string.Empty;
+        string foregroundImageLink = !string.IsNullOrEmpty(entry.ForegroundImageLink) ? entry.ForegroundImageLink : string.Empty;
+        string foregroundImageAlt = !string.IsNullOrEmpty(entry.ForegroundImage.Description) ? entry.ForegroundImage.Description : string.Empty;
 
-        var freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
+        string freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
 
-        var popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
+        IEnumerable<string> popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
 
-        var featuredTasks =
+        List<SubItem> featuredTasks =
             entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var featuredTopics =
+        List<SubItem> featuredTopics =
             entry.FeaturedTopics.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
                                         _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                         .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var carouselContents =
+        List<CarouselContent> carouselContents =
             entry.CarouselContents.Where(subItem => subItem.Sys is not null && ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _carouselFactory.ToModel(item)).ToList();
 
-        var campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
+        CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
-        var featuredGroup = 
+        Group featuredGroup = 
             entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
                 && _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
 
-        var callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+        CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
-        var callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
+        CallToActionBanner callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
 
-        var spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
+        IEnumerable<SpotlightOnBanner> spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
 
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
             featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner);

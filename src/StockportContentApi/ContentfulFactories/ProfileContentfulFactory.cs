@@ -62,7 +62,8 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner),
             Colour = entry.Colour,
             InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
-                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList(),
         };
     }
 }
