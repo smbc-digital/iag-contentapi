@@ -40,7 +40,8 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
         return new()
         {
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
-                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             Author = entry.Author,
             Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))

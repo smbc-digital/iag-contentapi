@@ -4,13 +4,11 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
 {
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly IContentfulFactory<ContentfulPrivacyNotice, Topic> _parentTopicFactory;
-    private readonly ILogger<PrivacyNoticeContentfulFactory> _logger;
 
-    public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory, ILogger<PrivacyNoticeContentfulFactory> logger)
+    public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory)
     {
         _crumbFactory = crumbFactory;
         _parentTopicFactory = parentTopicFactory;
-        _logger = logger;
     }
 
     public PrivacyNotice ToModel(ContentfulPrivacyNotice entry)
