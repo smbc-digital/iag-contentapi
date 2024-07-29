@@ -29,7 +29,8 @@ public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
 
         var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                   && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                  .Select(alert => _alertFactory.ToModel(alert));
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert));
 
         var updatedAt = entry.Sys.UpdatedAt is not null ? entry.Sys.UpdatedAt : entry.SunriseDate;
 

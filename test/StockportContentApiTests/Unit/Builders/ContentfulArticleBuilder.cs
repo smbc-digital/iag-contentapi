@@ -11,20 +11,15 @@ public class ContentfulArticleBuilder
     private string _body = "body";
     private readonly DateTime _sunriseDate = new(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
     private readonly DateTime _sunsetDate = new(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
-
     private List<ContentfulAlert> _alertsInline = new() { new ContentfulAlertBuilder().Build() };
-
     private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
-
     private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
-
     private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
     private readonly List<ContentfulProfile> _profiles = new() { new ContentfulProfileBuilder().Build() };
     private List<ContentfulSection> _sections = new(){ new ContentfulSectionBuilder().Build() };
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
     private readonly DateTime _updatedAt = DateTime.Now;
-
     public Asset Image { get => _image; set => _image = value; }
 
     public ContentfulArticle Build()

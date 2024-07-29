@@ -50,7 +50,8 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
 
         var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
                                                  _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
         var contactUsCategories =
             entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))

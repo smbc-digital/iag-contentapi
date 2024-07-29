@@ -43,11 +43,13 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
             Alerts = entry.Alerts?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
 
             AlertsInline = entry.AlertsInline?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
             Themes = entry
                         .Filters?

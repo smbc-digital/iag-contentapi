@@ -8,9 +8,7 @@ public class PrivacyNoticeContentfulFactoryTest
 
     public PrivacyNoticeContentfulFactoryTest()
     {
-        Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>> mockTopicFactory = new();
-        Mock<ILogger<PrivacyNoticeContentfulFactory>> mockLogger = new();
-        _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object, _parentTopicFactory.Object, mockLogger.Object);
+        _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object, _parentTopicFactory.Object);
     }
 
     [Fact]

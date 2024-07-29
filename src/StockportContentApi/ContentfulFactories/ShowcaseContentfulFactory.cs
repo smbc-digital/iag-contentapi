@@ -72,7 +72,8 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
 
         var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
                                                  _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
         var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))

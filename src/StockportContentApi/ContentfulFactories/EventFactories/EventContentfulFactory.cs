@@ -31,11 +31,9 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
 
         var categories = entry.EventCategories.Select(ec => _eventCategoryFactory.ToModel(ec));
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
-                                                    &&
-                                                    _dateComparer.DateNowIsWithinSunriseAndSunsetDates(
-                                                        alert.SunriseDate, alert.SunsetDate))
-            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&  _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
         return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
             entry.Location,

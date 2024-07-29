@@ -24,19 +24,20 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
 
     public Section ToModel(ContentfulSection entry)
     {
-        var profiles = entry.Profiles.Where(profile => ContentfulHelpers.EntryIsNotALink(profile.Sys))
+        List<Profile> profiles = entry.Profiles.Where(profile => ContentfulHelpers.EntryIsNotALink(profile.Sys))
                                      .Select(profile => _profileFactory.ToModel(profile)).ToList();
-        var documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+        List<Document> documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
                                        .Select(document => _documentFactory.ToModel(document)).ToList();
-        var body = _videoRepository.Process(entry.Body);
+        string body = _videoRepository.Process(entry.Body);
 
-        var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alertInline => _alertFactory.ToModel(alertInline));
-        
-        var sectionBranding = entry.SectionBranding is not null ? entry.SectionBranding.Where(_ => _ is not null).Select(branding => _sectionBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-        var updatedAt = entry.Sys.UpdatedAt.Value;
+        List<GroupBranding> sectionBranding = entry.SectionBranding is not null ? entry.SectionBranding.Where(_ => _ is not null).Select(branding => _sectionBrandingFactory.ToModel(branding)).ToList() : new List<GroupBranding>();
+
+        DateTime updatedAt = entry.Sys.UpdatedAt.Value;
 
         return new Section(entry.Title, entry.Slug, entry.MetaDescription,
             body, profiles, documents, entry.LogoAreaTitle, sectionBranding,
