@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Payment
 {
     public string Title { get; set; }
@@ -61,5 +62,3 @@ public class Payment
         Alerts = alerts;
     }
 }
-
-

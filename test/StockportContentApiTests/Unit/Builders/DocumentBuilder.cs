@@ -2,16 +2,21 @@
 
 public class DocumentBuilder
 {
-    private string _assetId = "asset id";
-    private string _title = "title";
-    private int _size = 22;
-    private string _url = "url";
-    private DateTime _lastUpdated = DateTime.MinValue;
-    private string _fileName = "fileName";
-    private string _mediaType = "mediatype";
+    private readonly string _assetId = "asset id";
+    private readonly string _title = "title";
+    private readonly int _size = 22;
+    private readonly string _url = "url";
+    private readonly DateTime _lastUpdated = DateTime.MinValue;
+    private readonly string _fileName = "fileName";
+    private readonly string _mediaType = "mediatype";
 
-    public Document Build()
-    {
-        return new Document(_title, _size, _lastUpdated, _url, _fileName, _assetId, _mediaType);
-    }
+    public Document Build() => new() {
+        Title = _title, 
+        Size = _size,
+        LastUpdated = _lastUpdated,
+        Url = _url,
+        FileName = _fileName,
+        AssetId = _assetId,
+        MediaType = _mediaType
+        };
 }

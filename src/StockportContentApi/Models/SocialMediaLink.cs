@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class SocialMediaLink
 {
     public string Title { get; }
@@ -18,12 +19,4 @@ public class SocialMediaLink
         AccountName = accountName;
         ScreenReader = screenReader;
     }
-}
-
-public class NullSocialMediaLink : SocialMediaLink
-{
-    public NullSocialMediaLink()
-        : base(
-            string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
-    { }
 }

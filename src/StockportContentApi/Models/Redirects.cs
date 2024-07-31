@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Redirects
 {
     public Dictionary<string, RedirectDictionary> ShortUrlRedirects;
@@ -12,6 +13,8 @@ public class Redirects
     }
 }
 
+[ExcludeFromCodeCoverage]
+
 public class ShortUrlRedirects
 {
     public Dictionary<string, RedirectDictionary> Redirects;
@@ -22,6 +25,7 @@ public class ShortUrlRedirects
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class LegacyUrlRedirects
 {
     public Dictionary<string, RedirectDictionary> Redirects;

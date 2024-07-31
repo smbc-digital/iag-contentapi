@@ -1,5 +1,6 @@
 namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class ContactUsArea
 {
     public string Title { get; set; }
@@ -13,7 +14,6 @@ public class ContactUsArea
     public string InsetTextTitle { get; set; }
     public string InsetTextBody { get; set; }
     public IEnumerable<ContactUsCategory> ContactUsCategories { get; set; }
-
     public string MetaDescription { get; set; }
 
     public ContactUsArea(string slug,

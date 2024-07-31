@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulTopic : ContentfulReference
 {
     public string Summary { get; set; } = string.Empty;
@@ -16,7 +17,7 @@ public class ContentfulTopic : ContentfulReference
     public string EmailAlertsTopicId { get; set; } = string.Empty;
     public ContentfulEventBanner EventBanner { get; set; } = new()
     {
-        Sys = new SystemProperties { Type = "Entry" }
+        Sys = new() { Type = "Entry" }
     };
     public bool DisplayContactUs { get; set; } = true;
     public string EventCategory { get; set; }

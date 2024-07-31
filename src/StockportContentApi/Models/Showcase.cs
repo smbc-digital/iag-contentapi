@@ -1,5 +1,6 @@
 namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Showcase
 {
     public string Title { get; set; }

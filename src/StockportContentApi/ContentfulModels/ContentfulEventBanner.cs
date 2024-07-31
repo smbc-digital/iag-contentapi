@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulEventBanner : IContentfulModel
 {
     public string Title { get; set; } = string.Empty;
@@ -7,5 +8,5 @@ public class ContentfulEventBanner : IContentfulModel
     public string Icon { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
     public string Colour { get; set; } = string.Empty;
-    public SystemProperties Sys { get; set; } = new SystemProperties();
+    public SystemProperties Sys { get; set; } = new();
 }

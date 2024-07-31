@@ -4,18 +4,17 @@ public class DocumentContentfulFactory : IContentfulFactory<Asset, Document>
 {
     public Document ToModel(Asset entry)
     {
-        if (entry.File == null)
-        {
-            entry.File = new File { Url = "" };
-        }
+        if (entry.File is null)
+            entry.File = new() { Url = string.Empty };
 
-        return new Document(
-                entry.Description,
-                unchecked((int)entry.File?.Details.Size),
-                entry.SystemProperties.UpdatedAt.Value,
-                entry.File?.Url,
-                entry.File?.FileName,
-                entry.SystemProperties.Id,
-                entry.File.ContentType);
+        return new() {
+            Title = entry.Description,
+            Size = (int)entry.File?.Details.Size,
+            LastUpdated = entry.SystemProperties.UpdatedAt.Value,
+            Url = entry.File?.Url,
+            FileName = entry.File?.FileName,
+            AssetId = entry.SystemProperties.Id,
+            MediaType = entry.File.ContentType
+        };
     }
 }

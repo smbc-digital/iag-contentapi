@@ -5,14 +5,17 @@ public class DocumentContentfulFactoryTest
     [Fact]
     public void ShouldCreateADocumentFromAContentfulDocument()
     {
-        var contentfulDocument = new ContentfulDocumentBuilder().Build();
+        // Arrange
+        Asset contentfulDocument = new ContentfulDocumentBuilder().Build();
 
-        var document = new DocumentContentfulFactory().ToModel(contentfulDocument);
+        // Act
+        Document document = new DocumentContentfulFactory().ToModel(contentfulDocument);
 
-        document.FileName.Should().Be(contentfulDocument.File.FileName);
-        document.Title.Should().Be(contentfulDocument.Description);
-        document.LastUpdated.Should().Be(contentfulDocument.SystemProperties.UpdatedAt.Value);
-        document.Size.Should().Be((int)contentfulDocument.File.Details.Size);
-        document.Url.Should().Be(contentfulDocument.File.Url);
+        // Assert
+        Assert.Equal(contentfulDocument.File.FileName, document.FileName);
+        Assert.Equal(contentfulDocument.Description, document.Title);
+        Assert.Equal(contentfulDocument.SystemProperties.UpdatedAt.Value, document.LastUpdated);
+        Assert.Equal(contentfulDocument.File.Details.Size, document.Size);
+        Assert.Equal(contentfulDocument.File.Url, document.Url);
     }
 }

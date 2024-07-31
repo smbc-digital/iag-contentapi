@@ -17,11 +17,11 @@ public class ContentfulReference : IContentfulModel
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
     public bool Highlight { get; set; } = false;
     public bool HideLastUpdated { get; set; } = false;
-    public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
-    public Asset BackgroundImage { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
-    public List<ContentfulReference> SubItems { get; set; } = new List<ContentfulReference>();
-    public List<ContentfulReference> SecondaryItems { get; set; } = new List<ContentfulReference>();
-    public List<ContentfulReference> TertiaryItems { get; set; } = new List<ContentfulReference>();
-    public List<ContentfulSection> Sections { get; set; } = new List<ContentfulSection>();
-    public SystemProperties Sys { get; set; } = new SystemProperties();
+    public Asset Image { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    public Asset BackgroundImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    public List<ContentfulReference> SubItems { get; set; } = new();
+    public List<ContentfulReference> SecondaryItems { get; set; } = new();
+    public List<ContentfulReference> TertiaryItems { get; set; } = new();
+    public List<ContentfulSection> Sections { get; set; } = new();
+    public SystemProperties Sys { get; set; } = new();
 }

@@ -31,13 +31,13 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
         if (entry is null)
             return null;
 
-        var subItems = entry.SubDirectories is not null
+        IEnumerable<SubItem> subItems = entry.SubDirectories is not null
                 ? entry.SubDirectories?
                     .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
                     .Select(item => _subitemFactory.ToModel(item))
-                : Enumerable.Empty<SubItem>();            
+                : Enumerable.Empty<SubItem>();
 
-        var directorySubItems = entry.SubItems?
+        IEnumerable<SubItem> directorySubItems = entry.SubItems?
                             .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                             .Select(item => _subitemFactory.ToModel(item));

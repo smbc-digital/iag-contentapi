@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulEventHomepage : IContentfulModel
 {
     public string Tag1 { get; set; } = string.Empty;
@@ -12,9 +13,7 @@ public class ContentfulEventHomepage : IContentfulModel
     public string Tag8 { get; set; } = string.Empty;
     public string Tag9 { get; set; } = string.Empty;
     public string Tag10 { get; set; } = string.Empty;
-    public SystemProperties Sys { get; set; } = new SystemProperties();
-
+    public SystemProperties Sys { get; set; } = new();
     public string MetaDescription { get; set; } = string.Empty;
-
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
 }

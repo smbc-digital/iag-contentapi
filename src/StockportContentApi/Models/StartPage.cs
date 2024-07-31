@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class StartPage
 {
     public string Title { get; }
@@ -40,6 +41,7 @@ public class StartPage
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class NullStartPage : StartPage
 {
     public NullStartPage()

@@ -275,7 +275,7 @@ public static class ServiceCollectionExtensions
             p.GetService<IOptions<RedisExpiryConfiguration>>()); 
         });
 
-        services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p => { return x => new DocumentPageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>()); });
+        services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p => { return x => new DocumentPageRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>()); });
         services.AddSingleton<IVideoRepository>(p => new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
 
         services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p =>

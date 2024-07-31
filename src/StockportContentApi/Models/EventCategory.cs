@@ -1,4 +1,5 @@
 ﻿namespace StockportContentApi.Model;
+[ExcludeFromCodeCoverage]
 
 public class EventCategory
 {
@@ -13,5 +14,3 @@ public class EventCategory
         Icon = icon;
     }
 }
-
-

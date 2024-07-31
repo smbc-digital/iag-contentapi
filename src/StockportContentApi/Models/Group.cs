@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Group
 {
     public string Name { get; set; }
@@ -36,7 +37,6 @@ public class Group
     public string AccessibleTransportLink { get; set; }
     public List<GroupBranding> GroupBranding { get; set; }
     public List<string> Tags { get; }
-
     public string AdditionalInformation { get; set; }
     public List<Document> AdditionalDocuments { get; set; }
     public DateTime? DateLastModified { get; set; }
