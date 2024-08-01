@@ -298,4 +298,3 @@ public class DirectoryRepositoryTests
         Assert.Single(response);
     }
 }
-

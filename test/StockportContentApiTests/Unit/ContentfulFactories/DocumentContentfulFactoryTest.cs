@@ -3,7 +3,7 @@
 public class DocumentContentfulFactoryTest
 {
     [Fact]
-    public void ShouldCreateADocumentFromAContentfulDocument()
+    public void ToModel_ShouldCreateADocumentFromAContentfulDocument()
     {
         // Arrange
         Asset contentfulDocument = new ContentfulDocumentBuilder().Build();

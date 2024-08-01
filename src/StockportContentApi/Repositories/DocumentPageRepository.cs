@@ -25,7 +25,7 @@ public class DocumentPageRepository : BaseRepository
             : _contentfulFactory.ToModel(entry);
 
         return documentPage == null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No Pdf Page found for '{documentPageSlug}'")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No document page found for '{documentPageSlug}'")
             : HttpResponse.Successful(documentPage);
     }
 

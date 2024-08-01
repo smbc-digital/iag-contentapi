@@ -18,10 +18,10 @@ public class TopicRepository
 
     public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
     {
-        var builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-        var entries = await _client.GetEntries(builder);
+        QueryBuilder<ContentfulTopic> builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
+        ContentfulCollection<ContentfulTopic> entries = await _client.GetEntries(builder);
 
-        var entry = entries.FirstOrDefault();
+        ContentfulTopic entry = entries.FirstOrDefault();
 
         if (entry is null) 
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
@@ -33,11 +33,11 @@ public class TopicRepository
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-        var entries = await _client.GetEntries(builder);
-        var contentfulTopics = entries as IEnumerable<ContentfulTopicForSiteMap> ?? entries.ToList();
+        QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
+        ContentfulCollection<ContentfulTopicForSiteMap> entries = await _client.GetEntries(builder);
+        IEnumerable<ContentfulTopicForSiteMap> contentfulTopics = entries as IEnumerable<ContentfulTopicForSiteMap> ?? entries.ToList();
 
-        var topics = GetAllTopics(contentfulTopics.ToList());
+        IEnumerable<TopicSiteMap> topics = GetAllTopics(contentfulTopics.ToList());
         return entries is null || !contentfulTopics.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
             : HttpResponse.Successful(topics);

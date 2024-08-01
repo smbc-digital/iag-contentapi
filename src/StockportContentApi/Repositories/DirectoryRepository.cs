@@ -39,7 +39,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
     public async Task<HttpResponse> Get(string slug)
     {
-        var directory = await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(slug, 0), _redisExpiryConfiguration.Directory);
+        Directory directory = await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(slug, 0), _redisExpiryConfiguration.Directory);
 
         return directory is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
@@ -48,14 +48,14 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);
-        var entries = await GetAllEntriesAsync(_client, builder);
+        QueryBuilder<ContentfulDirectory> builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").Include(1);
+        ContentfulCollection<ContentfulDirectory> entries = await GetAllEntriesAsync(_client, builder);
 
         if (entries == null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No entries found");
 
-        var contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
-        var directoriesList = contentfulDirectories.Select(directory => _directoryFactory.ToModel(directory)).ToList();
+        IEnumerable<ContentfulDirectory> contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
+        List<Directory> directoriesList = contentfulDirectories.Select(directory => _directoryFactory.ToModel(directory)).ToList();
         
         foreach (Directory directory in directoriesList)
         {
@@ -70,8 +70,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
 
     public async Task<HttpResponse> GetEntry(string slug)
     {
-        var directoryEntries = await GetAllDirectoryEntries();
-        var directoryEntry = directoryEntries?.SingleOrDefault(directoryEntry => directoryEntry.Slug == slug);
+        IEnumerable<DirectoryEntry> directoryEntries = await GetAllDirectoryEntries();
+        DirectoryEntry directoryEntry = directoryEntries?.SingleOrDefault(directoryEntry => directoryEntry.Slug == slug);
 
         return directoryEntry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
@@ -83,17 +83,17 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         if (depth > DepthLimit)
             return null;
 
-        var builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(2);
-        var contentfulDirectories = await GetAllEntriesAsync(_client, builder);
+        QueryBuilder<ContentfulDirectory> builder = new QueryBuilder<ContentfulDirectory>().ContentTypeIs("directory").FieldEquals("fields.slug", slug).Include(2);
+        ContentfulCollection<ContentfulDirectory> contentfulDirectories = await GetAllEntriesAsync(_client, builder);
 
         if (!contentfulDirectories.Any())
             return null;
 
-        var contentfulDirectory = contentfulDirectories.SingleOrDefault();
-        var directory = _directoryFactory.ToModel(contentfulDirectory);
+        ContentfulDirectory contentfulDirectory = contentfulDirectories.SingleOrDefault();
+        Directory directory = _directoryFactory.ToModel(contentfulDirectory);
         directory.Entries = await GetDirectoryEntriesForDirectory(directory.Slug);
 
-        var contentfulSubDirectoriesTasks = contentfulDirectory
+        Task<Directory>[] contentfulSubDirectoriesTasks = contentfulDirectory
             .SubDirectories?.Select(async subDirectory => 
                 await _cache.GetFromCacheOrDirectlyAsync(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1), _redisExpiryConfiguration.Directory)).ToArray();
 
@@ -116,9 +116,9 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntriesFromSource()
     {
-        var builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(1);
-        var entries = await GetAllEntriesAsync(_client, builder);
-        var contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
+        QueryBuilder<ContentfulDirectoryEntry> builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(1);
+        ContentfulCollection<ContentfulDirectoryEntry> entries = await GetAllEntriesAsync(_client, builder);
+        IEnumerable<ContentfulDirectoryEntry> contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
         return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
     }
 }
