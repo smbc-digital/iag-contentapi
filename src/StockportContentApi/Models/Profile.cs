@@ -20,6 +20,7 @@ public class Profile
     public string Subject { get; set; }
     public EventBanner EventsBanner { get; set; }
     public string Colour { get; set; }
+    public Topic ParentTopic { get; set; }
 
     public Profile()
     {

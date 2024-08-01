@@ -19,7 +19,7 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<HttpResponse> GetProfile(string slug)
     {
-        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(1);
+        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(2);
         var entries = await _client.GetEntries(builder);
         var entry = entries.FirstOrDefault();
 
