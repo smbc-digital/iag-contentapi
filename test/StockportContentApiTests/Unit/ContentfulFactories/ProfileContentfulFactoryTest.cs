@@ -9,6 +9,7 @@ public class ProfileContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly ProfileContentfulFactory _profileContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Topic>> _parentTopicFactory = new();
 
     public ProfileContentfulFactoryTest()
     {
@@ -18,7 +19,8 @@ public class ProfileContentfulFactoryTest
             _alertFactory.Object,
             _triviaFactory.Object,
             _inlineQuoteFactory.Object,
-            _eventBannerFactory.Object
+            _eventBannerFactory.Object,
+            _parentTopicFactory.Object
         );
     }
 

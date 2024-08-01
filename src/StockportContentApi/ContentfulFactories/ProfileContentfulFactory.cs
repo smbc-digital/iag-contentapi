@@ -7,19 +7,22 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
     private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
+    private readonly IContentfulFactory<ContentfulProfile, Topic> _parentTopicFactory;
 
     public ProfileContentfulFactory(
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
         IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
         IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
-        IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory)
+        IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
+        IContentfulFactory<ContentfulProfile, Topic> parentTopicFactory)
     {
         _crumbFactory = crumbFactory;
         _alertFactory = alertFactory;
         _triviaFactory = triviaFactory;
         _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
         _eventBannerFactory = eventBannerFactory;
+        _parentTopicFactory = parentTopicFactory;
     }
 
     public Profile ToModel(ContentfulProfile entry)
@@ -64,6 +67,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+            ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic()
         };
     }
 }
