@@ -21,16 +21,16 @@ public class ProfileParentTopicContentfulFactory : IContentfulFactory<Contentful
         if (_entry is null)
             return new NullTopic();
 
-        var topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
+        ContentfulReference topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
 
         if (topicInBreadcrumb is null) return new NullTopic();
 
-        var subItems = topicInBreadcrumb.SubItems
+        List<SubItem> subItems = topicInBreadcrumb.SubItems
             .Select(CheckCurrentProfile)
             .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        var secondaryItems = topicInBreadcrumb.SecondaryItems
+        List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems
             .Select(CheckCurrentProfile)
             .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
