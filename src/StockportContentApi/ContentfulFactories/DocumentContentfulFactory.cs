@@ -9,7 +9,7 @@ public class DocumentContentfulFactory : IContentfulFactory<Asset, Document>
 
         return new() {
             Title = entry.Description,
-            Size = (int)entry.File?.Details.Size,
+            Size = unchecked((int)entry.File?.Details.Size),
             LastUpdated = entry.SystemProperties.UpdatedAt.Value,
             Url = entry.File?.Url,
             FileName = entry.File?.FileName,

@@ -50,7 +50,7 @@ public class StartPageRepository
         IEnumerable<StartPage> startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
             .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
 
-        return startPages == null || !startPages.Any()
+        return startPages is null || !startPages.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
             : HttpResponse.Successful(startPages);
     }

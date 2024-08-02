@@ -44,7 +44,7 @@ public class DocumentsService : IDocumentService
     {
         Group group = await GetGroup(groupSlug, config);
 
-        bool assetExistsInGroup = group.AdditionalDocuments.Exists(o => o.AssetId == asset.SystemProperties.Id);
+        bool assetExistsInGroup = group.AdditionalDocuments.Exists(_ => _.AssetId.Equals(asset.SystemProperties.Id));
         return assetExistsInGroup;
     }
 
