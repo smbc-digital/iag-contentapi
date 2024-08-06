@@ -95,7 +95,7 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>>
-        (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
+        (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>

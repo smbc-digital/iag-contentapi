@@ -61,6 +61,6 @@ public class LandingPageRepository : BaseRepository
         ContentfulCollection<ContentfulReference> entries = await GetAllEntriesAsync(_client, builder);
 
         IEnumerable<ContentfulReference> contentfulEntries = entries as IEnumerable<ContentfulReference> ?? entries.ToList();
-        return contentfulEntries.Select(g => _subItemFactory.ToModel(g)).ToList().FirstOrDefault();
+        return contentfulEntries.Select(_ => _subItemFactory.ToModel(_)).ToList().FirstOrDefault();
     }
 }
