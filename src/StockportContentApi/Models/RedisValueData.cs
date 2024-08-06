@@ -1,5 +1,6 @@
 namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class RedisValueData
 {
     public string Key { get; set; }

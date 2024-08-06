@@ -62,10 +62,12 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
 
         var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert));
 
         var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert));
 
         return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,

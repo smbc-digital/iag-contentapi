@@ -36,9 +36,10 @@ public class ProfileRepositoryTest
             Title = "title",
             Slug = "slug",
             Subtitle = "subtitle",
-            Quote = "quote",
-            Image = "image",
+            Teaser = "teaser",
+            Image = new MediaAsset(),
             Body = "body",
+            ImageCaption = "imageCaption",
             Breadcrumbs = new List<Crumb>
             {
                 new("title", "slug", "type")
@@ -58,10 +59,11 @@ public class ProfileRepositoryTest
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
-            Subject = "subject"
+            Subject = "subject",
+            Colour = "pink"
         };
 
-        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(1);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(2);
 
         _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);

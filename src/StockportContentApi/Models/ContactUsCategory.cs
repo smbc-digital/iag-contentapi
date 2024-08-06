@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class ContactUsCategory
 {
     public string Title { get; }
@@ -14,9 +15,4 @@ public class ContactUsCategory
         BodyTextRight = bodyTextRight;
         Icon = icon;
     }
-}
-
-public class NullContactUsCategory : ContactUsCategory
-{
-    public NullContactUsCategory() : base(string.Empty, string.Empty, string.Empty, string.Empty) { }
 }

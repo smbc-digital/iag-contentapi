@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class MapPosition
 {
     public double Lon { get; set; }
     public double Lat { get; set; }
 
     [JsonIgnore]
-    public GeoCoordinate Coordinates { get => new GeoCoordinate(Lat, Lon); }
+    public GeoCoordinate Coordinates { get => new(Lat, Lon); }
 
     public double Distance(MapPosition destination)
     {
-        return Coordinates.GetDistanceTo(new GeoCoordinate(destination.Lat, Lon));
+        return Coordinates.GetDistanceTo(new(destination.Lat, Lon));
     }
 }

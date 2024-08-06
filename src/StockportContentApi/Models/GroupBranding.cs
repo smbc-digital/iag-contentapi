@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class GroupBranding
 {
     public string Title { get; set; }

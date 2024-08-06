@@ -1,5 +1,6 @@
 namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class RedirectDictionary : Dictionary<string, string>
 {
     public RedirectDictionary() { }

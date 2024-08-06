@@ -15,19 +15,21 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
 
     public StartPage ToModel(ContentfulStartPage entry)
     {
-        var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        List<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                    .Where(alert => !alert.Severity.Equals("Condolence"))
+                                    .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var breadcrumbs =
+        List<Crumb> breadcrumbs =
             entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                 .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alertInline => _alertFactory.ToModel(alertInline));
 
-        var backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
+        string backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                             ? entry.BackgroundImage.File.Url : string.Empty;
 
         return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,

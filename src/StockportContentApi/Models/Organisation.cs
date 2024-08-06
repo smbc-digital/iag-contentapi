@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Organisation
 {
     public string Title { get; set; }
@@ -33,5 +34,3 @@ public class Organisation
         DonationsUrl = donationsUrl;
     }
 }
-
-

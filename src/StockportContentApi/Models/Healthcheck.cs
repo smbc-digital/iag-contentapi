@@ -1,5 +1,5 @@
 namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class Healthcheck
 {
     public readonly string AppVersion;

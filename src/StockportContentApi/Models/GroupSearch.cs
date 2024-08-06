@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class GroupSearch
 {
     public string Category { get; set; }

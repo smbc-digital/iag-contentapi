@@ -18,7 +18,7 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
         if (entry is null)
             return null;
 
-        var directoryEntry = new DirectoryEntry
+        DirectoryEntry directoryEntry = new()
         {
             Slug = entry.Slug,
             Provider = entry.Provider,
@@ -43,11 +43,13 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
             Alerts = entry.Alerts?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
 
             AlertsInline = entry.AlertsInline?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
             Themes = entry
                         .Filters?

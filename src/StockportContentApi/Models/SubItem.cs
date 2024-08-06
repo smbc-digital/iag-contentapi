@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class SubItem
 {
     public string Slug { get; set; }
@@ -14,10 +15,7 @@ public class SubItem
     public string Image { get; set; }
     public List<SubItem> SubItems { get; set; }
 
-    public SubItem()
-    {
-
-    }
+    public SubItem() { }
 
     public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems, string colourScheme = "default")
     {

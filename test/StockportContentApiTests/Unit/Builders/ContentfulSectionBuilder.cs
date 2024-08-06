@@ -8,16 +8,13 @@ public class ContentfulSectionBuilder
     private string _body = "body";
     private DateTime _sunriseDate = DateTime.MinValue;
     private DateTime _sunsetDate = DateTime.MinValue;
+    private DateTime _updatedAt = DateTime.Now;
     private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
     private List<ContentfulProfile> _profiles = new List<ContentfulProfile> {
         new ContentfulProfileBuilder().Build() };
     private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
     {
         new ContentfulAlertBuilder().Build()
-    };
-    private SystemProperties _sys = new SystemProperties
-    {
-        ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };
 
     public ContentfulSection Build()
@@ -32,14 +29,13 @@ public class ContentfulSectionBuilder
             Documents = _documents,
             SunriseDate = _sunriseDate,
             SunsetDate = _sunsetDate,
+            UpdatedAt = _updatedAt,
             AlertsInline = _alertsInline,
-            Sys = _sys
+            Sys = new SystemProperties
+            {
+                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
+                UpdatedAt = _updatedAt
+            }
         };
-    }
-
-    public ContentfulSectionBuilder AddUpdatedAt(DateTime newTime)
-    {
-        _sys.UpdatedAt = newTime;
-        return this;
     }
 }

@@ -19,8 +19,8 @@ public class SectionRepository
     {
         var sections = new List<ContentfulSectionForSiteMap>();
 
-        var builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
-        var articles = await _client.GetEntries(builder);
+        QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
+        ContentfulCollection<ContentfulArticleForSiteMap> articles = await _client.GetEntries(builder);
 
         foreach (var article in articles.Where(e => e.Sections.Any()))
         {
@@ -37,12 +37,12 @@ public class SectionRepository
 
     public async Task<HttpResponse> GetSections(string slug)
     {
-        var builder = new QueryBuilder<ContentfulSection>().ContentTypeIs("section").FieldEquals("fields.slug", slug).Include(3);
+        QueryBuilder<ContentfulSection> builder = new QueryBuilder<ContentfulSection>().ContentTypeIs("section").FieldEquals("fields.slug", slug).Include(3);
 
-        var entries = await _client.GetEntries(builder);
+        ContentfulCollection<ContentfulSection> entries = await _client.GetEntries(builder);
 
-        var entry = entries.FirstOrDefault();
-        var Section = _contentfulFactory.ToModel(entry);
+        ContentfulSection entry = entries.FirstOrDefault();
+        Section Section = _contentfulFactory.ToModel(entry);
 
         return Section.GetType() == typeof(NullHomepage)
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Section found")

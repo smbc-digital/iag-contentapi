@@ -19,36 +19,30 @@ public class DocumentPageContentfulFactory : IContentfulFactory<ContentfulDocume
         _dateComparer = new DateComparer(timeProvider);
     }
 
-    public DocumentPage ToModel(ContentfulDocumentPage entryContentfulDocumentPage)
+    public DocumentPage ToModel(ContentfulDocumentPage entry)
     {
-        var entry = entryContentfulDocumentPage;
-
-        var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                           .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
-
-        var documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
-                                       .Select(document => _documentFactory.ToModel(document)).ToList();
-
-        var relatedDocuments = entry.RelatedDocuments.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
-
-        var updatedAt = entry.Sys.UpdatedAt.Value;
-
-        return new DocumentPage(
-            title: entry.Title,
-            slug: entry.Slug,
-            teaser: entry.Teaser,
-            metaDescription: entry.MetaDescription,
-            aboutTheDocument: entry.AboutTheDocument,
-            documents: documents,
-            awsDocuments: entry.AwsDocuments,
-            requestAnAccessibleFormatContactInformation: entry.RequestAnAccessibleFormatContactInformation,
-            furtherInformation: entry.FurtherInformation,
-            relatedDocuments: relatedDocuments,
-            datePublished: entry.DatePublished,
-            lastUpdated: entry.LastUpdated,
-            breadcrumbs: breadcrumbs,
-            updatedAt: updatedAt);
+        if (entry is null)
+            return null;
+        
+        return new() {
+            Title = entry.Title,
+            Slug = entry.Slug,
+            Teaser = entry.Teaser,
+            MetaDescription = entry.MetaDescription,
+            AboutTheDocument = entry.AboutTheDocument,
+            Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+                                       .Select(document => _documentFactory.ToModel(document)).ToList(),
+            AwsDocuments = entry.AwsDocuments,
+            RequestAnAccessibleFormatContactInformation = entry.RequestAnAccessibleFormatContactInformation,
+            FurtherInformation = entry.FurtherInformation,
+            RelatedDocuments = entry.RelatedDocuments.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                    .Select(item => _subitemFactory.ToModel(item)).ToList(),
+            DatePublished = entry.DatePublished,
+            LastUpdated = entry.LastUpdated,
+            Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                           .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+            UpdatedAt = entry.Sys.UpdatedAt.Value
+        };
     }
 }

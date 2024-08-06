@@ -17,9 +17,9 @@ public class DocumentsController : Controller
     {
         try
         {
-            var result = await _documentService.GetSecureDocumentByAssetId(businessId, assetId, groupSlug);
+            Document result = await _documentService.GetSecureDocumentByAssetId(businessId, assetId, groupSlug);
 
-            if (result == null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
+            if (result is null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
 
             return new OkObjectResult(result);
         }

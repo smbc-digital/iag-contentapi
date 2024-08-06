@@ -11,7 +11,6 @@ public class ContentfulProfileTest
             Title = string.Empty,
             Slug = string.Empty,
             Subtitle = string.Empty,
-            Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
             Body = string.Empty,
             Breadcrumbs = new List<ContentfulReference>()
         };

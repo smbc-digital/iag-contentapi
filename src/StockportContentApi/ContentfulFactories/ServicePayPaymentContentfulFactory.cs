@@ -17,7 +17,8 @@ public class ServicePayPaymentContentfulFactory : IContentfulFactory<ContentfulS
     {
         var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                 .Select(alert => _alertFactory.ToModel(alert));
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert));
 
         var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                           .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();

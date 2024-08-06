@@ -38,7 +38,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
 
     public Article ToModel(ContentfulArticle entry)
     {
-        var sectionUpdatedAt = entry.Sections
+        DateTime sectionUpdatedAt = entry.Sections
             .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
             .Where(section => section.Sys.UpdatedAt is not null)
             .Select(section => section.Sys.UpdatedAt.Value)
@@ -64,6 +64,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                             .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
             Alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
             Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                             .Select(profile => _profileFactory.ToModel(profile)).ToList(),
@@ -79,6 +80,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             SunsetDate = entry.SunsetDate,
             AlertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alertInline => _alertFactory.ToModel(alertInline)),
             UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value ? sectionUpdatedAt : entry.Sys.UpdatedAt.Value,
             HideLastUpdated = entry.HideLastUpdated

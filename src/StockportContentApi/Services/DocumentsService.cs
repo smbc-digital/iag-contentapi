@@ -26,39 +26,39 @@ public class DocumentsService : IDocumentService
 
     public async Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug)
     {
-        var config = _contentfulConfigBuilder.Build(businessId);
-        var user = _loggedInHelper.GetLoggedInPerson();
+        ContentfulConfig config = _contentfulConfigBuilder.Build(businessId);
+        LoggedInPerson user = _loggedInHelper.GetLoggedInPerson();
 
-        var hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
+        bool hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
 
         if (!hasPermission) return null;
 
-        var asset = await GetDocumentAsAsset(assetId, config);
+        Asset asset = await GetDocumentAsAsset(assetId, config);
 
-        return asset == null || !await DoesGroupReferenceAsset(groupSlug, config, asset)
+        return asset is null || !await DoesGroupReferenceAsset(groupSlug, config, asset)
             ? null
             : _documentFactory.ToModel(asset);
     }
 
     private async Task<bool> DoesGroupReferenceAsset(string groupSlug, ContentfulConfig config, Asset asset)
     {
-        var group = await GetGroup(groupSlug, config);
+        Group group = await GetGroup(groupSlug, config);
 
-        var assetExistsInGroup = group.AdditionalDocuments.Exists(o => o.AssetId == asset.SystemProperties.Id);
+        bool assetExistsInGroup = group.AdditionalDocuments.Exists(_ => _.AssetId.Equals(asset.SystemProperties.Id));
         return assetExistsInGroup;
     }
 
     private async Task<Group> GetGroup(string groupSlug, ContentfulConfig config)
     {
-        var groupRepository = _groupRepository(config);
-        var groupResponse = await groupRepository.GetGroup(groupSlug, false);
+        IGroupRepository groupRepository = _groupRepository(config);
+        HttpResponse groupResponse = await groupRepository.GetGroup(groupSlug, false);
         return groupResponse.Get<Group>();
     }
 
     private async Task<Asset> GetDocumentAsAsset(string assetId, ContentfulConfig config)
     {
-        var repository = _documentRepository(config);
-        var assetResponse = await repository.Get(assetId);
+        IAssetRepository repository = _documentRepository(config);
+        Asset assetResponse = await repository.Get(assetId);
         return assetResponse;
     }
 
@@ -66,8 +66,8 @@ public class DocumentsService : IDocumentService
     {
         if (string.IsNullOrEmpty(user.Email)) return false;
 
-        var groupAdvisorsRepository = _groupAdvisorRepository(config);
-        var groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
+        IGroupAdvisorRepository groupAdvisorsRepository = _groupAdvisorRepository(config);
+        bool groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
         return groupAdvisorResponse;
     }
 }

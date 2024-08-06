@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulCallToActionBanner
 {
     public string Title { get; set; } = string.Empty;

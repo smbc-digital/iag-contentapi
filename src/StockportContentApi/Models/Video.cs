@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Video
 {
     public string Heading { get; set; }

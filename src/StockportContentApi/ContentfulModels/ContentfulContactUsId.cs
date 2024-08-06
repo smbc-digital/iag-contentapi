@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulContactUsId : IContentfulModel
 {
     public string Name { get; set; } = string.Empty;
@@ -7,5 +8,5 @@ public class ContentfulContactUsId : IContentfulModel
     public string EmailAddress { get; set; } = string.Empty;
     public string SuccessPageButtonText { get; set; } = string.Empty;
     public string SuccessPageReturnUrl { get; set; } = string.Empty;
-    public SystemProperties Sys { get; set; } = new SystemProperties();
+    public SystemProperties Sys { get; set; } = new();
 }

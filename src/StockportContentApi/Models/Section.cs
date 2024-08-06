@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Section
 {
     public string Title { get; }
@@ -13,9 +14,9 @@ public class Section
     public List<GroupBranding> SectionBranding { get; set; }
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
-    public Section() { }
+    public DateTime UpdatedAt { get; set; }
 
-    public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, string logoAreaTitle, List<GroupBranding> sectionBranding, DateTime sunriseDate, DateTime sunsetDate, IEnumerable<Alert> alertsInline)
+    public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, string logoAreaTitle, List<GroupBranding> sectionBranding, DateTime sunriseDate, DateTime sunsetDate, DateTime updatedAt, IEnumerable<Alert> alertsInline)
     {
         Title = title;
         Slug = slug;
@@ -27,6 +28,7 @@ public class Section
         SectionBranding = sectionBranding;
         SunriseDate = sunriseDate;
         SunsetDate = sunsetDate;
+        UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
     }
 }

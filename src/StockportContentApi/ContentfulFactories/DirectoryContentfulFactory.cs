@@ -31,13 +31,13 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
         if (entry is null)
             return null;
 
-        var subItems = entry.SubDirectories is not null
+        IEnumerable<SubItem> subItems = entry.SubDirectories is not null
                 ? entry.SubDirectories?
                     .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
                     .Select(item => _subitemFactory.ToModel(item))
-                : Enumerable.Empty<SubItem>();            
+                : Enumerable.Empty<SubItem>();
 
-        var directorySubItems = entry.SubItems?
+        IEnumerable<SubItem> directorySubItems = entry.SubItems?
                             .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                             .Select(item => _subitemFactory.ToModel(item));
@@ -54,11 +54,12 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             Alerts = entry.Alerts?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)),
-
             AlertsInline = entry.AlertsInline?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)),
             CallToAction = entry.CallToAction is null ? null : _callToActionFactory.ToModel(entry.CallToAction),
             BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)

@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulHomepage : IContentfulModel
 {
     public IEnumerable<string> PopularSearchTerms { get; set; } = new List<string>();

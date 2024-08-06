@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class EventCalender
 {
     public List<Event> Events { get; private set; }
