@@ -17,8 +17,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
 
     public LandingPage ToModel(ContentfulLandingPage entry)
     {
-        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
-                                                _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)).ToList();
 

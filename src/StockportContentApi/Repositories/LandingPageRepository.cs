@@ -26,25 +26,24 @@ public class LandingPageRepository : BaseRepository
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
         ContentfulLandingPage entry = entries.FirstOrDefault();
         
-        if(entry.Content is not null && entry.Content.Any())
+        if(entry.Content?.Any() is true)
         {
-            dynamic jsonString = entry.Content["content"].ToString();
+            string jsonString = entry.Content["content"].ToString();
 
             List<ContentItem> contentItems = JsonConvert.DeserializeObject<List<ContentItem>>(jsonString);
-            List<SubItem> contentBlocks = new();
 
-            if (contentItems.Any() && contentItems is not null)
+            if (contentItems?.Any() is true)
             {
+                List<SubItem> contentBlocks = new();
+
                 foreach (ContentItem contentItem in contentItems)
                 {
                     if (contentItem is not null && contentItem.Data is not null && contentItem.Data.Target is not null)
-                    {
-                        contentBlocks.Add(await GetContentBlock(contentItem.Data?.Target.Slug));
-                    }
+                        contentBlocks.Add(await GetContentBlock(contentItem.Data.Target.Slug));
                 }
-            }
 
-            entry.ContentBlocks = contentBlocks;
+                entry.ContentBlocks = contentBlocks;
+            }
         }
 
         if(entry is null)
