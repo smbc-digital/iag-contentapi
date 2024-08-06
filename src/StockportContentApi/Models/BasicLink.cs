@@ -1,4 +1,5 @@
 ﻿namespace StockportContentApi.Model;
+[ExcludeFromCodeCoverage]
 
 public class BasicLink
 {
@@ -11,9 +12,4 @@ public class BasicLink
         Url = url;
         Text = text;
     }
-}
-
-public class NullBasicLink : BasicLink
-{
-    public NullBasicLink() : base(string.Empty, string.Empty) { }
 }

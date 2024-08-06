@@ -1,15 +1,14 @@
-﻿namespace StockportContentApi.Model
+﻿namespace StockportContentApi.Model;
+[ExcludeFromCodeCoverage]
+public class FilterTheme
 {
-    public class FilterTheme
+    IEnumerable<Filter> filters;
+
+    public string Title { get; set; }
+
+    public IEnumerable<Filter> Filters
     {
-        IEnumerable<Filter> filters;
-
-        public string Title { get; set; }
-
-        public IEnumerable<Filter> Filters
-        {
-            get { return filters; }
-            set { filters = value.Distinct(); }
-        }
+        get { return filters; }
+        set { filters = value.Distinct(); }
     }
 }

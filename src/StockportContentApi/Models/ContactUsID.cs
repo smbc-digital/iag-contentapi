@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class ContactUsId
 {
     public string Name { get; }
@@ -16,9 +17,4 @@ public class ContactUsId
         SuccessPageButtonText = successPageButtonText;
         SuccessPageReturnUrl = successPageReturnUrl;
     }
-}
-
-public class NullContactUsId : ContactUsId
-{
-    public NullContactUsId() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) { }
 }

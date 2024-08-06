@@ -1,5 +1,6 @@
 namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulProfile : ContentfulReference
 {
     public string Subtitle { get; set; } = string.Empty;

@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class Event
 {
     public string Title { get; }
@@ -31,9 +31,7 @@ public class Event
     public bool? Paid { get; }
     public GeoCoordinate Coord { get; }
     public string AccessibleTransportLink { get; }
-
     public string MetaDescription { get; }
-
 
     public Event(string title, string slug, string teaser, string imageUrl, string description, string fee,
                  string location, string submittedBy, DateTime eventDate, string startTime, string endTime,

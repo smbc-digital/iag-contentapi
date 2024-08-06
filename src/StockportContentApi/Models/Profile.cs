@@ -23,7 +23,5 @@ public class Profile
     public Topic ParentTopic { get; set; }
 
     public Profile()
-    {
-
-    }
+    { }
 }

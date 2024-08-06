@@ -1,29 +1,19 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class CommsHomepage
 {
     public string Title { get; }
-
     public string MetaDescription { get; set; }
-
     public CallToActionBanner CallToActionBanner { get; }
-
     public string LatestNewsHeader { get; }
-
     public string TwitterFeedHeader { get; }
-
     public string InstagramFeedTitle { get; }
-
     public string InstagramLink { get; }
-
     public string FacebookFeedTitle { get; }
-
     public IEnumerable<BasicLink> UsefulLinks { get; }
-
     public Event WhatsOnInStockportEvent { get; }
-
     public string EmailAlertsTopicId { get; set; }
-
     public CommsHomepage(
         string title,
         string metaDescription,

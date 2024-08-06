@@ -1,5 +1,5 @@
 ﻿namespace StockportContentApi.Model;
-
+[ExcludeFromCodeCoverage]
 public class GroupResults
 {
     public List<Group> Groups { get; set; }

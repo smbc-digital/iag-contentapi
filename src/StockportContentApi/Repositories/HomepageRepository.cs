@@ -13,11 +13,11 @@ public class HomepageRepository
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+        ContentfulCollection<ContentfulHomepage> entries = await _client.GetEntries(builder);
+        ContentfulHomepage entry = entries.FirstOrDefault();
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No homepage found")
             : HttpResponse.Successful(_homepageFactory.ToModel(entry));
     }

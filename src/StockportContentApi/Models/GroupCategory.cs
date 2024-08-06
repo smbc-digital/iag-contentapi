@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class GroupCategory
 {
     public string Name { get; }
@@ -15,5 +16,3 @@ public class GroupCategory
         ImageUrl = imageUrl;
     }
 }
-
-

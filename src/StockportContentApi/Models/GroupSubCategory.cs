@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class GroupSubCategory
 {
     public string Name { get; }
@@ -11,5 +12,3 @@ public class GroupSubCategory
         Slug = slug;
     }
 }
-
-

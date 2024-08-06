@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulPrivacyNotice : ContentfulReference
 {
     public new string Slug { get; set; }
@@ -15,6 +16,4 @@ public class ContentfulPrivacyNotice : ContentfulReference
     public string RetentionPeriod { get; set; }
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
     public new SystemProperties Sys { get; set; }
-
-    public ContentfulPrivacyNotice() { }
 }

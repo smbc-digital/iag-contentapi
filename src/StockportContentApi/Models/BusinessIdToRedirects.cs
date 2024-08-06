@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class BusinessIdToRedirects
 {
     public readonly RedirectDictionary ShortUrlRedirects;

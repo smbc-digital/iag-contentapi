@@ -19,9 +19,9 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<HttpResponse> GetProfile(string slug)
     {
-        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(2);
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(2);
+        ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
+        ContentfulProfile entry = entries.FirstOrDefault();
 
         return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No profile found for '{slug}'")
@@ -30,13 +30,13 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
-        var entries = await _client.GetEntries(builder);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
+        ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
 
         if (!entries.Any() || entries is null) 
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
 
-        var models = entries.Select(_ => _profileFactory.ToModel(_));
+        IEnumerable<Profile> models = entries.Select(_ => _profileFactory.ToModel(_));
 
         return HttpResponse.Successful(models);
     }

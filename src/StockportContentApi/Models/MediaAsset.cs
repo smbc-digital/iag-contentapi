@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class MediaAsset
 {
     public string Url { get; set; }
@@ -11,12 +12,5 @@ public class MediaAsset
     {
         Url = url;
         Description = description;
-    }
-
-    public class NullMediaAsset : MediaAsset
-    {
-        public NullMediaAsset() : base(string.Empty, string.Empty)
-        {
-        }
     }
 }

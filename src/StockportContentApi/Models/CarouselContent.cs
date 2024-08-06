@@ -1,4 +1,5 @@
 ﻿namespace StockportContentApi.Model;
+[ExcludeFromCodeCoverage]
 
 public class CarouselContent
 {

@@ -18,7 +18,7 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
         if (entry is null)
             return null;
 
-        var directoryEntry = new DirectoryEntry
+        DirectoryEntry directoryEntry = new()
         {
             Slug = entry.Slug,
             Provider = entry.Provider,

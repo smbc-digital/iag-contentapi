@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulTrivia : IContentfulModel
 {
     public string Name { get; set; } = string.Empty;

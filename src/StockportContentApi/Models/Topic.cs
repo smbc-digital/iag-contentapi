@@ -71,6 +71,7 @@ public class Topic
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class NullTopic : Topic
 {
     public NullTopic() : base(

@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Model;
 
+[ExcludeFromCodeCoverage]
 public class Footer
 {
     public string Title { get; }
@@ -15,4 +16,3 @@ public class Footer
         SocialMediaLinks = socialMediaLinks;
     }
 }
-
