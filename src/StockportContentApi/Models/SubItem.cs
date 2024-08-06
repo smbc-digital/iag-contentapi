@@ -12,6 +12,7 @@ public class SubItem
     public DateTime SunriseDate { get; set; }
     public DateTime SunsetDate { get; set; }
     public string Image { get; set; }
+    public int MailingListId { get; set; }
     public List<SubItem> SubItems { get; set; }
 
     public SubItem() { }

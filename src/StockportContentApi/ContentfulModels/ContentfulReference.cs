@@ -24,4 +24,6 @@ public class ContentfulReference : IContentfulModel
     public List<ContentfulReference> TertiaryItems { get; set; } = new();
     public List<ContentfulSection> Sections { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
+    public string ContentType { get; set; } = string.Empty;
+    public int MailingListId { get; set; }
 }
