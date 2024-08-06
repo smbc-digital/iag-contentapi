@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulDocumentPage : ContentfulReference
 {
     public string AboutTheDocument { get; set; } = string.Empty;
