@@ -38,19 +38,19 @@ public class TopicContentfulFactoryTest
     [Fact]
     public void ToModel_ShouldCreateATopicFromAContentfulTopic()
     {
-        //Arrange
-        var crumb = new Crumb("title", "slug", "type");
+        // Arrange
+        Crumb crumb = new("title", "slug", "type");
         _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
 
-        var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
-        var secondaryItem = new SubItem("slug2", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
-        var tertiaryItem = new SubItem("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
 
-        var callToAction = new CallToActionBanner()
+        CallToActionBanner callToAction = new()
         {
             AltText = "altText",
             ButtonText = "buttonText",
@@ -62,20 +62,20 @@ public class TopicContentfulFactoryTest
         };
         _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
-        var eventBanner = new EventBanner("Title", "Teaser", "Icon", "Link", "Colour");
+        EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", "Colour");
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
-        var alert = new Alert("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
+        Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
         _alertFactory.Setup(_ => _.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
 
-        var carouselContent = new CarouselContent("title", "slug", "teaser", "image", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(2), "url");
+        CarouselContent carouselContent = new("title", "slug", "teaser", "image", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(2), "url");
         _carouselContentFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCarouselContent>()))
             .Returns(carouselContent);
 
-        //Act
-        var result = _topicContentfulFactory.ToModel(_contentfulTopic);
+        // Act
+        Topic result = _topicContentfulFactory.ToModel(_contentfulTopic);
 
-        //Assert
+        // Assert
         Assert.Single(result.SubItems);
         Assert.Equal(subItem, result.SubItems.First());
         Assert.Single(result.SecondaryItems);
@@ -113,7 +113,7 @@ public class TopicContentfulFactoryTest
         _contentfulTopic.BackgroundImage.SystemProperties.LinkType = "Link";
 
         // Act
-        var topic = _topicContentfulFactory.ToModel(_contentfulTopic);
+        Topic topic = _topicContentfulFactory.ToModel(_contentfulTopic);
 
         // Assert
         Assert.Empty(topic.Breadcrumbs);
@@ -133,10 +133,10 @@ public class TopicContentfulFactoryTest
             new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 01, 04)).WithSunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
-        var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
-        
+        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
+
         // Act
-        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
         // Arrange
         Assert.Single(topic.Alerts);
@@ -151,10 +151,10 @@ public class TopicContentfulFactoryTest
             new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 04, 10)).WithSunriseDate(new DateTime(2017, 01, 01)).WithSeverity("Condolence").Build()
         };
 
-        var contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
+        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
 
         // Act
-        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Single(topic.Alerts);
@@ -169,10 +169,10 @@ public class TopicContentfulFactoryTest
             new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 02, 03)).WithSunriseDate(new DateTime(2017, 01, 01)).Build()
         };
 
-        var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
+        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
         // Act
-        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Equal(2, topic.Alerts.Count());
@@ -187,10 +187,10 @@ public class TopicContentfulFactoryTest
             new ContentfulAlertBuilder().WithSunsetDate(new DateTime(2017, 10, 03)).WithSunriseDate(new DateTime(2017, 03, 01)).Build()
         };
 
-        var contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
+        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
         // Act
-        var topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Empty(topic.Alerts);

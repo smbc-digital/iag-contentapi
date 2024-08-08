@@ -2,113 +2,115 @@
 
 public class ParentTopicContentfulFactoryTests
 {
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemContentfulFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemContentfulFactory = new();
     private readonly ParentTopicContentfulFactory _parentTopicContentfulFactory;
-    private readonly Mock<ITimeProvider> _timeProvider;
+    private readonly Mock<ITimeProvider> _timeProvider = new();
 
     public ParentTopicContentfulFactoryTests()
     {
-        // create mocks
-        _subitemContentfulFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        _timeProvider = new Mock<ITimeProvider>();
+        _subitemContentfulFactory.Setup(subItem => subItem.ToModel(It.IsAny<ContentfulReference>()))
+                                .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 123, "body text", new List<SubItem>()));
+        _timeProvider.Setup(timeProvider => timeProvider.Now())
+                    .Returns(new DateTime(2017, 01, 02));
 
-        // setup mocks
-        _subitemContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
-                "image", new List<SubItem>()));
-        _timeProvider.Setup(o => o.Now())
-            .Returns(new DateTime(2017, 01, 02));
-
-        // call constructor
-        _parentTopicContentfulFactory = new ParentTopicContentfulFactory(_subitemContentfulFactory.Object, _timeProvider.Object);
+        _parentTopicContentfulFactory = new(_subitemContentfulFactory.Object, _timeProvider.Object);
     }
 
     [Fact]
     public void ShouldReturnATopicFromAContentfulArticleBasedOnTheBreadcrumbs()
     {
-        var subItemEntry = new List<ContentfulReference>
+        // Arrange
+        List<ContentfulReference> subItemEntry = new()
         {
             new ContentfulReferenceBuilder().Slug("sub-slug").Build()
         };
 
-        var ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
             .Name("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("topic")
             .Build();
 
-        var contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference>() { ContentfulReferences }).Build();
+        ContentfulArticle contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference>() { ContentfulReferences }).Build();
 
+        // Act
+        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 
-        var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
-
-        result.Name.Should().Be("test topic");
-        result.Slug.Should().Be("test-topic");
-        result.SubItems.Should().HaveCount(1);
+        // Assert
+        Assert.Equal("test topic", result.Name);
+        Assert.Equal("test-topic", result.Slug);
+        Assert.Single(result.SubItems);
     }
 
     [Fact]
     public void ShouldReturnNullTopicIfBreadcrumbDoesNotHaveTypeOfTopic()
     {
-        var subItemEntry = new List<ContentfulReference>
+        // Arrange
+        List<ContentfulReference> subItemEntry = new()
         {
             new ContentfulReferenceBuilder().Slug("sub-slug").Build()
         };
 
-        var ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
             .Name("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("id")
             .Build();
 
-        var contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference>() { ContentfulReferences }).Build();
+        ContentfulArticle contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new List<ContentfulReference>() { ContentfulReferences }).Build();
 
-        var result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
+        // Act
+        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 
-        result.Should().BeOfType<NullTopic>();
+        // Assert
+        Assert.IsType<NullTopic>(result);
     }
 
     [Fact]
     public void ShouldReturnNullTopicIfNoBreadcrumbs()
     {
-        var contentfulArticle = new ContentfulArticleBuilder()
+        // Arrange
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder()
             .Breadcrumbs(new List<ContentfulReference>())
             .Build();
 
-        var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
+        // Act
+        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 
-        result.Should().BeOfType<NullTopic>();
+        // Assert
+        Assert.IsType<NullTopic>(result);
     }
 
     [Fact]
     public void ShouldReturnTopicWithFirstSubItemOfTheArticle()
     {
-        var subItemEntry = new ContentfulReferenceBuilder()
+        // Arrange
+        ContentfulReference subItemEntry = new ContentfulReferenceBuilder()
             .Slug("sub-slug")
             .SystemId("same-id-as-article")
             .Build();
 
-        var subItemEntryOther = new ContentfulReferenceBuilder()
+        ContentfulReference subItemEntryOther = new ContentfulReferenceBuilder()
             .Slug("sub-slug")
             .SystemId("not-same-id-as-article")
             .Build();
 
-        var subItemEntryList = new List<ContentfulReference>
+        List<ContentfulReference> subItemEntryList = new()
         {
             subItemEntry,
             subItemEntryOther
         };
 
-        var ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
             .Name("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntryList)
             .SystemContentTypeId("topic")
             .Build();
 
-        var contentfulArticle = new ContentfulArticleBuilder()
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder()
             .Breadcrumbs(new List<ContentfulReference>()
             {
                 ContentfulReferences
@@ -118,16 +120,18 @@ public class ParentTopicContentfulFactoryTests
             .SystemId("same-id-as-article")
             .Build();
 
-        _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug == "article-slug")))
-            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, new List<SubItem>()));
+        _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug.Equals("article-slug"))))
+            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, 0, string.Empty, new List<SubItem>()));
 
-        var result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
+        // Act
+        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
 
-        result.Should().BeOfType<Topic>();
-        result.SubItems.Should().HaveCount(2);
-        result.SubItems.First().Title.Should().Be("title");
-        result.SubItems.First().Slug.Should().Be("slug");
-        result.SubItems.ToList()[1].Title.Should().Be("title");
-        result.SubItems.ToList()[1].Slug.Should().Be("slug");
+        // Assert
+        Assert.IsType<Topic>(result);
+        Assert.Equal(2, result.SubItems.Count());
+        Assert.Equal("title", result.SubItems.First().Title);
+        Assert.Equal("slug", result.SubItems.First().Slug);
+        Assert.Equal("title", result.SubItems.ToList()[1].Title);
+        Assert.Equal("slug", result.SubItems.ToList()[1].Slug);
     }
 }
