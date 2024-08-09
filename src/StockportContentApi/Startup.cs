@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi;
+﻿using TimeProvider = StockportContentApi.Utils.TimeProvider;
+
+namespace StockportContentApi;
 
 public class Startup
 {
