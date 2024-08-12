@@ -5,18 +5,15 @@ public class LandingPageRepository : BaseRepository
 {
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly IContentfulClient _client;
-    private readonly ILogger<LandingPageRepository> _logger;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
 
     public LandingPageRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
         IContentfulClientManager contentfulClientManager,
-        ILogger<LandingPageRepository> logger,
         IContentfulFactory<ContentfulReference, SubItem> subItemFactory)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);
-        _logger = logger;
         _subItemFactory = subItemFactory;
     }
 
@@ -25,6 +22,9 @@ public class LandingPageRepository : BaseRepository
         QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>().ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(3);
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
         ContentfulLandingPage entry = entries.FirstOrDefault();
+        
+        if(entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Landing Page found");
         
         if(entry.Content?.Any() is true)
         {
@@ -46,12 +46,11 @@ public class LandingPageRepository : BaseRepository
             }
         }
 
-        if(entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Landing Page found");
-
         LandingPage landingPage = _contentfulFactory.ToModel(entry);
 
-        return HttpResponse.Successful(landingPage);
+        return landingPage is null
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}")
+            : HttpResponse.Successful(landingPage);  
     }
 
     internal async Task<SubItem> GetContentBlock(string slug)
