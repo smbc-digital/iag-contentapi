@@ -28,7 +28,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (var item in entry.SubItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.ColourScheme);
+                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.ColourScheme, item.ComponentWidth);
                 subItems.Add(newItem);
             }
         }

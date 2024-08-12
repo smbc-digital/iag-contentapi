@@ -15,11 +15,12 @@ public class SubItem
     public string Image { get; set; }
     public int MailingListId { get; set; }
     public string Body { get; set; }
+    public string ComponentWidth { get; set; } = string.Empty;
     public List<SubItem> SubItems { get; set; }
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, int mailingListId, string body, List<SubItem> subItems, string colourScheme = "default")
+    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, int mailingListId, string body, List<SubItem> subItems, string colourScheme = "", string componentWidth = "")
     {
         Slug = slug;
         Teaser = teaser;
@@ -34,5 +35,6 @@ public class SubItem
         Body = body;
         SubItems = subItems;
         ColourScheme = colourScheme;
+        ComponentWidth = componentWidth;
     }
 }
