@@ -5,42 +5,41 @@ public class ShowcaseContentfulFactoryTest
     [Fact]
     public void ShouldCreateAShowcaseFromAContentfulShowcase()
     {
-        var subItems = new List<SubItem> {
-            new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()) };
-        var crumb = new Crumb("title", "slug", "type");
+        List<SubItem> subItems = new() {
+            new("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 123, "body text", new List<SubItem>()) };
+        Crumb crumb = new("title", "slug", "type");
 
-        var contentfulShowcase = new ContentfulShowcaseBuilder()
+        ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder()
             .Title("showcase title")
             .Slug("showcase-slug")
             .HeroImage(new Asset { File = new File { Url = "image-url.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } })
             .Teaser("showcase teaser")
             .MetaDescription("showcase metaDescription")
             .Subheading("subheading")
-            .SecondaryItems(new List<ContentfulReference>() { new ContentfulReference() { Sys = new SystemProperties() { Type = "Entry" } } })
+            .SecondaryItems(new List<ContentfulReference>() { new() { Sys = new SystemProperties() { Type = "Entry" } } })
             .Build();
 
-        var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
+        Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
+        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contenType", DateTime.MinValue, DateTime.MaxValue, "image", 123, "body text", new List<SubItem>()));
 
-        var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+        Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
+        Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
-        var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+        Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
 
-        var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
-
-        var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
         crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);
 
-        var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+        Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>> socialMediaFactory = new();
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
-        var didYouKnowFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
+        Mock<IContentfulFactory<ContentfulTrivia, Trivia>> didYouKnowFactory = new();
 
-        var videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+        Mock<IContentfulFactory<ContentfulVideo, Video>> videoFactory = new();
 
-        var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new();
         callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
             new CallToActionBanner
             {
@@ -51,15 +50,15 @@ public class ShowcaseContentfulFactoryTest
                 Link = "url"
             });
 
-        var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
+        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
 
-        Mock<ITimeProvider> timeprovider = new Mock<ITimeProvider>();
+        Mock<ITimeProvider> timeprovider = new();
 
-        timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
+        timeprovider.Setup(_timeProvider => _timeProvider.Now()).Returns(new DateTime(2017, 03, 30));
 
-        var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, videoFactory.Object, spotlightBannerFactory.Object);
+        ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, videoFactory.Object, spotlightBannerFactory.Object);
 
-        var showcase = contentfulFactory.ToModel(contentfulShowcase);
+        Showcase showcase = contentfulFactory.ToModel(contentfulShowcase);
 
         showcase.Should().BeOfType<Showcase>();
         showcase.Slug.Should().Be("showcase-slug");
@@ -78,31 +77,31 @@ public class ShowcaseContentfulFactoryTest
     [Fact]
     public void ShouldCreateAShowcaseWithAnEmptyFeaturedItems()
     {
-        var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(new List<ContentfulReference>()).Build();
+        ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(new List<ContentfulReference>()).Build();
 
-        var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+        Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 234, "body text", new List<SubItem>()));
 
-        var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
-        var timeprovider = new Mock<ITimeProvider>();
+        Mock<ITimeProvider> timeprovider = new();
 
         timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-        var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+        Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>> socialMediaFactory = new();
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
-        var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+        Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
-        var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+        Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
-        var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
+        Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
 
-        var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+        Mock<IContentfulFactory<ContentfulVideo, Video>> _videoFactory = new();
 
-        var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new();
         callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
             new CallToActionBanner
             {
@@ -113,11 +112,11 @@ public class ShowcaseContentfulFactoryTest
                 Link = "url"
             });
 
-        var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
+        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
 
-        var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+        ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
-        var model = contentfulFactory.ToModel(contentfulShowcase);
+        Showcase model = contentfulFactory.ToModel(contentfulShowcase);
 
         model.Should().BeOfType<Showcase>();
         model.SecondaryItems.Should().BeEmpty();
@@ -126,7 +125,7 @@ public class ShowcaseContentfulFactoryTest
     [Fact]
     public void ShouldCreateAShowcaseWithoutExpiredSubItems()
     {
-        var subItemThatShouldDisplay = new ContentfulReference()
+        ContentfulReference subItemThatShouldDisplay = new()
         {
 
             Title = "Sub1",
@@ -136,7 +135,7 @@ public class ShowcaseContentfulFactoryTest
 
         };
 
-        var subItemThatShouldHaveExpired = new ContentfulReference()
+        ContentfulReference subItemThatShouldHaveExpired = new()
         {
             Title = "Sub1",
             SunriseDate = new DateTime(2016, 12, 30),
@@ -144,33 +143,33 @@ public class ShowcaseContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        var subItems = new List<ContentfulReference> { subItemThatShouldDisplay, subItemThatShouldHaveExpired };
+        List<ContentfulReference> subItems = new() { subItemThatShouldDisplay, subItemThatShouldHaveExpired };
 
-        var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
+        ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
 
-        var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+        Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 456, "body text", new List<SubItem>()));
 
-        var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
-        var timeprovider = new Mock<ITimeProvider>();
+        Mock<ITimeProvider> timeprovider = new();
 
         timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-        var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+        Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>> socialMediaFactory = new();
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
-        var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+        Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
-        var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+        Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
-        var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
+        Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
 
-        var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+        Mock<IContentfulFactory<ContentfulVideo, Video>> _videoFactory = new();
 
-        var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
         callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
             new CallToActionBanner
             {
@@ -181,11 +180,11 @@ public class ShowcaseContentfulFactoryTest
                 Link = "url"
             });
 
-        var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
+        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
 
-        var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+        ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
-        var model = contentfulFactory.ToModel(contentfulShowcase);
+        Showcase model = contentfulFactory.ToModel(contentfulShowcase);
 
         model.Should().BeOfType<Showcase>();
         model.SecondaryItems.Count().Should().Be(1);
@@ -194,7 +193,7 @@ public class ShowcaseContentfulFactoryTest
     [Fact]
     public void ShouldCreateAShowcaseWithoutSubItemsThatHaveNotArisen()
     {
-        var subItemThatShouldNotYetDisplay = new ContentfulReference()
+        ContentfulReference subItemThatShouldNotYetDisplay = new()
         {
             Title = "Sub1",
             SunriseDate = new DateTime(2018, 12, 30),
@@ -202,7 +201,7 @@ public class ShowcaseContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        var subItemThatShouldDisplay = new ContentfulReference()
+        ContentfulReference subItemThatShouldDisplay = new()
         {
             Title = "Sub1",
             SunriseDate = new DateTime(2016, 12, 30),
@@ -210,35 +209,37 @@ public class ShowcaseContentfulFactoryTest
             Sys = new SystemProperties() { Type = "Entry" }
         };
 
-        var subItems = new List<ContentfulReference>();
-        subItems.Add(subItemThatShouldNotYetDisplay);
-        subItems.Add(subItemThatShouldDisplay);
+        List<ContentfulReference> subItems = new()
+        {
+            subItemThatShouldNotYetDisplay,
+            subItemThatShouldDisplay
+        };
 
-        var contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
+        ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder().SecondaryItems(subItems).Build();
 
-        var topicFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+        Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>()));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 789, "body text", new List<SubItem>()));
 
-        var crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
-        var timeprovider = new Mock<ITimeProvider>();
+        Mock<ITimeProvider> timeprovider = new();
 
         timeprovider.Setup(o => o.Now()).Returns(new DateTime(2017, 03, 30));
 
-        var socialMediaFactory = new Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>();
+        Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>> socialMediaFactory = new();
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
-        var _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
+        Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
-        var _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
+        Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
-        var _triviaFactory = new Mock<IContentfulFactory<ContentfulTrivia, Trivia>>();
+        Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
 
-        var _videoFactory = new Mock<IContentfulFactory<ContentfulVideo, Video>>();
+        Mock<IContentfulFactory<ContentfulVideo, Video>> _videoFactory = new();
 
-        var callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new();
         callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
             new CallToActionBanner
             {
@@ -249,11 +250,11 @@ public class ShowcaseContentfulFactoryTest
                 Link = "url"
             });
 
-        var spotlightBannerFactory = new Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>();
+        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
 
-        var contentfulFactory = new ShowcaseContentfulFactory(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
+        ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
-        var model = contentfulFactory.ToModel(contentfulShowcase);
+        Showcase model = contentfulFactory.ToModel(contentfulShowcase);
 
         model.Should().BeOfType<Showcase>();
         model.SecondaryItems.Count().Should().Be(1);

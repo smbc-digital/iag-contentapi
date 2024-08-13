@@ -93,6 +93,11 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
             p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
             p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
+
+        services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>>
+        (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
+            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
+
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
             (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink,
             SocialMediaLink>>()));
@@ -324,6 +329,15 @@ public static class ServiceCollectionExtensions
                         p.GetService<ILogger<EventRepository>>(),
                         p.GetService<IConfiguration>()),
                     p.GetService<ILogger<ShowcaseRepository>>()
+                );
+            });
+
+        services.AddSingleton<Func<ContentfulConfig, LandingPageRepository>>(
+            p => {
+                return x => new LandingPageRepository(x,
+                    p.GetService<IContentfulFactory<ContentfulLandingPage, LandingPage>>(),
+                    p.GetService<IContentfulClientManager>(),
+                    p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
                 );
             });
         
