@@ -23,8 +23,8 @@ public class LandingPageController : Controller
         await _handler.Get(() =>
         {
             LandingPageRepository repository = _createRepository(_createConfig(businessId));
-            Task<HttpResponse> showcase = repository.GetLandingPage(slug);
+            Task<HttpResponse> landingPage = repository.GetLandingPage(slug);
 
-            return showcase;
+            return landingPage;
         });
 }
