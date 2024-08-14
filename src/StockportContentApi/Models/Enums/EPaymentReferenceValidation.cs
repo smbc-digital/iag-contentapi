@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Enums;
+﻿namespace StockportContentApi.Models.Enums;
 public enum EPaymentReferenceValidation
 {
     None,

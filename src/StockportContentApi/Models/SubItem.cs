@@ -1,6 +1,4 @@
-﻿using StockportContentApi.Enums;
-
-namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Model;
 
 [ExcludeFromCodeCoverage]
 public class SubItem
