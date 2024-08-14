@@ -54,7 +54,7 @@ public class TopicContentfulFactoryTest
         {
             AltText = "altText",
             ButtonText = "buttonText",
-            Colour = "Pink",
+            Colour = EColourScheme.Pink,
             Image = "image",
             Link = "link",
             Teaser = "teaser",
@@ -62,7 +62,7 @@ public class TopicContentfulFactoryTest
         };
         _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
-        EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", "Colour");
+        EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", EColourScheme.Orange);
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
         Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
