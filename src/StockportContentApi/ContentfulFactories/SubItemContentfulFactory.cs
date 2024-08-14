@@ -26,36 +26,36 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         List<SubItem> subItems = new();
         if (entry.SubItems is not null)
         {
-            foreach (var item in entry.SubItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.SubItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.ColourScheme, item.ComponentWidth);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
 
         if (entry.SecondaryItems != null)
         {
-            foreach (var item in entry.SecondaryItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.SecondaryItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.ColourScheme, item.ComponentWidth);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
 
         if (entry.TertiaryItems != null)
         {
-            foreach (var item in entry.TertiaryItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.TertiaryItems.Where(EntryIsValid))
             {
-                var newItem = new SubItem(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.ColourScheme, item.ComponentWidth);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
 
         if (entry.Sections != null)
         {
-            foreach (var section in entry.Sections.Where(EntryIsValid))
+            foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
             {
-                var newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), entry.ContentType, section.SunriseDate, section.SunsetDate, GetEntryImage(section), entry.MailingListId, entry.Body, new List<SubItem>(), section.ColourScheme, section.ComponentWidth);
+                SubItem newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), entry.ContentType, section.SunriseDate, section.SunsetDate, GetEntryImage(section), entry.MailingListId, entry.Body, new List<SubItem>(), section.Link, section.ColourScheme);
                 subItems.Add(newSection);
             }
         }
@@ -67,7 +67,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
 
         var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
-        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.ContentType, entry.SunriseDate, entry.SunsetDate, image, entry.MailingListId, entry.Body, subItems, entry.ColourScheme, entry.ComponentWidth);
+        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.ContentType, entry.SunriseDate, entry.SunsetDate, image, entry.MailingListId, entry.Body, subItems, entry.Link, entry.ColourScheme);
     }
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)
