@@ -16,5 +16,5 @@ public class SubItemBuilder
     private readonly string _link = "external link";
     private readonly List<SubItem> _subItems = new();
 
-    public SubItem Build() => new(_slug, _title, _teaser, _icon, _type, _contentType, _sunriseDate, _sunsetDate, _image, _mailingListId, _body, _subItems, _link);
+    public SubItem Build() => new(_slug, _title, _teaser, _icon, _type, _contentType, _sunriseDate, _sunsetDate, _image, _mailingListId, _body, _subItems, _link, EColourScheme.Blue);
 }

@@ -15,6 +15,7 @@ global using StockportContentApi.ContentfulFactories.GroupFactories;
 global using StockportContentApi.ContentfulFactories.NewsFactories;
 global using StockportContentApi.ContentfulFactories.TopicFactories;
 global using StockportContentApi.ContentfulModels;
+global using StockportContentApi.Enums;
 global using StockportContentApi.Extensions;
 global using StockportContentApi.Factories;
 global using StockportContentApi.Http;

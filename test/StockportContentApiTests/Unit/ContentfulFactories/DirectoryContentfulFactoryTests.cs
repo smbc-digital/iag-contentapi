@@ -52,7 +52,7 @@ public class DirectoryContentfulFactoryTests
             })
             .Build();
 
-        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>(), "external link");
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>(), "external link", EColourScheme.Teal);
         _subItemFactory.Setup(_ => _.ToModel(ContentfulReference.SubItems.First())).Returns(subItem);
 
         // Act
