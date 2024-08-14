@@ -27,5 +27,5 @@ public class ContentfulReference : IContentfulModel
     public string ContentType { get; set; } = string.Empty;
     public int MailingListId { get; set; }
     public string Body { get; set; }
-    public string ComponentWidth { get; set; } = "Content width";
+    public string Link { get; set; } = "Content width";
 }
