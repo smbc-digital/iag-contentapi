@@ -8,7 +8,7 @@ public class FooterContentfulFactoryTest
         // Arrange
         Mock<IContentfulFactory<ContentfulReference, SubItem>> factory = new();
         factory.Setup(_subItemFactory => _subItemFactory.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 222, "body text", new List<SubItem>(), "externalLink", EColourScheme.Orange));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 222, "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Orange));
        
         Mock<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>> socialMediaFactory = new();
         socialMediaFactory.Setup(_socialMediaFactory => _socialMediaFactory.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
