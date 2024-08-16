@@ -34,6 +34,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             HeaderType = entry.HeaderType,
             HeaderImage = entry.HeaderImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeaderImage.SystemProperties) ?
                                 entry.HeaderImage.File.Url : string.Empty,
+            HeaderTheme = entry.HeaderTheme,
             ContentBlocks = entry.ContentBlocks,
             Content = entry.Content
         };
