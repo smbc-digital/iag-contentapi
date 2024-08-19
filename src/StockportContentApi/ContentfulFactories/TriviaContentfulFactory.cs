@@ -4,6 +4,6 @@ public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Triv
 {
     public Trivia ToModel(ContentfulTrivia entry)
     {
-        return new Trivia(entry.Name, entry.Icon, entry.Text, entry.Link);
+        return new Trivia(entry.Name, entry.Icon, entry.Body, entry.Link);
     }
 }
