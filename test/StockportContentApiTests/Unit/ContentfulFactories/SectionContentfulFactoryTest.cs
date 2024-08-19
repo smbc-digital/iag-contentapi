@@ -60,7 +60,7 @@ public class SectionContentfulFactoryTest
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
             Subject = "subject",
-            Colour = "orange"
+            Colour = EColourScheme.Teal
         };
 
         _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);

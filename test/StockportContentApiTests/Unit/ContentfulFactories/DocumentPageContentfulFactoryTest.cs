@@ -72,7 +72,7 @@ public class DocumentPageContentfulFactoryTests
         SubItem subItem = new()
         {
             Slug = "slug",
-            ColourScheme = "colour",
+            ColourScheme = EColourScheme.Blue,
             Icon = "icon",
             Image = "image",
             Title = "title",

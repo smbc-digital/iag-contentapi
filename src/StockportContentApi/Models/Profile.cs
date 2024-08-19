@@ -19,7 +19,7 @@ public class Profile
     public string Author { get; set; }
     public string Subject { get; set; }
     public EventBanner EventsBanner { get; set; }
-    public string Colour { get; set; }
+    public EColourScheme Colour { get; set; } = EColourScheme.Teal;
     public Topic ParentTopic { get; set; }
 
     public Profile()

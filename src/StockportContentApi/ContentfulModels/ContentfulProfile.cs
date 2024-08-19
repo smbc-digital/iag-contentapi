@@ -15,5 +15,5 @@ public class ContentfulProfile : ContentfulReference
     public string Author { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public ContentfulEventBanner EventsBanner { get; set; } = new();
-    public string Colour { get; set; } = string.Empty;
+    public EColourScheme Colour { get; set; } = EColourScheme.Teal;
 }
