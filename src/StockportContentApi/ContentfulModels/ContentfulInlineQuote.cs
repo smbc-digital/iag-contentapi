@@ -8,5 +8,5 @@ public class ContentfulInlineQuote
     public string Quote { get; set; } = string.Empty;
     public string Author { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
-    public string Theme { get; set; } = string.Empty;
+    public EColourScheme Theme { get; set; } = EColourScheme.Pink;
 }

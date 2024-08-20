@@ -12,7 +12,7 @@ public class ContentfulReference : IContentfulModel
     public string Teaser { get; set; } = string.Empty;
     public string MetaDescription { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
-    public string ColourScheme { get; set; } = "Teal";
+    public EColourScheme ColourScheme { get; set; } = EColourScheme.Teal;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
     public bool Highlight { get; set; } = false;
@@ -27,5 +27,6 @@ public class ContentfulReference : IContentfulModel
     public string ContentType { get; set; } = string.Empty;
     public int MailingListId { get; set; }
     public string Body { get; set; }
-    public string ComponentWidth { get; set; } = "Content width";
+    public string Link { get; set; } = string.Empty;
+    public string ButtonText { get; set; } = string.Empty;
 }

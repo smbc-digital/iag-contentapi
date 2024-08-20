@@ -42,19 +42,19 @@ public class TopicContentfulFactoryTest
         Crumb crumb = new("title", "slug", "type");
         _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
 
-        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
-        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
+        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
-        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>());
+        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", 111, "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue);
 
         CallToActionBanner callToAction = new()
         {
             AltText = "altText",
             ButtonText = "buttonText",
-            Colour = "Pink",
+            Colour = EColourScheme.Pink,
             Image = "image",
             Link = "link",
             Teaser = "teaser",
@@ -62,7 +62,7 @@ public class TopicContentfulFactoryTest
         };
         _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
 
-        EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", "Colour");
+        EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", EColourScheme.Orange);
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
         Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);

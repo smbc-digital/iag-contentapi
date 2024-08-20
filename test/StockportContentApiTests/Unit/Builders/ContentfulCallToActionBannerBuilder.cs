@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Builders;
+﻿using Jose.keys;
+
+namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulCallToActionBannerBuilder
 {
@@ -7,7 +9,7 @@ public class ContentfulCallToActionBannerBuilder
     private string _link = "link";
     private string _altText = "altText";
     private string _buttonText = "buttonText";
-    private string _colour = "colour";
+    private EColourScheme _colour = EColourScheme.Blue;
     private Asset _image = new Asset()
     {
         File = new File

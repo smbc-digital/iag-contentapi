@@ -7,7 +7,7 @@ public class SubItem
     public string Title { get; set; }
     public string Teaser { get; set; }
     public string Icon { get; set; }
-    public string ColourScheme { get; set; } = string.Empty;
+    public EColourScheme ColourScheme { get; set; } = EColourScheme.Teal;
     public string Type { get; set; }
     public string ContentType { get; set; }
     public DateTime SunriseDate { get; set; }
@@ -15,12 +15,13 @@ public class SubItem
     public string Image { get; set; }
     public int MailingListId { get; set; }
     public string Body { get; set; }
-    public string ComponentWidth { get; set; } = string.Empty;
+    public string Link { get; set; }
+    public string ButtonText { get; set; }
     public List<SubItem> SubItems { get; set; }
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, int mailingListId, string body, List<SubItem> subItems, string colourScheme = "", string componentWidth = "")
+    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, int mailingListId, string body, List<SubItem> subItems, string link, string buttonText, EColourScheme colourScheme)
     {
         Slug = slug;
         Teaser = teaser;
@@ -35,6 +36,7 @@ public class SubItem
         Body = body;
         SubItems = subItems;
         ColourScheme = colourScheme;
-        ComponentWidth = componentWidth;
+        Link = link;
+        ButtonText = buttonText;
     }
 }

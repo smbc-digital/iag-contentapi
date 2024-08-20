@@ -6,9 +6,9 @@ public class EventBanner
     public string Teaser { get; }
     public string Icon { get; }
     public string Link { get; }
-    public string Colour { get; }
+    public EColourScheme Colour { get; }
 
-    public EventBanner(string title, string teaser, string icon, string link, string colour)
+    public EventBanner(string title, string teaser, string icon, string link, EColourScheme colour)
     {
         Title = title;
         Teaser = teaser;
@@ -20,5 +20,5 @@ public class EventBanner
 
 public class NullEventBanner : EventBanner
 {
-    public NullEventBanner() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) { }
+    public NullEventBanner() : base(string.Empty, string.Empty, string.Empty, string.Empty, EColourScheme.None) { }
 }
