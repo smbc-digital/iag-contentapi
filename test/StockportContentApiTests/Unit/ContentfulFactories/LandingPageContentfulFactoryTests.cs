@@ -53,7 +53,7 @@ public class LandingPageContentfulFactoryTests
     }
 
     [Fact]
-    public void ToModel_ShouldNotAddBreadcrumbsOrImageOrAlertsOrHeaderImage_If_TheyAreLinks()
+    public void ToModel_ShouldNotAddBreadcrumbsOrImageOrAlerts_If_TheyAreLinks()
     {
         // Arrange
         ContentfulLandingPage contentfulLandingPage = new()
@@ -74,7 +74,6 @@ public class LandingPageContentfulFactoryTests
 
         contentfulLandingPage.Breadcrumbs.First().Sys.LinkType = "Link";
         contentfulLandingPage.Alerts.First().Sys.LinkType = "Link";
-        contentfulLandingPage.Image.SystemProperties.LinkType = "Link";
         contentfulLandingPage.HeaderImage.SystemProperties.LinkType = "Link";
 
         // Act
@@ -83,7 +82,6 @@ public class LandingPageContentfulFactoryTests
         // Assert
         Assert.Empty(landingPage.Breadcrumbs);
         Assert.Empty(landingPage.Alerts);
-        Assert.Empty(landingPage.Image);
         Assert.Empty(landingPage.HeaderImage);
         _crumbFactory.Verify(_ => _.ToModel(contentfulLandingPage.Breadcrumbs.First()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(contentfulLandingPage.Alerts.First()), Times.Never);
