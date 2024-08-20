@@ -15,10 +15,22 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
         _alertFactory = alertFactory;
     }
 
-    public LandingPage ToModel(ContentfulLandingPage entry) => entry is null
-        ? null
-        : new()
+    public LandingPage ToModel(ContentfulLandingPage entry)
+    {
+        if(entry is null)
+            return null;
+
+        MediaAsset image = new();
+        if (entry.Image is not null && entry.Image.File is not null)
         {
+            image = new MediaAsset
+            {
+                Url = entry.Image.File.Url,
+                Description = entry.Image.Description
+            };
+        }
+        
+        return new LandingPage(){
             Slug = entry.Slug,
             Title = entry.Title,
             Subtitle = entry.Subtitle,
@@ -29,8 +41,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
-            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-                            entry.Image.File.Url : string.Empty,
+            Image = image,
             HeaderType = entry.HeaderType,
             HeaderImage = entry.HeaderImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeaderImage.SystemProperties) ?
                                 entry.HeaderImage.File.Url : string.Empty,
@@ -38,4 +49,5 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             ContentBlocks = entry.ContentBlocks,
             Content = entry.Content
         };
+    }
 }
