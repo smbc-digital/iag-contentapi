@@ -130,7 +130,7 @@ public class LandingPageRepositoryTest
             Alerts = new List<Alert>(),
             Teaser = "landing page teaser",
             MetaDescription = "landing page metadescription",
-            Image = "image",
+            Image = new MediaAsset(),
             HeaderType = "full image",
             HeaderImage = "header image",
             ContentBlocks = new List<SubItem>() { subItem1, subItem2 },
