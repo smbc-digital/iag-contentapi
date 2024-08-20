@@ -7,7 +7,7 @@ public class SubItem
     public string Title { get; set; }
     public string Teaser { get; set; }
     public string Icon { get; set; }
-    public EColourScheme ColourScheme { get; set; } = EColourScheme.Teal;
+    public EColourScheme ColourScheme { get; set; } = EColourScheme.None;
     public string Type { get; set; }
     public string ContentType { get; set; }
     public DateTime SunriseDate { get; set; }

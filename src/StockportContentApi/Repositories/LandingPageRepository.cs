@@ -1,5 +1,4 @@
-﻿
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public class LandingPageRepository : BaseRepository
 {

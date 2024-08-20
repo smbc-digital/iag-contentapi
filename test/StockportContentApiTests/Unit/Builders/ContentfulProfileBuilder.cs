@@ -28,7 +28,7 @@ public class ContentfulProfileBuilder
                 Icon = "trivia icon",
                 Link = "trivia link",
                 Sys = new SystemProperties(),
-                Text = "trivia text"
+                Body = "trivia text"
             }
         },
         TriviaSubheading = "trivia heading",
