@@ -12,7 +12,7 @@ public class LandingPage
     public string MetaDescription { get; set; }
     public MediaAsset Image { get; set; }
     public string HeaderType { get; set; }
-    public string HeaderImage { get; set; }
+    public MediaAsset HeaderImage { get; set; }
     public EColourScheme HeaderColourScheme { get; set; }
     public IEnumerable<SubItem> ContentBlocks { get; set; }
     public IDictionary<string, dynamic> Content { get; set; }

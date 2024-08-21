@@ -132,7 +132,7 @@ public class LandingPageRepositoryTest
             MetaDescription = "landing page metadescription",
             Image = new MediaAsset(),
             HeaderType = "full image",
-            HeaderImage = "header image",
+            HeaderImage = new MediaAsset(),
             ContentBlocks = new List<SubItem>() { subItem1, subItem2 },
             Content = new Dictionary<string, dynamic>()
         };
