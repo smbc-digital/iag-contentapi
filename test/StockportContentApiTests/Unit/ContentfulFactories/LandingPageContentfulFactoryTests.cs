@@ -74,7 +74,6 @@ public class LandingPageContentfulFactoryTests
 
         contentfulLandingPage.Breadcrumbs.First().Sys.LinkType = "Link";
         contentfulLandingPage.Alerts.First().Sys.LinkType = "Link";
-        contentfulLandingPage.HeaderImage.SystemProperties.LinkType = "Link";
 
         // Act
         LandingPage landingPage = _landingPageFactory.ToModel(contentfulLandingPage);
@@ -82,7 +81,6 @@ public class LandingPageContentfulFactoryTests
         // Assert
         Assert.Empty(landingPage.Breadcrumbs);
         Assert.Empty(landingPage.Alerts);
-        Assert.Empty(landingPage.HeaderImage);
         _crumbFactory.Verify(_ => _.ToModel(contentfulLandingPage.Breadcrumbs.First()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(contentfulLandingPage.Alerts.First()), Times.Never);
     }

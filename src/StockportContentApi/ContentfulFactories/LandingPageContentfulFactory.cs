@@ -29,6 +29,16 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
                 Description = entry.Image.Description
             };
         }
+
+        MediaAsset headerImage = new();
+        if (entry.HeaderImage is not null && entry.HeaderImage.File is not null)
+        {
+            headerImage = new MediaAsset
+            {
+                Url = entry.HeaderImage.File.Url,
+                Description = entry.HeaderImage.Description
+            };
+        }
         
         return new LandingPage(){
             Slug = entry.Slug,
@@ -43,8 +53,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             MetaDescription = entry.MetaDescription,
             Image = image,
             HeaderType = entry.HeaderType,
-            HeaderImage = entry.HeaderImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeaderImage.SystemProperties) ?
-                                entry.HeaderImage.File.Url : string.Empty,
+            HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
             ContentBlocks = entry.ContentBlocks,
             Content = entry.Content
