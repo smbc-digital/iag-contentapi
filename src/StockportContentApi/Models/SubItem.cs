@@ -13,7 +13,7 @@ public class SubItem
     public DateTime SunriseDate { get; set; }
     public DateTime SunsetDate { get; set; }
     public string Image { get; set; }
-    public int MailingListId { get; set; }
+    public string MailingListId { get; set; }
     public string Body { get; set; }
     public string Link { get; set; }
     public string ButtonText { get; set; }
@@ -24,7 +24,7 @@ public class SubItem
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, int mailingListId, string body, List<SubItem> subItems, string link, string buttonText, EColourScheme colourScheme, string statistic, string statisticSubheading)
+    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, string mailingListId, string body, List<SubItem> subItems, string link, string buttonText, EColourScheme colourScheme, string statistic, string statisticSubheading)
     {
         Slug = slug;
         Teaser = teaser;
