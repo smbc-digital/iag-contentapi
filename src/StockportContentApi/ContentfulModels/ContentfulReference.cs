@@ -29,4 +29,6 @@ public class ContentfulReference : IContentfulModel
     public string Body { get; set; }
     public string Link { get; set; } = string.Empty;
     public string ButtonText { get; set; } = string.Empty;
+    public string Statistic { get; set; } = string.Empty;
+    public string StatisticSubheading { get; set; } = string.Empty;
 }

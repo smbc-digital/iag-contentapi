@@ -6,7 +6,7 @@ public class ShowcaseContentfulFactoryTest
     public void ShouldCreateAShowcaseFromAContentfulShowcase()
     {
         List<SubItem> subItems = new() {
-            new("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue) };
+            new("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty) };
         Crumb crumb = new("title", "slug", "type");
 
         ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder()
@@ -20,7 +20,7 @@ public class ShowcaseContentfulFactoryTest
             .Build();
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
-        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contenType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue));
+        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contenType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
@@ -81,7 +81,7 @@ public class ShowcaseContentfulFactoryTest
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
@@ -149,7 +149,7 @@ public class ShowcaseContentfulFactoryTest
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
@@ -219,7 +219,7 @@ public class ShowcaseContentfulFactoryTest
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
 
