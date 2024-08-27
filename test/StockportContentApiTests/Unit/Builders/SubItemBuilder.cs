@@ -11,7 +11,7 @@ public class SubItemBuilder
     private readonly DateTime _sunriseDate = DateTime.MinValue;
     private readonly DateTime _sunsetDate = DateTime.MaxValue;
     private readonly string _image = "image";
-    private readonly int _mailingListId = 111;
+    private readonly string _mailingListId = "111";
     private readonly string _body = "this is the body text of a sub item";
     private readonly string _link = "external link";
     private readonly string _buttonText = "button text";
