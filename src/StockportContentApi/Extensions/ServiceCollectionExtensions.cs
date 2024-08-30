@@ -232,6 +232,7 @@ public static class ServiceCollectionExtensions
                 .Add($"{businessId.ToUpper()}_SPACE", configuration[$"{businessId}:Space"])
                 .Add($"{businessId.ToUpper()}_ACCESS_KEY", configuration[$"{businessId}:AccessKey"])
                 .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", configuration[$"{businessId}:ManagementKey"])
+                .Add($"{businessId.ToUpper()}_ENVIRONMENT", configuration[$"{businessId}:Environment"])
                 .Build();
 
         services.AddTransient(_ => createConfig);

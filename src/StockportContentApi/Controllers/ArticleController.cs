@@ -19,13 +19,15 @@ public class ArticleController : Controller
     [Route("v2/{businessId}/articles/{articleSlug}")]
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId)
     {
-        return await _handler.Get(() =>
+        var result = await _handler.Get(() =>
         {
             var repository = _createRepository(_createConfig(businessId));
             var article = repository.GetArticle(articleSlug);
 
             return article;
         });
+
+        return result;
     }
 
     [ApiExplorerSettings(IgnoreApi = true)]

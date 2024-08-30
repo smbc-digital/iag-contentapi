@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Client;
+﻿using Contentful.Core.Configuration;
+
+namespace StockportContentApi.Client;
 
 public interface IContentfulClientManager
 {
@@ -22,11 +24,17 @@ public class ContentfulClientManager : IContentfulClientManager
     public IContentfulClient GetClient(ContentfulConfig config)
     {
         bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
-        var client = new ContentfulClient(_httpClient, !usePreviewApi ? config.AccessKey : "", usePreviewApi ? config.AccessKey : "", config.SpaceKey, usePreviewApi)
+        var options = new ContentfulOptions
         {
-            ResolveEntriesSelectively = true
+            SpaceId = config.SpaceKey,
+            Environment = config.Environment,
+            UsePreviewApi = usePreviewApi,
+            DeliveryApiKey = !usePreviewApi ? config.AccessKey : "",
+            PreviewApiKey = usePreviewApi ? config.AccessKey : "",
+            ResolveEntriesSelectively = true,
+            MaxNumberOfRateLimitRetries = 5
         };
-
+        var client = new ContentfulClient(_httpClient, options);        
         return client;
     }
 
