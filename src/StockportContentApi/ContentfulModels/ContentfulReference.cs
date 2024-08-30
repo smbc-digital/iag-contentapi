@@ -25,7 +25,7 @@ public class ContentfulReference : IContentfulModel
     public List<ContentfulSection> Sections { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
     public string ContentType { get; set; } = string.Empty;
-    public int MailingListId { get; set; }
+    public string MailingListId { get; set; }
     public string Body { get; set; }
     public string Link { get; set; } = string.Empty;
     public string ButtonText { get; set; } = string.Empty;
