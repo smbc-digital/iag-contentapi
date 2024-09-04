@@ -28,6 +28,7 @@ public class NewsRepositoryTest
         .Add("TEST_SPACE", "SPACE")
         .Add("TEST_ACCESS_KEY", "KEY")
         .Add("TEST_MANAGEMENT_KEY", "KEY")
+        .Add("TEST_ENVIRONMENT", "master")
         .Build();
 
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;

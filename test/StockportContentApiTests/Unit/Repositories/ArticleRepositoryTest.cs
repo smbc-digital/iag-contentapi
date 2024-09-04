@@ -19,6 +19,7 @@ public class ArticleRepositoryTest
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
             .Build();
         
         _videoRepository = new Mock<IVideoRepository>();
