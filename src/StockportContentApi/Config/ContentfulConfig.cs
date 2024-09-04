@@ -7,13 +7,16 @@ public class ContentfulConfig
     public string SpaceKey;
     public string AccessKey;
     public string ManagementKey;
+    public string Environment = "master";
+
 
     // NEW
-    public ContentfulConfig(string spaceKey, string accessKey, string managementKey)
+    public ContentfulConfig(string spaceKey, string accessKey, string managementKey, string environment = "master")
     {
         SpaceKey = spaceKey;
         AccessKey = accessKey;
         ManagementKey = managementKey;
+        Environment = environment;
     }
 
     // OLD (FUNC)
@@ -37,6 +40,7 @@ public class ContentfulConfig
         SpaceKey = GetConfigValue($"{BusinessId.ToUpper()}_SPACE");
         AccessKey = GetConfigValue($"{BusinessId.ToUpper()}_ACCESS_KEY");
         ManagementKey = GetConfigValue($"{BusinessId.ToUpper()}_MANAGEMENT_KEY");
+        Environment = GetConfigValue($"{BusinessId.ToUpper()}_ENVIRONMENT");
 
         ContentfulUrl = new Uri($"{GetConfigValue("DELIVERY_URL")}/" +
                                 $"spaces/{SpaceKey}/" +

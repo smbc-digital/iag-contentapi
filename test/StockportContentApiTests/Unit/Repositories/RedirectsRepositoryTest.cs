@@ -17,6 +17,8 @@ public class RedirectsRepositoryTest
             .Add("UNITTEST_SPACE", "SPACE")
             .Add("UNITTEST_ACCESS_KEY", "KEY")
             .Add("UNITTEST_MANAGEMENT_KEY", "KEY")
+            .Add("UNITTEST_ENVIRONMENT", "master")
+
             .Build();
 
         _createConfig = new Mock<Func<string, ContentfulConfig>>();
