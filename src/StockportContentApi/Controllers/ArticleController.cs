@@ -17,27 +17,22 @@ public class ArticleController : Controller
     [Route("{businessId}/articles/{articleSlug}")]
     [Route("v1/{businessId}/articles/{articleSlug}")]
     [Route("v2/{businessId}/articles/{articleSlug}")]
-    public async Task<IActionResult> GetArticle(string articleSlug, string businessId)
-    {
-        var result = await _handler.Get(() =>
+    public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
+        await _handler.Get(() =>
         {
             var repository = _createRepository(_createConfig(businessId));          
             return repository.GetArticle(articleSlug); 
         });
-
-        return result;
-    }
+    
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
     [Route("{businessId}/articleSiteMap")]
     [Route("v1/{businessId}/articleSiteMap")]
-    public async Task<IActionResult> Index(string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> Index(string businessId) =>
+        await _handler.Get(() =>
         {
             var repository = _createRepository(_createConfig(businessId));
             return repository.Get();
         });
-    }
 }

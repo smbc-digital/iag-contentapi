@@ -29,8 +29,8 @@ public class ContentfulClientManager : IContentfulClientManager
             SpaceId = config.SpaceKey,
             Environment = config.Environment,
             UsePreviewApi = usePreviewApi,
-            DeliveryApiKey = !usePreviewApi ? config.AccessKey : "",
-            PreviewApiKey = usePreviewApi ? config.AccessKey : "",
+            DeliveryApiKey = !usePreviewApi ? config.AccessKey : string.Empty,
+            PreviewApiKey = usePreviewApi ? config.AccessKey : string.Empty,
             ResolveEntriesSelectively = true,
             MaxNumberOfRateLimitRetries = 5
         };
