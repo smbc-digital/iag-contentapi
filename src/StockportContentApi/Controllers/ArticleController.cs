@@ -21,10 +21,8 @@ public class ArticleController : Controller
     {
         var result = await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var article = repository.GetArticle(articleSlug);
-
-            return article;
+            var repository = _createRepository(_createConfig(businessId));          
+            return repository.GetArticle(articleSlug); 
         });
 
         return result;
