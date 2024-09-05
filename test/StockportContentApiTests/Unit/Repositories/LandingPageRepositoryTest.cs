@@ -1,16 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Xunit.Sdk;
-
-namespace StockportContentApiTests.Unit.Repositories;
+﻿namespace StockportContentApiTests.Unit.Repositories;
 
 public class LandingPageRepositoryTest
 {
     private readonly LandingPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
-
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory = new();
     private readonly Mock<ICache> _cache;
 
     public LandingPageRepositoryTest()
@@ -26,14 +20,14 @@ public class LandingPageRepositoryTest
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _subItemFactory.Object);
+        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object);
     }
 
     [Fact]
     public async Task GetLandingPage_ReturnsSuccessResponse_WhenLandingPageIsFound()
     {
         // Arrange
-        ContentfulLandingPage contentfulLandingPage = new() { Content = new Dictionary<string, object> { { "content", "[]" } } };
+        ContentfulLandingPage contentfulLandingPage = new() { };
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
 
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
@@ -67,56 +61,17 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
-    public async Task GetContentBlock_ReturnsSubItem_WhenContentBlockIsFound()
+    public async Task GetLandingPage_PopulatesContentBlocks_WhenPageSectionsItemsArePresent()
     {
         // Arrange
-        ContentfulReference contentfulReference = new();
-        ContentfulCollection<ContentfulReference> contentfulCollection = new() { Items = new[] { contentfulReference } };
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        SubItem subItem = new();
-        _subItemFactory.Setup(factory => factory.ToModel(contentfulReference))
-            .Returns(subItem);
-
-        // Act
-        SubItem result = await _repository.GetContentBlock("test-content-block-slug");
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(subItem, result);
-    }
-
-    [Fact]
-    public async Task GetContentBlock_ReturnsNull_WhenContentBlockIsNotFound()
-    {
-        // Arrange
-        ContentfulCollection<ContentfulReference> contentfulCollection = new() { Items = Enumerable.Empty<ContentfulReference>() };
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        // Act
-        SubItem result = await _repository.GetContentBlock("non-existent-content-block-slug");
-
-        // Assert
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task GetLandingPage_PopulatesContentBlocks_WhenContentItemsArePresent()
-    {
-        // Arrange
-        List<ContentItem> contentItems = new()
-        { 
-            new() { Data = new Data { Target = new ContentfulReference { Slug = "content-block-1" } } },
-            new() { Data = new Data { Target = new ContentfulReference { Slug = "content-block-2" } } }
-        };
-
         ContentfulLandingPage contentfulLandingPage = new()
         {
-            Content = new Dictionary<string, object> { { "content", JsonConvert.SerializeObject(contentItems) } }
+            PageSections = new()
+            {
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build()
+            },
         };
 
         SubItem subItem1 = new() { Title = "SubItem 1" };
@@ -134,8 +89,7 @@ public class LandingPageRepositoryTest
             Image = new MediaAsset(),
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
-            ContentBlocks = new List<SubItem>() { subItem1, subItem2 },
-            Content = new Dictionary<string, dynamic>()
+            PageSections = new List<SubItem>() { subItem1, subItem2 }
         };
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
@@ -145,8 +99,6 @@ public class LandingPageRepositoryTest
 
         _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
             .Returns(landingPage);
-
-        _subItemFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulReference>())).Returns(subItem1);
 
         _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulReference>
@@ -164,9 +116,9 @@ public class LandingPageRepositoryTest
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(responseLandingPage.ContentBlocks);
-        Assert.Equal(2, responseLandingPage.ContentBlocks.Count());
-        Assert.Equal(subItem1, responseLandingPage.ContentBlocks.ToList()[0]);
-        Assert.Equal(subItem2, responseLandingPage.ContentBlocks.ToList()[1]);
+        Assert.NotNull(responseLandingPage.PageSections);
+        Assert.Equal(2, responseLandingPage.PageSections.Count());
+        Assert.Equal(subItem1, responseLandingPage.PageSections.ToList()[0]);
+        Assert.Equal(subItem2, responseLandingPage.PageSections.ToList()[1]);
     }
 }
