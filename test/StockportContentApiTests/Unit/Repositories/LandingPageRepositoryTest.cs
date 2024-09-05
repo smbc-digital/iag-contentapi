@@ -61,12 +61,12 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
-    public async Task GetLandingPage_PopulatesContentBlocks_WhenContentReferenceItemsArePresent()
+    public async Task GetLandingPage_PopulatesContentBlocks_WhenPageSectionsItemsArePresent()
     {
         // Arrange
         ContentfulLandingPage contentfulLandingPage = new()
         {
-            ContentReference = new()
+            PageSections = new()
             {
                 new ContentfulReferenceBuilder().Build(),
                 new ContentfulReferenceBuilder().Build(),
@@ -89,7 +89,7 @@ public class LandingPageRepositoryTest
             Image = new MediaAsset(),
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
-            ContentReference = new List<SubItem>() { subItem1, subItem2 }
+            PageSections = new List<SubItem>() { subItem1, subItem2 }
         };
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
@@ -116,9 +116,9 @@ public class LandingPageRepositoryTest
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(responseLandingPage.ContentReference);
-        Assert.Equal(2, responseLandingPage.ContentReference.Count());
-        Assert.Equal(subItem1, responseLandingPage.ContentReference.ToList()[0]);
-        Assert.Equal(subItem2, responseLandingPage.ContentReference.ToList()[1]);
+        Assert.NotNull(responseLandingPage.PageSections);
+        Assert.Equal(2, responseLandingPage.PageSections.Count());
+        Assert.Equal(subItem1, responseLandingPage.PageSections.ToList()[0]);
+        Assert.Equal(subItem2, responseLandingPage.PageSections.ToList()[1]);
     }
 }

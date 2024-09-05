@@ -58,7 +58,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
-            ContentReference = entry.ContentReference.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+            PageSections = entry.PageSections.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                     .Select(subItem => _subItemFactory.ToModel(subItem)).ToList()
         };

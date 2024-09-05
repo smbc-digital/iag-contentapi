@@ -31,7 +31,7 @@ public class LandingPageContentfulFactoryTests
         Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
         _contentfulLandingPage.Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
         _contentfulLandingPage.Alerts = new List<ContentfulAlert>() { new ContentfulAlertBuilder().Build() };
-        _contentfulLandingPage.ContentReference = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
+        _contentfulLandingPage.PageSections = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
         
         _crumbFactory.Setup(_ => _.ToModel(_contentfulLandingPage.Breadcrumbs.First())).Returns(crumb);
         _alertFactory.Setup(_ => _.ToModel(_contentfulLandingPage.Alerts.First())).Returns(alert);
@@ -50,11 +50,11 @@ public class LandingPageContentfulFactoryTests
         _crumbFactory.Verify(_ => _.ToModel(_contentfulLandingPage.Breadcrumbs.First()), Times.Once);
         Assert.Equal(alert, result.Alerts.First());
         _alertFactory.Verify(_ => _.ToModel(_contentfulLandingPage.Alerts.First()), Times.Once);
-        _subItemFactory.Verify(_ => _.ToModel(_contentfulLandingPage.ContentReference.First()), Times.Once);
+        _subItemFactory.Verify(_ => _.ToModel(_contentfulLandingPage.PageSections.First()), Times.Once);
     }
 
     [Fact]
-    public void ToModel_ShouldNotAddBreadcrumbsOrAlertsOrContentReference_If_TheyAreLinks()
+    public void ToModel_ShouldNotAddBreadcrumbsOrAlertsOrPageSections_If_TheyAreLinks()
     {
         // Arrange
         ContentfulLandingPage contentfulLandingPage = new()
@@ -69,12 +69,12 @@ public class LandingPageContentfulFactoryTests
             Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
             HeaderType = "full image",
             HeaderImage = new ContentfulAssetBuilder().Url("header-image-url.jpg").Build(),
-            ContentReference = new() { new ContentfulReferenceBuilder().Build() }
+            PageSections = new() { new ContentfulReferenceBuilder().Build() }
         };
 
         contentfulLandingPage.Breadcrumbs.First().Sys.LinkType = "Link";
         contentfulLandingPage.Alerts.First().Sys.LinkType = "Link";
-        contentfulLandingPage.ContentReference.First().Sys.LinkType = "Link";
+        contentfulLandingPage.PageSections.First().Sys.LinkType = "Link";
 
         // Act
         LandingPage landingPage = _landingPageFactory.ToModel(contentfulLandingPage);
@@ -84,7 +84,7 @@ public class LandingPageContentfulFactoryTests
         Assert.Empty(landingPage.Alerts);
         _crumbFactory.Verify(_ => _.ToModel(contentfulLandingPage.Breadcrumbs.First()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(contentfulLandingPage.Alerts.First()), Times.Never);
-        _subItemFactory.Verify(_ => _.ToModel(contentfulLandingPage.ContentReference.First()), Times.Never);
+        _subItemFactory.Verify(_ => _.ToModel(contentfulLandingPage.PageSections.First()), Times.Never);
     }
 
     [Fact]
