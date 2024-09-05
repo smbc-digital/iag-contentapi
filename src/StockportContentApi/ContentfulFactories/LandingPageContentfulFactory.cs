@@ -5,14 +5,17 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
 
     public LandingPageContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
         ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory)
+        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+        IContentfulFactory<ContentfulReference, SubItem> subItemFactory)
     {
         _crumbFactory = crumbFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
+        _subItemFactory = subItemFactory;
     }
 
     public LandingPage ToModel(ContentfulLandingPage entry)
@@ -55,8 +58,9 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
-            ContentBlocks = entry.ContentBlocks,
-            Content = entry.Content
+            ContentReference = entry.ContentReference.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList()
         };
     }
 }

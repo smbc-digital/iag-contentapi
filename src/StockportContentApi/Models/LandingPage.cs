@@ -14,16 +14,5 @@ public class LandingPage
     public string HeaderType { get; set; }
     public MediaAsset HeaderImage { get; set; }
     public EColourScheme HeaderColourScheme { get; set; }
-    public IEnumerable<SubItem> ContentBlocks { get; set; }
-    public IDictionary<string, dynamic> Content { get; set; }
-}
-
-public class Data
-{
-    public ContentfulReference Target { get; set; }
-}
-
-public class ContentItem
-{
-    public Data Data { get; set; }
+    public IEnumerable<SubItem> ContentReference { get; set; }
 }

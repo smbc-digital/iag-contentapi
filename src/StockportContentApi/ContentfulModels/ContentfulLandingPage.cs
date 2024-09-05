@@ -9,6 +9,5 @@ public class ContentfulLandingPage : ContentfulReference
     public string HeaderType { get; set; } = string.Empty;
     public Asset HeaderImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public EColourScheme HeaderColourScheme { get; set; } = EColourScheme.Teal;
-    public IDictionary<string, dynamic> Content { get; set; } = new Dictionary<string, dynamic>();
-    public List<SubItem> ContentBlocks { get; set; } = new();
+    public List<ContentfulReference> ContentReference { get; set; } = new();
 }
