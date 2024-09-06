@@ -15,7 +15,7 @@ public class LandingPageRepository : BaseRepository
 
     public async Task<HttpResponse> GetLandingPage(string slug)
     {
-        QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>().ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(3);
+        QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>().ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(2);
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
         ContentfulLandingPage entry = entries.FirstOrDefault();
         
