@@ -20,11 +20,16 @@ public class SubItem
     public List<SubItem> SubItems { get; set; }
     public string Statistic { get; set; }
     public string StatisticSubheading { get; set; }
+    public string VideoTitle { get; set; }
+    public string VideoToken { get; set; }
+    public string VideoPlaceholderPhotoId { get; set; }
 
+
+ 
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, string mailingListId, string body, List<SubItem> subItems, string link, string buttonText, EColourScheme colourScheme, string statistic, string statisticSubheading)
+    public SubItem(string slug, string title, string teaser, string icon, string type, string contentType, DateTime sunriseDate, DateTime sunsetDate, string image, string mailingListId, string body, List<SubItem> subItems, string link, string buttonText, EColourScheme colourScheme, string statistic, string statisticSubheading, string videoTitle, string videoToken, string videoPlaceholderPhotoId)
     {
         Slug = slug;
         Teaser = teaser;
@@ -43,5 +48,8 @@ public class SubItem
         ButtonText = buttonText;
         Statistic = statistic;
         StatisticSubheading = statisticSubheading;
+        VideoTitle = videoTitle;
+        VideoToken = videoToken;
+        VideoPlaceholderPhotoId = videoPlaceholderPhotoId;
     }
 }

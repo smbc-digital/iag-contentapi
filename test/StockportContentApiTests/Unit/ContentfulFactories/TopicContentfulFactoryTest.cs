@@ -42,13 +42,13 @@ public class TopicContentfulFactoryTest
         Crumb crumb = new("title", "slug", "type");
         _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
 
-        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty);
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
-        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty);
+        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
-        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty);
+        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
         CallToActionBanner callToAction = new()
         {
