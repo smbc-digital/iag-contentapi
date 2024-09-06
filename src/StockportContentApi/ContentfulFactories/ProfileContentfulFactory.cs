@@ -4,7 +4,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
 {
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
+    private readonly IContentfulFactory<ContentfulReference, Trivia> _triviaFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
     private readonly IContentfulFactory<ContentfulProfile, Topic> _parentTopicFactory;
@@ -12,7 +12,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
     public ProfileContentfulFactory(
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
+        IContentfulFactory<ContentfulReference, Trivia> triviaFactory,
         IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
         IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
         IContentfulFactory<ContentfulProfile, Topic> parentTopicFactory)

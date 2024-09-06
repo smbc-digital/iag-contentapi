@@ -5,7 +5,7 @@ public class ProfileContentfulFactoryTest
     private readonly ContentfulProfile _contentfulProfile;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulTrivia, Trivia>> _triviaFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Trivia>> _triviaFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly ProfileContentfulFactory _profileContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory = new();
@@ -41,7 +41,7 @@ public class ProfileContentfulFactoryTest
         Assert.Empty(profile.TriviaSection);
         _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
-        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Never);
+        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class ProfileContentfulFactoryTest
         _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
         _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
         _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
-        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Once);
+        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
         _inlineQuoteFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulInlineQuote>()), Times.Once);
         _eventBannerFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulEventBanner>()), Times.Once);
     }

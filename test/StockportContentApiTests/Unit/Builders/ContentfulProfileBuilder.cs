@@ -22,7 +22,7 @@ public class ContentfulProfileBuilder
         Alerts = _alerts,
         Author = "author",
         Subject = "subject",
-        TriviaSection = new List<ContentfulTrivia>() {
+        TriviaSection = new List<ContentfulReference>() {
             new() {
                 Name = "trivia name",
                 Icon = "trivia icon",

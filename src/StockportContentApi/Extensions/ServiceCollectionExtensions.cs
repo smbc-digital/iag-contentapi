@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(p => new InlineQuoteContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulTrivia, Trivia>>(), p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(), p.GetService<IContentfulFactory<ContentfulProfile, Topic>>()));
+        services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p => new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, Trivia>>(), p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(), p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(), p.GetService<IContentfulFactory<ContentfulProfile, Topic>>()));
         services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p => new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(), p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(), p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
         services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p => new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
         services.AddSingleton<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>(p => new ServicePayPaymentContentfulFactory(
@@ -130,7 +130,7 @@ public static class ServiceCollectionExtensions
             ));
         services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
             (p => new TopicSiteMapContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulTrivia, Trivia>>
+        services.AddSingleton<IContentfulFactory<ContentfulReference, Trivia>>
             (p => new TriviaContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
             (p => new ArticleSiteMapContentfulFactory());
