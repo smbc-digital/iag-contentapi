@@ -9,7 +9,7 @@ public class ParentTopicContentfulFactoryTests
     public ParentTopicContentfulFactoryTests()
     {
         _subitemContentfulFactory.Setup(subItem => subItem.ToModel(It.IsAny<ContentfulReference>()))
-                                .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Green, string.Empty, string.Empty));
+                                .Returns(new SubItem("slug", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Green, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty));
         _timeProvider.Setup(timeProvider => timeProvider.Now())
                     .Returns(new DateTime(2017, 01, 02));
 
@@ -121,7 +121,7 @@ public class ParentTopicContentfulFactoryTests
             .Build();
 
         _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug.Equals("article-slug"))))
-            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, string.Empty, string.Empty, new List<SubItem>(), "externalLink", "button text", EColourScheme.Teal, string.Empty, string.Empty));
+            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, string.Empty, string.Empty, new List<SubItem>(), "externalLink", "button text", EColourScheme.Teal, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty));
 
         // Act
         Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
