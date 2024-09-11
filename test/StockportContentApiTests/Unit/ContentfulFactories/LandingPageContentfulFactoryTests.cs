@@ -5,7 +5,7 @@ public class LandingPageContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly ITimeProvider _timeProvider = new TimeProvider();
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory= new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, ContentBlock>> _contentBlockFactory= new();
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _landingPageFactory;
     private readonly ContentfulLandingPage _contentfulLandingPage = new()
         {
@@ -21,7 +21,7 @@ public class LandingPageContentfulFactoryTests
             HeaderImage = new Asset(),
         };
 
-    public LandingPageContentfulFactoryTests() => _landingPageFactory = new LandingPageContentfulFactory(_crumbFactory.Object, _timeProvider, _alertFactory.Object, _subItemFactory.Object);
+    public LandingPageContentfulFactoryTests() => _landingPageFactory = new LandingPageContentfulFactory(_crumbFactory.Object, _timeProvider, _alertFactory.Object, _contentBlockFactory.Object);
 
     [Fact]
     public void ToModel_ShouldCreateALandingPageFromAContentfulLandingPage()
@@ -50,7 +50,7 @@ public class LandingPageContentfulFactoryTests
         _crumbFactory.Verify(_ => _.ToModel(_contentfulLandingPage.Breadcrumbs.First()), Times.Once);
         Assert.Equal(alert, result.Alerts.First());
         _alertFactory.Verify(_ => _.ToModel(_contentfulLandingPage.Alerts.First()), Times.Once);
-        _subItemFactory.Verify(_ => _.ToModel(_contentfulLandingPage.PageSections.First()), Times.Once);
+        _contentBlockFactory.Verify(_ => _.ToModel(_contentfulLandingPage.PageSections.First()), Times.Once);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class LandingPageContentfulFactoryTests
         Assert.Empty(landingPage.Alerts);
         _crumbFactory.Verify(_ => _.ToModel(contentfulLandingPage.Breadcrumbs.First()), Times.Never);
         _alertFactory.Verify(_ => _.ToModel(contentfulLandingPage.Alerts.First()), Times.Never);
-        _subItemFactory.Verify(_ => _.ToModel(contentfulLandingPage.PageSections.First()), Times.Never);
+        _contentBlockFactory.Verify(_ => _.ToModel(contentfulLandingPage.PageSections.First()), Times.Never);
     }
 
     [Fact]

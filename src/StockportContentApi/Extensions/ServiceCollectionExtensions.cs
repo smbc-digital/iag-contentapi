@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(p => new CarouselContentContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
+        services.AddSingleton<IContentfulFactory<ContentfulReference, ContentBlock>>(p => new ContentBlockContentfulFactory(p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>>(p => new HomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
             p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
@@ -96,7 +97,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>>
         (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
+            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<IContentfulFactory<ContentfulReference, ContentBlock>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
             (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<IContentfulFactory<ContentfulSocialMediaLink,

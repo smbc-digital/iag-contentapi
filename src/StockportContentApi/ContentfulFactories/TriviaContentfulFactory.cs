@@ -2,8 +2,6 @@
 
 public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Trivia>
 {
-    public Trivia ToModel(ContentfulTrivia entry)
-    {
-        return new Trivia(entry.Name, entry.Icon, entry.Body, entry.Link);
-    }
+    public Trivia ToModel(ContentfulTrivia entry) =>
+        new(entry.Name, entry.Icon, entry.Body, entry.Link, entry.Statistic, entry.StatisticSubHeading);
 }
