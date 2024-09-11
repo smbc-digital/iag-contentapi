@@ -87,6 +87,7 @@ public class LandingPageRepositoryTest
             Teaser = "landing page teaser",
             MetaDescription = "landing page metadescription",
             Image = new MediaAsset(),
+            Icon = "icon",
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
             PageSections = new List<SubItem>() { subItem1, subItem2 }

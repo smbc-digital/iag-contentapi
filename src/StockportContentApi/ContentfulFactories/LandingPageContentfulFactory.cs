@@ -54,6 +54,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
+            Icon = entry.Icon,
             Image = image,
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
