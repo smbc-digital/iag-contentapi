@@ -72,7 +72,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
     private bool EntryIsValid(ContentfulReference entry) =>
         ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
 
-    private static bool IsSubItemSuitableForContentType(string parentContentType, string subItemContentType) =>
+    internal static bool IsSubItemSuitableForContentType(string parentContentType, string subItemContentType) =>
         parentContentType switch
         {
             "CallToAction" => subItemContentType.Equals("callToActionBanner"),
