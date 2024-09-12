@@ -20,6 +20,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             Body = entry.Body,
             SubItems = entry.SubItems?
                 .Where(EntryIsValid)
+                .Where(item => IsSubItemSuitableForContentType(entry.ContentType, GetEntryType(item)))
                 .Select(item => new ContentBlock
                 {
                     Slug = item.Slug,
@@ -70,4 +71,20 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
 
     private bool EntryIsValid(ContentfulReference entry) =>
         ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
+
+    private static bool IsSubItemSuitableForContentType(string parentContentType, string subItemContentType) =>
+        parentContentType switch
+        {
+            "CallToAction" => subItemContentType.Equals("callToActionBanner"),
+            "EventCards" => subItemContentType.Equals("events"),
+            "FindOutMoreBanner" or "FindOutMoreCards" or "ImageBannerContentWidth" or "ImageBannerScreenWidth" or
+            "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
+            "NewsBanner" => subItemContentType.Equals("news"),
+            "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
+            "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
+            "SubscriptionBanner" => false,
+            "TriviaBanner" or "TriviaCardsContentWidth" or "TriviaCardsScreenWidth" or "TriviaList" => subItemContentType.Equals("informationList"),
+            "Video" => false,
+            _ => true
+        };
 }
