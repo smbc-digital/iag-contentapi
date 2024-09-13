@@ -83,7 +83,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
             "SubscriptionBanner" => false,
-            "TriviaBanner" or "TriviaCardsContentWidth" or "TriviaCardsScreenWidth" or "TriviaList" => subItemContentType.Equals("informationList"),
+            "TriviaBanner" or "TriviaCards" or "TriviaList" => subItemContentType.Equals("informationList"),
             "Video" => false,
             _ => true
         };
