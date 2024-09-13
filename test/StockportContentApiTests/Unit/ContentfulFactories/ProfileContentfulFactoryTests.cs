@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ProfileContentfulFactoryTest
+public class ProfileContentfulFactoryTests
 {
     private readonly ContentfulProfile _contentfulProfile;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
@@ -11,7 +11,7 @@ public class ProfileContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Topic>> _parentTopicFactory = new();
 
-    public ProfileContentfulFactoryTest()
+    public ProfileContentfulFactoryTests()
     {
         _contentfulProfile = new ContentfulProfileBuilder().Build();
         _profileContentfulFactory = new ProfileContentfulFactory(
@@ -33,7 +33,7 @@ public class ProfileContentfulFactoryTest
         _contentfulProfile.TriviaSection.First().Sys.LinkType = "Link";
 
         // Act
-        var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
+        Profile profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
         // Assert
         Assert.Empty(profile.Breadcrumbs);
@@ -48,7 +48,7 @@ public class ProfileContentfulFactoryTest
     public void ToModel_ShouldReturnNull()
     {
         // Act
-        var profile = _profileContentfulFactory.ToModel(null);
+        Profile profile = _profileContentfulFactory.ToModel(null);
 
         // Assert
         Assert.Null(profile);
@@ -58,7 +58,7 @@ public class ProfileContentfulFactoryTest
     public void ToModel_ShouldReturnProfile()
     {
         // Act
-        var profile = _profileContentfulFactory.ToModel(_contentfulProfile);
+        Profile profile = _profileContentfulFactory.ToModel(_contentfulProfile);
 
         // Assert
         Assert.NotEmpty(profile.Image.Url);

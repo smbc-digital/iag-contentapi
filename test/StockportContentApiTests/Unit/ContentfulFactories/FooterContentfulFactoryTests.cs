@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class FooterContentfulFactoryTest
+public class FooterContentfulFactoryTests
 {
     [Fact]
     public void ShouldCreateAFooterFromAContentfulReference()

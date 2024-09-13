@@ -1,46 +1,40 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
+namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class PrivacyNoticeParentTopicContentfulFactoryTest
+public class ProfileParentTopicContentfulFactoryTests
 {
-    private readonly PrivacyNoticeParentTopicContentfulFactory _privacyNoticeParentTopicContentfulFactory;
+    private readonly ProfileParentTopicContentfulFactory _profileParentTopicContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
 
-    public PrivacyNoticeParentTopicContentfulFactoryTest()
+    public ProfileParentTopicContentfulFactoryTests()
     {
-        _privacyNoticeParentTopicContentfulFactory = new PrivacyNoticeParentTopicContentfulFactory(_subitemFactory.Object, _timeProvider.Object);
+        _profileParentTopicContentfulFactory = new ProfileParentTopicContentfulFactory(_subitemFactory.Object, _timeProvider.Object);
     }
 
     [Fact]
-    public void ToModel_ShouldReturnPrivacyNotice()
+    public void ToModel_ShouldReturnProfile()
     {
         // Arrange
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Slug = "test-slug",
             Title = "test-title",
-            Category = "test-category",
-            Purpose = "test-purpose",
-            TypeOfData = "test-type-of-data",
-            Legislation = "test-legislation",
-            Obtained = "test-obtained",
-            ExternallyShared = "test-externally-shared",
-            RetentionPeriod = "test-retention-period",
-            OutsideEu = false,
-            AutomatedDecision = false,
+            Icon = "test-icon",
+            Image = new Asset(),
+            Teaser = "test-teaser",
             Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() }
         };
 
         // Act
-        Topic topic = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic topic = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         Assert.IsType<Topic>(topic);
     }
 
     [Fact]
-    public void ToModel_ShouldConvertContentfulPrivacyNoticeToPrivacyNotice()
+    public void ToModel_ShouldConvertContentfulProfileToProfile()
     {
         // Arrange
         ContentfulReference contentfulReference = new()
@@ -52,14 +46,14 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
             SecondaryItems = new List<ContentfulReference>()
         };
 
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Breadcrumbs = new List<ContentfulReference> { contentfulReference },
             Sys = new SystemProperties { Id = "valid-id" }
         };
 
         // Act
-        Topic topic = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic topic = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         Assert.IsType<Topic>(topic);
@@ -71,27 +65,20 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
     public void ToModel_ShouldNotAddLinks()
     {
         // Arrange
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Slug = "test-slug",
             Title = "test-title",
-            Category = "test-category",
-            Purpose = "test-purpose",
-            TypeOfData = "test-type-of-data",
-            Legislation = "test-legislation",
-            Obtained = "test-obtained",
-            ExternallyShared = "test-externally-shared",
-            RetentionPeriod = "test-retention-period",
-            OutsideEu = false,
-            AutomatedDecision = false,
+            Icon = "test-icon",
+            Teaser = "test-teaser",
             Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() }
         };
 
-        contentfulPrivacyNotice.Image.SystemProperties.LinkType = "Link";
-        contentfulPrivacyNotice.Breadcrumbs.First().Sys.LinkType = "Link";
+        contentfulProfile.Image.SystemProperties.LinkType = "Link";
+        contentfulProfile.Breadcrumbs.First().Sys.LinkType = "Link";
 
         // Act
-        Topic topic = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic topic = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         _mockCrumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
@@ -101,13 +88,13 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
     public void ToModel_ShouldReturnNullTopic_If_TopicInBreadcrumbIsNull()
     {
         // Arrange
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Breadcrumbs = new List<ContentfulReference>()
         };
 
         // Act
-        Topic topic = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic topic = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         Assert.IsType<NullTopic>(topic);
@@ -117,7 +104,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
     public void ToModel_ShouldReturnNullTopic_WhenEntryIsNull()
     {
         // Act
-        Topic topic = _privacyNoticeParentTopicContentfulFactory.ToModel(null);
+        Topic topic = _profileParentTopicContentfulFactory.ToModel(null);
 
         // Assert
         Assert.IsType<NullTopic>(topic);
@@ -134,7 +121,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
             SecondaryItems = new List<ContentfulReference>()
         };
 
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Breadcrumbs = new List<ContentfulReference> { contentfulReference },
             Sys = new SystemProperties { Id = "valid-id" }
@@ -144,7 +131,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
         _timeProvider.Setup(_ => _.Now()).Returns(DateTime.Now);
 
         // Act
-        Topic result = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic result = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         Assert.IsType<Topic>(result);
@@ -162,7 +149,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
             SecondaryItems = new List<ContentfulReference>()
         };
 
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
+        ContentfulProfile contentfulProfile = new()
         {
             Breadcrumbs = new List<ContentfulReference> { contentfulReference },
             Sys = new SystemProperties { Id = "valid-id" },
@@ -183,7 +170,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTest
         _timeProvider.Setup(_ => _.Now()).Returns(DateTime.Now);
 
         // Act
-        Topic result = _privacyNoticeParentTopicContentfulFactory.ToModel(contentfulPrivacyNotice);
+        Topic result = _profileParentTopicContentfulFactory.ToModel(contentfulProfile);
 
         // Assert
         Assert.IsType<Topic>(result);

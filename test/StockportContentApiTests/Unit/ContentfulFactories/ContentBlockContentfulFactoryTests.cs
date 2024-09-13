@@ -1,16 +1,11 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ContentBlockContentfulFactoryTest
+public class ContentBlockContentfulFactoryTests
 {
     private readonly Mock<ITimeProvider> _timeProviderMock = new();
     private readonly ContentBlockContentfulFactory _factory;
 
-    public ContentBlockContentfulFactoryTest()
-    {
-        // _timeProviderMock.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-
-        _factory = new ContentBlockContentfulFactory(_timeProviderMock.Object);
-    }
+    public ContentBlockContentfulFactoryTests() => _factory = new ContentBlockContentfulFactory(_timeProviderMock.Object);
 
     [Fact]
     public void ToModel_ShouldReturnContentBlock_WithCorrectFields()

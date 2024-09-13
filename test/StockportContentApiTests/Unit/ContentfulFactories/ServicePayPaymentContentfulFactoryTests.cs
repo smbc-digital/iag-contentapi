@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ServicePayPaymentContentfulFactoryTest
+public class ServicePayPaymentContentfulFactoryTests
 {
     private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
     private Mock<ITimeProvider> _timeProvider;
@@ -9,7 +9,7 @@ public class ServicePayPaymentContentfulFactoryTest
     [Fact]
     public void ShouldCreateAServicePayPaymentFromAContentfulServicePayPayment()
     {
-        var contentfulPayment = new ContentfulServicePayPaymentBuilder()
+        ContentfulServicePayPayment contentfulPayment = new ContentfulServicePayPaymentBuilder()
             .Slug("payment-slug")
             .Title("payment title")
             .Teaser("payment teaser")
@@ -20,9 +20,9 @@ public class ServicePayPaymentContentfulFactoryTest
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         _timeProvider = new Mock<ITimeProvider>();
         _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        var contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
+        ServicePayPaymentContentfulFactory contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
-        var payment = contentfulFactory.ToModel(contentfulPayment);
+        ServicePayPayment payment = contentfulFactory.ToModel(contentfulPayment);
 
         payment.Slug.Should().Be("payment-slug");
         payment.Title.Should().Be("payment title");

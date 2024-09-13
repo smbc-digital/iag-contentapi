@@ -1,12 +1,12 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class OrganisationContentfulFactoryTest
+public class OrganisationContentfulFactoryTests
 {
     private readonly ContentfulOrganisation _contentfulOrganisation;
     private readonly OrganisationContentfulFactory _organisationContentfulFactory;
     private readonly Mock<IContentfulFactory<ContentfulOrganisation, Organisation>> _contentfulOrganisationFactory;
 
-    public OrganisationContentfulFactoryTest()
+    public OrganisationContentfulFactoryTests()
     {
         _contentfulOrganisationFactory = new Mock<IContentfulFactory<ContentfulOrganisation, Organisation>>();
         _contentfulOrganisation = new ContentfulOrganisation
@@ -27,7 +27,7 @@ public class OrganisationContentfulFactoryTest
     [Fact]
     public void ShouldCreateAGroupFromAContentfulGroup()
     {
-        var group = _organisationContentfulFactory.ToModel(_contentfulOrganisation);
+        Organisation group = _organisationContentfulFactory.ToModel(_contentfulOrganisation);
         group.Should().BeEquivalentTo(_contentfulOrganisation, o => o.ExcludingMissingMembers());
     }
 }

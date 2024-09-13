@@ -1,20 +1,20 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class EventCategoryContentfulFactoryTest
+public class EventCategoryContentfulFactoryTests
 {
     [Fact]
     public void ShouldCreateAEventCategoryFromAContentfulEventCategory()
     {
 
-        var contentfulShowcase = new ContentfulEventCategoryBuilder()
+        ContentfulEventCategory contentfulShowcase = new ContentfulEventCategoryBuilder()
             .Name("category name")
             .Slug("category-slug")
             .Icon("icon")
             .Build();
 
-        var contentfulFactory = new EventCategoryContentfulFactory();
+        EventCategoryContentfulFactory contentfulFactory = new();
 
-        var category = contentfulFactory.ToModel(contentfulShowcase);
+        EventCategory category = contentfulFactory.ToModel(contentfulShowcase);
 
         category.Should().BeOfType<EventCategory>();
         category.Name.Should().Be("category name");

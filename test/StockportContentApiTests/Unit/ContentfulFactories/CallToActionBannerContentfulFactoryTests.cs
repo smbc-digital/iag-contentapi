@@ -1,14 +1,14 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class CallToActionBannerContentfulFactoryTest
+public class CallToActionBannerContentfulFactoryTests
 {
-    private readonly CallToActionBannerContentfulFactory _factory= new CallToActionBannerContentfulFactory();
+    private readonly CallToActionBannerContentfulFactory _factory= new();
     
     [Fact]
     public void ToModel_ShouldReturnNull_IfEntryIsNull()
     {
         // Act
-        var result = _factory.ToModel(null);
+        CallToActionBanner result = _factory.ToModel(null);
 
         // Assert
         Assert.Null(result);
@@ -18,7 +18,7 @@ public class CallToActionBannerContentfulFactoryTest
     public void ToModel_ShouldReturnCallToActionBanner()
     {
         // Arrange
-        var model = new ContentfulCallToActionBanner
+        ContentfulCallToActionBanner model = new()
         {
             AltText = "alt text",
             ButtonText = "button text",
@@ -33,7 +33,7 @@ public class CallToActionBannerContentfulFactoryTest
         };
 
         // Act
-        var result = _factory.ToModel(model);
+        CallToActionBanner result = _factory.ToModel(model);
 
         // Assert
         Assert.NotNull(result);

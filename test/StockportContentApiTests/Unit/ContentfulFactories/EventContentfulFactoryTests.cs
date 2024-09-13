@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class EventContentfulFactoryTest
+public class EventContentfulFactoryTests
 {
     private readonly ContentfulEvent _contentfulEvent;
     private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
@@ -12,7 +12,7 @@ public class EventContentfulFactoryTest
     private readonly List<Alert> _alerts = new List<Alert>() {
             new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9), string.Empty, false, string.Empty) };
 
-    public EventContentfulFactoryTest()
+    public EventContentfulFactoryTests()
     {
         _contentfulEvent = new ContentfulEventBuilder().Build();
 
@@ -38,7 +38,7 @@ public class EventContentfulFactoryTest
         _contentfulEvent.Documents.First().SystemProperties.LinkType = "Link";
         _contentfulEvent.Image.SystemProperties.LinkType = "Link";
 
-        var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
+        Event anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
         anEvent.Documents.Count.Should().Be(0);
         anEvent.ImageUrl.Should().Be(string.Empty);
@@ -51,7 +51,7 @@ public class EventContentfulFactoryTest
         _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>()))
             .Returns(new GroupBuilder().Name("Test Group").Build());
 
-        var anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
+        Event anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
 
         anEvent.Group.Name.Should().Be("Test Group");
     }

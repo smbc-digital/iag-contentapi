@@ -1,12 +1,12 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ShowcaseContentfulFactoryTest
+public class ShowcaseContentfulFactoryTests
 {
     [Fact]
     public void ShouldCreateAShowcaseFromAContentfulShowcase()
     {
         List<SubItem> subItems = new() {
-            new("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List < SubItem >(), EColourScheme.Blue) };
+            new("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue) };
         Crumb crumb = new("title", "slug", "type");
 
         ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder()

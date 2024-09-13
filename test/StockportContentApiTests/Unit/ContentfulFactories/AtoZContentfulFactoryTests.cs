@@ -1,15 +1,15 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class AtoZContentfulFactoryTest
+public class AtoZContentfulFactoryTests
 {
 
     [Fact]
-    public void ShouldCreateAAtoZFromAContentfulReference()
+    public void ShouldCreateAtoZFromAContentfulReference()
     {
-        var ContentfulReference =
+        ContentfulAtoZ ContentfulReference =
             new ContentfulAToZBuilder().Build();
 
-        var atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
+        AtoZ atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
 
         atoZ.Slug.Should().Be(ContentfulReference.Slug);
         atoZ.Title.Should().Be(ContentfulReference.Title);

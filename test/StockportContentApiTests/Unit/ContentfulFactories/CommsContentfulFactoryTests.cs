@@ -1,12 +1,12 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class CommsContentfulFactoryTest
+public class CommsContentfulFactoryTests
 {
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
     private readonly CommsContentfulFactory _factory;
 
-    public CommsContentfulFactoryTest()
+    public CommsContentfulFactoryTests()
     {
         _factory = new CommsContentfulFactory(
             _callToActionFactory.Object,
@@ -25,7 +25,7 @@ public class CommsContentfulFactoryTest
             .Setup(_ => _.ToModel(It.IsAny<ContentfulEvent>()))
             .Returns(new EventBuilder().Build());
 
-        var model = new ContentfulCommsHomepage
+        ContentfulCommsHomepage model = new()
         {
             WhatsOnInStockportEvent = new ContentfulEventBuilder().Build(),
             MetaDescription = "meta description",
@@ -42,7 +42,7 @@ public class CommsContentfulFactoryTest
         };
 
         // Act
-        var result = _factory.ToModel(model);
+        CommsHomepage result = _factory.ToModel(model);
 
         // Assert
         Assert.NotNull(result);

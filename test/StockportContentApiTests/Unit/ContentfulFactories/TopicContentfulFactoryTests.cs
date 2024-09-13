@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class TopicContentfulFactoryTest
+public class TopicContentfulFactoryTests
 {
     private readonly ContentfulTopic _contentfulTopic;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
@@ -13,7 +13,7 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
-    public TopicContentfulFactoryTest()
+    public TopicContentfulFactoryTests()
     {
         _contentfulTopic = new ContentfulTopicBuilder().Build();
         _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
