@@ -5,7 +5,6 @@ public class LandingPageRepositoryTest
     private readonly LandingPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
-    private readonly Mock<ICache> _cache;
 
     public LandingPageRepositoryTest()
     {
@@ -87,6 +86,7 @@ public class LandingPageRepositoryTest
             Teaser = "landing page teaser",
             MetaDescription = "landing page metadescription",
             Image = new MediaAsset(),
+            Icon = "icon",
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
             PageSections = new List<ContentBlock>() { contentBlock1, contentBlock2 }

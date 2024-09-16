@@ -50,12 +50,12 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
+            Icon = entry.Icon,
             Image = image,
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
-            PageSections = entry.PageSections.Where(contentBlock => ContentfulHelpers.EntryIsNotALink(contentBlock.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(contentBlock.SunriseDate, contentBlock.SunsetDate))
+            PageSections = entry.PageSections.Where(contentBlock => ContentfulHelpers.EntryIsNotALink(contentBlock.Sys))
                                     .Select(contentBlock => _contentBlockFactory.ToModel(contentBlock)).ToList()
         };
     }

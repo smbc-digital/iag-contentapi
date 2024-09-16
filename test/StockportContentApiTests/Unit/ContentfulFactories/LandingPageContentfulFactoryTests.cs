@@ -16,6 +16,7 @@ public class LandingPageContentfulFactoryTests
             Alerts = new List<ContentfulAlert>(),
             Teaser = "landing page teaser",
             MetaDescription = "landing page metadescription",
+            Icon = "icon",
             Image = new Asset(),
             HeaderType = "full image",
             HeaderImage = new Asset(),
@@ -45,6 +46,7 @@ public class LandingPageContentfulFactoryTests
         Assert.Equal("landing page subtitle", result.Subtitle);
         Assert.Equal("landing page teaser", result.Teaser);
         Assert.Equal("landing page metadescription", result.MetaDescription);
+        Assert.Equal("icon", result.Icon);
         Assert.Equal("full image", result.HeaderType);
         Assert.Equal(crumb, result.Breadcrumbs.First());
         _crumbFactory.Verify(_ => _.ToModel(_contentfulLandingPage.Breadcrumbs.First()), Times.Once);
@@ -66,6 +68,7 @@ public class LandingPageContentfulFactoryTests
             Alerts = new List<ContentfulAlert>() { new ContentfulAlertBuilder().Build() },
             Teaser = "landing page teaser",
             MetaDescription = "landing page metaDescription",
+            Icon = "icon",
             Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
             HeaderType = "full image",
             HeaderImage = new ContentfulAssetBuilder().Url("header-image-url.jpg").Build(),
