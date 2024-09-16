@@ -4,7 +4,7 @@ public class ShowcaseRepository
 {
     private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
     private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly EventRepository _eventRepository;
     private readonly ILogger<ShowcaseRepository> _logger;
 
@@ -74,7 +74,7 @@ public class ShowcaseRepository
             showcase.Events = events.Take(3);
         }
 
-        var news = await PopulateNews(showcase.NewsCategoryTag);
+        ShowcaseNews news = await PopulateNews(showcase.NewsCategoryTag);
         if (news != null)
         {
             showcase.NewsArticle = news.News;
@@ -96,7 +96,7 @@ public class ShowcaseRepository
         News result = null;
         var type = string.Empty;
 
-        var newsBuilder =
+        QueryBuilder<ContentfulNews> newsBuilder =
             new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
                 .FieldMatches(n => n.Categories, tag)
                 .Include(1);
