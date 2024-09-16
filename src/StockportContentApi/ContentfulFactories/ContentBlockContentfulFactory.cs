@@ -52,15 +52,23 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             VideoToken = entry.VideoToken,
             VideoPlaceholderPhotoId = entry.VideoPlaceholderPhotoId
         };
-    
+
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
         sys.ContentType.SystemProperties.Id.Equals("groupHomepage") ? "groups" : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
         entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
 
-    private static string GetEntryImage(ContentfulReference entry) => 
-        entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+    private static string GetEntryImage(ContentfulReference entry)
+    {
+        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+
+        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
+            ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
+            image = entry.BackgroundImage.File.Url;
+
+        return image;
+    }
 
     private static string GetEntryTitle(ContentfulReference entry) => 
         !string.IsNullOrEmpty(entry.NavigationTitle) 
@@ -83,7 +91,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
             "SubscriptionBanner" => false,
-            "TriviaBanner" or "TriviaCardsContentWidth" or "TriviaCardsScreenWidth" or "TriviaList" => subItemContentType.Equals("informationList"),
+            "TriviaBanner" or "TriviaCards" or "TriviaList" => subItemContentType.Equals("informationList"),
             "Video" => false,
             _ => true
         };
