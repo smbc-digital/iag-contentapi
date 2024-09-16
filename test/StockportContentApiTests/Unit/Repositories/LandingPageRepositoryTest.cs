@@ -5,7 +5,6 @@ public class LandingPageRepositoryTest
     private readonly LandingPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
-    private readonly Mock<ICache> _cache;
 
     public LandingPageRepositoryTest()
     {
