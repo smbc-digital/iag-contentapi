@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class TopicContentfulFactoryTest
+public class TopicContentfulFactoryTests
 {
     private readonly ContentfulTopic _contentfulTopic;
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
@@ -13,7 +13,7 @@ public class TopicContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
-    public TopicContentfulFactoryTest()
+    public TopicContentfulFactoryTests()
     {
         _contentfulTopic = new ContentfulTopicBuilder().Build();
         _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
@@ -42,13 +42,13 @@ public class TopicContentfulFactoryTest
         Crumb crumb = new("title", "slug", "type");
         _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
 
-        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
 
-        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        SubItem secondaryItem = new("slug2", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
         _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
 
-        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", "contentType", DateTime.MinValue, DateTime.MaxValue, "image", "111", "body text", new List<SubItem>(), "externalLink", "button text", EColourScheme.Blue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        SubItem tertiaryItem = new("slug3", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
 
         CallToActionBanner callToAction = new()
         {

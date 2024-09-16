@@ -1,20 +1,18 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class GroupContentfulFactoryTest
+public class GroupContentfulFactoryTests
 {
     private readonly ContentfulGroup _contentfulGroup;
     private readonly GroupContentfulFactory _groupContentfulFactory;
-    private readonly ContentfulEventBuilder _contentfulEventBuilder = new ContentfulEventBuilder();
-
-    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
+    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulOrganisation, Organisation>> _contentfulOrganisationFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _contentfulGroupBrandingFactory;
     private Mock<ITimeProvider> _timeProvider;
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
 
-    public GroupContentfulFactoryTest()
+    public GroupContentfulFactoryTests()
     {
         _timeProvider = new Mock<ITimeProvider>();
 
@@ -32,13 +30,13 @@ public class GroupContentfulFactoryTest
     public void ShouldCreateAGroupFromAContentfulGroup()
     {
         // Arrange
-        var crumb = new Crumb("Stockport Local", string.Empty, "groups");
-        var category = new GroupCategory("name", "slug", "icon", "imageUrl");
-        var administrators = new GroupAdministrators
+        Crumb crumb = new("Stockport Local", string.Empty, "groups");
+        GroupCategory category = new("name", "slug", "icon", "imageUrl");
+        GroupAdministrators administrators = new()
         {
             Items = new List<GroupAdministratorItems>
             {
-                new GroupAdministratorItems
+                new()
                 {
                     Name = "Name",
                     Email = "Email",
@@ -46,24 +44,24 @@ public class GroupContentfulFactoryTest
                 }
             }
         };
-        var mapPosition = new MapPosition
+        MapPosition mapPosition = new()
         {
             Lat = 39,
             Lon = 2
         };
-        var subCategories = new List<GroupSubCategory>
+        List<GroupSubCategory> subCategories = new()
         {
-            new GroupSubCategory("name", "slug")
+            new("name", "slug")
         };
-        var organisation = new Organisation
+        Organisation organisation = new()
         {
             Title = "Org"
         };
-        var suitableFor = new List<string>
+        List<string> suitableFor = new()
         {
             "people"
         };
-        var document = new DocumentBuilder().Build();
+        Document document = new DocumentBuilder().Build();
 
         _documentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
         _contentfulGroupCategoryFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulGroupCategory>()))
@@ -74,7 +72,7 @@ public class GroupContentfulFactoryTest
             .Returns(organisation);
 
         // Act
-        var result = _groupContentfulFactory.ToModel(_contentfulGroup);
+        Group result = _groupContentfulFactory.ToModel(_contentfulGroup);
 
         // Assert
         result.AbilityLevel.Should().Be("");

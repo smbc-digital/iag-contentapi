@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ArticleContentfulFactoryTest
+public class ArticleContentfulFactoryTests
 {
     private readonly ContentfulArticle _contentfulArticle;
     private readonly Mock<IVideoRepository> _videoRepository = new();
@@ -15,7 +15,7 @@ public class ArticleContentfulFactoryTest
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _articleBrandingFactory = new();
 
-    public ArticleContentfulFactoryTest()
+    public ArticleContentfulFactoryTests()
     {
         _contentfulArticle = new ContentfulArticleBuilder()
             .WithBreadcrumbContentType("topic")

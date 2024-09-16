@@ -4,17 +4,13 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
 {
     private readonly DateComparer _dateComparer;
 
-    public SubItemContentfulFactory(ITimeProvider timeProvider)
-    {
-        _dateComparer = new DateComparer(timeProvider);
-    }
+    public SubItemContentfulFactory(ITimeProvider timeProvider) => _dateComparer = new DateComparer(timeProvider);
 
     public SubItem ToModel(ContentfulReference entry)
     {
-        var type = GetEntryType(entry);
-        var image = GetEntryImage(entry);
-        if (string.IsNullOrEmpty(image) &&
-            entry.BackgroundImage?.SystemProperties is not null &&
+        string type = GetEntryType(entry);
+        string image = GetEntryImage(entry);
+        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
             ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
         {
             image = entry.BackgroundImage.File.Url;
@@ -28,7 +24,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SubItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ButtonText, item.ColourScheme, item.Statistic, item.StatisticSubheading, item.VideoTitle, item.VideoToken, item.VideoPlaceholderPhotoId);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -37,7 +33,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SecondaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ButtonText, item.ColourScheme, item.Statistic, item.StatisticSubheading, item.VideoTitle, item.VideoToken, item.VideoPlaceholderPhotoId);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -46,7 +42,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.TertiaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), entry.ContentType, item.SunriseDate, item.SunsetDate, GetEntryImage(item), item.MailingListId, item.Body, new List<SubItem>(), item.Link, item.ButtonText, item.ColourScheme, item.Statistic, item.StatisticSubheading, item.VideoTitle, item.VideoToken, item.VideoPlaceholderPhotoId);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -55,36 +51,27 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
             {
-                SubItem newSection = new SubItem($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), entry.ContentType, section.SunriseDate, section.SunsetDate, GetEntryImage(section), entry.MailingListId, entry.Body, new List<SubItem>(), section.Link, section.ButtonText, section.ColourScheme, section.Statistic, section.StatisticSubheading, section.VideoTitle, section.VideoToken, section.VideoPlaceholderPhotoId);
+                SubItem newSection = new($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
                 subItems.Add(newSection);
             }
         }
 
         if (string.IsNullOrEmpty(entry.Icon))
-        {
-            entry.Icon = type == "payment" ? "si-coin" : "si-default";
-        }
+            entry.Icon = type.Equals("payment") ? "si-coin" : "si-default";
 
-        var handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
+        string handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
-        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.ContentType, entry.SunriseDate, entry.SunsetDate, image, entry.MailingListId, entry.Body, subItems, entry.Link, entry.ButtonText, entry.ColourScheme, entry.Statistic, entry.StatisticSubheading, entry.VideoTitle, entry.VideoToken, entry.VideoPlaceholderPhotoId);
+        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
     }
 
-    private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug)
-    {
-        return sys.ContentType.SystemProperties.Id == "groupHomepage" ? "groups" : entrySlug;
-    }
+    private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
+        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") ? "groups" : entrySlug;
 
-    private string GetEntryType(ContentfulReference entry)
-    {
-        return entry.Sys.ContentType.SystemProperties.Id == "startPage" ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
-    }
+    private static string GetEntryType(ContentfulReference entry) =>
+        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
 
-    private string GetEntryImage(ContentfulReference entry)
-    {
-        return entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-            entry.Image.File.Url : string.Empty;
-    }
+    private static string GetEntryImage(ContentfulReference entry) =>
+        entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
 
     private static string GetEntryTitle(ContentfulReference entry) => 
         !string.IsNullOrEmpty(entry.NavigationTitle) 
@@ -93,8 +80,6 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
                 ? entry.Title 
                 : entry.Name;
 
-    private bool EntryIsValid(ContentfulReference entry)
-    {
-        return ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
-    }
+    private bool EntryIsValid(ContentfulReference entry) =>
+        ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
 }

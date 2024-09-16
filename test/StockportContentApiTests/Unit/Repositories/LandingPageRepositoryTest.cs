@@ -5,7 +5,6 @@ public class LandingPageRepositoryTest
     private readonly LandingPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
-    private readonly Mock<ICache> _cache;
 
     public LandingPageRepositoryTest()
     {
@@ -74,8 +73,8 @@ public class LandingPageRepositoryTest
             },
         };
 
-        SubItem subItem1 = new() { Title = "SubItem 1" };
-        SubItem subItem2 = new() { Title = "SubItem 2" };
+        ContentBlock contentBlock1 = new() { Title = "ContentBlock 1" };
+        ContentBlock contentBlock2 = new() { Title = "ContentBlock 2" };
 
         LandingPage landingPage = new()
         {
@@ -90,7 +89,7 @@ public class LandingPageRepositoryTest
             Icon = "icon",
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
-            PageSections = new List<SubItem>() { subItem1, subItem2 }
+            PageSections = new List<ContentBlock>() { contentBlock1, contentBlock2 }
         };
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
@@ -119,7 +118,7 @@ public class LandingPageRepositoryTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(responseLandingPage.PageSections);
         Assert.Equal(2, responseLandingPage.PageSections.Count());
-        Assert.Equal(subItem1, responseLandingPage.PageSections.ToList()[0]);
-        Assert.Equal(subItem2, responseLandingPage.PageSections.ToList()[1]);
+        Assert.Equal(contentBlock1, responseLandingPage.PageSections.ToList()[0]);
+        Assert.Equal(contentBlock2, responseLandingPage.PageSections.ToList()[1]);
     }
 }

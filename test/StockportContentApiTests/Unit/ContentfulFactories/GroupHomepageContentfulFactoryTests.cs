@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class GroupHomepageContentfulFactoryTest
+public class GroupHomepageContentfulFactoryTests
 {
     private readonly ContentfulGroupHomepage _contentfulGroupHomepage;
     private readonly GroupHomepageContentfulFactory _groupHomepageContentfulFactory;
@@ -11,7 +11,7 @@ public class GroupHomepageContentfulFactoryTest
     private readonly Mock<ITimeProvider> _mockTimeProvider;
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
 
-    public GroupHomepageContentfulFactoryTest()
+    public GroupHomepageContentfulFactoryTests()
     {
         _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
         _groupCategoryFactory = new Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>();
@@ -28,11 +28,11 @@ public class GroupHomepageContentfulFactoryTest
     public void ShouldReturnGroupHomepage()
     {
         // Arrange
-        var eventBanner = new EventBanner("title", "teaser", "icon", "link", EColourScheme.Teal_Light);
-        var featuredGroup = new GroupBuilder().Build();
-        var category = new GroupCategory("title", "slug", "icon", "image");
-        var subCategory = new GroupSubCategory("title", "slug");
-        var alert = new Alert("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MinValue,
+        EventBanner eventBanner = new("title", "teaser", "icon", "link", EColourScheme.Teal_Light);
+        Group featuredGroup = new GroupBuilder().Build();
+        GroupCategory category = new("title", "slug", "icon", "image");
+        GroupSubCategory subCategory = new("title", "slug");
+        Alert alert = new("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MinValue,
             "slug", false, string.Empty);
 
         _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(featuredGroup);
@@ -42,7 +42,7 @@ public class GroupHomepageContentfulFactoryTest
         _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act
-        var result = _groupHomepageContentfulFactory.ToModel(_contentfulGroupHomepage);
+        GroupHomepage result = _groupHomepageContentfulFactory.ToModel(_contentfulGroupHomepage);
 
         // Assert
         result.Title.Should().Be("title");
@@ -66,5 +66,4 @@ public class GroupHomepageContentfulFactoryTest
         result.SecondaryBody.Should().Be("secondaryBody");
         result.EventBanner.Should().BeEquivalentTo(eventBanner);
     }
-
 }

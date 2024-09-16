@@ -5,17 +5,17 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
+    private readonly IContentfulFactory<ContentfulReference, ContentBlock> _contentBlockFactory;
 
     public LandingPageContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulReference, SubItem> subItemFactory)
+        IContentfulFactory<ContentfulReference, ContentBlock> contentBlockFactory)
     {
         _crumbFactory = crumbFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
-        _subItemFactory = subItemFactory;
+        _contentBlockFactory = contentBlockFactory;
     }
 
     public LandingPage ToModel(ContentfulLandingPage entry)
@@ -25,23 +25,19 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
 
         MediaAsset image = new();
         if (entry.Image is not null && entry.Image.File is not null)
-        {
             image = new MediaAsset
             {
                 Url = entry.Image.File.Url,
                 Description = entry.Image.Description
             };
-        }
 
         MediaAsset headerImage = new();
         if (entry.HeaderImage is not null && entry.HeaderImage.File is not null)
-        {
             headerImage = new MediaAsset
             {
                 Url = entry.HeaderImage.File.Url,
                 Description = entry.HeaderImage.Description
             };
-        }
         
         return new LandingPage(){
             Slug = entry.Slug,
@@ -59,9 +55,8 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
-            PageSections = entry.PageSections.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList()
+            PageSections = entry.PageSections.Where(contentBlock => ContentfulHelpers.EntryIsNotALink(contentBlock.Sys))
+                                    .Select(contentBlock => _contentBlockFactory.ToModel(contentBlock)).ToList()
         };
     }
 }

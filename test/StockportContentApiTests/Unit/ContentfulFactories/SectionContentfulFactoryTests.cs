@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class SectionContentfulFactoryTest
+public class SectionContentfulFactoryTests
 {
     private readonly ContentfulSection _contentfulSection;
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
@@ -11,7 +11,7 @@ public class SectionContentfulFactoryTest
     private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
     private Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory;
 
-    public SectionContentfulFactoryTest()
+    public SectionContentfulFactoryTests()
     {
         _contentfulSection = new ContentfulSectionBuilder().Build();
         _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
@@ -65,23 +65,23 @@ public class SectionContentfulFactoryTest
 
         _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
 
-        var document = new DocumentBuilder().Build();
+        Document document = new DocumentBuilder().Build();
         _documentFactory.Setup(o => o.ToModel(_contentfulSection.Documents.First())).Returns(document);
 
         const string processedBody = "this is processed body";
         _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-        var alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
+        Alert alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
         _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act
-        var result = _sectionFactory.ToModel(_contentfulSection);
+        Section result = _sectionFactory.ToModel(_contentfulSection);
 
         // Assert
         result.AlertsInline.Count().Should().Be(1);
         result.AlertsInline.First().Should().BeEquivalentTo(alert);
         result.Body.Should().BeEquivalentTo("this is processed body");
-        result.Documents.Count().Should().Be(1);
+        result.Documents.Count.Should().Be(1);
         result.Documents.First().Should().BeEquivalentTo(document);
         result.Profiles.Count().Should().Be(1);
         result.Profiles.First().Should().BeEquivalentTo(profile);
@@ -98,9 +98,9 @@ public class SectionContentfulFactoryTest
         _contentfulSection.Profiles.First().Sys.LinkType = "Link";
         _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(_contentfulSection.Body);
 
-        var section = _sectionFactory.ToModel(_contentfulSection);
+        Section section = _sectionFactory.ToModel(_contentfulSection);
 
-        section.Documents.Count().Should().Be(0);
+        section.Documents.Count.Should().Be(0);
         _documentFactory.Verify(o => o.ToModel(It.IsAny<Asset>()), Times.Never);
         section.Profiles.Count().Should().Be(0);
         _profileFactory.Verify(o => o.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);

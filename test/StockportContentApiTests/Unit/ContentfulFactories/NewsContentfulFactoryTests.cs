@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class NewsContentfulFactoryTest
+public class NewsContentfulFactoryTests
 {
     private readonly Mock<IVideoRepository> _videoRepository;
     private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
@@ -10,7 +10,7 @@ public class NewsContentfulFactoryTest
     private readonly ContentfulNews _contentfulNews;
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
 
-    public NewsContentfulFactoryTest()
+    public NewsContentfulFactoryTests()
     {
         _contentfulNews = new ContentfulNewsBuilder().Document().Build();
         _videoRepository = new Mock<IVideoRepository>();
@@ -32,7 +32,7 @@ public class NewsContentfulFactoryTest
         _videoRepository.Setup(o => o.Process(_contentfulNews.Body)).Returns(_contentfulNews.Body);
 
         // Act
-        var news = _newsContentfulFactory.ToModel(_contentfulNews);
+        News news = _newsContentfulFactory.ToModel(_contentfulNews);
 
         // Assert
         _documentFactory.Verify(o => o.ToModel(It.IsAny<Asset>()), Times.Never);

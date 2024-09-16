@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class DocumentContentfulFactoryTest
+public class DocumentContentfulFactoryTests
 {
     [Fact]
     public void ToModel_ShouldCreateADocumentFromAContentfulDocument()

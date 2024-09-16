@@ -4,7 +4,6 @@ public class DocumentPageRepositoryTest
 {
     private readonly DocumentPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<IContentfulFactory<ContentfulDocumentPage, DocumentPage>> _documentFactory;
     private readonly Mock<ICache> _cache;
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
 

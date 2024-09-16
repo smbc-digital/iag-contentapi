@@ -1,10 +1,10 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class SpotlightOnBannerContentfulFactoryTest
+public class SpotlightOnBannerContentfulFactoryTests
 {
     private readonly SpotlightOnBannerContentfulFactory _spotlightOnBannerContentfulFactory;
 
-    public SpotlightOnBannerContentfulFactoryTest() {
+    public SpotlightOnBannerContentfulFactoryTests() {
         _spotlightOnBannerContentfulFactory = new SpotlightOnBannerContentfulFactory();
     }
 
@@ -12,7 +12,8 @@ public class SpotlightOnBannerContentfulFactoryTest
     public void ToModel_ShouldCreateSpotlightOnListFromAContentfulSpotlightOnList()
     {
         // Arrange
-        List<ContentfulSpotlightOnBanner> entry = new List<ContentfulSpotlightOnBanner>{
+        List<ContentfulSpotlightOnBanner> entry = new()
+        {
             new ContentfulSpotlightOnBanner {
                 Title = "Spotlight title",
                 Image = new Asset() {
@@ -30,7 +31,7 @@ public class SpotlightOnBannerContentfulFactoryTest
         };
 
         // Act
-        var result = _spotlightOnBannerContentfulFactory.ToModel(entry);
+        IEnumerable<SpotlightOnBanner> result = _spotlightOnBannerContentfulFactory.ToModel(entry);
 
         // Assert
         Assert.Single(result);
@@ -63,7 +64,7 @@ public class SpotlightOnBannerContentfulFactoryTest
         };
 
         // Act
-        var result = _spotlightOnBannerContentfulFactory.ToModel(entry);
+        IEnumerable<SpotlightOnBanner> result = _spotlightOnBannerContentfulFactory.ToModel(entry);
 
         // Assert
         Assert.Equal(entry.First().Sys.PublishedAt, result.First().LastUpdated);
@@ -73,7 +74,7 @@ public class SpotlightOnBannerContentfulFactoryTest
     public void ToModel_ShouldReturnEmptyList_If_ContentfulListIsNull()
     {
         // Act
-        var result = _spotlightOnBannerContentfulFactory.ToModel(null);
+        IEnumerable<SpotlightOnBanner> result = _spotlightOnBannerContentfulFactory.ToModel(null);
 
         // Assert
         Assert.NotNull(result);
