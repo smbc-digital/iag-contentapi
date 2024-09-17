@@ -73,7 +73,7 @@ public class NewsRepository : BaseRepository
         }
 
         var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
-        var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => t == tag));
+        var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
 
         if (!filteredEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
@@ -83,7 +83,7 @@ public class NewsRepository : BaseRepository
             .Select(item => _newsContentfulFactory.ToModel(item))
             .GetNewsDates(out dates, _timeProvider)
             .Where(news => CheckDates(startDate, endDate, news))
-            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
+            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Any(c => string.Equals(c, category, StringComparison.InvariantCultureIgnoreCase)))
             .OrderByDescending(o => o.SunriseDate)
             .ToList();
 

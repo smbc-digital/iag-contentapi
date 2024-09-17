@@ -21,4 +21,6 @@ public class ContentBlock
     public string VideoTitle { get; set; }
     public string VideoToken { get; set; }
     public string VideoPlaceholderPhotoId { get; set; }
+    public string AssociatedTagCategory { get; set; }
+    public News NewsArticle { get; set; }
 }

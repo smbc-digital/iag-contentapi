@@ -4,13 +4,16 @@ public class LandingPageRepository : BaseRepository
 {
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
 
     public LandingPageRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
-        IContentfulClientManager contentfulClientManager)
+        IContentfulClientManager contentfulClientManager,
+        IContentfulFactory<ContentfulNews, News> newsFactory)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);
+        _newsFactory = newsFactory;
     }
 
     public async Task<HttpResponse> GetLandingPage(string slug)
@@ -24,8 +27,41 @@ public class LandingPageRepository : BaseRepository
         
         LandingPage landingPage = _contentfulFactory.ToModel(entry);
 
+        if (landingPage is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}");
+
+        if(landingPage.PageSections is not null && landingPage.PageSections.Any())
+        {
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("NewsBanner") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
+            {
+                ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
+                if (latestNewsResponse is not null)
+                    contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+            }
+        }
+        
         return landingPage is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}")
             : HttpResponse.Successful(landingPage);  
+    }
+
+    private async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
+    {
+        QueryBuilder<ContentfulNews> newsBuilderUsingCategory = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+                .FieldMatches(n => n.Categories, tag)
+                .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingCategory);
+        
+        if (newsEntries is null || !newsEntries.Any())
+        {
+            QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+                .FieldMatches(n => n.Tags, tag)
+                .Include(1);
+
+            newsEntries = await _client.GetEntries(newsBuilderUsingTag);
+        }
+
+        return newsEntries.FirstOrDefault();
     }
 }

@@ -34,4 +34,5 @@ public class ContentfulReference : IContentfulModel
     public string VideoTitle { get; set; }
     public string VideoToken { get; set; }
     public string VideoPlaceholderPhotoId { get; set; }
+    public string AssociatedTagCategory { get; set; }
 }

@@ -40,7 +40,8 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
                     StatisticSubHeading = item.StatisticSubheading,
                     VideoTitle = item.VideoTitle,
                     VideoToken = item.VideoToken,
-                    VideoPlaceholderPhotoId = item.VideoPlaceholderPhotoId
+                    VideoPlaceholderPhotoId = item.VideoPlaceholderPhotoId,
+                    AssociatedTagCategory = item.AssociatedTagCategory
                 })
                 .ToList() ?? new List<ContentBlock>(),
             Link = entry.Link,
@@ -50,7 +51,8 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             StatisticSubHeading = entry.StatisticSubheading,
             VideoTitle = entry.VideoTitle,
             VideoToken = entry.VideoToken,
-            VideoPlaceholderPhotoId = entry.VideoPlaceholderPhotoId
+            VideoPlaceholderPhotoId = entry.VideoPlaceholderPhotoId,
+            AssociatedTagCategory = entry.AssociatedTagCategory
         };
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
@@ -87,7 +89,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             "EventCards" => subItemContentType.Equals("events"),
             "FindOutMoreBanner" or "FindOutMoreCards" or "ImageBannerContentWidth" or "ImageBannerScreenWidth" or
             "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
-            "NewsBanner" => subItemContentType.Equals("news"),
+            "NewsBanner" => false,
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
             "SubscriptionBanner" => false,
