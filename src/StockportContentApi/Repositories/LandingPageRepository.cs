@@ -30,17 +30,16 @@ public class LandingPageRepository : BaseRepository
         if (landingPage is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}");
 
-        foreach (ContentBlock contentBlock in landingPage.PageSections)
+        if(landingPage.PageSections is not null && landingPage.PageSections.Any())
         {
-            if (contentBlock.ContentType.Equals("NewsBanner") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("NewsBanner") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
             {
                 ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
-
                 if (latestNewsResponse is not null)
                     contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
             }
         }
-
+        
         return landingPage is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}")
             : HttpResponse.Successful(landingPage);  
