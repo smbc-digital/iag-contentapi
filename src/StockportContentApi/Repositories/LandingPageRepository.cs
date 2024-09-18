@@ -45,15 +45,15 @@ public class LandingPageRepository : BaseRepository
             : HttpResponse.Successful(landingPage);  
     }
 
-    private async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
+    internal async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
     {
         QueryBuilder<ContentfulNews> newsBuilderUsingCategory = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
                 .FieldMatches(n => n.Categories, tag)
                 .Include(1);
 
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingCategory);
-        
-        if (newsEntries is null || !newsEntries.Any())
+
+        if (newsEntries is null || !newsEntries.Items?.Any() is true)
         {
             QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
                 .FieldMatches(n => n.Tags, tag)
