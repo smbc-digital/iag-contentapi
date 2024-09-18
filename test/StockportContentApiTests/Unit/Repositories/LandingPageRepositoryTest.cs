@@ -122,4 +122,106 @@ public class LandingPageRepositoryTest
         Assert.Equal(contentBlock1, responseLandingPage.PageSections.ToList()[0]);
         Assert.Equal(contentBlock2, responseLandingPage.PageSections.ToList()[1]);
     }
+
+    [Fact]
+    public async Task GetLandingPage_ShouldCallGetLatestNewsByCategory_WhenNewsBannerExists()
+    {
+        // Arrange
+        ContentfulLandingPage contentfulLandingPage = new()
+        {
+            PageSections = new()
+            {
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build()
+            },
+        };
+
+        LandingPage landingPage = new()
+        {
+            Slug = "existing-slug",
+            PageSections = new List<ContentBlock>
+            {
+                new()
+                {
+                    ContentType = "NewsBanner",
+                    AssociatedTagCategory = "news-category"
+                }
+            }
+        };
+
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
+
+        ContentfulNews contentfulNews = new();
+        News news = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
+            It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+           It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+
+        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
+            .Returns(landingPage);
+
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
+            {
+                Items = new List<ContentfulReference>
+                {
+                    new() { Sys = new SystemProperties { Id = "content-block-1" } },
+                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
+                }
+            });
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { new() } });
+
+        _newsFactory.Setup(factory => factory.ToModel(new ContentfulNews()))
+            .Returns(news);
+
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("existing-slug");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByTagOrCategory_ShouldReturnNews_WhenCategoryMatches()
+    {
+        // Arrange
+        ContentfulNews contentfulNews = new();
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
+
+        // Act
+        ContentfulNews news = await _repository.GetLatestNewsByTagOrCategory("some-category");
+
+        // Assert
+        Assert.NotNull(news);
+        Assert.Equal(contentfulNews, news);
+        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByTagOrCategory_ShouldReturnNews_WhenTagMatchesAfterCategoryFails()
+    {
+        // Arrange
+        ContentfulNews contentfulNews = new();
+        
+        _contentfulClient.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("categories")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ContentfulCollection<ContentfulNews>)null);
+
+        _contentfulClient.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
+
+        // Act
+        ContentfulNews news = await _repository.GetLatestNewsByTagOrCategory("some-tag");
+
+        // Assert
+        Assert.NotNull(news);
+        Assert.Equal(contentfulNews, news);
+        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("categories")), It.IsAny<CancellationToken>()), Times.Once);
+        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Once);
+    }
 }
