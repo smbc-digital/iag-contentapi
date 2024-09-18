@@ -4,15 +4,18 @@ public class LandingPageRepository : BaseRepository
 {
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly IContentfulClient _client;
+    private readonly EventRepository _eventRepository;
     private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
 
     public LandingPageRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
         IContentfulClientManager contentfulClientManager,
+        EventRepository eventRepository,
         IContentfulFactory<ContentfulNews, News> newsFactory)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);
+        _eventRepository = eventRepository;
         _newsFactory = newsFactory;
     }
 
@@ -38,6 +41,16 @@ public class LandingPageRepository : BaseRepository
                 if (latestNewsResponse is not null)
                     contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
             }
+
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("EventCards") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
+            {
+                List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+
+                if (!events.Any())
+                    events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
+
+                contentBlock.Events = events.Take(3).ToList();
+            }        
         }
         
         return landingPage is null
