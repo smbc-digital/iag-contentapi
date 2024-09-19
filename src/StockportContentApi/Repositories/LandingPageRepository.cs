@@ -49,10 +49,7 @@ public class LandingPageRepository : BaseRepository
                 List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
 
                 if (!events.Any())
-                {
                     events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
-                    contentBlock.UsingTag = true;
-                }
 
                 contentBlock.Events = events.Take(3).ToList();
             }
