@@ -24,4 +24,5 @@ public class ContentBlock
     public string AssociatedTagCategory { get; set; }
     public News NewsArticle { get; set; }
     public List<Event> Events { get; set; }
+    public bool UsingTag { get; set; }
 }
