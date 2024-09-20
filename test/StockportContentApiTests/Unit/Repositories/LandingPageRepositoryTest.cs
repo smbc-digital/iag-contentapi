@@ -6,6 +6,7 @@ public class LandingPageRepositoryTest
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
     public LandingPageRepositoryTest()
     {
@@ -20,7 +21,7 @@ public class LandingPageRepositoryTest
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _newsFactory.Object);
+        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _newsFactory.Object, _profileFactory.Object);
     }
 
     [Fact]
@@ -187,6 +188,69 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
+    public async Task GetLandingPage_ShouldCallGetProfile_WhenProfileBannerExists()
+    {
+        // Arrange
+        ContentfulLandingPage contentfulLandingPage = new()
+        {
+            PageSections = new()
+            {
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build(),
+                new ContentfulReferenceBuilder().Build()
+            },
+        };
+
+        LandingPage landingPage = new()
+        {
+            Slug = "existing-slug",
+            PageSections = new List<ContentBlock>
+            {
+                new()
+                {
+                    ContentType = "ProfileBanner",
+                    SubItems = new List<ContentBlock>() {
+                        new() {}
+                    }
+                }
+            }
+        };
+
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
+
+        ContentfulProfile contentfulProfile = new();
+        Profile profile = new();
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+           It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+
+        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
+            .Returns(landingPage);
+
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
+            {
+                Items = new List<ContentfulReference>
+                {
+                    new() { Sys = new SystemProperties { Id = "content-block-1" } },
+                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
+                }
+            });
+
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulProfile> { Items = new List<ContentfulProfile> { new() } });
+
+        _profileFactory.Setup(factory => factory.ToModel(new ContentfulProfile()))
+            .Returns(profile);
+
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("existing-slug");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task GetLatestNewsByTagOrCategory_ShouldReturnNews_WhenCategoryMatches()
     {
         // Arrange
@@ -223,5 +287,58 @@ public class LandingPageRepositoryTest
         Assert.Equal(contentfulNews, news);
         _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("categories")), It.IsAny<CancellationToken>()), Times.Once);
         _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetProfile_ReturnsProfile_WhenProfileExists()
+    {
+        // Arrange
+        string slug = "test-slug";
+        ContentfulProfile profile = new() { Slug = slug };
+        ContentfulCollection<ContentfulProfile> profiles = new()
+        {
+            Items = new List<ContentfulProfile> { profile }
+        };
+
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(profiles);
+
+        // Act
+        ContentfulProfile result = await _repository.GetProfile(slug);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(slug, result.Slug);
+    }
+
+    [Fact]
+    public async Task GetProfile_ReturnsNull_WhenNoProfileExists()
+    {
+        // Arrange
+        ContentfulCollection<ContentfulProfile> profiles = new() { Items = new List<ContentfulProfile>() };
+
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(profiles);
+
+        // Act
+        ContentfulProfile result = await _repository.GetProfile("non-existent-slug");
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetProfile_ThrowsException_WhenContentfulClientFails()
+    {
+        // Arrange
+        var slug = "test-slug";
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Contentful service error"));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(() => _repository.GetProfile(slug));
     }
 }

@@ -339,7 +339,8 @@ public static class ServiceCollectionExtensions
                 return x => new LandingPageRepository(x,
                     p.GetService<IContentfulFactory<ContentfulLandingPage, LandingPage>>(),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulNews, News>>()
+                    p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()
                 );
             });
         

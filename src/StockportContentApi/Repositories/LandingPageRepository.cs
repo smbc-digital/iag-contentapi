@@ -5,15 +5,18 @@ public class LandingPageRepository : BaseRepository
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
     public LandingPageRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
         IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulNews, News> newsFactory)
+        IContentfulFactory<ContentfulNews, News> newsFactory,
+        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);
         _newsFactory = newsFactory;
+        _profileFactory = profileFactory;
     }
 
     public async Task<HttpResponse> GetLandingPage(string slug)
@@ -37,6 +40,13 @@ public class LandingPageRepository : BaseRepository
                 ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
                 if (latestNewsResponse is not null)
                     contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+            }
+
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("ProfileBanner") && contentBlock.SubItems?.Any() is true))
+            {
+                ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
+                if (profile is not null)
+                    contentBlock.Profile = _profileFactory.ToModel(profile);
             }
         }
         
@@ -63,5 +73,16 @@ public class LandingPageRepository : BaseRepository
         }
 
         return newsEntries.FirstOrDefault();
+    }
+
+    internal async Task<ContentfulProfile> GetProfile(string slug)
+    {
+        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile")
+                .FieldMatches(p => p.Slug, slug)
+                .Include(1);
+
+        ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
+
+        return profileEntries.FirstOrDefault();
     }
 }
