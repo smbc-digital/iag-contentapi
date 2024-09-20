@@ -3,6 +3,7 @@
 public class LandingPageRepositoryTest
 {
     private readonly LandingPageRepository _repository;
+    private readonly EventRepository _eventRepository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
@@ -21,7 +22,7 @@ public class LandingPageRepositoryTest
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _newsFactory.Object, _profileFactory.Object);
+        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object,  _eventRepository, _newsFactory.Object, _profileFactory.Object);
     }
 
     [Fact]
