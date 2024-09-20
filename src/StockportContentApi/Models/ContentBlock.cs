@@ -22,6 +22,8 @@ public class ContentBlock
     public string VideoToken { get; set; }
     public string VideoPlaceholderPhotoId { get; set; }
     public string AssociatedTagCategory { get; set; }
+    public bool UseTag { get; set; }
     public News NewsArticle { get; set; }
+    public Profile Profile { get; set; }
     public List<Event> Events { get; set; }
 }

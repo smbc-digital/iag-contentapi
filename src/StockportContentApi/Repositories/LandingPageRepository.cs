@@ -6,17 +6,20 @@ public class LandingPageRepository : BaseRepository
     private readonly IContentfulClient _client;
     private readonly EventRepository _eventRepository;
     private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
     public LandingPageRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
         IContentfulClientManager contentfulClientManager,
         EventRepository eventRepository,
-        IContentfulFactory<ContentfulNews, News> newsFactory)
+        IContentfulFactory<ContentfulNews, News> newsFactory,
+        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);
         _eventRepository = eventRepository;
         _newsFactory = newsFactory;
+        _profileFactory = profileFactory;
     }
 
     public async Task<HttpResponse> GetLandingPage(string slug)
@@ -35,48 +38,87 @@ public class LandingPageRepository : BaseRepository
 
         if (landingPage.PageSections is not null && landingPage.PageSections.Any())
         {
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("NewsBanner") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
             {
-                ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
-                if (latestNewsResponse is not null)
-                    contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
-            }
+                switch (contentBlock.ContentType)
+                {
+                    case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
+                        {
+                            ContentfulNews latestNewsResponse = await GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
+                            if (latestNewsResponse is not null)
+                            {
+                                contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+                                contentBlock.UseTag = false;
+                            }
+                            else 
+                            {
+                                latestNewsResponse = await GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
+                                if (latestNewsResponse is not null)
+                                {
+                                    contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+                                    contentBlock.UseTag = true;
+                                }
+                            }
+                                
+                            break;
+                        }
+                    case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
+                        {
+                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
 
-            foreach (ContentBlock contentBlock in landingPage.PageSections
-                .Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)
-                && contentBlock.ContentType.Equals("EventCards") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
-            {
-                List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+                            if (!events.Any())
+                                events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
 
-                if (!events.Any())
-                    events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
+                            contentBlock.Events = events.Take(3).ToList();
+                            break;
+                        }
+                    case "ProfileBanner" when contentBlock.SubItems?.Any() is true:
+                        {
+                            ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
+                            if (profile is not null)
+                                contentBlock.Profile = _profileFactory.ToModel(profile);
+                            break;
+                        }
+                    default:
+                        break;
+                }
 
-                contentBlock.Events = events.Take(3).ToList();
             }
         }
 
-        return landingPage is null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}")
-            : HttpResponse.Successful(landingPage);
+        return HttpResponse.Successful(landingPage);
     }
 
-    internal async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
+    internal async Task<ContentfulNews> GetLatestNewsByTag(string tag)
+    {
+        QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+            .FieldMatches(n => n.Tags, tag)
+            .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingTag);
+
+        return newsEntries.FirstOrDefault();
+    }
+
+    internal async Task<ContentfulNews> GetLatestNewsByCategory(string category)
     {
         QueryBuilder<ContentfulNews> newsBuilderUsingCategory = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
-                .FieldMatches(n => n.Categories, tag)
+                .FieldMatches(n => n.Categories, category)
                 .Include(1);
 
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingCategory);
 
-        if (newsEntries is null || !newsEntries.Items?.Any() is true)
-        {
-            QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
-                .FieldMatches(n => n.Tags, tag)
+        return newsEntries.FirstOrDefault();
+    }
+
+    internal async Task<ContentfulProfile> GetProfile(string slug)
+    {
+        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile")
+                .FieldMatches(p => p.Slug, slug)
                 .Include(1);
 
-            newsEntries = await _client.GetEntries(newsBuilderUsingTag);
-        }
+        ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
 
-        return newsEntries.FirstOrDefault();
+        return profileEntries.FirstOrDefault();
     }
 }
