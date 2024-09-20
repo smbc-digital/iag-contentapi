@@ -38,34 +38,42 @@ public class LandingPageRepository : BaseRepository
 
         if (landingPage.PageSections is not null && landingPage.PageSections.Any())
         {
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("NewsBanner") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
             {
-                ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
-                if (latestNewsResponse is not null)
-                    contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
-            }
+                switch (contentBlock.ContentType)
+                {
+                    case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
+                        {
+                            ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
+                            if (latestNewsResponse is not null)
+                                contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+                            break;
+                        }
+                    case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
+                        {
+                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
 
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("EventCards") && !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)))
-            {
-                List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+                            if (!events.Any())
+                                events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
 
-                if (!events.Any())
-                    events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
+                            contentBlock.Events = events.Take(3).ToList();
+                            break;
+                        }
+                    case "ProfileBanner" when contentBlock.SubItems?.Any() is true:
+                        {
+                            ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
+                            if (profile is not null)
+                                contentBlock.Profile = _profileFactory.ToModel(profile);
+                            break;
+                        }
+                    default:
+                        break;
+                }
 
-                contentBlock.Events = events.Take(3).ToList();
-            }
-
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType) && contentBlock.ContentType.Equals("ProfileBanner") && contentBlock.SubItems?.Any() is true))
-            {
-                ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
-                if (profile is not null)
-                    contentBlock.Profile = _profileFactory.ToModel(profile);
             }
         }
 
-        return landingPage is null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}")
-            : HttpResponse.Successful(landingPage);
+        return HttpResponse.Successful(landingPage);
     }
 
     internal async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
