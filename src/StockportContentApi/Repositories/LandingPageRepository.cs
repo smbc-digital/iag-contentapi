@@ -44,9 +44,22 @@ public class LandingPageRepository : BaseRepository
                 {
                     case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            ContentfulNews latestNewsResponse = await GetLatestNewsByTagOrCategory(contentBlock.AssociatedTagCategory);
+                            ContentfulNews latestNewsResponse = await GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
                             if (latestNewsResponse is not null)
+                            {
                                 contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+                                contentBlock.UseTag = false;
+                            }
+                            else 
+                            {
+                                latestNewsResponse = await GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
+                                if (latestNewsResponse is not null)
+                                {
+                                    contentBlock.NewsArticle = _newsFactory.ToModel(latestNewsResponse);
+                                    contentBlock.UseTag = true;
+                                }
+                            }
+                                
                             break;
                         }
                     case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
@@ -76,22 +89,24 @@ public class LandingPageRepository : BaseRepository
         return HttpResponse.Successful(landingPage);
     }
 
-    internal async Task<ContentfulNews> GetLatestNewsByTagOrCategory(string tag)
+    internal async Task<ContentfulNews> GetLatestNewsByTag(string tag)
+    {
+        QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+            .FieldMatches(n => n.Tags, tag)
+            .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingTag);
+
+        return newsEntries.FirstOrDefault();
+    }
+
+    internal async Task<ContentfulNews> GetLatestNewsByCategory(string category)
     {
         QueryBuilder<ContentfulNews> newsBuilderUsingCategory = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
-                .FieldMatches(n => n.Categories, tag)
+                .FieldMatches(n => n.Categories, category)
                 .Include(1);
 
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilderUsingCategory);
-
-        if (newsEntries is null || !newsEntries.Items?.Any() is true)
-        {
-            QueryBuilder<ContentfulNews> newsBuilderUsingTag = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
-                .FieldMatches(n => n.Tags, tag)
-                .Include(1);
-
-            newsEntries = await _client.GetEntries(newsBuilderUsingTag);
-        }
 
         return newsEntries.FirstOrDefault();
     }

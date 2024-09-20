@@ -252,7 +252,7 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
-    public async Task GetLatestNewsByTagOrCategory_ShouldReturnNews_WhenCategoryMatches()
+    public async Task GetLatestNewsByCategory_ShouldReturnNews_WhenCategoryMatches()
     {
         // Arrange
         ContentfulNews contentfulNews = new();
@@ -260,7 +260,7 @@ public class LandingPageRepositoryTest
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
 
         // Act
-        ContentfulNews news = await _repository.GetLatestNewsByTagOrCategory("some-category");
+        ContentfulNews news = await _repository.GetLatestNewsByCategory("some-category");
 
         // Assert
         Assert.NotNull(news);
@@ -269,24 +269,19 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
-    public async Task GetLatestNewsByTagOrCategory_ShouldReturnNews_WhenTagMatchesAfterCategoryFails()
+    public async Task GetLatestNewsByTag_ShouldReturnNews_WhenTagMatches()
     {
         // Arrange
         ContentfulNews contentfulNews = new();
-        
-        _contentfulClient.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("categories")), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ContentfulCollection<ContentfulNews>)null);
-
         _contentfulClient.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
 
         // Act
-        ContentfulNews news = await _repository.GetLatestNewsByTagOrCategory("some-tag");
+        ContentfulNews news = await _repository.GetLatestNewsByTag("some-tag");
 
         // Assert
         Assert.NotNull(news);
         Assert.Equal(contentfulNews, news);
-        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("categories")), It.IsAny<CancellationToken>()), Times.Once);
         _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Once);
     }
 
