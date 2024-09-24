@@ -1,15 +1,26 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using Contentful.Core.Models;
+using StockportContentApi.Constants;
+using StockportContentApi.ContentfulModels;
 
-public class LandingPageRepositoryTest
+namespace StockportContentApiTests.Unit.Repositories;
+
+public class LandingPageRepositoryTests
 {
     private readonly LandingPageRepository _repository;
-    private readonly EventRepository _eventRepository;
+    private readonly Mock<EventRepository> _eventRepository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
+    private readonly Mock<IHttpClient> _httpClient;
+    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
+    private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
+    private readonly Mock<ITimeProvider> _timeprovider;
+    private readonly Mock<ICache> _cacheWrapper;
+    private readonly Mock<IConfiguration> _configuration;
+    private readonly Mock<ILogger<ShowcaseRepository>> _mockLogger;
 
-    public LandingPageRepositoryTest()
+    public LandingPageRepositoryTests()
     {
         ContentfulConfig config = new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
@@ -19,10 +30,26 @@ public class LandingPageRepositoryTest
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
+        _httpClient = new Mock<IHttpClient>();
+        _timeprovider = new Mock<ITimeProvider>();
+        _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
+        _mockLogger = new Mock<ILogger<ShowcaseRepository>>();
+        _timeprovider.Setup(o => o.Now()).Returns(DateTime.Today.AddDays(1));
+
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object,  _eventRepository, _newsFactory.Object, _profileFactory.Object);
+
+        _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+        _cacheWrapper = new Mock<ICache>();
+
+        Mock<ILogger<EventRepository>> _logger = new();
+        _configuration = new Mock<IConfiguration>();
+        _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
+
+        _eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
+
+        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _eventRepository.Object, _newsFactory.Object, _profileFactory.Object);
     }
 
     [Fact]
@@ -126,6 +153,115 @@ public class LandingPageRepositoryTest
     }
 
     [Fact]
+    public async Task GetLandingPage_GetsEventsFromCategory_WhenCategoryEventsIsNotEmpty()
+    {
+        // Arrange
+        LandingPage landingPage = new()
+        {
+            PageSections = new List<ContentBlock>
+            {
+                new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
+            }
+        };
+
+        ContentfulLandingPage contentfulLandingPage = new()
+        {
+            PageSections = new()
+             {
+                 new ContentfulReferenceBuilder().Build(),
+                 new ContentfulReferenceBuilder().Build(),
+                 new ContentfulReferenceBuilder().Build()
+             }
+        };
+
+        Event anyEvent = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), DateTime.MaxValue, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), EventFrequency.Weekly, new(), It.IsAny<string>(), new(), new List<string>(), It.IsAny<MapPosition>(), It.IsAny<bool>(), It.IsAny<string>(), DateTime.MinValue, new(), It.IsAny<Group>(), new(), new(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>());
+
+        List<Event> events = new() { anyEvent, anyEvent, anyEvent };
+
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
+         .ReturnsAsync(new ContentfulCollection<ContentfulReference>
+         {
+             Items = new List<ContentfulReference>
+             {
+                new () { Sys = new SystemProperties { Id = "content-block-1" }},
+                new() { Sys = new SystemProperties { Id = "content-block-2" }}
+             }
+         });
+
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+        _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
+            .Returns(landingPage);
+        _eventRepository.Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
+            .ReturnsAsync(events);
+
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("test-slug");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetLandingPage_GetsEventsFromTags_WhenCategoryEventsIsEmpty()
+    {
+        // Arrange
+        LandingPage landingPage = new()
+        {
+            PageSections = new List<ContentBlock>
+            {
+                new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
+            }
+        };
+
+        ContentfulLandingPage contentfulLandingPage = new()
+        {
+            PageSections = new()
+             {
+                 new ContentfulReferenceBuilder().Build(),
+                 new ContentfulReferenceBuilder().Build(),
+                 new ContentfulReferenceBuilder().Build()
+             }
+        };
+
+        Event anyEvent = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), DateTime.MaxValue, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), EventFrequency.Weekly, new(), It.IsAny<string>(), new(), new List<string>(), It.IsAny<MapPosition>(), It.IsAny<bool>(), It.IsAny<string>(), DateTime.MinValue, new(), It.IsAny<Group>(), new(), new(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>());
+
+        List<Event> emptyEvents = new();
+        List<Event> tagEvents = new() { anyEvent, anyEvent, anyEvent };
+
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
+            {
+                Items = new List<ContentfulReference>
+                {
+                    new () { Sys = new SystemProperties { Id = "content-block-1" } },
+                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
+                }
+            });
+
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+        _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
+            .Returns(landingPage);
+        _eventRepository.Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
+            .ReturnsAsync(emptyEvents);
+        _eventRepository.Setup(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()))
+            .ReturnsAsync(tagEvents);
+
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("test-slug");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+    }
+
+    [Fact]
     public async Task GetLandingPage_ShouldCallGetLatestNewsByCategory_WhenNewsBannerExists()
     {
         // Arrange
@@ -154,7 +290,6 @@ public class LandingPageRepositoryTest
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
 
-        ContentfulNews contentfulNews = new();
         News news = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
             It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
@@ -329,7 +464,7 @@ public class LandingPageRepositoryTest
     public async Task GetProfile_ThrowsException_WhenContentfulClientFails()
     {
         // Arrange
-        var slug = "test-slug";
+        string slug = "test-slug";
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Contentful service error"));
