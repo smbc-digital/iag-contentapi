@@ -1,8 +1,4 @@
-﻿using Contentful.Core.Models;
-using StockportContentApi.Constants;
-using StockportContentApi.ContentfulModels;
-
-namespace StockportContentApiTests.Unit.Repositories;
+﻿namespace StockportContentApiTests.Unit.Repositories;
 
 public class LandingPageRepositoryTests
 {
@@ -12,13 +8,11 @@ public class LandingPageRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
-    private readonly Mock<IHttpClient> _httpClient;
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
     private readonly Mock<ITimeProvider> _timeprovider;
     private readonly Mock<ICache> _cacheWrapper;
     private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<ILogger<ShowcaseRepository>> _mockLogger;
 
     public LandingPageRepositoryTests()
     {
@@ -30,18 +24,15 @@ public class LandingPageRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _httpClient = new Mock<IHttpClient>();
         _timeprovider = new Mock<ITimeProvider>();
         _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
-        _mockLogger = new Mock<ILogger<ShowcaseRepository>>();
         _timeprovider.Setup(o => o.Now()).Returns(DateTime.Today.AddDays(1));
+        _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+        _cacheWrapper = new Mock<ICache>();
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-
-        _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-        _cacheWrapper = new Mock<ICache>();
 
         Mock<ILogger<EventRepository>> _logger = new();
         _configuration = new Mock<IConfiguration>();
