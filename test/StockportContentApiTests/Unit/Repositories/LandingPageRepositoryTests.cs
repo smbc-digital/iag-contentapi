@@ -180,7 +180,7 @@ public class LandingPageRepositoryTests
          });
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
         _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
             .Returns(landingPage);
@@ -193,7 +193,7 @@ public class LandingPageRepositoryTests
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-        _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
     }
 
     [Fact]
@@ -234,7 +234,7 @@ public class LandingPageRepositoryTests
             });
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
         _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
             .Returns(landingPage);
