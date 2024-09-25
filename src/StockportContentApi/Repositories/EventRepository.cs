@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public class EventRepository : BaseRepository
 {
@@ -199,7 +196,7 @@ public class EventRepository : BaseRepository
         return HttpResponse.Successful(events);
     }
 
-    internal virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
+    public virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
     {
         var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
@@ -217,7 +214,7 @@ public class EventRepository : BaseRepository
         return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
     }
 
-    internal virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
+    public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
     {
         var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
