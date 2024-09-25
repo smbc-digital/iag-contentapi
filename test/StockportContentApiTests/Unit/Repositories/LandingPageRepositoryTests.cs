@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using StockportContentApi.Model;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class LandingPageRepositoryTests
 {
@@ -144,7 +146,7 @@ public class LandingPageRepositoryTests
     }
 
     [Fact]
-    public async Task GetLandingPage_GetsEventsFromCategory_WhenCategoryEventsIsNotEmpty()
+    public async Task GetLandingPage_GetsEventsFromCategory_WhenCategoryEventListIsNotEmpty()
     {
         // Arrange
         LandingPage landingPage = new()
@@ -179,7 +181,7 @@ public class LandingPageRepositoryTests
              }
          });
 
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
         _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
         _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
@@ -189,15 +191,18 @@ public class LandingPageRepositoryTests
 
         // Act
         HttpResponse response = await _repository.GetLandingPage("test-slug");
+        List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        Assert.NotNull(responseEvents);
+        Assert.Equal(3, responseEvents.Count);
     }
 
     [Fact]
-    public async Task GetLandingPage_GetsEventsFromTags_WhenCategoryEventsIsEmpty()
+    public async Task GetLandingPage_GetsEventsFromTags_WhenCategoryEventListIsEmpty()
     {
         // Arrange
         LandingPage landingPage = new()
@@ -233,7 +238,7 @@ public class LandingPageRepositoryTests
                 }
             });
 
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage }};
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
         _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
         _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
@@ -245,11 +250,14 @@ public class LandingPageRepositoryTests
 
         // Act
         HttpResponse response = await _repository.GetLandingPage("test-slug");
+        List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        Assert.NotNull(responseEvents);
+        Assert.Equal(3, responseEvents.Count);
     }
 
     [Fact]
