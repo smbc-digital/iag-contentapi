@@ -1,6 +1,4 @@
-﻿using StockportContentApi.Model;
-
-namespace StockportContentApiTests.Unit.Repositories;
+﻿namespace StockportContentApiTests.Unit.Repositories;
 
 public class LandingPageRepositoryTests
 {
@@ -10,11 +8,12 @@ public class LandingPageRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
-    private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
-    private readonly Mock<ITimeProvider> _timeprovider;
-    private readonly Mock<ICache> _cacheWrapper;
-    private readonly Mock<IConfiguration> _configuration;
+    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
+    private readonly Mock<ITimeProvider> _timeprovider = new();
+    private readonly Mock<ICache> _cacheWrapper = new();
+    private readonly Mock<IConfiguration> _configuration = new();
+    private readonly Mock<ILogger<EventRepository>> _logger = new();
 
     public LandingPageRepositoryTests()
     {
@@ -25,19 +24,12 @@ public class LandingPageRepositoryTests
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
-
-        _timeprovider = new Mock<ITimeProvider>();
-        _eventHomepageFactory = new Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>();
+;
         _timeprovider.Setup(o => o.Now()).Returns(DateTime.Today.AddDays(1));
-        _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
-        _cacheWrapper = new Mock<ICache>();
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-
-        Mock<ILogger<EventRepository>> _logger = new();
-        _configuration = new Mock<IConfiguration>();
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
         _eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
