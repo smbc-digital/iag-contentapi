@@ -196,7 +196,7 @@ public class EventRepository : BaseRepository
         return HttpResponse.Successful(events);
     }
 
-    public async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
+    public virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
     {
         var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
@@ -214,7 +214,7 @@ public class EventRepository : BaseRepository
         return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
     }
 
-    public async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
+    public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
     {
         var entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
