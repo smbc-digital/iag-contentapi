@@ -349,7 +349,13 @@ public static class ServiceCollectionExtensions
                         p.GetService<ICache>(),
                         p.GetService<ILogger<EventRepository>>(),
                         p.GetService<IConfiguration>()),
-                    p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                    new NewsRepository(x, 
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                        p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
+                        p.GetService<ICache>(),
+                        p.GetService<IConfiguration>()),
                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()
                 );
             });

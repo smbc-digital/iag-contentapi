@@ -133,4 +133,34 @@ public class NewsRepository : BaseRepository
         var result = await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
         return result;
     }
+
+    public virtual async Task<News> GetLatestNewsByTag(string tag)
+    {
+        QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+            .FieldMatches(n => n.Tags, tag)
+            .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
+            
+        ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
+        if (contentfulNews is not null)
+            return _newsContentfulFactory.ToModel(contentfulNews);
+
+        return null;
+    }
+
+    public virtual async Task<News> GetLatestNewsByCategory(string category)
+    {
+        QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+                .FieldMatches(n => n.Categories, category)
+                .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
+        
+        ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
+        if (contentfulNews is not null)
+            return _newsContentfulFactory.ToModel(contentfulNews);
+
+        return null;
+    }
 }

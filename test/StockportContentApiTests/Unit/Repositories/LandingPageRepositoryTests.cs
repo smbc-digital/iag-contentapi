@@ -3,95 +3,20 @@
 public class LandingPageRepositoryTests
 {
     private readonly LandingPageRepository _repository;
-    private readonly Mock<EventRepository> _eventRepository;
+    private readonly Mock<EventRepository> _eventRepository = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulLandingPage, LandingPage>> _contentfulFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
+    private readonly Mock<NewsRepository> _newsRepository = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
     private readonly Mock<ITimeProvider> _timeprovider = new();
     private readonly Mock<ICache> _cacheWrapper = new();
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<ILogger<EventRepository>> _logger = new();
-
-    public LandingPageRepositoryTests()
-    {
-        ContentfulConfig config = new ContentfulConfig("test")
-            .Add("DELIVERY_URL", "https://fake.url")
-            .Add("TEST_SPACE", "SPACE")
-            .Add("TEST_ACCESS_KEY", "KEY")
-            .Add("TEST_MANAGEMENT_KEY", "KEY")
-            .Add("TEST_ENVIRONMENT", "master")
-            .Build();
-;
-        _timeprovider.Setup(o => o.Now()).Returns(DateTime.Today.AddDays(1));
-
-        Mock<IContentfulClientManager> contentfulClientManager = new();
-        _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
-
-        _eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
-
-        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _eventRepository.Object, _newsFactory.Object, _profileFactory.Object);
-    }
-
-    [Fact]
-    public async Task GetLandingPage_ReturnsSuccessResponse_WhenLandingPageIsFound()
-    {
-        // Arrange
-        ContentfulLandingPage contentfulLandingPage = new() { };
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
-            .Returns(new LandingPage());
-
-        // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
-
-        // Assert
-        Assert.IsType<HttpResponse>(response);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetLandingPage_ReturnsNotFoundResponse_WhenLandingPageIsNotFound()
-    {
-        // Arrange
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = Enumerable.Empty<ContentfulLandingPage>() };
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        // Act
-        HttpResponse response = await _repository.GetLandingPage("non-existent-slug");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("No Landing Page found", response.Error);
-    }
-
-    [Fact]
-    public async Task GetLandingPage_PopulatesContentBlocks_WhenPageSectionsItemsArePresent()
-    {
-        // Arrange
-        ContentfulLandingPage contentfulLandingPage = new()
-        {
-            PageSections = new()
-            {
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build()
-            },
-        };
-
-        ContentBlock contentBlock1 = new() { Title = "ContentBlock 1" };
-        ContentBlock contentBlock2 = new() { Title = "ContentBlock 2" };
-
-        LandingPage landingPage = new()
+    readonly LandingPage _landingPage = new()
         {
             Slug = "landing-page-slug",
             Title = "landing page title",
@@ -104,334 +29,216 @@ public class LandingPageRepositoryTests
             Icon = "icon",
             HeaderType = "full image",
             HeaderImage = new MediaAsset(),
-            PageSections = new List<ContentBlock>() { contentBlock1, contentBlock2 }
+            PageSections = new List<ContentBlock>() { new() { Title = "ContentBlock 1" }, new() { Title = "ContentBlock 2" } }
         };
+    
+    public LandingPageRepositoryTests()
+    {
+        ContentfulConfig config = BuildContentfulConfig();
+        _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
+        Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
+        _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
+        _newsRepository = new(config, _timeprovider.Object, contentfulClientManager.Object, _newsFactory.Object, _newsRoomFactory.Object, _cacheWrapper.Object,  _configuration.Object);
+        _eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
+
+        _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _eventRepository.Object, _newsRepository.Object, _profileFactory.Object);
+        
+        ContentfulLandingPage contentfulLandingPage = new ContentfulLandingPageBuilder().Build();
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
+        
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(contentfulCollection);
 
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
+        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage)).Returns(_landingPage);
+    }
+    
+    private static ContentfulConfig BuildContentfulConfig() =>
+        new ContentfulConfig("test")
+            .Add("DELIVERY_URL", "https://fake.url")
+            .Add("TEST_SPACE", "SPACE")
+            .Add("TEST_ACCESS_KEY", "KEY")
+            .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
+            .Build();
 
-        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
-            .Returns(landingPage);
+    private Mock<IContentfulClientManager> SetupContentfulClientManager(ContentfulConfig config)
+    {
+        Mock<IContentfulClientManager> contentfulClientManager = new();
+        contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
+        return contentfulClientManager;
+    }
 
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
-            {
-                Items = new List<ContentfulReference>
-                {
-                    new() { Sys = new SystemProperties { Id = "content-block-1" } },
-                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
-                }
-            });
+    [Fact]
+    public async Task GetLandingPage_ReturnsSuccessResponse_WhenLandingPageIsFound()
+    {
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
+
+        // Assert
+        Assert.IsType<HttpResponse>(response);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetLandingPage_ReturnsNotFoundResponse_WhenLandingPageIsNotFound()
+    {
+        // Arrange
+        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = Enumerable.Empty<ContentfulLandingPage>() };
+        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(contentfulCollection);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
+        HttpResponse response = await _repository.GetLandingPage("non-existent-slug");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("No Landing Page found", response.Error);
+    }
+
+    [Fact]
+    public async Task GetLandingPage_PopulatesContentBlocks_WhenPageSectionsItemsArePresent()
+    {
+        // Act
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
         LandingPage responseLandingPage = response.Get<LandingPage>();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(responseLandingPage.PageSections);
         Assert.Equal(2, responseLandingPage.PageSections.Count());
-        Assert.Equal(contentBlock1, responseLandingPage.PageSections.ToList()[0]);
-        Assert.Equal(contentBlock2, responseLandingPage.PageSections.ToList()[1]);
+        Assert.Equal(_landingPage.PageSections.ToList()[0], responseLandingPage.PageSections.ToList()[0]);
+        Assert.Equal(_landingPage.PageSections.ToList()[1], responseLandingPage.PageSections.ToList()[1]);
     }
 
     [Fact]
     public async Task GetLandingPage_GetsEventsFromCategory_WhenCategoryEventListIsNotEmpty()
     {
         // Arrange
-        LandingPage landingPage = new()
+        _landingPage.PageSections = new List<ContentBlock>()
         {
-            PageSections = new List<ContentBlock>
-            {
-                new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
-            }
+            new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
         };
 
-        ContentfulLandingPage contentfulLandingPage = new()
-        {
-            PageSections = new()
-             {
-                 new ContentfulReferenceBuilder().Build(),
-                 new ContentfulReferenceBuilder().Build(),
-                 new ContentfulReferenceBuilder().Build()
-             }
-        };
+        List<Event> events = new() { new EventBuilder().Build(), new EventBuilder().Build(), new EventBuilder().Build() };
 
-        Event anyEvent = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), DateTime.MaxValue, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), EventFrequency.Weekly, new(), It.IsAny<string>(), new(), new List<string>(), It.IsAny<MapPosition>(), It.IsAny<bool>(), It.IsAny<string>(), DateTime.MinValue, new(), It.IsAny<Group>(), new(), new(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>());
-
-        List<Event> events = new() { anyEvent, anyEvent, anyEvent };
-
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
-         .ReturnsAsync(new ContentfulCollection<ContentfulReference>
-         {
-             Items = new List<ContentfulReference>
-             {
-                new () { Sys = new SystemProperties { Id = "content-block-1" }},
-                new() { Sys = new SystemProperties { Id = "content-block-2" }}
-             }
-         });
-
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-        _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
-            .Returns(landingPage);
         _eventRepository.Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(events);
+                        .ReturnsAsync(events);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
         List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         Assert.NotNull(responseEvents);
         Assert.Equal(3, responseEvents.Count);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
     }
 
     [Fact]
     public async Task GetLandingPage_GetsEventsFromTags_WhenCategoryEventListIsEmpty()
     {
         // Arrange
-        LandingPage landingPage = new()
+        _landingPage.PageSections = new List<ContentBlock>() 
         {
-            PageSections = new List<ContentBlock>
-            {
-                new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
-            }
+            new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
         };
 
-        ContentfulLandingPage contentfulLandingPage = new()
-        {
-            PageSections = new()
-             {
-                 new ContentfulReferenceBuilder().Build(),
-                 new ContentfulReferenceBuilder().Build(),
-                 new ContentfulReferenceBuilder().Build()
-             }
-        };
-
-        Event anyEvent = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), DateTime.MaxValue, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), EventFrequency.Weekly, new(), It.IsAny<string>(), new(), new List<string>(), It.IsAny<MapPosition>(), It.IsAny<bool>(), It.IsAny<string>(), DateTime.MinValue, new(), It.IsAny<Group>(), new(), new(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>());
-
-        List<Event> emptyEvents = new();
-        List<Event> tagEvents = new() { anyEvent, anyEvent, anyEvent };
-
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
-            {
-                Items = new List<ContentfulReference>
-                {
-                    new () { Sys = new SystemProperties { Id = "content-block-1" } },
-                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
-                }
-            });
-
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-        _contentfulFactory.Setup(factory => factory.ToModel(It.IsAny<ContentfulLandingPage>()))
-            .Returns(landingPage);
         _eventRepository.Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(emptyEvents);
+            .ReturnsAsync(new List<Event>());
+        
         _eventRepository.Setup(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(tagEvents);
+            .ReturnsAsync(new List<Event>() { new EventBuilder().Build(), new EventBuilder().Build(), new EventBuilder().Build() });
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
         List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         Assert.NotNull(responseEvents);
         Assert.Equal(3, responseEvents.Count);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
     }
 
     [Fact]
     public async Task GetLandingPage_ShouldCallGetLatestNewsByCategory_WhenNewsBannerExists()
     {
         // Arrange
-        ContentfulLandingPage contentfulLandingPage = new()
+        _landingPage.PageSections = new List<ContentBlock>() 
         {
-            PageSections = new()
-            {
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build()
-            },
+            new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-category" }
         };
-
-        LandingPage landingPage = new()
-        {
-            Slug = "existing-slug",
-            PageSections = new List<ContentBlock>
-            {
-                new()
-                {
-                    ContentType = "NewsBanner",
-                    AssociatedTagCategory = "news-category"
-                }
-            }
-        };
-
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
 
         News news = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
             It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
 
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-           It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
-            .Returns(landingPage);
-
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
-            {
-                Items = new List<ContentfulReference>
-                {
-                    new() { Sys = new SystemProperties { Id = "content-block-1" } },
-                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
-                }
-            });
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { new() } });
-
-        _newsFactory.Setup(factory => factory.ToModel(new ContentfulNews()))
-            .Returns(news);
+        _newsRepository.Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
+            .ReturnsAsync(news);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("existing-slug");
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(result);
+        Assert.Equal(news, responseNews);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
-    public async Task GetLandingPage_ShouldCallGetProfile_WhenProfileBannerExists()
+    public async Task GetLandingPage_ShouldReturnNews_WhenTagMatches()
     {
         // Arrange
-        ContentfulLandingPage contentfulLandingPage = new()
+        _landingPage.PageSections = new List<ContentBlock>() 
         {
-            PageSections = new()
-            {
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build(),
-                new ContentfulReferenceBuilder().Build()
-            },
+            new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-tag" }
         };
 
-        LandingPage landingPage = new()
-        {
-            Slug = "existing-slug",
-            PageSections = new List<ContentBlock>
-            {
-                new()
-                {
-                    ContentType = "ProfileBanner",
-                    SubItems = new List<ContentBlock>() {
-                        new() {}
-                    }
-                }
-            }
-        };
+        News news = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
+            It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
 
-        ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
-
-        ContentfulProfile contentfulProfile = new();
-        Profile profile = new();
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(),
-           It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
-
-        _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage))
-            .Returns(landingPage);
-
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulReference>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulReference>
-            {
-                Items = new List<ContentfulReference>
-                {
-                    new() { Sys = new SystemProperties { Id = "content-block-1" } },
-                    new() { Sys = new SystemProperties { Id = "content-block-2" } }
-                }
-            });
-
-        _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulProfile> { Items = new List<ContentfulProfile> { new() } });
-
-        _profileFactory.Setup(factory => factory.ToModel(new ContentfulProfile()))
-            .Returns(profile);
+        _newsRepository.Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
+            .ReturnsAsync((News)null);
+        
+        _newsRepository.Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>()))
+            .ReturnsAsync(news);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("existing-slug");
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetLatestNewsByCategory_ShouldReturnNews_WhenCategoryMatches()
-    {
-        // Arrange
-        ContentfulNews contentfulNews = new();
-        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
-
-        // Act
-        ContentfulNews news = await _repository.GetLatestNewsByCategory("some-category");
-
-        // Assert
-        Assert.NotNull(news);
-        Assert.Equal(contentfulNews, news);
-        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task GetLatestNewsByTag_ShouldReturnNews_WhenTagMatches()
-    {
-        // Arrange
-        ContentfulNews contentfulNews = new();
-        _contentfulClient.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = new List<ContentfulNews> { contentfulNews } });
-
-        // Act
-        ContentfulNews news = await _repository.GetLatestNewsByTag("some-tag");
-
-        // Assert
-        Assert.NotNull(news);
-        Assert.Equal(contentfulNews, news);
-        _contentfulClient.Verify(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Contains("tags")), It.IsAny<CancellationToken>()), Times.Once);
+        Assert.NotNull(result);
+        Assert.Equal(news, responseNews);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
     public async Task GetProfile_ReturnsProfile_WhenProfileExists()
     {
         // Arrange
-        string slug = "test-slug";
-        ContentfulProfile profile = new() { Slug = slug };
         ContentfulCollection<ContentfulProfile> profiles = new()
         {
-            Items = new List<ContentfulProfile> { profile }
+            Items = new List<ContentfulProfile> { new ContentfulProfileBuilder().Slug("test-slug").Build() }
         };
 
-        _contentfulClient
-            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(profiles);
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(profiles);
 
         // Act
-        ContentfulProfile result = await _repository.GetProfile(slug);
+        ContentfulProfile result = await _repository.GetProfile("test-slug");
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(slug, result.Slug);
+        Assert.Equal("test-slug", result.Slug);
     }
 
     [Fact]
@@ -440,9 +247,8 @@ public class LandingPageRepositoryTests
         // Arrange
         ContentfulCollection<ContentfulProfile> profiles = new() { Items = new List<ContentfulProfile>() };
 
-        _contentfulClient
-            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(profiles);
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(profiles);
 
         // Act
         ContentfulProfile result = await _repository.GetProfile("non-existent-slug");
@@ -455,12 +261,10 @@ public class LandingPageRepositoryTests
     public async Task GetProfile_ThrowsException_WhenContentfulClientFails()
     {
         // Arrange
-        string slug = "test-slug";
-        _contentfulClient
-            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Contentful service error"));
+        _contentfulClient.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
+                         .ThrowsAsync(new Exception("Contentful service error"));
 
         // Act & Assert
-        await Assert.ThrowsAsync<Exception>(() => _repository.GetProfile(slug));
+        await Assert.ThrowsAsync<Exception>(() => _repository.GetProfile("test-slug"));
     }
 }
