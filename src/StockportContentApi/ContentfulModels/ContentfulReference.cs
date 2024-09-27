@@ -31,8 +31,9 @@ public class ContentfulReference : IContentfulModel
     public string ButtonText { get; set; } = string.Empty;
     public string Statistic { get; set; } = string.Empty;
     public string StatisticSubheading { get; set; } = string.Empty;
-    public string VideoTitle { get; set; }
-    public string VideoToken { get; set; }
-    public string VideoPlaceholderPhotoId { get; set; }
-    public string AssociatedTagCategory { get; set; }
+    public string VideoTitle { get; set; } = string.Empty;
+    public string VideoToken { get; set; } = string.Empty;
+    public string VideoPlaceholderPhotoId { get; set; } = string.Empty;
+    public string AssociatedTagCategory { get; set; } = string.Empty;
+    public string ScreenReader { get; set; } = string.Empty;
 }
