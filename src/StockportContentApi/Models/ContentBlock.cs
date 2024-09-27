@@ -26,4 +26,5 @@ public class ContentBlock
     public News NewsArticle { get; set; }
     public Profile Profile { get; set; }
     public List<Event> Events { get; set; }
+    public string ScreenReader { get; set; }
 }
