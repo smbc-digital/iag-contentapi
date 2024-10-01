@@ -48,7 +48,7 @@ public class EventReccurenceFactory
         DateTime newDate = new(nextMonth.Year, nextMonth.Month, 1, date.Hour, date.Minute, date.Second, date.Kind);
         while (!newDate.DayOfWeek.Equals(date.DayOfWeek))
             newDate = newDate.AddDays(1);
-        
+
         return newDate;
     }
 
@@ -59,11 +59,11 @@ public class EventReccurenceFactory
         for (int i = 1; i < dayOccurrence; i++)
         {
             newDate = newDate.AddDays(7);
-            
-            if (newDate.AddDays(7).Month.Equals(newDate.Month)) 
+
+            if (newDate.AddDays(7).Month.Equals(newDate.Month))
                 break;
         }
-        
+
         return newDate;
     }
 }

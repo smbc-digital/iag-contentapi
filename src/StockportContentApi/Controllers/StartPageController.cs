@@ -36,7 +36,7 @@ public class StartPageController : Controller
         return await _handler.Get(() =>
         {
             StartPageRepository startRepository = _createRepository(_createConfig(businessId));
-            
+
             return startRepository.Get();
         });
     }

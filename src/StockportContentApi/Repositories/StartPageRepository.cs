@@ -32,7 +32,7 @@ public class StartPageRepository
             startPage = new NullStartPage();
 
         return startPage.GetType().Equals(typeof(NullStartPage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") 
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'")
             : HttpResponse.Successful(startPage);
     }
 

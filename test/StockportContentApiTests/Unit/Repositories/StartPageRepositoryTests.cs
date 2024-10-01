@@ -33,8 +33,10 @@ public class StartPageRepositoryTests : TestingBaseClass
         // Arrange
         string slug = "startpage_slug";
         ContentfulStartPage ContentfulStartPage = new ContentfulStartPageBuilder().Slug(slug).Build();
-        ContentfulCollection<ContentfulStartPage> collection = new();
-        collection.Items = new List<ContentfulStartPage> { ContentfulStartPage };
+        ContentfulCollection<ContentfulStartPage> collection = new()
+        {
+            Items = new List<ContentfulStartPage> { ContentfulStartPage }
+        };
 
         List<Alert> _alerts = new()
         { new Alert("title", "subHeading", "body",
@@ -84,8 +86,10 @@ public class StartPageRepositoryTests : TestingBaseClass
         // Arrange
         string slug = "startpage_slug";
 
-        ContentfulCollection<ContentfulStartPage> collection = new();
-        collection.Items = new List<ContentfulStartPage>();
+        ContentfulCollection<ContentfulStartPage> collection = new()
+        {
+            Items = new List<ContentfulStartPage>()
+        };
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
 

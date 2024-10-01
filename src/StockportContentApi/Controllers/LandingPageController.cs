@@ -19,7 +19,7 @@ public class LandingPageController : Controller
     [HttpGet]
     [Route("{businessId}/landing/{slug}")]
     [Route("v1/{businessId}/landing/{slug}")]
-    public async Task<IActionResult> GetLandingPage(string slug, string businessId) => 
+    public async Task<IActionResult> GetLandingPage(string slug, string businessId) =>
         await _handler.Get(() =>
         {
             LandingPageRepository repository = _createRepository(_createConfig(businessId));

@@ -47,7 +47,7 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
         List<Document> groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties)).Select(document => _documentFactory.ToModel(document)).ToList();
 
         Organisation organisation = entry.Organisation is not null
-            ? _contentfulOrganisationFactory.ToModel(entry.Organisation) 
+            ? _contentfulOrganisationFactory.ToModel(entry.Organisation)
             : new Organisation();
 
         string status = "Published";
@@ -56,12 +56,12 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
 
         GroupAdministrators administrators = entry.GroupAdministrators;
 
-        List<string> cost = entry.Cost is not null && entry.Cost.Any() 
-            ? entry.Cost 
+        List<string> cost = entry.Cost is not null && entry.Cost.Any()
+            ? entry.Cost
             : new List<string>();
 
-        List<GroupBranding> groupBranding = entry.GroupBranding is not null 
-            ? entry.GroupBranding.Where(o => o is not null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList() 
+        List<GroupBranding> groupBranding = entry.GroupBranding is not null
+            ? entry.GroupBranding.Where(o => o is not null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList()
             : new List<GroupBranding>();
 
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)

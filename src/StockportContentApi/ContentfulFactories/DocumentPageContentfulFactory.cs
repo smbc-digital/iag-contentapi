@@ -23,8 +23,9 @@ public class DocumentPageContentfulFactory : IContentfulFactory<ContentfulDocume
     {
         if (entry is null)
             return null;
-        
-        return new() {
+
+        return new()
+        {
             Title = entry.Title,
             Slug = entry.Slug,
             Teaser = entry.Teaser,

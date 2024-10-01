@@ -16,7 +16,7 @@ public class GroupCategoryRepository
         QueryBuilder<ContentfulGroupCategory> builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
 
         ContentfulCollection<ContentfulGroupCategory> entries = await _client.GetEntries(builder);
-        
+
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
 

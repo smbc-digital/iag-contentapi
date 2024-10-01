@@ -45,7 +45,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             .OrderByDescending(section => section)
             .FirstOrDefault();
 
-        return new(){
+        return new()
+        {
             Body = !string.IsNullOrEmpty(entry.Body) ? _videoRepository.Process(entry.Body) : string.Empty,
             Slug = entry.Slug,
             Title = entry.Title,

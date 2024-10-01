@@ -183,8 +183,8 @@ public class GroupController : Controller
             existingGroup.Sys.Version = version;
             HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
 
-            return response.StatusCode is HttpStatusCode.OK 
-                ? HttpResponse.Successful("Successfully deleted administrator") 
+            return response.StatusCode is HttpStatusCode.OK
+                ? HttpResponse.Successful("Successfully deleted administrator")
                 : HttpResponse.Failure(response.StatusCode, "An error has occurred");
         });
     }
@@ -225,8 +225,8 @@ public class GroupController : Controller
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
-                return response.StatusCode is HttpStatusCode.OK 
-                    ? HttpResponse.Successful($"Successfully updated the group {existingGroup.Name}") 
+                return response.StatusCode is HttpStatusCode.OK
+                    ? HttpResponse.Successful($"Successfully updated the group {existingGroup.Name}")
                     : HttpResponse.Failure(response.StatusCode, "An error has occurred");
             });
         }

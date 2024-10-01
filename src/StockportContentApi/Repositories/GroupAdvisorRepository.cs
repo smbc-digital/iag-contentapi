@@ -55,7 +55,7 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
 
         GroupAdvisor result = _contentfulFactory.ToModel(entries.FirstOrDefault());
 
-        if (result.HasGlobalAccess || result.Groups.Contains(slug)) 
+        if (result.HasGlobalAccess || result.Groups.Contains(slug))
             return true;
 
         return false;

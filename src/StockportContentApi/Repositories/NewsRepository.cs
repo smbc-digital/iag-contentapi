@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public class NewsRepository : BaseRepository
 {
@@ -31,8 +29,8 @@ public class NewsRepository : BaseRepository
         QueryBuilder<ContentfulNews> builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1);
         ContentfulCollection<ContentfulNews> entries = await GetAllEntriesAsync(_client, builder);
 
-        return !entries.Any() 
-            ? null 
+        return !entries.Any()
+            ? null
             : entries.ToList();
     }
 
@@ -79,7 +77,7 @@ public class NewsRepository : BaseRepository
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
         IEnumerable<ContentfulNews> filteredEntries = newsEntries.Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
 
-        if (!filteredEntries.Any()) 
+        if (!filteredEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
 
@@ -108,7 +106,7 @@ public class NewsRepository : BaseRepository
     {
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
-        if (!newsEntries.Any()) 
+        if (!newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
         List<News> newsArticles = newsEntries

@@ -44,8 +44,10 @@ public class EventCategoryRepositoryTests
     [Fact]
     public void ShouldReturnNotFoundIfNoEventCategoryFound()
     {
-        ContentfulCollection<ContentfulEventCategory> collection = new();
-        collection.Items = new List<ContentfulEventCategory>();
+        ContentfulCollection<ContentfulEventCategory> collection = new()
+        {
+            Items = new List<ContentfulEventCategory>()
+        };
 
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-categories-content-type")), It.IsAny<Func<Task<List<EventCategory>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<EventCategory>());
 

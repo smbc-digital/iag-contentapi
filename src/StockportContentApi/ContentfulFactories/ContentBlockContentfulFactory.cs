@@ -6,7 +6,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
 
     public ContentBlockContentfulFactory(ITimeProvider timeProvider) => _dateComparer = new DateComparer(timeProvider);
 
-    public ContentBlock ToModel(ContentfulReference entry) => 
+    public ContentBlock ToModel(ContentfulReference entry) =>
         new()
         {
             Slug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug),
@@ -73,11 +73,11 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
         return image;
     }
 
-    private static string GetEntryTitle(ContentfulReference entry) => 
-        !string.IsNullOrEmpty(entry.NavigationTitle) 
-            ? entry.NavigationTitle 
-            : !string.IsNullOrEmpty(entry.Title) 
-                ? entry.Title 
+    private static string GetEntryTitle(ContentfulReference entry) =>
+        !string.IsNullOrEmpty(entry.NavigationTitle)
+            ? entry.NavigationTitle
+            : !string.IsNullOrEmpty(entry.Title)
+                ? entry.Title
                 : entry.Name;
 
     private bool EntryIsValid(ContentfulReference entry) =>

@@ -31,8 +31,10 @@ public class GroupCategoryRepositoryTests
         const string slug = "unit-test-GroupCategory";
 
         ContentfulGroupCategory rawGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Name("name").Build();
-        ContentfulCollection<ContentfulGroupCategory> collection = new();
-        collection.Items = new List<ContentfulGroupCategory> { rawGroupCategory };
+        ContentfulCollection<ContentfulGroupCategory> collection = new()
+        {
+            Items = new List<ContentfulGroupCategory> { rawGroupCategory }
+        };
 
         QueryBuilder<ContentfulGroupCategory> builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
         _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupCategory>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
@@ -51,8 +53,10 @@ public class GroupCategoryRepositoryTests
     [Fact]
     public void ShouldReturnNotFoundIfNoGroupCategoryFound()
     {
-        ContentfulCollection<ContentfulGroupCategory> collection = new();
-        collection.Items = new List<ContentfulGroupCategory>();
+        ContentfulCollection<ContentfulGroupCategory> collection = new()
+        {
+            Items = new List<ContentfulGroupCategory>()
+        };
 
         _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulGroupCategory>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);

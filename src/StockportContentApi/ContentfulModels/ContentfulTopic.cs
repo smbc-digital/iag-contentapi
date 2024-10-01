@@ -23,5 +23,5 @@ public class ContentfulTopic : ContentfulReference
     public string EventCategory { get; set; }
     public ContentfulCarouselContent CampaignBanner { get; set; } = new();
     public List<ContentfulGroupBranding> TopicBranding { get; set; } = new();
-    public string LogoAreaTitle { get; set;}
+    public string LogoAreaTitle { get; set; }
 }

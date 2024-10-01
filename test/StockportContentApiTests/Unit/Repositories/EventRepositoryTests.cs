@@ -106,8 +106,10 @@ public class EventRepositoryTests
         ContentfulEvent aThirdEvent = new ContentfulEventBuilder().Slug("slug-3").Featured(false).EventDate(new DateTime(2017, 09, 15)).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
-        ContentfulCollection<ContentfulEvent> collection = new();
-        collection.Items = new List<ContentfulEvent> { anEvent };
+        ContentfulCollection<ContentfulEvent> collection = new()
+        {
+            Items = new List<ContentfulEvent> { anEvent }
+        };
 
 
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
@@ -164,12 +166,14 @@ public class EventRepositoryTests
         archivedvents.Group.DateHiddenTo = DateTime.Now.AddDays(2);
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, archivedvents };
 
-        ContentfulCollection<ContentfulEvent> newsListCollection = new();
-        newsListCollection.Items = new List<ContentfulEvent>
+        ContentfulCollection<ContentfulEvent> newsListCollection = new()
+        {
+            Items = new List<ContentfulEvent>
         {
             anEvent,
             anotherEvent,
             archivedvents
+        }
         };
 
         QueryBuilder<CancellationToken> builder = new QueryBuilder<CancellationToken>().ContentTypeIs("events").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);

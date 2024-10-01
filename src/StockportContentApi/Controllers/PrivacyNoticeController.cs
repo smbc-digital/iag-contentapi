@@ -16,7 +16,7 @@ public class PrivacyNoticeController : Controller
     [HttpGet]
     [Route("{businessId}/privacy-notices/{slug}")]
     [Route("v1/{businessId}/privacy-notices/{slug}")]
-    public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) => 
+    public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) =>
         await _handler.Get(async () =>
         {
             IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));
@@ -31,7 +31,7 @@ public class PrivacyNoticeController : Controller
     [HttpGet]
     [Route("{businessId}/privacy-notices")]
     [Route("v1/{businessId}/privacy-notices")]
-    public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) => 
+    public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) =>
         await _handler.Get(async () =>
         {
             IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));

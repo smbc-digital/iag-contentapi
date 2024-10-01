@@ -36,8 +36,10 @@ public class ContactUsIdRepositoryTests
         const string slug = "unit-test-showcase";
 
         ContentfulContactUsId rawContactUsId = new();
-        ContentfulCollection<ContentfulContactUsId> collection = new();
-        collection.Items = new List<ContentfulContactUsId> { rawContactUsId };
+        ContentfulCollection<ContentfulContactUsId> collection = new()
+        {
+            Items = new List<ContentfulContactUsId> { rawContactUsId }
+        };
 
         _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulContactUsId>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
@@ -55,8 +57,10 @@ public class ContactUsIdRepositoryTests
         // Arrange
         const string slug = "test-slug";
         ContentfulContactUsId rawContactUs = new() { Slug = slug };
-        ContentfulCollection<ContentfulContactUsId> collection = new();
-        collection.Items = new List<ContentfulContactUsId> { rawContactUs };
+        ContentfulCollection<ContentfulContactUsId> collection = new()
+        {
+            Items = new List<ContentfulContactUsId> { rawContactUs }
+        };
 
         // Act
         QueryBuilder<ContentfulContactUsId> builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);

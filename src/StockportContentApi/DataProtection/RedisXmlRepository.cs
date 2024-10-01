@@ -131,7 +131,7 @@ public class RedisXmlRepository : IXmlRepository, IDisposable
             elements.Add(XElement.Parse(item.Value));
 
         this.Logger.LogDebug("Read {XmlElementCount} XML elements from Redis.", elements.Count);
-        
+
         return elements.AsReadOnly();
     }
 

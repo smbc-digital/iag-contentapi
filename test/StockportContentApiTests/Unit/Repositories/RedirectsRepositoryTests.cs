@@ -33,8 +33,10 @@ public class RedirectsRepositoryTests
     public void GetRedirects_ShouldGetsListOfRedirectsBack_ReturnSuccessful()
     {
         ContentfulRedirect ContentfulRedirects = new ContentfulRedirectBuilder().Build();
-        ContentfulCollection<ContentfulRedirect> collection = new();
-        collection.Items = new List<ContentfulRedirect> { ContentfulRedirects };
+        ContentfulCollection<ContentfulRedirect> collection = new()
+        {
+            Items = new List<ContentfulRedirect> { ContentfulRedirects }
+        };
 
         BusinessIdToRedirects redirectItem = new(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
 
@@ -66,8 +68,10 @@ public class RedirectsRepositoryTests
     public void GetRedirects_BusinessIdExist_ShouldReturnSuccessful()
     {
         ContentfulRedirect ContentfulRedirects = new();
-        ContentfulCollection<ContentfulRedirect> collection = new();
-        collection.Items = new List<ContentfulRedirect>();
+        ContentfulCollection<ContentfulRedirect> collection = new()
+        {
+            Items = new List<ContentfulRedirect>()
+        };
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
@@ -94,8 +98,10 @@ public class RedirectsRepositoryTests
     [Fact]
     public void GetRedirects_NoBusinessId_ShouldReturnNotFound()
     {
-        ContentfulCollection<ContentfulRedirect> collection = new();
-        collection.Items = new List<ContentfulRedirect>();
+        ContentfulCollection<ContentfulRedirect> collection = new()
+        {
+            Items = new List<ContentfulRedirect>()
+        };
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
@@ -144,8 +150,10 @@ public class RedirectsRepositoryTests
     public void GetUpdatedRedirects_BusinessIdExist_ReturnSuccessful()
     {
         ContentfulRedirect ContentfulRedirects = new ContentfulRedirectBuilder().Build();
-        ContentfulCollection<ContentfulRedirect> collection = new();
-        collection.Items = new List<ContentfulRedirect> { ContentfulRedirects };
+        ContentfulCollection<ContentfulRedirect> collection = new()
+        {
+            Items = new List<ContentfulRedirect> { ContentfulRedirects }
+        };
 
         BusinessIdToRedirects redirectItem = new(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
 

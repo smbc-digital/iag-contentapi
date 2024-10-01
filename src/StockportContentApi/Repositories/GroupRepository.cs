@@ -216,7 +216,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
                 groups = groups.OrderBy(group => group.Name).ToList();
                 break;
         }
-        
+
         groupResults.Groups = groups;
         groupResults.AvailableSubCategories = groups.SelectMany(group => group.SubCategories ?? new List<GroupSubCategory>()).ToList();
 
@@ -274,8 +274,8 @@ public class GroupRepository : BaseRepository, IGroupRepository
         List<GroupCategory> groupCategoryList = groupCategoryEntries.Select(gc => _groupCategoryFactory.ToModel(gc))
             .OrderBy(category => category.Name).ToList();
 
-        return !groupCategoryList.Any() 
-            ? null 
+        return !groupCategoryList.Any()
+            ? null
             : groupCategoryList;
     }
 

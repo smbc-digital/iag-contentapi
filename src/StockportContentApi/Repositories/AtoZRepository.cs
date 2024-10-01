@@ -60,10 +60,10 @@ public class AtoZRepository : BaseRepository
             .ContentTypeIs(contentType)
             .Include(0);
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
-        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries is not null 
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries is not null
             ? entries
                 .Where(x => x.DisplayOnAZ.Equals("True")
-                && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles is null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter)))))) 
+                && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles is null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter))))))
             : null;
 
         if (entriesWithDisplayOn is not null)

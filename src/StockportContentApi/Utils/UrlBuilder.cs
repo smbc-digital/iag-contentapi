@@ -30,9 +30,9 @@ public class UrlBuilder : IUrlBuilder
 
     private static string GetSearchTypeForTag(ref string tag)
     {
-        if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) 
+        if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#"))
             return "in";
-        
+
         tag = tag.Remove(0, 1);
 
         return "match";

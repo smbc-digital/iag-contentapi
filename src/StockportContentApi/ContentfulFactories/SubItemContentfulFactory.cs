@@ -53,7 +53,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
             foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
             {
                 SubItem newSection = new($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
-                
+
                 subItems.Add(newSection);
             }
         }

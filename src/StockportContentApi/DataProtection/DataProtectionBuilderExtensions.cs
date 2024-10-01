@@ -28,10 +28,10 @@ public static class DataProtectionBuilderExtensions
         if (redisConnectionString is null)
             throw new ArgumentNullException(nameof(redisConnectionString));
 
-        if (redisConnectionString.Length is 0)
+        if (redisConnectionString.Length.Equals(0))
             throw new ArgumentException("Redis connection string may not be empty.", nameof(redisConnectionString));
 
-        return builder.Use(ServiceDescriptor.Singleton<IXmlRepository>(services => 
+        return builder.Use(ServiceDescriptor.Singleton<IXmlRepository>(services =>
             new RedisXmlRepository(redisConnectionString, services.GetRequiredService<ILogger<RedisXmlRepository>>())));
     }
 
@@ -67,7 +67,7 @@ public static class DataProtectionBuilderExtensions
         }
 
         builder.Services.Add(descriptor);
-        
+
         return builder;
     }
 }

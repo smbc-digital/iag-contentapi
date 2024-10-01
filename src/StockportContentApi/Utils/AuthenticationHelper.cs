@@ -12,7 +12,7 @@ public class AuthenticationHelper : IAuthenticationHelper
     private const string BeginsWithV = "v";
     private const string ThenZeroOrMoreIntegers = "[0-9]+";
 
-    public AuthenticationHelper() {}
+    public AuthenticationHelper() { }
 
     public AuthenticationData ExtractAuthenticationDataFromContext(HttpContext context)
     {
@@ -23,21 +23,21 @@ public class AuthenticationHelper : IAuthenticationHelper
 
         string[] routeValues = context.Request.Path.Value.Split('/');
 
-        authenticationData.VersionText = routeValues.Length > 1 
-            ? routeValues[1] 
+        authenticationData.VersionText = routeValues.Length > 1
+            ? routeValues[1]
             : string.Empty;
-        
+
         int.TryParse(authenticationData.VersionText.Replace("v", string.Empty), out int version);
         authenticationData.Version = version;
-        
-        authenticationData.BusinessId = routeValues.Length > 2 
-            ? routeValues[2] 
+
+        authenticationData.BusinessId = routeValues.Length > 2
+            ? routeValues[2]
             : string.Empty;
-        
-        authenticationData.Endpoint = routeValues.Length > 3 
-            ? routeValues[3] 
+
+        authenticationData.Endpoint = routeValues.Length > 3
+            ? routeValues[3]
             : string.Empty;
-       
+
         authenticationData.Verb = context.Request.Method;
 
         return authenticationData;

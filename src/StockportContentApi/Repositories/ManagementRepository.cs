@@ -24,7 +24,7 @@ public class ManagementRepository
             Entry<dynamic> group = await _client.CreateOrUpdateEntry(entry, null, null, systemProperties.Version);
             if (group.SystemProperties.Version is not null)
                 await _client.PublishEntry(entry.SystemProperties.Id, group.SystemProperties.Version.Value);
-            
+
             return HttpResponse.Successful(group);
         }
         catch (Exception ex)

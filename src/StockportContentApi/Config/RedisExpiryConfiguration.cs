@@ -1,7 +1,7 @@
 ﻿namespace StockportContentApi.Config
 {
     public class RedisExpiryConfiguration
-    { 
+    {
         public int News { get; set; }
         public int Events { get; set; }
         public int Groups { get; set; }

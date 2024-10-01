@@ -24,7 +24,7 @@ public class OrganisationRepository
 
         ContentfulOrganisation entry = entries.FirstOrDefault();
 
-        if (entry is null) 
+        if (entry is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
 
         Organisation organisation = _contentfulFactory.ToModel(entry);

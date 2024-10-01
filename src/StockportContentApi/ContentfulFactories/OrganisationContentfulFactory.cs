@@ -4,7 +4,7 @@ public class OrganisationContentfulFactory : IContentfulFactory<ContentfulOrgani
 {
     public Organisation ToModel(ContentfulOrganisation entry)
     {
-        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
+        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
             ? entry.Image.File.Url : string.Empty;
 
         return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,

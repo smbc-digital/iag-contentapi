@@ -24,7 +24,7 @@ public class ServicePayPaymentController : Controller
         return await _handler.Get(() =>
         {
             ServicePayPaymentRepository paymentRepository = _createRepository(_createConfig(businessId));
-            
+
             return paymentRepository.GetPayment(slug);
         });
     }

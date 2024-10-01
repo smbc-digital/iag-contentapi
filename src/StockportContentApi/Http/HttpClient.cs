@@ -22,7 +22,7 @@ public class HttpClient : IHttpClient
         {
             HttpResponseMessage responseMessage = await _client.GetAsync(url);
 
-            if (!responseMessage.IsSuccessStatusCode) 
+            if (!responseMessage.IsSuccessStatusCode)
                 return HttpResponse.Failure(responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
             string content = await responseMessage.Content.ReadAsStringAsync();

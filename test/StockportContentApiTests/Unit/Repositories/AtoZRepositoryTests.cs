@@ -118,7 +118,7 @@ public class AtoZRepositoryTests
     public void ItReturnsANotFoundIfNoItemsMatch()
     {
         string letter = "b";
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals( $"atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
         _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
         _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
 
@@ -137,14 +137,16 @@ public class AtoZRepositoryTests
     public async void ItGetsAnAtoZListingForTheLetterBWhereTheLetterMatchesWithAnAlterniveTitleAndSetsTheTitleAsTheAlternativeTitle()
     {
         string alternativeTitle = "Do you know this started!";
-        ContentfulCollection<ContentfulAtoZ> aToZcollection = new();
-        aToZcollection.Items = new List<ContentfulAtoZ>
+        ContentfulCollection<ContentfulAtoZ> aToZcollection = new()
+        {
+            Items = new List<ContentfulAtoZ>
         {
             new ContentfulAToZBuilder().Title("Vintage Village 1").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
             new ContentfulAToZBuilder().Title("Vintage Village 2").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
             new ContentfulAToZBuilder().Title("Vintage Village 3").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
             new ContentfulAToZBuilder().Title("Vintage Village 4").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
             new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string> { alternativeTitle }).Build()
+        }
         };
 
         _client
@@ -166,10 +168,12 @@ public class AtoZRepositoryTests
     public void ItGetsAnAtoZListingItemWithMultipleAlternateTitles()
     {
         List<string> alternateTitles = new() { "This is alternate title", "this is also another alternate title" };
-        ContentfulCollection<ContentfulAtoZ> aToZcollection = new();
-        aToZcollection.Items = new List<ContentfulAtoZ>
+        ContentfulCollection<ContentfulAtoZ> aToZcollection = new()
+        {
+            Items = new List<ContentfulAtoZ>
         {
             new ContentfulAToZBuilder().Title("Vintage Village").AlternativeTitles(alternateTitles).Build()
+        }
         };
 
         _client

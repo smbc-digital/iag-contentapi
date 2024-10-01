@@ -77,8 +77,10 @@ public class OrganisationRepositoryTests
         // Arrange
         const string slug = "invalid-url";
 
-        ContentfulCollection<ContentfulOrganisation> collection = new();
-        collection.Items = new List<ContentfulOrganisation>();
+        ContentfulCollection<ContentfulOrganisation> collection = new()
+        {
+            Items = new List<ContentfulOrganisation>()
+        };
 
         QueryBuilder<ContentfulOrganisation> builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
         _contentfulClient.Setup(o => o.GetEntries(

@@ -37,7 +37,7 @@ public class TopicController : Controller
         return await _handler.Get(() =>
         {
             TopicRepository topicRepository = _createRepository(_createConfig(businessId));
-            
+
             return topicRepository.Get();
         });
     }

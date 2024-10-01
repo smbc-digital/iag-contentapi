@@ -34,7 +34,7 @@ public class EventCategoryRepository
 
         ContentfulCollection<ContentfulEventCategory> entries = await _client.GetEntries(builder);
 
-        if (entries is null || !entries.Any()) 
+        if (entries is null || !entries.Any())
             new List<EventCategory>();
 
         List<EventCategory> eventCategories = entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();

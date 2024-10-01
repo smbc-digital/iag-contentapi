@@ -20,7 +20,7 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
 
         ContentfulReference topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
 
-        if (topicInBreadcrumb is null) 
+        if (topicInBreadcrumb is null)
             return new NullTopic();
 
         List<SubItem> subItems = topicInBreadcrumb.SubItems
@@ -38,9 +38,9 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
 
     private ContentfulReference CheckCurrentArticle(ContentfulReference item)
     {
-        if (!item.Sys.Id.Equals(_entry.Sys.Id)) 
+        if (!item.Sys.Id.Equals(_entry.Sys.Id))
             return item;
-        
+
         return new ContentfulReference
         {
             Icon = _entry.Icon,

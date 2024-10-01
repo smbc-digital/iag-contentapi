@@ -46,8 +46,10 @@ public class PaymentRepositoryTests
         rawPayments.Add(new ContentfulPaymentBuilder().Slug("firstPayment").Build());
         rawPayments.Add(new ContentfulPaymentBuilder().Slug("secondPayment").Build());
         rawPayments.Add(new ContentfulPaymentBuilder().Slug("thirdPayment").Build());
-        ContentfulCollection<ContentfulPayment> collection = new();
-        collection.Items = rawPayments;
+        ContentfulCollection<ContentfulPayment> collection = new()
+        {
+            Items = rawPayments
+        };
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
         _contentfulClient.Setup(o => o.GetEntries(
@@ -75,8 +77,10 @@ public class PaymentRepositoryTests
         const string slug = "any-payment";
 
         ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
-        ContentfulCollection<ContentfulPayment> collection = new();
-        collection.Items = new List<ContentfulPayment> { rawPayment };
+        ContentfulCollection<ContentfulPayment> collection = new()
+        {
+            Items = new List<ContentfulPayment> { rawPayment }
+        };
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
         _contentfulClient.Setup(o => o.GetEntries(
@@ -106,8 +110,10 @@ public class PaymentRepositoryTests
         // Arrange
         const string slug = "invalid-url";
 
-        ContentfulCollection<ContentfulPayment> collection = new();
-        collection.Items = new List<ContentfulPayment>();
+        ContentfulCollection<ContentfulPayment> collection = new()
+        {
+            Items = new List<ContentfulPayment>()
+        };
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
         _contentfulClient.Setup(o => o.GetEntries(

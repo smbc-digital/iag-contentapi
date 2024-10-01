@@ -57,7 +57,7 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
-        Group featuredGroup = 
+        Group featuredGroup =
             entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
                 && _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
                 .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();

@@ -57,7 +57,7 @@ public class ContentfulConfig
     {
         if (_config.TryGetValue(key, out string value))
             return value;
-            
+
         throw new ArgumentException($"No value found for '{key}' in the contentful config.");
     }
 }

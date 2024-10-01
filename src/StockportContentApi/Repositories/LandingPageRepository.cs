@@ -50,7 +50,7 @@ public class LandingPageRepository : BaseRepository
                                 contentBlock.NewsArticle = latestNewsResponse;
                                 contentBlock.UseTag = false;
                             }
-                            else 
+                            else
                             {
                                 latestNewsResponse = await _newsRepository.GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
                                 if (latestNewsResponse is not null)
@@ -59,7 +59,7 @@ public class LandingPageRepository : BaseRepository
                                     contentBlock.UseTag = true;
                                 }
                             }
-                                
+
                             break;
                         }
                     case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):

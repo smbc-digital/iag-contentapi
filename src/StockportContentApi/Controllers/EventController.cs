@@ -137,8 +137,8 @@ public class EventController : Controller
             if (eventsByCategory.Count.Equals(0) && eventsByTag.Count.Equals(0))
                 return new NotFoundObjectResult($"No events found for category {category}");
 
-            List<Event> events = eventsByCategory.Count > 0 
-                ? eventsByCategory 
+            List<Event> events = eventsByCategory.Count > 0
+                ? eventsByCategory
                 : eventsByTag;
 
             return new OkObjectResult(events);

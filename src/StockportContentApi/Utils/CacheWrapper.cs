@@ -73,7 +73,7 @@ public class Cache : ICache
         return result;
     }
 
-    public void RemoveItemFromCache(string cacheKey) => 
+    public void RemoveItemFromCache(string cacheKey) =>
         _memoryCache.RemoveAsync(cacheKey);
 
     public void Set(string cacheKey, object cacheEntry, int minutes)
@@ -109,14 +109,14 @@ public class Cache : ICache
             if (string.IsNullOrEmpty(returnData))
             {
                 _logger.LogDebug($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
-                
+
                 return false;
             }
         }
         catch (Exception ex)
         {
             _logger.LogCritical(new EventId(), ex, "CacheWrapper : TryGetValue<T> : An error occurred trying to read from Redis");
-            
+
             return false;
         }
 

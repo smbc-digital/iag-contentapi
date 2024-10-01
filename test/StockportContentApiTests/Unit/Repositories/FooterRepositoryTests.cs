@@ -32,11 +32,13 @@ public class FooterRepositoryTests
     {
         Footer mockFooter = new("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>());
 
-        ContentfulCollection<ContentfulFooter> footerCollection = new();
-        footerCollection.Items = new List<ContentfulFooter>
+        ContentfulCollection<ContentfulFooter> footerCollection = new()
+        {
+            Items = new List<ContentfulFooter>
             {
                new ContentfulFooterBuilder().Build()
-            };
+            }
+        };
 
         _client.Setup(o => o.GetEntries(
                             It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),

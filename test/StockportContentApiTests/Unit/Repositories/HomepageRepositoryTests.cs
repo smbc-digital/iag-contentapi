@@ -29,8 +29,10 @@ public class HomepageRepositoryTests
     public void ItGetsHomepage()
     {
         ContentfulHomepage contentfulHomepage = new();
-        ContentfulCollection<ContentfulHomepage> collection = new();
-        collection.Items = new List<ContentfulHomepage> { contentfulHomepage };
+        ContentfulCollection<ContentfulHomepage> collection = new()
+        {
+            Items = new List<ContentfulHomepage> { contentfulHomepage }
+        };
 
         QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
         _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build() == builder.Build()),

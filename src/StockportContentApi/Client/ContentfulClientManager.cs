@@ -34,9 +34,9 @@ public class ContentfulClientManager : IContentfulClientManager
             ResolveEntriesSelectively = true,
             MaxNumberOfRateLimitRetries = 5
         };
-        
+
         ContentfulClient client = new(_httpClient, options);
-        
+
         return client;
     }
 

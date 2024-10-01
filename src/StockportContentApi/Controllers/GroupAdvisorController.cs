@@ -20,7 +20,7 @@ public class GroupAdvisorController : Controller
         IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
         List<GroupAdvisor> result = await repository.GetAdvisorsByGroup(slug);
 
-        if (result is null || !result.Any()) 
+        if (result is null || !result.Any())
             return new NotFoundObjectResult($"No group advisors found for group {slug}");
 
         return new OkObjectResult(result);
@@ -34,7 +34,7 @@ public class GroupAdvisorController : Controller
         IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
         GroupAdvisor result = await repository.Get(email);
 
-        if (result is null) 
+        if (result is null)
             return new NotFoundObjectResult($"No group advisor found for email {email}");
 
         return new OkObjectResult(result);
@@ -48,7 +48,7 @@ public class GroupAdvisorController : Controller
         IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
         bool result = await repository.CheckIfUserHasAccessToGroupBySlug(slug, email);
 
-        if (!result) 
+        if (!result)
             return new NotFoundObjectResult($"Email {email} doesn't have access to group {slug}'s advisor console");
 
         return new OkObjectResult(result);

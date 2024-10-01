@@ -21,7 +21,7 @@ public class JwtDecoder : IJwtDecoder
         try
         {
             // valid tokens are split into three sections by .'s
-            if (token.Split('.').Length is not 3)
+            if (!token.Split('.').Length.Equals(3))
             {
                 _logger.LogWarning($"InvalidJwtException was thrown from jwt decoder for token {token}");
                 throw new InvalidJwtException("Invalid JWT token");

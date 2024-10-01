@@ -7,7 +7,8 @@ public class DocumentContentfulFactory : IContentfulFactory<Asset, Document>
         if (entry.File is null)
             entry.File = new() { Url = string.Empty };
 
-        return new() {
+        return new()
+        {
             Title = entry.Description,
             Size = unchecked((int)entry.File?.Details.Size),
             LastUpdated = entry.SystemProperties.UpdatedAt.Value,

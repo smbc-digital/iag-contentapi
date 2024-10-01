@@ -27,7 +27,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
 
     public Profile ToModel(ContentfulProfile entry)
     {
-        if(entry is null)
+        if (entry is null)
             return null;
 
         MediaAsset image = new();

@@ -20,7 +20,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
 
     public LandingPage ToModel(ContentfulLandingPage entry)
     {
-        if(entry is null)
+        if (entry is null)
             return null;
 
         MediaAsset image = new();
@@ -38,8 +38,9 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
                 Url = entry.HeaderImage.File.Url,
                 Description = entry.HeaderImage.Description
             };
-        
-        return new LandingPage(){
+
+        return new LandingPage()
+        {
             Slug = entry.Slug,
             Title = entry.Title,
             Subtitle = entry.Subtitle,

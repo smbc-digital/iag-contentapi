@@ -27,12 +27,14 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
-            new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
-            new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("not-a-group").Build() }).Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("not-a-group").Build() }).Build()
+            }
         };
 
         // Mock
@@ -55,10 +57,13 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().Build()
+            }
         };
 
         // Mock
@@ -81,10 +86,13 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build()
+            }
         };
 
         // Mock
@@ -105,10 +113,12 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            }
         };
 
         // Mock
@@ -129,10 +139,12 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            }
         };
 
         // Mock
@@ -153,10 +165,13 @@ public class GroupAdvisorRepositoryTests
     {
         // Arrange
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
-        ContentfulCollection<ContentfulGroupAdvisor> collection = new();
-        collection.Items = new List<ContentfulGroupAdvisor>()
+
+        ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            Items = new List<ContentfulGroupAdvisor>()
+            {
+                new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+            }
         };
 
         // Mock

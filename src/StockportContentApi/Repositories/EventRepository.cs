@@ -161,7 +161,7 @@ public class EventRepository : BaseRepository
         if (displayFeatured is not null && displayFeatured is true)
             events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
 
-        if (limit > 0) 
+        if (limit > 0)
             events = events.Take(limit).ToList();
 
         List<string> eventCategories = await GetCategories();
@@ -176,7 +176,7 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        if (entries is null || !entries.Any()) 
+        if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
         IEnumerable<Event> eventsAll = GetAllEventsAndTheirReccurrences(entries);
@@ -224,8 +224,8 @@ public class EventRepository : BaseRepository
                 .ThenBy(t => t.Title)
                 .ToList();
 
-        return onlyNextOccurrence 
-            ? GetNextOccurenceOfEvents(events) 
+        return onlyNextOccurrence
+            ? GetNextOccurenceOfEvents(events)
             : events;
     }
 
@@ -297,9 +297,9 @@ public class EventRepository : BaseRepository
     {
         ContentType eventType = await _client.GetContentType("events");
         Contentful.Core.Models.Management.InValuesValidator validation = eventType.Fields.First(f => f.Name.Equals("Categories")).Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
-        
-        return !validation.RequiredValues.Any() 
-            ? null 
+
+        return !validation.RequiredValues.Any()
+            ? null
             : validation.RequiredValues;
     }
 

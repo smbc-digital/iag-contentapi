@@ -51,8 +51,10 @@ public class GroupRepositoryTests
     {
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Build();
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
@@ -77,8 +79,10 @@ public class GroupRepositoryTests
         // Arrange
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(-1)).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Slug("group_slug").DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(-1)).Build();
 
@@ -106,8 +110,10 @@ public class GroupRepositoryTests
         // Arrange
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(1)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Slug("group_slug").DateHiddenFrom(DateTime.Now.AddDays(1)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
 
@@ -135,8 +141,10 @@ public class GroupRepositoryTests
         // Arrange
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Slug("group_slug").DateHiddenFrom(DateTime.Now.AddDays(-3)).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
 
@@ -164,8 +172,10 @@ public class GroupRepositoryTests
         // Arrange
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenFrom(DateTime.Now.AddDays(-3)).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Slug("group_slug").DateHiddenFrom(DateTime.Now.AddDays(-3)).Build();
 
@@ -193,8 +203,10 @@ public class GroupRepositoryTests
         // Arrange
         const string slug = "group_slug";
         ContentfulGroup contentfulGroup = new ContentfulGroupBuilder().Slug(slug).DateHiddenTo(DateTime.Now.AddDays(3)).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroup };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroup }
+        };
 
         Group group = new GroupBuilder().Slug("group_slug").DateHiddenTo(DateTime.Now.AddDays(3)).Build();
 
@@ -219,8 +231,10 @@ public class GroupRepositoryTests
     [Fact]
     public void Return404WhenGroupWhenItemsDontExist()
     {
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup>();
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup>()
+        };
 
         const string slug = "not-found";
         _client.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulGroup>>(),
@@ -238,8 +252,10 @@ public class GroupRepositoryTests
         // Arrange
         string testCategorySlug = "test-category-slug";
         List<ContentfulGroup> listOfContentfulGroups = SetupMockFactoriesAndGetContentfulGroupsForCollection(testCategorySlug);
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = listOfContentfulGroups;
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = listOfContentfulGroups
+        };
         List<GroupCategory> listOfGroupCategories = new() { new GroupCategory("name", testCategorySlug, "icon", "image-url.jpg") };
 
         // Act
@@ -269,8 +285,10 @@ public class GroupRepositoryTests
         // Arrange
         string testCategorySlug = "test-category-slug";
         List<ContentfulGroup> listOfContentfulGroups = SetupMockFactoriesAndGetContentfulGroupsForCollection(testCategorySlug);
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = listOfContentfulGroups;
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = listOfContentfulGroups
+        };
         List<ContentfulGroupCategory> listOfContentfulGroupCategories = new() { new ContentfulGroupCategory() { Slug = "slug-that-matches-no-groups" } };
         List<GroupCategory> listOfGroupCategories = new() { new GroupCategory("name", "slug-that-matches-no-groups", "icon", "image-url.jpg") };
 
@@ -298,8 +316,10 @@ public class GroupRepositoryTests
         const string slug = "unit-test-GroupCategory";
         string testCategorySlug = "test-category-slug";
         List<ContentfulGroup> listOfContentfulGroups = SetupMockFactoriesAndGetContentfulGroupsForCollection(testCategorySlug);
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = listOfContentfulGroups;
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = listOfContentfulGroups
+        };
 
         ContentfulGroupCategory rawContentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
         GroupCategory rawGroupCategory = new("name", slug, "icon", "imageUrl");
@@ -325,8 +345,10 @@ public class GroupRepositoryTests
         const string slug = "unit-test-GroupCategory";
         string testCategorySlug = "test-category-slug";
         List<ContentfulGroup> listOfContentfulGroups = SetupMockFactoriesAndGetContentfulGroupsForCollection(testCategorySlug);
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = listOfContentfulGroups;
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = listOfContentfulGroups
+        };
 
         ContentfulGroupCategory rawContentfulGroupCategory = new ContentfulGroupCategoryBuilder().Slug(slug).Build();
         GroupCategory rawGroupCategory = new("name", slug, "icon", "imageUrl");
@@ -361,8 +383,10 @@ public class GroupRepositoryTests
         const string slug = "unit-test-GroupCategory";
         MapPosition location = new() { Lat = 1, Lon = 1 };
         ContentfulGroup contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroupWithlocation };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroupWithlocation }
+        };
 
         Group groupWithLocation = new GroupBuilder().MapPosition(location).Slug(slug).Build();
 
@@ -389,8 +413,10 @@ public class GroupRepositoryTests
         const string slug = "unit-test-GroupCategory";
         MapPosition location = new() { Lat = 1, Lon = 1 };
         ContentfulGroup contentfulGroupWithlocation = new ContentfulGroupBuilder().Slug(slug).MapPosition(location).Build();
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = new List<ContentfulGroup> { contentfulGroupWithlocation };
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = new List<ContentfulGroup> { contentfulGroupWithlocation }
+        };
 
         bool volunteering = true;
         Group groupWithLocation = new GroupBuilder().Volunteering(volunteering).Slug(slug).Build();
@@ -512,8 +538,10 @@ public class GroupRepositoryTests
         contentfulGroupsReturned.Add(correctContentfulGroup);
         contentfulGroupsReturned.Add(new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems> { new() { Email = "fred@msn.com", Permission = "A" } } }).Build());
         contentfulGroupsReturned.Add(new ContentfulGroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems> { new() { Email = "jerry@gmail.com", Permission = "A" } } }).Build());
-        ContentfulCollection<ContentfulGroup> collection = new();
-        collection.Items = contentfulGroupsReturned;
+        ContentfulCollection<ContentfulGroup> collection = new()
+        {
+            Items = contentfulGroupsReturned
+        };
 
         Group groupReturned = new GroupBuilder().GroupAdministrators(new GroupAdministrators() { Items = new List<GroupAdministratorItems>() { new() { Email = emailAddress, Permission = "A" } } }).Build();
 
@@ -539,8 +567,10 @@ public class GroupRepositoryTests
     public void ShouldReturnContenfulGroupHomepage()
     {
         ContentfulGroupHomepage contenfulHomepage = new ContentfulGroupHomepageBuilder().Build();
-        ContentfulCollection<ContentfulGroupHomepage> collection = new();
-        collection.Items = new List<ContentfulGroupHomepage> { contenfulHomepage };
+        ContentfulCollection<ContentfulGroupHomepage> collection = new()
+        {
+            Items = new List<ContentfulGroupHomepage> { contenfulHomepage }
+        };
 
         GroupHomepage groupHomepage = new("title", "slug", "metaDescription", "image-url.jpg", string.Empty, null, null, null, null, string.Empty, string.Empty, string.Empty, string.Empty, new NullEventBanner());
 
