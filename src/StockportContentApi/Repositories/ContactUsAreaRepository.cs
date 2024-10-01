@@ -14,13 +14,13 @@ public class ContactUsAreaRepository
     public async Task<HttpResponse> GetContactUsArea()
     {
 
-        var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
+        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
 
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        ContentfulCollection<ContentfulContactUsArea> entries = await _client.GetEntries(builder);
+        ContentfulContactUsArea entry = entries.FirstOrDefault();
 
-        var contactUsArea = _contentfulFactory.ToModel(entry);
-        if (contactUsArea == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
+        ContactUsArea contactUsArea = _contentfulFactory.ToModel(entry);
+        if (contactUsArea is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
 
         return HttpResponse.Successful(contactUsArea);
     }

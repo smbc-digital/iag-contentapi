@@ -13,7 +13,7 @@ public class ManagementRepository
 
     public async Task<HttpResponse> CreateOrUpdate(dynamic content, SystemProperties systemProperties)
     {
-        var entry = new Entry<dynamic>
+        Entry<dynamic> entry = new()
         {
             Fields = content,
             SystemProperties = systemProperties
@@ -21,14 +21,16 @@ public class ManagementRepository
 
         try
         {
-            var group = await _client.CreateOrUpdateEntry(entry, null, null, systemProperties.Version);
-            if (group.SystemProperties.Version != null)
+            Entry<dynamic> group = await _client.CreateOrUpdateEntry(entry, null, null, systemProperties.Version);
+            if (group.SystemProperties.Version is not null)
                 await _client.PublishEntry(entry.SystemProperties.Id, group.SystemProperties.Version.Value);
+            
             return HttpResponse.Successful(group);
         }
         catch (Exception ex)
         {
             _logger.LogError(new EventId(0), ex, "An unexpected error occured while performing the get operation");
+
             return HttpResponse.Failure(HttpStatusCode.InternalServerError, ex.Message);
         }
     }
@@ -39,18 +41,20 @@ public class ManagementRepository
         {
             await _client.UnpublishEntry(systemProperties.Id, systemProperties.Version.Value);
             await _client.DeleteEntry(systemProperties.Id, systemProperties.Version.Value);
-            return HttpResponse.Successful("Successfully Deleted Entry: " + systemProperties.Id);
+            return HttpResponse.Successful($"Successfully Deleted Entry: {systemProperties.Id}");
         }
         catch (Exception ex)
         {
             _logger.LogError(new EventId(0), ex, "An unexpected error occured while performing the get operation");
+
             return HttpResponse.Failure(HttpStatusCode.InternalServerError, ex.Message);
         }
     }
 
     public async Task<int> GetVersion(string entryId)
     {
-        var managementGroup = await _client.GetEntry(entryId);
+        Entry<dynamic> managementGroup = await _client.GetEntry(entryId);
+
         return managementGroup.SystemProperties.Version ?? 0;
     }
 }

@@ -4,7 +4,8 @@ public class SpotlightOnBannerContentfulFactoryTests
 {
     private readonly SpotlightOnBannerContentfulFactory _spotlightOnBannerContentfulFactory;
 
-    public SpotlightOnBannerContentfulFactoryTests() {
+    public SpotlightOnBannerContentfulFactoryTests()
+    {
         _spotlightOnBannerContentfulFactory = new SpotlightOnBannerContentfulFactory();
     }
 

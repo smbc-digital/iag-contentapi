@@ -16,7 +16,7 @@ public class ContentfulArticleBuilder
     private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
     private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
     private readonly List<ContentfulProfile> _profiles = new() { new ContentfulProfileBuilder().Build() };
-    private List<ContentfulSection> _sections = new(){ new ContentfulSectionBuilder().Build() };
+    private List<ContentfulSection> _sections = new() { new ContentfulSectionBuilder().Build() };
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
     private readonly DateTime _updatedAt = DateTime.Now;

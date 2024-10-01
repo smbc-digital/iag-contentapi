@@ -3,7 +3,7 @@ namespace StockportContentApi.Config;
 public class ContentfulConfig
 {
     public readonly string BusinessId;
-    private readonly Dictionary<string, string> _config = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> _config = new();
     public string SpaceKey;
     public string AccessKey;
     public string ManagementKey;
@@ -55,9 +55,9 @@ public class ContentfulConfig
 
     private string GetConfigValue(string key)
     {
-        string value;
-        if (_config.TryGetValue(key, out value))
+        if (_config.TryGetValue(key, out string value))
             return value;
+            
         throw new ArgumentException($"No value found for '{key}' in the contentful config.");
     }
 }

@@ -3,7 +3,7 @@
 public class GroupCategoryRepository
 {
     private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
 
     public GroupCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulFactory, IContentfulClientManager contentfulClientManager)
     {
@@ -13,14 +13,15 @@ public class GroupCategoryRepository
 
     public async Task<HttpResponse> GetGroupCategories()
     {
-        var builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
+        QueryBuilder<ContentfulGroupCategory> builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
 
-        var entries = await _client.GetEntries(builder);
-        if (entries == null || !entries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
+        ContentfulCollection<ContentfulGroupCategory> entries = await _client.GetEntries(builder);
+        
+        if (entries is null || !entries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
 
-        var groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();
-
-        groupCategories = groupCategories.OrderBy(c => c.Name).ToList();
+        List<GroupCategory> groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();
+        groupCategories = groupCategories.OrderBy(group => group.Name).ToList();
 
         return HttpResponse.Successful(groupCategories);
     }

@@ -18,7 +18,7 @@ public class DocumentPageRepository : BaseRepository
 
     public async Task<HttpResponse> GetDocumentPage(string documentPageSlug)
     {
-        ContentfulDocumentPage entry = await _cache.GetFromCacheOrDirectlyAsync("documentPage-" + documentPageSlug, () => GetDocumentPageEntry(documentPageSlug));
+        ContentfulDocumentPage entry = await _cache.GetFromCacheOrDirectlyAsync($"documentPage-{documentPageSlug}", () => GetDocumentPageEntry(documentPageSlug));
 
         DocumentPage documentPage = entry is null
             ? null

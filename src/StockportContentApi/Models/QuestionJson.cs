@@ -1,16 +1,16 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 
 public class QuestionJson
 {
-    public int pageId { get; set; }
-    public string buttonText { get; set; }
+    public int PageId { get; set; }
+    public string ButtonText { get; set; }
     public bool ShouldCache { get; set; }
     public bool IsLastPage { get; set; }
-    public List<Question> questions { get; set; }
-    public List<Behaviour> behaviours { get; set; }
-    public string description { get; set; }
+    public List<Question> Questions { get; set; }
+    public List<Behaviour> Behaviours { get; set; }
+    public string Description { get; set; }
     public bool HideBackButton { get; set; }
-    public InlineAlert alert { get; set; }
+    public InlineAlert Alert { get; set; }
 }
 
 public class InlineAlert
@@ -21,18 +21,18 @@ public class InlineAlert
 
 public class Option
 {
-    public string label { get; set; }
-    public string value { get; set; }
-    public string image { get; set; }
-    public string tertiaryInformation { get; set; }
+    public string Label { get; set; }
+    public string Value { get; set; }
+    public string Image { get; set; }
+    public string TertiaryInformation { get; set; }
     public string SubLabel { get; set; }
 }
 
 public class ValidatorData
 {
-    public string type { get; set; }
-    public string message { get; set; }
-    public string value { get; set; }
+    public string Type { get; set; }
+    public string Message { get; set; }
+    public string Value { get; set; }
 }
 
 

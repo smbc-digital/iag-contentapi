@@ -7,10 +7,8 @@ public interface IMsHttpClientWrapper
 
 public class MsHttpClientWrapper : IMsHttpClientWrapper
 {
-    private readonly System.Net.Http.HttpClient _client = new System.Net.Http.HttpClient();
+    private readonly System.Net.Http.HttpClient _client = new();
 
     public Task<HttpResponseMessage> GetAsync(string url)
-    {
-        return _client.GetAsync(url);
-    }
+        => _client.GetAsync(url);
 }

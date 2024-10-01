@@ -4,19 +4,19 @@ public class GroupCategoryContentfulFactory : IContentfulFactory<ContentfulGroup
 {
     public GroupCategory ToModel(ContentfulGroupCategory entry)
     {
-        var name = !string.IsNullOrEmpty(entry.Name)
+        string name = !string.IsNullOrEmpty(entry.Name)
             ? entry.Name
-            : "";
+            : string.Empty;
 
-        var slug = !string.IsNullOrEmpty(entry.Slug)
+        string slug = !string.IsNullOrEmpty(entry.Slug)
             ? entry.Slug
-            : "";
+            : string.Empty;
 
-        var icon = !string.IsNullOrEmpty(entry.Icon)
+        string icon = !string.IsNullOrEmpty(entry.Icon)
             ? entry.Icon
-            : "";
+            : string.Empty;
 
-        var image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
+        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
             entry.Image.File.Url : string.Empty;
 
         return new GroupCategory(name, slug, icon, image);

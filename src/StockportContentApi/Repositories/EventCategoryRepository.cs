@@ -19,25 +19,25 @@ public class EventCategoryRepository
 
     public async Task<HttpResponse> GetEventCategories()
     {
-        var categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect, _eventsCategoryTimeout);
+        List<EventCategory> categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect, _eventsCategoryTimeout);
 
-        if (categories != null && !categories.Any())
-        {
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
-        }
+        if (categories is not null && !categories.Any())
+            HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
 
-        categories = categories.OrderBy(c => c.Name).ToList();
+        categories = categories.OrderBy(category => category.Name).ToList();
         return HttpResponse.Successful(categories);
     }
 
     private async Task<List<EventCategory>> GetCategoriesDirect()
     {
-        var builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
+        QueryBuilder<ContentfulEventCategory> builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
 
-        var entries = await _client.GetEntries(builder);
-        if (entries == null || !entries.Any()) new List<EventCategory>();
+        ContentfulCollection<ContentfulEventCategory> entries = await _client.GetEntries(builder);
 
-        var eventCategories = entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
+        if (entries is null || !entries.Any()) 
+            new List<EventCategory>();
+
+        List<EventCategory> eventCategories = entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
 
         return !eventCategories.Any() ? null : eventCategories;
     }

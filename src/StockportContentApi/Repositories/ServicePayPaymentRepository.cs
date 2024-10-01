@@ -2,7 +2,7 @@
 
 public class ServicePayPaymentRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> _servicePayPaymentFactory;
 
     public ServicePayPaymentRepository(ContentfulConfig config,
@@ -16,11 +16,11 @@ public class ServicePayPaymentRepository
 
     public async Task<HttpResponse> GetPayment(string slug)
     {
-        var builder = new QueryBuilder<ContentfulServicePayPayment>().ContentTypeIs("servicePayPayment").FieldEquals("fields.slug", slug).Include(1);
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        QueryBuilder<ContentfulServicePayPayment> builder = new QueryBuilder<ContentfulServicePayPayment>().ContentTypeIs("servicePayPayment").FieldEquals("fields.slug", slug).Include(1);
+        ContentfulCollection<ContentfulServicePayPayment> entries = await _client.GetEntries(builder);
+        ContentfulServicePayPayment entry = entries.FirstOrDefault();
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No service pay payment found for '{slug}'")
             : HttpResponse.Successful(_servicePayPaymentFactory.ToModel(entry));
     }

@@ -77,7 +77,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             entry.TriviaSection.Select(trivia => new Trivia(trivia.Name, trivia.Icon, trivia.Body, trivia.Link, trivia.Statistic, trivia.StatisticSubHeading))
             : new List<Trivia>();
 
-        return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image, featuredTasks, subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner, 
+        return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image, featuredTasks, subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner,
         entry.EventCategory, callToAction, topicBranding, logoAreaTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),

@@ -26,7 +26,7 @@ public class NewsController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _newsRepository(_createConfig(businessId));
+            NewsRepository repository = _newsRepository(_createConfig(businessId));
             return repository.Get(tag, category, dateFrom, dateTo);
         });
     }
@@ -38,7 +38,7 @@ public class NewsController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _newsRepository(_createConfig(businessId));
+            NewsRepository repository = _newsRepository(_createConfig(businessId));
             return repository.GetNewsByLimit(limit);
         });
     }
@@ -50,7 +50,7 @@ public class NewsController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _newsRepository(_createConfig(businessId));
+            NewsRepository repository = _newsRepository(_createConfig(businessId));
             return repository.GetNews(slug);
         });
     }

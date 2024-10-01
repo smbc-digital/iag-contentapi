@@ -23,8 +23,8 @@ public class ContentfulClientManager : IContentfulClientManager
 
     public IContentfulClient GetClient(ContentfulConfig config)
     {
-        bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out var usePreviewApi);
-        var options = new ContentfulOptions
+        bool.TryParse(_configuration["Contentful:UsePreviewAPI"], out bool usePreviewApi);
+        ContentfulOptions options = new()
         {
             SpaceId = config.SpaceKey,
             Environment = config.Environment,
@@ -34,7 +34,9 @@ public class ContentfulClientManager : IContentfulClientManager
             ResolveEntriesSelectively = true,
             MaxNumberOfRateLimitRetries = 5
         };
-        var client = new ContentfulClient(_httpClient, options);        
+        
+        ContentfulClient client = new(_httpClient, options);
+        
         return client;
     }
 

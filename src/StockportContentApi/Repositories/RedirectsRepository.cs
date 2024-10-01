@@ -37,9 +37,9 @@ public class RedirectsRepository : BaseRepository
 
     public async Task<HttpResponse> GetUpdatedRedirects()
     {
-        var redirectPerBusinessId = new Dictionary<string, BusinessIdToRedirects>();
+        Dictionary<string, BusinessIdToRedirects> redirectPerBusinessId = new();
 
-        foreach (var businessId in _redirectBusinessIds.BusinessIds)
+        foreach (string businessId in _redirectBusinessIds.BusinessIds)
         {
             redirectPerBusinessId.Add(businessId, await GetRedirectForBusinessId(businessId));
         }
@@ -51,10 +51,10 @@ public class RedirectsRepository : BaseRepository
 
     private Redirects GetRedirectsFromBusinessIdToRedirectsDictionary(Dictionary<string, BusinessIdToRedirects> redirects)
     {
-        var shortUrlRedirects = new Dictionary<string, RedirectDictionary>();
-        var legacyUrlRedirects = new Dictionary<string, RedirectDictionary>();
+        Dictionary<string, RedirectDictionary> shortUrlRedirects = new();
+        Dictionary<string, RedirectDictionary> legacyUrlRedirects = new();
 
-        foreach (var businessId in redirects.Keys)
+        foreach (string businessId in redirects.Keys)
         {
             shortUrlRedirects.Add(businessId, redirects[businessId].ShortUrlRedirects);
             legacyUrlRedirects.Add(businessId, redirects[businessId].LegacyUrlRedirects);
@@ -68,11 +68,11 @@ public class RedirectsRepository : BaseRepository
 
     private async Task<BusinessIdToRedirects> GetRedirectForBusinessId(string businessId)
     {
-        var config = _createConfig(businessId);
+        ContentfulConfig config = _createConfig(businessId);
 
         _client = ClientManager.GetClient(config);
-        var builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
-        var entries = await _client.GetEntries(builder);
+        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
+        ContentfulCollection<ContentfulRedirect> entries = await _client.GetEntries(builder);
 
         return !entries.Any()
             ? new NullBusinessIdToRedirects()

@@ -31,9 +31,9 @@ public class StartPageRepository
         if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
             startPage = new NullStartPage();
 
-        return startPage.GetType() == typeof(NullStartPage) ?
-            HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") :
-            HttpResponse.Successful(startPage);
+        return startPage.GetType().Equals(typeof(NullStartPage))
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found for '{startPageSlug}'") 
+            : HttpResponse.Successful(startPage);
     }
 
     public async Task<HttpResponse> Get()

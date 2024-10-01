@@ -3,28 +3,29 @@
 public class ContentfulEventBuilder
 {
     private string _slug = "slug";
-    private string _title = "title";
-    private string _teaser = "teaser";
-    private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-    private string _description = "description";
-    private string _fee = "fee";
-    private string _location = "location";
-    private string _submittedby = "submittedBy";
-    private DateTime _eventDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+    private readonly string _title = "title";
+    private readonly string _teaser = "teaser";
+    private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private readonly string _description = "description";
+    private readonly string _fee = "fee";
+    private readonly string _location = "location";
+    private readonly string _submittedby = "submittedBy";
+    private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private string _startTime = "10:00";
-    private string _endTime = "17:00";
+    private readonly string _endTime = "17:00";
     private int _occurences = -1;
     private EventFrequency _eventFrequency = EventFrequency.None;
-    private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
-    private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-    private List<string> _categories = new List<string> { "category 1", "category 2" };
-    private List<ContentfulEventCategory> _eventCategories = new List<ContentfulEventCategory>() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" }, new ContentfulEventCategory { Name = "Event Category", Slug = "event-category" } };
-    private MapPosition _mapPosition = new MapPosition() { Lat = 53.5, Lon = -2.5 };
-    private string _bookingInformation = "booking information";
+    private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
+    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
+    private List<string> _categories = new() { "category 1", "category 2" };
+    private List<ContentfulEventCategory> _eventCategories = new() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" }, new ContentfulEventCategory { Name = "Event Category", Slug = "event-category" } };
+    private MapPosition _mapPosition = new() { Lat = 53.5, Lon = -2.5 };
+    private readonly string _bookingInformation = "booking information";
     private bool _featured = false;
-    public SystemProperties _sys = new SystemProperties();
-    private List<string> _tags = new List<string> { "tag 1", "tag 2" };
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert> {
+    public SystemProperties _sys = new();
+    private List<string> _tags = new() { "tag 1", "tag 2" };
+    private readonly List<ContentfulAlert> _alerts = new()
+    {
         new ContentfulAlertBuilder().Build()};
 
     private ContentfulGroup _group = new ContentfulGroupBuilder().Build();

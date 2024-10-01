@@ -2,23 +2,23 @@
 
 public class ContentfulGroupBuilder
 {
-    private string _name = "_name";
+    private readonly string _name = "_name";
     private string _slug = "_slug";
-    private string _phoneNumber = "_phoneNumber";
+    private readonly string _phoneNumber = "_phoneNumber";
     private string _metaDescription = "_metaDescription";
-    private string _email = "_email";
-    private string _website = "_website";
-    private string _twitter = "_twitter";
-    private string _facebook = "_facebook";
-    private string _address = "_address";
-    private string _description = "_description";
-    private List<string> _cost = new List<string> { "lots" };
-    private string _costText = "";
-    private string _abilityLevel = "";
-    private string _accessibleTransportLink = "link";
-    private string _additionalInformation = "info";
-    private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-    private List<ContentfulGroupCategory> _categoriesReference = new List<ContentfulGroupCategory>
+    private readonly string _email = "_email";
+    private readonly string _website = "_website";
+    private readonly string _twitter = "_twitter";
+    private readonly string _facebook = "_facebook";
+    private readonly string _address = "_address";
+    private readonly string _description = "_description";
+    private List<string> _cost = new() { "lots" };
+    private string _costText = string.Empty;
+    private string _abilityLevel = string.Empty;
+    private readonly string _accessibleTransportLink = "link";
+    private readonly string _additionalInformation = "info";
+    private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private List<ContentfulGroupCategory> _categoriesReference = new()
     {
         new ContentfulGroupCategory
         {
@@ -42,18 +42,17 @@ public class ContentfulGroupBuilder
             }
         }
     };
-    private MapPosition _mapPosition = new MapPosition() { Lat = 39, Lon = 2 };
-    private SystemProperties _sys = new SystemProperties
+    private MapPosition _mapPosition = new() { Lat = 39, Lon = 2 };
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
         UpdatedAt = DateTime.MinValue
     };
-    private GroupAdministrators _groupAdministrators = new GroupAdministrators()
+    private GroupAdministrators _groupAdministrators = new()
     {
         Items = new List<GroupAdministratorItems>
         {
-            new GroupAdministratorItems
-            {
+            new() {
                 Name = "Name",
                 Email = "Email",
                 Permission = "admin"
@@ -62,15 +61,15 @@ public class ContentfulGroupBuilder
     };
     private DateTime _dateHiddenFrom = DateTime.MinValue;
     private DateTime _dateHiddenTo = DateTime.MinValue;
-    private ContentfulOrganisation _organisation = new ContentfulOrganisation();
-    private List<string> _suitableFor = new List<string>()
+    private readonly ContentfulOrganisation _organisation = new();
+    private readonly List<string> _suitableFor = new()
     {
         "people"
     };
-    private List<string> _ageRanges = new List<string>() { "15-20" };
-    private bool _volunteering = true;
-    private string _volunteeringText = "text";
-    private List<Asset> _additionalDocuments = new List<Asset>
+    private readonly List<string> _ageRanges = new() { "15-20" };
+    private readonly bool _volunteering = true;
+    private readonly string _volunteeringText = "text";
+    private readonly List<Asset> _additionalDocuments = new()
     {
         new Asset
         {
@@ -94,9 +93,9 @@ public class ContentfulGroupBuilder
             Description = "description"
         }
     };
-    private string _donationsText = "donText";
-    private string _donationsUrl = "donUrl";
-    private List<ContentfulGroupSubCategory> _subCategories = new List<ContentfulGroupSubCategory>
+    private readonly string _donationsText = "donText";
+    private readonly string _donationsUrl = "donUrl";
+    private readonly List<ContentfulGroupSubCategory> _subCategories = new()
     {
         new ContentfulGroupSubCategory
         {

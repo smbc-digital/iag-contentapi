@@ -17,42 +17,42 @@ public class LandingPageRepositoryTests
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<ILogger<EventRepository>> _logger = new();
     readonly LandingPage _landingPage = new()
-        {
-            Slug = "landing-page-slug",
-            Title = "landing page title",
-            Subtitle = "landing page subtitle",
-            Breadcrumbs = new List<Crumb>(),
-            Alerts = new List<Alert>(),
-            Teaser = "landing page teaser",
-            MetaDescription = "landing page metadescription",
-            Image = new MediaAsset(),
-            Icon = "icon",
-            HeaderType = "full image",
-            HeaderImage = new MediaAsset(),
-            PageSections = new List<ContentBlock>() { new() { Title = "ContentBlock 1" }, new() { Title = "ContentBlock 2" } }
-        };
-    
+    {
+        Slug = "landing-page-slug",
+        Title = "landing page title",
+        Subtitle = "landing page subtitle",
+        Breadcrumbs = new List<Crumb>(),
+        Alerts = new List<Alert>(),
+        Teaser = "landing page teaser",
+        MetaDescription = "landing page metadescription",
+        Image = new MediaAsset(),
+        Icon = "icon",
+        HeaderType = "full image",
+        HeaderImage = new MediaAsset(),
+        PageSections = new List<ContentBlock>() { new() { Title = "ContentBlock 1" }, new() { Title = "ContentBlock 2" } }
+    };
+
     public LandingPageRepositoryTests()
     {
         ContentfulConfig config = BuildContentfulConfig();
         _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
-        _newsRepository = new(config, _timeprovider.Object, contentfulClientManager.Object, _newsFactory.Object, _newsRoomFactory.Object, _cacheWrapper.Object,  _configuration.Object);
+        _newsRepository = new(config, _timeprovider.Object, contentfulClientManager.Object, _newsFactory.Object, _newsRoomFactory.Object, _cacheWrapper.Object, _configuration.Object);
         _eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object, _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
 
         _repository = new LandingPageRepository(config, _contentfulFactory.Object, contentfulClientManager.Object, _eventRepository.Object, _newsRepository.Object, _profileFactory.Object);
-        
+
         ContentfulLandingPage contentfulLandingPage = new ContentfulLandingPageBuilder().Build();
 
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = new[] { contentfulLandingPage } };
-        
+
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
                          .ReturnsAsync(contentfulCollection);
 
         _contentfulFactory.Setup(factory => factory.ToModel(contentfulLandingPage)).Returns(_landingPage);
     }
-    
+
     private static ContentfulConfig BuildContentfulConfig() =>
         new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
@@ -141,14 +141,14 @@ public class LandingPageRepositoryTests
     public async Task GetLandingPage_GetsEventsFromTags_WhenCategoryEventListIsEmpty()
     {
         // Arrange
-        _landingPage.PageSections = new List<ContentBlock>() 
+        _landingPage.PageSections = new List<ContentBlock>()
         {
             new() { ContentType = "EventCards", AssociatedTagCategory = "events" }
         };
 
         _eventRepository.Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
             .ReturnsAsync(new List<Event>());
-        
+
         _eventRepository.Setup(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()))
             .ReturnsAsync(new List<Event>() { new EventBuilder().Build(), new EventBuilder().Build(), new EventBuilder().Build() });
 
@@ -168,7 +168,7 @@ public class LandingPageRepositoryTests
     public async Task GetLandingPage_ShouldCallGetLatestNewsByCategory_WhenNewsBannerExists()
     {
         // Arrange
-        _landingPage.PageSections = new List<ContentBlock>() 
+        _landingPage.PageSections = new List<ContentBlock>()
         {
             new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-category" }
         };
@@ -195,7 +195,7 @@ public class LandingPageRepositoryTests
     public async Task GetLandingPage_ShouldReturnNews_WhenTagMatches()
     {
         // Arrange
-        _landingPage.PageSections = new List<ContentBlock>() 
+        _landingPage.PageSections = new List<ContentBlock>()
         {
             new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-tag" }
         };
@@ -206,7 +206,7 @@ public class LandingPageRepositoryTests
 
         _newsRepository.Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
             .ReturnsAsync((News)null);
-        
+
         _newsRepository.Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>()))
             .ReturnsAsync(news);
 

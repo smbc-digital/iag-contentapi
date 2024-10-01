@@ -6,23 +6,20 @@ public class AuthenticationHelperTests
 
     public AuthenticationHelperTests()
     {
-        var timeProvider = new Mock<ITimeProvider>();
-        timeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 10, 25));
-
-        _helper = new AuthenticationHelper(timeProvider.Object);
+        _helper = new AuthenticationHelper();
     }
 
     [Fact]
     public void ExtractAuthenticationDataFromContext_ShouldReturnAuthenticationDataWithCorrectValues()
     {
         // Arrange
-        var context = new DefaultHttpContext();
+        DefaultHttpContext context = new();
         context.Request.Path = "/v1/stockportgov/articles/test";
         context.Request.Headers.Add("Authorization", "test");
         context.Request.Method = "GET";
 
         // Act
-        var data = _helper.ExtractAuthenticationDataFromContext(context);
+        AuthenticationData data = _helper.ExtractAuthenticationDataFromContext(context);
 
         // Assert
         data.Version.Should().Be(1);
@@ -45,7 +42,7 @@ public class AuthenticationHelperTests
     public void GetApiEndPoint_ShouldReturnCorrectEndpoint(string requestedEndpoint, string result)
     {
         // Act
-        var returnedEndpoint = _helper.GetApiEndPoint(requestedEndpoint);
+        string returnedEndpoint = _helper.GetApiEndPoint(requestedEndpoint);
 
         // Assert
         returnedEndpoint.Should().Be(result);
@@ -55,7 +52,7 @@ public class AuthenticationHelperTests
     public void CheckVersionIsProvided_ShouldThrowExceptionIfVersionIsNotProvided()
     {
         // Arrange
-        var authData = new AuthenticationData()
+        AuthenticationData authData = new()
         {
             AuthenticationKey = "key",
             BusinessId = "businessid",
@@ -73,7 +70,7 @@ public class AuthenticationHelperTests
     public void Invoke_ShouldReturnIfNoApiKeyIsInTheConfig()
     {
         // Arrange
-        var context = new DefaultHttpContext();
+        DefaultHttpContext context = new();
         context.Request.Path = "/v1/stockportgov/articles/test";
         context.Request.Headers.Add("Authorization", "test");
         context.Request.Method = "GET";

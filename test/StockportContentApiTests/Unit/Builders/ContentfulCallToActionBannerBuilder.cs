@@ -1,16 +1,14 @@
-﻿using Jose.keys;
-
-namespace StockportContentApiTests.Unit.Builders;
+﻿namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulCallToActionBannerBuilder
 {
-    private string _title = "title";
-    private string _teaser = "teaser";
-    private string _link = "link";
-    private string _altText = "altText";
-    private string _buttonText = "buttonText";
-    private EColourScheme _colour = EColourScheme.Blue;
-    private Asset _image = new Asset()
+    private readonly string _title = "title";
+    private readonly string _teaser = "teaser";
+    private readonly string _link = "link";
+    private readonly string _altText = "altText";
+    private readonly string _buttonText = "buttonText";
+    private readonly EColourScheme _colour = EColourScheme.Blue;
+    private readonly Asset _image = new()
     {
         File = new File
         {

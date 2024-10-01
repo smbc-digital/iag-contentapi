@@ -2,9 +2,9 @@
 
 public class AssetRepositoryTests
 {
-    private Mock<IContentfulClientManager> _contentfulClientManager = new Mock<IContentfulClientManager>();
-    private Mock<ILogger<AssetRepository>> _logger = new Mock<ILogger<AssetRepository>>();
-    private Mock<IContentfulClient> _contentfulClient = new Mock<IContentfulClient>();
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
+    private readonly Mock<ILogger<AssetRepository>> _logger = new();
+    private readonly Mock<IContentfulClient> _contentfulClient = new();
 
     public AssetRepositoryTests()
     {
@@ -18,10 +18,10 @@ public class AssetRepositoryTests
         _contentfulClient.Setup(o => o.GetAsset("asset", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Asset());
 
-        var assetRepository = new AssetRepository(new ContentfulConfig("", "", ""), _contentfulClientManager.Object,
+        AssetRepository assetRepository = new(new ContentfulConfig(string.Empty, string.Empty, string.Empty), _contentfulClientManager.Object,
             _logger.Object);
 
-        var asset = await assetRepository.Get("asset");
+        Asset asset = await assetRepository.Get("asset");
 
         asset.Should().NotBeNull();
     }
@@ -33,7 +33,7 @@ public class AssetRepositoryTests
                 o.GetAsset("asset-fail", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ContentfulException(500, "There was a problem with getting assetid: asset-fail from contentful"));
 
-        var assetRepository = new AssetRepository(new ContentfulConfig("", "", ""), _contentfulClientManager.Object,
+        AssetRepository assetRepository = new(new ContentfulConfig(string.Empty, string.Empty, string.Empty), _contentfulClientManager.Object,
             _logger.Object);
 
         await assetRepository.Get("asset-fail");

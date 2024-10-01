@@ -38,59 +38,59 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
 
     public Showcase ToModel(ContentfulShowcase entry)
     {
-        var heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
+        string heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
             entry.HeroImage.File.Url : string.Empty;
 
-        var primaryItems =
+        List<SubItem> primaryItems =
             entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var secondaryItems =
+        List<SubItem> secondaryItems =
             entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                                   && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var featuredItems =
+        List<SubItem> featuredItems =
             entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
                                                   && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+        List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
             .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-        var breadcrumbs =
+        List<Crumb> breadcrumbs =
             entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                 .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var profile = entry.Profile != null
+        Profile profile = entry.Profile is not null
             ? _profileFactory.ToModel(entry.Profile)
             : null;
 
-        var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
+        List<Profile> profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
             .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
                                                  _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+        List<SubItem> tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
 
-        var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+        List<Trivia> triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
             .Select(fact => _triviaFactory.ToModel(fact)).ToList();
 
-        var callToActionBanner = entry.CallToActionBanner != null
+        CallToActionBanner callToActionBanner = entry.CallToActionBanner is not null
             ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
             : null;
 
-        var video = entry.Video != null
+        Video video = entry.Video is not null
             ? _videoFactory.ToModel(entry.Video)
             : null;
 
-        var spotlightBanner = entry.SpotlightBanner != null
+        SpotlightBanner spotlightBanner = entry.SpotlightBanner is not null
             ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
             : null;
 

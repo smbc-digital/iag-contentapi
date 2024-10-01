@@ -2,17 +2,18 @@
 
 public class ContentfulSectionBuilder
 {
-    private string _title = "title";
-    private string _slug = "slug";
-    private string _metaDescription = "metaDescription";
-    private string _body = "body";
-    private DateTime _sunriseDate = DateTime.MinValue;
-    private DateTime _sunsetDate = DateTime.MinValue;
-    private DateTime _updatedAt = DateTime.Now;
-    private List<Asset> _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
-    private List<ContentfulProfile> _profiles = new List<ContentfulProfile> {
+    private readonly string _title = "title";
+    private readonly string _slug = "slug";
+    private readonly string _metaDescription = "metaDescription";
+    private readonly string _body = "body";
+    private readonly DateTime _sunriseDate = DateTime.MinValue;
+    private readonly DateTime _sunsetDate = DateTime.MinValue;
+    private readonly DateTime _updatedAt = DateTime.Now;
+    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
+    private readonly List<ContentfulProfile> _profiles = new()
+    {
         new ContentfulProfileBuilder().Build() };
-    private List<ContentfulAlert> _alertsInline = new List<ContentfulAlert>
+    private readonly List<ContentfulAlert> _alertsInline = new()
     {
         new ContentfulAlertBuilder().Build()
     };

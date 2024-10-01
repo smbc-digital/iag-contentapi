@@ -23,10 +23,10 @@ public class TopicRepository
 
         ContentfulTopic entry = entries.FirstOrDefault();
 
-        if (entry is null) 
+        if (entry is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No topic found for '{slug}'");
 
-        var model = _topicFactory.ToModel(entry);
+        Topic model = _topicFactory.ToModel(entry);
 
         return HttpResponse.Successful(model);
     }

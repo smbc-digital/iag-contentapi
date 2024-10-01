@@ -76,21 +76,21 @@ public class RedisXmlRepository : IXmlRepository, IDisposable
     /// </exception>
     public RedisXmlRepository(IConnectionMultiplexer connection, ILogger<RedisXmlRepository> logger)
     {
-        if (connection == null)
+        if (connection is null)
         {
             throw new ArgumentNullException(nameof(connection));
         }
 
-        if (logger == null)
+        if (logger is null)
         {
             throw new ArgumentNullException(nameof(logger));
         }
 
-        this._connection = connection;
-        this.Logger = logger;
+        _connection = connection;
+        Logger = logger;
 
         // Mask the password so it doesn't get logged.
-        var configuration = Regex.Replace(this._connection.Configuration, @"password\s*=\s*[^,]*", "password=****", RegexOptions.IgnoreCase);
+        string configuration = Regex.Replace(this._connection.Configuration, @"password\s*=\s*[^,]*", "password=****", RegexOptions.IgnoreCase);
         this.Logger.LogDebug("Storing data protection keys in Redis: {RedisConfiguration}", configuration);
     }
 
@@ -120,21 +120,18 @@ public class RedisXmlRepository : IXmlRepository, IDisposable
     /// </returns>
     public IReadOnlyCollection<XElement> GetAllElements()
     {
-        var database = this._connection.GetDatabase();
-        var hash = database.HashGetAll(RedisHashKey);
-        var elements = new List<XElement>();
+        IDatabase database = this._connection.GetDatabase();
+        HashEntry[] hash = database.HashGetAll(RedisHashKey);
+        List<XElement> elements = new();
 
-        if (hash == null || hash.Length == 0)
-        {
-            return elements.AsReadOnly();
-        }
+        if (hash is null || hash.Length.Equals(0))
+            elements.AsReadOnly();
 
-        foreach (var item in hash.ToStringDictionary())
-        {
+        foreach (KeyValuePair<string, string> item in hash.ToStringDictionary())
             elements.Add(XElement.Parse(item.Value));
-        }
 
         this.Logger.LogDebug("Read {XmlElementCount} XML elements from Redis.", elements.Count);
+        
         return elements.AsReadOnly();
     }
 
@@ -157,10 +154,8 @@ public class RedisXmlRepository : IXmlRepository, IDisposable
     /// </exception>
     public void StoreElement(XElement element, string friendlyName)
     {
-        if (element == null)
-        {
+        if (element is null)
             throw new ArgumentNullException(nameof(element));
-        }
 
         if (string.IsNullOrEmpty(friendlyName))
         {
@@ -187,7 +182,7 @@ public class RedisXmlRepository : IXmlRepository, IDisposable
         {
             if (disposing)
             {
-                if (this._connection != null)
+                if (this._connection is not null)
                 {
                     this._connection.Close();
                     this._connection.Dispose();

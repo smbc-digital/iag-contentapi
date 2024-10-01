@@ -22,8 +22,8 @@ public class ContactUsController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var contactUsArea = repository.GetContactUsArea();
+            ContactUsAreaRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> contactUsArea = repository.GetContactUsArea();
 
             return contactUsArea;
         });

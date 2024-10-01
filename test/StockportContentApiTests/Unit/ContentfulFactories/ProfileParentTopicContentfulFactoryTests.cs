@@ -161,7 +161,8 @@ public class ProfileParentTopicContentfulFactoryTests
             Teaser = "teaser"
         };
 
-        SubItem subItem = new(){
+        SubItem subItem = new()
+        {
             Slug = "subitem-slug",
             Title = "subitem title"
         };

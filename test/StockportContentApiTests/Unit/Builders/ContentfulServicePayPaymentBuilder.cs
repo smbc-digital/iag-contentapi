@@ -8,13 +8,14 @@ internal class ContentfulServicePayPaymentBuilder
     private string _description = "description";
     private string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
-    private string _metaDescription = "metaDescription";
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>();
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
+    private readonly string _metaDescription = "metaDescription";
+    private List<ContentfulAlert> _alerts = new();
+    private List<ContentfulReference> _breadcrumbs = new()
+    {
         new ContentfulReferenceBuilder().Build() };
     private string _paymentAmount = "23.00";
-    private string _accountReference = "accountReference";
-    private string _catalogueId = "catalogueId";
+    private readonly string _accountReference = "accountReference";
+    private readonly string _catalogueId = "catalogueId";
 
     public ContentfulServicePayPayment Build()
     {

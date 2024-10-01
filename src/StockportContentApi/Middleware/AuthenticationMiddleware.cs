@@ -24,10 +24,10 @@ public class AuthenticationMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        if( context.Request.Path.Value.EndsWith("_healthcheck"))
+        if (context.Request.Path.Value.EndsWith("_healthcheck"))
             await _next.Invoke(context);
 
-        var apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
+        string apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
 
         if (string.IsNullOrEmpty(apiConfigurationkey))
         {
@@ -36,7 +36,7 @@ public class AuthenticationMiddleware
             return;
         }
 
-        var authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
+        AuthenticationData authenticationData = _authHelper.ExtractAuthenticationDataFromContext(context);
 
         if (string.IsNullOrEmpty(authenticationData.AuthenticationKey))
         {
@@ -45,7 +45,7 @@ public class AuthenticationMiddleware
             return;
         }
 
-        if (authenticationData.AuthenticationKey != apiConfigurationkey)
+        if (!authenticationData.AuthenticationKey.Equals(apiConfigurationkey))
         {
             try
             {

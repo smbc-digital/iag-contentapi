@@ -1,4 +1,5 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
+
 public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory, Directory>
 {
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
@@ -8,10 +9,10 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
-    
+
     public DirectoryContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
         IContentfulFactory<ContentfulExternalLink, ExternalLink> externalLinkFactory,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory, 
+        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,

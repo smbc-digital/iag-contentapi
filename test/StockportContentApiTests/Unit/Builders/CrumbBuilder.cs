@@ -2,9 +2,9 @@
 
 public class CrumbBuilder
 {
-    private string _slug = "slug";
-    private string _title = "title";
-    private string _name = "name";
+    private readonly string _slug = "slug";
+    private readonly string _title = "title";
+    private readonly string _name = "name";
 
     public Crumb Build()
     {

@@ -31,7 +31,7 @@ public class ArticleRepository : BaseRepository
     public async Task<HttpResponse> Get()
     {
         IEnumerable<ArticleSiteMap> articles = await GetArticlesFromContentful();
-        
+
         if (articles is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
 
@@ -83,7 +83,7 @@ public class ArticleRepository : BaseRepository
     private void ProcessArticleContent(Article article)
     {
         article.Body = _videoRepository.Process(article.Body);
-        foreach (var section in article.Sections)
+        foreach (Section section in article.Sections)
         {
             if (section is not null)
                 section.Body = _videoRepository.Process(section.Body);

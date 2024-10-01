@@ -13,15 +13,15 @@ public class NewsExtensionsTests
     [Fact]
     public void ShouldReturnTwoDatesForNewsItems()
     {
-        var news = new List<News>()
+        List<News> news = new()
         {
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>()),
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>())
         };
 
-        var dates = new List<DateTime>();
+        List<DateTime> dates = new();
 
-        var result = news.GetNewsDates(out dates, _timeProvider.Object);
+        IEnumerable<News> result = news.GetNewsDates(out dates, _timeProvider.Object);
 
         dates.Should().HaveCount(2);
         dates[0].Month.Should().Be(2);
@@ -35,15 +35,15 @@ public class NewsExtensionsTests
     [Fact]
     public void ShouldReturnOneDateForDuplicateMonths()
     {
-        var news = new List<News>
+        List<News> news = new()
         {
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>()),
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>())
         };
 
-        var dates = new List<DateTime>();
+        List<DateTime> dates = new();
 
-        var result = news.GetNewsDates(out dates, _timeProvider.Object);
+        IEnumerable<News> result = news.GetNewsDates(out dates, _timeProvider.Object);
 
         dates.Should().HaveCount(1);
         dates[0].Month.Should().Be(2);
@@ -55,7 +55,7 @@ public class NewsExtensionsTests
     [Fact]
     public void ShouldReturnOnlyReturnCurrentAndPastNewsItems()
     {
-        var news = new List<News>
+        List<News> news = new()
         {
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 02, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>()),
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 03, 01), new DateTime(2016, 10, 01), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>()),
@@ -63,9 +63,9 @@ public class NewsExtensionsTests
             new News("title", "slug", "teaser", "purpose", "image", "thumbnail", "body", new DateTime(2016, 12, 10), new DateTime(2016, 12, 25), new DateTime(2016, 05, 01), new List<Crumb>(), new List<Alert>(), new List<string>(), new List<Document>(), new List<string>(), new List<Profile>())
         };
 
-        var dates = new List<DateTime>();
+        List<DateTime> dates = new();
 
-        var result = news.GetNewsDates(out dates, _timeProvider.Object);
+        IEnumerable<News> result = news.GetNewsDates(out dates, _timeProvider.Object);
 
         dates.Should().HaveCount(3);
         dates[0].Month.Should().Be(2);

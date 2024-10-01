@@ -24,8 +24,8 @@ public class DocumentPageController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var article = repository.GetDocumentPage(documentPageSlug);
+            DocumentPageRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> article = repository.GetDocumentPage(documentPageSlug);
 
             return article;
         });

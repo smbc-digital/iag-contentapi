@@ -23,7 +23,8 @@ public class ServicePayPaymentController : Controller
     {
         return await _handler.Get(() =>
         {
-            var paymentRepository = _createRepository(_createConfig(businessId));
+            ServicePayPaymentRepository paymentRepository = _createRepository(_createConfig(businessId));
+            
             return paymentRepository.GetPayment(slug);
         });
     }

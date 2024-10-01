@@ -4,10 +4,10 @@ public class GroupHomepageContentfulFactoryTests
 {
     private readonly ContentfulGroupHomepage _contentfulGroupHomepage;
     private readonly GroupHomepageContentfulFactory _groupHomepageContentfulFactory;
-    private Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-    private Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
-    private Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+    private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
+    private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
+    private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _groupSubCategoryFactory;
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
     private readonly Mock<ITimeProvider> _mockTimeProvider;
     private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
 

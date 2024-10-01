@@ -11,14 +11,14 @@ namespace StockportContentApi.Extensions
             {
                 if (hostingContext.HostingEnvironment.IsDevelopment() || hostingContext.HostingEnvironment.EnvironmentName.Equals("local"))
                 {
-                    Log.Logger.Information($"USING LOCAL SECRETS");
-                    
+                    Log.Logger.Information("USING LOCAL SECRETS");
+
                     // Use local secrets for development - need to work out what the difference is between the name/format of local json secrets string
                     configBuilder.AddUserSecrets<Program>();
                 }
                 else
                 {
-                    Log.Logger.Information($"USING AWS SECRETS MANAGER");
+                    Log.Logger.Information("USING AWS SECRETS MANAGER");
 
                     // secrets will take the form of {env}/{group}/{secret__name} e.g. int/iag/MySecret__AccessKey = MySecret:AccessKey in dev secrets
                     configBuilder.AddAwsSecrets(hostingContext);
@@ -32,12 +32,12 @@ namespace StockportContentApi.Extensions
         {
             IConfiguration partialConfig = configurationBuilder.Build();
 
-            var secretConfig = new AWSSecretsManagerConfiguration();
+            AWSSecretsManagerConfiguration secretConfig = new();
             partialConfig
                 .GetSection(nameof(AWSSecretsManagerConfiguration))
                 .Bind(secretConfig);
 
-            var allowedPrefixes = GetSecretPrefixes(secretConfig, hostingContext.HostingEnvironment.EnvironmentName);
+            List<string> allowedPrefixes = GetSecretPrefixes(secretConfig, hostingContext.HostingEnvironment.EnvironmentName);
 
             configurationBuilder.AddSecretsManager(configurator: opts =>
             {
@@ -53,7 +53,7 @@ namespace StockportContentApi.Extensions
         {
             // Gets a list of required prefixes for this env based on the value in the appsettings e.g. "int/iag/",
             // i.e. secrets that are specific to the env and group/application
-            var allowedPrefixes = secretConfig.SecretGroups
+            List<string> allowedPrefixes = secretConfig.SecretGroups
                                     .Select(grp => $"{env}/{grp}/").ToList();
 
             // The intention for this is to allow secrets to be shared between groups of environments
@@ -73,15 +73,15 @@ namespace StockportContentApi.Extensions
             if (!string.IsNullOrEmpty(secretConfig.SharedSecretPrefix))
                 allowedPrefixes.Add($"{env}/{secretConfig.SharedSecretPrefix}/");
 
-                // Adds global secrets to the list of allowed prefixes
-                // E.G. global/
+            // Adds global secrets to the list of allowed prefixes
+            // E.G. global/
             if (!string.IsNullOrEmpty(secretConfig.GlobalSecretPrefix))
                 allowedPrefixes.Add($"{secretConfig.GlobalSecretPrefix}/");
 
             allowedPrefixes.ForEach(prefix => Log.Logger.Information($"SecretsConfigurationBuilderExtensions : GetSecretPrefixes : ALLOWED PREFIX : {prefix}"));
             return allowedPrefixes;
         }
-        
+
         // Only load entries that start with any of the allowed prefixes
         private static bool HasPrefix(List<string> allowedPrefixes, SecretListEntry entry)
         {
@@ -93,10 +93,10 @@ namespace StockportContentApi.Extensions
         {
             // We know one of the prefixes matches, this assumes there's only one match,
             // So don't use '/' in your environment or secretgroup names!
-            var prefix = prefixes.First(secretValue.StartsWith);
+            string prefix = prefixes.First(secretValue.StartsWith);
 
             // Strip the prefix, and replace "__" with ":"
-            var key = secretValue
+            string key = secretValue
                         .Substring(prefix.Length)
                         .Replace("__", ":");
 

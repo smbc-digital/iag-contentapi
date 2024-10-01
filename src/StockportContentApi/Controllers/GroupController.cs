@@ -35,7 +35,7 @@ public class GroupController : Controller
     {
         return await _handler.Get(() =>
         {
-            var groupRepository = _groupRepository(_createConfig(businessId));
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
             return groupRepository.Get();
         });
     }
@@ -46,9 +46,9 @@ public class GroupController : Controller
     [Route("v1/{businessId}/grouphomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
-        var repository = _groupRepository(_createConfig(businessId));
-        var response = await repository.GetGroupHomepage();
-        var homepage = response.Get<GroupHomepage>();
+        IGroupRepository repository = _groupRepository(_createConfig(businessId));
+        HttpResponse response = await repository.GetGroupHomepage();
+        GroupHomepage homepage = response.Get<GroupHomepage>();
         return Ok(homepage);
     }
 
@@ -59,7 +59,7 @@ public class GroupController : Controller
     {
         return await _handler.Get(() =>
         {
-            var groupRepository = _groupRepository(_createConfig(businessId));
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
             return groupRepository.GetGroup(groupSlug, onlyActive);
         });
     }
@@ -71,7 +71,7 @@ public class GroupController : Controller
     {
         return await _handler.Get(() =>
         {
-            var groupRepository = _groupCategoryRepository(_createConfig(businessId));
+            GroupCategoryRepository groupRepository = _groupCategoryRepository(_createConfig(businessId));
             return groupRepository.GetGroupCategories();
         });
     }
@@ -83,7 +83,7 @@ public class GroupController : Controller
     {
         return await _handler.Get(() =>
         {
-            var groupRepository = _groupRepository(_createConfig(businessId));
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
             return groupRepository.GetGroupResults(groupSearch, slugs);
         });
     }
@@ -96,7 +96,7 @@ public class GroupController : Controller
     {
         return await _handler.Get(() =>
         {
-            var groupRepository = _groupRepository(_createConfig(businessId));
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
             return groupRepository.GetAdministratorsGroups(email);
         });
     }
@@ -109,18 +109,18 @@ public class GroupController : Controller
     {
         try
         {
-            var groupRepository = _groupRepository(_createConfig(businessId));
-            var existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+            ContentfulGroup existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
 
-            var existingCategories = await groupRepository.GetContentfulGroupCategories();
-            var referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
+            ContentfulCollection<ContentfulGroupCategory> existingCategories = await groupRepository.GetContentfulGroupCategories();
+            List<ContentfulGroupCategory> referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
 
-            var managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
+            ManagementGroup managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
 
             return await _handler.Get(async () =>
             {
-                var managementRepository = _managementRepository(_createConfig(businessId));
-                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+                int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
             });
@@ -137,27 +137,25 @@ public class GroupController : Controller
     [Route("v1/{businessId}/groups/{slug}")]
     public async Task<IActionResult> DeleteGroup(string slug, string businessId)
     {
-        var repository = _groupRepository(_createConfig(businessId));
-        var eventRepository = _eventRepository(_createConfig(businessId));
-        var existingGroup = await repository.GetContentfulGroup(slug);
-        var groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
+        IGroupRepository repository = _groupRepository(_createConfig(businessId));
+        EventRepository eventRepository = _eventRepository(_createConfig(businessId));
+        ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
+        IEnumerable<ContentfulEvent> groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
 
         return await _handler.Get(async () =>
         {
-            var managementRepository = _managementRepository(_createConfig(businessId));
+            ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
 
-            foreach (var groupEvent in groupEvents)
+            foreach (ContentfulEvent groupEvent in groupEvents)
             {
-                var eventVersion = await managementRepository.GetVersion(groupEvent.Sys.Id);
+                int eventVersion = await managementRepository.GetVersion(groupEvent.Sys.Id);
                 groupEvent.Sys.Version = eventVersion;
-                var result = await managementRepository.Delete(groupEvent.Sys);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                {
+                HttpResponse result = await managementRepository.Delete(groupEvent.Sys);
+                if (result.StatusCode is not HttpStatusCode.OK)
                     return result;
-                }
             }
 
-            var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+            int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
             existingGroup.Sys.Version = version;
             return await managementRepository.Delete(existingGroup.Sys);
         });
@@ -169,23 +167,25 @@ public class GroupController : Controller
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
     {
-        var repository = _groupRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(_createConfig(businessId));
 
-        var existingGroup = await repository.GetContentfulGroup(slug);
+        ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
-        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
+        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => !a.Email.Equals(emailAddress)).ToList();
 
-        var managementGroup = new ManagementGroup();
+        ManagementGroup managementGroup = new();
         _mapper.Map(existingGroup, managementGroup);
 
         return await _handler.Get(async () =>
         {
-            var managementRepository = _managementRepository(_createConfig(businessId));
-            var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+            ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+            int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
             existingGroup.Sys.Version = version;
-            var response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+            HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
 
-            return response.StatusCode == System.Net.HttpStatusCode.OK ? HttpResponse.Successful($"Successfully deleted administrator") : HttpResponse.Failure(response.StatusCode, "An error has occurred");
+            return response.StatusCode is HttpStatusCode.OK 
+                ? HttpResponse.Successful("Successfully deleted administrator") 
+                : HttpResponse.Failure(response.StatusCode, "An error has occurred");
         });
     }
 
@@ -194,60 +194,57 @@ public class GroupController : Controller
     [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> UpdateAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
-    {
-        return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
-    }
+        => await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost]
     [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> AddAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
-    {
-        return await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
-    }
+        => await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
+
 
     private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug, string emailAddress, string businessId)
     {
-        var repository = _groupRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(_createConfig(businessId));
 
-        var existingGroup = await repository.GetContentfulGroup(slug);
+        ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
-        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => a.Email != emailAddress).ToList();
+        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => !a.Email.Equals(emailAddress)).ToList();
 
-        if (user != null)
+        if (user is not null)
         {
             existingGroup.GroupAdministrators.Items.Add(user);
 
-            ManagementGroup managementGroup = new ManagementGroup();
+            ManagementGroup managementGroup = new();
             _mapper.Map(existingGroup, managementGroup);
 
             return await _handler.Get(async () =>
             {
-                var managementRepository = _managementRepository(_createConfig(businessId));
-                var version = await managementRepository.GetVersion(existingGroup.Sys.Id);
+                ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+                int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
-                var response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
-                return response.StatusCode == System.Net.HttpStatusCode.OK ? HttpResponse.Successful($"Successfully updated the group {existingGroup.Name}") : HttpResponse.Failure(response.StatusCode, "An error has occurred");
+                HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
+                return response.StatusCode is HttpStatusCode.OK 
+                    ? HttpResponse.Successful($"Successfully updated the group {existingGroup.Name}") 
+                    : HttpResponse.Failure(response.StatusCode, "An error has occurred");
             });
         }
         else
-        {
             throw new Exception("Invalid data received");
-        }
     }
 
     private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories, ContentfulGroup existingGroup)
     {
-        var contentfulGroup = _mapper.Map<ContentfulGroup>(group);
+        ContentfulGroup contentfulGroup = _mapper.Map<ContentfulGroup>(group);
         contentfulGroup.GroupBranding = existingGroup.GroupBranding;
         contentfulGroup.CategoriesReference = referencedCategories;
         contentfulGroup.Image = existingGroup.Image;
         contentfulGroup.SubCategories = existingGroup.SubCategories;
         contentfulGroup.Organisation = existingGroup.Organisation;
-
-        var managementGroup = new ManagementGroup();
+        ManagementGroup managementGroup = new();
         _mapper.Map(contentfulGroup, managementGroup);
+
         return managementGroup;
     }
 }

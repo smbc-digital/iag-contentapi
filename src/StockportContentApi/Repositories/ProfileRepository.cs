@@ -33,7 +33,7 @@ public class ProfileRepository : IProfileRepository
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
 
-        if (!entries.Any() || entries is null) 
+        if (!entries.Any() || entries is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
 
         IEnumerable<Profile> models = entries.Select(_ => _profileFactory.ToModel(_));

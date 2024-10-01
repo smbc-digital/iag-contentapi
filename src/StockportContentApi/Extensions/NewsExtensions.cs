@@ -4,13 +4,13 @@ public static class NewsExtensions
 {
     public static IEnumerable<News> GetNewsDates(this IEnumerable<News> news, out List<DateTime> dates, ITimeProvider timeProvider)
     {
-        var datesList = new List<DateTime>();
+        List<DateTime> datesList = new();
 
-        foreach (var item in news.ToList())
+        foreach (News item in news.ToList())
         {
-            var isSunriseDateIsInThePast = item.SunriseDate <= timeProvider.Now();
+            bool isSunriseDateIsInThePast = item.SunriseDate <= timeProvider.Now();
 
-            var isDateAlreadyInList = datesList.Any(d => d.Month.Equals(item.SunriseDate.Month) && d.Year.Equals(item.SunriseDate.Year));
+            bool isDateAlreadyInList = datesList.Any(date => date.Month.Equals(item.SunriseDate.Month) && date.Year.Equals(item.SunriseDate.Year));
 
             if (!isDateAlreadyInList && isSunriseDateIsInThePast)
             {

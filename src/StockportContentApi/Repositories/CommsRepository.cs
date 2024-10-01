@@ -13,23 +13,24 @@ public class CommsRepository
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulCommsHomepage>().ContentTypeIs("commsHomepage").Include(1);
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        QueryBuilder<ContentfulCommsHomepage> builder = new QueryBuilder<ContentfulCommsHomepage>().ContentTypeIs("commsHomepage").Include(1);
+        ContentfulCollection<ContentfulCommsHomepage> entries = await _client.GetEntries(builder);
+        ContentfulCommsHomepage entry = entries.FirstOrDefault();
 
-        if (entry != null && entry.WhatsOnInStockportEvent == null)
+        if (entry is not null && entry.WhatsOnInStockportEvent is not null)
         {
-            var sortOrder = SortOrderBuilder<ContentfulEvent>.New(f => f.EventDate);
-            var eventQueryBuilder = new QueryBuilder<ContentfulEvent>()
+            SortOrderBuilder<ContentfulEvent> sortOrder = SortOrderBuilder<ContentfulEvent>.New(evnt => evnt.EventDate);
+            QueryBuilder<ContentfulEvent> eventQueryBuilder = new QueryBuilder<ContentfulEvent>()
                 .FieldGreaterThan(f => f.EventDate, DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))
                 .ContentTypeIs("events")
                 .OrderBy(sortOrder.Build())
                 .Limit(1);
-            var eventEntry = await _client.GetEntries(eventQueryBuilder);
+
+            ContentfulCollection<ContentfulEvent> eventEntry = await _client.GetEntries(eventQueryBuilder);
             entry.WhatsOnInStockportEvent = eventEntry.FirstOrDefault();
         }
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No comms homepage found")
             : HttpResponse.Successful(_commsHomepageFactory.ToModel(entry));
     }

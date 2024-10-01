@@ -18,15 +18,16 @@ public class OrganisationRepository
 
     public async Task<HttpResponse> GetOrganisation(string slug)
     {
-        var builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
+        QueryBuilder<ContentfulOrganisation> builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
 
-        var entries = await _client.GetEntries(builder);
+        ContentfulCollection<ContentfulOrganisation> entries = await _client.GetEntries(builder);
 
-        var entry = entries.FirstOrDefault();
+        ContentfulOrganisation entry = entries.FirstOrDefault();
 
-        if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
+        if (entry is null) 
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
 
-        var organisation = _contentfulFactory.ToModel(entry);
+        Organisation organisation = _contentfulFactory.ToModel(entry);
 
         organisation.Groups = await _groupRepository.GetLinkedGroupsByOrganisation(slug);
 

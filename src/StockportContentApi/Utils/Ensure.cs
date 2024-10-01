@@ -10,7 +10,7 @@ public static class Ensure
 
     public static void ArgumentNotNull(object variable, string name)
     {
-        if (variable == null)
+        if (variable is null)
             throw new ArgumentNullException($"'{name}' cannot be null or empty.");
     }
 }

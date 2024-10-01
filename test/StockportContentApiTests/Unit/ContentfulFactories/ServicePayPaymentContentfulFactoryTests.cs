@@ -20,7 +20,7 @@ public class ServicePayPaymentContentfulFactoryTests
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         _timeProvider = new Mock<ITimeProvider>();
         _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        ServicePayPaymentContentfulFactory contentfulFactory = new ServicePayPaymentContentfulFactory(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
+        ServicePayPaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
         ServicePayPayment payment = contentfulFactory.ToModel(contentfulPayment);
 

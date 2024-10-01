@@ -23,7 +23,8 @@ public class TopicController : Controller
     {
         return await _handler.Get(() =>
         {
-            var topicRepository = _createRepository(_createConfig(businessId));
+            TopicRepository topicRepository = _createRepository(_createConfig(businessId));
+
             return topicRepository.GetTopicByTopicSlug(topicSlug);
         });
     }
@@ -35,7 +36,8 @@ public class TopicController : Controller
     {
         return await _handler.Get(() =>
         {
-            var topicRepository = _createRepository(_createConfig(businessId));
+            TopicRepository topicRepository = _createRepository(_createConfig(businessId));
+            
             return topicRepository.Get();
         });
     }

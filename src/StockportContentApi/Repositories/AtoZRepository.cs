@@ -30,7 +30,7 @@ public class AtoZRepository : BaseRepository
 
     public async Task<HttpResponse> Get(string letter)
     {
-        var atozItems = new List<AtoZ>();
+        List<AtoZ> atozItems = new();
         atozItems.AddRange(await GetAtoZ(letter));
 
         atozItems = atozItems.OrderBy(o => o.Title).ToList();
@@ -42,37 +42,41 @@ public class AtoZRepository : BaseRepository
 
     public async Task<List<AtoZ>> GetAtoZ(string letter)
     {
-        var letterToLower = letter.ToLower();
+        string letterToLower = letter.ToLower();
 
-        var atozItems = new List<AtoZ>();
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-article-" + letterToLower, () => GetAtoZItemFromContentType("article", letterToLower), _atoZTimeout));
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-topic-" + letterToLower, () => GetAtoZItemFromContentType("topic", letterToLower), _atoZTimeout));
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync("atoz-showcase-" + letterToLower, () => GetAtoZItemFromContentType("showcase", letterToLower), _atoZTimeout));
+        List<AtoZ> atozItems = new();
+        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-article-{letterToLower}", () => GetAtoZItemFromContentType("article", letterToLower), _atoZTimeout));
+        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-topic-{letterToLower}", () => GetAtoZItemFromContentType("topic", letterToLower), _atoZTimeout));
+        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-showcase-{letterToLower}", () => GetAtoZItemFromContentType("showcase", letterToLower), _atoZTimeout));
         atozItems = atozItems.OrderBy(o => o.Title).ToList();
+
         return atozItems;
     }
 
     public async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
     {
-        var atozList = new List<AtoZ>();
-        var builder = new QueryBuilder<ContentfulAtoZ>()
+        List<AtoZ> atozList = new();
+        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>()
             .ContentTypeIs(contentType)
             .Include(0);
-        var entries = await GetAllEntriesAsync(_client, builder, _logger);
-        var entriesWithDisplayOn = entries != null ? entries
-            .Where(x => x.DisplayOnAZ == "True"
-            && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles == null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter)))))) : null;
+        ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries is not null 
+            ? entries
+                .Where(x => x.DisplayOnAZ.Equals("True")
+                && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles is null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter)))))) 
+            : null;
 
-        if (entriesWithDisplayOn != null)
+        if (entriesWithDisplayOn is not null)
         {
-            foreach (var item in entriesWithDisplayOn)
+            foreach (ContentfulAtoZ item in entriesWithDisplayOn)
             {
                 DateTime sunriseDate = DateComparer.DateFieldToDate(item.SunriseDate);
                 DateTime sunsetDate = DateComparer.DateFieldToDate(item.SunsetDate);
+
                 if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(sunriseDate, sunsetDate))
                 {
                     AtoZ buildItem = _contentfulAtoZFactory.ToModel(item);
-                    var matchingItems = buildItem.SetTitleStartingWithLetter(letter);
+                    List<AtoZ> matchingItems = buildItem.SetTitleStartingWithLetter(letter);
                     atozList.AddRange(matchingItems);
                 }
             }

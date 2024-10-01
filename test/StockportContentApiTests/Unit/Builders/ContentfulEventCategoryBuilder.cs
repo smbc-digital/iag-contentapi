@@ -5,7 +5,7 @@ public class ContentfulEventCategoryBuilder
     private string _name { get; set; } = "name";
     private string _slug { get; set; } = "slug";
     private string _icon { get; set; } = "icon";
-    private SystemProperties _sys = new SystemProperties
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };

@@ -16,33 +16,33 @@ public class PaymentRepository
 
     public async Task<HttpResponse> GetPayment(string slug)
     {
-        var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+        ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
+        ContentfulPayment entry = entries.FirstOrDefault();
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No payment found for '{slug}'")
             : HttpResponse.Successful(_paymentFactory.ToModel(entry));
     }
 
     public async Task<HttpResponse> Get()
     {
-        var builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-        var entries = await _client.GetEntries(builder);
-        var contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+        ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
+        IEnumerable<ContentfulPayment> contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();
 
-        var payments = GetAllPayments(contentfulPayments);
-        return entries == null || !contentfulPayments.Any()
+        IEnumerable<Payment> payments = GetAllPayments(contentfulPayments);
+        return entries is null || !contentfulPayments.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No payments found")
             : HttpResponse.Successful(payments);
     }
 
     private IEnumerable<Payment> GetAllPayments(IEnumerable<ContentfulPayment> entries)
     {
-        var entriesList = new List<Payment>();
-        foreach (var entry in entries)
+        List<Payment> entriesList = new();
+        foreach (ContentfulPayment entry in entries)
         {
-            var paymentItem = _paymentFactory.ToModel(entry);
+            Payment paymentItem = _paymentFactory.ToModel(entry);
             entriesList.Add(paymentItem);
         }
         return entriesList;

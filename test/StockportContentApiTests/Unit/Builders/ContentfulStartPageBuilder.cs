@@ -10,15 +10,15 @@ public class ContentfulStartPageBuilder
     private string _formLinkLabel { get; set; } = "Start now";
     private string _formLink { get; set; } = "http://start.com";
     private string _lowerBody { get; set; } = "Lower body";
-    private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private string _icon { get; set; } = "icon";
 
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+    private readonly List<ContentfulReference> _breadcrumbs = new()
     {
       new ContentfulReferenceBuilder().Build()
     };
 
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+    private readonly List<ContentfulAlert> _alerts = new()
     {
         new ContentfulAlertBuilder().Build()
     };

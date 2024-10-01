@@ -40,7 +40,7 @@ public class PrivacyNoticeContentfulFactoryTests
             AutomatedDecision = false,
             Breadcrumbs = new List<ContentfulReference>()
         };
-        
+
         // Act
         PrivacyNotice privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
 

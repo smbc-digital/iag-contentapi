@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-namespace StockportContentApi.Extensions;
+﻿namespace StockportContentApi.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -170,10 +167,10 @@ public static class ServiceCollectionExtensions
 
         if (useRedisSession)
         {
-            var redisUrl = configuration["TokenStoreUrl"];
+            string redisUrl = configuration["TokenStoreUrl"];
             logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis URL {redisUrl}");
 
-            var redisIp = redisUrl;
+            string redisIp = redisUrl;
             if (!_appEnvironment.Equals("local"))
             {
                 redisIp = GetHostEntryForUrl(redisUrl, logger);
@@ -181,7 +178,7 @@ public static class ServiceCollectionExtensions
 
             }
 
-            var name = Assembly.GetEntryAssembly()?.GetName().Name;
+            string name = Assembly.GetEntryAssembly()?.GetName().Name;
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -198,7 +195,7 @@ public static class ServiceCollectionExtensions
                 };
             });
 
-            var redis = ConnectionMultiplexer.Connect(redisIp);
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisIp);
             logger.Information($"CONTENTAPI : ServiceCollectionExtensions : Add Cache : Using Redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
 
@@ -349,7 +346,7 @@ public static class ServiceCollectionExtensions
                         p.GetService<ICache>(),
                         p.GetService<ILogger<EventRepository>>(),
                         p.GetService<IConfiguration>()),
-                    new NewsRepository(x, 
+                    new NewsRepository(x,
                         p.GetService<ITimeProvider>(),
                         p.GetService<IContentfulClientManager>(),
                         p.GetService<IContentfulFactory<ContentfulNews, News>>(),
@@ -380,11 +377,11 @@ public static class ServiceCollectionExtensions
             p => { return x => new NewsRepository(x, p.GetService<ITimeProvider>(), p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulNews, News>>(), p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(), p.GetService<ICache>(), p.GetService<IConfiguration>()); });
 
         services.AddSingleton<Func<ContentfulConfig, SectionRepository>>(
-            p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>(), p.GetService<ITimeProvider>()); });
+            p => { return x => new SectionRepository(x, p.GetService<IContentfulFactory<ContentfulSection, Section>>(), p.GetService<IContentfulClientManager>()); });
         services.AddSingleton<Func<ContentfulConfig, TopicRepository>>(
             p => { return x => new TopicRepository(x, p.GetService<IContentfulClientManager>(), p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(), p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()); });
         services.AddSingleton<RedirectsRepository>();
-        services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper(p.GetService<ITimeProvider>()));
+        services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper());
         services.AddSingleton<Func<ContentfulConfig, IGroupRepository>>(
             p =>
             {
@@ -440,7 +437,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddAutoMapper(this IServiceCollection services)
     {
-        var config = new MapperConfiguration(cfg =>
+        MapperConfiguration config = new(cfg =>
         {
             cfg.AddProfile(new AutoMapperConfig());
         });
@@ -458,7 +455,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddRedirects(this IServiceCollection services, IConfiguration configuration)
     {
-        var redirectBusinessIds = new List<string>();
+        List<string> redirectBusinessIds = new();
         configuration.GetSection("RedirectBusinessIds").Bind(redirectBusinessIds);
         services.AddSingleton(new RedirectBusinessIds(redirectBusinessIds));
 
@@ -484,7 +481,7 @@ public static class ServiceCollectionExtensions
     {
         if (!string.IsNullOrEmpty(configuration["group:authenticationKey"]))
         {
-            var groupKeys = new GroupAuthenticationKeys { Key = configuration["group:authenticationKey"] };
+            GroupAuthenticationKeys groupKeys = new() { Key = configuration["group:authenticationKey"] };
             services.AddSingleton(groupKeys);
 
             services.AddSingleton<IJwtDecoder>(p => new JwtDecoder(p.GetService<GroupAuthenticationKeys>(), p.GetService<ILogger<JwtDecoder>>()));
@@ -499,14 +496,14 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddHelpers(this IServiceCollection services)
     {
-        services.AddTransient<ILoggedInHelper>(p => new LoggedInHelper(p.GetService<IHttpContextAccessor>(), p.GetService<CurrentEnvironment>(), p.GetService<IJwtDecoder>(), p.GetService<ILogger<LoggedInHelper>>()));
+        services.AddTransient<ILoggedInHelper>(p => new LoggedInHelper(p.GetService<IHttpContextAccessor>(), p.GetService<IJwtDecoder>(), p.GetService<ILogger<LoggedInHelper>>()));
 
         return services;
     }
 
     private static string GetHostEntryForUrl(string host, Serilog.ILogger logger)
     {
-        var addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
+        IPAddress[] addresses = Dns.GetHostEntryAsync(host).Result.AddressList;
 
         if (!addresses.Any())
         {

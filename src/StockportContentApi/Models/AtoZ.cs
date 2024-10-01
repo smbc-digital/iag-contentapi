@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 
 public class AtoZ
 {
@@ -21,21 +21,20 @@ public class AtoZ
 
     public List<AtoZ> SetTitleStartingWithLetter(string letter)
     {
-        var matchingItems = new List<AtoZ>();
-        var letterToLower = letter.ToLower();
+        List<AtoZ> matchingItems = new();
+        string letterToLower = letter.ToLower();
 
         if (Title.ToLower().StartsWith(letterToLower)) matchingItems.Add(this);
 
-        if (AlternativeTitles != null)
+        if (AlternativeTitles is not null)
         {
-            foreach (var atozAlternativeTitle in AlternativeTitles)
+            foreach (string atozAlternativeTitle in AlternativeTitles)
             {
                 if (atozAlternativeTitle.ToLower().StartsWith(letterToLower))
-                {
                     matchingItems.Add(new AtoZ(atozAlternativeTitle, Slug, Teaser, Type, AlternativeTitles));
-                }
             }
         }
+
         return matchingItems;
     }
 }

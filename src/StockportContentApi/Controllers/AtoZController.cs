@@ -22,7 +22,7 @@ public class AtoZController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
+            AtoZRepository repository = _createRepository(_createConfig(businessId));
             return repository.Get(letter);
         });
     }

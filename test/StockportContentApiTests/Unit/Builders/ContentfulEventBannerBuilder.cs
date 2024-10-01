@@ -2,11 +2,11 @@
 
 public class ContentfulEventBannerBuilder
 {
-    private string _title = "title";
-    private string _teaser = "teaser";
-    private string _icon = "icon";
-    private string _link = "link";
-    private SystemProperties _sys = new SystemProperties
+    private readonly string _title = "title";
+    private readonly string _teaser = "teaser";
+    private readonly string _icon = "icon";
+    private readonly string _link = "link";
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };

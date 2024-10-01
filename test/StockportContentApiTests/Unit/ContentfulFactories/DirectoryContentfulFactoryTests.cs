@@ -1,4 +1,4 @@
-﻿using Directory = StockportContentApi.Model.Directory;
+﻿using Directory = StockportContentApi.Models.Directory;
 namespace StockportContentApiTests.Unit.ContentfulFactories;
 public class DirectoryContentfulFactoryTests
 {
@@ -10,7 +10,8 @@ public class DirectoryContentfulFactoryTests
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
 
-    public DirectoryContentfulFactoryTests(){
+    public DirectoryContentfulFactoryTests()
+    {
         _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
     }
@@ -73,7 +74,8 @@ public class DirectoryContentfulFactoryTests
     }
 
     [Fact]
-    public void ToModel_ShouldReturnNull_IfNullEntry(){
+    public void ToModel_ShouldReturnNull_IfNullEntry()
+    {
         // Act
         Directory directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(null);
 

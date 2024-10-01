@@ -2,15 +2,15 @@
 
 public class CommsRepositoryTests
 {
-    private readonly Mock<IContentfulClientManager> _mockClientManager = new Mock<IContentfulClientManager>();
-    private readonly Mock<IContentfulClient> _mockClient = new Mock<IContentfulClient>();
-    private readonly Mock<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>> _mockCommsHomepageFactory = new Mock<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>();
+    private readonly Mock<IContentfulClientManager> _mockClientManager = new();
+    private readonly Mock<IContentfulClient> _mockClient = new();
+    private readonly Mock<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>> _mockCommsHomepageFactory = new();
     private readonly CommsRepository _repository;
 
 
     public CommsRepositoryTests()
     {
-        var config = new ContentfulConfig("test")
+        ContentfulConfig config = new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
@@ -54,16 +54,15 @@ public class CommsRepositoryTests
                 {
                     Items = new List<ContentfulCommsHomepage>
                     {
-                        new ContentfulCommsHomepage
-                        {
+                        new() {
                             WhatsOnInStockportEvent = new ContentfulEventBuilder().Build()
                         }
                     }
                 });
 
         // Act
-        var result = await _repository.Get();
-        var parsedResult = result.Get<CommsHomepage>();
+        HttpResponse result = await _repository.Get();
+        CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
         _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
@@ -76,7 +75,7 @@ public class CommsRepositoryTests
     public async Task Get_ShouldReturnCommsHomepageModel_AndNoEvent()
     {
         // Arrange
-        var commsCallback = new ContentfulCommsHomepage();
+        ContentfulCommsHomepage commsCallback = new();
 
         _mockCommsHomepageFactory
             .Setup(_ => _
@@ -106,7 +105,7 @@ public class CommsRepositoryTests
                 {
                     Items = new List<ContentfulCommsHomepage>
                     {
-                        new ContentfulCommsHomepage()
+                        new()
                     }
                 });
 
@@ -122,8 +121,8 @@ public class CommsRepositoryTests
                 });
 
         // Act
-        var result = await _repository.Get();
-        var parsedResult = result.Get<CommsHomepage>();
+        HttpResponse result = await _repository.Get();
+        CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
         _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
@@ -138,8 +137,8 @@ public class CommsRepositoryTests
     public async Task Get_ShouldReturnCommsHomepageModel_AndHasEvent()
     {
         // Arrange
-        var expectedEvent = new ContentfulEventBuilder().Build();
-        var commsCallback = new ContentfulCommsHomepage();
+        ContentfulEvent expectedEvent = new ContentfulEventBuilder().Build();
+        ContentfulCommsHomepage commsCallback = new();
 
         _mockCommsHomepageFactory
             .Setup(_ => _
@@ -169,7 +168,7 @@ public class CommsRepositoryTests
                 {
                     Items = new List<ContentfulCommsHomepage>
                     {
-                        new ContentfulCommsHomepage()
+                        new()
                     }
                 });
 
@@ -188,8 +187,8 @@ public class CommsRepositoryTests
                 });
 
         // Act
-        var result = await _repository.Get();
-        var parsedResult = result.Get<CommsHomepage>();
+        HttpResponse result = await _repository.Get();
+        CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
         _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
@@ -217,7 +216,7 @@ public class CommsRepositoryTests
                 });
 
         // Act
-        var result = await _repository.Get();
+        HttpResponse result = await _repository.Get();
 
         // Assert
         _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);

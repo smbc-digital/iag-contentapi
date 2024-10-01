@@ -27,12 +27,12 @@ public class ProfileParentTopicContentfulFactory : IContentfulFactory<Contentful
 
         List<SubItem> subItems = topicInBreadcrumb.SubItems
             .Select(CheckCurrentProfile)
-            .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+            .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems
             .Select(CheckCurrentProfile)
-            .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+            .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);

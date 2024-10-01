@@ -4,13 +4,13 @@ public class CarouselContentContentfulFactory : IContentfulFactory<ContentfulCar
 {
     public CarouselContent ToModel(ContentfulCarouselContent carousel)
     {
-        var title = carousel.Title ?? string.Empty;
-        var slug = carousel.Slug ?? string.Empty;
-        var teaser = carousel.Teaser ?? string.Empty;
-        var image = carousel.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(carousel.Image.SystemProperties) ?
+        string title = carousel.Title ?? string.Empty;
+        string slug = carousel.Slug ?? string.Empty;
+        string teaser = carousel.Teaser ?? string.Empty;
+        string image = carousel.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(carousel.Image.SystemProperties) ?
             carousel.Image.File.Url : string.Empty;
 
-        var url = carousel.Url ?? string.Empty;
+        string url = carousel.Url ?? string.Empty;
 
         DateTime sunriseDate = DateComparer.DateFieldToDate(carousel.SunriseDate);
         DateTime sunsetDate = DateComparer.DateFieldToDate(carousel.SunsetDate);

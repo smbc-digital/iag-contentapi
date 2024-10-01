@@ -20,8 +20,8 @@ public class ProfileController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var profile = repository.GetProfile(profileSlug);
+            IProfileRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> profile = repository.GetProfile(profileSlug);
 
             return profile;
         });
@@ -34,8 +34,8 @@ public class ProfileController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var profile = repository.Get();
+            IProfileRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> profile = repository.Get();
 
             return profile;
         });

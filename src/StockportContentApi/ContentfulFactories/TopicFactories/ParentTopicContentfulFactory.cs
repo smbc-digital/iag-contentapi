@@ -18,18 +18,19 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
     {
         _entry = entry;
 
-        var topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id == "topic");
+        ContentfulReference topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
 
-        if (topicInBreadcrumb == null) return new NullTopic();
+        if (topicInBreadcrumb is null) 
+            return new NullTopic();
 
-        var subItems = topicInBreadcrumb.SubItems
+        List<SubItem> subItems = topicInBreadcrumb.SubItems
             .Select(CheckCurrentArticle)
-            .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+            .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        var secondaryItems = topicInBreadcrumb.SecondaryItems
+        List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems
             .Select(CheckCurrentArticle)
-            .Where(subItem => subItem != null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+            .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
             .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
@@ -37,9 +38,9 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
 
     private ContentfulReference CheckCurrentArticle(ContentfulReference item)
     {
-        if (item.Sys.Id != _entry.Sys.Id) return item;
-
-        // the link is to the current article
+        if (!item.Sys.Id.Equals(_entry.Sys.Id)) 
+            return item;
+        
         return new ContentfulReference
         {
             Icon = _entry.Icon,

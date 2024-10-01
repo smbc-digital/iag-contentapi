@@ -3,7 +3,7 @@
 public class ContentfulProfileBuilder
 {
     private string _slug = "slug";
-    private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
     private readonly SystemProperties _sys = new()
     {
         ContentType = new() { SystemProperties = new() { Id = "id" } }

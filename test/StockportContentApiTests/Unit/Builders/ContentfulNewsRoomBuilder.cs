@@ -2,11 +2,11 @@
 
 public class ContentfulNewsRoomBuilder
 {
-    private string _title = "title";
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
-    private bool _emailAlerts = true;
-    private string _emailAlertsTopicId = "test-id";
-    private SystemProperties _sys = new SystemProperties { Type = "Entry" };
+    private readonly string _title = "title";
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
+    private readonly bool _emailAlerts = true;
+    private readonly string _emailAlertsTopicId = "test-id";
+    private readonly SystemProperties _sys = new() { Type = "Entry" };
 
     public ContentfulNewsRoom Build()
     {

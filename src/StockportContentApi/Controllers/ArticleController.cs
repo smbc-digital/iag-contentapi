@@ -20,10 +20,10 @@ public class ArticleController : Controller
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
         await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));          
-            return repository.GetArticle(articleSlug); 
+            ArticleRepository repository = _createRepository(_createConfig(businessId));
+            return repository.GetArticle(articleSlug);
         });
-    
+
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
@@ -32,7 +32,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> Index(string businessId) =>
         await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
+            ArticleRepository repository = _createRepository(_createConfig(businessId));
             return repository.Get();
         });
 }

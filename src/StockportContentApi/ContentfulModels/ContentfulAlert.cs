@@ -12,5 +12,5 @@ public class ContentfulAlert : IContentfulModel
     public SystemProperties Sys { get; set; } = new SystemProperties();
     public string Slug { get; set; } = string.Empty;
     public bool IsStatic { get; set; }
-    public Asset Image { get; set; } = new Asset { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    public Asset Image { get; set; } = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
 }

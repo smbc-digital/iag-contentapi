@@ -22,8 +22,8 @@ public class OrganisationController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _organisationRepository(_createConfig(businessId));
-            var article = repository.GetOrganisation(organisationSlug);
+            OrganisationRepository repository = _organisationRepository(_createConfig(businessId));
+            Task<HttpResponse> article = repository.GetOrganisation(organisationSlug);
 
             return article;
         });

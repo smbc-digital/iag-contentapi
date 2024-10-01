@@ -5,7 +5,7 @@ public class NewsContentfulFactoryTests
     private readonly Mock<IVideoRepository> _videoRepository;
     private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder;
-    private readonly Mock<ITimeProvider> _timeProvider = new Mock<ITimeProvider>();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly NewsContentfulFactory _newsContentfulFactory;
     private readonly ContentfulNews _contentfulNews;
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;

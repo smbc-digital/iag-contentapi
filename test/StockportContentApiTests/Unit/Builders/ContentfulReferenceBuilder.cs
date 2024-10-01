@@ -5,14 +5,14 @@ public class ContentfulReferenceBuilder
     private string _slug = "slug";
     private string _title = "title";
     private string _name = "name";
-    private string _teaser = "teaser";
+    private readonly string _teaser = "teaser";
     private string _icon = "icon";
-    private DateTime _sunriseDate = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-    private DateTime _sunsetDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-    private Asset _image = new Asset { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-    private List<ContentfulReference> _subItems = new List<ContentfulReference>();
-    private List<ContentfulReference> _secondaryItems = new List<ContentfulReference>();
-    private List<ContentfulReference> _tertiaryItems = new List<ContentfulReference>();
+    private readonly DateTime _sunriseDate = new(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    private readonly DateTime _sunsetDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+    private readonly Asset _image = new() { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    private List<ContentfulReference> _subItems = new();
+    private List<ContentfulReference> _secondaryItems = new();
+    private List<ContentfulReference> _tertiaryItems = new();
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
 

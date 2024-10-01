@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 [ExcludeFromCodeCoverage]
 public class Event
 {
@@ -66,13 +66,11 @@ public class Event
         EventCategories = eventCategories;
         Paid = paid;
         Free = free;
-        Coord = MapPosition == null ? null : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
+        Coord = MapPosition is null ? null : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
         AccessibleTransportLink = accessibleTransportLink;
         MetaDescription = metaDescription;
     }
 
-    public bool ShouldSerializeFrequency()
-    {
-        return false;
-    }
+    public bool ShouldSerializeFrequency() =>
+        false;
 }

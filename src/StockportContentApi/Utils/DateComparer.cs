@@ -4,10 +4,9 @@ public class DateComparer
 {
     private readonly ITimeProvider _timeProvider;
 
-    public DateComparer(ITimeProvider timeProvider)
-    {
+    public DateComparer(ITimeProvider timeProvider) =>
+
         _timeProvider = timeProvider;
-    }
 
     public static DateTime DateFieldToDate(dynamic date)
     {
@@ -21,42 +20,31 @@ public class DateComparer
         DateTime? sunsetDate = null)
     {
         sunsetDate = sunsetDate ?? DateTime.MaxValue;
-        var sunriseCheck = sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate;
-        var sunsetCheck = sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate;
+        bool sunriseCheck = sunriseDate.Equals(DateTime.MinValue) || _timeProvider.Now() >= sunriseDate;
+        bool sunsetCheck = sunsetDate.Equals(DateTime.MinValue) || _timeProvider.Now() <= sunsetDate;
 
         return sunriseCheck
                && sunsetCheck;
     }
 
-    public bool DateNowIsAfterSunriseDate(DateTime sunriseDate)
-    {
-        return sunriseDate < _timeProvider.Now();
-    }
-
+    public bool DateNowIsAfterSunriseDate(DateTime sunriseDate) =>
+        sunriseDate < _timeProvider.Now();
     public bool DateNowIsNotBetweenHiddenRange(DateTime? hiddenFrom, DateTime? hiddenTo)
     {
-        var now = DateTime.Now;
-        return hiddenFrom > now || (hiddenTo < now && hiddenTo != DateTime.MinValue) || (hiddenFrom == DateTime.MinValue && hiddenTo == DateTime.MinValue) || (hiddenFrom == null && hiddenTo == null);
+        DateTime now = DateTime.Now;
+
+        return hiddenFrom > now || (hiddenTo < now && !hiddenTo.Equals(DateTime.MinValue)) || (hiddenFrom.Equals(DateTime.MinValue) && hiddenTo.Equals(DateTime.MinValue)) || (hiddenFrom is null && hiddenTo is null);
     }
 
-    public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate)
-    {
-        return sunriseDate.Date >= startDate.Date && sunriseDate.Date <= endDate.Date && sunriseDate <= _timeProvider.Now();
-    }
+    public bool SunriseDateIsBetweenStartAndEndDates(DateTime sunriseDate, DateTime startDate, DateTime endDate) =>
+        sunriseDate.Date >= startDate.Date && sunriseDate.Date <= endDate.Date && sunriseDate <= _timeProvider.Now();
 
-    public bool EventDateIsBetweenStartAndEndDates(DateTime eventDate, DateTime startDate, DateTime endDate)
-    {
-        return eventDate.Date >= startDate.Date && eventDate.Date <= endDate.Date;
-    }
+    public bool EventDateIsBetweenStartAndEndDates(DateTime eventDate, DateTime startDate, DateTime endDate) =>
+        eventDate.Date >= startDate.Date && eventDate.Date <= endDate.Date;
 
-    public bool EventDateIsBetweenTodayAndLater(DateTime eventDate)
-    {
-        return eventDate.Date >= _timeProvider.Now().Date;
-    }
+    public bool EventDateIsBetweenTodayAndLater(DateTime eventDate) =>
+        eventDate.Date >= _timeProvider.Now().Date;
 
-    private static bool IsValidDateTime(dynamic date)
-    {
-        DateTime datetime;
-        return date != null && DateTime.TryParse(date.ToString(), out datetime);
-    }
+    private static bool IsValidDateTime(dynamic date) =>
+        date is not null && DateTime.TryParse(date.ToString(), out DateTime datetime);
 }

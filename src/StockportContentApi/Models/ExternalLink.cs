@@ -1,4 +1,5 @@
-namespace StockportContentApi.Model;
+namespace StockportContentApi.Models;
+
 [ExcludeFromCodeCoverage]
 public class ExternalLink
 {

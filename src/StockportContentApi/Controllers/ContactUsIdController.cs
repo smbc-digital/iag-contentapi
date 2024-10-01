@@ -23,7 +23,7 @@ public class ContactUsIdController : Controller
     {
         return await _handler.Get(() =>
         {
-            var contactUsIdRepository = _createRepository(_createConfig(businessId));
+            ContactUsIdRepository contactUsIdRepository = _createRepository(_createConfig(businessId));
             return contactUsIdRepository.GetContactUsIds(slug);
         });
     }

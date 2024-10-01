@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum EventFrequency

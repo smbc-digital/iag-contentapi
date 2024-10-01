@@ -23,8 +23,8 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var showcase = repository.GetShowcases(showcaseSlug);
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> showcase = repository.GetShowcases(showcaseSlug);
 
             return showcase;
         });
@@ -37,8 +37,8 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var showcase = repository.Get();
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> showcase = repository.Get();
 
             return showcase;
         });

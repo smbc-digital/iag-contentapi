@@ -9,13 +9,13 @@ public abstract class TestingBaseClass
     /// <returns>HttpResponse with the content as a string</returns>
     protected HttpResponse GetResponseFromFile(string file)
     {
-        var assembly = this.GetType().GetTypeInfo().Assembly;
-        var response = new HttpResponseMessage();
-        var resources = assembly.GetManifestResourceNames();
-        var resourceName = resources.FirstOrDefault(f => f.Equals($"{file}", StringComparison.OrdinalIgnoreCase));
-        var json = string.Empty;
+        Assembly assembly = GetType().GetTypeInfo().Assembly;
+        HttpResponseMessage response = new();
+        string[] resources = assembly.GetManifestResourceNames();
+        string resourceName = resources.FirstOrDefault(f => f.Equals(file, StringComparison.OrdinalIgnoreCase));
+        string json = string.Empty;
         using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-        using (StreamReader reader = new StreamReader(stream))
+        using (StreamReader reader = new(stream))
         {
             json = reader.ReadToEnd();
         }
@@ -30,13 +30,13 @@ public abstract class TestingBaseClass
     /// <returns>String content of file</returns>
     protected string GetStringResponseFromFile(string file)
     {
-        var assembly = this.GetType().GetTypeInfo().Assembly;
-        var response = new HttpResponseMessage();
-        var resources = assembly.GetManifestResourceNames();
-        var resourceName = resources.FirstOrDefault(f => f.Equals($"{file}", StringComparison.OrdinalIgnoreCase));
-        var json = string.Empty;
+        Assembly assembly = GetType().GetTypeInfo().Assembly;
+        HttpResponseMessage response = new();
+        string[] resources = assembly.GetManifestResourceNames();
+        string resourceName = resources.FirstOrDefault(f => f.Equals(file, StringComparison.OrdinalIgnoreCase));
+        string json = string.Empty;
         using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-        using (StreamReader reader = new StreamReader(stream))
+        using (StreamReader reader = new(stream))
         {
             json = reader.ReadToEnd();
         }

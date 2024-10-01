@@ -3,11 +3,11 @@
 public class ContentfulTopicForSiteMapBuilder
 {
     private string _slug = "slug";
-    private DateTime _sunriseDate = DateTime.MinValue;
-    private DateTime _sunsetDate = DateTime.MaxValue;
+    private readonly DateTime _sunriseDate = DateTime.MinValue;
+    private readonly DateTime _sunsetDate = DateTime.MaxValue;
     private List<ContentfulSectionForSiteMap> _sections = new();
-    private string _systemId = "id";
-    private string _contentTypeSystemId = "id";
+    private readonly string _systemId = "id";
+    private readonly string _contentTypeSystemId = "id";
 
     public ContentfulTopicForSiteMap Build()
     {
@@ -30,7 +30,7 @@ public class ContentfulTopicForSiteMapBuilder
         _slug = slug;
         return this;
     }
-    
+
     public ContentfulTopicForSiteMapBuilder Sections(List<ContentfulSectionForSiteMap> sections)
     {
         _sections = sections;

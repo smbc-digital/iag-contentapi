@@ -2,35 +2,32 @@
 
 public class SectionRepository
 {
-    private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulSection, Section> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
 
     public SectionRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulSection, Section> SectionBuilder,
-        IContentfulClientManager contentfulClientManager,
-        ITimeProvider timeProvider)
+        IContentfulClientManager contentfulClientManager)
     {
-        _dateComparer = new DateComparer(timeProvider);
         _contentfulFactory = SectionBuilder;
         _client = contentfulClientManager.GetClient(config);
     }
     public async Task<HttpResponse> Get()
     {
-        var sections = new List<ContentfulSectionForSiteMap>();
+        List<ContentfulSectionForSiteMap> sections = new();
 
         QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2).Limit(ContentfulQueryValues.LIMIT_MAX);
         ContentfulCollection<ContentfulArticleForSiteMap> articles = await _client.GetEntries(builder);
 
-        foreach (var article in articles.Where(e => e.Sections.Any()))
+        foreach (ContentfulArticleForSiteMap article in articles.Where(e => e.Sections.Any()))
         {
-            foreach (var section in article.Sections)
+            foreach (ContentfulSectionForSiteMap section in article.Sections)
             {
                 sections.Add(new ContentfulSectionForSiteMap { Slug = $"{article.Slug}/{section.Slug}", SunriseDate = section.SunriseDate, SunsetDate = section.SunsetDate });
             }
         }
 
-        return sections.GetType() == typeof(NullHomepage)
+        return sections.GetType().Equals(typeof(NullHomepage))
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Sections found")
             : HttpResponse.Successful(sections);
     }
@@ -44,7 +41,7 @@ public class SectionRepository
         ContentfulSection entry = entries.FirstOrDefault();
         Section Section = _contentfulFactory.ToModel(entry);
 
-        return Section.GetType() == typeof(NullHomepage)
+        return Section.GetType().Equals(typeof(NullHomepage))
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Section found")
             : HttpResponse.Successful(Section);
     }

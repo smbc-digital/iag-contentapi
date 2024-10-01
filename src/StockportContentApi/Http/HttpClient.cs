@@ -20,17 +20,17 @@ public class HttpClient : IHttpClient
     {
         try
         {
-            var responseMessage = await _client.GetAsync(url);
+            HttpResponseMessage responseMessage = await _client.GetAsync(url);
 
-            if (!responseMessage.IsSuccessStatusCode) return HttpResponse.Failure(responseMessage.StatusCode, responseMessage.ReasonPhrase);
+            if (!responseMessage.IsSuccessStatusCode) 
+                return HttpResponse.Failure(responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-            var content = await responseMessage.Content.ReadAsStringAsync();
+            string content = await responseMessage.Content.ReadAsStringAsync();
 
             return HttpResponse.Successful(content);
         }
         catch (HttpRequestException ex)
         {
-            // GetAsync above throws an exception, catch it here and return fail
             _logger.LogError(new EventId(0), ex, "An error occured while communicating with the remote service.");
             return HttpResponse.Failure(HttpStatusCode.InternalServerError, ex.Message);
         }

@@ -1,15 +1,16 @@
-﻿namespace StockportContentApi.Repositories;
+﻿using Microsoft.AspNetCore.Components.Web;
+
+namespace StockportContentApi.Repositories;
 
 public class NewsRepository : BaseRepository
 {
     private readonly ITimeProvider _timeProvider;
-    private const int ReferenceLevelLimit = 1;
     private readonly IContentfulFactory<ContentfulNews, News> _newsContentfulFactory;
     private readonly IContentfulFactory<ContentfulNewsRoom, Newsroom> _newsRoomContentfulFactory;
     private readonly DateComparer _dateComparer;
     private readonly ICache _cache;
     private readonly IContentfulClient _client;
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
     private readonly int _newsTimeout;
 
     public NewsRepository(ContentfulConfig config, ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
@@ -27,68 +28,70 @@ public class NewsRepository : BaseRepository
 
     private async Task<IList<ContentfulNews>> GetAllNews()
     {
-        var builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1);
-        var entries = await GetAllEntriesAsync(_client, builder);
-        return !entries.Any() ? null : entries.ToList();
+        QueryBuilder<ContentfulNews> builder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1);
+        ContentfulCollection<ContentfulNews> entries = await GetAllEntriesAsync(_client, builder);
+
+        return !entries.Any() 
+            ? null 
+            : entries.ToList();
     }
 
     private async Task<ContentfulNewsRoom> GetNewsRoom()
     {
-        var builder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
-        var entries = await _client.GetEntries(builder);
+        QueryBuilder<ContentfulNewsRoom> builder = new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1);
+        ContentfulCollection<ContentfulNewsRoom> entries = await _client.GetEntries(builder);
+
         return entries.FirstOrDefault();
     }
 
     private async Task<List<string>> GetNewsCategories()
     {
-        var eventType = await _client.GetContentType("news");
-        var validation = eventType.Fields.First(f => f.Name == "Categories").Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
+        ContentType eventType = await _client.GetContentType("news");
+        Contentful.Core.Models.Management.InValuesValidator validation = eventType.Fields.First(field => field.Name.Equals("Categories")).Items.Validations[0] as Contentful.Core.Models.Management.InValuesValidator;
+
         return validation?.RequiredValues;
     }
 
     public async Task<HttpResponse> GetNews(string slug)
     {
-        var entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
+        IList<ContentfulNews> entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
-        var entry = entries.Where(e => e.Slug == slug).FirstOrDefault();
+        ContentfulNews entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
 
-        if (entry != null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate)) entry = null;
+        if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate)) entry = null;
 
-        return entry == null
+        return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
             : HttpResponse.Successful(_newsContentfulFactory.ToModel(entry));
     }
 
     public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
     {
-        var newsroom = new Newsroom(new List<Alert>(), false, string.Empty);
+        Newsroom newsroom = new(new List<Alert>(), false, string.Empty);
 
-        var newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom, _newsTimeout);
+        ContentfulNewsRoom newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom, _newsTimeout);
 
         List<string> categories;
 
-        if (newsRoomEntry != null)
-        {
+        if (newsRoomEntry is not null)
             newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
-        }
 
-        var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
-        var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
+        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
+        IEnumerable<ContentfulNews> filteredEntries = newsEntries.Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
 
-        if (!filteredEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+        if (!filteredEntries.Any()) 
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<DateTime> dates;
 
-        var newsArticles = filteredEntries
+        List<News> newsArticles = filteredEntries
             .Select(item => _newsContentfulFactory.ToModel(item))
-            .GetNewsDates(out dates, _timeProvider)
+            .GetNewsDates(out List<DateTime> dates, _timeProvider)
             .Where(news => CheckDates(startDate, endDate, news))
-            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Any(c => string.Equals(c, category, StringComparison.InvariantCultureIgnoreCase)))
+            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
             .OrderByDescending(o => o.SunriseDate)
             .ToList();
 
         categories = await GetCategories();
-
         newsroom.SetNews(newsArticles);
         newsroom.SetCategories(categories);
         newsroom.SetDates(dates.Distinct().ToList());
@@ -96,19 +99,19 @@ public class NewsRepository : BaseRepository
         return HttpResponse.Successful(newsroom);
     }
 
-    private bool CheckDates(DateTime? startDate, DateTime? endDate, News news)
-    {
-        return startDate.HasValue && endDate.HasValue
+    private bool CheckDates(DateTime? startDate, DateTime? endDate, News news) =>
+        startDate.HasValue && endDate.HasValue
             ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value)
             : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
-    }
 
     public async Task<HttpResponse> GetNewsByLimit(int limit)
     {
-        var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
+        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
-        if (!newsEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
-        var newsArticles = newsEntries
+        if (!newsEntries.Any()) 
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+
+        List<News> newsArticles = newsEntries
             .Select(item => _newsContentfulFactory.ToModel(item))
             .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
             .OrderByDescending(o => o.SunriseDate)
@@ -120,19 +123,8 @@ public class NewsRepository : BaseRepository
             : HttpResponse.Successful(newsArticles);
     }
 
-    private static string GetSearchTypeForTag(ref string tag)
-    {
-        if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) return "in";
-        tag = tag.Remove(0, 1);
-
-        return "match";
-    }
-
-    public async Task<List<string>> GetCategories()
-    {
-        var result = await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
-        return result;
-    }
+    public async Task<List<string>> GetCategories() =>
+        await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
 
     public virtual async Task<News> GetLatestNewsByTag(string tag)
     {
@@ -141,7 +133,7 @@ public class NewsRepository : BaseRepository
             .Include(1);
 
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
-            
+
         ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
         if (contentfulNews is not null)
             return _newsContentfulFactory.ToModel(contentfulNews);
@@ -156,7 +148,7 @@ public class NewsRepository : BaseRepository
                 .Include(1);
 
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
-        
+
         ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
         if (contentfulNews is not null)
             return _newsContentfulFactory.ToModel(contentfulNews);

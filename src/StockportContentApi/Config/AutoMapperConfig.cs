@@ -77,10 +77,8 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
 {
     public ManagementGroup Convert(ContentfulGroup source, ManagementGroup destination, ResolutionContext context)
     {
-        if (destination == null)
-        {
+        if (destination is null)
             destination = new ManagementGroup();
-        }
 
         destination.AdditionalInformation = new Dictionary<string, string> { { "en-GB", source.AdditionalInformation } };
         destination.MapPosition = new Dictionary<string, MapPosition> { { "en-GB", source.MapPosition } };
@@ -97,8 +95,8 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
         destination.Volunteering = new Dictionary<string, bool> { { "en-GB", source.Volunteering } };
         destination.Donations = new Dictionary<string, bool> { { "en-GB", source.Donations } };
         destination.Website = new Dictionary<string, string> { { "en-GB", source.Website } };
-        destination.DateHiddenFrom = new Dictionary<string, string> { { "en-GB", source.DateHiddenFrom != null ? source.DateHiddenFrom.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
-        destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB", source.DateHiddenTo != null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
+        destination.DateHiddenFrom = new Dictionary<string, string> { { "en-GB", source.DateHiddenFrom is not null ? source.DateHiddenFrom.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
+        destination.DateHiddenTo = new Dictionary<string, string> { { "en-GB", source.DateHiddenTo is not null ? source.DateHiddenTo.Value.ToString("yyyy-MM-ddTHH:mm:ssK") : DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ssK") } };
         destination.Cost = new Dictionary<string, List<string>>()
         {
             {
@@ -118,7 +116,8 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
         };
 
         destination.VolunteeringText = new Dictionary<string, string> { { "en-GB", source.VolunteeringText } };
-        if (destination.Organisation != null)
+
+        if (destination.Organisation is not null)
         {
             destination.Organisation = new Dictionary<string, ManagementReference>() { { "en-GB", new ManagementReference { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(source.Organisation.Sys) } } };
         }
@@ -169,7 +168,7 @@ public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
         destination.Featured = new Dictionary<string, bool> { { "en-GB", source.Featured } };
         destination.Fee = new Dictionary<string, string> { { "en-GB", source.Fee } };
         destination.Free = new Dictionary<string, bool?> { { "en-GB", source.Free } };
-        if (source.Frequency != EventFrequency.None)
+        if (!source.Frequency.Equals(EventFrequency.None))
         {
             destination.Frequency = new Dictionary<string, EventFrequency> { { "en-GB", source.Frequency } };
             destination.Occurences = new Dictionary<string, int> { { "en-GB", source.Occurences } };

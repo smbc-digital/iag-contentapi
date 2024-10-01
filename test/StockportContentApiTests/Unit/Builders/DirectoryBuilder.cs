@@ -8,7 +8,7 @@ public class DirectoryBuilder
     string MetaDescription { get; set; }
     string Id { get; set; }
     string BackgroundImageUrl { get; set; }
-    private List<ContentfulAlert> _alerts = new() {
+    private readonly List<ContentfulAlert> _alerts = new() {
         new ContentfulAlertBuilder().Build()
     };
     ContentfulCallToActionBanner CallToActionBanner { get; set; }
@@ -27,7 +27,7 @@ public class DirectoryBuilder
         new ContentfulReference()
     };
 
-    private List<ContentfulDirectory> _subDirectories = new() {
+    private readonly List<ContentfulDirectory> _subDirectories = new() {
         new ContentfulDirectory()
     };
 

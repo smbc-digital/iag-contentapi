@@ -2,22 +2,18 @@
 
 public interface IUrlBuilder
 {
-    string UrlFor(string type, int referenceLevel = -1, bool displayOnAtoZ = false, string slug = null,
-        int limit = -1, string tag = null);
+    string UrlFor(string type, int referenceLevel = -1, bool displayOnAtoZ = false, string slug = null, int limit = -1, string tag = null);
 }
 public class UrlBuilder : IUrlBuilder
 {
     private readonly string _contentfulApiUrl;
 
-
-    public UrlBuilder(string contentfulApiUrl)
-    {
+    public UrlBuilder(string contentfulApiUrl) =>
         _contentfulApiUrl = contentfulApiUrl;
-    }
 
     public string UrlFor(string type, int referenceLevel = -1, bool displayOnAtoZ = false, string slug = null, int limit = -1, string tag = null)
     {
-        var baseUrl = $"{_contentfulApiUrl}&content_type={type}";
+        string baseUrl = $"{_contentfulApiUrl}&content_type={type}";
         if (displayOnAtoZ)
             baseUrl = $"{baseUrl}&fields.displayOnAZ=true";
         if (referenceLevel >= 0)
@@ -34,7 +30,9 @@ public class UrlBuilder : IUrlBuilder
 
     private static string GetSearchTypeForTag(ref string tag)
     {
-        if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) return "in";
+        if (string.IsNullOrEmpty(tag) || !tag.StartsWith("#")) 
+            return "in";
+        
         tag = tag.Remove(0, 1);
 
         return "match";

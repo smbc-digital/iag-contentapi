@@ -22,7 +22,8 @@ public class StartPageController : Controller
     {
         return await _handler.Get(() =>
         {
-            var startPageRepository = _createRepository(_createConfig(businessId));
+            StartPageRepository startPageRepository = _createRepository(_createConfig(businessId));
+
             return startPageRepository.GetStartPage(slug);
         });
     }
@@ -34,7 +35,8 @@ public class StartPageController : Controller
     {
         return await _handler.Get(() =>
         {
-            var startRepository = _createRepository(_createConfig(businessId));
+            StartPageRepository startRepository = _createRepository(_createConfig(businessId));
+            
             return startRepository.Get();
         });
     }

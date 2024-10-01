@@ -5,15 +5,14 @@ public class SwaggerFilter : IDocumentFilter
 
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
-        var pathStart = "/{businessId}";
-        var pathLength = pathStart.Length;
-        foreach (var item in swaggerDoc.Paths)
+        string pathStart = "/{businessId}";
+        int pathLength = pathStart.Length;
+        
+        foreach (KeyValuePair<string, OpenApiPathItem> item in swaggerDoc.Paths)
         {
-            var path = item.Key;
-            if (path.ToString().Substring(0, pathLength) == pathStart)
-            {
+            string path = item.Key;
+            if (path.ToString()[..pathLength].Equals(pathStart))
                 swaggerDoc.Paths[path] = null;
-            }
         }
     }
 }

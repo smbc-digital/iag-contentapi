@@ -9,7 +9,7 @@ public class GroupContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _contentfulGroupCategoryFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>> _contentfulGroupSubCategoryFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _contentfulGroupBrandingFactory;
-    private Mock<ITimeProvider> _timeProvider;
+    private readonly Mock<ITimeProvider> _timeProvider;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
 
     public GroupContentfulFactoryTests()
@@ -75,7 +75,7 @@ public class GroupContentfulFactoryTests
         Group result = _groupContentfulFactory.ToModel(_contentfulGroup);
 
         // Assert
-        result.AbilityLevel.Should().Be("");
+        result.AbilityLevel.Should().Be(string.Empty);
         result.AccessibleTransportLink.Should().Be("link");
         result.AdditionalDocuments.Count.Should().Be(1);
         result.AdditionalDocuments.First().Should().BeEquivalentTo(document);
@@ -92,7 +92,7 @@ public class GroupContentfulFactoryTests
         result.CategoriesReference.First().Should().BeEquivalentTo(category);
 
         result.Cost.Count.Should().Be(1);
-        result.CostText.Should().Be("");
+        result.CostText.Should().Be(string.Empty);
 
         result.DateHiddenFrom.Should().Be(DateTime.MinValue);
         result.DateHiddenTo.Should().Be(DateTime.MinValue);

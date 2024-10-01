@@ -1,11 +1,12 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
+
 public class DirectoryEntryContentfulFactoryTests
-{       
+{
     [Fact]
     public void ShouldCreateADirectorEntryFromAContentfulReference()
     {
         // Arrange
-        var contentfulReference =
+        ContentfulDirectoryEntry contentfulReference =
             new DirectoryEntryBuilder()
             .WithSlug("test-directory-entry")
             .WithTitle("Test Directory Entry")
@@ -19,7 +20,8 @@ public class DirectoryEntryContentfulFactoryTests
             .WithTwitter("@test")
             .WithFacebook("TestFacebook")
             .WithAddress("Town Hall, Stockport, SK1 3XE")
-            .WithMapPosition(new MapPosition { 
+            .WithMapPosition(new MapPosition
+            {
                 Lat = 53.393310,
                 Lon = -2.126633
             })
@@ -54,7 +56,7 @@ public class DirectoryEntryContentfulFactoryTests
             .Build();
 
         // Act
-        var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(),new TimeProvider()).ToModel(contentfulReference);
+        DirectoryEntry directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider()).ToModel(contentfulReference);
 
         // Assert
         Assert.Equal(contentfulReference.Slug, directoryEntry.Slug);

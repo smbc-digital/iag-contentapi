@@ -2,8 +2,8 @@
 
 public class CallToActionBannerContentfulFactoryTests
 {
-    private readonly CallToActionBannerContentfulFactory _factory= new();
-    
+    private readonly CallToActionBannerContentfulFactory _factory = new();
+
     [Fact]
     public void ToModel_ShouldReturnNull_IfEntryIsNull()
     {
@@ -22,8 +22,10 @@ public class CallToActionBannerContentfulFactoryTests
         {
             AltText = "alt text",
             ButtonText = "button text",
-            Image = new Asset(){
-                File = new File(){
+            Image = new Asset()
+            {
+                File = new File()
+                {
                     Url = "url"
                 }
             },

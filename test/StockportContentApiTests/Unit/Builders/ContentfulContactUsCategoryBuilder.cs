@@ -7,7 +7,7 @@ public class ContentfulContactUsCategoryBuilder
     private string _bodyTextRight = "body";
     private string _icon = "icon";
 
-    private SystemProperties _sys = new SystemProperties
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };

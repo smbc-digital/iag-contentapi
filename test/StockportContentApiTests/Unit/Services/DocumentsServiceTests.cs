@@ -59,7 +59,7 @@ public class DocumentsServiceTests
 
         _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(expectedResult);
 
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig("", "", ""));
+        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
 
         _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
         {
@@ -194,7 +194,7 @@ public class DocumentsServiceTests
 
         _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
 
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig("", "", ""));
+        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
 
         _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
         {

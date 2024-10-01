@@ -28,7 +28,7 @@ public class Startup
 
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Environment {_appEnvironment}");
         services.AddSingleton(new CurrentEnvironment(_appEnvironment));
-        
+
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Cache");
         services.AddCache(_useRedisSession, _appEnvironment, Configuration, _logger, _useLocalCache);
 
@@ -39,8 +39,8 @@ public class Startup
         services.AddSingleton<IHttpClient>(p => new LoggingHttpClient(new HttpClient(new MsHttpClientWrapper(), p.GetService<ILogger<HttpClient>>()), p.GetService<ILogger<LoggingHttpClient>>()));
 
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Healthchecks");
-        services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment, p.GetService<ICache>()));
-        
+        services.AddTransient<IHealthcheckService>(p => new HealthcheckService($"{_contentRootPath}/version.txt", $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
+
         services.AddTransient<ResponseHandler>();
         services.AddSingleton<ITimeProvider>(new TimeProvider());
 

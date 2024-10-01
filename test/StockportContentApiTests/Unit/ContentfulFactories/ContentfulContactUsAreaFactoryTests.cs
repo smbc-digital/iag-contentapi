@@ -52,7 +52,7 @@ public class ContentfulContactUsAreaFactoryTests
 
         _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
-        var result = _factory.ToModel(entry);
+        ContactUsArea result = _factory.ToModel(entry);
 
         Assert.NotNull(result.Breadcrumbs);
         Assert.NotNull(result.Alerts);
@@ -76,7 +76,7 @@ public class ContentfulContactUsAreaFactoryTests
             new ContentfulContactUsCategory()
         };
 
-        var entry = new ContentfulContactUsAreaBuilder()
+        ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder()
                             .PrimaryItems(primaryItems)
                             .Breadcrumbs(breadcrumbs)
                             .Alerts(alerts)
@@ -85,7 +85,7 @@ public class ContentfulContactUsAreaFactoryTests
 
         _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
-        var result = _factory.ToModel(entry);
+        ContactUsArea result = _factory.ToModel(entry);
 
         Assert.Single(result.Breadcrumbs);
         Assert.Single(result.Alerts);

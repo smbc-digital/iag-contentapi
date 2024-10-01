@@ -4,13 +4,13 @@ public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGr
 {
     public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)
     {
-        var name = !string.IsNullOrEmpty(entry.Name)
+        string name = !string.IsNullOrEmpty(entry.Name)
             ? entry.Name
-            : "";
+            : string.Empty;
 
-        var slug = !string.IsNullOrEmpty(entry.Slug)
+        string slug = !string.IsNullOrEmpty(entry.Slug)
             ? entry.Slug
-            : "";
+            : string.Empty;
 
         return new GroupSubCategory(name, slug);
     }

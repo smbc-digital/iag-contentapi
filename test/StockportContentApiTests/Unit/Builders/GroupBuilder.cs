@@ -5,37 +5,37 @@ public class GroupBuilder
     private string _name = "_name";
     private string _slug = "_slug";
     private string _metaDescription = "_metaDescription";
-    private string _phoneNumber = "_phoneNumber";
-    private string _email = "_email";
-    private string _website = "_website";
-    private string _twitter = "_twitter";
-    private string _facebook = "_facebook";
-    private string _address = "_address";
-    private string _description = "_description";
-    private string _image = "image-url.jpg";
-    private string _thumbnail = "thumbnail.jpg";
+    private readonly string _phoneNumber = "_phoneNumber";
+    private readonly string _email = "_email";
+    private readonly string _website = "_website";
+    private readonly string _twitter = "_twitter";
+    private readonly string _facebook = "_facebook";
+    private readonly string _address = "_address";
+    private readonly string _description = "_description";
+    private readonly string _image = "image-url.jpg";
+    private readonly string _thumbnail = "thumbnail.jpg";
     private DateTime? _dateHiddenFrom = null;
     private DateTime? _dateHiddenTo = null;
-    private List<GroupCategory> _categoriesReference = new List<GroupCategory>();
-    private List<GroupSubCategory> _subCategories = new List<GroupSubCategory>();
-    private List<Event> _events = new List<Event>();
-    private List<Crumb> _crumbs = new List<Crumb> { new Crumb("slug", "title", "type") };
-    private MapPosition _mapPosition = new MapPosition() { Lat = 39.0, Lon = 2.0 };
+    private List<GroupCategory> _categoriesReference = new();
+    private readonly List<GroupSubCategory> _subCategories = new();
+    private List<Event> _events = new();
+    private readonly List<Crumb> _crumbs = new() { new Crumb("slug", "title", "type") };
+    private MapPosition _mapPosition = new() { Lat = 39.0, Lon = 2.0 };
     private bool _volunteering = false;
-    private GroupAdministrators _groupAdministrators = new GroupAdministrators();
-    private List<string> _cost = new List<string> { "_cost" };
+    private GroupAdministrators _groupAdministrators = new();
+    private List<string> _cost = new() { "_cost" };
     private string _costText = "_costText";
     private string _abilityLevel = "_abilityLevel";
-    private Organisation _organisation = new Organisation();
-    private string _additionalInformation = "additional inforamtion";
-    private List<Document> _additionalDocuments = new List<Document>();
-    private List<string> _suitableFor = new List<string>();
-    private List<string> _ageRanges = new List<string>();
-    private DateTime? _dateLastModified = new DateTime?();
+    private Organisation _organisation = new();
+    private readonly string _additionalInformation = "additional inforamtion";
+    private List<Document> _additionalDocuments = new();
+    private readonly List<string> _suitableFor = new();
+    private readonly List<string> _ageRanges = new();
+    private readonly DateTime? _dateLastModified = new DateTime?();
     private string _donationsText = "_donationsText";
     private string _donationsUrl = "_donationsUrl";
-    private List<GroupBranding> _groupBranding = new List<GroupBranding>();
-    private List<Alert> _alerts = new List<Alert>
+    private List<GroupBranding> _groupBranding = new();
+    private readonly List<Alert> _alerts = new()
     {
         new Alert("title",
             "subHeading",
@@ -46,7 +46,7 @@ public class GroupBuilder
             "slug", false, string.Empty)
     };
 
-    private List<Alert> _alertsInline = new List<Alert>
+    private readonly List<Alert> _alertsInline = new()
     {
         new Alert("title",
             "subHeading",
