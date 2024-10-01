@@ -3,9 +3,9 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class PaymentController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, PaymentRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public PaymentController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,

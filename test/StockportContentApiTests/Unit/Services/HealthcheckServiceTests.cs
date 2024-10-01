@@ -2,22 +2,22 @@
 
 public class HealthcheckServiceTests
 {
-    private readonly HealthcheckService _healthcheckService;
-    private readonly string _shaPath;
-    private readonly string _appVersionPath;
-    private readonly Mock<IFileWrapper> _fileWrapperMock;
-    private readonly Mock<ICache> _cacheWrapper;
     private const string ExpiryTime = "Expiry";
     private const string Key = "Key";
     private const int NumberOfItems = 4;
+    private readonly string _appVersionPath;
+    private readonly Mock<ICache> _cacheWrapper;
+    private readonly Mock<IFileWrapper> _fileWrapperMock;
+    private readonly HealthcheckService _healthcheckService;
+    private readonly string _shaPath;
 
     public HealthcheckServiceTests()
     {
         _appVersionPath = "./Unit/version.txt";
         _shaPath = "./Unit/sha.txt";
-        _fileWrapperMock = new Mock<IFileWrapper>();
+        _fileWrapperMock = new();
         SetUpFakeFileSystem();
-        _cacheWrapper = new Mock<ICache>();
+        _cacheWrapper = new();
 
         _healthcheckService = CreateHealthcheckService(_appVersionPath, _shaPath);
     }
@@ -56,7 +56,8 @@ public class HealthcheckServiceTests
         string notFoundVersionPath = "notfound";
         _fileWrapperMock.Setup(x => x.Exists(notFoundVersionPath)).Returns(false);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(notFoundVersionPath, _shaPath);
+        HealthcheckService healthCheckServiceWithNotFoundVersion =
+            CreateHealthcheckService(notFoundVersionPath, _shaPath);
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
         check.AppVersion.Should().Be("dev");
@@ -68,7 +69,8 @@ public class HealthcheckServiceTests
         string notFoundShaPath = "notfound";
         _fileWrapperMock.Setup(x => x.Exists(notFoundShaPath)).Returns(false);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(_appVersionPath, notFoundShaPath);
+        HealthcheckService healthCheckServiceWithNotFoundVersion =
+            CreateHealthcheckService(_appVersionPath, notFoundShaPath);
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
         check.SHA.Should().Be(string.Empty);
@@ -115,5 +117,4 @@ public class HealthcheckServiceTests
     //    redisData[0].Expiry.Should().Be(ExpiryTime);
     //    redisData[0].NumberOfItems.Should().Be(NumberOfItems);
     //}
-
 }

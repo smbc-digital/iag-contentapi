@@ -6,7 +6,7 @@ public class RedirectsRepository : BaseRepository
     private const string ContentType = "redirect";
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly RedirectBusinessIds _redirectBusinessIds;
-    private Contentful.Core.IContentfulClient _client;
+    private IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory;
     private readonly ShortUrlRedirects _shortUrlRedirects;
     private readonly LegacyUrlRedirects _legacyUrlRedirects;

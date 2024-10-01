@@ -2,8 +2,8 @@
 
 public class LandingPageRepository : BaseRepository
 {
-    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
     private readonly EventRepository _eventRepository;
     private readonly NewsRepository _newsRepository;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
@@ -24,7 +24,8 @@ public class LandingPageRepository : BaseRepository
 
     public async Task<HttpResponse> GetLandingPage(string slug)
     {
-        QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>().ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(2);
+        QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>()
+            .ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(2);
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
         ContentfulLandingPage entry = entries.FirstOrDefault();
 
@@ -38,13 +39,15 @@ public class LandingPageRepository : BaseRepository
 
         if (landingPage.PageSections is not null && landingPage.PageSections.Any())
         {
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock =>
+                         !string.IsNullOrEmpty(contentBlock.ContentType)))
             {
                 switch (contentBlock.ContentType)
                 {
                     case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            News latestNewsResponse = await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
+                            News latestNewsResponse =
+                                await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
                             if (latestNewsResponse is not null)
                             {
                                 contentBlock.NewsArticle = latestNewsResponse;
@@ -52,7 +55,8 @@ public class LandingPageRepository : BaseRepository
                             }
                             else
                             {
-                                latestNewsResponse = await _newsRepository.GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
+                                latestNewsResponse =
+                                    await _newsRepository.GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
                                 if (latestNewsResponse is not null)
                                 {
                                     contentBlock.NewsArticle = latestNewsResponse;
@@ -64,7 +68,8 @@ public class LandingPageRepository : BaseRepository
                         }
                     case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+                            List<Event> events =
+                                await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
 
                             if (!events.Any())
                                 events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
@@ -79,10 +84,7 @@ public class LandingPageRepository : BaseRepository
                                 contentBlock.Profile = _profileFactory.ToModel(profile);
                             break;
                         }
-                    default:
-                        break;
                 }
-
             }
         }
 
@@ -92,8 +94,8 @@ public class LandingPageRepository : BaseRepository
     internal async Task<ContentfulProfile> GetProfile(string slug)
     {
         QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile")
-                .FieldMatches(p => p.Slug, slug)
-                .Include(1);
+            .FieldMatches(p => p.Slug, slug)
+            .Include(1);
 
         ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
 

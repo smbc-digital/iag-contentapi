@@ -2,7 +2,7 @@
 
 public class ContactUsAreaRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory;
 
     public ContactUsAreaRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory)

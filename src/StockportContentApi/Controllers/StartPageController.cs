@@ -2,9 +2,9 @@
 
 public class StartPageController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, StartPageRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public StartPageController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,

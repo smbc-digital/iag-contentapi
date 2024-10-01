@@ -2,9 +2,9 @@
 
 public class DocumentPageRepository : BaseRepository
 {
-    private readonly IContentfulFactory<ContentfulDocumentPage, DocumentPage> _contentfulFactory;
     private readonly ICache _cache;
     private readonly IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulDocumentPage, DocumentPage> _contentfulFactory;
 
     public DocumentPageRepository(ContentfulConfig config,
         IContentfulClientManager contentfulClientManager,
@@ -18,7 +18,8 @@ public class DocumentPageRepository : BaseRepository
 
     public async Task<HttpResponse> GetDocumentPage(string documentPageSlug)
     {
-        ContentfulDocumentPage entry = await _cache.GetFromCacheOrDirectlyAsync($"documentPage-{documentPageSlug}", () => GetDocumentPageEntry(documentPageSlug));
+        ContentfulDocumentPage entry = await _cache.GetFromCacheOrDirectlyAsync($"documentPage-{documentPageSlug}",
+            () => GetDocumentPageEntry(documentPageSlug));
 
         DocumentPage documentPage = entry is null
             ? null

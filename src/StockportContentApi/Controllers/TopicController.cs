@@ -2,9 +2,9 @@
 
 public class TopicController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, TopicRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public TopicController(
         ResponseHandler handler,

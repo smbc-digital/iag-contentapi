@@ -2,9 +2,9 @@
 
 public class SectionController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, SectionRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public SectionController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,

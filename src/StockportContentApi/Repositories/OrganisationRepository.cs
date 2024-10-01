@@ -3,7 +3,7 @@
 public class OrganisationRepository
 {
     private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IGroupRepository _groupRepository;
 
     public OrganisationRepository(ContentfulConfig config,

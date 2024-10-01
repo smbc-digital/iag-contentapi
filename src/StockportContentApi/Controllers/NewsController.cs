@@ -2,8 +2,8 @@
 
 public class NewsController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly ResponseHandler _handler;
     private readonly Func<ContentfulConfig, NewsRepository> _newsRepository;
 
     public NewsController(ResponseHandler handler,
@@ -19,10 +19,10 @@ public class NewsController : Controller
     [Route("{businessId}/news")]
     [Route("v1/{businessId}/news")]
     public async Task<IActionResult> Index(string businessId,
-                                        [FromQuery] string tag = null,
-                                        [FromQuery] string category = null,
-                                        [FromQuery] DateTime? dateFrom = null,
-                                        [FromQuery] DateTime? dateTo = null)
+        [FromQuery] string tag = null,
+        [FromQuery] string category = null,
+        [FromQuery] DateTime? dateFrom = null,
+        [FromQuery] DateTime? dateTo = null)
     {
         return await _handler.Get(() =>
         {

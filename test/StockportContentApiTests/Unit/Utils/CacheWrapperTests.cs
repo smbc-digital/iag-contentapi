@@ -2,21 +2,23 @@
 
 public class CacheTests
 {
-    readonly Cache _cacheWrapper;
-    readonly Mock<IDistributedCacheWrapper> _distributedCacheWrapper;
-    readonly Mock<ILogger<ICache>> _logger = new();
+    private readonly Cache _cacheWrapper;
+    private readonly Mock<IDistributedCacheWrapper> _distributedCacheWrapper;
+    private readonly Mock<ILogger<ICache>> _logger = new();
 
     public CacheTests()
     {
-        _distributedCacheWrapper = new Mock<IDistributedCacheWrapper>();
-        _cacheWrapper = new Cache(_distributedCacheWrapper.Object, _logger.Object, true);
+        _distributedCacheWrapper = new();
+        _cacheWrapper = new(_distributedCacheWrapper.Object, _logger.Object, true);
     }
 
     [Fact]
     public void ShouldCallContentfulIfCacheIsEmpty()
     {
         // Arrange
-        _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>())).ReturnsAsync(string.Empty);
+        _distributedCacheWrapper
+            .Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(string.Empty);
 
         // Act
         string valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -29,7 +31,9 @@ public class CacheTests
     public void ShouldNotCallContentfulIfCacheIsFull()
     {
         // Arrange
-        _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>())).ReturnsAsync("\"Cache Data\"");
+        _distributedCacheWrapper
+            .Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync("\"Cache Data\"");
 
         // Act
         string valueFromCall = _cacheWrapper.GetFromCacheOrDirectly("test-key", testFallbackMethod);
@@ -44,7 +48,9 @@ public class CacheTests
     public async void ShouldCallContentfulIfCacheIsEmptyAsync()
     {
         // Arrange
-        _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>())).ReturnsAsync(string.Empty);
+        _distributedCacheWrapper
+            .Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(string.Empty);
 
         // Act
         string valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);
@@ -58,7 +64,9 @@ public class CacheTests
     public async void ShouldNotCallContentfulIfCacheIsFullAsync()
     {
         // Arrange
-        _distributedCacheWrapper.Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>())).ReturnsAsync("\"Cache Data\"");
+        _distributedCacheWrapper
+            .Setup(o => o.GetString(It.Is<string>(s => s.Equals("test-key")), It.IsAny<CancellationToken>()))
+            .ReturnsAsync("\"Cache Data\"");
 
         // Act
         string valueFromCall = await _cacheWrapper.GetFromCacheOrDirectlyAsync("test-key", testFallbackMethodAsync);
@@ -67,8 +75,5 @@ public class CacheTests
         valueFromCall.Should().Be("Cache Data");
     }
 
-    public async Task<string> testFallbackMethodAsync()
-    {
-        return await Task.FromResult("Contentful Data");
-    }
+    public async Task<string> testFallbackMethodAsync() => await Task.FromResult("Contentful Data");
 }

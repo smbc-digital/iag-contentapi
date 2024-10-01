@@ -2,10 +2,10 @@
 
 public class GroupAdvisorRepositoryTests
 {
-    readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
-    readonly Mock<IContentfulClient> _client = new();
-    readonly Mock<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>> _contentfulFactory = new();
-    readonly GroupAdvisorRepository _repository;
+    private readonly Mock<IContentfulClient> _client = new();
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>> _contentfulFactory = new();
+    private readonly GroupAdvisorRepository _repository;
 
     public GroupAdvisorRepositoryTests()
     {
@@ -19,7 +19,7 @@ public class GroupAdvisorRepositoryTests
 
         _contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-        _repository = new GroupAdvisorRepository(config, _contentfulClientManager.Object, _contentfulFactory.Object);
+        _repository = new(config, _contentfulClientManager.Object, _contentfulFactory.Object);
     }
 
     [Fact]
@@ -29,21 +29,29 @@ public class GroupAdvisorRepositoryTests
         string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1).Build();
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
-                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
-                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
-                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("not-a-group").Build() }).Build()
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference>
+                    { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference>
+                    { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build(),
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference>
+                    { new ContentfulReferenceBuilder().Slug("not-a-group").Build() }).Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("test-group")))))
-                          .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("not-a-group")))))
-                          .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "not-a-group" }).Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o =>
+                o.ToModel(
+                    It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("test-group")))))
+            .Returns(new GroupAdvisorBuilder().Groups(new List<string> { "test-group" }).Build());
+        _contentfulFactory.Setup(o =>
+                o.ToModel(It.Is<ContentfulGroupAdvisor>(
+                    g => g.Groups.ToList().Exists(p => p.Slug.Equals("not-a-group")))))
+            .Returns(new GroupAdvisorBuilder().Groups(new List<string> { "not-a-group" }).Build());
 
         // Act
         List<GroupAdvisor> result = AsyncTestHelper.Resolve(_repository.GetAdvisorsByGroup("test-group"));
@@ -56,20 +64,23 @@ public class GroupAdvisorRepositoryTests
     public void ShouldGetAdvisorsGroupByEmail()
     {
         // Arrange
-        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
+        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors")
+            .FieldEquals("fields.email", "email").Include(1).Build();
 
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
                 new ContentfulGroupAdvisorBuilder().Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupAdvisor>())).Returns(new GroupAdvisorBuilder().Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroupAdvisor>()))
+            .Returns(new GroupAdvisorBuilder().Build());
 
         // Act
         GroupAdvisor result = AsyncTestHelper.Resolve(_repository.Get("email"));
@@ -85,21 +96,26 @@ public class GroupAdvisorRepositoryTests
     public void ShouldReturnTrueForIfGroupIsInListForEmail()
     {
         // Arrange
-        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
+        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors")
+            .FieldEquals("fields.email", "email").Include(1).Build();
 
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
-                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build()
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference>
+                    { new ContentfulReferenceBuilder().Slug("test-group").Build() }).Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("test-group")))))
-                          .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "test-group" }).Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o =>
+                o.ToModel(
+                    It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("test-group")))))
+            .Returns(new GroupAdvisorBuilder().Groups(new List<string> { "test-group" }).Build());
 
         // Act
         bool result = AsyncTestHelper.Resolve(_repository.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
@@ -112,20 +128,24 @@ public class GroupAdvisorRepositoryTests
     public void ShouldReturnFalseIfGroupIsntInListForEmail()
     {
         // Arrange
-        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
+        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors")
+            .FieldEquals("fields.email", "email").Include(1).Build();
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
-                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+                new ContentfulGroupAdvisorBuilder().ContentfulReferences(new List<ContentfulReference>
+                    { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
-                          .Returns(new GroupAdvisorBuilder().Groups(new List<string>() { "group" }).Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o =>
+                o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
+            .Returns(new GroupAdvisorBuilder().Groups(new List<string> { "group" }).Build());
 
         // Act
         bool result = AsyncTestHelper.Resolve(_repository.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
@@ -138,20 +158,25 @@ public class GroupAdvisorRepositoryTests
     public void ShouldReturnTrueIfUserHasGlobalAccessAndDoesntHaveGroupInList()
     {
         // Arrange
-        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
+        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors")
+            .FieldEquals("fields.email", "email").Include(1).Build();
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
-                new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+                new ContentfulGroupAdvisorBuilder().GlobalAccess(true)
+                    .ContentfulReferences(new List<ContentfulReference>
+                        { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
-                          .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o =>
+                o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
+            .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string> { "group" }).Build());
 
         // Act
         bool result = AsyncTestHelper.Resolve(_repository.CheckIfUserHasAccessToGroupBySlug("test-group", "email"));
@@ -164,21 +189,26 @@ public class GroupAdvisorRepositoryTests
     public void ShouldReturnTrueIfUserHasGlobalAccessAndHasGroupInList()
     {
         // Arrange
-        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", "email").Include(1).Build();
+        string query = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors")
+            .FieldEquals("fields.email", "email").Include(1).Build();
 
         ContentfulCollection<ContentfulGroupAdvisor> collection = new()
         {
-            Items = new List<ContentfulGroupAdvisor>()
+            Items = new List<ContentfulGroupAdvisor>
             {
-                new ContentfulGroupAdvisorBuilder().GlobalAccess(true).ContentfulReferences(new List<ContentfulReference> { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
+                new ContentfulGroupAdvisorBuilder().GlobalAccess(true)
+                    .ContentfulReferences(new List<ContentfulReference>
+                        { new ContentfulReferenceBuilder().Slug("group").Build() }).Build()
             }
         };
 
         // Mock
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(collection);
-        _contentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
-                          .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string>() { "group" }).Build());
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupAdvisor>>(q => q.Build().Equals(query)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+        _contentfulFactory.Setup(o =>
+                o.ToModel(It.Is<ContentfulGroupAdvisor>(g => g.Groups.ToList().Exists(p => p.Slug.Equals("group")))))
+            .Returns(new GroupAdvisorBuilder().GlobalAccess(true).Groups(new List<string> { "group" }).Build());
 
         // Act
         bool result = AsyncTestHelper.Resolve(_repository.CheckIfUserHasAccessToGroupBySlug("group", "email"));

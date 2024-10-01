@@ -1,10 +1,11 @@
 ﻿namespace StockportContentApi.Controllers;
+
 [ApiController]
 public class DirectoryController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
+    private readonly ResponseHandler _handler;
 
     public DirectoryController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,

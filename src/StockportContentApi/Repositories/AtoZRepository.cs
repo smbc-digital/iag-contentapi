@@ -3,7 +3,7 @@
 public class AtoZRepository : BaseRepository
 {
     private readonly DateComparer _dateComparer;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
     private readonly ICache _cache;
     private readonly int _atoZTimeout;

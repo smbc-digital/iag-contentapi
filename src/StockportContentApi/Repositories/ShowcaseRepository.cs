@@ -2,11 +2,11 @@
 
 public class ShowcaseRepository
 {
-    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
-    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
     private readonly IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
     private readonly EventRepository _eventRepository;
     private readonly ILogger<ShowcaseRepository> _logger;
+    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
 
     public ShowcaseRepository(ContentfulConfig config,
         IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
@@ -21,9 +21,11 @@ public class ShowcaseRepository
         _eventRepository = eventRepository;
         _logger = logger;
     }
+
     public async Task<HttpResponse> Get()
     {
-        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
+        QueryBuilder<ContentfulShowcase> builder =
+            new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
 
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
         IEnumerable<Showcase> showcases = entries.Select(e => _contentfulFactory.ToModel(e));
@@ -35,17 +37,15 @@ public class ShowcaseRepository
 
     public async Task<HttpResponse> GetShowcases(string slug)
     {
-        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
+        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase")
+            .FieldEquals("fields.slug", slug).Include(3);
 
 
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
 
         ContentfulShowcase entry = entries.FirstOrDefault();
 
-        if (entry is null)
-        {
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
-        }
+        if (entry is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
 
         Showcase showcase = new();
 
@@ -116,15 +116,15 @@ public class ShowcaseRepository
         {
             DateTime now = DateTime.Now.AddMinutes(5);
             ContentfulNews article = newsEntry.Where(entry => now > entry.SunriseDate)
-                                    .Where(entry => now < entry.SunsetDate)
-                                    .OrderByDescending(news => news.SunriseDate)
-                                    .Take(1)
-                                    .FirstOrDefault();
+                .Where(entry => now < entry.SunsetDate)
+                .OrderByDescending(news => news.SunriseDate)
+                .Take(1)
+                .FirstOrDefault();
 
             if (article is not null)
                 result = _newsFactory.ToModel(article);
         }
 
-        return new ShowcaseNews() { News = result, Type = type };
+        return new() { News = result, Type = type };
     }
 }

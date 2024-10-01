@@ -2,11 +2,11 @@
 
 public class GroupController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
     private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
     private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
+    private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
+    private readonly ResponseHandler _handler;
     private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
     private readonly IMapper _mapper;
 
@@ -17,7 +17,7 @@ public class GroupController : Controller
         Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
         Func<ContentfulConfig, ManagementRepository> managementRepository,
         IMapper mapper
-        )
+    )
     {
         _handler = handler;
         _createConfig = createConfig;
@@ -79,7 +79,8 @@ public class GroupController : Controller
     [HttpGet]
     [Route("{businessId}/group-results")]
     [Route("v1/{businessId}/group-results")]
-    public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch, [FromQuery] string slugs = "")
+    public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch,
+        [FromQuery] string slugs = "")
     {
         return await _handler.Get(() =>
         {
@@ -112,8 +113,10 @@ public class GroupController : Controller
             IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
             ContentfulGroup existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
 
-            ContentfulCollection<ContentfulGroupCategory> existingCategories = await groupRepository.GetContentfulGroupCategories();
-            List<ContentfulGroupCategory> referencedCategories = existingCategories.Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
+            ContentfulCollection<ContentfulGroupCategory> existingCategories =
+                await groupRepository.GetContentfulGroupCategories();
+            List<ContentfulGroupCategory> referencedCategories = existingCategories
+                .Where(c => group.CategoriesReference.Select(cr => cr.Slug).Contains(c.Slug)).ToList();
 
             ManagementGroup managementGroup = ConvertToManagementGroup(group, referencedCategories, existingGroup);
 
@@ -171,7 +174,8 @@ public class GroupController : Controller
 
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
-        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => !a.Email.Equals(emailAddress)).ToList();
+        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items
+            .Where(a => !a.Email.Equals(emailAddress)).ToList();
 
         ManagementGroup managementGroup = new();
         _mapper.Map(existingGroup, managementGroup);
@@ -204,18 +208,18 @@ public class GroupController : Controller
         => await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
 
 
-    private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug, string emailAddress, string businessId)
+    private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug,
+        string emailAddress, string businessId)
     {
         IGroupRepository repository = _groupRepository(_createConfig(businessId));
-
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
-        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items.Where(a => !a.Email.Equals(emailAddress)).ToList();
+        existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items
+            .Where(a => !a.Email.Equals(emailAddress)).ToList();
 
         if (user is not null)
         {
             existingGroup.GroupAdministrators.Items.Add(user);
-
             ManagementGroup managementGroup = new();
             _mapper.Map(existingGroup, managementGroup);
 
@@ -230,11 +234,12 @@ public class GroupController : Controller
                     : HttpResponse.Failure(response.StatusCode, "An error has occurred");
             });
         }
-        else
-            throw new Exception("Invalid data received");
+
+        throw new("Invalid data received");
     }
 
-    private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories, ContentfulGroup existingGroup)
+    private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories,
+        ContentfulGroup existingGroup)
     {
         ContentfulGroup contentfulGroup = _mapper.Map<ContentfulGroup>(group);
         contentfulGroup.GroupBranding = existingGroup.GroupBranding;

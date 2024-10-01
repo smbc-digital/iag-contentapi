@@ -3,7 +3,7 @@
 public class ContactUsIdRepository
 {
     private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
 
     public ContactUsIdRepository(ContentfulConfig config, IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory, IContentfulClientManager contentfulClientManager)
     {

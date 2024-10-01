@@ -2,11 +2,12 @@
 
 public class CommsController : Controller
 {
-    private readonly ResponseHandler _handler;
-    private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, CommsRepository> _commsRepository;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly ResponseHandler _handler;
 
-    public CommsController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig, Func<ContentfulConfig, CommsRepository> commsRepository)
+    public CommsController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig,
+        Func<ContentfulConfig, CommsRepository> commsRepository)
     {
         _handler = handler;
         _createConfig = createConfig;

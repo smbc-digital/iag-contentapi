@@ -2,11 +2,11 @@
 
 public class AuthenticationMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<AuthenticationMiddleware> _logger;
     private readonly IAuthenticationHelper _authHelper;
+    private readonly IConfiguration _configuration;
     private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly ILogger<AuthenticationMiddleware> _logger;
+    private readonly RequestDelegate _next;
 
     public AuthenticationMiddleware(
         RequestDelegate next,

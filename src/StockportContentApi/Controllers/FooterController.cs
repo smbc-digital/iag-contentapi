@@ -3,9 +3,9 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class FooterController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, FooterRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public FooterController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,

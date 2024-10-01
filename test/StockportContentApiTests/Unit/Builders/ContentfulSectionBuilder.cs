@@ -2,25 +2,28 @@
 
 public class ContentfulSectionBuilder
 {
-    private readonly string _title = "title";
-    private readonly string _slug = "slug";
-    private readonly string _metaDescription = "metaDescription";
-    private readonly string _body = "body";
-    private readonly DateTime _sunriseDate = DateTime.MinValue;
-    private readonly DateTime _sunsetDate = DateTime.MinValue;
-    private readonly DateTime _updatedAt = DateTime.Now;
-    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
-    private readonly List<ContentfulProfile> _profiles = new()
-    {
-        new ContentfulProfileBuilder().Build() };
     private readonly List<ContentfulAlert> _alertsInline = new()
     {
         new ContentfulAlertBuilder().Build()
     };
 
-    public ContentfulSection Build()
+    private readonly string _body = "body";
+    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
+    private readonly string _metaDescription = "metaDescription";
+
+    private readonly List<ContentfulProfile> _profiles = new()
     {
-        return new ContentfulSection
+        new ContentfulProfileBuilder().Build()
+    };
+
+    private readonly string _slug = "slug";
+    private readonly DateTime _sunriseDate = DateTime.MinValue;
+    private readonly DateTime _sunsetDate = DateTime.MinValue;
+    private readonly string _title = "title";
+    private readonly DateTime _updatedAt = DateTime.Now;
+
+    public ContentfulSection Build() =>
+        new()
         {
             Title = _title,
             Slug = _slug,
@@ -32,11 +35,10 @@ public class ContentfulSectionBuilder
             SunsetDate = _sunsetDate,
             UpdatedAt = _updatedAt,
             AlertsInline = _alertsInline,
-            Sys = new SystemProperties
+            Sys = new()
             {
-                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
+                ContentType = new() { SystemProperties = new() { Id = "id" } },
                 UpdatedAt = _updatedAt
             }
         };
-    }
 }

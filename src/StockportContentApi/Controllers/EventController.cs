@@ -2,13 +2,13 @@
 
 public class EventController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
     private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
+    private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
+    private readonly ResponseHandler _handler;
+    private readonly ILogger<EventController> _logger;
     private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger<EventController> _logger;
 
     public EventController(
         ResponseHandler handler,
@@ -80,8 +80,10 @@ public class EventController : Controller
         EventRepository repository = _eventRepository(_createConfig(businessId));
         ContentfulEvent existingEvent = await repository.GetContentfulEvent(eventDetail.Slug);
 
-        ContentfulCollection<ContentfulEventCategory> existingCategories = await repository.GetContentfulEventCategories();
-        List<ContentfulEventCategory> referencedCategories = existingCategories.Items.Where(c => eventDetail.EventCategories.Any(ed => c.Name.Equals(ed.Name))).ToList();
+        ContentfulCollection<ContentfulEventCategory> existingCategories =
+            await repository.GetContentfulEventCategories();
+        List<ContentfulEventCategory> referencedCategories = existingCategories.Items
+            .Where(c => eventDetail.EventCategories.Any(ed => c.Name.Equals(ed.Name))).ToList();
 
         ManagementEvent managementEvent = ConvertToManagementEvent(eventDetail, referencedCategories, existingEvent);
 
@@ -122,7 +124,8 @@ public class EventController : Controller
     [HttpGet]
     [Route("{businessId}/events/by-category")]
     [Route("v1/{businessId}/events/by-category")]
-    public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
+    public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "",
+        bool onlyNextOccurrence = true)
     {
         EventRepository repository = _eventRepository(_createConfig(businessId));
 
@@ -145,7 +148,8 @@ public class EventController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(0), ex, $"There was an error with getting events by category / tag for category {category}");
+            _logger.LogError(new(0), ex,
+                $"There was an error with getting events by category / tag for category {category}");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -170,7 +174,8 @@ public class EventController : Controller
         });
     }
 
-    private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories, ContentfulEvent existingEvent)
+    private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories,
+        ContentfulEvent existingEvent)
     {
         ContentfulEvent contentfulEvent = _mapper.Map<ContentfulEvent>(eventDetail);
         contentfulEvent.EventCategories = categories;

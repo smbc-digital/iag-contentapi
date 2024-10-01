@@ -2,11 +2,12 @@
 
 public class ProfileController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, IProfileRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
-    public ProfileController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig, Func<ContentfulConfig, IProfileRepository> createRepository)
+    public ProfileController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig,
+        Func<ContentfulConfig, IProfileRepository> createRepository)
     {
         _handler = handler;
         _createConfig = createConfig;

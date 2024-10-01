@@ -23,12 +23,13 @@ public interface ICache
 
 public class Cache : ICache
 {
-    private readonly IDistributedCacheWrapper _memoryCache;
     private readonly ILogger<ICache> _logger;
-    private readonly bool _useRedisCache;
+    private readonly IDistributedCacheWrapper _memoryCache;
     private readonly bool _useLocalCache;
+    private readonly bool _useRedisCache;
 
-    public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache, bool useLocalCache = true)
+    public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache,
+        bool useLocalCache = true)
     {
         _memoryCache = memoryCache;
         _logger = logger;
@@ -41,10 +42,10 @@ public class Cache : ICache
 
     public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod, int minutes)
     {
-
-        if ((!_useRedisCache && !_useLocalCache) || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
+        if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
         {
-            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
+            _logger.LogInformation(
+                $"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
 
             result = fallbackMethod();
 
@@ -60,10 +61,10 @@ public class Cache : ICache
 
     public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
     {
-
-        if ((!_useRedisCache && !_useLocalCache) || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
+        if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
         {
-            _logger.LogInformation($"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
+            _logger.LogInformation(
+                $"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
             result = await fallbackMethod();
 
             if ((_useRedisCache || _useLocalCache) && minutes > 0 && _memoryCache is not null && result is not null)
@@ -80,7 +81,8 @@ public class Cache : ICache
     {
         _logger.LogDebug($"CacheWrapper : Set : Setting key {cacheKey} for {minutes} minutes");
 
-        string data = JsonConvert.SerializeObject(cacheEntry, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+        string data = JsonConvert.SerializeObject(cacheEntry,
+            new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         try
         {
             _memoryCache.SetString(cacheKey, data, minutes);
@@ -108,14 +110,16 @@ public class Cache : ICache
 
             if (string.IsNullOrEmpty(returnData))
             {
-                _logger.LogDebug($"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
+                _logger.LogDebug(
+                    $"CacheWrapper : TryGetValue<T> : data returned for key {key} was either null or empty");
 
                 return false;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(new EventId(), ex, "CacheWrapper : TryGetValue<T> : An error occurred trying to read from Redis");
+            _logger.LogCritical(new(), ex,
+                "CacheWrapper : TryGetValue<T> : An error occurred trying to read from Redis");
 
             return false;
         }
@@ -130,7 +134,8 @@ public class Cache : ICache
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(new EventId(), ex, $"CacheWrapper : TryGetValue<T> : error deserilizing cached data for key '{key}' with value {returnData}");
+            _logger.LogCritical(new(), ex,
+                $"CacheWrapper : TryGetValue<T> : error deserilizing cached data for key '{key}' with value {returnData}");
             return false;
         }
 

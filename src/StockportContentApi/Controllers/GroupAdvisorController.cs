@@ -2,8 +2,8 @@
 
 public class GroupAdvisorController : Controller
 {
-    readonly Func<string, ContentfulConfig> _createConfig;
-    readonly Func<ContentfulConfig, IGroupAdvisorRepository> _createRepository;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _createRepository;
 
     public GroupAdvisorController(Func<string, ContentfulConfig> createConfig,
         Func<ContentfulConfig, IGroupAdvisorRepository> createRepository)

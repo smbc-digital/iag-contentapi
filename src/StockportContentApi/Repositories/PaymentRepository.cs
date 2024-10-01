@@ -2,7 +2,7 @@
 
 public class PaymentRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulPayment, Payment> _paymentFactory;
 
     public PaymentRepository(ContentfulConfig config,

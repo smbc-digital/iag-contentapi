@@ -11,7 +11,8 @@ public class ProfileRepository : IProfileRepository
     private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
 
-    public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulProfile, Profile> profileFactory)
+    public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager,
+        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
     {
         _client = clientManager.GetClient(config);
         _profileFactory = profileFactory;
@@ -19,7 +20,8 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<HttpResponse> GetProfile(string slug)
     {
-        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(2);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile")
+            .FieldEquals("fields.slug", slug).Include(2);
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
         ContentfulProfile entry = entries.FirstOrDefault();
 
@@ -30,11 +32,12 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<HttpResponse> Get()
     {
-        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
+        QueryBuilder<ContentfulProfile> builder =
+            new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
 
         if (!entries.Any() || entries is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No profiles found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No profiles found");
 
         IEnumerable<Profile> models = entries.Select(_ => _profileFactory.ToModel(_));
 

@@ -2,12 +2,15 @@
 
 public class ContactUsAreaRepositoryTests
 {
-    private readonly ContactUsAreaRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
+
+    private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>
+        _mockContactUsCategoryFactory = new();
+
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
+    private readonly ContactUsAreaRepository _repository;
 
     private readonly Mock<ITimeProvider> _timeprovider = new();
 
@@ -22,7 +25,7 @@ public class ContactUsAreaRepositoryTests
             .Build();
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _contentfulClient = new Mock<IContentfulClient>();
+        _contentfulClient = new();
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
         ContactUsAreaContentfulFactory contentfulFactory = new(_mockSubitemFactory.Object,
@@ -31,7 +34,7 @@ public class ContactUsAreaRepositoryTests
             _mockAlertFactory.Object,
             _mockContactUsCategoryFactory.Object);
 
-        _repository = new ContactUsAreaRepository(config, contentfulClientManager.Object, contentfulFactory);
+        _repository = new(config, contentfulClientManager.Object, contentfulFactory);
     }
 
     [Fact]
@@ -44,9 +47,12 @@ public class ContactUsAreaRepositoryTests
         ContentfulContactUsArea rawContactUsArea = new ContentfulContactUsAreaBuilder().Slug(slug).Build();
         collection.Items = new List<ContentfulContactUsArea> { rawContactUsArea };
 
-        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
+        QueryBuilder<ContentfulContactUsArea> builder =
+            new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
 
-        _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+        _contentfulClient.Setup(o =>
+                o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build().Equals(builder.Build())),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
@@ -64,14 +70,18 @@ public class ContactUsAreaRepositoryTests
         Crumb crumb = new("title", "slug", "type");
         ContentfulCollection<ContentfulContactUsArea> collection = new();
         ContentfulContactUsArea rawContactUsArea = new ContentfulContactUsAreaBuilder().Slug(slug)
-            .Breadcrumbs(new List<ContentfulReference>()
-                        { new() {Title = crumb.Title, Slug = crumb.Title, Sys = new SystemProperties() {Type = "Entry" }},
-                        })
+            .Breadcrumbs(new()
+            {
+                new() { Title = crumb.Title, Slug = crumb.Title, Sys = new() { Type = "Entry" } }
+            })
             .Build();
         collection.Items = new List<ContentfulContactUsArea> { rawContactUsArea };
 
-        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
-        _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+        QueryBuilder<ContentfulContactUsArea> builder =
+            new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
+        _contentfulClient.Setup(o =>
+                o.GetEntries(It.Is<QueryBuilder<ContentfulContactUsArea>>(q => q.Build().Equals(builder.Build())),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         _mockCrumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(crumb);

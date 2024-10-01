@@ -2,10 +2,10 @@
 
 public class DocumentPageController : Controller
 {
-
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, DocumentPageRepository> _createRepository;
+
+    private readonly ResponseHandler _handler;
 
     public DocumentPageController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
