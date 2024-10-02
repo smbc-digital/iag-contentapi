@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
+﻿using TimeProvider = StockportContentApi.Utils.TimeProvider;
+
+namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class LandingPageContentfulFactoryTests
 {

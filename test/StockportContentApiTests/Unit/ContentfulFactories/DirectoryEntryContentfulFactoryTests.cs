@@ -56,7 +56,7 @@ public class DirectoryEntryContentfulFactoryTests
             .Build();
 
         // Act
-        DirectoryEntry directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider()).ToModel(contentfulReference);
+        var directoryEntry = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(),new StockportContentApi.Utils.TimeProvider()).ToModel(contentfulReference);
 
         // Assert
         Assert.Equal(contentfulReference.Slug, directoryEntry.Slug);

@@ -1,31 +1,25 @@
 ﻿using Directory = StockportContentApi.Models.Directory;
+using TimeProvider = StockportContentApi.Utils.TimeProvider;
 
 namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class DirectoryContentfulFactoryTests
 {
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory =
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = 
         new CallToActionBannerContentfulFactory();
-
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory =
-        new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(),
-            new TimeProvider());
-
+        new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory =
         new EventBannerContentfulFactory();
-
-    private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory =
-        new ExternalLinkContentfulFactory();
-
+    private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory = new ExternalLinkContentfulFactory();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
     private readonly ITimeProvider _timeProvider = new TimeProvider();
 
     public DirectoryContentfulFactoryTests()
     {
-        _subItemFactory = new();
-        _alertFactory = new();
+        _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
+        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
     }
 
     [Fact]

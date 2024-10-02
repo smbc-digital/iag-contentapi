@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi;
+﻿using TimeProvider = StockportContentApi.Utils.TimeProvider;
+
+namespace StockportContentApi;
 
 public class Startup
 {
@@ -49,7 +51,7 @@ public class Startup
         services.AddTransient<ResponseHandler>();
         services.AddSingleton<ITimeProvider>(new TimeProvider());
 
-        _logger.Information("CONTENTAPI: STARTUP : ConfigureServices : Adding Base Configuration");
+        _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Base Configuration");
         services.AddSingleton(Configuration);
 
         _logger.Information("CONTENTAPI: STARTUP : ConfigureServices : Add HTTP Context Accessor");
@@ -98,7 +100,8 @@ public class Startup
                 Description =
                     "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"."
             });
-            c.AddSecurityRequirement(new()
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new()

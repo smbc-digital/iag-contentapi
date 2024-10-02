@@ -17,7 +17,7 @@ public class ContentfulClientManagerTests
            .Build();
 
         IContentfulClient contenfulClient = manager.GetClient(config);
-
-        contenfulClient.Should().BeEquivalentTo(new Contentful.Core.ContentfulClient(httpClient, string.Empty, config.AccessKey, config.SpaceKey) { ResolveEntriesSelectively = true });
+        
+        contenfulClient.Should().BeEquivalentTo(new Contentful.Core.ContentfulClient(httpClient, "", config.AccessKey, config.SpaceKey));
     }
 }
