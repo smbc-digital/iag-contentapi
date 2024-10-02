@@ -24,6 +24,7 @@ public class PaymentController : Controller
         return await _handler.Get(() =>
         {
             PaymentRepository paymentRepository = _createRepository(_createConfig(businessId));
+
             return paymentRepository.GetPayment(slug);
         });
     }
@@ -36,6 +37,7 @@ public class PaymentController : Controller
         return await _handler.Get(() =>
         {
             PaymentRepository paymentRepository = _createRepository(_createConfig(businessId));
+
             return paymentRepository.Get();
         });
     }

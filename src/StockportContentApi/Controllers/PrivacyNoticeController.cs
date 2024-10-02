@@ -42,6 +42,7 @@ public class PrivacyNoticeController : Controller
 
             if (!privacyNotices.Any() || privacyNotices is null)
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "Privacy notices not found");
+
             return HttpResponse.Successful(privacyNotices);
         });
 }

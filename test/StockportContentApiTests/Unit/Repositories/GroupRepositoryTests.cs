@@ -642,7 +642,7 @@ public class GroupRepositoryTests
         List<Group> filteredGroups = response.Get<List<Group>>();
 
         // Assert
-        filteredGroups.Count().Should().Be(1);
+        filteredGroups.Count.Should().Be(1);
     }
 
     [Fact]

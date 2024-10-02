@@ -25,9 +25,10 @@ public class EventCategoryRepository
             GetCategoriesDirect, _eventsCategoryTimeout);
 
         if (categories is not null && !categories.Any())
-            HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
 
         categories = categories.OrderBy(category => category.Name).ToList();
+
         return HttpResponse.Successful(categories);
     }
 

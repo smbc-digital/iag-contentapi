@@ -4,7 +4,6 @@ public class LandingPageController : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, LandingPageRepository> _createRepository;
-
     private readonly ResponseHandler _handler;
 
     public LandingPageController(ResponseHandler handler,

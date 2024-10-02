@@ -124,12 +124,12 @@ public class EventController : Controller
     [HttpGet]
     [Route("{businessId}/events/by-category")]
     [Route("v1/{businessId}/events/by-category")]
-    public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "",
-        bool onlyNextOccurrence = true)
+    public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
     {
         EventRepository repository = _eventRepository(_createConfig(businessId));
 
-        if (string.IsNullOrEmpty(category)) return new NotFoundObjectResult("No category was supplied");
+        if (string.IsNullOrEmpty(category))
+            return new NotFoundObjectResult("No category was supplied");
 
         try
         {
@@ -150,6 +150,7 @@ public class EventController : Controller
         {
             _logger.LogError(new(0), ex,
                 $"There was an error with getting events by category / tag for category {category}");
+                
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -174,8 +175,7 @@ public class EventController : Controller
         });
     }
 
-    private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories,
-        ContentfulEvent existingEvent)
+    private ManagementEvent ConvertToManagementEvent(Event eventDetail, List<ContentfulEventCategory> categories, ContentfulEvent existingEvent)
     {
         ContentfulEvent contentfulEvent = _mapper.Map<ContentfulEvent>(eventDetail);
         contentfulEvent.EventCategories = categories;

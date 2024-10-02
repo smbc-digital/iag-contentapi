@@ -15,7 +15,7 @@ public class EventReccurenceFactoryTests
     }
 
     [Fact]
-    public void ShouldCreateReccuringEventsaccordingToMonthlyDay()
+    public void ShouldCreateReccuringEventsAccordingToMonthlyDay()
     {
         Event eventItem = new EventBuilder().Occurrences(3).Frequency(EventFrequency.MonthlyDay).EventDate(new DateTime(2017, 01, 19)).Build();
 
@@ -29,7 +29,7 @@ public class EventReccurenceFactoryTests
     }
 
     [Fact]
-    public void ShouldCreateReccuringEventsaccordingToMonthlyDayOnLastOccurenceOfDayInMonth()
+    public void ShouldCreateReccuringEventsAccordingToMonthlyDayOnLastOccurenceOfDayInMonth()
     {
         Event eventItem = new EventBuilder().Occurrences(3).Frequency(EventFrequency.MonthlyDay).EventDate(new DateTime(2017, 01, 29)).Build();
 

@@ -13,9 +13,7 @@ internal class ContentfulPaymentBuilder
     private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
     private readonly string _metaDescription = "metaDescription";
     private List<ContentfulAlert> _alerts = new();
-    private List<ContentfulReference> _breadcrumbs = new()
-    {
-        new ContentfulReferenceBuilder().Build() };
+    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
 
     public ContentfulPayment Build()
     {

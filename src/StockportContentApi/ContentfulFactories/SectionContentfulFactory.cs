@@ -17,7 +17,7 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
         _profileFactory = profileFactory;
         _documentFactory = documentFactory;
         _videoRepository = videoRepository;
-        _dateComparer = new(timeProvider);
+        _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
         _sectionBrandingFactory = sectionBrandingFactory;
     }

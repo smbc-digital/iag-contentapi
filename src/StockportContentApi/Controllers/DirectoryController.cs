@@ -24,6 +24,7 @@ public class DirectoryController : Controller
         return await _handler.Get(() =>
         {
             DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            
             return directoryRepository.Get();
         });
     }
@@ -37,6 +38,7 @@ public class DirectoryController : Controller
         {
             DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
             HttpResponse response = await directoryRepository.Get(slug);
+
             return response.CreateResult();
         }
         catch
@@ -53,6 +55,7 @@ public class DirectoryController : Controller
         return await _handler.Get(() =>
         {
             DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+
             return directoryRepository.GetEntry(directoryEntrySlug);
         });
     }

@@ -2,9 +2,8 @@
 
 public class InlineQuoteContentfulFactory : IContentfulFactory<ContentfulInlineQuote, InlineQuote>
 {
-    public InlineQuote ToModel(ContentfulInlineQuote entry)
-    {
-        return new InlineQuote()
+    public InlineQuote ToModel(ContentfulInlineQuote entry) =>
+        new()
         {
             Image = entry.Image.File.Url,
             ImageAltText = entry.ImageAltText,
@@ -13,5 +12,4 @@ public class InlineQuoteContentfulFactory : IContentfulFactory<ContentfulInlineQ
             Slug = entry.Slug,
             Theme = entry.Theme
         };
-    }
 }

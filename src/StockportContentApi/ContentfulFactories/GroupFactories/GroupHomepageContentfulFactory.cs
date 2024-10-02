@@ -24,28 +24,21 @@ public class GroupHomepageContentfulFactory : IContentfulFactory<ContentfulGroup
         string backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
                                        ? entry.BackgroundImage.File.Url : string.Empty;
 
-
         IEnumerable<Group> groups = entry.FeaturedGroups.Select(g => _groupFactory.ToModel(g));
-
         GroupCategory groupCategory = _groupCategoryListFactory.ToModel(entry.FeaturedGroupsCategory);
-
         GroupSubCategory groupSubCategory = _groupSubCategoryListFactory.ToModel(entry.FeaturedGroupsSubCategory);
-
         List<Group> featuredGroup = groups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(
-            group.DateHiddenFrom, group.DateHiddenTo)).ToList();
-
+            group.DateHiddenFrom, group.DateHiddenTo)).ToList();         
         IEnumerable<Alert> alerts = entry.Alerts.Select(_ => _alertFactory.ToModel(_));
-
+        
         string bodyHeading = entry.BodyHeading;
-
         string body = entry.Body;
-
         string secondaryBodyHeading = entry.SecondaryBodyHeading;
-
         string secondaryBody = entry.SecondaryBody;
 
         EventBanner eventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
-            ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner();
+            ? _eventBannerFactory.ToModel(entry.EventBanner) 
+            : new NullEventBanner();
 
         return new GroupHomepage(entry.Title, entry.Slug, entry.MetaDescription, backgroundImage, entry.FeaturedGroupsHeading, featuredGroup, groupCategory, groupSubCategory, alerts, bodyHeading, body, secondaryBodyHeading, secondaryBody, eventBanner);
     }

@@ -73,8 +73,7 @@ public class DocumentsService : IDocumentService
             return false;
 
         IGroupAdvisorRepository groupAdvisorsRepository = _groupAdvisorRepository(config);
-        bool groupAdvisorResponse =
-            await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
+        bool groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
 
         return groupAdvisorResponse;
     }

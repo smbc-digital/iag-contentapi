@@ -24,6 +24,7 @@ public class AtoZController : Controller
         return await _handler.Get(() =>
         {
             AtoZRepository repository = _createRepository(_createConfig(businessId));
+
             return repository.Get(letter);
         });
     }

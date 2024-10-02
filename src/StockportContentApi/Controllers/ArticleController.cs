@@ -22,6 +22,7 @@ public class ArticleController : Controller
         await _handler.Get(() =>
         {
             ArticleRepository repository = _createRepository(_createConfig(businessId));
+
             return repository.GetArticle(articleSlug);
         });
 
@@ -34,6 +35,7 @@ public class ArticleController : Controller
         await _handler.Get(() =>
         {
             ArticleRepository repository = _createRepository(_createConfig(businessId));
+
             return repository.Get();
         });
 }

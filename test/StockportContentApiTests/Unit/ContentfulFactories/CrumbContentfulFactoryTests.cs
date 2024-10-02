@@ -6,7 +6,6 @@ public class CrumbContentfulFactoryTests
     public void ShouldCreateACrumbFromAContentfulReference()
     {
         ContentfulReference ContentfulReference = new ContentfulReferenceBuilder().Build();
-
         Crumb crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
         crumb.Slug.Should().Be(ContentfulReference.Slug);
@@ -18,7 +17,6 @@ public class CrumbContentfulFactoryTests
     public void ShouldCreateACrumbWithNameIfSet()
     {
         ContentfulReference ContentfulReference = new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
-
         Crumb crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
 
         crumb.Title.Should().Be(ContentfulReference.Name);

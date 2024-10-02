@@ -171,6 +171,7 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
                     { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
             }
         };
+        
         return destination;
     }
 }

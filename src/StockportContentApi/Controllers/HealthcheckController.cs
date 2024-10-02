@@ -9,8 +9,6 @@ public class HealthcheckController : Controller
 
     [HttpGet]
     [Route("/_healthcheck")]
-    public async Task<IActionResult> Index(string articleSlug, string businessId)
-    {
-        return await Task.Run(async () => Json(await _healthcheckService.Get()));
-    }
+    public async Task<IActionResult> Index() =>
+        await Task.Run(async () => Json(await _healthcheckService.Get()));
 }

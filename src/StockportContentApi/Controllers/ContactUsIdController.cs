@@ -24,6 +24,7 @@ public class ContactUsIdController : Controller
         return await _handler.Get(() =>
         {
             ContactUsIdRepository contactUsIdRepository = _createRepository(_createConfig(businessId));
+
             return contactUsIdRepository.GetContactUsIds(slug);
         });
     }

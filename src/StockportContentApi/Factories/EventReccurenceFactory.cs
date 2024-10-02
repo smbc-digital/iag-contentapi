@@ -21,7 +21,9 @@ public class EventReccurenceFactory
         for (int i = 1; i < eventItem.Occurences; i++)
         {
             Event recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
-            if (recurringEvent is not null) reoccuredEventsByFrequency.Add(recurringEvent);
+            
+            if (recurringEvent is not null)
+                reoccuredEventsByFrequency.Add(recurringEvent);
         }
 
         return reoccuredEventsByFrequency;

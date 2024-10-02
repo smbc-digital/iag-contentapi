@@ -13,15 +13,11 @@ public class HttpResponse
         Error = error;
     }
 
-    public static HttpResponse Successful(object content)
-    {
-        return new HttpResponse(HttpStatusCode.OK, content, string.Empty);
-    }
+    public static HttpResponse Successful(object content) =>
+        new HttpResponse(HttpStatusCode.OK, content, string.Empty);
 
-    public static HttpResponse Failure(HttpStatusCode statusCode, string error)
-    {
-        return new HttpResponse(statusCode, null, error);
-    }
+    public static HttpResponse Failure(HttpStatusCode statusCode, string error) =>
+        new HttpResponse(statusCode, null, error);
 
     public IActionResult CreateResult()
     {
@@ -40,13 +36,10 @@ public class HttpResponse
             default:
                 return new EmptyResult();
         }
-
     }
 
-    public override string ToString()
-    {
-        return JsonConvert.SerializeObject(this);
-    }
+    public override string ToString() =>
+        JsonConvert.SerializeObject(this);
 
     public T Get<T>()
     {

@@ -19,13 +19,15 @@ public class DocumentsController : Controller
         {
             Document result = await _documentService.GetSecureDocumentByAssetId(businessId, assetId, groupSlug);
 
-            if (result is null) return new NotFoundObjectResult($"No document found for assetId {assetId}");
+            if (result is null)
+                return new NotFoundObjectResult($"No document found for assetId {assetId}");
 
             return new OkObjectResult(result);
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error getting secrure document with assetId: {assetId} with exception: {ex.Message}");
+
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

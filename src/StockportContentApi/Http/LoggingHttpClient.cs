@@ -16,8 +16,8 @@ public class LoggingHttpClient : IHttpClient
     {
         _logger.LogInformation($"Querying: {RemoveAccessKeyFromUrl(url)}");
         HttpResponse response = await _inner.Get(url);
-
         _logger.LogDebug($"Response: {response}");
+
         return response;
     }
 

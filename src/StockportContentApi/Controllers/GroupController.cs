@@ -36,6 +36,7 @@ public class GroupController : Controller
         return await _handler.Get(() =>
         {
             IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+
             return groupRepository.Get();
         });
     }
@@ -49,6 +50,7 @@ public class GroupController : Controller
         IGroupRepository repository = _groupRepository(_createConfig(businessId));
         HttpResponse response = await repository.GetGroupHomepage();
         GroupHomepage homepage = response.Get<GroupHomepage>();
+
         return Ok(homepage);
     }
 
@@ -60,6 +62,7 @@ public class GroupController : Controller
         return await _handler.Get(() =>
         {
             IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+
             return groupRepository.GetGroup(groupSlug, onlyActive);
         });
     }
@@ -72,6 +75,7 @@ public class GroupController : Controller
         return await _handler.Get(() =>
         {
             GroupCategoryRepository groupRepository = _groupCategoryRepository(_createConfig(businessId));
+
             return groupRepository.GetGroupCategories();
         });
     }
@@ -85,6 +89,7 @@ public class GroupController : Controller
         return await _handler.Get(() =>
         {
             IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+
             return groupRepository.GetGroupResults(groupSearch, slugs);
         });
     }
@@ -98,6 +103,7 @@ public class GroupController : Controller
         return await _handler.Get(() =>
         {
             IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+
             return groupRepository.GetAdministratorsGroups(email);
         });
     }
@@ -125,6 +131,7 @@ public class GroupController : Controller
                 ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
+
                 return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
             });
         }
@@ -154,12 +161,14 @@ public class GroupController : Controller
                 int eventVersion = await managementRepository.GetVersion(groupEvent.Sys.Id);
                 groupEvent.Sys.Version = eventVersion;
                 HttpResponse result = await managementRepository.Delete(groupEvent.Sys);
+
                 if (result.StatusCode is not HttpStatusCode.OK)
                     return result;
             }
 
             int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
             existingGroup.Sys.Version = version;
+
             return await managementRepository.Delete(existingGroup.Sys);
         });
     }

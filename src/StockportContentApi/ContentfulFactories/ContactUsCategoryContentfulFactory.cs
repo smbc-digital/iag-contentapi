@@ -2,8 +2,6 @@
 
 public class ContactUsCategoryContentfulFactory : IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>
 {
-    public ContactUsCategory ToModel(ContentfulContactUsCategory entry)
-    {
-        return new ContactUsCategory(entry.Title, entry.BodyTextLeft, entry.BodyTextRight, entry.Icon);
-    }
+    public ContactUsCategory ToModel(ContentfulContactUsCategory entry) =>
+        new(entry.Title, entry.BodyTextLeft, entry.BodyTextRight, entry.Icon);
 }
