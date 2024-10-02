@@ -42,7 +42,7 @@ public class RedirectsRepositoryTests
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
@@ -75,7 +75,7 @@ public class RedirectsRepositoryTests
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
@@ -105,7 +105,7 @@ public class RedirectsRepositoryTests
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
@@ -143,7 +143,7 @@ public class RedirectsRepositoryTests
         AsyncTestHelper.Resolve(repository.GetRedirects());
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-        _client.Verify(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()), Times.Never);
+        _client.Verify(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class RedirectsRepositoryTests
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);

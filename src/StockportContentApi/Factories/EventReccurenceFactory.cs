@@ -17,11 +17,11 @@ public class EventReccurenceFactory
 
     public List<Event> GetReccuringEventsOfEvent(Event eventItem)
     {
-        List<Event> reoccuredEventsByFrequency = new();
+        List<Event> reoccuredEventsByFrequency = [];
         for (int i = 1; i < eventItem.Occurences; i++)
         {
             Event recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
-            
+
             if (recurringEvent is not null)
                 reoccuredEventsByFrequency.Add(recurringEvent);
         }
@@ -48,6 +48,7 @@ public class EventReccurenceFactory
     private static DateTime GetFirstMatchingDayOfMonth(DateTime date, DateTime nextMonth)
     {
         DateTime newDate = new(nextMonth.Year, nextMonth.Month, 1, date.Hour, date.Minute, date.Second, date.Kind);
+
         while (!newDate.DayOfWeek.Equals(date.DayOfWeek))
             newDate = newDate.AddDays(1);
 
@@ -62,7 +63,7 @@ public class EventReccurenceFactory
         {
             newDate = newDate.AddDays(7);
 
-            if (newDate.AddDays(7).Month.Equals(newDate.Month))
+            if (!newDate.AddDays(7).Month.Equals(newDate.Month))
                 break;
         }
 

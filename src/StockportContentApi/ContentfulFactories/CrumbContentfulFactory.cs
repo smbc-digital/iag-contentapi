@@ -5,7 +5,7 @@ public class CrumbContentfulFactory : IContentfulFactory<ContentfulReference, Cr
     public Crumb ToModel(ContentfulReference entry)
     {
         string title = !string.IsNullOrEmpty(entry.Title)
-            ? entry.Title 
+            ? entry.Title
             : entry.Name;
 
         return new Crumb(title, entry.Slug, entry.Sys.ContentType.SystemProperties.Id);

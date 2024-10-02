@@ -25,7 +25,7 @@
     }
     else
     {
-        string location  = $"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json";
+        string location = $"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json";
         builder.Configuration.AddJsonFile(location);
         Log.Logger.Information($"CONTENTAPI : INITIALISE SECRETS {builder.Environment.EnvironmentName}: Load JSON Secrets from file system, {location}");
     }
@@ -53,7 +53,7 @@
             "/api/swagger/v1/swagger.json",
             "Stockport Content API");
     });
-    
+
     app.UseMiddleware<AuthenticationMiddleware>();
     app.UseStaticFiles();
     app.UseRouting();

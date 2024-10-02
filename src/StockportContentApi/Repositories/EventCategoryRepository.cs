@@ -45,6 +45,8 @@ public class EventCategoryRepository
         List<EventCategory> eventCategories =
             entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
 
-        return !eventCategories.Any() ? null : eventCategories;
+        return !eventCategories.Any()
+            ? null
+            : eventCategories;
     }
 }

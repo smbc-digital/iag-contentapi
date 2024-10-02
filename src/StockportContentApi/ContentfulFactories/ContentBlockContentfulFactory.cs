@@ -64,7 +64,9 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
 
     private static string GetEntryImage(ContentfulReference entry)
     {
-        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+            ? entry.Image.File.Url
+            : string.Empty;
 
         if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
             ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))

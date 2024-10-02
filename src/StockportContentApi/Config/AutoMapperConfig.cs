@@ -90,8 +90,7 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
         destination.GroupAdministrators = new() { { "en-GB", source.GroupAdministrators } };
         destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id)
             ? null
-            : new Dictionary<string, LinkReference>
-                { { "en-GB", new() { Sys = new() { Id = source.Image.SystemProperties.Id } } } };
+            : new Dictionary<string, LinkReference> { { "en-GB", new() { Sys = new() { Id = source.Image.SystemProperties.Id } } } };
         destination.Name = new() { { "en-GB", source.Name } };
         destination.PhoneNumber = new() { { "en-GB", source.PhoneNumber } };
         destination.Slug = new() { { "en-GB", source.Slug } };
@@ -171,7 +170,7 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
                     { Sys = context.Mapper.Map<SystemProperties, ManagementSystemProperties>(sc.Sys) }).ToList()
             }
         };
-        
+
         return destination;
     }
 }
@@ -217,8 +216,7 @@ public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
         };
         destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id)
             ? null
-            : new Dictionary<string, LinkReference>
-                { { "en-GB", new() { Sys = new() { Id = source.Image.SystemProperties.Id } } } };
+            : new Dictionary<string, LinkReference> { { "en-GB", new() { Sys = new() { Id = source.Image.SystemProperties.Id } } } };
         destination.Location = new() { { "en-GB", source.Location } };
         destination.MapPosition = new() { { "en-GB", source.MapPosition } };
         destination.Paid = new() { { "en-GB", source.Paid } };

@@ -150,7 +150,7 @@ public class EventController : Controller
         {
             _logger.LogError(new(0), ex,
                 $"There was an error with getting events by category / tag for category {category}");
-                
+
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

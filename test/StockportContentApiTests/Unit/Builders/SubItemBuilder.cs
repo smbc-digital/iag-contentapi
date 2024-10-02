@@ -12,5 +12,6 @@ public class SubItemBuilder
     private readonly string _image = "image";
     private readonly List<SubItem> _subItems = new();
 
-    public SubItem Build() => new(_slug, _title, _teaser, _icon, _type, _sunriseDate, _sunsetDate, _image, _subItems, EColourScheme.Blue);
+    public SubItem Build() => 
+        new(_slug, _title, _teaser, _icon, _type, _sunriseDate, _sunsetDate, _image, _subItems, EColourScheme.Blue);
 }

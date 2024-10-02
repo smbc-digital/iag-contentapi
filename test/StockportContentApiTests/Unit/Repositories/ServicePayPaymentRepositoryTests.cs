@@ -54,7 +54,7 @@ public class ServicePayPaymentRepositoryTests
 
         _contentfulClient.Setup(o => o.GetEntries(
             It.Is<QueryBuilder<ContentfulServicePayPayment>>(
-                 q => q.Build() == builder.Build()),
+                 q => q.Build().Equals(builder.Build())),
                  It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 

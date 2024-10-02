@@ -52,7 +52,7 @@ public class StartPageRepositoryTests : TestingBaseClass
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _startPageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulStartPage>())).Returns(startPageItem);
@@ -93,7 +93,7 @@ public class StartPageRepositoryTests : TestingBaseClass
 
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         // Act

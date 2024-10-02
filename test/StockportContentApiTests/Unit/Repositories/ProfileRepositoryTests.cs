@@ -66,7 +66,7 @@ public class ProfileRepositoryTests
 
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(2);
 
-        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
         _profileFactory.Setup(_ => _.ToModel(contentfulProfile)).Returns(profile);
 
@@ -169,7 +169,7 @@ public class ProfileRepositoryTests
 
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
 
-        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(collection);
 
         // Act

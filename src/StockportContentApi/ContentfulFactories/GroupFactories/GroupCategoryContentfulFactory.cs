@@ -16,8 +16,9 @@ public class GroupCategoryContentfulFactory : IContentfulFactory<ContentfulGroup
             ? entry.Icon
             : string.Empty;
 
-        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-            entry.Image.File.Url : string.Empty;
+        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+            ? entry.Image.File.Url
+            : string.Empty;
 
         return new GroupCategory(name, slug, icon, image);
     }

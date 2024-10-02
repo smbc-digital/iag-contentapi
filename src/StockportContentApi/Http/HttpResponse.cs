@@ -14,10 +14,10 @@ public class HttpResponse
     }
 
     public static HttpResponse Successful(object content) =>
-        new HttpResponse(HttpStatusCode.OK, content, string.Empty);
+        new(HttpStatusCode.OK, content, string.Empty);
 
     public static HttpResponse Failure(HttpStatusCode statusCode, string error) =>
-        new HttpResponse(statusCode, null, error);
+        new(statusCode, null, error);
 
     public IActionResult CreateResult()
     {

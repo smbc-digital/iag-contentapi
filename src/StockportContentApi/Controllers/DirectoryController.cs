@@ -24,7 +24,7 @@ public class DirectoryController : Controller
         return await _handler.Get(() =>
         {
             DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-            
+
             return directoryRepository.Get();
         });
     }

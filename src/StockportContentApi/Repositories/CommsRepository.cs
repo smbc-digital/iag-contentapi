@@ -17,7 +17,7 @@ public class CommsRepository
         ContentfulCollection<ContentfulCommsHomepage> entries = await _client.GetEntries(builder);
         ContentfulCommsHomepage entry = entries.FirstOrDefault();
 
-        if (entry is not null && entry.WhatsOnInStockportEvent is not null)
+        if (entry is not null && entry.WhatsOnInStockportEvent is null)
         {
             SortOrderBuilder<ContentfulEvent> sortOrder = SortOrderBuilder<ContentfulEvent>.New(evnt => evnt.EventDate);
             QueryBuilder<ContentfulEvent> eventQueryBuilder = new QueryBuilder<ContentfulEvent>()

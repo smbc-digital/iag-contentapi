@@ -77,8 +77,8 @@ public class NewsRepositoryTests
         _client.Setup(_ =>
                 _.GetEntries(
                     It.Is<QueryBuilder<ContentfulNewsRoom>>(q =>
-                        q.Build() == new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1)
-                            .Build()),
+                        q.Build().Equals(new QueryBuilder<ContentfulNewsRoom>().ContentTypeIs("newsroom").Include(1)
+                            .Build())),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(_newsroomContentfulCollection);
 
@@ -116,7 +116,7 @@ public class NewsRepositoryTests
             .Build();
 
         _client.Setup(_ => _.GetEntries(
-                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build() == simpleNewsQuery),
+                It.Is<QueryBuilder<ContentfulNews>>(q => q.Build().Equals(simpleNewsQuery)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
@@ -807,8 +807,8 @@ public class NewsRepositoryTests
 
         _client.Setup(_ => _.GetEntries(
                 It.Is<QueryBuilder<ContentfulNews>>(q =>
-                    q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000)
-                        .Build()),
+                    q.Build().Equals(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000)
+                        .Build())),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(newsListCollection);
 
@@ -868,8 +868,8 @@ public class NewsRepositoryTests
 
         _client.Setup(_ => _.GetEntries(
                 It.Is<QueryBuilder<ContentfulNews>>(q =>
-                    q.Build() == new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000)
-                        .Build()),
+                    q.Build().Equals(new QueryBuilder<ContentfulNews>().ContentTypeIs("news").Include(1).Limit(1000)
+                        .Build())),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(newsListCollection);
 

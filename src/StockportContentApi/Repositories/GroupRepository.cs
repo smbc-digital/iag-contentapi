@@ -231,7 +231,9 @@ public class GroupRepository : BaseRepository, IGroupRepository
                 .Where(_ => !_.MapPosition.Lat.Equals(0) && !_.MapPosition.Lon.Equals(0))
                 .ToList();
 
-        if (groupsWithNoCoordinates.Count > 0) groups.AddRange(groupsWithNoCoordinates);
+        if (groupsWithNoCoordinates.Count > 0)
+            groups.AddRange(groupsWithNoCoordinates);
+
         switch (!string.IsNullOrEmpty(groupSearch.Order) ? groupSearch.Order.ToLower() : "name a-z")
         {
             case "name a-z":
@@ -248,13 +250,11 @@ public class GroupRepository : BaseRepository, IGroupRepository
         }
 
         groupResults.Groups = groups;
-        groupResults.AvailableSubCategories =
-            groups.SelectMany(group => group.SubCategories ?? new List<GroupSubCategory>()).ToList();
+        groupResults.AvailableSubCategories = groups.SelectMany(group => group.SubCategories ?? new List<GroupSubCategory>()).ToList();
 
         List<GroupCategory> groupCategoryResults = await GetGroupCategories();
 
-        if (!string.IsNullOrEmpty(groupSearch.Category) && groupCategoryResults.All(group =>
-                !string.Equals(group.Slug, groupSearch.Category, StringComparison.CurrentCultureIgnoreCase)))
+        if (!string.IsNullOrEmpty(groupSearch.Category) && groupCategoryResults.All(group => !string.Equals(group.Slug, groupSearch.Category, StringComparison.CurrentCultureIgnoreCase)))
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories found");
 
         groupResults.Categories = groupCategoryResults;
@@ -273,7 +273,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
         List<ContentfulGroup> groups = contentfulGroups
             .Where(group => group.GroupAdministrators?.Items is not null && group.GroupAdministrators.Items
-                .Any(item => item is null && item.Email.ToUpper().Equals(email.ToUpper()))).ToList();
+                .Any(item => item is not null && item.Email.ToUpper().Equals(email.ToUpper()))).ToList();
 
         IEnumerable<Group> result = groups.Select(group => _groupFactory.ToModel(group));
 

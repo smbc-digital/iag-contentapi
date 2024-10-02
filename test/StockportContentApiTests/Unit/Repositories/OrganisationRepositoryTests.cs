@@ -59,7 +59,7 @@ public class OrganisationRepositoryTests
             Items = new List<ContentfulOrganisation> { contentfulOrganisation }
         };
 
-        _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulOrganisation>>(q => q.Build() == builder.Build()), It.IsAny<CancellationToken>()))
+        _contentfulClient.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulOrganisation>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
 
         // Act

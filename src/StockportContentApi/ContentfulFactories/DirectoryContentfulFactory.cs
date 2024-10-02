@@ -43,8 +43,8 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                             .Select(item => _subitemFactory.ToModel(item));
 
-        subItems = directorySubItems is not null 
-            ? subItems.Concat(directorySubItems) 
+        subItems = directorySubItems is not null
+            ? subItems.Concat(directorySubItems)
             : subItems;
 
         return new()

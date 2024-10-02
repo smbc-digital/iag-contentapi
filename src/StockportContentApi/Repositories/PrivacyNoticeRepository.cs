@@ -29,7 +29,9 @@ public class PrivacyNoticeRepository : IPrivacyNoticeRepository
         ContentfulCollection<ContentfulPrivacyNotice> entries = await _client.GetEntries(builder);
         ContentfulPrivacyNotice entry = entries.FirstOrDefault();
 
-        return entry is not null ? _contentfulFactory.ToModel(entry) : null;
+        return entry is not null
+            ? _contentfulFactory.ToModel(entry)
+            : null;
     }
 
     public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()

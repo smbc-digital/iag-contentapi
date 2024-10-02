@@ -108,7 +108,7 @@ public class ShowcaseRepositoryTests
             .FieldEquals("fields.slug", slug).Include(3);
 
         _contentfulClient.Setup(o =>
-                o.GetEntries(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()),
+                o.GetEntries(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build().Equals(builder.Build())),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
@@ -140,7 +140,7 @@ public class ShowcaseRepositoryTests
         QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase")
             .FieldEquals("fields.slug", slug).Include(3);
         _contentfulClient.Setup(o =>
-                o.GetEntries(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build() == builder.Build()),
+                o.GetEntries(It.Is<QueryBuilder<ContentfulShowcase>>(q => q.Build().Equals(builder.Build())),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 

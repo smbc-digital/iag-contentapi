@@ -32,7 +32,9 @@ public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert));
 
-        DateTime? updatedAt = entry.Sys.UpdatedAt is not null ? entry.Sys.UpdatedAt : entry.SunriseDate;
+        DateTime? updatedAt = entry.Sys.UpdatedAt is not null
+            ? entry.Sys.UpdatedAt
+            : entry.SunriseDate;
 
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                      .Select(profile => _profileFactory.ToModel(profile)).ToList();

@@ -37,8 +37,7 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
             Instagram = entry.Instagram,
             LinkedIn = entry.LinkedIn,
             Address = entry.Address,
-            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
-                                ? entry.Image.File.Url : string.Empty,
+            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty,
             Directories = entry.Directories?.Select(contentfulDirectory => new MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
             Alerts = entry.Alerts?
                         .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)

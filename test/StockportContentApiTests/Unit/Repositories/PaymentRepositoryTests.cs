@@ -54,7 +54,7 @@ public class PaymentRepositoryTests
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
         _contentfulClient.Setup(o => o.GetEntries(
             It.Is<QueryBuilder<ContentfulPayment>>(
-                 q => q.Build() == builder.Build()),
+                 q => q.Build().Equals(builder.Build())),
                  It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
@@ -85,7 +85,7 @@ public class PaymentRepositoryTests
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
         _contentfulClient.Setup(o => o.GetEntries(
             It.Is<QueryBuilder<ContentfulPayment>>(
-                 q => q.Build() == builder.Build()),
+                 q => q.Build().Equals(builder.Build())),
                  It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 

@@ -43,7 +43,7 @@ public class TopicRepositoryTests
         };
 
         QueryBuilder<ContentfulTopic> builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build() == builder.Build()),
+        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _topicFactory.Setup(_ => _.ToModel(contentfulTopic)).Returns(_topic);
@@ -104,7 +104,7 @@ public class TopicRepositoryTests
         };
 
         QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build() == builder.Build()),
+        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         // Act
@@ -124,7 +124,7 @@ public class TopicRepositoryTests
         };
 
         QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build() == builder.Build()),
+        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         // Act

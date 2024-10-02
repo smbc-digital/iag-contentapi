@@ -65,7 +65,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -100,7 +100,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -137,7 +137,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -174,7 +174,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -210,7 +210,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -246,7 +246,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -446,7 +446,7 @@ public class GroupRepositoryTests
 
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);
@@ -482,7 +482,7 @@ public class GroupRepositoryTests
 
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
             .FieldEquals("fields.slug", slug).Include(1);
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
@@ -632,7 +632,7 @@ public class GroupRepositoryTests
             .Include(1)
             .Limit(ContentfulQueryValues.LIMIT_MAX);
         _client.Setup(
-            o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build() == builder.Build()),
+            o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroup>>(q => q.Build().Equals(builder.Build())),
                 It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _groupFactory.Setup(o => o.ToModel(correctContentfulGroup)).Returns(groupReturned);
@@ -660,7 +660,7 @@ public class GroupRepositoryTests
         QueryBuilder<ContentfulGroupHomepage> builder =
             new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupHomepage>>(q => q.Build() == builder.Build()),
+        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulGroupHomepage>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _groupHomepageContentfulFactory.Setup(o => o.ToModel(contenfulHomepage)).Returns(groupHomepage);

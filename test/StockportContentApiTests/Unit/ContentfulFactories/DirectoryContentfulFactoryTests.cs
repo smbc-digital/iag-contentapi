@@ -6,7 +6,7 @@ namespace StockportContentApiTests.Unit.ContentfulFactories;
 public class DirectoryContentfulFactoryTests
 {
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = 
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory =
         new CallToActionBannerContentfulFactory();
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory =
         new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
