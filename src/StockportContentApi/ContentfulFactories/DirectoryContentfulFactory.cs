@@ -33,15 +33,13 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             return null;
 
         IEnumerable<SubItem> subItems = entry.SubDirectories is not null
-                ? entry.SubDirectories?
-                    .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
+                ? entry.SubDirectories?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
                     .Select(item => _subitemFactory.ToModel(item))
                 : Enumerable.Empty<SubItem>();
 
-        IEnumerable<SubItem> directorySubItems = entry.SubItems?
-                            .Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
-                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
-                            .Select(item => _subitemFactory.ToModel(item));
+        IEnumerable<SubItem> directorySubItems = entry.SubItems?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys) 
+                                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                                                    .Select(item => _subitemFactory.ToModel(item));
 
         subItems = directorySubItems is not null
             ? subItems.Concat(directorySubItems)
@@ -54,31 +52,40 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             Body = entry.Body,
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
-            Alerts = entry.Alerts?
-                        .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+            Alerts = entry.Alerts?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
+                        .Select(alert => _alertFactory.ToModel(alert)),
+            
+            AlertsInline = entry.AlertsInline?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(alert => _alertFactory.ToModel(alert)),
-            AlertsInline = entry.AlertsInline?
-                        .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                            .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)),
-            CallToAction = entry.CallToAction is null ? null : _callToActionFactory.ToModel(entry.CallToAction),
+            
+            CallToAction = entry.CallToAction is null 
+                ? null 
+                : _callToActionFactory.ToModel(entry.CallToAction),
+            
             BackgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
-                            ? entry.BackgroundImage.File.Url : string.Empty,
+                ? entry.BackgroundImage.File.Url 
+                : string.Empty,
+            
             ContentfulId = entry.Sys.Id,
             ColourScheme = entry.ColourScheme,
             SearchBranding = entry.SearchBranding,
             Icon = entry.Icon,
             SubItems = subItems,
             EventBanner = ContentfulHelpers.EntryIsNotALink(entry.EventBanner.Sys)
-                            ? _eventBannerFactory.ToModel(entry.EventBanner) : new NullEventBanner(),
+                ? _eventBannerFactory.ToModel(entry.EventBanner)
+                : new NullEventBanner(),
+            
             RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
-                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
                                 .Select(item => _subitemFactory.ToModel(item)).ToList(),
+            
             ExternalLinks = entry.ExternalLinks.Where(el => ContentfulHelpers.EntryIsNotALink(el.Sys))
                                 .Select(link => _externalLinkFactory.ToModel(link)).ToList(),
+            
             PinnedEntries = entry.PinnedEntries?.Select(entry => _directoryEntryFactory.ToModel(entry)).ToList()
         };
     }

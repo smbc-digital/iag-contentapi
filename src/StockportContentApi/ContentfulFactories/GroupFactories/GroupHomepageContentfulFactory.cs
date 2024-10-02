@@ -22,13 +22,17 @@ public class GroupHomepageContentfulFactory : IContentfulFactory<ContentfulGroup
     public GroupHomepage ToModel(ContentfulGroupHomepage entry)
     {
         string backgroundImage = ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
-                                       ? entry.BackgroundImage.File.Url : string.Empty;
+            ? entry.BackgroundImage.File.Url 
+            : string.Empty;
 
         IEnumerable<Group> groups = entry.FeaturedGroups.Select(g => _groupFactory.ToModel(g));
+        
         GroupCategory groupCategory = _groupCategoryListFactory.ToModel(entry.FeaturedGroupsCategory);
+        
         GroupSubCategory groupSubCategory = _groupSubCategoryListFactory.ToModel(entry.FeaturedGroupsSubCategory);
-        List<Group> featuredGroup = groups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(
-            group.DateHiddenFrom, group.DateHiddenTo)).ToList();
+        
+        List<Group> featuredGroup = groups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo)).ToList();
+        
         IEnumerable<Alert> alerts = entry.Alerts.Select(_ => _alertFactory.ToModel(_));
 
         string bodyHeading = entry.BodyHeading;

@@ -20,20 +20,21 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
 
     public Event ToModel(ContentfulEvent entry)
     {
-        List<Document> eventDocuments =
-            entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                .Select(document => _documentFactory.ToModel(document)).ToList();
+        List<Document> eventDocuments = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                                            .Select(document => _documentFactory.ToModel(document)).ToList();
 
-        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-            entry.Image?.File?.Url : string.Empty;
+        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
+            ? entry.Image?.File?.Url 
+            : string.Empty;
 
         Group group = _groupFactory.ToModel(entry.Group);
 
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(ec => _eventCategoryFactory.ToModel(ec));
 
-        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-                            .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
         return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
             entry.Location,

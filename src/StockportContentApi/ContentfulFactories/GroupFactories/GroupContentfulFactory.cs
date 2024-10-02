@@ -33,24 +33,29 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
 
     public Group ToModel(ContentfulGroup entry)
     {
-        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ?
-            entry.Image.File.Url : string.Empty;
+        string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
+            ? entry.Image.File.Url 
+            : string.Empty;
 
         List<GroupCategory> categoriesReferences = entry.CategoriesReference is not null
-            ? entry.CategoriesReference.Where(catRef => catRef is not null).Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory)).ToList()
+            ? entry.CategoriesReference.Where(catRef => catRef is not null)
+                .Select(catogory => _contentfulGroupCategoryFactory.ToModel(catogory)).ToList()
             : new List<GroupCategory>();
 
         List<GroupSubCategory> subCategories = entry.SubCategories is not null
-            ? entry.SubCategories.Where(o => o is not null).Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
+            ? entry.SubCategories.Where(o => o is not null)
+                .Select(category => _contentfulGroupSubCategoryFactory.ToModel(category)).ToList()
             : new List<GroupSubCategory>();
 
-        List<Document> groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties)).Select(document => _documentFactory.ToModel(document)).ToList();
+        List<Document> groupDocuments = entry.AdditionalDocuments.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                                            .Select(document => _documentFactory.ToModel(document)).ToList();
 
         Organisation organisation = entry.Organisation is not null
             ? _contentfulOrganisationFactory.ToModel(entry.Organisation)
             : new Organisation();
 
         string status = "Published";
+
         if (!_dateComparer.DateNowIsNotBetweenHiddenRange(entry.DateHiddenFrom, entry.DateHiddenTo))
             status = "Archived";
 
@@ -61,18 +66,19 @@ public class GroupContentfulFactory : IContentfulFactory<ContentfulGroup, Group>
             : new List<string>();
 
         List<GroupBranding> groupBranding = entry.GroupBranding is not null
-            ? entry.GroupBranding.Where(o => o is not null).Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList()
+            ? entry.GroupBranding.Where(o => o is not null)
+                .Select(branding => _contentfulGroupBrandingFactory.ToModel(branding)).ToList()
             : new List<GroupBranding>();
 
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                           && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert));
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                        .Where(alert => !alert.Severity.Equals("Condolence"))
+                                        .Select(alert => _alertFactory.ToModel(alert));
 
         IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                           && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert));
+                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                                            .Select(alert => _alertFactory.ToModel(alert));
 
         return new Group(entry.Name, entry.Slug, entry.MetaDescription, entry.PhoneNumber, entry.Email, entry.Website,
             entry.Twitter, entry.Facebook, entry.Address, entry.Description, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),

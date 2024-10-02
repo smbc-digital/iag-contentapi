@@ -18,25 +18,20 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
     {
         _entry = entry;
 
-        ContentfulReference topicInBreadcrumb =
-            entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
+        ContentfulReference topicInBreadcrumb = entry.Breadcrumbs.LastOrDefault(o => o.Sys.ContentType.SystemProperties.Id.Equals("topic"));
 
         if (topicInBreadcrumb is null)
             return new NullTopic();
 
-        List<SubItem> subItems = topicInBreadcrumb.SubItems
-            .Select(CheckCurrentArticle)
-            .Where(subItem =>
-                subItem is not null &&
-                _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+        List<SubItem> subItems = topicInBreadcrumb.SubItems.Select(CheckCurrentArticle)
+                                    .Where(subItem => subItem is not null 
+                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
-        List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems
-            .Select(CheckCurrentArticle)
-            .Where(subItem =>
-                subItem is not null &&
-                _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+        List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems.Select(CheckCurrentArticle)
+                                        .Where(subItem => subItem is not null
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         return new(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
     }

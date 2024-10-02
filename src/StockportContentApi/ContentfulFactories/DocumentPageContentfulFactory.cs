@@ -31,18 +31,24 @@ public class DocumentPageContentfulFactory : IContentfulFactory<ContentfulDocume
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
             AboutTheDocument = entry.AboutTheDocument,
+
             Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
-                                       .Select(document => _documentFactory.ToModel(document)).ToList(),
+                            .Select(document => _documentFactory.ToModel(document)).ToList(),
+            
             AwsDocuments = entry.AwsDocuments,
             RequestAnAccessibleFormatContactInformation = entry.RequestAnAccessibleFormatContactInformation,
             FurtherInformation = entry.FurtherInformation,
+
             RelatedDocuments = entry.RelatedDocuments.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(item => _subitemFactory.ToModel(item)).ToList(),
+                                .Select(item => _subitemFactory.ToModel(item)).ToList(),
+
             DatePublished = entry.DatePublished,
             LastUpdated = entry.LastUpdated,
+
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                           .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+
             UpdatedAt = entry.Sys.UpdatedAt.Value
         };
     }

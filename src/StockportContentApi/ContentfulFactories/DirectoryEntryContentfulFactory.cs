@@ -37,31 +37,34 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
             Instagram = entry.Instagram,
             LinkedIn = entry.LinkedIn,
             Address = entry.Address,
-            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty,
+            
+            Image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
+                ? entry.Image.File.Url 
+                : string.Empty,
+            
             Directories = entry.Directories?.Select(contentfulDirectory => new MinimalDirectory(contentfulDirectory.Slug, contentfulDirectory.Title)),
-            Alerts = entry.Alerts?
-                        .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+            
+            Alerts = entry.Alerts?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(alert => _alertFactory.ToModel(alert)),
 
-            AlertsInline = entry.AlertsInline?
-                        .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                        .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)),
-            Themes = entry
-                        .Filters?
-                        .Select(filter => filter.Theme)
+            AlertsInline = entry.AlertsInline?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                            .Select(alert => _alertFactory.ToModel(alert)),
+            
+            Themes = entry.Filters?.Select(filter => filter.Theme)
                         .Distinct()
                         .Select(theme => new FilterTheme()
                         {
                             Title = theme,
                             Filters = entry.Filters
                                 .Where(filter => !string.IsNullOrEmpty(filter.Theme)
-                                        && filter.Theme.Equals(theme))
+                                    && filter.Theme.Equals(theme))
                                 .Select(filter => new Filter(filter))
                         }),
+            
             Branding = entry.GroupBranding?.Select(branding => _brandingFactory.ToModel(branding))
         };
 

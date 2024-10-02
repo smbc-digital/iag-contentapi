@@ -57,10 +57,14 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
         };
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") ? "groups" : entrySlug;
+        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
+            ? "groups" 
+            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
-        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
+        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") 
+            ? "start-page" 
+            : entry.Sys.ContentType.SystemProperties.Id;
 
     private static string GetEntryImage(ContentfulReference entry)
     {
@@ -68,8 +72,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             ? entry.Image.File.Url
             : string.Empty;
 
-        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
-            ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
+        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
             image = entry.BackgroundImage.File.Url;
 
         return image;

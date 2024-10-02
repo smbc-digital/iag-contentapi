@@ -16,9 +16,8 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
         if (entry is null)
             return null;
 
-        List<Crumb> breadcrumbs = entry.Breadcrumbs
-            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
         Topic topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
 

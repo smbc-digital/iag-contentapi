@@ -13,9 +13,10 @@ public class NewsRoomContentfulFactory : IContentfulFactory<ContentfulNewsRoom, 
 
     public Newsroom ToModel(ContentfulNewsRoom entry)
     {
-        IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert));
+        IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                        .Where(alert => !alert.Severity.Equals("Condolence"))
+                                        .Select(alert => _alertFactory.ToModel(alert));
 
         return new Newsroom(alerts.ToList(), entry.EmailAlerts, entry.EmailAlertsTopicId);
     }

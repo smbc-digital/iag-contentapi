@@ -10,11 +10,9 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
     {
         string type = GetEntryType(entry);
         string image = GetEntryImage(entry);
-        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
-            ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
-        {
+
+        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
             image = entry.BackgroundImage.File.Url;
-        }
 
         string title = GetEntryTitle(entry);
         List<SubItem> subItems = new();
@@ -59,7 +57,9 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         }
 
         if (string.IsNullOrEmpty(entry.Icon))
-            entry.Icon = type.Equals("payment") ? "si-coin" : "si-default";
+            entry.Icon = type.Equals("payment") 
+                ? "si-coin" 
+                : "si-default";
 
         string handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
@@ -67,13 +67,19 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
     }
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") ? "groups" : entrySlug;
+        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
+            ? "groups"
+            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
-        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
+        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage")
+            ? "start-page"
+            : entry.Sys.ContentType.SystemProperties.Id;
 
     private static string GetEntryImage(ContentfulReference entry) =>
-        entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+        entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+            ? entry.Image.File.Url
+            : string.Empty;
 
     private static string GetEntryTitle(ContentfulReference entry) =>
         !string.IsNullOrEmpty(entry.NavigationTitle)

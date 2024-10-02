@@ -10,6 +10,7 @@ public class CarouselContentContentfulFactory : IContentfulFactory<ContentfulCar
         string image = carousel.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(carousel.Image.SystemProperties)
             ? carousel.Image.File.Url
             : string.Empty;
+
         string url = carousel.Url ?? string.Empty;
         DateTime sunriseDate = DateComparer.DateFieldToDate(carousel.SunriseDate);
         DateTime sunsetDate = DateComparer.DateFieldToDate(carousel.SunsetDate);

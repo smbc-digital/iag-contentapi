@@ -4,8 +4,7 @@ public class DocumentContentfulFactory : IContentfulFactory<Asset, Document>
 {
     public Document ToModel(Asset entry)
     {
-        if (entry.File is null)
-            entry.File = new() { Url = string.Empty };
+        entry.File ??= new() { Url = string.Empty };
 
         return new()
         {

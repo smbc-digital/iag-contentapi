@@ -25,17 +25,17 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
     public Section ToModel(ContentfulSection entry)
     {
         List<Profile> profiles = entry.Profiles.Where(profile => ContentfulHelpers.EntryIsNotALink(profile.Sys))
-            .Select(profile => _profileFactory.ToModel(profile)).ToList();
-        List<Document> documents = entry.Documents
-            .Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-            .Select(document => _documentFactory.ToModel(document)).ToList();
+                                    .Select(profile => _profileFactory.ToModel(profile)).ToList();
+
+        List<Document> documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                                    .Select(document => _documentFactory.ToModel(document)).ToList();
+
         string body = _videoRepository.Process(entry.Body);
 
-        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section =>
-                ContentfulHelpers.EntryIsNotALink(section.Sys)
-                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-            .Where(alert => !alert.Severity.Equals("Condolence"))
-            .Select(alertInline => _alertFactory.ToModel(alertInline));
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                                            .Select(alertInline => _alertFactory.ToModel(alertInline));
 
         List<GroupBranding> sectionBranding = entry.SectionBranding is not null
             ? entry.SectionBranding.Where(_ => _ is not null)

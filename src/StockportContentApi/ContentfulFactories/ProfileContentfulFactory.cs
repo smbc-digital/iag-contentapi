@@ -43,30 +43,38 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
         return new()
         {
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
-                .Where(alert => !alert.Severity.Equals("Condolence"))
-                .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                        .Where(alert => !alert.Severity.Equals("Condolence"))
+                        .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+            
             Author = entry.Author,
-            Body = entry.Body,
+            Body = entry.Body,     
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
-            Image = image,
+                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+
+            Image = image,    
             ImageCaption = entry.ImageCaption,
             InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
+            
             Teaser = entry.Teaser,
             Slug = entry.Slug,
             Subject = entry.Subject,
             Subtitle = entry.Subtitle,
             Title = entry.Title,
+            
             TriviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                .Select(fact => _triviaFactory.ToModel(fact)).ToList(),
+                            .Select(fact => _triviaFactory.ToModel(fact)).ToList(),
+            
             TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                 ? entry.TriviaSubheading
                 : string.Empty,
+
             EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner),
             Colour = entry.Colour,
+            
             InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
-                .Where(alert => !alert.Severity.Equals("Condolence"))
-                .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                            .Where(alert => !alert.Severity.Equals("Condolence"))
+                            .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+            
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic()
         };
     }
