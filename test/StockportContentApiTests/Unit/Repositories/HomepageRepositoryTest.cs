@@ -13,6 +13,7 @@ public class HomepageRepositoryTest
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
         _homepageFactory = new Mock<IContentfulFactory<ContentfulHomepage, Homepage>>();
@@ -36,7 +37,7 @@ public class HomepageRepositoryTest
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _homepageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulHomepage>()))
-            .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null));
+            .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null));
 
         var response = AsyncTestHelper.Resolve(_repository.Get());
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

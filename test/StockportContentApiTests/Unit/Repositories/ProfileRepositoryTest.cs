@@ -14,6 +14,7 @@ public class ProfileRepositoryTest
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
         _client = new Mock<IContentfulClient>();
@@ -60,7 +61,7 @@ public class ProfileRepositoryTest
             InlineQuotes = new List<InlineQuote>(),
             Author = "author",
             Subject = "subject",
-            Colour = "pink"
+            Colour = EColourScheme.Pink
         };
 
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", "a-slug").Include(2);

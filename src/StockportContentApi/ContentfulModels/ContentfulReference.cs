@@ -12,7 +12,7 @@ public class ContentfulReference : IContentfulModel
     public string Teaser { get; set; } = string.Empty;
     public string MetaDescription { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
-    public string ColourScheme { get; set; } = "Teal";
+    public EColourScheme ColourScheme { get; set; } = EColourScheme.None;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
     public bool Highlight { get; set; } = false;
@@ -24,4 +24,16 @@ public class ContentfulReference : IContentfulModel
     public List<ContentfulReference> TertiaryItems { get; set; } = new();
     public List<ContentfulSection> Sections { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
+    public string ContentType { get; set; } = string.Empty;
+    public string MailingListId { get; set; }
+    public string Body { get; set; }
+    public string Link { get; set; } = string.Empty;
+    public string ButtonText { get; set; } = string.Empty;
+    public string Statistic { get; set; } = string.Empty;
+    public string StatisticSubheading { get; set; } = string.Empty;
+    public string VideoTitle { get; set; } = string.Empty;
+    public string VideoToken { get; set; } = string.Empty;
+    public string VideoPlaceholderPhotoId { get; set; } = string.Empty;
+    public string AssociatedTagCategory { get; set; } = string.Empty;
+    public string ScreenReader { get; set; } = string.Empty;
 }

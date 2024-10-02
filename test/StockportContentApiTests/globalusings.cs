@@ -20,6 +20,7 @@ global using StockportContentApi.Factories;
 global using StockportContentApi.Http;
 global using StockportContentApi.Middleware;
 global using StockportContentApi.Model;
+global using StockportContentApi.Models.Enums;
 global using StockportContentApi.Models.Exceptions;
 global using StockportContentApi.Repositories;
 global using StockportContentApi.Services;

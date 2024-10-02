@@ -5,9 +5,9 @@ namespace StockportContentApiTests.Unit.Repositories;
 public class NewsRepositoryTest
 {
     private readonly NewsRepository _repository;
-    private readonly Mock<ITimeProvider> _mockTimeProvider;
-    private readonly Mock<IVideoRepository> _videoRepository;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
+    private readonly Mock<IVideoRepository> _videoRepository = new();
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
     private const string Title = "This is the news";
     private const string Body = "The news";
     private const string Slug = "news-of-the-century";
@@ -28,25 +28,22 @@ public class NewsRepositoryTest
         .Add("TEST_SPACE", "SPACE")
         .Add("TEST_ACCESS_KEY", "KEY")
         .Add("TEST_MANAGEMENT_KEY", "KEY")
+        .Add("TEST_ENVIRONMENT", "master")
         .Build();
 
-    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory;
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsContentfulFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomContentfulFactory = new();
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly NewsContentfulFactory _contentfulFactory;
-    private readonly Mock<IContentfulClientManager> _contentfulClientManager;
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
     private readonly ContentType _newsContentType;
     private readonly ContentfulCollection<ContentfulNewsRoom> _newsroomContentfulCollection;
-    private readonly Mock<ICache> _cacheWrapper;
-    private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder;
+    private readonly Mock<ICache> _cacheWrapper = new();
+    private readonly Mock<IConfiguration> _configuration = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder = new();
 
     public NewsRepositoryTest()
     {
-        _mockTimeProvider = new Mock<ITimeProvider>();
-        _videoRepository = new Mock<IVideoRepository>();
-        _cacheWrapper = new Mock<ICache>();
-
         _newsContentType = new ContentType() {
             Fields = new() {
                 new() {
@@ -68,11 +65,7 @@ public class NewsRepositoryTest
             }
         };
 
-        _contentfulClientManager = new Mock<IContentfulClientManager>();
-        _client = new Mock<IContentfulClient>();
         _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-        _alertBuilder = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
         _contentfulFactory = new NewsContentfulFactory(_videoRepository.Object, new DocumentContentfulFactory(), _alertBuilder.Object, _mockTimeProvider.Object, _profileFactory.Object);
 
@@ -83,10 +76,6 @@ public class NewsRepositoryTest
         _client.Setup(_ => _.GetContentType("news", It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_newsContentType);
 
-        _newsContentfulFactory = new Mock<IContentfulFactory<ContentfulNews, News>>();
-        _newsRoomContentfulFactory = new Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>>();
-
-        _configuration = new Mock<IConfiguration>();
         _configuration.Setup(_ => _["redisExpiryTimes:News"]).Returns("60");
         _repository = new NewsRepository(_config, _mockTimeProvider.Object, _contentfulClientManager.Object, _newsContentfulFactory.Object, _newsRoomContentfulFactory.Object, _cacheWrapper.Object, _configuration.Object);
     }
@@ -99,14 +88,14 @@ public class NewsRepositoryTest
         List<Alert> alerts = new() { new AlertBuilder().Build() };
         _mockTimeProvider.Setup(_ => _.Now()).Returns(DateTime.Now);
 
-        var contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();
+        ContentfulNews contentfulNews = new ContentfulNewsBuilder().Title("This is the news").Body("The news").Teaser("Read more for the news").Slug(slug).SunriseDate(new DateTime(2016, 08, 01)).SunsetDate(new DateTime(2016, 08, 10)).Build();
         ContentfulCollection<ContentfulNews> collection = new() {
             Items = new List<ContentfulNews> { contentfulNews }
         };
 
         List<ContentfulNews> newsCollection = new() { contentfulNews };
 
-        var simpleNewsQuery =  new QueryBuilder<ContentfulNews>()
+        string simpleNewsQuery =  new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
             .FieldEquals("fields.slug", slug)
             .Include(1)
@@ -120,12 +109,12 @@ public class NewsRepositoryTest
         _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns(contentfulNews.Body);
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(newsCollection);
 
-        var newsItem = new News(Title, Slug, Teaser, Purpose, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _updatedAt, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" }, new List<Profile>());
+        News newsItem = new(Title, Slug, Teaser, Purpose, Image, ImageConverter.ConvertToThumbnail(Image), Body, _sunriseDate, _sunsetDate, _updatedAt, _crumbs, alerts, null, new List<Document>(), new List<string> { "A category" }, new List<Profile>());
 
         _newsContentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulNews>())).Returns(newsItem);
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -144,7 +133,7 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(collection.Items.ToList());
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNews("news-of-the-century"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews("news-of-the-century"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -181,13 +170,13 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-categories"), It.IsAny<Func<Task<List<string>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new List<string> { "Benefits", "foo", "Council leader" });
 
         _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns("The news");
-        
+
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var newsroom = response.Get<Newsroom>();
+        Newsroom newsroom = response.Get<Newsroom>();
         Assert.Single(newsroom.Alerts);
         Assert.Equal(_alerts[0].Title, newsroom.Alerts[0].Title);
         Assert.True(newsroom.EmailAlerts);
@@ -200,7 +189,7 @@ public class NewsRepositoryTest
         Assert.Equal(2016, newsroom.Dates[0].Year);
         Assert.Equal(2, newsroom.News.Count);
 
-        var firstNews = newsroom.News.First();
+        News firstNews = newsroom.News.First();
         Assert.Equal(Title, firstNews.Title);
         Assert.Equal(Body, firstNews.Body);
         Assert.Equal(Slug, firstNews.Slug);
@@ -225,7 +214,7 @@ public class NewsRepositoryTest
         Newsroom newsRoom = new(new List<Alert> { }, true, string.Empty);
         _newsRoomContentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
-        var news = new News(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _updatedAt, _crumbs, _alerts, null, new List<Document>(), _newsCategories, new List<Profile>());
+        News news = new(Title, Slug, Teaser, Purpose, Image, ThumbnailImage, Body, _sunriseDate, _sunsetDate, _updatedAt, _crumbs, _alerts, null, new List<Document>(), _newsCategories, new List<Profile>());
 
         _newsContentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulNews>())).Returns(news);
 
@@ -246,12 +235,12 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
-        var newsroom = response.Get<Newsroom>();
+
+        Newsroom newsroom = response.Get<Newsroom>();
         Assert.Empty(newsroom.Alerts);
         Assert.Equal(2, newsroom.News.Count);
         Assert.Equal(Title, newsroom.News.First().Title);
@@ -298,8 +287,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate: null, endDate: null));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: null, startDate: null, endDate: null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -339,8 +328,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1", startDate: null, endDate: null));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: "news-category-1", startDate: null, endDate: null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -380,8 +369,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: "Events", category: "news-category-1", startDate: null, endDate: null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -421,8 +410,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(2, newsroom.News.Count);
@@ -457,8 +446,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2017, 08, 01), endDate: new DateTime(2017, 08, 31)));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: new DateTime(2017, 08, 01), endDate: new DateTime(2017, 08, 31)));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Empty(newsroom.News);
@@ -491,8 +480,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: null, endDate: null));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: null, category: null, startDate: null, endDate: null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Single(newsroom.Dates);
@@ -523,7 +512,7 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null, null));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -554,8 +543,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag: tag, category: null, startDate: new DateTime(2016, 08, 01), endDate: new DateTime(2016, 08, 31)));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         newsroom.News.First().Tags.Any(t => t == tag).Should().BeTrue();
@@ -593,8 +582,8 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
-        var newsroom = response.Get<Newsroom>();
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(2, newsroom.News.Count);
@@ -613,9 +602,9 @@ public class NewsRepositoryTest
                 .Returns<ContentfulNews>(_ => new News(_.Title, _.Slug, _.Teaser, null, null, null, null, _.SunriseDate, _.SunsetDate, DateTime.MinValue, null, null, null, new List<Document>(), null, null));
 
         ContentfulCollection<ContentfulNews> newsListCollection = new();
-        var earliestNewsItem = new ContentfulNewsBuilder().Title("This is the first news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
-        var middleNewsItem = new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2017, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build();
-        var latestNewsItem = new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2018, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
+        ContentfulNews earliestNewsItem = new ContentfulNewsBuilder().Title("This is the first news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
+        ContentfulNews middleNewsItem = new ContentfulNewsBuilder().Title("Another news article").Slug("another-news-article").Teaser("This is another news article").SunriseDate(new DateTime(2017, 06, 30, 23, 0, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 11, 22, 23, 0, 0, DateTimeKind.Utc)).Build();
+        ContentfulNews latestNewsItem = new ContentfulNewsBuilder().Title("This is the news").Slug("news-of-the-century").Teaser("Read more for the news").SunriseDate(new DateTime(2018, 08, 24, 23, 30, 0, DateTimeKind.Utc)).SunsetDate(new DateTime(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc)).Build();
         newsListCollection.Items = new List<ContentfulNews>
         {
             earliestNewsItem,
@@ -633,10 +622,10 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(1));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(1));
 
         // Arrange
-        var newsList = response.Get<List<News>>();
+        List<News> newsList = response.Get<List<News>>();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Single(newsList);
         Assert.Equal(latestNewsItem.Title, newsList.First().Title);
@@ -677,11 +666,11 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "newsroom"), It.IsAny<Func<Task<ContentfulNewsRoom>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(2));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNewsByLimit(2));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var newsList = response.Get<List<News>>();
+        List<News> newsList = response.Get<List<News>>();
 
         Assert.Equal(2, newsList.Count);
         Assert.Equal(Title, newsList.First().Title);
@@ -707,12 +696,12 @@ public class NewsRepositoryTest
 
         _mockTimeProvider.Setup(_ => _.Now()).Returns(nowDateTime);
 
-        var newsWithSunriseDateInFuture = new ContentfulNewsBuilder().SunriseDate(futureSunRiseDate).Slug(slug).Build();
+        ContentfulNews newsWithSunriseDateInFuture = new ContentfulNewsBuilder().SunriseDate(futureSunRiseDate).Slug(slug).Build();
         ContentfulCollection<ContentfulNews> collection = new() {
             Items = new List<ContentfulNews> { newsWithSunriseDateInFuture }
         };
 
-        var simpleNewsQuery = new QueryBuilder<ContentfulNews>()
+        string simpleNewsQuery = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
             .FieldEquals("fields.slug", slug)
             .Include(1)
@@ -722,7 +711,7 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(collection.Items.ToList());
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -738,7 +727,7 @@ public class NewsRepositoryTest
         DateTime pastSunSetDate = DateTime.Now.AddDays(-10);
 
         _mockTimeProvider.Setup(_ => _.Now()).Returns(nowDateTime);
-        var newsWithSunsetDateInPast = new ContentfulNewsBuilder()
+        ContentfulNews newsWithSunsetDateInPast = new ContentfulNewsBuilder()
             .SunsetDate(pastSunSetDate)
             .SunriseDate(pastSunRiseDate)
             .Slug(slug)
@@ -748,7 +737,7 @@ public class NewsRepositoryTest
             Items = new List<ContentfulNews> { newsWithSunsetDateInPast }
         };
 
-        var simpleNewsQuery = new QueryBuilder<ContentfulNews>()
+        string simpleNewsQuery = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
             .FieldEquals("fields.slug", slug)
             .Include(1)
@@ -758,7 +747,7 @@ public class NewsRepositoryTest
         _cacheWrapper.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s == "news-all"), It.IsAny<Func<Task<IList<ContentfulNews>>>>(), It.Is<int>(s => s == 60))).ReturnsAsync(collection.Items.ToList());
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -798,15 +787,111 @@ public class NewsRepositoryTest
         _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns("The news");
 
         // Act
-        var response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
 
         // Assert
-        var newsroom = response.Get<Newsroom>();
+        Newsroom newsroom = response.Get<Newsroom>();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         newsroom.News[0].Slug.Equals("new-news");
         newsroom.News[1].Slug.Equals("middle-news");
         newsroom.News[2].Slug.Equals("old-news");
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByTag_ShouldReturnNews_WhenValidNewsIsFound()
+    {
+        // Arrange
+        List<ContentfulNews> newsList = new()
+        {
+            new ContentfulNews { Tags = new List<string>() { "tech" }, SunriseDate = DateTime.Now.AddDays(-1), SunsetDate = DateTime.Now.AddDays(1) }
+        };
+
+        News expectedNews = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
+            It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
+
+        _client.Setup(c => c.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
+        
+        DateTime nowDateTime = DateTime.Now;
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(nowDateTime);
+
+        _newsContentfulFactory.Setup(f => f.ToModel(It.IsAny<ContentfulNews>())).Returns(expectedNews);
+
+        // Act
+        News result = await _repository.GetLatestNewsByTag("tech");
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedNews, result);
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByTag_ShouldReturnNull_WhenNoValidNewsIsFound()
+    {
+        // Arrange
+        List<ContentfulNews> newsList = new();
+
+        _client.Setup(c => c.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
+
+        // Act
+        News result = await _repository.GetLatestNewsByTag("tech");
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByCategory_ShouldReturnNews_WhenValidNewsIsFound()
+    {
+        // Arrange
+        List<ContentfulNews> newsList = new()
+        {
+            new ContentfulNews { Categories = new List<string>() { "sports" }, SunriseDate = DateTime.Now.AddDays(-1), SunsetDate = DateTime.Now.AddDays(1) } // Out of date range
+        };
+
+        News expectedNews = new(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<List<Crumb>>(),
+            It.IsAny<List<Alert>>(), It.IsAny<List<string>>(), It.IsAny<List<Document>>(), It.IsAny<List<string>>(), It.IsAny<List<Profile>>());
+
+        _client.Setup(c => c.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
+        
+        DateTime nowDateTime = DateTime.Now;
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(nowDateTime);
+
+        _newsContentfulFactory.Setup(f => f.ToModel(It.IsAny<ContentfulNews>())).Returns(expectedNews);
+
+        // Act
+        News result = await _repository.GetLatestNewsByCategory("sports");
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedNews, result);
+    }
+
+    [Fact]
+    public async Task GetLatestNewsByCategory_ShouldReturnNull_WhenDateIsOutOfRange()
+    {
+        // Arrange
+        List<ContentfulNews> newsList = new()
+        {
+            new ContentfulNews { Categories = new List<string>() { "sports" }, SunriseDate = DateTime.Now.AddDays(-10), SunsetDate = DateTime.Now.AddDays(-5) } // Out of date range
+        };
+
+        _client.Setup(c => c.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
+
+        DateTime nowDateTime = DateTime.Now;
+        _mockTimeProvider.Setup(_ => _.Now()).Returns(nowDateTime);
+
+        // Act
+        News result = await _repository.GetLatestNewsByCategory("sports");
+
+        // Assert
+        Assert.Null(result);
     }
 }

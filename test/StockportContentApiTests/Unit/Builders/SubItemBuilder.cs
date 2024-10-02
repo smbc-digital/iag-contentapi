@@ -10,10 +10,7 @@ public class SubItemBuilder
     private readonly DateTime _sunriseDate = DateTime.MinValue;
     private readonly DateTime _sunsetDate = DateTime.MaxValue;
     private readonly string _image = "image";
-    private readonly List<SubItem> _subItems = new List<SubItem>();
+    private readonly List<SubItem> _subItems = new();
 
-    public SubItem Build()
-    {
-        return new SubItem(_slug, _title, _teaser, _icon, _type, _sunriseDate, _sunsetDate, _image, _subItems);
-    }
+    public SubItem Build() => new(_slug, _title, _teaser, _icon, _type, _sunriseDate, _sunsetDate, _image, _subItems, EColourScheme.Blue);
 }

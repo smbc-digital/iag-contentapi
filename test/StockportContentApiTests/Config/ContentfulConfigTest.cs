@@ -12,6 +12,7 @@ public class ContentfulConfigTest
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TESTID_ACCESS_KEY", key)
             .Add("TESTID_MANAGEMENT_KEY", "KEY")
+            .Add("TESTID_ENVIRONMENT", "master")
             .Add("TESTID_SPACE", space)
             .Build();
         var expectedResult = "https://fake.url/spaces/SPACE/entries?access_token=KEY";
@@ -29,6 +30,8 @@ public class ContentfulConfigTest
             .Add("TESTID_ACCESS_KEY", "KEY")
             .Add("TESTID_MANAGEMENT_KEY", "KEY")
             .Add("TESTID_SPACE", "SPACE")
+            .Add("TESTID_ENVIRONMENT", "master")
+            
             .Build());
 
         Assert.Equal("No value found for 'DELIVERY_URL' in the contentful config.", exception.Message);
@@ -40,10 +43,26 @@ public class ContentfulConfigTest
         Exception exception = Assert.Throws<ArgumentException>(() => new ContentfulConfig("testid")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TESTID_ACCESS_KEY", "KEY")
+            .Add("TESTID_ENVIRONMENT", "master")
+            .Add("TESTID_MANAGEMENT_KEY", "KEY")
             .Build());
 
         Assert.Equal("No value found for 'TESTID_SPACE' in the contentful config.", exception.Message);
     }
+
+        [Fact]
+    public void FailsIfEnvironemtnIsMissing()
+    {
+        Exception exception = Assert.Throws<ArgumentException>(() => new ContentfulConfig("testid")
+            .Add("DELIVERY_URL", "https://fake.url")
+            .Add("TESTID_ACCESS_KEY", "KEY")
+            .Add("TESTID_SPACE", "SPACE")
+            .Add("TESTID_MANAGEMENT_KEY", "KEY")
+            .Build());
+
+        Assert.Equal("No value found for 'TESTID_ENVIRONMENT' in the contentful config.", exception.Message);
+    }
+
 
     [Fact]
     public void FailsIfAccessKeyIsMissing()
@@ -51,6 +70,9 @@ public class ContentfulConfigTest
         Exception exception = Assert.Throws<ArgumentException>(() => new ContentfulConfig("testid")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TESTID_SPACE", "SPACE")
+            .Add("TESTID_ENVIRONMENT", "master")
+            .Add("TESTID_MANAGEMENT_KEY", "KEY")
+
             .Build());
 
         Assert.Equal("No value found for 'TESTID_ACCESS_KEY' in the contentful config.", exception.Message);

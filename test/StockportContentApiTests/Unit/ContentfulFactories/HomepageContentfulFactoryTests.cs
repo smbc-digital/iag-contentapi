@@ -21,11 +21,10 @@ public class HomepageContentfulFactoryTests
         _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
         _spotlightOnFactory = new Mock<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>>();
 
-        // mocks
         _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(new GroupBuilder().Build());
         _subitemFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItemBuilder().Build());
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
-        _carouselContentFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCarouselContent>())).Returns(new CarouselContent("", "", "", "", DateTime.MinValue, DateTime.MaxValue, ""));
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        _carouselContentFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCarouselContent>())).Returns(new CarouselContent(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty));
         _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
         _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
         _spotlightOnFactory.Setup(_ => _.ToModel(It.IsAny<IEnumerable<ContentfulSpotlightOnBanner>>())).Returns(new List<SpotlightOnBanner>());
@@ -42,28 +41,35 @@ public class HomepageContentfulFactoryTests
     [Fact]
     public void ShouldBuildHomepageFromContentfulHomepage()
     {
-        var contentfulHomepage = new ContentfulHomepageBuilder().Build();
+        // Arrange
+        ContentfulHomepage contentfulHomepage = new ContentfulHomepageBuilder().Build();
 
-        var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
+        // Act
+        Homepage homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
-        homepage.FeaturedGroup.Should().NotBeNull();
-        homepage.MetaDescription.Should().BeEquivalentTo("meta description");
+        // Assert
+        Assert.NotNull(homepage.FeaturedGroup);
+        Assert.Equal("meta description", homepage.MetaDescription);
     }
 
     [Fact]
     public void ShouldBuildHomepageWithNoContentfulGroup()
     {
-        var contentfulHomepage = new ContentfulHomepageBuilder().FeaturedGroups(new List<ContentfulGroup>()).Build();
+        // Arrange
+        ContentfulHomepage contentfulHomepage = new ContentfulHomepageBuilder().FeaturedGroups(new List<ContentfulGroup>()).Build();
 
-        var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
+        // Act
+        Homepage homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
-        homepage.FeaturedGroup.Should().BeNull();
+        // Assert
+        Assert.Null(homepage.FeaturedGroup);
     }
 
     [Fact]
     public void ShouldPickFirstAvaliableFeaturedGroup()
     {
-        var contentfulHomepage = new ContentfulHomepageBuilder()
+        // Arrange
+        ContentfulHomepage contentfulHomepage = new ContentfulHomepageBuilder()
             .FeaturedGroups(new List<ContentfulGroup>()
             {
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(2018, 01, 01)).Build(),
@@ -71,24 +77,29 @@ public class HomepageContentfulFactoryTests
                 new ContentfulGroupBuilder().Build()
             }).Build();
 
-        var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
+        // Act
+        Homepage homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
-        homepage.FeaturedGroup.Should().NotBeNull();
+        // Assert
+        Assert.NotNull(homepage.FeaturedGroup);
     }
 
     [Fact]
     public void ShouldNotFailIfNoGroupsCanBeUsed()
     {
-        var contentfulHomepage = new ContentfulHomepageBuilder()
+        // Arrange
+        ContentfulHomepage contentfulHomepage = new ContentfulHomepageBuilder()
             .FeaturedGroups(new List<ContentfulGroup>()
             {
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build(),
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build(),
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build()
             }).Build();
+        
+        // Act
+        Homepage homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 
-        var homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
-
-        homepage.FeaturedGroup.Should().BeNull();
+        // Assert
+        Assert.Null(homepage.FeaturedGroup);
     }
 }

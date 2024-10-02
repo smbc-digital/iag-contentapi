@@ -6,12 +6,12 @@ public class GroupAdvisorContentfulFactoryTests
     public void ToModel_ShouldCreateAGroupAdvisor()
     {
         // Arrange
-        var builder = new ContentfulGroupAdvisorBuilder();
-        var contentfulGroupAdvisor = builder.Build();
-        var factory = new GroupAdvisorContentfulFactory();
+        ContentfulGroupAdvisorBuilder builder = new();
+        ContentfulGroupAdvisor contentfulGroupAdvisor = builder.Build();
+        GroupAdvisorContentfulFactory factory = new();
 
         // Act
-        var result = factory.ToModel(contentfulGroupAdvisor);
+        GroupAdvisor result = factory.ToModel(contentfulGroupAdvisor);
 
         // Assert
         result.Name.Should().Be(contentfulGroupAdvisor.Name);

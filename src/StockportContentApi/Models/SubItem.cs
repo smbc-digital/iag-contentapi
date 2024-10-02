@@ -7,7 +7,7 @@ public class SubItem
     public string Title { get; set; }
     public string Teaser { get; set; }
     public string Icon { get; set; }
-    public string ColourScheme { get; set; } = string.Empty;
+    public EColourScheme ColourScheme { get; set; } = EColourScheme.Multi;
     public string Type { get; set; }
     public DateTime SunriseDate { get; set; }
     public DateTime SunsetDate { get; set; }
@@ -16,7 +16,7 @@ public class SubItem
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems, string colourScheme = "default")
+    public SubItem(string slug, string title, string teaser, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems, EColourScheme colourScheme)
     {
         Slug = slug;
         Teaser = teaser;

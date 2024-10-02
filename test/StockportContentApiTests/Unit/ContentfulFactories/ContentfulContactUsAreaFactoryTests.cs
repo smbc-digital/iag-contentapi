@@ -21,10 +21,10 @@ public class ContentfulContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel()
     {
-        var entry = new ContentfulContactUsAreaBuilder()
+        ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder()
                             .Build();
 
-        var result = _factory.ToModel(entry);
+        ContactUsArea result = _factory.ToModel(entry);
 
         Assert.NotNull(result.Breadcrumbs);
         Assert.NotNull(result.Alerts);
@@ -45,13 +45,8 @@ public class ContentfulContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel_WithPrimaryItems()
     {
-        var primaryItems = new List<ContentfulReference>
-        {
-            new ContentfulReference
-            {
-            }
-        };
-        var entry = new ContentfulContactUsAreaBuilder()
+        List<ContentfulReference> primaryItems = new() { new() { } };
+        ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder()
                             .PrimaryItems(primaryItems)
                             .Build();
 
@@ -72,22 +67,11 @@ public class ContentfulContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel_WithAllItems()
     {
-        var primaryItems = new List<ContentfulReference>
-        {
-            new ContentfulReference()
-        };
+        List<ContentfulReference> primaryItems = new() { new() };
+        List<ContentfulReference> breadcrumbs = new() { new() };
+        List<ContentfulAlert> alerts = new() { new() };
 
-        var breadcrumbs = new List<ContentfulReference>
-        {
-            new ContentfulReference()
-        };
-
-        var alerts = new List<ContentfulAlert>
-        {
-            new ContentfulAlert()
-        };
-
-        var contactUsCategories = new List<ContentfulContactUsCategory>
+        List<ContentfulContactUsCategory> contactUsCategories = new()
         {
             new ContentfulContactUsCategory()
         };

@@ -32,6 +32,7 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         string foregroundImageAlt = !string.IsNullOrEmpty(entry.ForegroundImage.Description) ? entry.ForegroundImage.Description : string.Empty;
 
         string freeText = !string.IsNullOrEmpty(entry.FreeText) ? entry.FreeText : string.Empty;
+        string title = !string.IsNullOrEmpty(entry.Title) ? entry.Title : string.Empty;
 
         IEnumerable<string> popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
 
@@ -68,6 +69,6 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
         IEnumerable<SpotlightOnBanner> spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
 
         return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner);
+            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, title, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner);
     }
 }

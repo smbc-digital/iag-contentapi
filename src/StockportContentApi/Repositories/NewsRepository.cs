@@ -73,7 +73,7 @@ public class NewsRepository : BaseRepository
         }
 
         var newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
-        var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => t == tag));
+        var filteredEntries = newsEntries.Where(n => tag == null || n.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
 
         if (!filteredEntries.Any()) return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
@@ -83,7 +83,7 @@ public class NewsRepository : BaseRepository
             .Select(item => _newsContentfulFactory.ToModel(item))
             .GetNewsDates(out dates, _timeProvider)
             .Where(news => CheckDates(startDate, endDate, news))
-            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Contains(category))
+            .Where(news => string.IsNullOrWhiteSpace(category) || news.Categories.Any(c => string.Equals(c, category, StringComparison.InvariantCultureIgnoreCase)))
             .OrderByDescending(o => o.SunriseDate)
             .ToList();
 
@@ -132,5 +132,35 @@ public class NewsRepository : BaseRepository
     {
         var result = await _cache.GetFromCacheOrDirectlyAsync("news-categories", GetNewsCategories, _newsTimeout);
         return result;
+    }
+
+    public virtual async Task<News> GetLatestNewsByTag(string tag)
+    {
+        QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+            .FieldMatches(n => n.Tags, tag)
+            .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
+            
+        ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
+        if (contentfulNews is not null)
+            return _newsContentfulFactory.ToModel(contentfulNews);
+
+        return null;
+    }
+
+    public virtual async Task<News> GetLatestNewsByCategory(string category)
+    {
+        QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
+                .FieldMatches(n => n.Categories, category)
+                .Include(1);
+
+        ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
+        
+        ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
+        if (contentfulNews is not null)
+            return _newsContentfulFactory.ToModel(contentfulNews);
+
+        return null;
     }
 }

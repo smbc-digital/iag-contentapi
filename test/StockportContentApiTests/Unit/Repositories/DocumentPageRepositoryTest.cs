@@ -4,7 +4,6 @@ public class DocumentPageRepositoryTest
 {
     private readonly DocumentPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<IContentfulFactory<ContentfulDocumentPage, DocumentPage>> _documentFactory;
     private readonly Mock<ICache> _cache;
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
 
@@ -15,6 +14,7 @@ public class DocumentPageRepositoryTest
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
             .Build();
         
         _cache = new Mock<ICache>();

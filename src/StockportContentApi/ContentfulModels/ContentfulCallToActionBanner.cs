@@ -9,5 +9,5 @@ public class ContentfulCallToActionBanner
     public string ButtonText { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
-    public string Colour { get; set; } = string.Empty;
+    public EColourScheme Colour { get; set; } = EColourScheme.Teal;
 }

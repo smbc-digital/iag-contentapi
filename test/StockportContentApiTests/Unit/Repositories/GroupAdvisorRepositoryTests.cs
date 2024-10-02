@@ -14,6 +14,7 @@ public class GroupAdvisorRepositoryTests
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
+            .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
         _contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);

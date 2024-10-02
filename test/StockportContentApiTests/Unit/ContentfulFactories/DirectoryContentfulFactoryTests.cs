@@ -1,4 +1,5 @@
-﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
+﻿using Directory = StockportContentApi.Model.Directory;
+namespace StockportContentApiTests.Unit.ContentfulFactories;
 public class DirectoryContentfulFactoryTests
 {
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
@@ -18,7 +19,7 @@ public class DirectoryContentfulFactoryTests
     public void ToModel_ShouldCreateADirectoryFromAContentfulReference()
     {
         // Arrange
-        var ContentfulReference =
+        ContentfulDirectory ContentfulReference =
             new DirectoryBuilder()
             .WithSlug("test-directory")
             .WithTitle("Test-Directory")
@@ -51,11 +52,11 @@ public class DirectoryContentfulFactoryTests
             })
             .Build();
 
-        var subItem = new SubItem("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>());
+        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Teal);
         _subItemFactory.Setup(_ => _.ToModel(ContentfulReference.SubItems.First())).Returns(subItem);
-            
+
         // Act
-        var directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(ContentfulReference);
+        Directory directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(ContentfulReference);
 
         // Assert
         Assert.Equal(ContentfulReference.Slug, directory.Slug);
@@ -74,7 +75,7 @@ public class DirectoryContentfulFactoryTests
     [Fact]
     public void ToModel_ShouldReturnNull_IfNullEntry(){
         // Act
-        var directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(null);
+        Directory directory = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(null);
 
         // Assert
         Assert.Null(directory);
@@ -84,14 +85,14 @@ public class DirectoryContentfulFactoryTests
     public void ToModel_ShouldNotAddSubItems_Alerts_SubDirectories_RelatedContent_IfTheyAreLinks()
     {
         // Arrange
-        var directory = new DirectoryBuilder().Build();
+        ContentfulDirectory directory = new DirectoryBuilder().Build();
         directory.SubItems.First().Sys.LinkType = "Link";
         directory.Alerts.First().Sys.LinkType = "Link";
         directory.SubDirectories.First().Sys.LinkType = "Link";
         directory.RelatedContent.First().Sys.LinkType = "Link";
 
         // Act
-        var result = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(directory);
+        Directory result = new DirectoryContentfulFactory(_subItemFactory.Object, _externalLinkFactory, _alertFactory.Object, _callToActionFactory, _timeProvider, _eventBannerFactory, _directoryEntryFactory).ToModel(directory);
 
         // Assert
         Assert.Empty(result.SubItems);

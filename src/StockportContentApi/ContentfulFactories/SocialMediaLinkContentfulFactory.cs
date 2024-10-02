@@ -4,6 +4,6 @@ public class SocialMediaLinkContentfulFactory : IContentfulFactory<ContentfulSoc
 {
     public SocialMediaLink ToModel(ContentfulSocialMediaLink link)
     {
-        return new SocialMediaLink(link.Title, link.Slug, link.Url, link.Icon, link.AccountName, link.ScreenReader);
+        return new SocialMediaLink(link.Title, link.Slug, link.Link, link.Icon, link.AccountName, link.ScreenReader);
     }
 }
