@@ -6,9 +6,9 @@ public class DirectoryContentfulFactoryTests
     private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory = new ExternalLinkContentfulFactory();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = new CallToActionBannerContentfulFactory();
-    private readonly ITimeProvider _timeProvider = new TimeProvider();
+    private readonly ITimeProvider _timeProvider = new StockportContentApi.Utils.TimeProvider();
     private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = new EventBannerContentfulFactory();
-    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new TimeProvider());
+    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = new DirectoryEntryContentfulFactory(new AlertContentfulFactory(), new GroupBrandingContentfulFactory(), new StockportContentApi.Utils.TimeProvider());
 
     public DirectoryContentfulFactoryTests(){
         _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();

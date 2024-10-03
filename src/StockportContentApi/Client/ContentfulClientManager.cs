@@ -31,7 +31,6 @@ public class ContentfulClientManager : IContentfulClientManager
             UsePreviewApi = usePreviewApi,
             DeliveryApiKey = !usePreviewApi ? config.AccessKey : string.Empty,
             PreviewApiKey = usePreviewApi ? config.AccessKey : string.Empty,
-            ResolveEntriesSelectively = true,
             MaxNumberOfRateLimitRetries = 5
         };
         var client = new ContentfulClient(_httpClient, options);        

@@ -1,6 +1,6 @@
 ﻿try
 {
-    var builder = WebApplication.CreateBuilder(args);
+    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
     if(!builder.Environment.EnvironmentName.Equals("local"))
         Log.Logger = new LoggerConfiguration()
@@ -14,7 +14,7 @@
         .AddJsonFile("appsettings.json")
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
-    var useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
+    bool useAwsSecretManager = bool.Parse(builder.Configuration.GetSection("UseAWSSecretManager").Value);
 
     Log.Logger.Information($"CONTENTAPI : ENVIRONMENT : {builder.Environment.EnvironmentName}");
     
@@ -25,7 +25,7 @@
     }
     else
     {
-        var location  = $"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json";
+        string location  = $"{builder.Configuration.GetSection("secrets-location").Value}/appsettings.{builder.Environment.EnvironmentName}.secrets.json";
         builder.Configuration.AddJsonFile(location);
         Log.Logger.Information($"CONTENTAPI : INITIALISE SECRETS {builder.Environment.EnvironmentName}: Load JSON Secrets from file system, {location}");
     }
@@ -35,11 +35,11 @@
         .WriteToElasticsearchAws(builder.Configuration));
 
     Log.Logger.Information($"CONTENTAPI : CONFIGURE APPLICATION START");
-    var startup = new Startup(builder.Configuration, builder.Environment, Log.Logger);
+    Startup startup = new(builder.Configuration, builder.Environment, Log.Logger);
     startup.ConfigureServices(builder.Services);
     
     Log.Logger.Information($"CONTENTAPI : BUILDING APPLICATION");
-    var app = builder.Build();
+    WebApplication app = builder.Build();
 
     if (!app.Environment.IsEnvironment("prod") && !app.Environment.IsEnvironment("stage"))
         app.UseDeveloperExceptionPage();
@@ -53,16 +53,15 @@
             "/api/swagger/v1/swagger.json",
             "Stockport Content API");
     });
+    
     app.UseMiddleware<AuthenticationMiddleware>();
     app.UseStaticFiles();
     app.UseRouting();
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
+    app.UseEndpoints(endpoints => endpoints.MapControllers());
 
     Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
+                .WriteToElasticsearchAws(builder.Configuration)
                 .CreateLogger();
 
     app.Run();
