@@ -45,7 +45,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
         {
             Slug = entry.Slug,
             Title = entry.Title,
-            Subtitle = entry.Subtitle,   
+            Subtitle = entry.Subtitle,
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                             .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
             
@@ -60,7 +60,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             Image = image,
             HeaderType = entry.HeaderType,
             HeaderImage = headerImage,
-            HeaderColourScheme = entry.HeaderColourScheme,      
+            HeaderColourScheme = entry.HeaderColourScheme,
             PageSections = entry.PageSections.Where(contentBlock => ContentfulHelpers.EntryIsNotALink(contentBlock.Sys))
                             .Select(contentBlock => _contentBlockFactory.ToModel(contentBlock)).ToList()
         };

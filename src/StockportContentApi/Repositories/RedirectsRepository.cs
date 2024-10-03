@@ -40,9 +40,7 @@ public class RedirectsRepository : BaseRepository
         Dictionary<string, BusinessIdToRedirects> redirectPerBusinessId = new();
 
         foreach (string businessId in _redirectBusinessIds.BusinessIds)
-        {
             redirectPerBusinessId.Add(businessId, await GetRedirectForBusinessId(businessId));
-        }
 
         return !redirectPerBusinessId.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "Redirects not found")

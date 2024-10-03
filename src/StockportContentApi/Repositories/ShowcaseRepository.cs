@@ -24,9 +24,7 @@ public class ShowcaseRepository
 
     public async Task<HttpResponse> Get()
     {
-        QueryBuilder<ContentfulShowcase> builder =
-            new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
-
+        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
         IEnumerable<Showcase> showcases = entries.Select(e => _contentfulFactory.ToModel(e));
 
@@ -37,15 +35,12 @@ public class ShowcaseRepository
 
     public async Task<HttpResponse> GetShowcases(string slug)
     {
-        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase")
-            .FieldEquals("fields.slug", slug).Include(3);
-
-
+        QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").FieldEquals("fields.slug", slug).Include(3);
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
-
         ContentfulShowcase entry = entries.FirstOrDefault();
 
-        if (entry is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
 
         Showcase showcase = new();
 
@@ -73,6 +68,7 @@ public class ShowcaseRepository
         }
 
         ShowcaseNews news = await PopulateNews(showcase.NewsCategoryTag);
+
         if (news is not null)
         {
             showcase.NewsArticle = news.News;
@@ -92,10 +88,7 @@ public class ShowcaseRepository
         News result = null;
         string type = string.Empty;
 
-        QueryBuilder<ContentfulNews> newsBuilder =
-            new QueryBuilder<ContentfulNews>().ContentTypeIs("news")
-                .FieldMatches(n => n.Categories, tag)
-                .Include(1);
+        QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldMatches(n => n.Categories, tag).Include(1);
         ContentfulCollection<ContentfulNews> newsEntry = await _client.GetEntries(newsBuilder);
 
         if (newsEntry is not null && newsEntry.Any())

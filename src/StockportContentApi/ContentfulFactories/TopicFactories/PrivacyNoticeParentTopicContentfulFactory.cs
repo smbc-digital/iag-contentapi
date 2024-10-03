@@ -4,15 +4,13 @@ public class PrivacyNoticeParentTopicContentfulFactory : IContentfulFactory<Cont
 {
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
     private readonly DateComparer _dateComparer;
+    private ContentfulPrivacyNotice _entry;
 
-    public PrivacyNoticeParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
-        ITimeProvider timeProvider)
+    public PrivacyNoticeParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, ITimeProvider timeProvider)
     {
         _subItemFactory = subItemFactory;
         _dateComparer = new DateComparer(timeProvider);
     }
-
-    private ContentfulPrivacyNotice _entry;
 
     public Topic ToModel(ContentfulPrivacyNotice entry)
     {

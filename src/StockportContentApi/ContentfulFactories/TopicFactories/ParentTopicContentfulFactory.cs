@@ -4,7 +4,6 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
 {
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
-
     private ContentfulArticle _entry;
 
     public ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,

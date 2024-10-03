@@ -40,7 +40,7 @@ public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
                                     .Select(profile => _profileFactory.ToModel(profile)).ToList();
 
         return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
-            _videoRepository.Process(entry.Body), entry.SunriseDate, entry.SunsetDate, entry.Sys.UpdatedAt.Value, new List<Crumb> { new("News", string.Empty, "news") },
+            entry.Body, entry.SunriseDate, entry.SunsetDate, entry.Sys.UpdatedAt.Value, new List<Crumb> { new("News", string.Empty, "news") },
             alerts.ToList(), entry.Tags, documents, entry.Categories, profiles);
     }
 }

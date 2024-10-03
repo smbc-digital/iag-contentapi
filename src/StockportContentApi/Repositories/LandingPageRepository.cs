@@ -39,15 +39,14 @@ public class LandingPageRepository : BaseRepository
 
         if (landingPage.PageSections is not null && landingPage.PageSections.Any())
         {
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock =>
-                         !string.IsNullOrEmpty(contentBlock.ContentType)))
+            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
             {
                 switch (contentBlock.ContentType)
                 {
                     case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            News latestNewsResponse =
-                                await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
+                            News latestNewsResponse = await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
+
                             if (latestNewsResponse is not null)
                             {
                                 contentBlock.NewsArticle = latestNewsResponse;
@@ -63,13 +62,11 @@ public class LandingPageRepository : BaseRepository
                                     contentBlock.UseTag = true;
                                 }
                             }
-
                             break;
                         }
                     case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            List<Event> events =
-                                await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
 
                             if (!events.Any())
                                 events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
@@ -80,10 +77,13 @@ public class LandingPageRepository : BaseRepository
                     case "ProfileBanner" when contentBlock.SubItems?.Any() is true:
                         {
                             ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
+
                             if (profile is not null)
                                 contentBlock.Profile = _profileFactory.ToModel(profile);
                             break;
                         }
+                    default:
+                        break;
                 }
             }
         }
@@ -93,10 +93,7 @@ public class LandingPageRepository : BaseRepository
 
     internal async Task<ContentfulProfile> GetProfile(string slug)
     {
-        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile")
-            .FieldMatches(p => p.Slug, slug)
-            .Include(1);
-
+        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldMatches(p => p.Slug, slug).Include(1);
         ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
 
         return profileEntries.FirstOrDefault();

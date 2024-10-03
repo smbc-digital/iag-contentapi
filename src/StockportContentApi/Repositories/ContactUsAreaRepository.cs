@@ -20,7 +20,9 @@ public class ContactUsAreaRepository
         ContentfulContactUsArea entry = entries.FirstOrDefault();
 
         ContactUsArea contactUsArea = _contentfulFactory.ToModel(entry);
-        if (contactUsArea is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
+        
+        if (contactUsArea is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
 
         return HttpResponse.Successful(contactUsArea);
     }

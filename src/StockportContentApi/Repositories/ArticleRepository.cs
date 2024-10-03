@@ -87,6 +87,7 @@ public class ArticleRepository : BaseRepository
     private void ProcessArticleContent(Article article)
     {
         article.Body = _videoRepository.Process(article.Body);
+        
         foreach (Section section in article.Sections)
         {
             if (section is not null)

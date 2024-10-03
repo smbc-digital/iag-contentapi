@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Config;
+﻿using ManagementAsset = StockportContentApi.ManagementModels.ManagementAsset;
+
+namespace StockportContentApi.Config;
 
 public class AutoMapperConfig : AutoMapper.Profile
 {
@@ -78,8 +80,7 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
 {
     public ManagementGroup Convert(ContentfulGroup source, ManagementGroup destination, ResolutionContext context)
     {
-        if (destination is null)
-            destination = new();
+        destination ??= new();
 
         destination.AdditionalInformation = new() { { "en-GB", source.AdditionalInformation } };
         destination.MapPosition = new() { { "en-GB", source.MapPosition } };

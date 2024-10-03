@@ -47,7 +47,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
                         .Select(alert => _alertFactory.ToModel(alert)).ToList(),
             
             Author = entry.Author,
-            Body = entry.Body,     
+            Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                             .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
 

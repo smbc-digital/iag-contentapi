@@ -363,8 +363,8 @@ public static class ServiceCollectionExtensions
             return x => new(x, p.GetService<IContentfulClientManager>(),
                 p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>());
         });
-        services.AddSingleton<IVideoRepository>(p =>
-            new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
+        //services.AddSingleton<IVideoRepository>(p =>
+        //    new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
 
         services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p =>
             config =>

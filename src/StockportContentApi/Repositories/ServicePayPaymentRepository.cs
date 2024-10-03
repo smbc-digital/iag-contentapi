@@ -11,7 +11,6 @@ public class ServicePayPaymentRepository
     {
         _client = clientManager.GetClient(config);
         _servicePayPaymentFactory = servicePayPaymentFactory;
-
     }
 
     public async Task<HttpResponse> GetPayment(string slug)

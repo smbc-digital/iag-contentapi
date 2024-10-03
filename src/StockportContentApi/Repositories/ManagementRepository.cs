@@ -22,6 +22,7 @@ public class ManagementRepository
         try
         {
             Entry<dynamic> group = await _client.CreateOrUpdateEntry(entry, null, null, systemProperties.Version);
+
             if (group.SystemProperties.Version is not null)
                 await _client.PublishEntry(entry.SystemProperties.Id, group.SystemProperties.Version.Value);
 
@@ -41,6 +42,7 @@ public class ManagementRepository
         {
             await _client.UnpublishEntry(systemProperties.Id, systemProperties.Version.Value);
             await _client.DeleteEntry(systemProperties.Id, systemProperties.Version.Value);
+            
             return HttpResponse.Successful($"Successfully Deleted Entry: {systemProperties.Id}");
         }
         catch (Exception ex)

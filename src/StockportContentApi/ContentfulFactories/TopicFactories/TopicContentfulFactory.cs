@@ -34,25 +34,28 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     public Topic ToModel(ContentfulTopic entry)
     {
         List<SubItem> featuredTasks = entry.FeaturedTasks
-            .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(item => _subItemFactory.ToModel(item)).ToList();
+                                        .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Select(item => _subItemFactory.ToModel(item)).ToList();
 
         List<SubItem> subItems = entry.SubItems
-            .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                    .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
+                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         List<SubItem> secondaryItems = entry.SecondaryItems
-            .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                        .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs
-            .Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
-            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        List<Alert> alerts = entry.Alerts
-            .Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-            .Where(alert => !alert.Severity.Equals("Condolence"))
-            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
         string backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
             ? entry.BackgroundImage.File.Url 

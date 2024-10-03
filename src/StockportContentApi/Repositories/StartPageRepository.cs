@@ -15,11 +15,7 @@ public class StartPageRepository
 
     public async Task<HttpResponse> GetStartPage(string startPageSlug)
     {
-        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
-            .ContentTypeIs("startPage")
-            .FieldEquals("fields.slug", startPageSlug)
-            .Include(3);
-
+        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", startPageSlug).Include(3);
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);
 
         if (!entries.Any())
@@ -38,17 +34,14 @@ public class StartPageRepository
 
     public async Task<HttpResponse> Get()
     {
-        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
-            .ContentTypeIs("startPage")
-            .Include(3);
-
+        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").Include(3);
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);
 
         if (!entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
         IEnumerable<StartPage> startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
-            .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
+                                                .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
 
         return startPages is null || !startPages.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")

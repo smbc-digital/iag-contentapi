@@ -121,7 +121,6 @@ public class EventRepositoryTests
             Items = new List<ContentfulEvent> { anEvent }
         };
 
-
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
@@ -325,7 +324,6 @@ public class EventRepositoryTests
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
 
-
         EventCalender eventCalender = response.Get<EventCalender>();
         eventCalender.Events.Count.Should().Be(occurences);
         eventCalender.Events[0].EventDate.Should().Be(new(2017, 04, 01));
@@ -351,7 +349,6 @@ public class EventRepositoryTests
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
-
 
         EventCalender eventCalender = response.Get<EventCalender>();
         eventCalender.Events.Count.Should().Be(occurences);
@@ -455,7 +452,6 @@ public class EventRepositoryTests
         ContentfulEvent anotherEvent =
             new ContentfulEventBuilder().EventCategoryList(new() { contentfulCategory2 }).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent };
-
 
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
@@ -807,10 +803,8 @@ public class EventRepositoryTests
         // Assert
         Assert.Equal(eventsCalendar.Events[0].EventDate, firstEvent.EventDate);
         Assert.Equal(eventsCalendar.Events[0].StartTime, firstEvent.StartTime);
-
         Assert.Equal(eventsCalendar.Events[1].EventDate, secondEvent.EventDate);
         Assert.Equal(eventsCalendar.Events[1].StartTime, secondEvent.StartTime);
-
         Assert.Equal(eventsCalendar.Events[2].EventDate, thirdEvent.EventDate);
         Assert.Equal(eventsCalendar.Events[2].StartTime, thirdEvent.StartTime);
     }

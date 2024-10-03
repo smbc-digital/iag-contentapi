@@ -101,20 +101,4 @@ public class HealthcheckServiceTests
 
         check.AppVersion.Should().Be("dev");
     }
-
-    //[Fact]
-    //public async void ShouldReturnRedisKeys()
-    //{
-    //    string newFile = "newFile";
-    //    _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
-    //    _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new[] { string.Empty });
-
-    //    var healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
-    //    var check = await healthCheckServiceWithNotFoundVersion.Get();
-
-    //    var redisData = check.RedisValueData;
-    //    redisData[0].Key.Should().Be(Key);
-    //    redisData[0].Expiry.Should().Be(ExpiryTime);
-    //    redisData[0].NumberOfItems.Should().Be(NumberOfItems);
-    //}
 }

@@ -21,8 +21,7 @@ public class EventCategoryRepository
 
     public async Task<HttpResponse> GetEventCategories()
     {
-        List<EventCategory> categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type",
-            GetCategoriesDirect, _eventsCategoryTimeout);
+        List<EventCategory> categories = await _cache.GetFromCacheOrDirectlyAsync("event-categories-content-type", GetCategoriesDirect, _eventsCategoryTimeout);
 
         if (categories is not null && !categories.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");

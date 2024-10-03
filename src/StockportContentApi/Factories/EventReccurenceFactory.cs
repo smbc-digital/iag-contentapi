@@ -17,7 +17,8 @@ public class EventReccurenceFactory
 
     public List<Event> GetReccuringEventsOfEvent(Event eventItem)
     {
-        List<Event> reoccuredEventsByFrequency = [];
+        List<Event> reoccuredEventsByFrequency = new List<Event>();
+        
         for (int i = 1; i < eventItem.Occurences; i++)
         {
             Event recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);

@@ -3,10 +3,7 @@
 public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
 {
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>
-        _callToActionBannerContentfulFactory;
-
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;

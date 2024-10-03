@@ -13,14 +13,15 @@ public class FooterRepository
 
     public async Task<HttpResponse> GetFooter()
     {
-
         QueryBuilder<ContentfulFooter> builder = new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1);
 
         ContentfulCollection<ContentfulFooter> entries = await _client.GetEntries(builder);
         ContentfulFooter entry = entries.FirstOrDefault();
 
         Footer footer = _contentfulFactory.ToModel(entry);
-        if (footer is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No footer found");
+        
+        if (footer is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No footer found");
 
         return HttpResponse.Successful(footer);
     }

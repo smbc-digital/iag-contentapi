@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Models.Management;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public class EventRepository : BaseRepository
 {
@@ -36,8 +34,7 @@ public class EventRepository : BaseRepository
 
     public async Task<HttpResponse> GetEventHomepage()
     {
-        QueryBuilder<ContentfulEventHomepage> builder =
-            new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
+        QueryBuilder<ContentfulEventHomepage> builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
         ContentfulCollection<ContentfulEventHomepage> entries = await _client.GetEntries(builder);
         ContentfulEventHomepage entry = entries.ToList().First();
 
@@ -48,59 +45,55 @@ public class EventRepository : BaseRepository
 
     public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
     {
-        IList<ContentfulEvent> events =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
         IEnumerable<ContentfulEvent> groupEvents = events.Where(evnt => evnt.Group.Slug.Equals(groupSlug));
+        
         return groupEvents;
     }
 
     private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
     {
-        IList<ContentfulEvent> events =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
-        List<Event> liveEvents = GetAllEventsAndTheirReccurrences(events)
-            .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
-            .OrderBy(evnt => evnt.EventDate)
-            .ThenBy(c => TimeSpan.Parse(c.StartTime))
-            .ThenBy(t => t.Title)
-            .ToList();
+        IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        
+        List<Event> liveEvents = GetAllEventsAndTheirReccurrences(events).Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
+                                    .OrderBy(evnt => evnt.EventDate)
+                                    .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                    .ThenBy(t => t.Title)
+                                    .ToList();
 
         liveEvents = GetNextOccurenceOfEvents(liveEvents);
 
         foreach (EventHomepageRow row in homepage.Rows)
-        {
-            if (row.IsLatest)
-                row.Events = liveEvents.Take(3);
-            else
-                row.Events = liveEvents.Where(evnt => evnt.Tags.Contains(row.Tag.ToLower())).Take(3);
-        }
+            row.Events = row.IsLatest
+                ? liveEvents.Take(3) 
+                : liveEvents.Where(evnt => evnt.Tags.Contains(row.Tag.ToLower())).Take(3);
 
         return homepage;
     }
 
     public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
-        await _cache.GetFromCacheOrDirectlyAsync("contentful-event-categories", GetContentfulEventCategoriesDirect,
-            _eventsTimeout);
+        await _cache.GetFromCacheOrDirectlyAsync("contentful-event-categories", GetContentfulEventCategoriesDirect, _eventsTimeout);
 
     private async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategoriesDirect()
     {
-        QueryBuilder<ContentfulEventCategory> eventCategoryBuilder =
-            new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory").Include(1);
+        QueryBuilder<ContentfulEventCategory> eventCategoryBuilder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory").Include(1);
         ContentfulCollection<ContentfulEventCategory> result = await _client.GetEntries(eventCategoryBuilder);
 
-        return !result.Any() ? null : result;
+        return !result.Any() 
+            ? null 
+            : result;
     }
 
     public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
         IEnumerable<Event> events = GetAllEventsAndTheirReccurrences(entries);
 
         Event eventItem = events.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
 
         eventItem = GetEventFromItsOccurrences(date, eventItem);
+
         if (eventItem is not null && !string.IsNullOrEmpty(eventItem.Group?.Slug) &&
             !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             eventItem.Group = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
@@ -119,16 +112,14 @@ public class EventRepository : BaseRepository
         if (eventItem is null || !date.HasValue || eventItem.EventDate.Equals(date))
             return eventItem;
 
-        return new EventReccurenceFactory()
-            .GetReccuringEventsOfEvent(eventItem)
-            .SingleOrDefault(x => x.EventDate.Equals(date));
+        return new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem)
+                    .SingleOrDefault(x => x.EventDate.Equals(date));
     }
 
     public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit,
         bool? displayFeatured, string tag, string price, double latitude, double longitude)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
@@ -154,14 +145,14 @@ public class EventRepository : BaseRepository
         List<Event> events =
             GetAllEventsAndTheirReccurrences(entries)
                 .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                .Where(e => string.IsNullOrWhiteSpace(category) ||
-                            e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) ||
-                            e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
+                .Where(e => string.IsNullOrWhiteSpace(category) 
+                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
+                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
                 .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
-                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free") ||
-                            price.ToLower().Equals("free,paid") ||
-                            price.ToLower().Equals("free") && (e.Free ?? false) ||
-                            price.ToLower().Equals("paid") && (e.Paid ?? false))
+                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free") 
+                    || price.ToLower().Equals("free,paid") 
+                    || price.ToLower().Equals("free") && (e.Free ?? false)
+                    || price.ToLower().Equals("paid") && (e.Paid ?? false))
                 .Where(e => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
                 .OrderBy(o => o.EventDate)
                 .ThenBy(c => TimeSpan.Parse(c.StartTime))
@@ -184,60 +175,54 @@ public class EventRepository : BaseRepository
 
     public async Task<HttpResponse> Get(string category)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
         IEnumerable<Event> eventsAll = GetAllEventsAndTheirReccurrences(entries);
 
-        List<Event> events =
-            eventsAll
-                .Where(e => e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) ||
-                            e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())) ||
-                            e.Tags.Contains(category.ToLower()))
-                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                .OrderBy(o => o.EventDate)
-                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                .ThenBy(t => t.Title)
-                .ToList();
+        List<Event> events = eventsAll.Where(e => e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
+                                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower()))
+                                    || e.Tags.Contains(category.ToLower()))
+                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                                .OrderBy(o => o.EventDate)
+                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                .ThenBy(t => t.Title)
+                                .ToList();
 
         return HttpResponse.Successful(events);
     }
 
     public virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events =
-            GetAllEventsAndTheirReccurrences(entries)
-                .Where(e => string.IsNullOrWhiteSpace(category)
-                            || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
-                            || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
-                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                .OrderBy(o => o.EventDate)
-                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                .ThenBy(t => t.Title)
-                .ToList();
+        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => string.IsNullOrWhiteSpace(category)
+                                    || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
+                                    || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
+                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                                .OrderBy(o => o.EventDate)
+                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                .ThenBy(t => t.Title)
+                                .ToList();
 
-        return onlyNextOccurrence ? GetNextOccurenceOfEvents(events) : events;
+        return onlyNextOccurrence
+            ? GetNextOccurenceOfEvents(events)
+            : events;
     }
 
     public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events =
-            GetAllEventsAndTheirReccurrences(entries)
-                .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
-                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                .OrderBy(o => o.EventDate)
-                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                .ThenBy(t => t.Title)
-                .ToList();
+        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => string.IsNullOrWhiteSpace(tag)
+                                    || e.Tags.Contains(tag.ToLower()))
+                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                                .OrderBy(o => o.EventDate)
+                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                .ThenBy(t => t.Title)
+                                .ToList();
 
         return onlyNextOccurrence
             ? GetNextOccurenceOfEvents(events)
@@ -261,9 +246,11 @@ public class EventRepository : BaseRepository
     {
         QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
         ContentfulCollection<ContentfulEvent> entries = await GetAllEntriesAsync(_client, builder);
-        IEnumerable<ContentfulEvent> publishedEvents = entries.Where(e =>
-            _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
-        return !publishedEvents.Any() ? null : publishedEvents.ToList();
+        IEnumerable<ContentfulEvent> publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
+        
+        return !publishedEvents.Any()
+            ? null 
+            : publishedEvents.ToList();
     }
 
     public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
@@ -287,16 +274,14 @@ public class EventRepository : BaseRepository
 
     public async Task<List<Event>> GetLinkedEvents<T>(string slug)
     {
-        IList<ContentfulEvent> entries =
-            await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirReccurrences(entries)
-            .Where(e => e.Group.Slug.Equals(slug))
-            .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-            .OrderBy(o => o.EventDate)
-            .ThenBy(c => TimeSpan.Parse(c.StartTime))
-            .ThenBy(t => t.Title)
-            .ToList();
+        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => e.Group.Slug.Equals(slug))
+                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+                                .OrderBy(o => o.EventDate)
+                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                .ThenBy(t => t.Title)
+                                .ToList();
 
         return GetNextOccurenceOfEvents(events);
     }
@@ -309,6 +294,7 @@ public class EventRepository : BaseRepository
     private async Task<List<string>> GetCategoriesDirect()
     {
         ContentType eventType = await _client.GetContentType("events");
+        
         InValuesValidator validation =
             eventType.Fields.First(f => f.Name.Equals("Categories")).Items.Validations[0] as InValuesValidator;
 
@@ -319,8 +305,7 @@ public class EventRepository : BaseRepository
 
     public async Task<ContentfulEvent> GetContentfulEvent(string slug)
     {
-        QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events")
-            .FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").FieldEquals("fields.slug", slug).Include(1);
         ContentfulCollection<ContentfulEvent> entries = await _client.GetEntries(builder);
         ContentfulEvent entry = entries.FirstOrDefault();
 

@@ -55,9 +55,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
         ContentfulCollection<ContentfulGroup> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulGroup> contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
 
-        contentfulGroups =
-            contentfulGroups.Where(
-                group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
+        contentfulGroups = contentfulGroups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
 
         IEnumerable<Group> groupList = contentfulGroups.Select(group => _groupFactory.ToModel(group));
 
@@ -78,8 +76,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
     public async Task<HttpResponse> GetGroupHomepage()
     {
-        QueryBuilder<ContentfulGroupHomepage> builder =
-            new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
+        QueryBuilder<ContentfulGroupHomepage> builder = new QueryBuilder<ContentfulGroupHomepage>().ContentTypeIs("groupHomepage").Include(1);
         ContentfulCollection<ContentfulGroupHomepage> entries = await _client.GetEntries(builder);
         ContentfulGroupHomepage entry = entries.ToList().First();
 
@@ -136,10 +133,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
         ContentfulCollection<ContentfulGroup> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulGroup> contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
 
-        contentfulGroups =
-            contentfulGroups.Where(
-                groupItem =>
-                    _dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
+        contentfulGroups = contentfulGroups.Where(groupItem =>_dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
 
         IEnumerable<Group> groupList = contentfulGroups.Select(group => _groupFactory.ToModel(group));
 
@@ -167,6 +161,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
                 $"{groupSearch.Latitude},{groupSearch.Longitude}{(groupSearch.Location.ToLower().Equals(Groups.Location) ? ",10" : ",3.2")}");
 
         string[] subCategoriesArray = groupSearch.SubCategories.Split(',');
+        
         IEnumerable<string> subCategoriesList =
             subCategoriesArray.Where(subCategory => !string.IsNullOrWhiteSpace(subCategory));
 
@@ -178,14 +173,16 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
         ContentfulCollection<ContentfulGroup> entries = await GetAllEntriesAsync(_client, builder);
 
-        if (entries is null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
+        if (entries is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found");
 
         List<Group> groupsWithNoCoordinates = new();
         ContentfulCollection<ContentfulGroup> noCoordinatesEntries = entries;
+
         if (groupSearch.Location.ToLower().Equals(Groups.Location))
         {
-            QueryBuilder<ContentfulGroup> noCoordinatesBuilder =
-                new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+            QueryBuilder<ContentfulGroup> noCoordinatesBuilder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
+
             if (!string.IsNullOrEmpty(slugs))
                 noCoordinatesEntries = entries;
             else
@@ -265,15 +262,12 @@ public class GroupRepository : BaseRepository, IGroupRepository
     public async Task<HttpResponse> GetAdministratorsGroups(string email)
     {
         QueryBuilder<ContentfulGroup> builder =
-            new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators")
-                .Include(1)
-                .Limit(ContentfulQueryValues.LIMIT_MAX);
+            new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
 
         ContentfulCollection<ContentfulGroup> contentfulGroups = await _client.GetEntries(builder);
 
-        List<ContentfulGroup> groups = contentfulGroups
-            .Where(group => group.GroupAdministrators?.Items is not null && group.GroupAdministrators.Items
-                .Any(item => item is not null && item.Email.ToUpper().Equals(email.ToUpper()))).ToList();
+        List<ContentfulGroup> groups = contentfulGroups.Where(group => group.GroupAdministrators?.Items is not null && group.GroupAdministrators.Items
+                                        .Any(item => item is not null && item.Email.ToUpper().Equals(email.ToUpper()))).ToList();
 
         IEnumerable<Group> result = groups.Select(group => _groupFactory.ToModel(group));
 
@@ -284,8 +278,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
         await _cache.GetFromCacheOrDirectlyAsync("group-categories", GetGroupCategoriesDirect, _groupsTimeout);
 
     public async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategories() =>
-        await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect,
-            _groupsTimeout);
+        await _cache.GetFromCacheOrDirectlyAsync("contentful-group-categories", GetContentfulGroupCategoriesDirect, _groupsTimeout);
 
     public async Task<List<Group>> GetLinkedGroupsByOrganisation(string slug)
     {
@@ -293,21 +286,19 @@ public class GroupRepository : BaseRepository, IGroupRepository
         List<Group> groups = response.Get<List<Group>>();
 
         groups = groups.Where(group => group.Organisation.Slug.Equals(slug))
-            .OrderBy(group => group.Name)
-            .ToList();
+                    .OrderBy(group => group.Name)
+                    .ToList();
 
         return groups;
     }
 
     private async Task<List<GroupCategory>> GetGroupCategoriesDirect()
     {
-        QueryBuilder<ContentfulGroupCategory> groupCategoryBuilder =
-            new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
-        ContentfulCollection<ContentfulGroupCategory> groupCategoryEntries =
-            await _client.GetEntries(groupCategoryBuilder);
+        QueryBuilder<ContentfulGroupCategory> groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+        ContentfulCollection<ContentfulGroupCategory> groupCategoryEntries = await _client.GetEntries(groupCategoryBuilder);
 
         List<GroupCategory> groupCategoryList = groupCategoryEntries.Select(gc => _groupCategoryFactory.ToModel(gc))
-            .OrderBy(category => category.Name).ToList();
+                                                    .OrderBy(category => category.Name).ToList();
 
         return !groupCategoryList.Any()
             ? null
@@ -316,10 +307,11 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
     private async Task<ContentfulCollection<ContentfulGroupCategory>> GetContentfulGroupCategoriesDirect()
     {
-        QueryBuilder<ContentfulGroupCategory> groupCategoryBuilder =
-            new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
+        QueryBuilder<ContentfulGroupCategory> groupCategoryBuilder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory").Include(1);
         ContentfulCollection<ContentfulGroupCategory> result = await _client.GetEntries(groupCategoryBuilder);
 
-        return !result.Any() ? null : result;
+        return !result.Any()
+            ? null 
+            : result;
     }
 }

@@ -66,7 +66,9 @@ public class Event
         EventCategories = eventCategories;
         Paid = paid;
         Free = free;
-        Coord = MapPosition is null ? null : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
+        Coord = MapPosition is null 
+            ? null 
+            : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
         AccessibleTransportLink = accessibleTransportLink;
         MetaDescription = metaDescription;
     }

@@ -56,15 +56,13 @@ public class AtoZRepository : BaseRepository
     public async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
     {
         List<AtoZ> atozList = new();
-        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>()
-            .ContentTypeIs(contentType)
-            .Include(0);
+        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
-        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries is not null
-            ? entries
-                .Where(x => x.DisplayOnAZ.Equals("True")
-                && ((x.Title.ToLower().StartsWith(letter)) || (x.Name.ToLower().StartsWith(letter)) || (x.AlternativeTitles is null ? false : (x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter))))))
-            : null;
+
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(x => x.DisplayOnAZ.Equals("True") && x.Title.ToLower().StartsWith(letter)
+                                                                || x.Name.ToLower().StartsWith(letter) 
+                                                                || (x.AlternativeTitles is not null 
+                                                                && x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter))));
 
         if (entriesWithDisplayOn is not null)
         {

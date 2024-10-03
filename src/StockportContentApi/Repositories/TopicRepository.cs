@@ -36,12 +36,13 @@ public class TopicRepository
         QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
         ContentfulCollection<ContentfulTopicForSiteMap> entries = await _client.GetEntries(builder);
         IEnumerable<ContentfulTopicForSiteMap> contentfulTopics = entries as IEnumerable<ContentfulTopicForSiteMap> ?? entries.ToList();
-
         IEnumerable<TopicSiteMap> topics = GetAllTopics(contentfulTopics.ToList());
+
         return entries is null || !contentfulTopics.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
             : HttpResponse.Successful(topics);
     }
 
-    private IEnumerable<TopicSiteMap> GetAllTopics(List<ContentfulTopicForSiteMap> entries) => entries.Select(entry => _topicSiteMapFactory.ToModel(entry)).ToList();
+    private IEnumerable<TopicSiteMap> GetAllTopics(List<ContentfulTopicForSiteMap> entries) => 
+        entries.Select(entry => _topicSiteMapFactory.ToModel(entry)).ToList();
 }

@@ -30,8 +30,8 @@ public class PaymentRepository
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
         ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
         IEnumerable<ContentfulPayment> contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();
-
         IEnumerable<Payment> payments = GetAllPayments(contentfulPayments);
+
         return entries is null || !contentfulPayments.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No payments found")
             : HttpResponse.Successful(payments);
@@ -40,11 +40,13 @@ public class PaymentRepository
     private IEnumerable<Payment> GetAllPayments(IEnumerable<ContentfulPayment> entries)
     {
         List<Payment> entriesList = new();
+
         foreach (ContentfulPayment entry in entries)
         {
             Payment paymentItem = _paymentFactory.ToModel(entry);
             entriesList.Add(paymentItem);
         }
+        
         return entriesList;
     }
 }

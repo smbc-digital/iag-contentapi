@@ -15,7 +15,7 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
 
     public StartPage ToModel(ContentfulStartPage entry)
     {
-        List<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
+        List<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
@@ -23,7 +23,7 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
         List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                             .Where(alert => !alert.Severity.Equals("Condolence"))
                                             .Select(alertInline => _alertFactory.ToModel(alertInline));

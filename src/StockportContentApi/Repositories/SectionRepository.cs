@@ -20,12 +20,8 @@ public class SectionRepository
         ContentfulCollection<ContentfulArticleForSiteMap> articles = await _client.GetEntries(builder);
 
         foreach (ContentfulArticleForSiteMap article in articles.Where(e => e.Sections.Any()))
-        {
             foreach (ContentfulSectionForSiteMap section in article.Sections)
-            {
                 sections.Add(new ContentfulSectionForSiteMap { Slug = $"{article.Slug}/{section.Slug}", SunriseDate = section.SunriseDate, SunsetDate = section.SunsetDate });
-            }
-        }
 
         return sections.GetType().Equals(typeof(NullHomepage))
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Sections found")
@@ -35,9 +31,7 @@ public class SectionRepository
     public async Task<HttpResponse> GetSections(string slug)
     {
         QueryBuilder<ContentfulSection> builder = new QueryBuilder<ContentfulSection>().ContentTypeIs("section").FieldEquals("fields.slug", slug).Include(3);
-
         ContentfulCollection<ContentfulSection> entries = await _client.GetEntries(builder);
-
         ContentfulSection entry = entries.FirstOrDefault();
         Section Section = _contentfulFactory.ToModel(entry);
 

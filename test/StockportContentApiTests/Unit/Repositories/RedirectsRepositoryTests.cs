@@ -39,7 +39,6 @@ public class RedirectsRepositoryTests
         };
 
         BusinessIdToRedirects redirectItem = new(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
-
         QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
 
         _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
@@ -49,7 +48,6 @@ public class RedirectsRepositoryTests
         _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
 
         HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
-
         Redirects redirects = response.Get<Redirects>();
 
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;
@@ -82,7 +80,6 @@ public class RedirectsRepositoryTests
         _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(new NullBusinessIdToRedirects());
 
         HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
-
         Redirects redirects = response.Get<Redirects>();
 
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;
@@ -92,7 +89,6 @@ public class RedirectsRepositoryTests
         legacyUrls.Count.Should().Be(1);
         legacyUrls["unittest"].Count.Should().Be(0);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
     }
 
     [Fact]
@@ -166,7 +162,6 @@ public class RedirectsRepositoryTests
         _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
 
         HttpResponse response = AsyncTestHelper.Resolve(repository.GetUpdatedRedirects());
-
         Redirects redirects = response.Get<Redirects>();
 
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;

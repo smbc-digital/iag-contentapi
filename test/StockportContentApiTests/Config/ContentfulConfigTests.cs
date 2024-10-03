@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Config;
 
-public class ContentfulConfigTest
+public class ContentfulConfigTests
 {
     [Fact]
     public void BuildsContentfulUrlForBusinessIdBasedOnEnvironmentVariables()

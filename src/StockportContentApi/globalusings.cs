@@ -2,7 +2,7 @@
 global using System.Globalization;
 global using System.Net;
 global using System.Reflection;
-global using System.Runtime.Serialization;
+global using System.Runtime.Serialization; 
 global using System.Text;
 global using System.Text.RegularExpressions;
 global using System.Xml.Linq;
@@ -10,6 +10,7 @@ global using AutoMapper;
 global using Contentful.Core;
 global using Contentful.Core.Errors;
 global using Contentful.Core.Models;
+global using Contentful.Core.Models.Management;
 global using Contentful.Core.Search;
 global using GeoCoordinatePortable;
 global using Jose;

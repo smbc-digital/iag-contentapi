@@ -18,10 +18,8 @@ public class VideoRepository : IVideoRepository
         _httpClient = httpClient;
     }
 
-    public string Process(string content)
-    {
-        return ReplaceVideoTagsWithVideoContent(content);
-    }
+    public string Process(string content) =>
+        ReplaceVideoTagsWithVideoContent(content);
 
     private static string ReplaceVideoTagsWithVideoContent(string body)
     {
@@ -40,6 +38,7 @@ public class VideoRepository : IVideoRepository
     private static IEnumerable<string> GetVideosTags(string body)
     {
         IEnumerable<Match> matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
+        
         return matches.Select(m => m.Value).ToList();
     }
 }
