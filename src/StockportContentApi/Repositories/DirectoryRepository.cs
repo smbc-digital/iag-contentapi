@@ -118,6 +118,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         QueryBuilder<ContentfulDirectoryEntry> builder = new QueryBuilder<ContentfulDirectoryEntry>().ContentTypeIs("group").Include(1);
         ContentfulCollection<ContentfulDirectoryEntry> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulDirectoryEntry> contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
+        
         return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
     }
 }

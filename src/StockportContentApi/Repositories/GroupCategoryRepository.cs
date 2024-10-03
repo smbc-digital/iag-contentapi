@@ -14,7 +14,6 @@ public class GroupCategoryRepository
     public async Task<HttpResponse> GetGroupCategories()
     {
         QueryBuilder<ContentfulGroupCategory> builder = new QueryBuilder<ContentfulGroupCategory>().ContentTypeIs("groupCategory");
-
         ContentfulCollection<ContentfulGroupCategory> entries = await _client.GetEntries(builder);
 
         if (entries is null || !entries.Any())

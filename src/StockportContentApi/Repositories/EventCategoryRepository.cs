@@ -33,9 +33,7 @@ public class EventCategoryRepository
 
     private async Task<List<EventCategory>> GetCategoriesDirect()
     {
-        QueryBuilder<ContentfulEventCategory> builder =
-            new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
-
+        QueryBuilder<ContentfulEventCategory> builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
         ContentfulCollection<ContentfulEventCategory> entries = await _client.GetEntries(builder);
 
         if (entries is null || !entries.Any())

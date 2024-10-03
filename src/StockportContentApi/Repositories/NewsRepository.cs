@@ -53,7 +53,6 @@ public class NewsRepository : BaseRepository
     public async Task<HttpResponse> GetNews(string slug)
     {
         IList<ContentfulNews> entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
-
         ContentfulNews entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
 
         if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate))

@@ -66,8 +66,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
     public async Task<ContentfulGroup> GetContentfulGroup(string slug)
     {
-        QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
-            .FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
         ContentfulCollection<ContentfulGroup> entries = await _client.GetEntries(builder);
         ContentfulGroup entry = entries.FirstOrDefault();
 
@@ -87,9 +86,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
     public async Task<HttpResponse> GetGroup(string slug, bool onlyActive)
     {
-        QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group")
-            .FieldEquals("fields.slug", slug).Include(1);
-
+        QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldEquals("fields.slug", slug).Include(1);
         ContentfulCollection<ContentfulGroup> entries = await _client.GetEntries(builder);
 
         ContentfulGroup entry = onlyActive
@@ -97,13 +94,14 @@ public class GroupRepository : BaseRepository, IGroupRepository
                 _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
             : entries.FirstOrDefault();
 
-        if (entry is null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No group found for '{slug}'");
 
         Group group = _groupFactory.ToModel(entry);
         group.SetEvents(await _eventRepository.GetLinkedEvents<Group>(slug));
-
         string twitterUser = group.Twitter;
         string faceBookUser = group.Facebook;
+
         if (twitterUser is not null && twitterUser.StartsWith("@"))
         {
             twitterUser = twitterUser.Replace("@", "/");
@@ -132,9 +130,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
         ContentfulCollection<ContentfulGroup> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulGroup> contentfulGroups = entries as IEnumerable<ContentfulGroup> ?? entries.ToList();
-
         contentfulGroups = contentfulGroups.Where(groupItem =>_dateComparer.DateNowIsNotBetweenHiddenRange(groupItem.DateHiddenFrom, groupItem.DateHiddenTo));
-
         IEnumerable<Group> groupList = contentfulGroups.Select(group => _groupFactory.ToModel(group));
 
         IEnumerable<Group> linkedGroups = groupList.Where(group =>
@@ -153,7 +149,6 @@ public class GroupRepository : BaseRepository, IGroupRepository
     public async Task<HttpResponse> GetGroupResults(GroupSearch groupSearch, string slugs)
     {
         GroupResults groupResults = new();
-
         QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").Include(1);
 
         if (groupSearch.Longitude.Equals(0) && groupSearch.Latitude.Equals(0))
@@ -162,8 +157,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
         string[] subCategoriesArray = groupSearch.SubCategories.Split(',');
         
-        IEnumerable<string> subCategoriesList =
-            subCategoriesArray.Where(subCategory => !string.IsNullOrWhiteSpace(subCategory));
+        IEnumerable<string> subCategoriesList = subCategoriesArray.Where(subCategory => !string.IsNullOrWhiteSpace(subCategory));
 
         if (!string.IsNullOrEmpty(slugs))
         {
@@ -209,24 +203,23 @@ public class GroupRepository : BaseRepository, IGroupRepository
             groupsWithNoCoordinates = groupsWithNoCoordinates.OrderBy(group => group.Name).Distinct().ToList();
         }
 
-        List<Group> groups =
-            entries.Select(group => _groupFactory.ToModel(group))
-                .Where(group => group.CategoriesReference.Any(category =>
-                    string.IsNullOrEmpty(groupSearch.Category) ||
-                    category.Slug.ToLower().Equals(groupSearch.Category.ToLower())))
-                .Where(group =>
-                    string.IsNullOrWhiteSpace(groupSearch.Tags) || group.Tags.Contains(groupSearch.Tags.ToLower()))
-                .Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
-                .Where(group =>
-                    string.IsNullOrEmpty(groupSearch.GetInvolved) ||
-                    group.Volunteering && groupSearch.GetInvolved.Equals("yes"))
-                .Where(group => string.IsNullOrEmpty(groupSearch.Organisation) || group.Organisation is not null &&
-                    group.Organisation.Slug.Equals(groupSearch.Organisation))
-                .Where(group =>
-                    !subCategoriesList.Any() ||
-                    group.SubCategories.Any(category => subCategoriesList.Contains(category.Slug)))
-                .Where(_ => !_.MapPosition.Lat.Equals(0) && !_.MapPosition.Lon.Equals(0))
-                .ToList();
+        List<Group> groups = entries.Select(group => _groupFactory.ToModel(group))
+                                .Where(group => group.CategoriesReference.Any(category =>
+                                    string.IsNullOrEmpty(groupSearch.Category) ||
+                                    category.Slug.ToLower().Equals(groupSearch.Category.ToLower())))
+                                .Where(group =>
+                                    string.IsNullOrWhiteSpace(groupSearch.Tags) || group.Tags.Contains(groupSearch.Tags.ToLower()))
+                                .Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
+                                .Where(group =>
+                                    string.IsNullOrEmpty(groupSearch.GetInvolved) ||
+                                    group.Volunteering && groupSearch.GetInvolved.Equals("yes"))
+                                .Where(group => string.IsNullOrEmpty(groupSearch.Organisation) || group.Organisation is not null &&
+                                    group.Organisation.Slug.Equals(groupSearch.Organisation))
+                                .Where(group =>
+                                    !subCategoriesList.Any() ||
+                                    group.SubCategories.Any(category => subCategoriesList.Contains(category.Slug)))
+                                .Where(_ => !_.MapPosition.Lat.Equals(0) && !_.MapPosition.Lon.Equals(0))
+                                .ToList();
 
         if (groupsWithNoCoordinates.Count > 0)
             groups.AddRange(groupsWithNoCoordinates);
@@ -261,8 +254,7 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
     public async Task<HttpResponse> GetAdministratorsGroups(string email)
     {
-        QueryBuilder<ContentfulGroup> builder =
-            new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+        QueryBuilder<ContentfulGroup> builder = new QueryBuilder<ContentfulGroup>().ContentTypeIs("group").FieldExists("fields.groupAdministrators").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
 
         ContentfulCollection<ContentfulGroup> contentfulGroups = await _client.GetEntries(builder);
 

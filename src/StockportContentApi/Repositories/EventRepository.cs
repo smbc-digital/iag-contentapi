@@ -126,7 +126,6 @@ public class EventRepository : BaseRepository
 
         DateTime? searchdateFrom = dateFrom;
         DateTime? searchdateTo = dateTo;
-
         DateTime now = _timeProvider.Now().Date;
 
         if (!dateFrom.HasValue && !dateTo.HasValue)
@@ -138,26 +137,25 @@ public class EventRepository : BaseRepository
             searchdateTo = DateTime.MaxValue;
         else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date < now)
             searchdateFrom = DateTime.MinValue;
-        else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= now) searchdateFrom = now;
+        else if (!dateFrom.HasValue && dateTo.HasValue && dateTo.Value.Date >= now)
+            searchdateFrom = now;
 
         GeoCoordinate searchCoord = new(latitude, longitude);
 
-        List<Event> events =
-            GetAllEventsAndTheirReccurrences(entries)
-                .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                .Where(e => string.IsNullOrWhiteSpace(category) 
-                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
-                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
-                .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
-                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free") 
-                    || price.ToLower().Equals("free,paid") 
-                    || price.ToLower().Equals("free") && (e.Free ?? false)
-                    || price.ToLower().Equals("paid") && (e.Paid ?? false))
-                .Where(e => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
-                .OrderBy(o => o.EventDate)
-                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                .ThenBy(t => t.Title)
-                .ToList();
+        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => CheckDates(searchdateFrom, searchdateTo, e))
+                                .Where(e => string.IsNullOrWhiteSpace(category) 
+                                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
+                                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
+                                .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
+                                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free") 
+                                    || price.ToLower().Equals("free,paid") 
+                                    || price.ToLower().Equals("free") && (e.Free ?? false)
+                                    || price.ToLower().Equals("paid") && (e.Paid ?? false))
+                                .Where(e => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
+                                .OrderBy(o => o.EventDate)
+                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
+                                .ThenBy(t => t.Title)
+                                .ToList();
 
         if (displayFeatured is not null && displayFeatured is true)
             events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
@@ -166,7 +164,6 @@ public class EventRepository : BaseRepository
             events = events.Take(limit).ToList();
 
         List<string> eventCategories = await GetCategories();
-
         EventCalender eventCalender = new();
         eventCalender.SetEvents(events, eventCategories);
 
@@ -294,9 +291,7 @@ public class EventRepository : BaseRepository
     private async Task<List<string>> GetCategoriesDirect()
     {
         ContentType eventType = await _client.GetContentType("events");
-        
-        InValuesValidator validation =
-            eventType.Fields.First(f => f.Name.Equals("Categories")).Items.Validations[0] as InValuesValidator;
+        InValuesValidator validation = eventType.Fields.First(f => f.Name.Equals("Categories")).Items.Validations[0] as InValuesValidator;
 
         return !validation.RequiredValues.Any()
             ? null

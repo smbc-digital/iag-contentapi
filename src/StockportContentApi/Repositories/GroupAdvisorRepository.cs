@@ -21,7 +21,6 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
     public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
     {
         QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
-
         ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
         if (entries is null)
@@ -35,7 +34,6 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
     public async Task<GroupAdvisor> Get(string email)
     {
         QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
-
         ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
         if (entries is null)
@@ -47,7 +45,6 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
     public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)
     {
         QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
-
         ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
         if (entries is null)

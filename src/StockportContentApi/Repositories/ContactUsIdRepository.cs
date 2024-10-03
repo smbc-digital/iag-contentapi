@@ -14,7 +14,6 @@ public class ContactUsIdRepository
     public async Task<HttpResponse> GetContactUsIds(string slug)
     {
         QueryBuilder<ContentfulContactUsId> builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
-
         ContentfulCollection<ContentfulContactUsId> entries = await _client.GetEntries(builder);
         ContentfulContactUsId entry = entries.FirstOrDefault();
 

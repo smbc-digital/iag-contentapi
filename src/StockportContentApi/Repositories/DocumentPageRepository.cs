@@ -38,8 +38,8 @@ public class DocumentPageRepository : BaseRepository
             .Include(3);
 
         ContentfulCollection<ContentfulDocumentPage> entries = await _client.GetEntries(builder);
-
         ContentfulDocumentPage entry = entries.FirstOrDefault();
+
         return entry;
     }
 }
