@@ -1,56 +1,55 @@
 ﻿namespace StockportWebapp.DataProtection;
 
 /// <summary>
-/// Extension methods for <see cref="IDataProtectionBuilder"/> for configuring
-/// data protection options.
+///     Extension methods for <see cref="IDataProtectionBuilder" /> for configuring
+///     data protection options.
 /// </summary>
 public static class DataProtectionBuilderExtensions
 {
     /// <summary>
-    /// Sets up data protection to persist session keys in Redis.
+    ///     Sets up data protection to persist session keys in Redis.
     /// </summary>
-    /// <param name="builder">The <see cref="IDataProtectionBuilder"/> used to set up data protection options.</param>
+    /// <param name="builder">The <see cref="IDataProtectionBuilder" /> used to set up data protection options.</param>
     /// <param name="redisConnectionString">The connection string specifying the Redis instance and database for key storage.</param>
     /// <returns>
-    /// The <paramref name="builder" /> for continued configuration.
+    ///     The <paramref name="builder" /> for continued configuration.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="builder" /> or <paramref name="redisConnectionString" /> is <see langword="null" />.
+    ///     Thrown if <paramref name="builder" /> or <paramref name="redisConnectionString" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="System.ArgumentException">
-    /// Thrown if <paramref name="redisConnectionString" /> is empty.
+    ///     Thrown if <paramref name="redisConnectionString" /> is empty.
     /// </exception>
-    public static IDataProtectionBuilder PersistKeysToRedis(this IDataProtectionBuilder builder, string redisConnectionString)
+    public static IDataProtectionBuilder PersistKeysToRedis(this IDataProtectionBuilder builder,
+        string redisConnectionString)
     {
-        if (builder == null)
-        {
+        if (builder is null)
             throw new ArgumentNullException(nameof(builder));
-        }
 
-        if (redisConnectionString == null)
-        {
+        if (redisConnectionString is null)
             throw new ArgumentNullException(nameof(redisConnectionString));
-        }
 
-        if (redisConnectionString.Length == 0)
-        {
+        if (redisConnectionString.Length.Equals(0))
             throw new ArgumentException("Redis connection string may not be empty.", nameof(redisConnectionString));
-        }
 
-        return builder.Use(ServiceDescriptor.Singleton<IXmlRepository>(services => new RedisXmlRepository(redisConnectionString, services.GetRequiredService<ILogger<RedisXmlRepository>>())));
+        return builder.Use(ServiceDescriptor.Singleton<IXmlRepository>(services =>
+            new RedisXmlRepository(redisConnectionString, services.GetRequiredService<ILogger<RedisXmlRepository>>())));
     }
 
     /// <summary>
-    /// Updates an <see cref="IDataProtectionBuilder"/> to use the service of
-    /// a specific type, removing all other services of that type.
+    ///     Updates an <see cref="IDataProtectionBuilder" /> to use the service of
+    ///     a specific type, removing all other services of that type.
     /// </summary>
-    /// <param name="builder">The <see cref="IDataProtectionBuilder"/> that should use the specified service.</param>
-    /// <param name="descriptor">The <see cref="ServiceDescriptor"/> with the service the <paramref name="builder" /> should use.</param>
+    /// <param name="builder">The <see cref="IDataProtectionBuilder" /> that should use the specified service.</param>
+    /// <param name="descriptor">
+    ///     The <see cref="ServiceDescriptor" /> with the service the <paramref name="builder" /> should
+    ///     use.
+    /// </param>
     /// <returns>
-    /// The <paramref name="builder" /> for continued configuration.
+    ///     The <paramref name="builder" /> for continued configuration.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="builder" /> or <paramref name="descriptor" /> is <see langword="null" />.
+    ///     Thrown if <paramref name="builder" /> or <paramref name="descriptor" /> is <see langword="null" />.
     /// </exception>
     public static IDataProtectionBuilder Use(this IDataProtectionBuilder builder, ServiceDescriptor descriptor)
     {
@@ -59,25 +58,20 @@ public static class DataProtectionBuilderExtensions
         // DataProtection bits work. Due to some of the differences in how
         // that base set of bits handles DI, it's better to follow suit
         // and work in the same way than to try and debug weird issues.
-        if (builder == null)
-        {
+        if (builder is null)
             throw new ArgumentNullException(nameof(builder));
-        }
 
-        if (descriptor == null)
-        {
+        if (descriptor is null)
             throw new ArgumentNullException(nameof(descriptor));
-        }
 
         for (int i = builder.Services.Count - 1; i >= 0; i--)
         {
             if (builder.Services[i]?.ServiceType == descriptor.ServiceType)
-            {
                 builder.Services.RemoveAt(i);
-            }
         }
 
         builder.Services.Add(descriptor);
+
         return builder;
     }
 }

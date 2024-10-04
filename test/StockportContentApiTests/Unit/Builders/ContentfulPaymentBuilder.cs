@@ -11,10 +11,9 @@ internal class ContentfulPaymentBuilder
     private string _parisReference = "parisReference";
     private string _fund = "fund";
     private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
-    private string _metaDescription = "metaDescription";
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>();
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference> {
-        new ContentfulReferenceBuilder().Build() };
+    private readonly string _metaDescription = "metaDescription";
+    private List<ContentfulAlert> _alerts = new();
+    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
 
     public ContentfulPayment Build()
     {

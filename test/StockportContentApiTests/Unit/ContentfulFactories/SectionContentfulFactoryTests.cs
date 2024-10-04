@@ -8,8 +8,8 @@ public class SectionContentfulFactoryTests
     private readonly Mock<IVideoRepository> _videoRepository;
     private readonly SectionContentfulFactory _sectionFactory;
     private readonly Mock<ITimeProvider> _timeProvider;
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory;
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory;
 
     public SectionContentfulFactoryTests()
     {
@@ -71,7 +71,7 @@ public class SectionContentfulFactoryTests
         const string processedBody = "this is processed body";
         _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
 
-        Alert alert = new Alert("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
+        Alert alert = new("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
         _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act

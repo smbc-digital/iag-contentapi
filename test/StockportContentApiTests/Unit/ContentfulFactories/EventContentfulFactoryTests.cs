@@ -9,7 +9,7 @@ public class EventContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory;
     private readonly EventContentfulFactory _eventContentfulFactory;
-    private readonly List<Alert> _alerts = new List<Alert>() {
+    private readonly List<Alert> _alerts = new() {
             new Alert("title", "subHeading", "body", "severity", new DateTime(0001, 1, 1), new DateTime(9999, 9, 9), string.Empty, false, string.Empty) };
 
     public EventContentfulFactoryTests()

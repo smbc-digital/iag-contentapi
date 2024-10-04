@@ -5,17 +5,17 @@ public class ContentfulNewsBuilder
     private string _title = "title";
     private string _slug = "slug";
     private string _teaser = "teaser";
-    private string _purpose = "purpose";
-    private string _imageUrl = "image.jpg";
+    private readonly string _purpose = "purpose";
+    private readonly string _imageUrl = "image.jpg";
     private string _body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-    private DateTime _sunriseDate = new DateTime(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
-    private DateTime _sunsetDate = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
-    private DateTime _updatedAt = new DateTime(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
-    private List<string> _tags = new List<string> { "Bramall Hall", "Events" };
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert> { new ContentfulAlertBuilder().Build() };
-    private List<Asset> _documents = new List<Asset>();
+    private DateTime _sunriseDate = new(2016, 06, 30, 0, 0, 0, DateTimeKind.Utc);
+    private DateTime _sunsetDate = new(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
+    private DateTime _updatedAt = new(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
+    private List<string> _tags = new() { "Bramall Hall", "Events" };
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
+    private List<Asset> _documents = new();
 
-    private List<string> _categories = new List<string> { "A category" };
+    private readonly List<string> _categories = new() { "A category" };
 
     public ContentfulNews Build()
     {

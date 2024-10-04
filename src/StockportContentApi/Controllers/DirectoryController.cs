@@ -1,10 +1,11 @@
 ﻿namespace StockportContentApi.Controllers;
+
 [ApiController]
 public class DirectoryController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
+    private readonly ResponseHandler _handler;
 
     public DirectoryController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -22,7 +23,8 @@ public class DirectoryController : Controller
     {
         return await _handler.Get(() =>
         {
-            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+
             return directoryRepository.Get();
         });
     }
@@ -34,8 +36,9 @@ public class DirectoryController : Controller
     {
         try
         {
-            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-            HttpResponse response =  await directoryRepository.Get(slug);
+            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            HttpResponse response = await directoryRepository.Get(slug);
+
             return response.CreateResult();
         }
         catch
@@ -51,7 +54,8 @@ public class DirectoryController : Controller
     {
         return await _handler.Get(() =>
         {
-            var directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
+
             return directoryRepository.GetEntry(directoryEntrySlug);
         });
     }

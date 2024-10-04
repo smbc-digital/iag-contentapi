@@ -2,11 +2,13 @@
 
 public class PrivacyNoticeController : Controller
 {
+    private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly ResponseHandler _handler;
     private readonly Func<ContentfulConfig, IPrivacyNoticeRepository> _privacyNoticeRepository;
-    private readonly Func<string, ContentfulConfig> _createConfig;
 
-    public PrivacyNoticeController(ResponseHandler handler, Func<ContentfulConfig, IPrivacyNoticeRepository> privacyNoticeRepository, Func<string, ContentfulConfig> createConfig)
+    public PrivacyNoticeController(ResponseHandler handler,
+        Func<ContentfulConfig, IPrivacyNoticeRepository> privacyNoticeRepository,
+        Func<string, ContentfulConfig> createConfig)
     {
         _handler = handler;
         _createConfig = createConfig;
@@ -16,7 +18,7 @@ public class PrivacyNoticeController : Controller
     [HttpGet]
     [Route("{businessId}/privacy-notices/{slug}")]
     [Route("v1/{businessId}/privacy-notices/{slug}")]
-    public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) => 
+    public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) =>
         await _handler.Get(async () =>
         {
             IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));
@@ -31,7 +33,7 @@ public class PrivacyNoticeController : Controller
     [HttpGet]
     [Route("{businessId}/privacy-notices")]
     [Route("v1/{businessId}/privacy-notices")]
-    public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) => 
+    public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) =>
         await _handler.Get(async () =>
         {
             IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));
@@ -40,7 +42,7 @@ public class PrivacyNoticeController : Controller
 
             if (!privacyNotices.Any() || privacyNotices is null)
                 return HttpResponse.Failure(HttpStatusCode.NotFound, "Privacy notices not found");
-            else
-                return HttpResponse.Successful(privacyNotices);
+
+            return HttpResponse.Successful(privacyNotices);
         });
 }

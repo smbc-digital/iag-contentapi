@@ -174,7 +174,8 @@ public class PrivacyNoticeParentTopicContentfulFactoryTests
             Teaser = "teaser"
         };
 
-        SubItem subItem = new(){
+        SubItem subItem = new()
+        {
             Slug = "subitem-slug",
             Title = "subitem title"
         };

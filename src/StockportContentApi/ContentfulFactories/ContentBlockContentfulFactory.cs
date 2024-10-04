@@ -6,7 +6,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
 
     public ContentBlockContentfulFactory(ITimeProvider timeProvider) => _dateComparer = new DateComparer(timeProvider);
 
-    public ContentBlock ToModel(ContentfulReference entry) => 
+    public ContentBlock ToModel(ContentfulReference entry) =>
         new()
         {
             Slug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug),
@@ -57,27 +57,32 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
         };
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") ? "groups" : entrySlug;
+        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
+            ? "groups" 
+            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
-        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") ? "start-page" : entry.Sys.ContentType.SystemProperties.Id;
+        entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") 
+            ? "start-page" 
+            : entry.Sys.ContentType.SystemProperties.Id;
 
     private static string GetEntryImage(ContentfulReference entry)
     {
-        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) ? entry.Image.File.Url : string.Empty;
+        string image = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties)
+            ? entry.Image.File.Url
+            : string.Empty;
 
-        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null &&
-            ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
+        if (string.IsNullOrEmpty(image) && entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties))
             image = entry.BackgroundImage.File.Url;
 
         return image;
     }
 
-    private static string GetEntryTitle(ContentfulReference entry) => 
-        !string.IsNullOrEmpty(entry.NavigationTitle) 
-            ? entry.NavigationTitle 
-            : !string.IsNullOrEmpty(entry.Title) 
-                ? entry.Title 
+    private static string GetEntryTitle(ContentfulReference entry) =>
+        !string.IsNullOrEmpty(entry.NavigationTitle)
+            ? entry.NavigationTitle
+            : !string.IsNullOrEmpty(entry.Title)
+                ? entry.Title
                 : entry.Name;
 
     private bool EntryIsValid(ContentfulReference entry) =>

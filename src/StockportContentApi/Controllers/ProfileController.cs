@@ -2,11 +2,12 @@
 
 public class ProfileController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, IProfileRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
-    public ProfileController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig, Func<ContentfulConfig, IProfileRepository> createRepository)
+    public ProfileController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig,
+        Func<ContentfulConfig, IProfileRepository> createRepository)
     {
         _handler = handler;
         _createConfig = createConfig;
@@ -20,8 +21,8 @@ public class ProfileController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var profile = repository.GetProfile(profileSlug);
+            IProfileRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> profile = repository.GetProfile(profileSlug);
 
             return profile;
         });
@@ -34,8 +35,8 @@ public class ProfileController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var profile = repository.Get();
+            IProfileRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> profile = repository.Get();
 
             return profile;
         });

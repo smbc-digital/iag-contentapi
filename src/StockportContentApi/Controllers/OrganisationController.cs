@@ -2,9 +2,9 @@
 
 public class OrganisationController : Controller
 {
+    private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly ResponseHandler _handler;
     private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository;
-    private readonly Func<string, ContentfulConfig> _createConfig;
 
     public OrganisationController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -22,8 +22,8 @@ public class OrganisationController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _organisationRepository(_createConfig(businessId));
-            var article = repository.GetOrganisation(organisationSlug);
+            OrganisationRepository repository = _organisationRepository(_createConfig(businessId));
+            Task<HttpResponse> article = repository.GetOrganisation(organisationSlug);
 
             return article;
         });

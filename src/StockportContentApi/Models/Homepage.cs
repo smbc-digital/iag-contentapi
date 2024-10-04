@@ -1,4 +1,5 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
+
 [ExcludeFromCodeCoverage]
 public class Homepage
 {
@@ -21,7 +22,7 @@ public class Homepage
     public string EventCategory { get; }
     public string MetaDescription { get; set; }
     public CarouselContent CampaignBanner { get; set; }
-    public CallToActionBanner CallToAction {get;set;}
+    public CallToActionBanner CallToAction { get; set; }
     public CallToActionBanner CallToActionPrimary { get; set; }
     public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; }
 

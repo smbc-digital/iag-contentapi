@@ -4,10 +4,10 @@ public class GroupAdvisorContentfulFactory : IContentfulFactory<ContentfulGroupA
 {
     public GroupAdvisor ToModel(ContentfulGroupAdvisor entry)
     {
-        var name = entry.Name;
-        var emailAddress = entry.Email;
-        var groups = entry.Groups.Select(g => g.Slug);
-        var hasGlobalAccess = entry.GlobalAccess;
+        string name = entry.Name;
+        string emailAddress = entry.Email;
+        IEnumerable<string> groups = entry.Groups.Select(group => group.Slug);
+        bool hasGlobalAccess = entry.GlobalAccess;
 
         return new GroupAdvisor(name, emailAddress, groups, hasGlobalAccess);
     }

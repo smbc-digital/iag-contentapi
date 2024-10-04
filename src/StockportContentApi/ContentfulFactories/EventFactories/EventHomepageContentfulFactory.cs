@@ -5,34 +5,35 @@ public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEvent
     private readonly DateComparer _dateComparer;
 
     public EventHomepageContentfulFactory(ITimeProvider timeProvider)
-    {
-        _dateComparer = new DateComparer(timeProvider);
-    }
+        => _dateComparer = new DateComparer(timeProvider);
 
     public EventHomepage ToModel(ContentfulEventHomepage entry)
     {
-        var tags = new List<string>();
-
-        tags.Add(entry.Tag1);
-        tags.Add(entry.Tag2);
-        tags.Add(entry.Tag3);
-        tags.Add(entry.Tag4);
-        tags.Add(entry.Tag5);
-        tags.Add(entry.Tag6);
-        tags.Add(entry.Tag7);
-        tags.Add(entry.Tag8);
-        tags.Add(entry.Tag9);
-        tags.Add(entry.Tag10);
-
-        var rows = new List<EventHomepageRow>();
-        rows.Add(new EventHomepageRow
+        List<string> tags = new()
         {
-            IsLatest = true,
-            Tag = string.Empty,
-            Events = null
-        });
+            entry.Tag1,
+            entry.Tag2,
+            entry.Tag3,
+            entry.Tag4,
+            entry.Tag5,
+            entry.Tag6,
+            entry.Tag7,
+            entry.Tag8,
+            entry.Tag9,
+            entry.Tag10
+        };
 
-        foreach (var tag in tags)
+        List<EventHomepageRow> rows = new()
+        {
+            new EventHomepageRow
+            {
+                IsLatest = true,
+                Tag = string.Empty,
+                Events = null
+            }
+        };
+
+        foreach (string tag in tags)
         {
             rows.Add(new EventHomepageRow
             {
@@ -42,9 +43,11 @@ public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEvent
             });
         }
 
-        var eventHomePage = new EventHomepage(rows);
-        eventHomePage.MetaDescription = entry.MetaDescription;
-        eventHomePage.Alerts = entry.Alerts;
+        EventHomepage eventHomePage = new(rows)
+        {
+            MetaDescription = entry.MetaDescription,
+            Alerts = entry.Alerts
+        };
 
         return eventHomePage;
     }

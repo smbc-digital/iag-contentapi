@@ -2,8 +2,6 @@
 
 public class SpotlightBannerContentfulFactory : IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>
 {
-    public SpotlightBanner ToModel(ContentfulSpotlightBanner entry)
-    {
-        return new SpotlightBanner(entry.Title, entry.Teaser, entry.Link);
-    }
+    public SpotlightBanner ToModel(ContentfulSpotlightBanner entry) =>
+        new(entry.Title, entry.Teaser, entry.Link);
 }

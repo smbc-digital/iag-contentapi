@@ -15,13 +15,13 @@ public class PaymentContentfulFactory : IContentfulFactory<ContentfulPayment, Pa
 
     public Payment ToModel(ContentfulPayment entry)
     {
-        var alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert));
+        IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+                                        .Where(alert => !alert.Severity.Equals("Condolence"))
+                                        .Select(alert => _alertFactory.ToModel(alert));
 
-        var breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                          .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
         return new Payment(entry.Title,
             entry.Slug,

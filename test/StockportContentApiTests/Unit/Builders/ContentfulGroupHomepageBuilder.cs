@@ -5,15 +5,15 @@ public class ContentfulGroupHomepageBuilder
     private string _title = "title";
     private string _slug = "slug";
     private string _metaDescription = "metaDescription";
-    private Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-    private SystemProperties _sys = new SystemProperties
+    private readonly Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };
     private ContentfulEventBanner _eventBanner =
         new ContentfulEventBannerBuilder().Build();
-    private string _featuredGroupsHeading = "heading";
-    private List<ContentfulGroup> _featuredGroups = new List<ContentfulGroup>
+    private readonly string _featuredGroupsHeading = "heading";
+    private readonly List<ContentfulGroup> _featuredGroups = new()
     {
         new ContentfulGroupBuilder().Build()
     };

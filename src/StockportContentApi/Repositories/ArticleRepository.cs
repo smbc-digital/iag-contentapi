@@ -31,11 +31,12 @@ public class ArticleRepository : BaseRepository
     public async Task<HttpResponse> Get()
     {
         IEnumerable<ArticleSiteMap> articles = await GetArticlesFromContentful();
-        
+
         if (articles is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
 
         IEnumerable<ArticleSiteMap> entries = articles.Where(article => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(article.SunriseDate, article.SunsetDate));
+
         return entries.Any()
             ? HttpResponse.Successful(entries)
             : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found within sunrise and sunset dates");
@@ -49,6 +50,7 @@ public class ArticleRepository : BaseRepository
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
 
         ProcessArticleContent(article);
+
         return HttpResponse.Successful(article);
     }
 
@@ -56,6 +58,7 @@ public class ArticleRepository : BaseRepository
     {
         QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
         ContentfulCollection<ContentfulArticleForSiteMap> entries = await GetAllEntriesAsync(_client, builder);
+
         return entries?.Select(entry => _contentfulFactoryArticle.ToModel(entry));
     }
 
@@ -77,13 +80,15 @@ public class ArticleRepository : BaseRepository
             .Include(3);
 
         ContentfulCollection<ContentfulArticle> entries = await _client.GetEntries(builder);
+
         return entries.FirstOrDefault();
     }
 
     private void ProcessArticleContent(Article article)
     {
         article.Body = _videoRepository.Process(article.Body);
-        foreach (var section in article.Sections)
+        
+        foreach (Section section in article.Sections)
         {
             if (section is not null)
                 section.Body = _videoRepository.Process(section.Body);

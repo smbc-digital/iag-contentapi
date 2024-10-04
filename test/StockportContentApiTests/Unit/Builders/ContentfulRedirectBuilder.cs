@@ -2,10 +2,10 @@
 
 public class ContentfulRedirectBuilder
 {
-    private string _title = "_title";
-    private Dictionary<string, string> _redirects = new Dictionary<string, string> { { "a-url", "another-url" } };
-    private Dictionary<string, string> _legacyUrls = new Dictionary<string, string> { { "some-url", "another-url" } };
-    private SystemProperties _sys = new SystemProperties
+    private readonly string _title = "_title";
+    private readonly Dictionary<string, string> _redirects = new() { { "a-url", "another-url" } };
+    private readonly Dictionary<string, string> _legacyUrls = new() { { "some-url", "another-url" } };
+    private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };

@@ -2,9 +2,9 @@
 
 public class SectionController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, SectionRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public SectionController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -22,8 +22,8 @@ public class SectionController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var section = repository.GetSections(sectionSlug);
+            SectionRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> section = repository.GetSections(sectionSlug);
 
             return section;
         });
@@ -36,8 +36,8 @@ public class SectionController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var section = repository.Get();
+            SectionRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> section = repository.Get();
 
             return section;
         });

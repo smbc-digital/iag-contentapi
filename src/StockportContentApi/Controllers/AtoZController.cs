@@ -3,9 +3,10 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class AtoZController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, AtoZRepository> _createRepository;
+    private readonly ResponseHandler _handler;
+
     public AtoZController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
         Func<ContentfulConfig, AtoZRepository> createRepository)
@@ -22,7 +23,8 @@ public class AtoZController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
+            AtoZRepository repository = _createRepository(_createConfig(businessId));
+
             return repository.Get(letter);
         });
     }

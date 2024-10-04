@@ -9,30 +9,35 @@ public interface IAuthenticationHelper
 
 public class AuthenticationHelper : IAuthenticationHelper
 {
-    private readonly DateComparer _dateComparer;
     private const string BeginsWithV = "v";
     private const string ThenZeroOrMoreIntegers = "[0-9]+";
 
-    public AuthenticationHelper(ITimeProvider timeProvider)
-    {
-        _dateComparer = new DateComparer(timeProvider);
-    }
+    public AuthenticationHelper() { }
 
     public AuthenticationData ExtractAuthenticationDataFromContext(HttpContext context)
     {
-        var authenticationData = new AuthenticationData
+        AuthenticationData authenticationData = new()
         {
             AuthenticationKey = context.Request.Headers["Authorization"]
         };
 
-        var routeValues = context.Request.Path.Value.Split('/');
+        string[] routeValues = context.Request.Path.Value.Split('/');
 
-        authenticationData.VersionText = routeValues.Length > 1 ? routeValues[1] : string.Empty;
-        int.TryParse(authenticationData.VersionText.Replace("v", string.Empty), out var version);
+        authenticationData.VersionText = routeValues.Length > 1
+            ? routeValues[1]
+            : string.Empty;
+
+        int.TryParse(authenticationData.VersionText.Replace("v", string.Empty), out int version);
         authenticationData.Version = version;
 
-        authenticationData.BusinessId = routeValues.Length > 2 ? routeValues[2] : string.Empty;
-        authenticationData.Endpoint = routeValues.Length > 3 ? routeValues[3] : string.Empty;
+        authenticationData.BusinessId = routeValues.Length > 2
+            ? routeValues[2]
+            : string.Empty;
+
+        authenticationData.Endpoint = routeValues.Length > 3
+            ? routeValues[3]
+            : string.Empty;
+
         authenticationData.Verb = context.Request.Method;
 
         return authenticationData;
@@ -40,51 +45,27 @@ public class AuthenticationHelper : IAuthenticationHelper
 
     public string GetApiEndPoint(string endpoint)
     {
-        switch (endpoint.ToLower())
+        return endpoint.ToLower() switch
         {
-            case "article":
-            case "articles":
-                return "articles";
-            case "group":
-            case "groups":
-            case "group-categories":
-            case "group-results":
-                return "groups";
-            case "payment":
-            case "payments":
-                return "payments";
-            case "event":
-            case "events":
-            case "event-categories":
-            case "eventhomepage":
-                return "events";
-            case "topic":
-            case "topics":
-                return "topics";
-            case "profile":
-            case "profiles":
-                return "profiles";
-            case "start-page":
-            case "start-pages":
-                return "start pages";
-            case "showcase":
-            case "showcases":
-                return "showcase";
-            case "organisation":
-            case "organisations":
-                return "organisations";
-            default:
-                return endpoint.ToLower();
-        }
+            "article" or "articles" => "articles",
+            "group" or "groups" or "group-categories" or "group-results" => "groups",
+            "payment" or "payments" => "payments",
+            "event" or "events" or "event-categories" or "eventhomepage" => "events",
+            "topic" or "topics" => "topics",
+            "profile" or "profiles" => "profiles",
+            "start-page" or "start-pages" => "start pages",
+            "showcase" or "showcases" => "showcase",
+            "organisation" or "organisations" => "organisations",
+            _ => endpoint.ToLower(),
+        };
     }
 
     public void CheckVersionIsProvided(AuthenticationData authenticationData)
     {
-        var versionPattern = new Regex(BeginsWithV + ThenZeroOrMoreIntegers);
+        Regex versionPattern = new(BeginsWithV + ThenZeroOrMoreIntegers);
+
         if (!versionPattern.IsMatch(authenticationData.VersionText))
-        {
             throw new AuthorizationException();
-        }
     }
 }
 

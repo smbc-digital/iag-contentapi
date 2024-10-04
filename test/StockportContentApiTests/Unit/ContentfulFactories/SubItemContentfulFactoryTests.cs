@@ -16,10 +16,10 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new()
-            {
-                Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
-            };
-        
+        {
+            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
+        };
+
         // Act
         SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
 
@@ -39,9 +39,9 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new()
-            {
-                Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-            };
+        {
+            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+        };
 
         // Act
         SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
@@ -55,9 +55,9 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new()
-            {
-                Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-            };
+        {
+            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+        };
 
         // Act
         SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
@@ -71,9 +71,9 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new()
-            {
-                Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-            };
+        {
+            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
+        };
 
         // Act
         SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
@@ -87,10 +87,10 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new()
-            {
-                Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } },
-                Icon = "fa-unique"
-            };
+        {
+            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } },
+            Icon = "fa-unique"
+        };
 
         // Act
         SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);

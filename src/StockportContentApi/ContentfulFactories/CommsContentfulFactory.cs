@@ -16,11 +16,9 @@ public class CommsContentfulFactory : IContentfulFactory<ContentfulCommsHomepage
     public CommsHomepage ToModel(ContentfulCommsHomepage model)
     {
         List<BasicLink> usefulLinks = new();
-        if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null &&
-            model.UsefulLinksText.Count.Equals(model.UsefulLinksURL.Count))
-        {
+
+        if (model.UsefulLinksText is not null && model.UsefulLinksURL is not null && model.UsefulLinksText.Count.Equals(model.UsefulLinksURL.Count))
             usefulLinks = model.UsefulLinksText.Zip(model.UsefulLinksURL, (text, url) => new BasicLink(url, text)).ToList();
-        }
 
         return new(
             model.Title,

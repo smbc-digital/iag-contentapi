@@ -94,7 +94,7 @@ public class DocumentPageContentfulFactoryTests
             Title = "title",
             Documents = new List<Asset> { new ContentfulDocumentBuilder().Build() },
             RelatedDocuments = new List<ContentfulReference>
-            { 
+            {
                 new() {
                     Slug = "slug",
                     Name = "name",

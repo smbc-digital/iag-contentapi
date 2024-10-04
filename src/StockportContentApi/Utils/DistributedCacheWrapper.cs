@@ -20,7 +20,7 @@ public class DistributedCacheWrapper : IDistributedCacheWrapper
 
     public void SetString(string key, string value, int expiration)
     {
-        var distributedCacheOptions = new DistributedCacheEntryOptions
+        DistributedCacheEntryOptions distributedCacheOptions = new()
         {
             AbsoluteExpiration = DateTime.Now.AddMinutes(expiration)
         };

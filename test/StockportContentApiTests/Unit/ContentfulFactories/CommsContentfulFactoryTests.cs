@@ -2,8 +2,8 @@
 
 public class CommsContentfulFactoryTests
 {
-    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
-    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new Mock<IContentfulFactory<ContentfulEvent, Event>>();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly CommsContentfulFactory _factory;
 
     public CommsContentfulFactoryTests()

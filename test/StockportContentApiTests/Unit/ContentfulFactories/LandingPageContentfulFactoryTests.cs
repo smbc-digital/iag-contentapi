@@ -7,22 +7,22 @@ public class LandingPageContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly ITimeProvider _timeProvider = new TimeProvider();
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulReference, ContentBlock>> _contentBlockFactory= new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, ContentBlock>> _contentBlockFactory = new();
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _landingPageFactory;
     private readonly ContentfulLandingPage _contentfulLandingPage = new()
-        {
-            Slug = "landing-page-slug",
-            Title = "landing page title",
-            Subtitle = "landing page subtitle",
-            Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() },
-            Alerts = new List<ContentfulAlert>(),
-            Teaser = "landing page teaser",
-            MetaDescription = "landing page metadescription",
-            Icon = "icon",
-            Image = new Asset(),
-            HeaderType = "full image",
-            HeaderImage = new Asset(),
-        };
+    {
+        Slug = "landing-page-slug",
+        Title = "landing page title",
+        Subtitle = "landing page subtitle",
+        Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() },
+        Alerts = new List<ContentfulAlert>(),
+        Teaser = "landing page teaser",
+        MetaDescription = "landing page metadescription",
+        Icon = "icon",
+        Image = new Asset(),
+        HeaderType = "full image",
+        HeaderImage = new Asset(),
+    };
 
     public LandingPageContentfulFactoryTests() => _landingPageFactory = new LandingPageContentfulFactory(_crumbFactory.Object, _timeProvider, _alertFactory.Object, _contentBlockFactory.Object);
 
@@ -35,7 +35,7 @@ public class LandingPageContentfulFactoryTests
         _contentfulLandingPage.Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
         _contentfulLandingPage.Alerts = new List<ContentfulAlert>() { new ContentfulAlertBuilder().Build() };
         _contentfulLandingPage.PageSections = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
-        
+
         _crumbFactory.Setup(_ => _.ToModel(_contentfulLandingPage.Breadcrumbs.First())).Returns(crumb);
         _alertFactory.Setup(_ => _.ToModel(_contentfulLandingPage.Alerts.First())).Returns(alert);
 
@@ -129,7 +129,8 @@ public class LandingPageContentfulFactoryTests
     }
 
     [Fact]
-    public void ToModel_ShouldReturnNull_IfNullEntry(){
+    public void ToModel_ShouldReturnNull_IfNullEntry()
+    {
         // Act & Assert
         Assert.Null(_landingPageFactory.ToModel(null));
     }

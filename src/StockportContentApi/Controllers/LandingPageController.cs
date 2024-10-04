@@ -2,10 +2,9 @@
 
 public class LandingPageController : Controller
 {
-
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, LandingPageRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public LandingPageController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -19,7 +18,7 @@ public class LandingPageController : Controller
     [HttpGet]
     [Route("{businessId}/landing/{slug}")]
     [Route("v1/{businessId}/landing/{slug}")]
-    public async Task<IActionResult> GetLandingPage(string slug, string businessId) => 
+    public async Task<IActionResult> GetLandingPage(string slug, string businessId) =>
         await _handler.Get(() =>
         {
             LandingPageRepository repository = _createRepository(_createConfig(businessId));

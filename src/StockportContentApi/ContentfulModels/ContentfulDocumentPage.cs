@@ -4,7 +4,7 @@
 public class ContentfulDocumentPage : ContentfulReference
 {
     public string AboutTheDocument { get; set; } = string.Empty;
-    public List<Asset> Documents { get; set; } = new ();
+    public List<Asset> Documents { get; set; } = new();
     public string AwsDocuments { get; set; } = string.Empty;
     public string RequestAnAccessibleFormatContactInformation { get; set; } = string.Empty;
     public string FurtherInformation { get; set; } = string.Empty;

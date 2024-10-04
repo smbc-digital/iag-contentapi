@@ -18,18 +18,16 @@ public class VideoRepository : IVideoRepository
         _httpClient = httpClient;
     }
 
-    public string Process(string content)
-    {
-        return ReplaceVideoTagsWithVideoContent(content);
-    }
+    public string Process(string content) =>
+        ReplaceVideoTagsWithVideoContent(content);
 
-    private string ReplaceVideoTagsWithVideoContent(string body)
+    private static string ReplaceVideoTagsWithVideoContent(string body)
     {
-        var videoTags = GetVideosTags(body);
+        IEnumerable<string> videoTags = GetVideosTags(body);
 
-        foreach (var videoTag in videoTags)
+        foreach (string videoTag in videoTags)
         {
-            var videoId = videoTag
+            string videoId = videoTag
                 .Replace(StartTag, string.Empty)
                 .Replace(EndTag, string.Empty);
         }
@@ -39,17 +37,8 @@ public class VideoRepository : IVideoRepository
 
     private static IEnumerable<string> GetVideosTags(string body)
     {
-        var matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
+        IEnumerable<Match> matches = Regex.Matches(body, "{{VIDEO:([0-9aA-zZ]*;?[0-9aA-zZ]*)}}").OfType<Match>();
+        
         return matches.Select(m => m.Value).ToList();
-    }
-
-    private bool VideoExists(string videoId)
-    {
-        var videoData = videoId.Split(';');
-        string url = $"{_twentyThreeConfig.BaseUrl}{videoData[0]}&token={videoData[1]}";
-
-        var result = _httpClient.Get(url).Result;
-
-        return result != null && result.StatusCode == HttpStatusCode.OK;
     }
 }

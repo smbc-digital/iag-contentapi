@@ -39,7 +39,7 @@ public class ArticleContentfulFactoryTests
         _contentfulArticle.Documents.First().SystemProperties.LinkType = "Link";
 
         // Act
-        var article = _articleFactory.ToModel(_contentfulArticle);
+        Article article = _articleFactory.ToModel(_contentfulArticle);
 
         // Assert
         Assert.Empty(article.BackgroundImage);

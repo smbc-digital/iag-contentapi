@@ -5,11 +5,11 @@ public class ContentfulAToZBuilder
     private string _title = "Vintage Village turns 6 years old";
     private string _slug = "vintage-village-turns-6-years-old";
     private string _teaser = "The vintage village turned 6 with a great reception";
-    private string _displayOnAZ = "True";
-    private List<string> _alternativeTitles = new List<string>() { "test1, test2, test3" };
-    private DateTime _sunriseDate = new DateTime(0001, 01, 01, 00, 00, 00);
-    private DateTime _sunsetDate = new DateTime(0001, 01, 01, 00, 00, 00);
-    private SystemProperties _sys = new SystemProperties
+    private readonly string _displayOnAZ = "True";
+    private List<string> _alternativeTitles = new() { "test1, test2, test3" };
+    private readonly DateTime _sunriseDate = new(0001, 01, 01, 00, 00, 00);
+    private readonly DateTime _sunsetDate = new(0001, 01, 01, 00, 00, 00);
+    private SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "article" } }
     };

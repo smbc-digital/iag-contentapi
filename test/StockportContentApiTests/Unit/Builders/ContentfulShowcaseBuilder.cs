@@ -21,13 +21,13 @@ public class ContentfulShowcaseBuilder
     private string _emailAlertsTopicId { get; set; } = "alertId";
     private string _emailAlertsText { get; set; } = "alertText";
     private string _typeformUrl { get; set; } = "typeformUrl";
-    private List<ContentfulSocialMediaLink> _socialMediaLinks = new List<ContentfulSocialMediaLink>();
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+    private List<ContentfulSocialMediaLink> _socialMediaLinks = new();
+    private List<ContentfulReference> _breadcrumbs = new()
     {
       new ContentfulReferenceBuilder().Build()
     };
 
-    private readonly List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+    private readonly List<ContentfulAlert> _alerts = new()
     {
         new ContentfulAlertBuilder().Build()
     };

@@ -39,25 +39,17 @@ public class FakeLogger<T> : ILogger<T>
                 Info(formatter.Invoke(state, exception));
                 break;
             case LogLevel.Error:
-                if (exception == null)
+                if (exception is null)
                     Error(formatter.Invoke(state, null));
                 else
                     Error(formatter.Invoke(state, exception), exception);
                 break;
             default:
-                // Don't do anything
                 Console.WriteLine("Fake logger recieved unexpected input.");
                 break;
         }
     }
 
-    public bool IsEnabled(LogLevel logLevel)
-    {
-        return true;
-    }
-
-    public IDisposable BeginScope<TState>(TState state)
-    {
-        return new MemoryStream();
-    }
+    public bool IsEnabled(LogLevel logLevel) => true;
+    public IDisposable BeginScope<TState>(TState state) => new MemoryStream();
 }

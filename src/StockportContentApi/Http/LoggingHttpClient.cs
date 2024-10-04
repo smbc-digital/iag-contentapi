@@ -14,20 +14,20 @@ public class LoggingHttpClient : IHttpClient
 
     public async Task<HttpResponse> Get(string url)
     {
-        _logger.LogInformation("Querying: " + RemoveAccessKeyFromUrl(url));
+        _logger.LogInformation($"Querying: {RemoveAccessKeyFromUrl(url)}");
         HttpResponse response = await _inner.Get(url);
+        _logger.LogDebug($"Response: {response}");
 
-        _logger.LogDebug("Response: " + response);
         return response;
     }
 
-    private string RemoveAccessKeyFromUrl(string url)
+    private static string RemoveAccessKeyFromUrl(string url)
     {
         const string accessToken = "access_token";
         if (string.IsNullOrWhiteSpace(url) || !url.Contains(accessToken))
             return url;
 
-        var token = url.Split('&')
+        string token = url.Split('&')
             .FirstOrDefault(s => !string.IsNullOrWhiteSpace(s) && s.Contains(accessToken))?
             .Split('=')[1];
 

@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
 public class Organisation
@@ -10,9 +10,9 @@ public class Organisation
     public string Phone { get; set; }
     public string Email { get; set; }
     public bool Volunteering { get; set; }
-    public string VolunteeringText { get; set; } = "";
-    public string DonationsText { get; set; } = "";
-    public string DonationsUrl { get; set; } = "";
+    public string VolunteeringText { get; set; } = string.Empty;
+    public string DonationsText { get; set; } = string.Empty;
+    public string DonationsUrl { get; set; } = string.Empty;
     public List<Group> Groups { get; set; } = new List<Group>();
     public bool Donations { get; set; }
 

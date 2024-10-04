@@ -2,8 +2,6 @@
 
 public class ArticleSiteMapContentfulFactory : IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>
 {
-    public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry)
-    {
-        return new ArticleSiteMap(entry.Slug, entry.SunriseDate, entry.SunsetDate);
-    }
+    public ArticleSiteMap ToModel(ContentfulArticleForSiteMap entry) =>
+        new(entry.Slug, entry.SunriseDate, entry.SunsetDate);
 }

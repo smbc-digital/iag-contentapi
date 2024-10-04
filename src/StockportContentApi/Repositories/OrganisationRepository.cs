@@ -3,7 +3,7 @@
 public class OrganisationRepository
 {
     private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IGroupRepository _groupRepository;
 
     public OrganisationRepository(ContentfulConfig config,
@@ -18,16 +18,14 @@ public class OrganisationRepository
 
     public async Task<HttpResponse> GetOrganisation(string slug)
     {
-        var builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
+        QueryBuilder<ContentfulOrganisation> builder = new QueryBuilder<ContentfulOrganisation>().ContentTypeIs("organisation").FieldEquals("fields.slug", slug);
+        ContentfulCollection<ContentfulOrganisation> entries = await _client.GetEntries(builder);
+        ContentfulOrganisation entry = entries.FirstOrDefault();
 
-        var entries = await _client.GetEntries(builder);
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
 
-        var entry = entries.FirstOrDefault();
-
-        if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
-
-        var organisation = _contentfulFactory.ToModel(entry);
-
+        Organisation organisation = _contentfulFactory.ToModel(entry);
         organisation.Groups = await _groupRepository.GetLinkedGroupsByOrganisation(slug);
 
         return HttpResponse.Successful(organisation);

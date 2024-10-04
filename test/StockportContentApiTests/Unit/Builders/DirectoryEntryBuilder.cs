@@ -14,7 +14,7 @@ public class DirectoryEntryBuilder
     string Facebook { get; set; }
     string Address { get; set; }
     MapPosition MapPosition { get; set; }
-    List<ContentfulAlert> Alerts { get; set; }=  new();
+    List<ContentfulAlert> Alerts { get; set; } = new();
     List<ContentfulFilter> Filters { get; set; } = new();
     List<ContentfulGroupBranding> Branding { get; set; } = new();
     List<ContentfulDirectory> Directories { get; set; } = new();
@@ -30,7 +30,7 @@ public class DirectoryEntryBuilder
         Email = Email,
         Website = Website,
         Twitter = Twitter,
-        Facebook = Facebook,   
+        Facebook = Facebook,
         Address = Address,
         Filters = Filters,
         Alerts = Alerts,
@@ -76,37 +76,37 @@ public class DirectoryEntryBuilder
         return this;
     }
 
-    public DirectoryEntryBuilder WithPhoneNumber(string phoneNumber) 
+    public DirectoryEntryBuilder WithPhoneNumber(string phoneNumber)
     {
         PhoneNumber = phoneNumber;
         return this;
     }
 
-    public DirectoryEntryBuilder WithEmail(string email) 
+    public DirectoryEntryBuilder WithEmail(string email)
     {
         Email = email;
         return this;
     }
 
-    public DirectoryEntryBuilder WithWebsite(string website) 
+    public DirectoryEntryBuilder WithWebsite(string website)
     {
         Website = website;
         return this;
     }
 
-    public DirectoryEntryBuilder WithTwitter(string twitter) 
+    public DirectoryEntryBuilder WithTwitter(string twitter)
     {
         Twitter = twitter;
         return this;
     }
 
-    public DirectoryEntryBuilder WithFacebook(string facebook) 
+    public DirectoryEntryBuilder WithFacebook(string facebook)
     {
         Facebook = facebook;
         return this;
     }
 
-    public DirectoryEntryBuilder WithAddress(string address) 
+    public DirectoryEntryBuilder WithAddress(string address)
     {
         Address = address;
         return this;

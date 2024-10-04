@@ -2,9 +2,9 @@
 
 public class ContactUsController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, ContactUsAreaRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public ContactUsController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -22,8 +22,8 @@ public class ContactUsController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var contactUsArea = repository.GetContactUsArea();
+            ContactUsAreaRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> contactUsArea = repository.GetContactUsArea();
 
             return contactUsArea;
         });

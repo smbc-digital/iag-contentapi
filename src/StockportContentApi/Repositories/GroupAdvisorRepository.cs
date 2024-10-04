@@ -20,39 +20,40 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
 
     public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
     {
-        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
+        QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").Include(1);
+        ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
-        var entries = await _client.GetEntries(builder);
+        if (entries is null)
+            return new List<GroupAdvisor>();
 
-        if (entries == null) return new List<GroupAdvisor>();
-
-        var result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
+        List<GroupAdvisor> result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
 
         return result.Where(item => item.Groups.Contains(slug)).ToList();
     }
 
     public async Task<GroupAdvisor> Get(string email)
     {
-        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
-        var entries = await _client.GetEntries(builder);
-
-        if (entries == null) return null;
+        if (entries is null)
+            return null;
 
         return entries.Select(item => _contentfulFactory.ToModel(item)).FirstOrDefault();
     }
 
     public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)
     {
-        var builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        QueryBuilder<ContentfulGroupAdvisor> builder = new QueryBuilder<ContentfulGroupAdvisor>().ContentTypeIs("groupAdvisors").FieldEquals("fields.email", email).Include(1);
+        ContentfulCollection<ContentfulGroupAdvisor> entries = await _client.GetEntries(builder);
 
-        var entries = await _client.GetEntries(builder);
+        if (entries is null)
+            return false;
 
-        if (entries == null) return false;
+        GroupAdvisor result = _contentfulFactory.ToModel(entries.FirstOrDefault());
 
-        var result = _contentfulFactory.ToModel(entries.FirstOrDefault());
-
-        if (result.HasGlobalAccess || result.Groups.Contains(slug)) return true;
+        if (result.HasGlobalAccess || result.Groups.Contains(slug))
+            return true;
 
         return false;
     }

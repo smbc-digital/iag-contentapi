@@ -4,17 +4,17 @@ public class EventCategoryContentfulFactory : IContentfulFactory<ContentfulEvent
 {
     public EventCategory ToModel(ContentfulEventCategory entry)
     {
-        var name = !string.IsNullOrEmpty(entry.Name)
+        string name = !string.IsNullOrEmpty(entry.Name)
             ? entry.Name
-            : "";
+            : string.Empty;
 
-        var slug = !string.IsNullOrEmpty(entry.Slug)
+        string slug = !string.IsNullOrEmpty(entry.Slug)
             ? entry.Slug
-            : "";
+            : string.Empty;
 
-        var icon = !string.IsNullOrEmpty(entry.Icon)
+        string icon = !string.IsNullOrEmpty(entry.Icon)
             ? entry.Icon
-            : "";
+            : string.Empty;
 
         return new EventCategory(name, slug, icon);
     }

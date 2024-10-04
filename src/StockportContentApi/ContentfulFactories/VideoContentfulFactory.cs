@@ -2,8 +2,6 @@
 
 public class VideoContentfulFactory : IContentfulFactory<ContentfulVideo, Video>
 {
-    public Video ToModel(ContentfulVideo entry)
-    {
-        return new Video(entry.Heading, entry.Text, entry.VideoEmbedCode);
-    }
+    public Video ToModel(ContentfulVideo entry) =>
+        new(entry.Heading, entry.Text, entry.VideoEmbedCode);
 }

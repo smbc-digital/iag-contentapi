@@ -3,7 +3,7 @@
 public class ContactUsIdRepository
 {
     private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory;
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
 
     public ContactUsIdRepository(ContentfulConfig config, IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory, IContentfulClientManager contentfulClientManager)
     {
@@ -13,14 +13,14 @@ public class ContactUsIdRepository
 
     public async Task<HttpResponse> GetContactUsIds(string slug)
     {
-        var builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulContactUsId> builder = new QueryBuilder<ContentfulContactUsId>().ContentTypeIs("contactUsId").FieldEquals("fields.slug", slug).Include(1);
+        ContentfulCollection<ContentfulContactUsId> entries = await _client.GetEntries(builder);
+        ContentfulContactUsId entry = entries.FirstOrDefault();
 
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
 
-        if (entry == null) return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
-
-        var contactUsId = _contentfulFactory.ToModel(entry);
+        ContactUsId contactUsId = _contentfulFactory.ToModel(entry);
 
         return HttpResponse.Successful(contactUsId);
     }

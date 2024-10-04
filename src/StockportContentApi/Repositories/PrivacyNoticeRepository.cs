@@ -21,25 +21,19 @@ public class PrivacyNoticeRepository : IPrivacyNoticeRepository
 
     public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
     {
-        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
-            .ContentTypeIs("privacyNotice")
-            .FieldEquals("fields.slug", slug)
-            .Include(2);
-
+        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug).Include(2);
         ContentfulCollection<ContentfulPrivacyNotice> entries = await _client.GetEntries(builder);
         ContentfulPrivacyNotice entry = entries.FirstOrDefault();
 
-        return entry is not null ? _contentfulFactory.ToModel(entry) : null;
+        return entry is not null
+            ? _contentfulFactory.ToModel(entry)
+            : null;
     }
 
     public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
     {
-        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
-            .ContentTypeIs("privacyNotice")
-            .Include(2);
-
+        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(2);
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);
-
         List<PrivacyNotice> convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 
         return convertedEntries;
@@ -47,12 +41,8 @@ public class PrivacyNoticeRepository : IPrivacyNoticeRepository
 
     public async Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title)
     {
-        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
-            .ContentTypeIs("privacyNotice")
-            .Include(2);
-
+        QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(2);
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);
-
         List<PrivacyNotice> convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
 
         return convertedEntries;
@@ -61,6 +51,7 @@ public class PrivacyNoticeRepository : IPrivacyNoticeRepository
     private async Task<IEnumerable<T>> GetAllEntries<T>(QueryBuilder<T> builder)
     {
         ContentfulCollection<T> entries = await _client.GetEntries(builder.Limit(ContentfulQueryValues.LIMIT_MAX));
+        
         return entries.Items;
     }
 }

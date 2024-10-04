@@ -3,9 +3,9 @@
 [ApiExplorerSettings(IgnoreApi = false)]
 public class HomepageController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, HomepageRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public HomepageController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -21,9 +21,9 @@ public class HomepageController : Controller
     [Route("v1/{businessId}/homepage")]
     public async Task<IActionResult> Get(string businessId)
     {
-        var result = await _handler.Get(() =>
+        IActionResult result = await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
+            HomepageRepository repository = _createRepository(_createConfig(businessId));
             return repository.Get();
         });
 

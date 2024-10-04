@@ -13,24 +13,23 @@ public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Foot
 
     public Footer ToModel(ContentfulFooter entry)
     {
-        var title = !string.IsNullOrEmpty(entry.Title)
+        string title = !string.IsNullOrEmpty(entry.Title)
             ? entry.Title
-            : "";
+            : string.Empty;
 
-        var slug = !string.IsNullOrEmpty(entry.Slug)
+        string slug = !string.IsNullOrEmpty(entry.Slug)
             ? entry.Slug
-            : "";
+            : string.Empty;
 
-        var copyrightSection = !string.IsNullOrEmpty(entry.CopyrightSection)
+        string copyrightSection = !string.IsNullOrEmpty(entry.CopyrightSection)
             ? entry.CopyrightSection
-            : "";
+            : string.Empty;
 
-        var links =
-            entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
-            .Select(item => _subitemFactory.ToModel(item)).ToList();
+        List<SubItem> links = entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
+                                .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
-                                           .Select(media => _socialMediaFactory.ToModel(media)).ToList();
+        List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+                                                    .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
         return new Footer(title, slug, links, socialMediaLinks);
     }

@@ -1,7 +1,7 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
 public class GroupStartPage
 {
-    public List<Group> Categories = new List<Group>();
+    public List<Group> Categories = new();
 }

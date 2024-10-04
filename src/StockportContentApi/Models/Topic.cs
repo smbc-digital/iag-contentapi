@@ -1,4 +1,5 @@
-﻿namespace StockportContentApi.Model;
+﻿namespace StockportContentApi.Models;
+
 [ExcludeFromCodeCoverage]
 public class Topic
 {
@@ -41,7 +42,7 @@ public class Topic
         string image, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
         IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, CarouselContent campaignBanner, string eventCategory,
-        CallToActionBanner callToAction, List<GroupBranding> topicBranding,  string logoAreaTitle,
+        CallToActionBanner callToAction, List<GroupBranding> topicBranding, string logoAreaTitle,
         bool displayContactUs = true)
     {
         Slug = slug;

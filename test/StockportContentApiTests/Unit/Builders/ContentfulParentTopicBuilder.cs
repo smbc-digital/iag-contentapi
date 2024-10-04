@@ -2,7 +2,7 @@
 
 public class ContentfulParentTopicBuilder
 {
-    private string _name = "name";
+    private readonly string _name = "name";
     private readonly List<ContentfulReference> _subItems = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
     private readonly List<ContentfulReference> _secondaryItems = new() { new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
     private string _systemId = "id";

@@ -2,10 +2,10 @@
 
 public class ShowcaseController : Controller
 {
-
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, ShowcaseRepository> _createRepository;
+
+    private readonly ResponseHandler _handler;
 
     public ShowcaseController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -23,8 +23,8 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var showcase = repository.GetShowcases(showcaseSlug);
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> showcase = repository.GetShowcases(showcaseSlug);
 
             return showcase;
         });
@@ -37,8 +37,8 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            var repository = _createRepository(_createConfig(businessId));
-            var showcase = repository.Get();
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            Task<HttpResponse> showcase = repository.Get();
 
             return showcase;
         });

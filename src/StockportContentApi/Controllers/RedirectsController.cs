@@ -16,9 +16,11 @@ public class RedirectsController : Controller
     [HttpGet]
     [Route("redirects")]
     [Route("v1/redirects")]
-    public async Task<IActionResult> GetRedirects() => await _handler.Get(() => _repository.GetRedirects());
+    public async Task<IActionResult> GetRedirects() =>
+        await _handler.Get(() => _repository.GetRedirects());
 
     [HttpPatch]
     [Route("v1/redirects")]
-    public async Task<IActionResult> UpdateRedirects() => await _handler.Get(() => _repository.GetUpdatedRedirects());
+    public async Task<IActionResult> UpdateRedirects() =>
+        await _handler.Get(() => _repository.GetUpdatedRedirects());
 }

@@ -1,6 +1,6 @@
-namespace StockportContentApi.Model;
-[ExcludeFromCodeCoverage]
+namespace StockportContentApi.Models;
 
+[ExcludeFromCodeCoverage]
 public class GroupAdministratorItems
 {
     public string Email { get; set; } = string.Empty;

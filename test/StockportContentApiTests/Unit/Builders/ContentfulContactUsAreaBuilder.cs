@@ -11,17 +11,17 @@ public class ContentfulContactUsAreaBuilder
 
     private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
 
-    private List<ContentfulReference> _breadcrumbs = new List<ContentfulReference>
+    private List<ContentfulReference> _breadcrumbs = new()
     {
       new ContentfulReferenceBuilder().Build()
     };
 
-    private List<ContentfulAlert> _alerts = new List<ContentfulAlert>
+    private List<ContentfulAlert> _alerts = new()
     {
         new ContentfulAlertBuilder().Build()
     };
 
-    private List<ContentfulContactUsCategory> _contactUsCategories = new List<ContentfulContactUsCategory>
+    private List<ContentfulContactUsCategory> _contactUsCategories = new()
     {
         new ContentfulContactUsCategoryBuilder().Build()
     };

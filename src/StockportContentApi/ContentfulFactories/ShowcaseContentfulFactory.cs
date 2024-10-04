@@ -2,16 +2,16 @@
 
 public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, Showcase>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
     private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-    private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionBannerContentfulFactory;
-    private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
+    private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
     private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
+    private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
+    private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
 
     public ShowcaseContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -27,7 +27,7 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
         _subitemFactory = subitemFactory;
         _crumbFactory = crumbFactory;
         _socialMediaFactory = socialMediaFactory;
-        _dateComparer = new DateComparer(timeProvider);
+        _dateComparer = new(timeProvider);
         _alertFactory = alertFactory;
         _profileFactory = profileFactory;
         _callToActionBannerContentfulFactory = callToActionBannerContentfulFactory;
@@ -38,63 +38,60 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
 
     public Showcase ToModel(ContentfulShowcase entry)
     {
-        var heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) ?
-            entry.HeroImage.File.Url : string.Empty;
+        string heroImage = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties)
+            ? entry.HeroImage.File.Url
+            : string.Empty;
 
-        var primaryItems =
-            entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
-                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        List<SubItem> primaryItems = entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
+                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var secondaryItems =
-            entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        List<SubItem> secondaryItems = entry.SecondaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var featuredItems =
-            entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys)
-                                                  && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        List<SubItem> featuredItems = entry.FeaturedItems.Where(featItem => ContentfulHelpers.EntryIsNotALink(featItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featItem.SunriseDate, featItem.SunsetDate))
+                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
-            .Select(media => _socialMediaFactory.ToModel(media)).ToList();
+        List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+                                                    .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-        var breadcrumbs =
-            entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var profile = entry.Profile != null
+        Profile profile = entry.Profile is not null
             ? _profileFactory.ToModel(entry.Profile)
             : null;
 
-        var profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
-            .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
+        List<Profile> profiles = entry.Profiles.Where(singleProfile => ContentfulHelpers.EntryIsNotALink(singleProfile.Sys))
+                                    .Select(singleProfile => _profileFactory.ToModel(singleProfile)).ToList();
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
-                                                 _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-                            .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-            .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
+        List<SubItem> tertiaryItems = entry.TertiaryItems.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Select(subItem => _subitemFactory.ToModel(subItem)).ToList();
 
-        var triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-            .Select(fact => _triviaFactory.ToModel(fact)).ToList();
+        List<Trivia> triviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
+                                        .Select(fact => _triviaFactory.ToModel(fact)).ToList();
 
-        var callToActionBanner = entry.CallToActionBanner != null
+        CallToActionBanner callToActionBanner = entry.CallToActionBanner is not null
             ? _callToActionBannerContentfulFactory.ToModel(entry.CallToActionBanner)
             : null;
 
-        var video = entry.Video != null
+        Video video = entry.Video is not null
             ? _videoFactory.ToModel(entry.Video)
             : null;
 
-        var spotlightBanner = entry.SpotlightBanner != null
+        SpotlightBanner spotlightBanner = entry.SpotlightBanner is not null
             ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
             : null;
 
-        return new Showcase
+        return new()
         {
             Title = entry.Title,
             Slug = entry.Slug,

@@ -95,7 +95,7 @@ public class HomepageContentfulFactoryTests
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build(),
                 new ContentfulGroupBuilder().DateHiddenFrom(new DateTime(2016, 01, 01)).DateHiddenTo(new DateTime(3000, 01, 01)).Build()
             }).Build();
-        
+
         // Act
         Homepage homepage = _homepageContentfulFactory.ToModel(contentfulHomepage);
 

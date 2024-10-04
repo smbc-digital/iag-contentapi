@@ -2,7 +2,7 @@
 
 public class ContactUsAreaRepository
 {
-    private readonly Contentful.Core.IContentfulClient _client;
+    private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory;
 
     public ContactUsAreaRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory)
@@ -13,14 +13,13 @@ public class ContactUsAreaRepository
 
     public async Task<HttpResponse> GetContactUsArea()
     {
+        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
+        ContentfulCollection<ContentfulContactUsArea> entries = await _client.GetEntries(builder);
+        ContentfulContactUsArea entry = entries.FirstOrDefault();
+        ContactUsArea contactUsArea = _contentfulFactory.ToModel(entry);
 
-        var builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
-
-        var entries = await _client.GetEntries(builder);
-        var entry = entries.FirstOrDefault();
-
-        var contactUsArea = _contentfulFactory.ToModel(entry);
-        if (contactUsArea == null) return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
+        if (contactUsArea is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
 
         return HttpResponse.Successful(contactUsArea);
     }

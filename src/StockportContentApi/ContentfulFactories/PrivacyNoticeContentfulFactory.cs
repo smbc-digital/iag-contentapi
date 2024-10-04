@@ -13,16 +13,17 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
 
     public PrivacyNotice ToModel(ContentfulPrivacyNotice entry)
     {
-        if(entry is null)
+        if (entry is null)
             return null;
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs
-            .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
         Topic topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
 
-        PrivacyNotice privacyNotice = new() {
+        PrivacyNotice privacyNotice = new()
+        {
             Slug = entry.Slug,
             Title = entry.Title,
             Category = entry.Category,

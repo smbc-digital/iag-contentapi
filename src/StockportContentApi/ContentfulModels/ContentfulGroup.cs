@@ -13,7 +13,7 @@ public class ContentfulGroup : IContentfulModel
     public string Facebook { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public Asset Image { get; set; } = new() { File = new File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    public Asset Image { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public List<ContentfulGroupCategory> CategoriesReference { get; set; } = new();
     public List<ContentfulGroupSubCategory> SubCategories { get; set; } = new();
     public MapPosition MapPosition { get; set; } = new();

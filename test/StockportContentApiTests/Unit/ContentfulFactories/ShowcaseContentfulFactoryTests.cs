@@ -23,7 +23,7 @@ public class ShowcaseContentfulFactoryTests
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
         Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
@@ -93,7 +93,7 @@ public class ShowcaseContentfulFactoryTests
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
         Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
@@ -161,7 +161,7 @@ public class ShowcaseContentfulFactoryTests
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
         Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 
@@ -169,7 +169,7 @@ public class ShowcaseContentfulFactoryTests
 
         Mock<IContentfulFactory<ContentfulVideo, Video>> _videoFactory = new();
 
-        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
+        Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> callToActionBanner = new();
         callToActionBanner.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(
             new CallToActionBanner
             {
@@ -221,7 +221,7 @@ public class ShowcaseContentfulFactoryTests
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
             .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
-        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
+        Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
         Mock<ITimeProvider> timeprovider = new();
 
@@ -231,7 +231,7 @@ public class ShowcaseContentfulFactoryTests
         socialMediaFactory.Setup(o => o.ToModel(It.IsAny<ContentfulSocialMediaLink>())).Returns(new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url", "sm-link-accountName", "sm-link-screenReader"));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", "", "", "", DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
         Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
 

@@ -4,9 +4,9 @@ public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulGroup
 {
     public GroupBranding ToModel(ContentfulGroupBranding entry)
     {
-        var file = new MediaAsset();
+        MediaAsset file = new();
 
-        if (entry != null && entry.File != null && entry.File.File != null)
+        if (entry is not null && entry.File is not null && entry.File.File is not null)
         {
             file = new MediaAsset
             {

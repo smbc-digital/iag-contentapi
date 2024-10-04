@@ -2,13 +2,9 @@ namespace StockportContentApi.Utils;
 
 public class ContentfulHelpers
 {
-    public static bool EntryIsNotALink(SystemProperties sys)
-    {
-        return sys.LinkType is null;
-    }
+    public static bool EntryIsNotALink(SystemProperties sys) =>
+        sys.LinkType is null;
 
-    public static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term)
-    {
-        return term.Cast<string>().ToList();
-    }
+    public static IEnumerable<string> ConvertToListOfStrings(IEnumerable<dynamic> term) =>
+        term.Cast<string>().ToList();
 }

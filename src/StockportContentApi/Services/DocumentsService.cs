@@ -8,13 +8,16 @@ public interface IDocumentService
 public class DocumentsService : IDocumentService
 {
     private readonly IContentfulConfigBuilder _contentfulConfigBuilder;
+    private readonly IContentfulFactory<Asset, Document> _documentFactory;
     private readonly Func<ContentfulConfig, IAssetRepository> _documentRepository;
     private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _groupAdvisorRepository;
     private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
-    private readonly IContentfulFactory<Asset, Document> _documentFactory;
     private readonly ILoggedInHelper _loggedInHelper;
 
-    public DocumentsService(Func<ContentfulConfig, IAssetRepository> documentRepository, Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository, Func<ContentfulConfig, IGroupRepository> groupRepository, IContentfulFactory<Asset, Document> documentFactory, IContentfulConfigBuilder contentfulConfigBuilder, ILoggedInHelper loggedInHelper)
+    public DocumentsService(Func<ContentfulConfig, IAssetRepository> documentRepository,
+        Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository,
+        Func<ContentfulConfig, IGroupRepository> groupRepository, IContentfulFactory<Asset, Document> documentFactory,
+        IContentfulConfigBuilder contentfulConfigBuilder, ILoggedInHelper loggedInHelper)
     {
         _documentRepository = documentRepository;
         _groupAdvisorRepository = groupAdvisorRepository;
@@ -28,10 +31,10 @@ public class DocumentsService : IDocumentService
     {
         ContentfulConfig config = _contentfulConfigBuilder.Build(businessId);
         LoggedInPerson user = _loggedInHelper.GetLoggedInPerson();
-
         bool hasPermission = await IsUserAdvisorForGroup(groupSlug, config, user);
 
-        if (!hasPermission) return null;
+        if (!hasPermission)
+            return null;
 
         Asset asset = await GetDocumentAsAsset(assetId, config);
 
@@ -43,8 +46,8 @@ public class DocumentsService : IDocumentService
     private async Task<bool> DoesGroupReferenceAsset(string groupSlug, ContentfulConfig config, Asset asset)
     {
         Group group = await GetGroup(groupSlug, config);
-
         bool assetExistsInGroup = group.AdditionalDocuments.Exists(_ => _.AssetId.Equals(asset.SystemProperties.Id));
+
         return assetExistsInGroup;
     }
 
@@ -52,6 +55,7 @@ public class DocumentsService : IDocumentService
     {
         IGroupRepository groupRepository = _groupRepository(config);
         HttpResponse groupResponse = await groupRepository.GetGroup(groupSlug, false);
+
         return groupResponse.Get<Group>();
     }
 
@@ -59,15 +63,18 @@ public class DocumentsService : IDocumentService
     {
         IAssetRepository repository = _documentRepository(config);
         Asset assetResponse = await repository.Get(assetId);
+
         return assetResponse;
     }
 
     private async Task<bool> IsUserAdvisorForGroup(string groupSlug, ContentfulConfig config, LoggedInPerson user)
     {
-        if (string.IsNullOrEmpty(user.Email)) return false;
+        if (string.IsNullOrEmpty(user.Email))
+            return false;
 
         IGroupAdvisorRepository groupAdvisorsRepository = _groupAdvisorRepository(config);
         bool groupAdvisorResponse = await groupAdvisorsRepository.CheckIfUserHasAccessToGroupBySlug(groupSlug, user.Email);
+
         return groupAdvisorResponse;
     }
 }

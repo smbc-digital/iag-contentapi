@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using Directory = StockportContentApi.Model.Directory;
+using Directory = StockportContentApi.Models.Directory;
 
 namespace StockportContentApiTests.Unit.Repositories;
 
@@ -17,7 +17,7 @@ public class DirectoryRepositoryTests
 
     public DirectoryRepositoryTests()
     {
-        var config = new ContentfulConfig("test")
+        ContentfulConfig config = new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
@@ -25,7 +25,8 @@ public class DirectoryRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _directory = new Directory{
+        _directory = new Directory
+        {
             Alerts = null,
             Slug = "directory-slug",
             Body = "Directory body",
@@ -38,7 +39,8 @@ public class DirectoryRepositoryTests
             PinnedEntries = null
         };
 
-        _directoryEntry = new DirectoryEntry{
+        _directoryEntry = new DirectoryEntry
+        {
             Alerts = null,
             Slug = "directory-entry-slug",
             Description = "Directory entry body",
@@ -46,7 +48,7 @@ public class DirectoryRepositoryTests
             MetaDescription = "Directory entry MetaDescription",
             Name = "Directory entry name",
             Directories = new List<MinimalDirectory>{
-                new MinimalDirectory("test-directory", "Test")
+                new("test-directory", "Test")
             }
         };
 
@@ -62,17 +64,17 @@ public class DirectoryRepositoryTests
 
         _mockLogger = new Mock<ILogger<DirectoryRepository>>();
         _mockOptions = new Mock<IOptions<RedisExpiryConfiguration>>();
-        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration {  Directory = 1 });
+        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration { Directory = 1 });
 
-        _repository  = new DirectoryRepository(config, contentfulClientManager.Object, _mockDirectoryContentfulFactory.Object, _mockDirectoryEntryContentfulFactory.Object, _mockCache.Object, _mockOptions.Object, _mockLogger.Object);
+        _repository = new DirectoryRepository(config, contentfulClientManager.Object, _mockDirectoryContentfulFactory.Object, _mockDirectoryEntryContentfulFactory.Object, _mockCache.Object, _mockOptions.Object, _mockLogger.Object);
     }
 
-    [Fact]  
+    [Fact]
     public async void GetDirectoryFromSource_WithSlug_Should_ReturnCorrectType()
     {
         // Arrange
         const string slug = "a-slug";
-        var contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
+        ContentfulDirectory contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
         ContentfulCollection<ContentfulDirectory> collection = new()
         {
             Items = new List<ContentfulDirectory> { contentfulDirectory }
@@ -82,34 +84,34 @@ public class DirectoryRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulDirectoryEntry>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>()});
+            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>() });
 
         _mockDirectoryContentfulFactory.Setup(_ => _.ToModel(contentfulDirectory)).Returns(_directory);
-        
+
         // Act
-        var response = await _repository.GetDirectoryFromSource(slug, 2);
+        Directory response = await _repository.GetDirectoryFromSource(slug, 2);
 
         // Assert
         Assert.IsType<Directory>(response);
         Assert.Equal(response, _directory);
     }
 
-    [Fact]  
+    [Fact]
     public async void GetDirectoryFromSource_WithSlug_Should_ReturnNull_WhenDepthLimitExceeded()
     {
         // Act
-        var response = await _repository.GetDirectoryFromSource("slug", 6);
+        Directory response = await _repository.GetDirectoryFromSource("slug", 6);
 
         // Assert
         Assert.Null(response);
     }
 
-    [Fact]  
+    [Fact]
     public async void GetDirectoryFromSource_WithSlug_Should_ReturnNull_WhenDirectoryDoesNotExist()
     {
         // Arrange
         const string slug = "a-slug";
-        var contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
+        ContentfulDirectory contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
         ContentfulCollection<ContentfulDirectory> collection = new()
         {
             Items = new List<ContentfulDirectory>()
@@ -119,45 +121,45 @@ public class DirectoryRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulDirectoryEntry>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>()});
+            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>() });
 
         _mockDirectoryContentfulFactory.Setup(_ => _.ToModel(contentfulDirectory)).Returns(_directory);
 
         // Act
-        var response = await _repository.GetDirectoryFromSource("non-existant-slug", 2);
+        Directory response = await _repository.GetDirectoryFromSource("non-existant-slug", 2);
 
         // Assert
         Assert.Null(response);
-    } 
+    }
 
     [Fact]
     public async void Get_WithSlug_Should_GetDirectoryEntries()
     {
         // Arrange
-        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync( _directory );
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync(_directory);
 
         // Act
-        var response = await _repository.Get("directory-slug");
+        HttpResponse response = await _repository.Get("directory-slug");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(response.Get<Directory>(), _directory);
-        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once); 
+        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
     public async void Get_WithSlug_Should_Return_FailedNotFound_IfDirectory_DoesNot_Exist()
     {
         // Arrange
-        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync( (Directory)null);
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync((Directory)null);
 
         // Act
-        var response = await _repository.Get("directory-slug");
+        HttpResponse response = await _repository.Get("directory-slug");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
-        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once); 
+        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -165,10 +167,10 @@ public class DirectoryRepositoryTests
     public async void Get_Should_Return_FailedNotFound_IfNoEntriesExist()
     {
         // Arrange
-        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync( (Directory)null);
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>())).ReturnsAsync((Directory)null);
 
         // Act
-        var response = await _repository.Get();
+        HttpResponse response = await _repository.Get();
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -180,7 +182,7 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         const string slug = "a-slug";
-        var contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
+        ContentfulDirectory contentfulDirectory = new DirectoryBuilder().WithSlug(slug).Build();
         ContentfulCollection<ContentfulDirectory> collection = new()
         {
             Items = new List<ContentfulDirectory> { contentfulDirectory }
@@ -190,12 +192,12 @@ public class DirectoryRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulDirectoryEntry>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>()});
+            It.IsAny<CancellationToken>())).ReturnsAsync(new ContentfulCollection<ContentfulDirectoryEntry> { Items = new List<ContentfulDirectoryEntry>() });
 
         _mockDirectoryContentfulFactory.Setup(_ => _.ToModel(contentfulDirectory)).Returns(_directory);
-        
+
         // Act
-        var response = await _repository.Get();
+        HttpResponse response = await _repository.Get();
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -210,41 +212,41 @@ public class DirectoryRepositoryTests
         _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        var response = await _repository.GetEntry("directory-entry-slug");
+        HttpResponse response = await _repository.GetEntry("directory-entry-slug");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(response.Get<DirectoryEntry>(), _directoryEntry);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);         
+        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
     public async void GetEntry_WithSlug_ShouldReturn_NotFound_If_DirectoryEntryDoesNotExist()
     {
         // Arrange
-        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> {  });
-        
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { });
+
         // Act
-        var response = await _repository.GetEntry("directory-entry-slug");
-        
+        HttpResponse response = await _repository.GetEntry("directory-entry-slug");
+
         // Assert
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);         
+        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
     public async void GetAllDirectoryEntries_ShouldReturn_IEnumerableOfDirectoryEntry()
     {
         // Arrange
-        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> {  });
+        _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { });
 
         // Act
-        var response = await _repository.GetAllDirectoryEntries();
+        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntries();
 
         // Assert
-        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once); 
+        _mockCache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
         Assert.IsAssignableFrom<IEnumerable<DirectoryEntry>>(response);
     }
 
@@ -255,7 +257,7 @@ public class DirectoryRepositoryTests
         _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        var response = await _repository.GetDirectoryEntriesForDirectory("test-directory");
+        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("test-directory");
 
         // Assert
         Assert.Single(response);
@@ -269,7 +271,7 @@ public class DirectoryRepositoryTests
         _mockCache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>())).ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        var response = await _repository.GetDirectoryEntriesForDirectory("non-existant-test-directory");
+        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("non-existant-test-directory");
 
         // Assert
         Assert.Empty(response);
@@ -280,7 +282,7 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         const string slug = "a-slug";
-        var contentfulDirectoryEntry = new DirectoryEntryBuilder().WithSlug(slug).Build();
+        ContentfulDirectoryEntry contentfulDirectoryEntry = new DirectoryEntryBuilder().WithSlug(slug).Build();
         ContentfulCollection<ContentfulDirectoryEntry> collection = new()
         {
             Items = new List<ContentfulDirectoryEntry> { contentfulDirectoryEntry }
@@ -292,7 +294,7 @@ public class DirectoryRepositoryTests
         _mockDirectoryEntryContentfulFactory.Setup(_ => _.ToModel(contentfulDirectoryEntry)).Returns(_directoryEntry);
 
         // Act
-        var response = await _repository.GetAllDirectoryEntriesFromSource();
+        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntriesFromSource();
 
         // Assert
         Assert.IsAssignableFrom<IEnumerable<DirectoryEntry>>(response);

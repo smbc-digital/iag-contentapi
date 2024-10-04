@@ -5,15 +5,10 @@ public class HealthcheckController : Controller
 {
     private readonly IHealthcheckService _healthcheckService;
 
-    public HealthcheckController(IHealthcheckService healthcheckService)
-    {
-        _healthcheckService = healthcheckService;
-    }
+    public HealthcheckController(IHealthcheckService healthcheckService) => _healthcheckService = healthcheckService;
 
     [HttpGet]
     [Route("/_healthcheck")]
-    public async Task<IActionResult> Index(string articleSlug, string businessId)
-    {
-        return await Task.Run(async () => Json(await _healthcheckService.Get()));
-    }
+    public async Task<IActionResult> Index() =>
+        await Task.Run(async () => Json(await _healthcheckService.Get()));
 }

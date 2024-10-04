@@ -3,33 +3,34 @@
 public class EventBuilder
 {
     private string _slug = "slug";
-    private string _title = "title";
-    private string _teaser = "teaser";
-    private string _image = "image-url.jpg";
-    private string _thumbnailImage = "thumb-image-url.jpg";
-    private string _description = "description";
-    private string _fee = "fee";
-    private string _location = "location";
-    private string _submittedby = "submittedBy";
-    private string _metaDescription = "metaDescription";
-    private DateTime _eventDate = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-    private string _startTime = "10:00";
-    private string _endTime = "17:00";
+    private readonly string _title = "title";
+    private readonly string _teaser = "teaser";
+    private readonly string _image = "image-url.jpg";
+    private readonly string _thumbnailImage = "thumb-image-url.jpg";
+    private readonly string _description = "description";
+    private readonly string _fee = "fee";
+    private readonly string _location = "location";
+    private readonly string _submittedby = "submittedBy";
+    private readonly string _metaDescription = "metaDescription";
+    private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+    private readonly string _startTime = "10:00";
+    private readonly string _endTime = "17:00";
     private int _occurences = -1;
     private EventFrequency _eventFrequency = EventFrequency.None;
-    private List<Crumb> _breadcrumbs = new List<Crumb> { new Crumb("Events", "", "events") };
-    private List<Document> _documents = new List<Document> { new DocumentBuilder().Build() };
-    private List<string> _categories = new List<string> { "Category 1", "Category 2" };
-    private MapPosition _mapPosition = new MapPosition() { Lat = 53.47, Lon = -2.2 };
+    private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
+    private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
+    private List<string> _categories = new() { "Category 1", "Category 2" };
+    private readonly MapPosition _mapPosition = new() { Lat = 53.47, Lon = -2.2 };
     private string _bookingInformation = "booking information";
     private bool _featured = true;
-    private DateTime _updatedAt = new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
-    private List<string> _tags = new List<string>();
-    private Group _group = null;
-    private List<Alert> _alerts = new List<Alert> { new Alert("title", "subHeading", "body",
+    private readonly DateTime _updatedAt = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+    private List<string> _tags = new();
+    private readonly Group _group = null;
+    private readonly List<Alert> _alerts = new()
+    { new Alert("title", "subHeading", "body",
                                                              "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                                                              new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug", false, string.Empty) };
-    private List<EventCategory> _eventCategories = new List<EventCategory>();
+    private List<EventCategory> _eventCategories = new();
 
     public Event Build()
     {

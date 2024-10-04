@@ -19,43 +19,40 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
 
     public ContactUsArea ToModel(ContentfulContactUsArea entry)
     {
-        var title = !string.IsNullOrEmpty(entry.Title)
+        string title = !string.IsNullOrEmpty(entry.Title)
             ? entry.Title
-            : "";
+            : string.Empty;
 
-        var slug = !string.IsNullOrEmpty(entry.Slug)
+        string slug = !string.IsNullOrEmpty(entry.Slug)
             ? entry.Slug
-            : "";
+            : string.Empty;
 
-        var categoriesTitle = !string.IsNullOrEmpty(entry.CategoriesTitle)
+        string categoriesTitle = !string.IsNullOrEmpty(entry.CategoriesTitle)
             ? entry.CategoriesTitle
-            : "";
+            : string.Empty;
 
-        var insetTextTitle = !string.IsNullOrEmpty(entry.InsetTextTitle)
+        string insetTextTitle = !string.IsNullOrEmpty(entry.InsetTextTitle)
             ? entry.InsetTextTitle
-            : "";
+            : string.Empty;
 
-        var insetTextBody = !string.IsNullOrEmpty(entry.InsetTextBody)
+        string insetTextBody = !string.IsNullOrEmpty(entry.InsetTextBody)
             ? entry.InsetTextBody
-            : "";
+            : string.Empty;
 
-        var breadcrumbs =
-            entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
 
-        var primaryItems =
-            entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys)
-                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
-                .Select(item => _subitemFactory.ToModel(item)).ToList();
+        List<SubItem> primaryItems = entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
+                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
 
-        var alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) &&
-                                                 _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-                            .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
 
-        var contactUsCategories =
-            entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
-                .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
+        List<ContactUsCategory> contactUsCategories = entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
+                                                        .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
         return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription);
     }

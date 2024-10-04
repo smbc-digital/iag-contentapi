@@ -24,7 +24,7 @@ public abstract class BaseRepository
         return result;
     }
 
-    private bool BuilderHasProperty<T>(QueryBuilder<T> builder, string property)
+    private static bool BuilderHasProperty<T>(QueryBuilder<T> builder, string property)
     {
         return builder.Build().Contains(property);
     }

@@ -8,25 +8,23 @@ public interface ILoggedInHelper
 public class LoggedInHelper : ILoggedInHelper
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly CurrentEnvironment _environment;
     private readonly IJwtDecoder _decoder;
     private readonly ILogger<LoggedInHelper> _logger;
 
-    public LoggedInHelper(IHttpContextAccessor httpContextAccessor, CurrentEnvironment environment, IJwtDecoder decoder, ILogger<LoggedInHelper> logger)
+    public LoggedInHelper(IHttpContextAccessor httpContextAccessor, IJwtDecoder decoder, ILogger<LoggedInHelper> logger)
     {
         _httpContextAccessor = httpContextAccessor;
-        _environment = environment;
         _decoder = decoder;
         _logger = logger;
     }
 
     public LoggedInPerson GetLoggedInPerson()
     {
-        var person = new LoggedInPerson();
+        LoggedInPerson person = new();
 
         try
         {
-            var token = _httpContextAccessor.HttpContext.Request.Headers["jwtCookie"];
+            Microsoft.Extensions.Primitives.StringValues token = _httpContextAccessor.HttpContext.Request.Headers["jwtCookie"];
 
             if (!string.IsNullOrEmpty(token)) person = _decoder.Decode(token);
         }

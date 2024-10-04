@@ -3,7 +3,7 @@
 public class EventReccurenceFactory
 {
     private readonly Dictionary<EventFrequency, Func<Event, int, Event>> _reccurenceDictionary =
-        new Dictionary<EventFrequency, Func<Event, int, Event>>
+        new()
         {
             { EventFrequency.None, (e, dayNum) => null },
             { EventFrequency.Daily, (e, dayNum) => GetReccuringEvent(e, e.EventDate.Date.AddDays(dayNum * 1)) },
@@ -17,12 +17,16 @@ public class EventReccurenceFactory
 
     public List<Event> GetReccuringEventsOfEvent(Event eventItem)
     {
-        var reoccuredEventsByFrequency = new List<Event>();
-        for (var i = 1; i < eventItem.Occurences; i++)
+        List<Event> reoccuredEventsByFrequency = new List<Event>();
+        
+        for (int i = 1; i < eventItem.Occurences; i++)
         {
-            var recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
-            if (recurringEvent != null) reoccuredEventsByFrequency.Add(recurringEvent);
+            Event recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
+
+            if (recurringEvent is not null)
+                reoccuredEventsByFrequency.Add(recurringEvent);
         }
+
         return reoccuredEventsByFrequency;
     }
 
@@ -36,29 +40,34 @@ public class EventReccurenceFactory
 
     private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)
     {
-        var followingMonth = date.AddMonths(occurrence);
-        var newDate = GetFirstMatchingDayOfMonth(date, followingMonth);
+        DateTime followingMonth = date.AddMonths(occurrence);
+        DateTime newDate = GetFirstMatchingDayOfMonth(date, followingMonth);
 
         return GetWeeklyDayInMonth(date, newDate);
     }
 
     private static DateTime GetFirstMatchingDayOfMonth(DateTime date, DateTime nextMonth)
     {
-        var newDate = new DateTime(nextMonth.Year, nextMonth.Month, 1, date.Hour, date.Minute, date.Second, date.Kind);
-        while (newDate.DayOfWeek != date.DayOfWeek)
+        DateTime newDate = new(nextMonth.Year, nextMonth.Month, 1, date.Hour, date.Minute, date.Second, date.Kind);
+
+        while (!newDate.DayOfWeek.Equals(date.DayOfWeek))
             newDate = newDate.AddDays(1);
+
         return newDate;
     }
 
     private static DateTime GetWeeklyDayInMonth(DateTime date, DateTime newDate)
     {
-        var dayOccurrence = (date.Day - 1) / 7 + 1;
+        int dayOccurrence = (date.Day - 1) / 7 + 1;
 
-        for (var i = 1; i < dayOccurrence; i++)
+        for (int i = 1; i < dayOccurrence; i++)
         {
             newDate = newDate.AddDays(7);
-            if (newDate.AddDays(7).Month != newDate.Month) break;
+
+            if (!newDate.AddDays(7).Month.Equals(newDate.Month))
+                break;
         }
+
         return newDate;
     }
 }

@@ -3,9 +3,9 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ServicePayPaymentController : Controller
 {
-    private readonly ResponseHandler _handler;
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<ContentfulConfig, ServicePayPaymentRepository> _createRepository;
+    private readonly ResponseHandler _handler;
 
     public ServicePayPaymentController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
@@ -23,7 +23,8 @@ public class ServicePayPaymentController : Controller
     {
         return await _handler.Get(() =>
         {
-            var paymentRepository = _createRepository(_createConfig(businessId));
+            ServicePayPaymentRepository paymentRepository = _createRepository(_createConfig(businessId));
+
             return paymentRepository.GetPayment(slug);
         });
     }

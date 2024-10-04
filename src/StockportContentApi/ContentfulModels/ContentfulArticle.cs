@@ -12,5 +12,5 @@ public class ContentfulArticle : ContentfulReference
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
     public List<ContentfulReference> RelatedContent { get; set; } = new();
     public List<ContentfulGroupBranding> ArticleBranding { get; set; } = new();
-    public string LogoAreaTitle { get; set;}
+    public string LogoAreaTitle { get; set; }
 }
