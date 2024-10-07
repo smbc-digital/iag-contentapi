@@ -28,5 +28,5 @@ public class FooterController : Controller
         });
 
         return response;
-    }
+    }    
 }

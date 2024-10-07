@@ -155,6 +155,9 @@ public static class ServiceCollectionExtensions
             .GetService<IContentfulFactory<ContentfulSocialMediaLink,
                 SocialMediaLink>>()));
 
+        services.AddSingleton<IContentfulFactory<ContentfulHeader, Header>>
+        (p => new HeaderContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
+
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(
             p.GetService<IVideoRepository>(),
             p.GetService<IContentfulFactory<Asset, Document>>(),
@@ -488,6 +491,14 @@ public static class ServiceCollectionExtensions
                 return x => new(x, p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulFooter, Footer>>());
             });
+
+        services.AddSingleton<Func<ContentfulConfig, HeaderRepository>>(
+            p =>
+            {
+                return x => new(x, p.GetService<IContentfulClientManager>(),
+                    p.GetService<IContentfulFactory<ContentfulHeader, Header>>());
+            });
+
         services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
             p =>
             {
