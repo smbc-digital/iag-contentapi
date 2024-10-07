@@ -93,6 +93,33 @@ public class EventController : Controller
         });
     }
 
+
+    [ApiExplorerSettings(IgnoreApi = false)]
+    [HttpPost]
+    [Route("{businessId}/events/{slug}")]
+    [Route("v1/{businessId}/events/{slug}")]
+    public async Task<IActionResult> CreateEvent([FromBody] Event eventDetail, string businessId)
+    {
+        var repository = _eventRepository(_createConfig(businessId));
+        var existingEvent = await repository.GetContentfulEvent(eventDetail.Slug);
+
+        var existingCategories = await repository.GetContentfulEventCategories();
+        var referencedCategories = existingCategories.Items.Where(c => eventDetail.EventCategories.Any(ed => c.Name == ed.Name)).ToList();
+
+        var managementEvent = ConvertToManagementEvent(eventDetail, referencedCategories, existingEvent);
+
+        return await _handler.Get(async () =>
+        {
+            var managementRepository = _managementRepository(_createConfig(businessId));
+            var systemProperties = 
+            var result = await managementRepository.CreateOrUpdate(managementEvent, new SystemProperties
+            {
+                Id = "TestEvent",                
+            };
+            return result;
+        });
+    }
+
     [HttpGet]
     [Route("{businessId}/events")]
     [Route("{businessId}/events/latest/{limit}")]
