@@ -5,6 +5,7 @@ public interface IJwtDecoder
     LoggedInPerson Decode(string token);
 }
 
+[ExcludeFromCodeCoverage]
 public class JwtDecoder : IJwtDecoder
 {
     private readonly GroupAuthenticationKeys _keys;

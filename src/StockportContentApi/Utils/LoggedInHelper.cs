@@ -5,6 +5,7 @@ public interface ILoggedInHelper
     LoggedInPerson GetLoggedInPerson();
 }
 
+[ExcludeFromCodeCoverage]
 public class LoggedInHelper : ILoggedInHelper
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

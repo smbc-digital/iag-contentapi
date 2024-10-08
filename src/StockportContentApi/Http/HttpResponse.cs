@@ -1,5 +1,6 @@
 namespace StockportContentApi.Http;
 
+[ExcludeFromCodeCoverage]
 public class HttpResponse
 {
     public readonly HttpStatusCode StatusCode;

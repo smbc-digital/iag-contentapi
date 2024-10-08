@@ -54,6 +54,7 @@ public class Homepage
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class NullHomepage : Homepage
 {
     public NullHomepage() : base(Enumerable.Empty<string>(), string.Empty, string.Empty, new List<SubItem>(),

@@ -30,7 +30,7 @@ public class FooterRepositoryTests
     [Fact]
     public void ShouldReturnAFooter()
     {
-        Footer mockFooter = new("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>());
+        Footer mockFooter = new("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3");
 
         ContentfulCollection<ContentfulFooter> footerCollection = new()
         {
@@ -46,7 +46,7 @@ public class FooterRepositoryTests
 
         _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulFooter>()))
             .Returns(new Footer("Title", "a-slug", new List<SubItem>(),
-                new List<SocialMediaLink>()));
+                new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3"));
         HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter());
         footer.Get<Footer>().Title.Should().Be(mockFooter.Title);
         footer.Get<Footer>().Slug.Should().Be(mockFooter.Slug);

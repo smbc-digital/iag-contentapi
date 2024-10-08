@@ -2,17 +2,33 @@
 
 public class AtoZContentfulFactoryTests
 {
+    [Fact]
+    public void ToModel_ShouldCreateAtoZFromAContentfulReference()
+    {
+        // Arrange
+        ContentfulAtoZ contentfulReference = new ContentfulAToZBuilder().Build();
+
+        // Act
+        AtoZ atoZ = new AtoZContentfulFactory().ToModel(contentfulReference);
+
+        // Assert
+        Assert.Equal(contentfulReference.Slug, atoZ.Slug);
+        Assert.Equal(contentfulReference.Title, atoZ.Title);
+        Assert.Equal(contentfulReference.Sys.ContentType.SystemProperties.Id, atoZ.Type);
+    }
 
     [Fact]
-    public void ShouldCreateAtoZFromAContentfulReference()
+    public void ToModel_ShouldMapEmptyValues()
     {
-        ContentfulAtoZ ContentfulReference =
-            new ContentfulAToZBuilder().Build();
+        // Arrange
+        ContentfulAtoZ contentfulReference = new ContentfulAToZBuilder().Build();
+        contentfulReference.Title = string.Empty;
 
-        AtoZ atoZ = new AtoZContentfulFactory().ToModel(ContentfulReference);
+        // Act
+        AtoZ atoZ = new AtoZContentfulFactory().ToModel(contentfulReference);
 
-        atoZ.Slug.Should().Be(ContentfulReference.Slug);
-        atoZ.Title.Should().Be(ContentfulReference.Title);
-        atoZ.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
+        // Assert
+        Assert.Equal(contentfulReference.Name, atoZ.Title);
+        Assert.Equal(contentfulReference.Sys.ContentType.SystemProperties.Id, atoZ.Type);
     }
 }

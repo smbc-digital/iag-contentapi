@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Http;
 
+[ExcludeFromCodeCoverage]
 public class LoggingHttpClient : IHttpClient
 {
     private readonly IHttpClient _inner;

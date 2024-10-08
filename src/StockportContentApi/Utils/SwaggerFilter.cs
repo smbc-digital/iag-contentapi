@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Utils;
 
+[ExcludeFromCodeCoverage]
 public class SwaggerFilter : IDocumentFilter
 {
 

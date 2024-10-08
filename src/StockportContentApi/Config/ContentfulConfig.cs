@@ -1,5 +1,6 @@
 namespace StockportContentApi.Config;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulConfig
 {
     public readonly string BusinessId;

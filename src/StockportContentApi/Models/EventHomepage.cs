@@ -8,6 +8,7 @@ public class EventHomepageRow
     public IEnumerable<Event> Events { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class EventHomepage
 {
     public IEnumerable<EventHomepageRow> Rows { get; }

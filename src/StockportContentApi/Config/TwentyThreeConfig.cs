@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Config;
 
+[ExcludeFromCodeCoverage]
 public class TwentyThreeConfig
 {
     public TwentyThreeConfig(string baseUrl)

@@ -1,9 +1,10 @@
-﻿namespace StockportWebapp.DataProtection;
+﻿namespace StockportContentApi.DataProtection;
 
 /// <summary>
 ///     Extension methods for <see cref="IDataProtectionBuilder" /> for configuring
 ///     data protection options.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class DataProtectionBuilderExtensions
 {
     /// <summary>

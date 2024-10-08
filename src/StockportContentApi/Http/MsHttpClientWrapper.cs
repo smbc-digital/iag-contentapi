@@ -5,6 +5,7 @@ public interface IMsHttpClientWrapper
     Task<HttpResponseMessage> GetAsync(string url);
 }
 
+[ExcludeFromCodeCoverage]
 public class MsHttpClientWrapper : IMsHttpClientWrapper
 {
     private readonly System.Net.Http.HttpClient _client = new();

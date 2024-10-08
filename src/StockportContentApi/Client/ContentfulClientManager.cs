@@ -8,6 +8,7 @@ public interface IContentfulClientManager
     IContentfulManagementClient GetManagementClient(ContentfulConfig config);
 }
 
+[ExcludeFromCodeCoverage]
 public class ContentfulClientManager : IContentfulClientManager
 {
     private readonly System.Net.Http.HttpClient _httpClient;

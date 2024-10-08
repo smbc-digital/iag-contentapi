@@ -2,6 +2,7 @@
 
 namespace StockportContentApi;
 
+[ExcludeFromCodeCoverage]
 public class Startup
 {
     private readonly string _appEnvironment;

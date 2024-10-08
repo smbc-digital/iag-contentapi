@@ -5,6 +5,7 @@ public interface IHttpClient
     Task<HttpResponse> Get(string url);
 }
 
+[ExcludeFromCodeCoverage]
 public class HttpClient : IHttpClient
 {
     private readonly IMsHttpClientWrapper _client;

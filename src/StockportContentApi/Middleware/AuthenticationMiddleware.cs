@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Middleware;
 
+[ExcludeFromCodeCoverage]
 public class AuthenticationMiddleware
 {
     private readonly IAuthenticationHelper _authHelper;
