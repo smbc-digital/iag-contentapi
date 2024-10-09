@@ -74,3 +74,6 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }

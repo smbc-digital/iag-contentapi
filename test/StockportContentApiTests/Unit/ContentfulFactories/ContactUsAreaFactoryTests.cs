@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class ContentfulContactUsAreaFactoryTests
+public class ContactUsAreaFactoryTests
 {
     private readonly ContactUsAreaContentfulFactory _factory;
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
@@ -9,7 +9,7 @@ public class ContentfulContactUsAreaFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
 
-    public ContentfulContactUsAreaFactoryTests()
+    public ContactUsAreaFactoryTests()
     {
         _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
             _mockCrumbFactory.Object,
@@ -65,7 +65,7 @@ public class ContentfulContactUsAreaFactoryTests
     }
 
     [Fact]
-    public void ShouldCreate_ValidContentfulContactUsAreModel_WithAllItems()
+    public void ShouldCreate_ValidContentfulContactUsAreaModel_WithAllItems()
     {
         List<ContentfulReference> primaryItems = new() { new() };
         List<ContentfulReference> breadcrumbs = new() { new() };

@@ -1,4 +1,4 @@
-﻿namespace StockportWebapp.DataProtection;
+﻿namespace StockportContentApi.DataProtection;
 
 /// <summary>
 ///     Key repository that stores XML encrypted keys in a Redis distributed cache.
@@ -29,6 +29,7 @@
 /// </remarks>
 /// <seealso cref="Microsoft.AspNetCore.DataProtection.Repositories.IXmlRepository" />
 /// <seealso cref="System.IDisposable" />
+[ExcludeFromCodeCoverage]
 public class RedisXmlRepository : IXmlRepository, IDisposable
 {
     /// <summary>

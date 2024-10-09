@@ -46,7 +46,7 @@ public class EventRepository : BaseRepository
     public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
     {
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
-        IEnumerable<ContentfulEvent> groupEvents = events.Where(evnt => evnt.Group.Slug.Equals(groupSlug));
+        IEnumerable<ContentfulEvent> groupEvents = events.Where(singleEvent => singleEvent.Group.Slug.Equals(groupSlug));
         
         return groupEvents;
     }
@@ -55,10 +55,11 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
         
-        List<Event> liveEvents = GetAllEventsAndTheirReccurrences(events).Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
-                                    .OrderBy(evnt => evnt.EventDate)
-                                    .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                    .ThenBy(t => t.Title)
+        List<Event> liveEvents = GetAllEventsAndTheirRecurrences(events)
+                                    .Where(singleEvent => _dateComparer.EventDateIsBetweenTodayAndLater(singleEvent.EventDate))
+                                    .OrderBy(singleEvent => singleEvent.EventDate)
+                                    .ThenBy(singleEvent => TimeSpan.Parse(singleEvent.StartTime))
+                                    .ThenBy(singleEvent => singleEvent.Title)
                                     .ToList();
 
         liveEvents = GetNextOccurenceOfEvents(liveEvents);
@@ -66,7 +67,7 @@ public class EventRepository : BaseRepository
         foreach (EventHomepageRow row in homepage.Rows)
             row.Events = row.IsLatest
                 ? liveEvents.Take(3) 
-                : liveEvents.Where(evnt => evnt.Tags.Contains(row.Tag.ToLower())).Take(3);
+                : liveEvents.Where(singleEvent => singleEvent.Tags.Contains(row.Tag.ToLower())).Take(3);
 
         return homepage;
     }
@@ -88,9 +89,9 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        IEnumerable<Event> events = GetAllEventsAndTheirReccurrences(entries);
+        IEnumerable<Event> events = GetAllEventsAndTheirRecurrences(entries);
 
-        Event eventItem = events.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
+        Event eventItem = events.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
 
         eventItem = GetEventFromItsOccurrences(date, eventItem);
 
@@ -112,7 +113,7 @@ public class EventRepository : BaseRepository
         if (eventItem is null || !date.HasValue || eventItem.EventDate.Equals(date))
             return eventItem;
 
-        return new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem)
+        return new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem)
                     .SingleOrDefault(x => x.EventDate.Equals(date));
     }
 
@@ -142,7 +143,7 @@ public class EventRepository : BaseRepository
 
         GeoCoordinate searchCoord = new(latitude, longitude);
 
-        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => CheckDates(searchdateFrom, searchdateTo, e))
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                                 .Where(e => string.IsNullOrWhiteSpace(category) 
                                     || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
                                     || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
@@ -177,7 +178,7 @@ public class EventRepository : BaseRepository
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
 
-        IEnumerable<Event> eventsAll = GetAllEventsAndTheirReccurrences(entries);
+        IEnumerable<Event> eventsAll = GetAllEventsAndTheirRecurrences(entries);
 
         List<Event> events = eventsAll.Where(e => e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
                                     || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower()))
@@ -195,7 +196,7 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => string.IsNullOrWhiteSpace(category)
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => string.IsNullOrWhiteSpace(category)
                                     || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
                                     || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
                                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
@@ -213,7 +214,7 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => string.IsNullOrWhiteSpace(tag)
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => string.IsNullOrWhiteSpace(tag)
                                     || e.Tags.Contains(tag.ToLower()))
                                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                                 .OrderBy(o => o.EventDate)
@@ -250,7 +251,7 @@ public class EventRepository : BaseRepository
             : publishedEvents.ToList();
     }
 
-    public IEnumerable<Event> GetAllEventsAndTheirReccurrences(IEnumerable<ContentfulEvent> entries)
+    public IEnumerable<Event> GetAllEventsAndTheirRecurrences(IEnumerable<ContentfulEvent> entries)
     {
         List<Event> entriesList = new();
 
@@ -258,7 +259,7 @@ public class EventRepository : BaseRepository
         {
             Event eventItem = _contentfulFactory.ToModel(entry);
             entriesList.Add(eventItem);
-            entriesList.AddRange(new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem));
+            entriesList.AddRange(new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem));
         }
 
         return entriesList;
@@ -273,7 +274,7 @@ public class EventRepository : BaseRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirReccurrences(entries).Where(e => e.Group.Slug.Equals(slug))
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => e.Group.Slug.Equals(slug))
                                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                                 .OrderBy(o => o.EventDate)
                                 .ThenBy(c => TimeSpan.Parse(c.StartTime))

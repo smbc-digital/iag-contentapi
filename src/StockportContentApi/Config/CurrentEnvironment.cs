@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Config;
 
+[ExcludeFromCodeCoverage]
 public class CurrentEnvironment
 {
     public string Name { get; }

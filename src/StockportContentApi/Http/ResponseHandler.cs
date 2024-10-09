@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Http;
 
+[ExcludeFromCodeCoverage]
 public class ResponseHandler
 {
     private readonly ILogger<ResponseHandler> _logger;

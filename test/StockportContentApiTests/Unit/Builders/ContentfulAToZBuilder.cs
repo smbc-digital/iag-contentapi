@@ -3,6 +3,7 @@
 public class ContentfulAToZBuilder
 {
     private string _title = "Vintage Village turns 6 years old";
+    private string _name = "Vintage Village turns six years old";
     private string _slug = "vintage-village-turns-6-years-old";
     private string _teaser = "The vintage village turned 6 with a great reception";
     private readonly string _displayOnAZ = "True";
@@ -19,6 +20,7 @@ public class ContentfulAToZBuilder
         return new ContentfulAtoZ
         {
             Title = _title,
+            Name = _name,
             Slug = _slug,
             Teaser = _teaser,
             DisplayOnAZ = _displayOnAZ,

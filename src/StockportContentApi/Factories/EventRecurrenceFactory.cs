@@ -1,36 +1,36 @@
 ﻿namespace StockportContentApi.Factories;
 
-public class EventReccurenceFactory
+public class EventRecurrenceFactory
 {
-    private readonly Dictionary<EventFrequency, Func<Event, int, Event>> _reccurenceDictionary =
+    private readonly Dictionary<EventFrequency, Func<Event, int, Event>> _recurrenceDictionary =
         new()
         {
             { EventFrequency.None, (e, dayNum) => null },
-            { EventFrequency.Daily, (e, dayNum) => GetReccuringEvent(e, e.EventDate.Date.AddDays(dayNum * 1)) },
-            { EventFrequency.Weekly, (e, dayNum) => GetReccuringEvent(e, e.EventDate.Date.AddDays(dayNum * 7)) },
-            { EventFrequency.Fortnightly, (e, dayNum) => GetReccuringEvent(e, e.EventDate.Date.AddDays(dayNum * 14)) },
-            { EventFrequency.Monthly, (e, monthNum) => GetReccuringEvent(e, e.EventDate.Date.AddMonths(monthNum * 1)) },
-            { EventFrequency.MonthlyDate, (e, monthNum) => GetReccuringEvent(e, e.EventDate.Date.AddMonths(monthNum * 1)) },
-            { EventFrequency.MonthlyDay, (e, monthNum) => GetReccuringEvent(e, GetCorrespondingMonthsDay(e.EventDate, monthNum)) },
-            { EventFrequency.Yearly, (e, monthNum) => GetReccuringEvent(e, e.EventDate.Date.AddMonths(monthNum * 12)) }
+            { EventFrequency.Daily, (e, dayNum) => GetRecurringEvent(e, e.EventDate.Date.AddDays(dayNum * 1)) },
+            { EventFrequency.Weekly, (e, dayNum) => GetRecurringEvent(e, e.EventDate.Date.AddDays(dayNum * 7)) },
+            { EventFrequency.Fortnightly, (e, dayNum) => GetRecurringEvent(e, e.EventDate.Date.AddDays(dayNum * 14)) },
+            { EventFrequency.Monthly, (e, monthNum) => GetRecurringEvent(e, e.EventDate.Date.AddMonths(monthNum * 1)) },
+            { EventFrequency.MonthlyDate, (e, monthNum) => GetRecurringEvent(e, e.EventDate.Date.AddMonths(monthNum * 1)) },
+            { EventFrequency.MonthlyDay, (e, monthNum) => GetRecurringEvent(e, GetCorrespondingMonthsDay(e.EventDate, monthNum)) },
+            { EventFrequency.Yearly, (e, monthNum) => GetRecurringEvent(e, e.EventDate.Date.AddMonths(monthNum * 12)) }
         };
 
-    public List<Event> GetReccuringEventsOfEvent(Event eventItem)
+    public List<Event> GetRecurringEventsOfEvent(Event eventItem)
     {
-        List<Event> reoccuredEventsByFrequency = new List<Event>();
+        List<Event> recurringEventsByFrequency = new List<Event>();
         
         for (int i = 1; i < eventItem.Occurences; i++)
         {
-            Event recurringEvent = _reccurenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
+            Event recurringEvent = _recurrenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
 
             if (recurringEvent is not null)
-                reoccuredEventsByFrequency.Add(recurringEvent);
+                recurringEventsByFrequency.Add(recurringEvent);
         }
 
-        return reoccuredEventsByFrequency;
+        return recurringEventsByFrequency;
     }
 
-    public static Event GetReccuringEvent(Event entry, DateTime newDate)
+    public static Event GetRecurringEvent(Event entry, DateTime newDate)
     {
         return new Event(entry.Title, entry.Slug, entry.Teaser, entry.ImageUrl, entry.Description, entry.Fee,
                          entry.Location, entry.SubmittedBy, newDate, entry.StartTime, entry.EndTime, entry.Occurences,

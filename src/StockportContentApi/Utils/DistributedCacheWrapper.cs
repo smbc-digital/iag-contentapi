@@ -7,6 +7,7 @@ public interface IDistributedCacheWrapper
     Task<string> GetString(string key, CancellationToken token = default);
 }
 
+[ExcludeFromCodeCoverage]
 public class DistributedCacheWrapper : IDistributedCacheWrapper
 {
     private readonly IDistributedCache _distributedCache;

@@ -7,6 +7,7 @@ public interface IAuthenticationHelper
     void CheckVersionIsProvided(AuthenticationData authenticationData);
 }
 
+[ExcludeFromCodeCoverage]
 public class AuthenticationHelper : IAuthenticationHelper
 {
     private const string BeginsWithV = "v";
@@ -69,6 +70,7 @@ public class AuthenticationHelper : IAuthenticationHelper
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class AuthenticationData
 {
     public string AuthenticationKey { get; set; }

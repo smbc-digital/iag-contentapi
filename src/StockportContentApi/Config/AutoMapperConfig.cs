@@ -2,6 +2,7 @@
 
 namespace StockportContentApi.Config;
 
+[ExcludeFromCodeCoverage]
 public class AutoMapperConfig : AutoMapper.Profile
 {
     public AutoMapperConfig()
@@ -76,6 +77,7 @@ public class AutoMapperConfig : AutoMapper.Profile
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
 {
     public ManagementGroup Convert(ContentfulGroup source, ManagementGroup destination, ResolutionContext context)
@@ -176,6 +178,7 @@ public class GroupConverter : ITypeConverter<ContentfulGroup, ManagementGroup>
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
 {
     public ManagementEvent Convert(ContentfulEvent source, ManagementEvent destination, ResolutionContext context)

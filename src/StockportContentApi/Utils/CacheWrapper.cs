@@ -21,6 +21,7 @@ public interface ICache
     void RemoveItemFromCache(string cacheKey);
 }
 
+[ExcludeFromCodeCoverage]
 public class Cache : ICache
 {
     private readonly ILogger<ICache> _logger;

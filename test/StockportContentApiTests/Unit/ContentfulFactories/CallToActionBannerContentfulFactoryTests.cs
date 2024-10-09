@@ -22,9 +22,9 @@ public class CallToActionBannerContentfulFactoryTests
         {
             AltText = "alt text",
             ButtonText = "button text",
-            Image = new Asset()
+            Image = new Asset
             {
-                File = new File()
+                File = new File
                 {
                     Url = "url"
                 }
@@ -45,5 +45,27 @@ public class CallToActionBannerContentfulFactoryTests
         Assert.Equal("link", result.Link);
         Assert.Equal("title", result.Title);
         Assert.Equal("teaser", result.Teaser);
+        Assert.Equal("url", result.Image);
+    }
+
+    [Fact]
+    public void ToModel_ShouldReturnCallToActionBannerWithNullImage()
+    {
+        // Arrange
+        ContentfulCallToActionBanner model = new()
+        {
+            AltText = "alt text",
+            ButtonText = "button text",
+            Link = "link",
+            Title = "title",
+            Teaser = "teaser"
+        };
+
+        // Act
+        CallToActionBanner result = _factory.ToModel(model);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Null(result.Image);
     }
 }

@@ -1,13 +1,13 @@
 ﻿namespace StockportContentApiTests.Unit.Factories;
 
-public class EventReccurenceFactoryTests
+public class EventRecurrenceFactoryTests
 {
     [Fact]
-    public void ShouldCreateReccuringEventsAccordingToMonthlyDate()
+    public void ShouldCreateRecurringEventsAccordingToMonthlyDate()
     {
         Event eventItem = new EventBuilder().Occurrences(3).Frequency(EventFrequency.MonthlyDate).EventDate(new DateTime(2017, 01, 24)).Build();
 
-        List<Event> events = new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem);
+        List<Event> events = new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem);
 
         events.Count.Should().Be(2);
         events[0].EventDate.Should().Be(new DateTime(2017, 02, 24));
@@ -15,11 +15,11 @@ public class EventReccurenceFactoryTests
     }
 
     [Fact]
-    public void ShouldCreateReccuringEventsAccordingToMonthlyDay()
+    public void ShouldCreateRecurringEventsAccordingToMonthlyDay()
     {
         Event eventItem = new EventBuilder().Occurrences(3).Frequency(EventFrequency.MonthlyDay).EventDate(new DateTime(2017, 01, 19)).Build();
 
-        List<Event> events = new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem);
+        List<Event> events = new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem);
 
         events.Count.Should().Be(2);
         events[0].EventDate.Should().Be(new DateTime(2017, 02, 16));
@@ -29,11 +29,11 @@ public class EventReccurenceFactoryTests
     }
 
     [Fact]
-    public void ShouldCreateReccuringEventsAccordingToMonthlyDayOnLastOccurenceOfDayInMonth()
+    public void ShouldCreateRecurringEventsAccordingToMonthlyDayOnLastOccurenceOfDayInMonth()
     {
         Event eventItem = new EventBuilder().Occurrences(3).Frequency(EventFrequency.MonthlyDay).EventDate(new DateTime(2017, 01, 29)).Build();
 
-        List<Event> events = new EventReccurenceFactory().GetReccuringEventsOfEvent(eventItem);
+        List<Event> events = new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem);
 
         events.Count.Should().Be(2);
         events[0].EventDate.Should().Be(new DateTime(2017, 02, 26));

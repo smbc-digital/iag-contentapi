@@ -25,12 +25,24 @@ public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Foot
             ? entry.CopyrightSection
             : string.Empty;
 
+        string footerContent1 = !string.IsNullOrEmpty(entry.FooterContent1)
+            ? entry.FooterContent1
+            : string.Empty;
+
+        string footerContent2 = !string.IsNullOrEmpty(entry.FooterContent2)
+            ? entry.FooterContent2
+            : string.Empty;
+
+        string footerContent3 = !string.IsNullOrEmpty(entry.FooterContent3)
+            ? entry.FooterContent3
+            : string.Empty;
+
         List<SubItem> links = entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
                                 .Select(item => _subitemFactory.ToModel(item)).ToList();
 
         List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                     .Select(media => _socialMediaFactory.ToModel(media)).ToList();
 
-        return new Footer(title, slug, links, socialMediaLinks);
+        return new Footer(title, slug, links, socialMediaLinks, footerContent1, footerContent2, footerContent3);
     }
 }

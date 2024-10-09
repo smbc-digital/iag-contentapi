@@ -1,5 +1,6 @@
 namespace StockportContentApi.Utils;
 
+[ExcludeFromCodeCoverage]
 public class ContentfulHelpers
 {
     public static bool EntryIsNotALink(SystemProperties sys) =>

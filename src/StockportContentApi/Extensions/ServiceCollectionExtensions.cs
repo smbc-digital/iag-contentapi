@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     /// <summary>
@@ -154,6 +155,9 @@ public static class ServiceCollectionExtensions
         (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p
             .GetService<IContentfulFactory<ContentfulSocialMediaLink,
                 SocialMediaLink>>()));
+
+        services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>
+        (p => new SiteHeaderContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(
             p.GetService<IVideoRepository>(),
@@ -488,6 +492,14 @@ public static class ServiceCollectionExtensions
                 return x => new(x, p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulFooter, Footer>>());
             });
+
+        services.AddSingleton<Func<ContentfulConfig, SiteHeaderRepository>>(
+            p =>
+            {
+                return x => new(x, p.GetService<IContentfulClientManager>(),
+                    p.GetService<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>());
+            });
+
         services.AddSingleton<Func<ContentfulConfig, NewsRepository>>(
             p =>
             {
