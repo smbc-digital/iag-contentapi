@@ -61,7 +61,6 @@
 
     Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
-                .WriteToElasticsearchAws(builder.Configuration)
                 .CreateLogger();
 
     app.Run();
