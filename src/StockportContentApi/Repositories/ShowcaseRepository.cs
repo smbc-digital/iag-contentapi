@@ -61,7 +61,7 @@ public class ShowcaseRepository
             {
                 events = await _eventRepository.GetEventsByTag(showcase.EventCategory, true);
                 if (events.Any())
-                    showcase.EventsCategoryOrTag.Equals("T");
+                    showcase.EventsCategoryOrTag = "T";
             }
 
             showcase.Events = events.Take(3);
