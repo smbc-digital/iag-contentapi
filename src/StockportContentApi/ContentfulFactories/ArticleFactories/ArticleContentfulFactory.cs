@@ -111,7 +111,9 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
                 ? sectionUpdatedAt 
                 : entry.Sys.UpdatedAt.Value,
             
-            HideLastUpdated = entry.HideLastUpdated
+            HideLastUpdated = entry.HideLastUpdated,
+            Author = entry.Author,
+            Photographer = entry.Photographer
         };
     }
 }
