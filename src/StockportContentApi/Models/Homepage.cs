@@ -17,7 +17,7 @@ public class Homepage
     public string ForegroundImageAlt { get; }
     public string FreeText { get; }
     public string Title { get; }
-
+    public string ImageOverlayText { get; set; }
     public Group FeaturedGroup { get; }
     public string EventCategory { get; }
     public string MetaDescription { get; set; }
@@ -28,7 +28,7 @@ public class Homepage
 
     public Homepage(IEnumerable<string> popularSearchTerms, string featuredTasksHeading, string featuredTasksSummary, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> featuredTopics, IEnumerable<Alert> alerts,
         IEnumerable<CarouselContent> carouselContents, string backgroundImage, string foregroundImage, string foregroundImageLocation, string foregroundImageLink, string foregroundImageAlt,
-        string freeText, string title, Group featuredGroup, string eventCategory, string metaDescription, CarouselContent campaignBanner, CallToActionBanner callToAction, CallToActionBanner callToActionPrimary, IEnumerable<SpotlightOnBanner> spotlightOnBanner)
+        string freeText, string title, Group featuredGroup, string eventCategory, string metaDescription, CarouselContent campaignBanner, CallToActionBanner callToAction, CallToActionBanner callToActionPrimary, IEnumerable<SpotlightOnBanner> spotlightOnBanner, string imageOverlayText)
     {
         PopularSearchTerms = popularSearchTerms;
         FeaturedTasksHeading = featuredTasksHeading;
@@ -51,6 +51,7 @@ public class Homepage
         CallToActionPrimary = callToActionPrimary;
         SpotlightOnBanner = spotlightOnBanner;
         Title = title;
+        ImageOverlayText = imageOverlayText;
     }
 }
 
@@ -59,7 +60,7 @@ public class NullHomepage : Homepage
 {
     public NullHomepage() : base(Enumerable.Empty<string>(), string.Empty, string.Empty, new List<SubItem>(),
         new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, null,
-        string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null)
+        string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null, string.Empty)
     {
     }
 }
