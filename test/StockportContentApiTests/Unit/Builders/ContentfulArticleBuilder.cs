@@ -20,6 +20,7 @@ public class ContentfulArticleBuilder
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
     private readonly DateTime _updatedAt = DateTime.Now;
+    private readonly DateTime _createdAt = DateTime.Now;
     public Asset Image { get => _image; set => _image = value; }
 
     public ContentfulArticle Build()
@@ -45,7 +46,8 @@ public class ContentfulArticleBuilder
             {
                 ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
                 Id = _systemId,
-                UpdatedAt = _updatedAt
+                UpdatedAt = _updatedAt,
+                CreatedAt = _createdAt,
             }
         };
     }

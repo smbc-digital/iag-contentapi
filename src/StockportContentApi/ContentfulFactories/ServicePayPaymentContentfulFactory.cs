@@ -39,7 +39,6 @@ public class ServicePayPaymentContentfulFactory : IContentfulFactory<ContentfulS
             entry.AccountReference,
             entry.PaymentDescription,
             alerts,
-            entry.PaymentAmount
-            );
+            entry.PaymentAmount);
     }
 }

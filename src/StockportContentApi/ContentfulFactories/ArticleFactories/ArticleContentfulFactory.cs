@@ -110,7 +110,9 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value 
                 ? sectionUpdatedAt 
                 : entry.Sys.UpdatedAt.Value,
-            
+
+            PublishedOn = entry.Sys.CreatedAt.Value,
+
             HideLastUpdated = entry.HideLastUpdated,
             Author = entry.Author,
             Photographer = entry.Photographer

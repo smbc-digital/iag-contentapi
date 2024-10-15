@@ -25,6 +25,7 @@ public class Article
     public DateTime SunsetDate { get; set; }
     public IEnumerable<SubItem> RelatedContent { get; set; } = new List<SubItem>();
     public DateTime UpdatedAt { get; set; }
+    public DateTime PublishedOn { get; set; }
     public bool HideLastUpdated { get; set; }
     public string Author { get; set; }
     public string Photographer { get; set; }
