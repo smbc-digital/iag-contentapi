@@ -13,4 +13,6 @@ public class ContentfulArticle : ContentfulReference
     public List<ContentfulReference> RelatedContent { get; set; } = new();
     public List<ContentfulGroupBranding> ArticleBranding { get; set; } = new();
     public string LogoAreaTitle { get; set; }
+    public string Author { get; set; }
+    public string Photographer { get; set; }
 }

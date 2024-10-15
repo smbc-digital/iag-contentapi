@@ -37,6 +37,7 @@ public class ArticleContentfulFactoryTests
         _contentfulArticle.Alerts.First().Sys.LinkType = "Link";
         _contentfulArticle.Profiles.First().Sys.LinkType = "Link";
         _contentfulArticle.Documents.First().SystemProperties.LinkType = "Link";
+        _contentfulArticle.Sys.CreatedAt = DateTime.Now;
 
         // Act
         Article article = _articleFactory.ToModel(_contentfulArticle);

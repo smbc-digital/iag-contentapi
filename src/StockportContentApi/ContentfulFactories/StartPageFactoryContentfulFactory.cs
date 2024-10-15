@@ -32,8 +32,20 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
             ? entry.BackgroundImage.File.Url 
             : string.Empty;
 
-        return new StartPage(entry.Title, entry.Slug, entry.Teaser, entry.Summary, entry.UpperBody,
-            entry.FormLinkLabel, entry.FormLink, entry.LowerBody, backgroundImage, entry.Icon,
-            breadcrumbs, alerts, alertsInline, entry.SunriseDate, entry.SunsetDate);
+        return new StartPage(entry.Title,
+            entry.Slug,
+            entry.Teaser,
+            entry.Summary,
+            entry.UpperBody,
+            entry.FormLinkLabel,
+            entry.FormLink,
+            entry.LowerBody,
+            backgroundImage,
+            entry.Icon,
+            breadcrumbs,
+            alerts,
+            alertsInline,
+            entry.SunriseDate,
+            entry.SunsetDate);
     }
 }

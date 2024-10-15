@@ -40,7 +40,6 @@ public class PaymentContentfulFactory : IContentfulFactory<ContentfulPayment, Pa
             entry.CatalogueId,
             entry.AccountReference,
             entry.PaymentDescription,
-            alerts
-            );
+            alerts);
     }
 }

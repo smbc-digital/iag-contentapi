@@ -8,7 +8,16 @@ public class OrganisationContentfulFactory : IContentfulFactory<ContentfulOrgani
             ? entry.Image.File.Url
             : string.Empty;
 
-        return new Organisation(entry.Title, entry.Slug, imageUrl, entry.AboutUs, entry.Phone, entry.Email,
-            entry.Volunteering, entry.VolunteeringText, entry.Donations, entry.DonationsText, entry.DonationsUrl);
+        return new Organisation(entry.Title,
+                                entry.Slug,
+                                imageUrl,
+                                entry.AboutUs,
+                                entry.Phone,
+                                entry.Email,
+                                entry.Volunteering,
+                                entry.VolunteeringText,
+                                entry.Donations,
+                                entry.DonationsText,
+                                entry.DonationsUrl);
     }
 }
