@@ -9,7 +9,11 @@ public class DirectoryBuilder
     private readonly string _id = "XXX123456";
     private readonly string _backgroundImageUrl = "//TESTIMAGE.JPG";
     private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
-    private readonly List<ContentfulAlert> _alertsInline = new() { new ContentfulAlertBuilder().Build() };
+    private readonly List<ContentfulAlert> _alertsInline = new()
+    {
+        new ContentfulAlertBuilder().WithSeverity("Condolence").Build(),
+        new ContentfulAlertBuilder().WithSeverity("Warning").Build()
+    };
     private readonly ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
     private readonly List<ContentfulReference> _relatedContent = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
     private readonly List<ContentfulExternalLink> _externalLinks = new() { new ContentfulExternalLink() };

@@ -38,10 +38,10 @@ public class DocumentPageContentfulFactoryTests
             AwsDocuments = "awsDocuments",
             RequestAnAccessibleFormatContactInformation = "contact info",
             FurtherInformation = "further information",
-            RelatedDocuments = new List<ContentfulReference> { },
+            RelatedDocuments = new List<ContentfulReference>(),
             DatePublished = DateTime.Now,
             LastUpdated = DateTime.Now,
-            Breadcrumbs = new List<ContentfulReference> { },
+            Breadcrumbs = new List<ContentfulReference>(),
             Sys = new SystemProperties { UpdatedAt = DateTime.Now }
         };
 

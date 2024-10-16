@@ -47,6 +47,7 @@ public class DirectoryContentfulFactoryTests
         Assert.NotNull(directory.CallToAction);
         Assert.Equal(directory.BackgroundImage.File.Url, result.BackgroundImage);
         Assert.Single(result.Alerts);
+        Assert.Single(result.AlertsInline);
         Assert.Single(result.PinnedEntries);
         Assert.Equal(2, result.SubItems.Count());
     }
@@ -65,6 +66,7 @@ public class DirectoryContentfulFactoryTests
         ContentfulDirectory directory = new DirectoryBuilder().Build();
         directory.SubItems.First().Sys.LinkType = "Link";
         directory.Alerts.First().Sys.LinkType = "Link";
+        directory.AlertsInline.First().Sys.LinkType = "Link";
         directory.SubDirectories.First().Sys.LinkType = "Link";
         directory.RelatedContent.First().Sys.LinkType = "Link";
 
@@ -74,7 +76,10 @@ public class DirectoryContentfulFactoryTests
         // Assert
         Assert.Empty(result.SubItems);
         Assert.Empty(result.Alerts);
+        Assert.Single(result.AlertsInline);
+        Assert.Empty(result.SubDirectories);
+        Assert.Empty(result.RelatedContent);
         _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
     }
 }
