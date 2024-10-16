@@ -5,7 +5,6 @@ public class ContactUsIdContentfulFactoryTests
     private readonly ContentfulContactUsId _contentfulContactUsId = new() { EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email" };
     private readonly ContactUsIdContentfulFactory _contactUsIdContentfulFactory = new();
 
-
     [Fact]
     public void ToModel_ShouldCreateAContactUsIdFromAContentfulContactUsId()
     {

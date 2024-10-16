@@ -33,13 +33,12 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             return null;
 
         IEnumerable<SubItem> subItems = entry.SubDirectories is not null
-                ? entry.SubDirectories?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys))
-                    .Select(item => _subitemFactory.ToModel(item))
-                : Enumerable.Empty<SubItem>();
+                                            ? entry.SubDirectories?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)).Select(_subitemFactory.ToModel)
+                                            : Enumerable.Empty<SubItem>();
 
-        IEnumerable<SubItem> directorySubItems = entry.SubItems?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys) 
-                                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
-                                                    .Select(item => _subitemFactory.ToModel(item));
+        IEnumerable<SubItem> directorySubItems = entry.SubItems?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
+                                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+                                                                .Select(_subitemFactory.ToModel);
 
         subItems = directorySubItems is not null
             ? subItems.Concat(directorySubItems)
@@ -55,12 +54,12 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             Alerts = entry.Alerts?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)),
+                        .Select(_alertFactory.ToModel),
             
             AlertsInline = entry.AlertsInline?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)),
+                            .Select(_alertFactory.ToModel),
             
             CallToAction = entry.CallToAction is null 
                 ? null 
@@ -81,12 +80,12 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             
             RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
-                                .Select(item => _subitemFactory.ToModel(item)).ToList(),
+                                .Select(_subitemFactory.ToModel).ToList(),
             
             ExternalLinks = entry.ExternalLinks.Where(el => ContentfulHelpers.EntryIsNotALink(el.Sys))
-                                .Select(link => _externalLinkFactory.ToModel(link)).ToList(),
+                                .Select(_externalLinkFactory.ToModel).ToList(),
             
-            PinnedEntries = entry.PinnedEntries?.Select(entry => _directoryEntryFactory.ToModel(entry)).ToList()
+            PinnedEntries = entry.PinnedEntries?.Select(_directoryEntryFactory.ToModel).ToList()
         };
     }
 }

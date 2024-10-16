@@ -3,22 +3,30 @@
 public class CrumbContentfulFactoryTests
 {
     [Fact]
-    public void ShouldCreateACrumbFromAContentfulReference()
+    public void ToModel_ShouldCreateACrumbFromAContentfulReference()
     {
-        ContentfulReference ContentfulReference = new ContentfulReferenceBuilder().Build();
-        Crumb crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
+        // Arrange
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().Build();
+        
+        // Act
+        Crumb crumb = new CrumbContentfulFactory().ToModel(contentfulReference);
 
-        crumb.Slug.Should().Be(ContentfulReference.Slug);
-        crumb.Title.Should().Be(ContentfulReference.Title);
-        crumb.Type.Should().Be(ContentfulReference.Sys.ContentType.SystemProperties.Id);
+        // Assert
+        Assert.Equal(contentfulReference.Slug, crumb.Slug);
+        Assert.Equal(contentfulReference.Title, crumb.Title);
+        Assert.Equal(contentfulReference.Sys.ContentType.SystemProperties.Id, crumb.Type);
     }
 
     [Fact]
-    public void ShouldCreateACrumbWithNameIfSet()
+    public void ToModel_ShouldCreateACrumbWithNameIfSet()
     {
-        ContentfulReference ContentfulReference = new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
-        Crumb crumb = new CrumbContentfulFactory().ToModel(ContentfulReference);
+        // Arrange
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
+        
+        // Act
+        Crumb crumb = new CrumbContentfulFactory().ToModel(contentfulReference);
 
-        crumb.Title.Should().Be(ContentfulReference.Name);
+        // Assert
+        Assert.Equal(contentfulReference.Name, crumb.Title);
     }
 }

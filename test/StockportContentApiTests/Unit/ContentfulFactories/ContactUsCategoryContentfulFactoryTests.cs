@@ -5,7 +5,6 @@ public class ContactUsCategoryontentfulFactoryTests
     private readonly ContentfulContactUsCategory _contentfulContactUsCategory = new() { Title = "title", BodyTextLeft = "body text left", BodyTextRight = "body text right", Icon = "icon" };
     private readonly ContactUsCategoryContentfulFactory _contactUsCategoryContentfulFactory = new();
 
-
     [Fact]
     public void ToModel_ShouldCreateAContactUsIdFromAContentfulContactUsId()
     {
