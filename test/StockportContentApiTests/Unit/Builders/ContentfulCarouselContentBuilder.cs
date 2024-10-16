@@ -12,8 +12,7 @@ class ContentfulCarouselContentBuilder
     private readonly SystemProperties _sys = new() { Type = "Entry" };
 
     public ContentfulCarouselContent Build()
-    {
-        return new ContentfulCarouselContent()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -24,7 +23,4 @@ class ContentfulCarouselContentBuilder
             Url = _url,
             Sys = _sys
         };
-    }
-
-
 }

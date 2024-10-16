@@ -146,4 +146,42 @@ public class ArticleContentfulFactoryTests
         Assert.Empty(article.Body);
         Assert.Equal("title", article.Title);
     }
+
+    [Fact]
+    public void ToModel_ShouldCallBrandingFactory_WhenArticleBrandingIsNotNull()
+    {
+        // Arrange
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder().Build();
+
+        _articleBrandingFactory
+            .Setup(factory => factory.ToModel(It.IsAny<ContentfulGroupBranding>()))
+            .Returns(new GroupBranding("branding title", "branding text", new MediaAsset(), "branding-url"));
+
+        // Act
+        Article article = _articleFactory.ToModel(contentfulArticle);
+
+        // Assert
+        Assert.NotNull(article);
+        Assert.Single(article.ArticleBranding);
+        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulGroupBranding>()), Times.Once);
+    }
+
+    [Fact]
+    public void ToModel_ShouldCallSubitemFactory_WhenRelatedContentIsNotNull()
+    {
+        // Arrange
+        ContentfulArticle contentfulArticle = new ContentfulArticleBuilder().Build();
+
+        _subitemFactory
+            .Setup(factory => factory.ToModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItem());
+
+        // Act
+        Article article = _articleFactory.ToModel(contentfulArticle);
+
+        // Assert
+        Assert.NotNull(article);
+        Assert.Single(article.RelatedContent);
+        _subitemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
+    }
 }

@@ -8,7 +8,11 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory;
 
-    public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
+    public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                        IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                        ITimeProvider timeProvider,
+                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                        IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
     {
         _subitemFactory = subitemFactory;
         _crumbFactory = crumbFactory;

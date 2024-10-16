@@ -12,8 +12,7 @@ public class ContentfulEventBannerBuilder
     };
 
     public ContentfulEventBanner Build()
-    {
-        return new ContentfulEventBanner
+        => new()
         {
             Title = _title,
             Teaser = _teaser,
@@ -21,6 +20,4 @@ public class ContentfulEventBannerBuilder
             Link = _link,
             Sys = _sys
         };
-    }
-
 }

@@ -18,8 +18,7 @@ public class ContentfulNewsBuilder
     private readonly List<string> _categories = new() { "A category" };
 
     public ContentfulNews Build()
-    {
-        return new ContentfulNews
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -33,12 +32,8 @@ public class ContentfulNewsBuilder
             Alerts = _alerts,
             Documents = _documents,
             Categories = _categories,
-            Sys =
-            {
-                UpdatedAt = _updatedAt,
-            }
+            Sys = { UpdatedAt = _updatedAt }
         };
-    }
 
     public ContentfulNewsBuilder Title(string title)
     {

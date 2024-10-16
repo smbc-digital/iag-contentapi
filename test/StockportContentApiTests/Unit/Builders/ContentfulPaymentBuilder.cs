@@ -16,8 +16,7 @@ internal class ContentfulPaymentBuilder
     private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
 
     public ContentfulPayment Build()
-    {
-        return new ContentfulPayment
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -32,7 +31,6 @@ internal class ContentfulPaymentBuilder
             MetaDescription = _metaDescription,
             Alerts = _alerts
         };
-    }
 
     public ContentfulPaymentBuilder Slug(string slug)
     {

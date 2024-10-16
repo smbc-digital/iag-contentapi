@@ -15,7 +15,6 @@ public class ContentfulEventBuilder
     private readonly string _endTime = "17:00";
     private int _occurences = -1;
     private EventFrequency _eventFrequency = EventFrequency.None;
-    private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
     private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
     private List<string> _categories = new() { "category 1", "category 2" };
     private List<ContentfulEventCategory> _eventCategories = new() { new ContentfulEventCategory { Name = "Category 2", Slug = "category-2" }, new ContentfulEventCategory { Name = "Event Category", Slug = "event-category" } };
@@ -31,8 +30,7 @@ public class ContentfulEventBuilder
     private ContentfulGroup _group = new ContentfulGroupBuilder().Build();
 
     public ContentfulEvent Build()
-    {
-        return new ContentfulEvent()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -58,7 +56,6 @@ public class ContentfulEventBuilder
             Alerts = _alerts,
             EventCategories = _eventCategories
         };
-    }
 
     public ContentfulEventBuilder Slug(string slug)
     {

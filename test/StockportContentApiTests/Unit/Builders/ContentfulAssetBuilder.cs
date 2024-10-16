@@ -11,8 +11,7 @@ public class ContentfulAssetBuilder
     private DateTime _updatedAt;
 
     public Asset Build()
-    {
-        return new Asset
+        => new()
         {
             Description = _description,
             File = new File
@@ -28,7 +27,6 @@ public class ContentfulAssetBuilder
             },
             Title = _title
         };
-    }
 
     public ContentfulAssetBuilder Url(string url)
     {

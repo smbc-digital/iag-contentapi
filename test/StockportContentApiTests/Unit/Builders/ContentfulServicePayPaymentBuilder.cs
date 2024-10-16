@@ -16,8 +16,7 @@ internal class ContentfulServicePayPaymentBuilder
     private readonly string _catalogueId = "catalogueId";
 
     public ContentfulServicePayPayment Build()
-    {
-        return new ContentfulServicePayPayment
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -32,7 +31,6 @@ internal class ContentfulServicePayPaymentBuilder
             AccountReference = _accountReference,
             CatalogueId = _catalogueId
         };
-    }
 
     public ContentfulServicePayPaymentBuilder Slug(string slug)
     {

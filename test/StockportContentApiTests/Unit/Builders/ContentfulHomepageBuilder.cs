@@ -38,8 +38,7 @@ public class ContentfulHomepageBuilder
     private readonly ContentfulCarouselContent _campaignBanner = new ContentfulCarouselContentBuilder().Build();
 
     public ContentfulHomepage Build()
-    {
-        return new ContentfulHomepage
+        => new()
         {
             PopularSearchTerms = _popularSearchTerms,
             FeaturedTasksHeading = _featuredTasksHeading,
@@ -55,7 +54,6 @@ public class ContentfulHomepageBuilder
             MetaDescription = _metaDescription,
             CampaignBanner = _campaignBanner
         };
-    }
 
     public ContentfulHomepageBuilder FeaturedGroups(List<ContentfulGroup> featuredGroups)
     {

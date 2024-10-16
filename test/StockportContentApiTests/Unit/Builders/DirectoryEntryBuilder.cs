@@ -18,26 +18,27 @@ public class DirectoryEntryBuilder
     List<ContentfulFilter> Filters { get; set; } = new();
     List<ContentfulGroupBranding> Branding { get; set; } = new();
     List<ContentfulDirectory> Directories { get; set; } = new();
-    public ContentfulDirectoryEntry Build() => new()
-    {
-        Slug = Slug,
-        Title = Title,
-        Provider = Provider,
-        Description = Description,
-        MetaDescription = MetaDescription,
-        Teaser = Teaser,
-        PhoneNumber = PhoneNumber,
-        Email = Email,
-        Website = Website,
-        Twitter = Twitter,
-        Facebook = Facebook,
-        Address = Address,
-        Filters = Filters,
-        Alerts = Alerts,
-        MapPosition = MapPosition,
-        GroupBranding = Branding,
-        Directories = Directories,
-    };
+    public ContentfulDirectoryEntry Build()
+        => new()
+        {
+            Slug = Slug,
+            Title = Title,
+            Provider = Provider,
+            Description = Description,
+            MetaDescription = MetaDescription,
+            Teaser = Teaser,
+            PhoneNumber = PhoneNumber,
+            Email = Email,
+            Website = Website,
+            Twitter = Twitter,
+            Facebook = Facebook,
+            Address = Address,
+            Filters = Filters,
+            Alerts = Alerts,
+            MapPosition = MapPosition,
+            GroupBranding = Branding,
+            Directories = Directories,
+        };
 
     public DirectoryEntryBuilder WithTitle(string title)
     {

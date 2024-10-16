@@ -8,9 +8,7 @@ class GroupAdvisorBuilder
     bool _globalAccess = false;
 
     public GroupAdvisor Build()
-    {
-        return new GroupAdvisor(_name, _email, _groups, _globalAccess);
-    }
+        => new(_name, _email, _groups, _globalAccess);
 
     public GroupAdvisorBuilder Email(string value)
     {

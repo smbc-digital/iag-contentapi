@@ -27,8 +27,7 @@ public class ContentfulContactUsAreaBuilder
     };
 
     public ContentfulContactUsArea Build()
-    {
-        return new ContentfulContactUsArea()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -41,7 +40,6 @@ public class ContentfulContactUsAreaBuilder
             ContactUsCategories = _contactUsCategories,
             MetaDescription = _metaDescription
         };
-    }
 
     public ContentfulContactUsAreaBuilder Slug(string slug)
     {

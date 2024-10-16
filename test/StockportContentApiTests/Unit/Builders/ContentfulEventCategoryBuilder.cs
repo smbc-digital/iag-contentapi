@@ -11,15 +11,13 @@ public class ContentfulEventCategoryBuilder
     };
 
     public ContentfulEventCategory Build()
-    {
-        return new ContentfulEventCategory()
+        => new()
         {
             Name = _name,
             Slug = _slug,
             Icon = _icon,
             Sys = _sys
         };
-    }
 
     public ContentfulEventCategoryBuilder Slug(string slug)
     {

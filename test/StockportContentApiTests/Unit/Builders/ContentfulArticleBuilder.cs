@@ -22,10 +22,21 @@ public class ContentfulArticleBuilder
     private readonly DateTime _updatedAt = DateTime.Now;
     private readonly DateTime _createdAt = DateTime.Now;
     public Asset Image { get => _image; set => _image = value; }
+    private List<ContentfulGroupBranding> _articleBranding = new()
+    {
+        new ContentfulGroupBranding()
+        {
+            Title = "branding title",
+            Text = "branding text",
+            File = new Asset(),
+            Url = "branding-url"
+        }
+    };
+
+    private List<ContentfulReference> _relatedContent = new() { new ContentfulReferenceBuilder().Build() };
 
     public ContentfulArticle Build()
-    {
-        return new ContentfulArticle
+        => new()
         {
             Alerts = _alerts,
             BackgroundImage = _backgroundImage,
@@ -48,9 +59,10 @@ public class ContentfulArticleBuilder
                 Id = _systemId,
                 UpdatedAt = _updatedAt,
                 CreatedAt = _createdAt,
-            }
+            },
+            ArticleBranding = _articleBranding,
+            RelatedContent = _relatedContent
         };
-    }
 
     public ContentfulArticleBuilder Slug(string slug)
     {

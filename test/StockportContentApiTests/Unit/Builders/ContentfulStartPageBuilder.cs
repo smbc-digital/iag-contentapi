@@ -24,8 +24,7 @@ public class ContentfulStartPageBuilder
     };
 
     public ContentfulStartPage Build()
-    {
-        return new ContentfulStartPage()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -40,7 +39,6 @@ public class ContentfulStartPageBuilder
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts
         };
-    }
 
     public ContentfulStartPageBuilder Slug(string slug)
     {

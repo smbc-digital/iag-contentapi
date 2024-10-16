@@ -8,59 +8,45 @@ public class DirectoryBuilder
     string MetaDescription { get; set; }
     string Id { get; set; }
     string BackgroundImageUrl { get; set; }
-    private readonly List<ContentfulAlert> _alerts = new() {
-        new ContentfulAlertBuilder().Build()
-    };
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
     ContentfulCallToActionBanner CallToActionBanner { get; set; }
-    private List<ContentfulReference> _relatedContent = new() {
-        new ContentfulReferenceBuilder().Slug("sub-slug").Build()
-    };
-    private List<ContentfulExternalLink> _externalLinks = new() {
-        new ContentfulExternalLink()
-    };
+    private List<ContentfulReference> _relatedContent = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+    private List<ContentfulExternalLink> _externalLinks = new() { new ContentfulExternalLink() };
+    private List<ContentfulDirectoryEntry> _pinnedEntries = new() { new ContentfulDirectoryEntry() };
+    private List<ContentfulReference> _subItems = new() { new ContentfulReference() };
+    private readonly List<ContentfulDirectory> _subDirectories = new() { new ContentfulDirectory() };
 
-    private List<ContentfulDirectoryEntry> _pinnedEntries = new() {
-        new ContentfulDirectoryEntry()
-    };
-
-    private List<ContentfulReference> _subItems = new() {
-        new ContentfulReference()
-    };
-
-    private readonly List<ContentfulDirectory> _subDirectories = new() {
-        new ContentfulDirectory()
-    };
-
-    public ContentfulDirectory Build() => new()
-    {
-        Slug = Slug,
-        Title = Title,
-        Body = Body,
-        MetaDescription = MetaDescription,
-        Teaser = Teaser,
-        Sys = new SystemProperties()
+    public ContentfulDirectory Build()
+        => new()
         {
-            Id = Id
-        },
-        BackgroundImage = new Asset()
-        {
-            File = new File
+            Slug = Slug,
+            Title = Title,
+            Body = Body,
+            MetaDescription = MetaDescription,
+            Teaser = Teaser,
+            Sys = new SystemProperties()
             {
-                Url = BackgroundImageUrl
+                Id = Id
             },
-            SystemProperties = new SystemProperties()
+            BackgroundImage = new Asset()
             {
-                Type = "Image"
-            }
-        },
-        CallToAction = CallToActionBanner,
-        Alerts = _alerts,
-        RelatedContent = _relatedContent,
-        ExternalLinks = _externalLinks,
-        PinnedEntries = _pinnedEntries,
-        SubItems = _subItems,
-        SubDirectories = _subDirectories
-    };
+                File = new File
+                {
+                    Url = BackgroundImageUrl
+                },
+                SystemProperties = new SystemProperties()
+                {
+                    Type = "Image"
+                }
+            },
+            CallToAction = CallToActionBanner,
+            Alerts = _alerts,
+            RelatedContent = _relatedContent,
+            ExternalLinks = _externalLinks,
+            PinnedEntries = _pinnedEntries,
+            SubItems = _subItems,
+            SubDirectories = _subDirectories
+        };
 
     public DirectoryBuilder WithTitle(string title)
     {

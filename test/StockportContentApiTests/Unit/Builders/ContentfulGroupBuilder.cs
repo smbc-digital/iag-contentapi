@@ -105,8 +105,7 @@ public class ContentfulGroupBuilder
     };
 
     public ContentfulGroup Build()
-    {
-        return new ContentfulGroup
+        => new()
         {
             Address = _address,
             Description = _description,
@@ -139,9 +138,7 @@ public class ContentfulGroupBuilder
             DonationsText = _donationsText,
             DonationsUrl = _donationsUrl,
             SubCategories = _subCategories
-
         };
-    }
 
     public ContentfulGroupBuilder Slug(string slug)
     {

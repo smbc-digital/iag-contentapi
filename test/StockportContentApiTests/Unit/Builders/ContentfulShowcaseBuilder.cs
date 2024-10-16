@@ -33,8 +33,7 @@ public class ContentfulShowcaseBuilder
     };
 
     public ContentfulShowcase Build()
-    {
-        return new ContentfulShowcase()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -56,7 +55,6 @@ public class ContentfulShowcaseBuilder
             Alerts = _alerts,
             TypeformUrl = _typeformUrl
         };
-    }
 
     public ContentfulShowcaseBuilder Slug(string slug)
     {

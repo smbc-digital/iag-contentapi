@@ -2,25 +2,22 @@
 
 public class ContentfulEntryBuilder<T>
 {
-    private T _fields = default(T);
+    private T _fields = default;
     private string _contentTypeSystemId = "id";
     private string _type = "Entry";
     private string _systemId = "id";
 
     public Entry<T> Build()
-    {
-        return new Entry<T>
+        => new()
         {
             Fields = _fields,
-            SystemProperties =
-                new SystemProperties
+            SystemProperties = new SystemProperties
                 {
                     Id = _systemId,
                     ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
                     Type = _type
                 }
         };
-    }
 
     public ContentfulEntryBuilder<T> Fields(T fields)
     {

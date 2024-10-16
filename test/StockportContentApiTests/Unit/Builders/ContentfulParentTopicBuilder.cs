@@ -9,8 +9,7 @@ public class ContentfulParentTopicBuilder
     private string _contentTypeSystemId = "id";
 
     public ContentfulTopic Build()
-    {
-        return new ContentfulTopic
+        => new()
         {
             Name = _name,
             SubItems = _subItems,
@@ -21,7 +20,6 @@ public class ContentfulParentTopicBuilder
                 Id = _systemId
             }
         };
-    }
 
     public ContentfulParentTopicBuilder SystemId(string id)
     {
