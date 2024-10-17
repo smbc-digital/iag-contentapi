@@ -12,26 +12,19 @@ public class ContentfulTopicBuilder
     private DateTime _sunsetDate = DateTime.MaxValue;
     private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
     private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-    private List<ContentfulReference> _breadcrumbs = new() {
-        new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
+    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
     private bool _emailAlerts = false;
     private string _emailAlertsTopicId = "id";
-
-    private List<ContentfulAlert> _alerts = new(){
-        new ContentfulAlertBuilder().Build()};
-    private List<ContentfulReference> _subItems = new() {
-       new ContentfulReferenceBuilder().Slug("sub-slug").Build()};
-    private List<ContentfulReference> _secondaryItems = new() {
-        new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
+    private List<ContentfulAlert> _alerts = new(){ new ContentfulAlertBuilder().Build() };
+    private List<ContentfulReference> _subItems = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+    private List<ContentfulReference> _secondaryItems = new() { new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
     private ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
-    private ContentfulEventBanner _eventBanner =
-       new ContentfulEventBannerBuilder().Build();
+    private ContentfulEventBanner _eventBanner = new ContentfulEventBannerBuilder().Build();
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
 
     public ContentfulTopic Build()
-    {
-        return new ContentfulTopic
+        => new()
         {
             Slug = _slug,
             Name = _name,
@@ -58,7 +51,6 @@ public class ContentfulTopicBuilder
                 Id = _systemId
             }
         };
-    }
 
     public ContentfulTopicBuilder Slug(string slug)
     {

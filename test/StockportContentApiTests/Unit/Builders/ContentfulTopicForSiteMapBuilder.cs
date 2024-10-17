@@ -10,8 +10,7 @@ public class ContentfulTopicForSiteMapBuilder
     private readonly string _contentTypeSystemId = "id";
 
     public ContentfulTopicForSiteMap Build()
-    {
-        return new ContentfulTopicForSiteMap
+        => new()
         {
             Slug = _slug,
             SunriseDate = _sunriseDate,
@@ -23,7 +22,6 @@ public class ContentfulTopicForSiteMapBuilder
                 Id = _systemId
             }
         };
-    }
 
     public ContentfulTopicForSiteMapBuilder Slug(string slug)
     {

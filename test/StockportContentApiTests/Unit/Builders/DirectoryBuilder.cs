@@ -1,142 +1,74 @@
 ﻿namespace StockportContentApiTests.Unit.Builders;
 public class DirectoryBuilder
 {
-    string Slug { get; set; }
-    string Title { get; set; }
-    string Body { get; set; }
-    string Teaser { get; set; }
-    string MetaDescription { get; set; }
-    string Id { get; set; }
-    string BackgroundImageUrl { get; set; }
-    private readonly List<ContentfulAlert> _alerts = new() {
-        new ContentfulAlertBuilder().Build()
-    };
-    ContentfulCallToActionBanner CallToActionBanner { get; set; }
-    private List<ContentfulReference> _relatedContent = new() {
-        new ContentfulReferenceBuilder().Slug("sub-slug").Build()
-    };
-    private List<ContentfulExternalLink> _externalLinks = new() {
-        new ContentfulExternalLink()
-    };
-
-    private List<ContentfulDirectoryEntry> _pinnedEntries = new() {
-        new ContentfulDirectoryEntry()
-    };
-
-    private List<ContentfulReference> _subItems = new() {
-        new ContentfulReference()
-    };
-
-    private readonly List<ContentfulDirectory> _subDirectories = new() {
-        new ContentfulDirectory()
-    };
-
-    public ContentfulDirectory Build() => new()
+    private string _slug = "slug";
+    private string _title = "title";
+    private string _body = "body";
+    private readonly string _teaser = "teaser";
+    private readonly string _metaDescription = "meta description";
+    private readonly string _id = "XXX123456";
+    private readonly string _backgroundImageUrl = "//TESTIMAGE.JPG";
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
+    private readonly List<ContentfulAlert> _alertsInline = new()
     {
-        Slug = Slug,
-        Title = Title,
-        Body = Body,
-        MetaDescription = MetaDescription,
-        Teaser = Teaser,
-        Sys = new SystemProperties()
-        {
-            Id = Id
-        },
-        BackgroundImage = new Asset()
-        {
-            File = new File
-            {
-                Url = BackgroundImageUrl
-            },
-            SystemProperties = new SystemProperties()
-            {
-                Type = "Image"
-            }
-        },
-        CallToAction = CallToActionBanner,
-        Alerts = _alerts,
-        RelatedContent = _relatedContent,
-        ExternalLinks = _externalLinks,
-        PinnedEntries = _pinnedEntries,
-        SubItems = _subItems,
-        SubDirectories = _subDirectories
+        new ContentfulAlertBuilder().WithSeverity("Condolence").Build(),
+        new ContentfulAlertBuilder().WithSeverity("Warning").Build()
     };
+    private readonly ContentfulCallToActionBanner _callToActionBanner = new ContentfulCallToActionBannerBuilder().Build();
+    private readonly List<ContentfulReference> _relatedContent = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
+    private readonly List<ContentfulExternalLink> _externalLinks = new() { new ContentfulExternalLink() };
+    private readonly List<ContentfulDirectoryEntry> _pinnedEntries = new() { new ContentfulDirectoryEntry() };
+    private readonly List<ContentfulReference> _subItems = new() { new ContentfulReference() };
+    private readonly List<ContentfulDirectory> _subDirectories = new() { new ContentfulDirectory() };
+
+    public ContentfulDirectory Build()
+        => new()
+        {
+            Slug = _slug,
+            Title = _title,
+            Body = _body,
+            MetaDescription = _metaDescription,
+            Teaser = _teaser,
+            Sys = new SystemProperties()
+            {
+                Id = _id
+            },
+            BackgroundImage = new Asset()
+            {
+                File = new File
+                {
+                    Url = _backgroundImageUrl
+                },
+                SystemProperties = new SystemProperties()
+                {
+                    Type = "Image"
+                }
+            },
+            CallToAction = _callToActionBanner,
+            Alerts = _alerts,
+            AlertsInline = _alertsInline,
+            RelatedContent = _relatedContent,
+            ExternalLinks = _externalLinks,
+            PinnedEntries = _pinnedEntries,
+            SubItems = _subItems,
+            SubDirectories = _subDirectories
+        };
 
     public DirectoryBuilder WithTitle(string title)
     {
-        Title = title;
+        _title = title;
         return this;
     }
 
     public DirectoryBuilder WithSlug(string slug)
     {
-        Slug = slug;
+        _slug = slug;
         return this;
     }
 
     public DirectoryBuilder WithBody(string body)
     {
-        Body = body;
-        return this;
-    }
-
-    public DirectoryBuilder WithTeaser(string teaser)
-    {
-        Teaser = teaser;
-        return this;
-    }
-
-    public DirectoryBuilder WithMetaDescription(string metaDescription)
-    {
-        MetaDescription = metaDescription;
-        return this;
-    }
-
-    public DirectoryBuilder WithId(string id)
-    {
-        Id = id;
-        return this;
-    }
-
-    public DirectoryBuilder WithBackgroundImageUrl(string _backgroundImageUrl)
-    {
-        BackgroundImageUrl = _backgroundImageUrl;
-        return this;
-    }
-
-    public DirectoryBuilder WithCallToAction(ContentfulCallToActionBanner banner)
-    {
-        CallToActionBanner = banner;
-        return this;
-    }
-
-    public DirectoryBuilder WithAlert(ContentfulAlert alert)
-    {
-        _alerts.Add(alert);
-        return this;
-    }
-
-    public DirectoryBuilder WithRelatedContent(List<ContentfulReference> relatedContent)
-    {
-        _relatedContent = relatedContent;
-        return this;
-    }
-
-    public DirectoryBuilder WithExternalLinks(List<ContentfulExternalLink> externalLinks)
-    {
-        _externalLinks = externalLinks;
-        return this;
-    }
-
-    public DirectoryBuilder WithPinnedEntries(List<ContentfulDirectoryEntry> pinnedEntries)
-    {
-        _pinnedEntries = pinnedEntries;
-        return this;
-    }
-
-    public DirectoryBuilder WithSubItems(List<ContentfulReference> subItems)
-    {
-        _subItems = subItems;
+        _body = body;
         return this;
     }
 }

@@ -1,126 +1,83 @@
 ﻿namespace StockportContentApiTests.Unit.Builders;
 public class DirectoryEntryBuilder
 {
-    string Slug { get; set; }
-    string Title { get; set; }
-    string Provider { get; set; }
-    string Description { get; set; }
-    string Teaser { get; set; }
-    string MetaDescription { get; set; }
-    string PhoneNumber { get; set; }
-    string Email { get; set; }
-    string Website { get; set; }
-    string Twitter { get; set; }
-    string Facebook { get; set; }
-    string Address { get; set; }
-    MapPosition MapPosition { get; set; }
-    List<ContentfulAlert> Alerts { get; set; } = new();
-    List<ContentfulFilter> Filters { get; set; } = new();
-    List<ContentfulGroupBranding> Branding { get; set; } = new();
-    List<ContentfulDirectory> Directories { get; set; } = new();
-    public ContentfulDirectoryEntry Build() => new()
+    private string _slug = "slug";
+    private readonly string _title = "title";
+    private readonly string _provider = "provider";
+    private readonly string _description = "description";
+    private readonly string _teaser = "teaser";
+    private readonly string _metaDescription = "meta description";
+    private readonly string _phoneNumber = "0123456789";
+    private readonly string _email = "email";
+    private readonly string _website = "website";
+    private readonly string _twitter = "twitter";
+    private readonly string _facebook = "facebook";
+    private readonly string _address = "address";
+    private readonly MapPosition _mapPosition = new()
     {
-        Slug = Slug,
-        Title = Title,
-        Provider = Provider,
-        Description = Description,
-        MetaDescription = MetaDescription,
-        Teaser = Teaser,
-        PhoneNumber = PhoneNumber,
-        Email = Email,
-        Website = Website,
-        Twitter = Twitter,
-        Facebook = Facebook,
-        Address = Address,
-        Filters = Filters,
-        Alerts = Alerts,
-        MapPosition = MapPosition,
-        GroupBranding = Branding,
-        Directories = Directories,
+        Lat = 53.393310,
+        Lon = -2.126633
     };
 
-    public DirectoryEntryBuilder WithTitle(string title)
+    private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().WithSeverity("Warning").Build() };
+    private readonly List<ContentfulAlert> _alertsInline = new()
     {
-        Title = title;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithProvider(string provider)
+        new ContentfulAlertBuilder().WithSeverity("Condolence").Build(),
+        new ContentfulAlertBuilder().WithSeverity("Information").Build()
+    };
+    private readonly List<ContentfulFilter> _filters = new();
+    private readonly List<ContentfulGroupBranding> _branding = new()
     {
-        Provider = provider;
-        return this;
-    }
+        new() {
+            File = new Asset(),
+            Sys = new SystemProperties(),
+            Text = "test",
+            Title = "test",
+            Url = "test"
+        }
+    };
 
+    private readonly List<ContentfulDirectory> _directories = new()
+    {
+        new DirectoryBuilder()
+        .WithSlug("test-alert")
+        .WithTitle("Test Alert")
+        .WithBody("Test Alert Body")
+        .Build()
+    };
+
+    public ContentfulDirectoryEntry Build()
+        => new()
+        {
+            Slug = _slug,
+            Title = _title,
+            Provider = _provider,
+            Description = _description,
+            MetaDescription = _metaDescription,
+            Teaser = _teaser,
+            PhoneNumber = _phoneNumber,
+            Email = _email,
+            Website = _website,
+            Twitter = _twitter,
+            Facebook = _facebook,
+            Address = _address,
+            Filters = _filters,
+            Alerts = _alerts,
+            AlertsInline = _alertsInline,
+            MapPosition = _mapPosition,
+            GroupBranding = _branding,
+            Directories = _directories,
+        };
 
     public DirectoryEntryBuilder WithSlug(string slug)
     {
-        Slug = slug;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithDescription(string description)
-    {
-        Description = description;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithTeaser(string teaser)
-    {
-        Teaser = teaser;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithMetaDescription(string metaDescription)
-    {
-        MetaDescription = metaDescription;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithPhoneNumber(string phoneNumber)
-    {
-        PhoneNumber = phoneNumber;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithEmail(string email)
-    {
-        Email = email;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithWebsite(string website)
-    {
-        Website = website;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithTwitter(string twitter)
-    {
-        Twitter = twitter;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithFacebook(string facebook)
-    {
-        Facebook = facebook;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithAddress(string address)
-    {
-        Address = address;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithMapPosition(MapPosition mapPosition)
-    {
-        MapPosition = mapPosition;
+        _slug = slug;
         return this;
     }
 
     public DirectoryEntryBuilder WithFilter(string slug, string title, string displayName, string theme)
     {
-        Filters.Add(new ContentfulFilter
+        _filters.Add(new ContentfulFilter
         {
             Slug = slug,
             Title = title,
@@ -128,24 +85,6 @@ public class DirectoryEntryBuilder
             Theme = theme
         });
 
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithAlert(ContentfulAlert alert)
-    {
-        Alerts.Add(alert);
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithBranding(List<ContentfulGroupBranding> branding)
-    {
-        Branding = branding;
-        return this;
-    }
-
-    public DirectoryEntryBuilder WithDirectories(List<ContentfulDirectory> directories)
-    {
-        Directories = directories;
         return this;
     }
 }

@@ -2,20 +2,21 @@
 
 public class ContactUsIdContentfulFactoryTests
 {
-    private readonly ContentfulContactUsId _contentfulContactUsId;
-    private readonly ContactUsIdContentfulFactory _contactUsIdContentfulFactory;
-
-    public ContactUsIdContentfulFactoryTests()
-    {
-        _contentfulContactUsId = new() { EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email" };
-        _contactUsIdContentfulFactory = new();
-    }
+    private readonly ContentfulContactUsId _contentfulContactUsId = new() { EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email" };
+    private readonly ContactUsIdContentfulFactory _contactUsIdContentfulFactory = new();
 
     [Fact]
-    public void ShouldCreateAContactUsIdFromAContentfulContactUsId()
+    public void ToModel_ShouldCreateAContactUsIdFromAContentfulContactUsId()
     {
+        // Act
         ContactUsId contactUsId = _contactUsIdContentfulFactory.ToModel(_contentfulContactUsId);
-        contactUsId.Should().BeOfType<ContactUsId>();
-        contactUsId.Should().BeEquivalentTo(_contentfulContactUsId, o => o.ExcludingMissingMembers());
+
+        // Assert
+        Assert.IsType<ContactUsId>(contactUsId);
+        Assert.Equal(_contentfulContactUsId.Name, contactUsId.Name);
+        Assert.Equal(_contentfulContactUsId.Slug, contactUsId.Slug);
+        Assert.Equal(_contentfulContactUsId.EmailAddress, contactUsId.EmailAddress);
+        Assert.Equal(_contentfulContactUsId.SuccessPageButtonText, contactUsId.SuccessPageButtonText);
+        Assert.Equal(_contentfulContactUsId.SuccessPageReturnUrl, contactUsId.SuccessPageReturnUrl);
     }
 }

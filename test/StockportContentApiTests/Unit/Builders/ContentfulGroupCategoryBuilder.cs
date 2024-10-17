@@ -12,8 +12,7 @@ public class ContentfulGroupCategoryBuilder
     };
 
     public ContentfulGroupCategory Build()
-    {
-        return new ContentfulGroupCategory()
+        => new()
         {
             Name = _name,
             Slug = _slug,
@@ -21,7 +20,6 @@ public class ContentfulGroupCategoryBuilder
             Image = _image,
             Sys = _sys
         };
-    }
 
     public ContentfulGroupCategoryBuilder Slug(string slug)
     {

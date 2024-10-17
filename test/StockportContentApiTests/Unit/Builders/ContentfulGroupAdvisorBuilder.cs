@@ -2,22 +2,19 @@
 
 class ContentfulGroupAdvisorBuilder
 {
-
     string _name = "name";
     string _email = "email";
     IEnumerable<ContentfulReference> _contentfulReference = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() };
     bool _globalAccess = false;
 
     public ContentfulGroupAdvisor Build()
-    {
-        return new ContentfulGroupAdvisor
+        => new()
         {
             Name = _name,
             Email = _email,
             GlobalAccess = _globalAccess,
             Groups = _contentfulReference
         };
-    }
 
     public ContentfulGroupAdvisorBuilder Email(string value)
     {

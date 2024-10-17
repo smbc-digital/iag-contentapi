@@ -9,8 +9,7 @@ public class ContentfulNewsRoomBuilder
     private readonly SystemProperties _sys = new() { Type = "Entry" };
 
     public ContentfulNewsRoom Build()
-    {
-        return new ContentfulNewsRoom
+        => new()
         {
             Title = _title,
             Alerts = _alerts,
@@ -18,5 +17,4 @@ public class ContentfulNewsRoomBuilder
             EmailAlerts = _emailAlerts,
             Sys = _sys
         };
-    }
 }

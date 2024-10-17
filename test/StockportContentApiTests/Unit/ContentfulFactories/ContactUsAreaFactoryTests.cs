@@ -21,11 +21,13 @@ public class ContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel()
     {
-        ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder()
-                            .Build();
+        // Arrange
+        ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder().Build();
 
+        // Act
         ContactUsArea result = _factory.ToModel(entry);
 
+        // Assert
         Assert.NotNull(result.Breadcrumbs);
         Assert.NotNull(result.Alerts);
         Assert.NotNull(result.InsetTextTitle);
@@ -45,6 +47,7 @@ public class ContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel_WithPrimaryItems()
     {
+        // Arrange
         List<ContentfulReference> primaryItems = new() { new() { } };
         ContentfulContactUsArea entry = new ContentfulContactUsAreaBuilder()
                             .PrimaryItems(primaryItems)
@@ -52,8 +55,10 @@ public class ContactUsAreaFactoryTests
 
         _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
+        // Act
         ContactUsArea result = _factory.ToModel(entry);
-
+        
+        // Assert
         Assert.NotNull(result.Breadcrumbs);
         Assert.NotNull(result.Alerts);
         Assert.NotNull(result.InsetTextTitle);
@@ -67,6 +72,7 @@ public class ContactUsAreaFactoryTests
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreaModel_WithAllItems()
     {
+        // Arrange
         List<ContentfulReference> primaryItems = new() { new() };
         List<ContentfulReference> breadcrumbs = new() { new() };
         List<ContentfulAlert> alerts = new() { new() };
@@ -85,8 +91,10 @@ public class ContactUsAreaFactoryTests
 
         _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
 
+        // Act
         ContactUsArea result = _factory.ToModel(entry);
-
+        
+        // Assert
         Assert.Single(result.Breadcrumbs);
         Assert.Single(result.Alerts);
         Assert.Single(result.PrimaryItems);

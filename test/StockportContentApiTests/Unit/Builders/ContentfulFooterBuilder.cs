@@ -12,8 +12,7 @@ public class ContentfulFooterBuilder
     private readonly List<ContentfulSocialMediaLink> _socialMediaLinks = new();
 
     public ContentfulFooter Build()
-    {
-        return new ContentfulFooter()
+        => new()
         {
             Title = _title,
             Slug = _slug,
@@ -21,5 +20,4 @@ public class ContentfulFooterBuilder
             Links = _links,
             SocialMediaLinks = _socialMediaLinks
         };
-    }
 }

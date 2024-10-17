@@ -10,14 +10,15 @@ public class DocumentBuilder
     private readonly string _fileName = "fileName";
     private readonly string _mediaType = "mediatype";
 
-    public Document Build() => new()
-    {
-        Title = _title,
-        Size = _size,
-        LastUpdated = _lastUpdated,
-        Url = _url,
-        FileName = _fileName,
-        AssetId = _assetId,
-        MediaType = _mediaType
-    };
+    public Document Build()
+        => new()
+        {
+            Title = _title,
+            Size = _size,
+            LastUpdated = _lastUpdated,
+            Url = _url,
+            FileName = _fileName,
+            AssetId = _assetId,
+            MediaType = _mediaType
+        };
 }

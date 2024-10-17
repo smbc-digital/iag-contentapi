@@ -27,17 +27,50 @@ public class EventBuilder
     private List<string> _tags = new();
     private readonly Group _group = null;
     private readonly List<Alert> _alerts = new()
-    { new Alert("title", "subHeading", "body",
-                                                             "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                                                             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), "slug", false, string.Empty) };
+        {
+            new Alert("title",
+                    "subHeading",
+                    "body",
+                    "severity",
+                    new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                    "slug",
+                    false,
+                    string.Empty)
+        };
+    
     private List<EventCategory> _eventCategories = new();
 
     public Event Build()
-    {
-        return new Event(_title, _slug, _teaser, _image, _description, _fee, _location, _submittedby,
-            _eventDate, _startTime, _endTime, _occurences, _eventFrequency, _breadcrumbs, _thumbnailImage,
-            _documents, _categories, _mapPosition, _featured, _bookingInformation, _updatedAt, _tags, _group, _alerts, _eventCategories, null, null, null, _metaDescription);
-    }
+        => new(_title,
+            _slug,
+            _teaser,
+            _image,
+            _description,
+            _fee,
+            _location,
+            _submittedby,
+            _eventDate,
+            _startTime,
+            _endTime,
+            _occurences,
+            _eventFrequency,
+            _breadcrumbs,
+            _thumbnailImage,
+            _documents,
+            _categories,
+            _mapPosition,
+            _featured,
+            _bookingInformation,
+            _updatedAt,
+            _tags,
+            _group,
+            _alerts,
+            _eventCategories,
+            null,
+            null,
+            null,
+            _metaDescription);
 
     public EventBuilder Slug(string slug)
     {

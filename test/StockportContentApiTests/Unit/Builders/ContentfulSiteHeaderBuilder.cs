@@ -21,12 +21,10 @@ public class ContentfulSiteHeaderBuilder
     };
 
     public ContentfulSiteHeader Build()
-    {
-        return new ContentfulSiteHeader
+        => new()
         {
             Title = _title,
             Logo = _logo,
             Items = _items
         };
-    }
 }

@@ -17,8 +17,7 @@ public class ContentfulReferenceBuilder
     private string _contentTypeSystemId = "id";
 
     public ContentfulReference Build()
-    {
-        return new ContentfulReference
+        => new()
         {
             Slug = _slug,
             Title = _title,
@@ -37,7 +36,6 @@ public class ContentfulReferenceBuilder
                 Id = _systemId
             }
         };
-    }
 
     public ContentfulReferenceBuilder Slug(string slug)
     {

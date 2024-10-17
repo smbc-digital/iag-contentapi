@@ -13,8 +13,7 @@ public class ContentfulContactUsCategoryBuilder
     };
 
     public ContentfulContactUsCategory Build()
-    {
-        return new ContentfulContactUsCategory
+        => new()
         {
             Title = _title,
             BodyTextLeft = _bodyTextLeft,
@@ -22,7 +21,6 @@ public class ContentfulContactUsCategoryBuilder
             Sys = _sys,
             Icon = _icon
         };
-    }
 
     public ContentfulContactUsCategoryBuilder Title(string title)
     {
@@ -47,5 +45,4 @@ public class ContentfulContactUsCategoryBuilder
         _icon = icon;
         return this;
     }
-
 }

@@ -16,7 +16,13 @@ class AlertBuilder
     };
 
     public Alert Build()
-    {
-        return new Alert(_title, _subHeading, _body, _severity, _sunriseDate, _sunsetDate, _slug, _isStatic, string.Empty);
-    }
+        => new(_title,
+                _subHeading,
+                _body,
+                _severity,
+                _sunriseDate,
+                _sunsetDate,
+                _slug,
+                _isStatic,
+                string.Empty);
 }

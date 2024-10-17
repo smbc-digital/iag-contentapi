@@ -17,8 +17,7 @@ public class ContentfulCallToActionBannerBuilder
     };
 
     public ContentfulCallToActionBanner Build()
-    {
-        return new ContentfulCallToActionBanner
+        => new()
         {
             Title = _title,
             Teaser = _teaser,
@@ -28,6 +27,4 @@ public class ContentfulCallToActionBannerBuilder
             Colour = _colour,
             Image = _image
         };
-    }
-
 }

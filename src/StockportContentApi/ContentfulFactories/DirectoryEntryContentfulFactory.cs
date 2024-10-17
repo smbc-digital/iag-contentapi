@@ -3,7 +3,6 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
 {
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
-
     private readonly DateComparer _dateComparer;
 
     public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)

@@ -22,8 +22,8 @@ public class ContentfulSectionBuilder
     private readonly string _title = "title";
     private readonly DateTime _updatedAt = DateTime.Now;
 
-    public ContentfulSection Build() =>
-        new()
+    public ContentfulSection Build()
+        => new()
         {
             Title = _title,
             Slug = _slug,

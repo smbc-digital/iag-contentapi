@@ -17,8 +17,7 @@ public class ContentfulAlertBuilder
     };
 
     public ContentfulAlert Build()
-    {
-        return new ContentfulAlert
+        => new()
         {
             Title = _title,
             Body = _body,
@@ -29,7 +28,7 @@ public class ContentfulAlertBuilder
             Sys = _sys,
             Slug = _slug
         };
-    }
+    
     public ContentfulAlertBuilder WithSlug(string slug)
     {
         _slug = slug;
