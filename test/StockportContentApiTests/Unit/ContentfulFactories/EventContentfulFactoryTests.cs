@@ -30,34 +30,41 @@ public class EventContentfulFactoryTests
                             false,
                             string.Empty));
 
-        _eventContentfulFactory = new EventContentfulFactory(_documentFactory.Object,
-                                                            _groupFactory.Object,
-                                                            _eventCategoryFactory.Object,
-                                                            _alertFactory.Object,
-                                                            _timeProvider.Object);
+        _eventContentfulFactory = new(_documentFactory.Object,
+                                    _groupFactory.Object,
+                                    _eventCategoryFactory.Object,
+                                    _alertFactory.Object,
+                                    _timeProvider.Object);
     }
 
     [Fact]
-    public void ShouldNotAddDocumentsOrImageIfTheyAreLinks()
+    public void ToModel_ShouldNotAddDocumentsOrImage_If_TheyAreLinks()
     {
+        // Arrange
         _contentfulEvent.Documents.First().SystemProperties.LinkType = "Link";
         _contentfulEvent.Image.SystemProperties.LinkType = "Link";
 
-        Event anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
+        // Act
+        Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
 
-        anEvent.Documents.Count.Should().Be(0);
-        anEvent.ImageUrl.Should().Be(string.Empty);
-        anEvent.ThumbnailImageUrl.Should().Be(string.Empty);
+        // Assert
+        Assert.Empty(result.Documents);
+        Assert.Empty(result.ImageUrl);
+        Assert.Empty(result.ThumbnailImageUrl);
     }
 
     [Fact]
-    public void ShouldReturnGroupLinkedToEvent()
+    public void ToModel_ShouldReturnGroupLinkedToEvent()
     {
-        _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>()))
+        // Arrange
+        _groupFactory
+            .Setup(factory => factory.ToModel(It.IsAny<ContentfulGroup>()))
             .Returns(new GroupBuilder().Name("Test Group").Build());
 
-        Event anEvent = _eventContentfulFactory.ToModel(_contentfulEvent);
+        // Act
+        Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
 
-        anEvent.Group.Name.Should().Be("Test Group");
+        // Assert
+        Assert.Equal("Test Group", result.Group.Name);
     }
 }
