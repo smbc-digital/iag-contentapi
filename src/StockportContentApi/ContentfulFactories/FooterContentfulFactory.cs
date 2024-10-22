@@ -38,10 +38,10 @@ public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Foot
             : string.Empty;
 
         List<SubItem> links = entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
-                                .Select(item => _subitemFactory.ToModel(item)).ToList();
+                                .Select(_subitemFactory.ToModel).ToList();
 
         List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
-                                                    .Select(media => _socialMediaFactory.ToModel(media)).ToList();
+                                                    .Select(_socialMediaFactory.ToModel).ToList();
 
         return new Footer(title, slug, links, socialMediaLinks, footerContent1, footerContent2, footerContent3);
     }

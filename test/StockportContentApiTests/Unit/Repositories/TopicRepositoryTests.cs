@@ -94,8 +94,8 @@ public class TopicRepositoryTests
         };
 
         ContentfulTopicForSiteMap contentfulTopic = new ContentfulTopicForSiteMapBuilder()
-            .Slug(slug)
-            .Sections(sections)
+            .WithSlug(slug)
+            .WithSections(sections)
             .Build();
 
         ContentfulCollection<ContentfulTopicForSiteMap> collection = new()
