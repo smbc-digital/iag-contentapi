@@ -3,7 +3,7 @@
 public class RedirectContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateInlineQuoteFromAContentfulReference()
+    public void ToModel_ShouldCreateRedirectFromAContentfulRedirect()
     {
         // Arrange
         ContentfulRedirect contentfulReference = new ContentfulRedirectBuilder().Build();

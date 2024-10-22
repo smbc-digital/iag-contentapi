@@ -3,7 +3,7 @@
 public class AlertContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateAlertFromAContentfulReference()
+    public void ToModel_ShouldCreateAlertFromAContentfulAlert()
     {
         // Arrange
         ContentfulAlert contentfulReference = new ContentfulAlertBuilder().Build();

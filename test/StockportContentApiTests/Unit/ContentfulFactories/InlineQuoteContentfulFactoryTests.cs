@@ -3,7 +3,7 @@
 public class InlineQuoteContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateInlineQuoteFromAContentfulReference()
+    public void ToModel_ShouldCreateInlineQuoteFromAContentfulInlineQuote()
     {
         // Arrange
         ContentfulInlineQuote contentfulReference = new ContentfulInlineQuoteBuilder().Build();

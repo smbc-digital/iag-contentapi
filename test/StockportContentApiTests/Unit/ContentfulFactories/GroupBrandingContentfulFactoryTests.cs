@@ -4,7 +4,7 @@ public class GroupBrandingContentfulFactoryTests
 {
 
     [Fact]
-    public void ToModel_ShouldCreateGroupBrandingFromAContentfulReference()
+    public void ToModel_ShouldCreateGroupBrandingFromAContentfulGroupBranding()
     {
         // Arrange
         ContentfulGroupBranding contentfulReference = new ContentfulGroupBrandingBuilder().Build();

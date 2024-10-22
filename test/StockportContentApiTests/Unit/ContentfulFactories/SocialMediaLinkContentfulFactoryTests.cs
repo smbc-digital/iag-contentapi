@@ -3,7 +3,7 @@
 public class SocialMediaLinkContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateInlineQuoteFromAContentfulReference()
+    public void ToModel_ShouldCreateSocialMediaLinkFromAContentfulSocialMediaLink()
     {
         // Arrange
         ContentfulSocialMediaLink contentfulReference = new ContentfulSocialMediaLinkBuilder().Build();

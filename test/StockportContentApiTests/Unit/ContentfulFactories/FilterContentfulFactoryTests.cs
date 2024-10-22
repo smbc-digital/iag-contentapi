@@ -3,7 +3,7 @@
 public class FilterContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateFilterFromAContentfulReference()
+    public void ToModel_ShouldCreateFilterFromAContentfulFilter()
     {
         // Arrange
         ContentfulFilter contentfulReference = new ContentfulFilterBuilder().Build();

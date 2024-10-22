@@ -3,7 +3,7 @@
 public class TriviaContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateTriviaFromAContentfulReference()
+    public void ToModel_ShouldCreateTriviaFromAContentfulTrivia()
     {
         // Arrange
         ContentfulTrivia contentfulReference = new ContentfulTriviaBuilder().Build();

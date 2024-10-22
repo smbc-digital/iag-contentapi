@@ -3,7 +3,7 @@
 public class ExternalLinkContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateExternalLinkFromAContentfulReference()
+    public void ToModel_ShouldCreateExternalLinkFromAContentfulExternalLink()
     {
         // Arrange
         ContentfulExternalLink contentfulReference = new ContentfulExternalLinkBuilder().Build();

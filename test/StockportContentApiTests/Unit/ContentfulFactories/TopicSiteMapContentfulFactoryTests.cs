@@ -3,7 +3,7 @@
 public class TopicSiteMapContentfulFactoryTests
 {
     [Fact]
-    public void ToModel_ShouldCreateTopicSiteMapFromAContentfulReference()
+    public void ToModel_ShouldCreateTopicSiteMapFromAContentfulTopicForSiteMap()
     {
         // Arrange
         ContentfulTopicForSiteMap contentfulReference = new ContentfulTopicForSiteMapBuilder().Build();
