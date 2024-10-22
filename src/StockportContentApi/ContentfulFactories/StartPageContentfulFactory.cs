@@ -1,12 +1,12 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulStartPage, StartPage>
+public class StartPageContentfulFactory : IContentfulFactory<ContentfulStartPage, StartPage>
 {
     private readonly DateComparer _dateComparer;
     private IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
 
-    public StartPageFactoryContentfulFactory(ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
+    public StartPageContentfulFactory(ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
     {
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
@@ -18,15 +18,15 @@ public class StartPageFactoryContentfulFactory : IContentfulFactory<ContentfulSt
         List<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                .Select(_alertFactory.ToModel).ToList();
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                             .Where(alert => !alert.Severity.Equals("Condolence"))
-                                            .Select(alertInline => _alertFactory.ToModel(alertInline));
+                                            .Select(_alertFactory.ToModel);
 
         string backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
             ? entry.BackgroundImage.File.Url 

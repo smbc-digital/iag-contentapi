@@ -58,7 +58,7 @@ public class ShowcaseRepositoryTests
                 Link = "url"
             });
 
-        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
+        Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> spotlightBannerFactory = new();
 
         ShowcaseContentfulFactory contentfulFactory = new(_topicFactory.Object, _crumbFactory.Object,
             _timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object,
