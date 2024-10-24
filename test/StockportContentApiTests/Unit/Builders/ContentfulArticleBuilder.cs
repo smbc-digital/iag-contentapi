@@ -33,7 +33,10 @@ public class ContentfulArticleBuilder
         }
     };
 
-    private List<ContentfulReference> _relatedContent = new() { new ContentfulReferenceBuilder().Build() };
+    private List<ContentfulReference> _relatedContent = new()
+    {
+        new ContentfulReferenceBuilder().Build()
+    };
 
     public ContentfulArticle Build()
         => new()

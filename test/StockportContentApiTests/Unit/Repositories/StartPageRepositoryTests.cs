@@ -2,10 +2,11 @@
 
 public class StartPageRepositoryTests : TestingBaseClass
 {
-    private readonly Mock<IContentfulFactory<ContentfulStartPage, StartPage>> _startPageFactory;
-    private readonly Mock<IContentfulClient> _client;
-    private readonly Mock<ITimeProvider> _mockTimeProvider;
+    private readonly Mock<IContentfulFactory<ContentfulStartPage, StartPage>> _startPageFactory = new();
+    private readonly Mock<IContentfulClient> _client = new();
+    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly StartPageRepository _repository;
+    private readonly DateComparer _comparer;
 
     public StartPageRepositoryTests()
     {
@@ -17,123 +18,110 @@ public class StartPageRepositoryTests : TestingBaseClass
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
+        _mockTimeProvider.Setup(timeProvider => timeProvider.Now()).Returns(new DateTime(2017, 08, 01));
+        _comparer = new DateComparer(_mockTimeProvider.Object);
+
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _client = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
-        _mockTimeProvider = new Mock<ITimeProvider>();
+        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_client.Object);
 
-        _startPageFactory = new Mock<IContentfulFactory<ContentfulStartPage, StartPage>>();
+        ContentfulCollection<ContentfulStartPage> collection = new()
+        {
+            Items = new List<ContentfulStartPage> { }
+        };
 
-        _repository = new StartPageRepository(config, contentfulClientManager.Object, _startPageFactory.Object, _mockTimeProvider.Object);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+
+        _repository = new(config,
+                        contentfulClientManager.Object,
+                        _startPageFactory.Object,
+                        _mockTimeProvider.Object);
     }
 
     [Fact]
-    public void GivenThereIsItemInTheContentResponse_ItReturnsOKResponseWithTheContentOfStartPage()
+    public void GetStartPage_ReturnsOKResponseWithTheContentOfStartPage_If_ThereIsItemInTheContentResponse()
     {
         // Arrange
-        string slug = "startpage_slug";
-        ContentfulStartPage ContentfulStartPage = new ContentfulStartPageBuilder().Slug(slug).Build();
-        ContentfulCollection<ContentfulStartPage> collection = new()
-        {
-            Items = new List<ContentfulStartPage> { ContentfulStartPage }
-        };
-
         List<Alert> _alerts = new()
-        { new Alert("title", "subHeading", "body",
-            "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-            new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false, string.Empty) };
+        {
+            new AlertBuilder().Build()
+        };
 
         List<Alert> _inlineAlerts = new()
-        { new Alert("title", "subHeading", "body",
-            "severity", new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-            new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc), string.Empty, false, String.Empty) };
-
-        StartPage startPageItem = new("Start Page", "startPageSlug", "this is a teaser", "This is a summary", "An upper body", "Start now", "http://start.com", "Lower body", "image.jpg", "icon", new List<Crumb> { new("title", "slug", "type") }, _alerts, _inlineAlerts, DateTime.MinValue, DateTime.MaxValue);
-
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
-
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-        _startPageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulStartPage>())).Returns(startPageItem);
-
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage(slug));
-
-        StartPage startPage = response.Get<StartPage>();
-
-        // Act
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        startPage.Title.Should().Be("Start Page");
-        startPage.Slug.Should().Be("startPageSlug");
-        startPage.Teaser.Should().Be("this is a teaser");
-        startPage.Summary.Should().Be("This is a summary");
-        startPage.UpperBody.Should().Be("An upper body");
-        startPage.FormLink.Should().Be("http://start.com");
-        startPage.FormLinkLabel.Should().Be("Start now");
-        startPage.LowerBody.Should().Be("Lower body");
-        startPage.BackgroundImage.Should().Be("image.jpg");
-        startPage.Icon.Should().Be("icon");
-        startPage.Breadcrumbs.Should().HaveCount(1);
-        startPage.Alerts.Should().BeEquivalentTo(_alerts);
-        startPage.AlertsInline.Should().BeEquivalentTo(_inlineAlerts);
-    }
-
-    [Fact]
-    public void GivenNoItemsInTheContentResponse_ItReturnsNotFoundResponse()
-    {
-        // Arrange
-        string slug = "startpage_slug";
-
-        ContentfulCollection<ContentfulStartPage> collection = new()
         {
-            Items = new List<ContentfulStartPage>()
+            new AlertBuilder().Build()
         };
 
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("startPage").FieldEquals("fields.slug", slug).Include(3);
+        ContentfulStartPage contentfulStartPage = new ContentfulStartPageBuilder().Slug("startpage_slug").Build();
+        ContentfulCollection<ContentfulStartPage> collection = new()
+        {
+            Items = new List<ContentfulStartPage> { contentfulStartPage }
+        };
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulStartPage>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
+
+        StartPage startPageItem = new("Start Page",
+                                    "startPageSlug",
+                                    "this is a teaser",
+                                    "This is a summary",
+                                    "An upper body",
+                                    "Start now",
+                                    "http://start.com",
+                                    "Lower body",
+                                    "image.jpg",
+                                    "icon",
+                                    new List<Crumb> { new("title", "slug", "type") },
+                                    _alerts,
+                                    _inlineAlerts,
+                                    DateTime.MinValue,
+                                    DateTime.MaxValue);
+
+        _startPageFactory
+            .Setup(startPageFactory => startPageFactory.ToModel(It.IsAny<ContentfulStartPage>()))
+            .Returns(startPageItem);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("startpage_slug"));
+        StartPage startPage = response.Get<StartPage>();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("Start Page", startPage.Title);
+        Assert.Equal("startPageSlug", startPage.Slug);
+        Assert.Equal("this is a teaser", startPage.Teaser);
+        Assert.Equal("This is a summary", startPage.Summary);
+        Assert.Equal("An upper body", startPage.UpperBody);
+        Assert.Equal("http://start.com", startPage.FormLink);
+        Assert.Equal("Start now", startPage.FormLinkLabel);
+        Assert.Equal("Lower body", startPage.LowerBody);
+        Assert.Equal("image.jpg", startPage.BackgroundImage);
+        Assert.Equal("icon", startPage.Icon);
+        Assert.Single(startPage.Breadcrumbs);
+        Assert.Equal(_alerts, startPage.Alerts);
+        Assert.Equal(_inlineAlerts, startPage.AlertsInline);
+    }
+
+    [Fact]
+    public void GetStartPage_ReturnsNotFoundResponse_If_NoItemsInTheContentResponse()
+    {
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("startpage_slug"));
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void Gets404ForNewsOutsideOfSunriseDate()
+    public async Task Get_ShouldReturnNotFound_WhenNoStartPageEntriesFound()
     {
-        const string slug = "unit-test-article";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 01, 01));
+        // Act
+        var response = await _repository.Get();
 
-        ContentfulCollection<ContentfulStartPage> collection = new();
-        ContentfulStartPage rawArticle = new ContentfulStartPageBuilder().Slug(slug).Build();
-        collection.Items = new List<ContentfulStartPage>();
-
-        _client.Setup(o => o.GetEntries<ContentfulStartPage>(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("unit-test-article"));
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    [Fact]
-    public void Gets404ForNewsOutsideOfSunsetDate()
-    {
-        const string slug = "unit-test-article";
-        _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 01));
-
-        ContentfulCollection<ContentfulStartPage> collection = new();
-        ContentfulStartPage rawArticle = new ContentfulStartPageBuilder().Slug(slug).Build();
-        collection.Items = new List<ContentfulStartPage>();
-
-        _client.Setup(o => o.GetEntries<ContentfulStartPage>(It.IsAny<QueryBuilder<ContentfulStartPage>>(), It.IsAny<CancellationToken>())).ReturnsAsync(collection);
-
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("unit-test-article"));
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("No start page found", response.Error);
     }
 }

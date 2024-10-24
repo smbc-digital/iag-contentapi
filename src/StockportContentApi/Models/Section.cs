@@ -8,7 +8,7 @@ public class Section
     public string MetaDescription { get; }
     public string Body { get; set; }
     public IEnumerable<Profile> Profiles { get; } = new List<Profile>();
-    public IEnumerable<Alert> AlertsInline { get; }
+    public IEnumerable<Alert> AlertsInline { get; set; }
     public List<Document> Documents { get; }
     public string LogoAreaTitle { get; set; }
     public List<GroupBranding> SectionBranding { get; set; }
@@ -31,4 +31,7 @@ public class Section
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
     }
+
+    public Section()
+    { }
 }

@@ -40,11 +40,11 @@ public class StartPageRepository
         if (!entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-        IEnumerable<StartPage> startPages = entries.Select(s => _contentfulFactory.ToModel(s)).ToList()
+        IEnumerable<StartPage> startPages = entries.Select(_contentfulFactory.ToModel).ToList()
                                                 .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
 
         return startPages is null || !startPages.Any()
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Topics found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No start page found")
             : HttpResponse.Successful(startPages);
     }
 }

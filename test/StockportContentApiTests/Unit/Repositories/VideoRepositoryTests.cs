@@ -3,75 +3,96 @@
 public class VideoRepositoryTests : TestingBaseClass
 {
     private readonly VideoRepository _videoRepository;
-    private readonly Mock<IHttpClient> _fakeHttpClient;
+    private readonly Mock<IHttpClient> _fakeHttpClient = new();
     private const string MockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
 
     public VideoRepositoryTests()
+        => _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object);
+
+    [Fact]
+    public void Process_ShouldReturnContentUnchanged_WhenNoVideoTagsPresent()
     {
-        _fakeHttpClient = new Mock<IHttpClient>();
-        _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object);
+        // Arrange
+        string content = "This is a simple content without video tags.";
+
+        // Act
+        string result = _videoRepository.Process(content);
+
+        // Assert
+        Assert.Equal(content, result);
     }
 
-    // /// <summary>
-    // /// Nothing should be replaced as both videos exist
-    // /// </summary>
-    // [Fact]
-    // public void KeepsVideoTagsForMultipleTwentyThreeVideoTagsInContent()
-    // {
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
-    //         .ReturnsAsync(HttpResponse.Successful(
-    //             GetStringResponseFromFile("StockportContentApiTests.Unit.MockVideoResponses.VideoExists.json")));
+    [Fact]
+    public void Process_ShouldProcessSingleVideoTag_WhenVideoTagIsPresent()
+    {
+        // Arrange
+        string content = "This content contains a video tag {{VIDEO:12345}}.";
 
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId2&token=VideoToken2"))
-    //         .ReturnsAsync(HttpResponse.Successful(GetStringResponseFromFile("StockportContentApiTests.Unit.MockVideoResponses.VideoExists.json")));
+        // Act
+        string result = _videoRepository.Process(content);
 
-    //     var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text";
-    //     var response = _videoRepository.Process(content);
+        // Assert
+        Assert.Contains("{{VIDEO:12345}}", result);
+    }
 
-    //     response.Should().Be(content);
-    // }
+    [Fact]
+    public void Process_ShouldProcessMultipleVideoTags_WhenMultipleVideoTagsArePresent()
+    {
+        // Arrange
+        string content = "First video: {{VIDEO:12345}}, second video: {{VIDEO:67890}}.";
 
-    // /// <summary>
-    // /// Test to check if multiple video tags will be removed if they don't exist and keep one existing video tag in the content
-    // /// </summary>
-    // [Fact]
-    // public void RemovesVideoTagTwentyThreeVideoDoesNotExistAndWillKeepOneTag()
-    // {
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
-    //         .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.NotFound, "No video found"));
+        // Act
+        string result = _videoRepository.Process(content);
 
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId2&token=VideoToken2"))
-    //         .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.NotFound, "No video found"));
+        // Assert
+        Assert.Contains("{{VIDEO:12345}}", result);
+        Assert.Contains("{{VIDEO:67890}}", result);
+    }
 
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId3&token=VideoToken3"))
-    //         .ReturnsAsync(HttpResponse.Successful("video exists"));
+    [Fact]
+    public void Process_ShouldNotThrowException_WhenInvalidVideoTagIsPresent()
+    {
+        // Arrange
+        string content = "This content contains an invalid video tag {{VIDEO:INVALID}}.";
 
-    //     var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text. {{VIDEO:VideoId3;VideoToken3}}";
-    //     var result = _videoRepository.Process(content);
+        // Act
+        var exception = Record.Exception(() => _videoRepository.Process(content));
 
-    //     // LogTesting.Assert(_videoLogger, LogLevel.Warning, "Twenty three video with id 'VideoId1' not found.");
-    //     // LogTesting.Assert(_videoLogger, LogLevel.Warning, "Twenty three video with id 'VideoId2' not found.");
-    //     result.Should().NotContain("{{VIDEO:VideoId1;VideoToken1}}");
-    //     result.Should().NotContain("{{VIDEO:VideoId2;VideoToken2}}");
-    //     result.Should().Contain("{{VIDEO:VideoId3;VideoToken3}}");
-    // }
+        // Assert
+        Assert.Null(exception);
+    }
 
-    // /// <summary>
-    // /// Test to check video tag gets removed if video provider is down or the url is wrong (service unavailable)
-    // /// </summary>
-    // [Fact]
-    // public void RemovesOneVideoTagIfTwentyThreeReturnsServiceUnavailable()
-    // {
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId1&token=VideoToken1"))
-    //         .ReturnsAsync(HttpResponse.Successful("video exists"));
+    [Fact]
+    public void GetVideosTags_ShouldReturnEmptyList_WhenNoVideoTagsPresent()
+    {
+        // Arrange
+        string content = "No video tags in this content.";
 
-    //     _fakeHttpClient.Setup(o => o.Get($"{MockTwentyThreeApiUrl}VideoId2&token=VideoToken2"))
-    //         .ReturnsAsync(HttpResponse.Failure(HttpStatusCode.ServiceUnavailable, "Service unavailable"));
+        // Act
+        IEnumerable<string> result = InvokePrivateMethod<IEnumerable<string>>(_videoRepository, "GetVideosTags", content);
 
-    //     var content = "Some text {{VIDEO:VideoId1;VideoToken1}}, {{VIDEO:VideoId2;VideoToken2}} Some more text";
+        // Assert
+        Assert.Empty(result);
+    }
 
-    //     var response = _videoRepository.Process(content);
+    [Fact]
+    public void GetVideosTags_ShouldReturnCorrectTags_WhenVideoTagsArePresent()
+    {
+        // Arrange
+        string content = "Here is a video tag {{VIDEO:12345}} and another one {{VIDEO:67890}}.";
 
-    //     response.Should().Be("Some text {{VIDEO:VideoId1;VideoToken1}},  Some more text");
-    // }
+        // Act
+        IEnumerable<string> result = InvokePrivateMethod<IEnumerable<string>>(_videoRepository, "GetVideosTags", content);
+
+        // Assert
+        Assert.Contains("{{VIDEO:12345}}", result);
+        Assert.Contains("{{VIDEO:67890}}", result);
+    }
+
+    private T InvokePrivateMethod<T>(object instance, string methodName, params object[] parameters)
+    {
+        MethodInfo methodInfo = instance.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+        
+        return (T)methodInfo.Invoke(instance, parameters);
+    }
 }
