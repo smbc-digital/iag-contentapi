@@ -7,14 +7,16 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
     private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
     private readonly DateComparer _dateComparer;
 
-    public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
+    public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
     {
         _documentFactory = documentFactory;
         _groupFactory = groupFactory;
         _alertFactory = alertFactory;
         _eventCategoryFactory = eventCategoryFactory;
+        _brandingFactory = brandingFactory;
         _dateComparer = new DateComparer(timeProvider);
     }
 
@@ -35,12 +37,14 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
+        
+        IEnumerable<GroupBranding> eventBranding = entry.EventBranding?.Select(branding => _brandingFactory.ToModel(branding));
 
         return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
             entry.Location,
             entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
             new List<Crumb> { new("Events", string.Empty, "events") },
             ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-            entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink, entry.MetaDescription);
+            entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink, eventBranding, entry.PhoneNumber, entry.Email, entry.Website, entry.MetaDescription);
     }
 }
