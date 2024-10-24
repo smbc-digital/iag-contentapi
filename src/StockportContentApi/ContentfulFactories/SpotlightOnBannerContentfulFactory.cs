@@ -1,12 +1,14 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class SpotlightOnBannerContentfulFactory : IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>
+public class SpotlightOnBannerContentfulFactory : IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>
 {
-    public IEnumerable<SpotlightOnBanner> ToModel(IEnumerable<ContentfulSpotlightOnBanner> entry)
+    public SpotlightOnBanner ToModel(ContentfulSpotlightOnBanner entry)
     {
-        if (entry is not null && entry.Any())
-            return entry.Select(_ => new SpotlightOnBanner(_.Title, _.Image.File.Url, _.AltText, _.Teaser, _.Link, _.Sys.UpdatedAt is not null ? _.Sys.UpdatedAt.Value : _.Sys.PublishedAt.Value));
+        if (entry is null)
+            return null;
 
-        return Enumerable.Empty<SpotlightOnBanner>();
+        DateTime updatedAt = entry.Sys.UpdatedAt is not null ? entry.Sys.UpdatedAt.Value : entry.Sys.PublishedAt.Value;
+
+        return new(entry.Title, entry?.Image?.File?.Url, entry.AltText, entry.Teaser, entry.Link, updatedAt);
     }
 }

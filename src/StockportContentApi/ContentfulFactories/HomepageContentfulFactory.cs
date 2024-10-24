@@ -8,9 +8,15 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> _spotlightOnBanner;
+    private readonly IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> _spotlightOnBanner;
 
-    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory, IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>> spotlightOnBanner)
+    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                    IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                                    IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                    IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
+                                    ITimeProvider timeProvider,
+                                    IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+                                    IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightOnBanner)
     {
         _subitemFactory = subitemFactory;
         _groupFactory = groupFactory;
@@ -63,33 +69,55 @@ public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, 
 
         List<SubItem> featuredTasks = entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
+                                        .Select(_subitemFactory.ToModel).ToList();
 
         List<SubItem> featuredTopics = entry.FeaturedTopics.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
+                                        .Select(_subitemFactory.ToModel).ToList();
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
-                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                .Select(_alertFactory.ToModel).ToList();
 
         List<CarouselContent> carouselContents = entry.CarouselContents.Where(subItem => subItem.Sys is not null && ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                                    .Select(item => _carouselFactory.ToModel(item)).ToList();
+                                                    .Select(_carouselFactory.ToModel).ToList();
 
         CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
         Group featuredGroup = entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
                                     && _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
-                                .Select(group => _groupFactory.ToModel(group)).FirstOrDefault();
+                                .Select(_groupFactory.ToModel).FirstOrDefault();
 
         CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
         CallToActionBanner callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
 
-        IEnumerable<SpotlightOnBanner> spotlightOnBanner = _spotlightOnBanner.ToModel(entry.SpotlightOnBanner);
+        List<SpotlightOnBanner> spotlightOnBanner = entry.SpotlightOnBanner?
+                                                            .Where(spotlightOnBanner => ContentfulHelpers.EntryIsNotALink(spotlightOnBanner.Sys))
+                                                            .Select(_spotlightOnBanner.ToModel).ToList();
 
-        return new Homepage(popularSearchTerms, featuredTasksHeading, featuredTasksSummary, featuredTasks,
-            featuredTopics, alerts, carouselContents, backgroundImage, foregroundImage, foregroundImageLocation, foregroundImageLink, foregroundImageAlt, freeText, title, featuredGroup, entry.EventCategory, entry.MetaDescription, campaignBanner, callToAction, callToActionPrimary, spotlightOnBanner, entry.ImageOverlayText);
+        return new Homepage(popularSearchTerms,
+                            featuredTasksHeading,
+                            featuredTasksSummary,
+                            featuredTasks,
+                            featuredTopics,
+                            alerts,
+                            carouselContents,
+                            backgroundImage,
+                            foregroundImage,
+                            foregroundImageLocation,
+                            foregroundImageLink,
+                            foregroundImageAlt,
+                            freeText,
+                            title,
+                            featuredGroup,
+                            entry.EventCategory,
+                            entry.MetaDescription,
+                            campaignBanner,
+                            callToAction,
+                            callToActionPrimary,
+                            spotlightOnBanner,
+                            entry.ImageOverlayText);
     }
 }

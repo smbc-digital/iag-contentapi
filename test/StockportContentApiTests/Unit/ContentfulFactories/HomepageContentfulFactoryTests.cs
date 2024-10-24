@@ -3,31 +3,43 @@
 public class HomepageContentfulFactoryTests
 {
     private readonly HomepageContentfulFactory _homepageContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory;
-    private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
-    private readonly Mock<ITimeProvider> _timeProvider;
-    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory;
-    private readonly Mock<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>> _spotlightOnFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> _spotlightOnFactory = new();
 
     public HomepageContentfulFactoryTests()
     {
-        _subitemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        _groupFactory = new Mock<IContentfulFactory<ContentfulGroup, Group>>();
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
-        _timeProvider = new Mock<ITimeProvider>();
-        _callToActionFactory = new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>();
-        _spotlightOnFactory = new Mock<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>>();
-
-        _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(new GroupBuilder().Build());
-        _subitemFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItemBuilder().Build());
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
-        _carouselContentFactory.Setup(o => o.ToModel(It.IsAny<ContentfulCarouselContent>())).Returns(new CarouselContent(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty));
-        _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
-        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
-        _spotlightOnFactory.Setup(_ => _.ToModel(It.IsAny<IEnumerable<ContentfulSpotlightOnBanner>>())).Returns(new List<SpotlightOnBanner>());
+        _groupFactory
+            .Setup(groupFactory => groupFactory.ToModel(It.IsAny<ContentfulGroup>()))
+            .Returns(new GroupBuilder().Build());
+        
+        _subitemFactory
+            .Setup(subitemFactory => subitemFactory.ToModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItemBuilder().Build());
+        
+        _alertFactory
+            .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
+            .Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+        
+        _carouselContentFactory
+            .Setup(carouselContentFactory => carouselContentFactory.ToModel(It.IsAny<ContentfulCarouselContent>()))
+            .Returns(new CarouselContent(string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty));
+        
+        _timeProvider
+            .Setup(timeProvider => timeProvider.Now())
+            .Returns(new DateTime(2017, 01, 01));
+        
+        _callToActionFactory
+            .Setup(callToActionFactory => callToActionFactory.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+            .Returns(new CallToActionBanner());
+        
+        _spotlightOnFactory
+            .Setup(spotlightOnFactory => spotlightOnFactory.ToModel(It.IsAny<ContentfulSpotlightOnBanner>()))
+            .Returns(new SpotlightOnBanner(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime()));
 
         _homepageContentfulFactory = new HomepageContentfulFactory(_subitemFactory.Object,
             _groupFactory.Object,

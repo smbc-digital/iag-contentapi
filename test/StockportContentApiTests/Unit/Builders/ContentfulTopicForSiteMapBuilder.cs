@@ -23,13 +23,13 @@ public class ContentfulTopicForSiteMapBuilder
             }
         };
 
-    public ContentfulTopicForSiteMapBuilder Slug(string slug)
+    public ContentfulTopicForSiteMapBuilder WithSlug(string slug)
     {
         _slug = slug;
         return this;
     }
 
-    public ContentfulTopicForSiteMapBuilder Sections(List<ContentfulSectionForSiteMap> sections)
+    public ContentfulTopicForSiteMapBuilder WithSections(List<ContentfulSectionForSiteMap> sections)
     {
         _sections = sections;
         return this;

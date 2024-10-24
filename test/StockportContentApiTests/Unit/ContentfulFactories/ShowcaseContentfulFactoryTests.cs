@@ -50,7 +50,7 @@ public class ShowcaseContentfulFactoryTests
                 Link = "url"
             });
 
-        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
+        Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> spotlightBannerFactory = new();
 
         Mock<ITimeProvider> timeprovider = new();
 
@@ -112,7 +112,7 @@ public class ShowcaseContentfulFactoryTests
                 Link = "url"
             });
 
-        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
+        Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> spotlightBannerFactory = new();
 
         ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
@@ -180,7 +180,7 @@ public class ShowcaseContentfulFactoryTests
                 Link = "url"
             });
 
-        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
+        Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> spotlightBannerFactory = new();
 
         ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 
@@ -250,7 +250,7 @@ public class ShowcaseContentfulFactoryTests
                 Link = "url"
             });
 
-        Mock<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>> spotlightBannerFactory = new();
+        Mock<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>> spotlightBannerFactory = new();
 
         ShowcaseContentfulFactory contentfulFactory = new(topicFactory.Object, crumbFactory.Object, timeprovider.Object, socialMediaFactory.Object, _alertFactory.Object, _profileFactory.Object, _triviaFactory.Object, callToActionBanner.Object, _videoFactory.Object, spotlightBannerFactory.Object);
 

@@ -43,8 +43,7 @@ public static class ServiceCollectionExtensions
                 p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
                 p.GetService<ITimeProvider>(),
                 p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-                p.GetService<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>,
-                    IEnumerable<SpotlightOnBanner>>>()));
+                p.GetService<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>()));
         services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p =>
             new ContactUsCategoryContentfulFactory());
@@ -62,10 +61,8 @@ public static class ServiceCollectionExtensions
                 p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
         services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p =>
             new EventBannerContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>(p =>
-            new SpotlightBannerContentfulFactory());
         services
-            .AddSingleton<IContentfulFactory<IEnumerable<ContentfulSpotlightOnBanner>, IEnumerable<SpotlightOnBanner>>>(
+            .AddSingleton<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>(
                 p => new SpotlightOnBannerContentfulFactory());
         services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p =>
             new SocialMediaLinkContentfulFactory());
@@ -144,7 +141,7 @@ public static class ServiceCollectionExtensions
             p.GetService<IContentfulFactory<ContentfulTrivia, Trivia>>(),
             p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
             p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
-            p.GetService<IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner>>()));
+            p.GetService<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>()));
 
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>>
         (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
@@ -205,7 +202,7 @@ public static class ServiceCollectionExtensions
                 p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
                 , p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>>
-        (p => new StartPageFactoryContentfulFactory(p.GetService<ITimeProvider>(),
+        (p => new StartPageContentfulFactory(p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
         services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>

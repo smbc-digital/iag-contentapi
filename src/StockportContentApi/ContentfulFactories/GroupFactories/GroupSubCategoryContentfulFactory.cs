@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulFactories.GroupFactories;
 
+[ExcludeFromCodeCoverage]
 public class GroupSubCategoryContentfulFactory : IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>
 {
     public GroupSubCategory ToModel(ContentfulGroupSubCategory entry)

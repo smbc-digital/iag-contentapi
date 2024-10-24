@@ -8,7 +8,7 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
     private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-    private readonly IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> _spotlightBannerFactory;
+    private readonly IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> _spotlightBannerFactory;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
     private readonly IContentfulFactory<ContentfulTrivia, Trivia> _triviaFactory;
     private readonly IContentfulFactory<ContentfulVideo, Video> _videoFactory;
@@ -22,7 +22,7 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
         IContentfulFactory<ContentfulTrivia, Trivia> triviaFactory,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionBannerContentfulFactory,
         IContentfulFactory<ContentfulVideo, Video> videoFactory,
-        IContentfulFactory<ContentfulSpotlightBanner, SpotlightBanner> spotlightBannerFactory)
+        IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightBannerFactory)
     {
         _subitemFactory = subitemFactory;
         _crumbFactory = crumbFactory;
@@ -87,7 +87,7 @@ public class ShowcaseContentfulFactory : IContentfulFactory<ContentfulShowcase, 
             ? _videoFactory.ToModel(entry.Video)
             : null;
 
-        SpotlightBanner spotlightBanner = entry.SpotlightBanner is not null
+        SpotlightOnBanner spotlightBanner = entry.SpotlightBanner is not null
             ? _spotlightBannerFactory.ToModel(entry.SpotlightBanner)
             : null;
 

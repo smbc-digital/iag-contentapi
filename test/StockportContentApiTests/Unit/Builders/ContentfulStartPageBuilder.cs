@@ -15,12 +15,13 @@ public class ContentfulStartPageBuilder
 
     private readonly List<ContentfulReference> _breadcrumbs = new()
     {
-      new ContentfulReferenceBuilder().Build()
+        new ContentfulReferenceBuilder().Build()
     };
 
     private readonly List<ContentfulAlert> _alerts = new()
     {
-        new ContentfulAlertBuilder().Build()
+        new ContentfulAlertBuilder().Build(),
+        new ContentfulAlertBuilder().WithSeverity("Condolence").Build()
     };
 
     public ContentfulStartPage Build()
@@ -37,7 +38,8 @@ public class ContentfulStartPageBuilder
             BackgroundImage = _image,
             Icon = _icon,
             Breadcrumbs = _breadcrumbs,
-            Alerts = _alerts
+            Alerts = _alerts,
+            AlertsInline = _alerts
         };
 
     public ContentfulStartPageBuilder Slug(string slug)
