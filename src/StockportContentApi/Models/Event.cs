@@ -31,7 +31,7 @@ public class Event
     public bool? Paid { get; }
     public GeoCoordinate Coord { get; }
     public string AccessibleTransportLink { get; }
-    public IEnumerable<GroupBranding> EventBranding { get; set; } = new List<GroupBranding>();
+    public List<GroupBranding> EventBranding { get; set; } = new List<GroupBranding>();
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string Website { get; set; }
@@ -42,7 +42,7 @@ public class Event
                  string location, string submittedBy, DateTime eventDate, string startTime, string endTime,
                  int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl,
                  List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,
-                 string bookingInformation, DateTime? updatedAt, List<string> tags, Group group, List<Alert> alerts, List<EventCategory> eventCategories, bool? free, bool? paid, string accessibleTransportLink, IEnumerable<GroupBranding> eventBranding, string phoneNumber, string email, string website, string metaDescription)
+                 string bookingInformation, DateTime? updatedAt, List<string> tags, Group group, List<Alert> alerts, List<EventCategory> eventCategories, bool? free, bool? paid, string accessibleTransportLink, List<GroupBranding> eventBranding, string phoneNumber, string email, string website, string metaDescription)
     {
         Title = title;
         Slug = slug;

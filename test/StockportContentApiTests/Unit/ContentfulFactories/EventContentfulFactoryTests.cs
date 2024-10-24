@@ -7,6 +7,7 @@ public class EventContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory = new();
     private readonly EventContentfulFactory _eventContentfulFactory;
 
@@ -33,6 +34,7 @@ public class EventContentfulFactoryTests
         _eventContentfulFactory = new(_documentFactory.Object,
                                     _groupFactory.Object,
                                     _eventCategoryFactory.Object,
+                                    _brandingFactory.Object,
                                     _alertFactory.Object,
                                     _timeProvider.Object);
     }

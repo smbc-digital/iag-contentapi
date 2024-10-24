@@ -38,7 +38,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(alert => _alertFactory.ToModel(alert)).ToList();
         
-        IEnumerable<GroupBranding> eventBranding = entry.EventBranding?.Select(branding => _brandingFactory.ToModel(branding));
+        List<GroupBranding> eventBranding = entry.EventBranding?.Select(_brandingFactory.ToModel).ToList();
 
         return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
             entry.Location,
