@@ -97,7 +97,7 @@ public class ShowcaseRepositoryTests
         Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
             string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
             string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null);
+            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         ContentfulCollection<ContentfulShowcase> collection = new();
@@ -153,7 +153,7 @@ public class ShowcaseRepositoryTests
         Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
             string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
             string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null);
+            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         // Act

@@ -15,7 +15,11 @@ public class EventBuilder
     private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private readonly string _startTime = "10:00";
     private readonly string _endTime = "17:00";
-    private int _occurences = -1;
+    private readonly string _phoneNumber = "01617481234";
+    private readonly string _email = "test@email.com"; 
+    private readonly string _website = "www.test.com";
+    private List<GroupBranding> _branding = new();
+    private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
     private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
@@ -70,6 +74,10 @@ public class EventBuilder
             null,
             null,
             null,
+            _branding,
+            _phoneNumber,
+            _email,
+            _website,
             _metaDescription);
 
     public EventBuilder Slug(string slug)
