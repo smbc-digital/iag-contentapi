@@ -40,7 +40,7 @@ public class EventRepositoryTests
 
         // TODO: Make this into a mock instead of concrete class, will need refactor to tests with this also
         EventContentfulFactory contentfulFactory = new(_documentFactory.Object, _groupFactory.Object,
-            _eventCategoryFactory.Object, _brandingFactory.Object, _alertFactory.Object,  _mockTimeProvider.Object);
+            _eventCategoryFactory.Object, _brandingFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
         EventHomepageContentfulFactory eventHomepageFactory = new(_mockTimeProvider.Object);
 
         _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);
