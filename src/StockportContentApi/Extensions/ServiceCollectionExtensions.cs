@@ -77,6 +77,7 @@ public static class ServiceCollectionExtensions
             new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
                 p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
                 p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
+                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
                 p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
                 p.GetService<ITimeProvider>()));
         services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(p =>

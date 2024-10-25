@@ -13,6 +13,8 @@ public class EventRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+
     private readonly Mock<ILogger<EventRepository>> _logger = new();
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly EventRepository _repository;
@@ -38,7 +40,7 @@ public class EventRepositoryTests
 
         // TODO: Make this into a mock instead of concrete class, will need refactor to tests with this also
         EventContentfulFactory contentfulFactory = new(_documentFactory.Object, _groupFactory.Object,
-            _eventCategoryFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
+            _eventCategoryFactory.Object, _brandingFactory.Object, _alertFactory.Object, _mockTimeProvider.Object);
         EventHomepageContentfulFactory eventHomepageFactory = new(_mockTimeProvider.Object);
 
         _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_contentfulClient.Object);
