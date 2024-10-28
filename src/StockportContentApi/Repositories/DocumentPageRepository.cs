@@ -30,7 +30,7 @@ public class DocumentPageRepository : BaseRepository
             : HttpResponse.Successful(documentPage);
     }
 
-    private async Task<ContentfulDocumentPage> GetDocumentPageEntry(string documentPageSlug)
+    internal async Task<ContentfulDocumentPage> GetDocumentPageEntry(string documentPageSlug)
     {
         QueryBuilder<ContentfulDocumentPage> builder = new QueryBuilder<ContentfulDocumentPage>()
             .ContentTypeIs("documentPage")

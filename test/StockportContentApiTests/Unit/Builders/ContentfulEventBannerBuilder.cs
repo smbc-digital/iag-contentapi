@@ -2,10 +2,10 @@
 
 public class ContentfulEventBannerBuilder
 {
-    private readonly string _title = "title";
-    private readonly string _teaser = "teaser";
-    private readonly string _icon = "icon";
-    private readonly string _link = "link";
+    private string _title = "title";
+    private string _teaser = "teaser";
+    private string _icon = "icon";
+    private string _link = "link";
     private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
@@ -20,4 +20,28 @@ public class ContentfulEventBannerBuilder
             Link = _link,
             Sys = _sys
         };
+
+    public ContentfulEventBannerBuilder WithTitle(string title)
+    {
+        _title = title;
+        return this;
+    }
+
+    public ContentfulEventBannerBuilder WithTeaser(string teaser)
+    {
+        _teaser = teaser;
+        return this;
+    }
+
+    public ContentfulEventBannerBuilder WithIcon(string icon)
+    {
+        _icon = icon;
+        return this;
+    }
+
+    public ContentfulEventBannerBuilder WithLink(string link)
+    {
+        _link = link;
+        return this;
+    }
 }

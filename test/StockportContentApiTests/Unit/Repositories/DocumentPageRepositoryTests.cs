@@ -3,8 +3,8 @@
 public class DocumentPageRepositoryTests
 {
     private readonly DocumentPageRepository _repository;
-    private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<ICache> _cache;
+    private readonly Mock<IContentfulClient> _contentfulClient = new();
+    private readonly Mock<ICache> _cache = new();
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
 
     public DocumentPageRepositoryTests()
@@ -17,7 +17,7 @@ public class DocumentPageRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _cache = new Mock<ICache>();
+        _mockTimeProvider.Setup(timeProvider => timeProvider.Now()).Returns(new DateTime(2016, 10, 15));
 
         DocumentPageContentfulFactory contentfulFactory = new(
             new Mock<IContentfulFactory<Asset, Document>>().Object,
@@ -27,9 +27,12 @@ public class DocumentPageRepositoryTests
         );
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new DocumentPageRepository(config, contentfulClientManager.Object, contentfulFactory, _cache.Object);
+        
+        _repository = new(config,
+                        contentfulClientManager.Object,
+                        contentfulFactory,
+                        _cache.Object);
     }
 
     [Fact]
@@ -46,28 +49,60 @@ public class DocumentPageRepositoryTests
     public void GetDocumentPage_ShouldReturnSuccessfulResponse()
     {
         // Arrange
-        ContentfulDocumentPage contentfulDocumentPage = new()
-        {
-            Slug = "slug",
-            AboutTheDocument = "about the document",
-            Documents = new List<Asset>(),
-            AwsDocuments = "aws documents",
-            RequestAnAccessibleFormatContactInformation = "request an accessible format contact information",
-            FurtherInformation = "further information",
-            RelatedDocuments = new List<ContentfulReference>(),
-            DatePublished = new(),
-            LastUpdated = new(),
-            Breadcrumbs = new List<ContentfulReference>(),
-            Sys = new() { UpdatedAt = new DateTime() }
-        };
+        ContentfulDocumentPage contentfulDocumentPage = new ContentfulDocumentPageBuilder().Build();
 
-        _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));
-        _cache.Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"documentPage-slug")), It.IsAny<Func<Task<ContentfulDocumentPage>>>())).ReturnsAsync(contentfulDocumentPage);
+        _cache
+            .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(slug => slug.Equals($"documentPage-slug")), It.IsAny<Func<Task<ContentfulDocumentPage>>>()))
+            .ReturnsAsync(contentfulDocumentPage);
 
         // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug"));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetDocumentPageEntry_ShouldReturnDocumentPage_WhenEntryExistsAsync()
+    {
+        // Arrange
+        ContentfulCollection<ContentfulDocumentPage> contentfulCollection = new()
+        {
+            Items = new List<ContentfulDocumentPage> { new ContentfulDocumentPageBuilder().Build() }
+        };
+
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulDocumentPage>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(contentfulCollection);
+
+        // Act
+        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("slug");
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("slug", result.Slug);
+        _contentfulClient.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulDocumentPage>>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetDocumentPageEntry_ShouldReturnNull_WhenNoEntryExists()
+    {
+        // Arrange
+        ContentfulCollection<ContentfulDocumentPage> contentfulCollection = new()
+        {
+            Items = new List<ContentfulDocumentPage>()
+        };
+
+        // Setup mock behavior for GetEntries method
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulDocumentPage>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(contentfulCollection);
+
+        // Act
+        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("non-existing-slug");
+
+        // Assert
+        Assert.Null(result);
+        _contentfulClient.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulDocumentPage>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

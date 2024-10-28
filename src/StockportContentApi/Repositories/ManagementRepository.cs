@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Repositories;
 
+[ExcludeFromCodeCoverage]
 public class ManagementRepository
 {
     private readonly IContentfulManagementClient _client;
@@ -30,7 +31,7 @@ public class ManagementRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(0), ex, "An unexpected error occured while performing the get operation");
+            _logger.LogError(new EventId(0), ex, "An unexpected error occurred while performing the get operation");
 
             return HttpResponse.Failure(HttpStatusCode.InternalServerError, ex.Message);
         }

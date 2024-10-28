@@ -109,6 +109,7 @@ public class ContentBlockContentfulFactoryTests
     [InlineData("SubscriptionBanner", "directory", false)]
     [InlineData("TriviaList", "callToActionBanner", false)]
     [InlineData("TriviaList", "informationList", true)]
+    [InlineData("TriviaList", "trivia", true)]
     [InlineData("Video", "topic", false)]
     [InlineData("Body", "topic", true)]
     public void IsSubItemSuitableForContentType_ShouldReturnCorrectResult(string parentContentType, string subItemContentType, bool expectedResult)

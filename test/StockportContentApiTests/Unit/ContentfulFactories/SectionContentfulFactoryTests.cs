@@ -21,14 +21,14 @@ public class SectionContentfulFactoryTests
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         _brandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
 
-        _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
+        _timeProvider.Setup(time => time.Now()).Returns(new DateTime(2017, 01, 01));
 
         _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
             _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, _brandingFactory.Object);
     }
 
     [Fact]
-    public void ShouldCreateASectionFromAContentfulSection()
+    public void ToModel_ShouldCreateASectionFromAContentfulSection()
     {
         // Arrange
         Profile profile = new()
@@ -46,14 +46,7 @@ public class SectionContentfulFactoryTests
             },
             Alerts = new List<Alert>
             {
-                new("title",
-                    "subheading",
-                    "body",
-                    "severity",
-                    DateTime.MinValue,
-                    DateTime.MaxValue,
-                    "slug",
-                    false, string.Empty)
+                new AlertBuilder().Build()
             },
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),
@@ -63,46 +56,52 @@ public class SectionContentfulFactoryTests
             Colour = EColourScheme.Teal
         };
 
-        _profileFactory.Setup(o => o.ToModel(_contentfulSection.Profiles.First())).Returns(profile);
+        _profileFactory
+            .Setup(profileFactory => profileFactory.ToModel(_contentfulSection.Profiles.First()))
+            .Returns(profile);
 
         Document document = new DocumentBuilder().Build();
-        _documentFactory.Setup(o => o.ToModel(_contentfulSection.Documents.First())).Returns(document);
+        _documentFactory.Setup(documentFactory => documentFactory.ToModel(_contentfulSection.Documents.First())).Returns(document);
 
-        const string processedBody = "this is processed body";
-        _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(processedBody);
+        _videoRepository.Setup(videoFactory => videoFactory.Process(_contentfulSection.Body)).Returns("this is processed body");
 
         Alert alert = new("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
-        _alertFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
+        _alertFactory.Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act
         Section result = _sectionFactory.ToModel(_contentfulSection);
 
         // Assert
-        result.AlertsInline.Count().Should().Be(1);
-        result.AlertsInline.First().Should().BeEquivalentTo(alert);
-        result.Body.Should().BeEquivalentTo("this is processed body");
-        result.Documents.Count.Should().Be(1);
-        result.Documents.First().Should().BeEquivalentTo(document);
-        result.Profiles.Count().Should().Be(1);
-        result.Profiles.First().Should().BeEquivalentTo(profile);
-        result.Slug.Should().Be("slug");
-        result.SunriseDate.Should().Be(DateTime.MinValue);
-        result.SunsetDate.Should().Be(DateTime.MinValue);
-        result.Title.Should().Be("title");
+        Assert.Single(result.AlertsInline);
+        Assert.Equal(alert, result.AlertsInline.First());
+        Assert.Equal("this is processed body", result.Body);
+        Assert.Single(result.Documents);
+        Assert.Equal(document, result.Documents.First());
+        Assert.Single(result.Profiles);
+        Assert.Equal(profile, result.Profiles.First());
+        Assert.Equal("slug", result.Slug);
+        Assert.Equal(DateTime.MinValue, result.SunriseDate);
+        Assert.Equal(DateTime.MinValue, result.SunsetDate);
+        Assert.Equal("title", result.Title);
     }
 
     [Fact]
-    public void ShouldNotAddDocumentsOrProfilesIfTheyAreLinks()
+    public void ToModel_ShouldNotAddDocumentsOrProfilesIfTheyAreLinks()
     {
+        // Arrange
         _contentfulSection.Documents.First().SystemProperties.LinkType = "Link";
         _contentfulSection.Profiles.First().Sys.LinkType = "Link";
-        _videoRepository.Setup(o => o.Process(_contentfulSection.Body)).Returns(_contentfulSection.Body);
+        _videoRepository
+            .Setup(videoRepository => videoRepository.Process(_contentfulSection.Body))
+            .Returns(_contentfulSection.Body);
 
+        // Act
         Section section = _sectionFactory.ToModel(_contentfulSection);
 
-        section.Documents.Count.Should().Be(0);
-        _documentFactory.Verify(o => o.ToModel(It.IsAny<Asset>()), Times.Never);
-        section.Profiles.Count().Should().Be(0);
-        _profileFactory.Verify(o => o.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);
+        // Assert
+        _documentFactory.Verify(documentFactory => documentFactory.ToModel(It.IsAny<Asset>()), Times.Never);
+        _profileFactory.Verify(profileFactory => profileFactory.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);
+        Assert.Empty(section.Documents);
+        Assert.Empty(section.Profiles);
     }
 }

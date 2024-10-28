@@ -3,8 +3,8 @@
 public class HomepageRepositoryTests
 {
     private readonly HomepageRepository _repository;
-    private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory;
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory = new();
+    private readonly Mock<IContentfulClient> _client = new();
 
     public HomepageRepositoryTests()
     {
@@ -16,32 +16,54 @@ public class HomepageRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _homepageFactory = new Mock<IContentfulFactory<ContentfulHomepage, Homepage>>();
-
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _client = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
+        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_client.Object);
 
         _repository = new HomepageRepository(config, contentfulClientManager.Object, _homepageFactory.Object);
     }
 
     [Fact]
-    public void ItGetsHomepage()
+    public void Get_ReturnsHomepage()
     {
-        ContentfulHomepage contentfulHomepage = new();
+        // Arrange
         ContentfulCollection<ContentfulHomepage> collection = new()
         {
-            Items = new List<ContentfulHomepage> { contentfulHomepage }
+            Items = new List<ContentfulHomepage> { new ContentfulHomepage() }
         };
 
         QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
         _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build().Equals(builder.Build())),
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
-        _homepageFactory.Setup(o => o.ToModel(It.IsAny<ContentfulHomepage>()))
-            .Returns(new Homepage(new List<string>(), string.Empty, string.Empty, new List<SubItem>(), new List<SubItem>(), new List<Alert>(), new List<CarouselContent>(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty, new CarouselContent(), new CallToActionBanner(), new CallToActionBanner(), null, string.Empty));
+        _homepageFactory
+            .Setup(homepage => homepage.ToModel(It.IsAny<ContentfulHomepage>()))
+            .Returns(new Homepage(new List<string>(),
+                                string.Empty,
+                                string.Empty,
+                                new List<SubItem>(),
+                                new List<SubItem>(),
+                                new List<Alert>(),
+                                new List<CarouselContent>(),
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                new CarouselContent(),
+                                new CallToActionBanner(),
+                                new CallToActionBanner(),
+                                null,
+                                string.Empty));
 
+        // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        
+        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
