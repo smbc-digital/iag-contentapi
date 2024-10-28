@@ -89,7 +89,7 @@ public class VideoRepositoryTests : TestingBaseClass
         Assert.Contains("{{VIDEO:67890}}", result);
     }
 
-    private T InvokePrivateMethod<T>(object instance, string methodName, params object[] parameters)
+    private static T InvokePrivateMethod<T>(object instance, string methodName, params object[] parameters)
     {
         MethodInfo methodInfo = instance.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
         

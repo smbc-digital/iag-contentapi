@@ -18,11 +18,16 @@ public class StartPageRepositoryTests : TestingBaseClass
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _mockTimeProvider.Setup(timeProvider => timeProvider.Now()).Returns(new DateTime(2017, 08, 01));
+        _mockTimeProvider
+            .Setup(timeProvider => timeProvider.Now())
+            .Returns(new DateTime(2017, 08, 01));
+        
         _comparer = new DateComparer(_mockTimeProvider.Object);
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_client.Object);
+        contentfulClientManager
+            .Setup(client => client.GetClient(config))
+            .Returns(_client.Object);
 
         ContentfulCollection<ContentfulStartPage> collection = new()
         {

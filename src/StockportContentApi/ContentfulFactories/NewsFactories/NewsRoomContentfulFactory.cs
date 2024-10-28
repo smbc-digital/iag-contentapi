@@ -1,5 +1,6 @@
 namespace StockportContentApi.ContentfulFactories.NewsFactories;
 
+[ExcludeFromCodeCoverage]
 public class NewsRoomContentfulFactory : IContentfulFactory<ContentfulNewsRoom, Newsroom>
 {
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;

@@ -8,7 +8,5 @@ public interface ITimeProvider
 public class TimeProvider : ITimeProvider
 {
     public DateTime Now()
-    {
-        return DateTime.UtcNow;
-    }
+        => DateTime.UtcNow;
 }
