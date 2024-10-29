@@ -15,4 +15,5 @@ public class ContentfulArticle : ContentfulReference
     public string LogoAreaTitle { get; set; }
     public string Author { get; set; }
     public string Photographer { get; set; }
+    public List<InlineQuote> InlineQuotes { get; set; } = new();
 }

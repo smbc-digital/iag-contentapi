@@ -115,7 +115,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
 
             HideLastUpdated = entry.HideLastUpdated,
             Author = entry.Author,
-            Photographer = entry.Photographer
+            Photographer = entry.Photographer,
+            InlineQuotes = entry.InlineQuotes
         };
     }
 }
