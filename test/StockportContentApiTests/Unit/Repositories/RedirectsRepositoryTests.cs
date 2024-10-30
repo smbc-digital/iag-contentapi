@@ -3,10 +3,10 @@
 public class RedirectsRepositoryTests
 {
     private readonly ContentfulConfig _config;
-    private readonly Mock<Func<string, ContentfulConfig>> _createConfig;
-    private readonly Mock<IContentfulClientManager> _contentfulClientManager;
-    private readonly Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>> _contenfulFactory;
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<Func<string, ContentfulConfig>> _createConfig = new();
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
+    private readonly Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>> _contenfulFactory = new();
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly ShortUrlRedirects _shortUrlRedirects = new(new Dictionary<string, RedirectDictionary>());
     private readonly LegacyUrlRedirects _legacyUrlRedirects = new(new Dictionary<string, RedirectDictionary>());
 
@@ -21,10 +21,6 @@ public class RedirectsRepositoryTests
 
             .Build();
 
-        _createConfig = new Mock<Func<string, ContentfulConfig>>();
-        _contenfulFactory = new Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>();
-        _contentfulClientManager = new Mock<IContentfulClientManager>();
-        _client = new Mock<IContentfulClient>();
         _createConfig.Setup(o => o(It.IsAny<string>())).Returns(_config);
         _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
     }

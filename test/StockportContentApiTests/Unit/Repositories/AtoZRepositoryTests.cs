@@ -2,13 +2,13 @@
 
 public class AtoZRepositoryTests
 {
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly ContentfulConfig _config;
-    private readonly Mock<IContentfulClientManager> _contentfulClientManager;
-    private readonly Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>> _aToZFactory;
-    private readonly Mock<ICache> _cache;
-    private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<ILogger> _logger;
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
+    private readonly Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>> _aToZFactory = new();
+    private readonly Mock<ICache> _cache = new();
+    private readonly Mock<IConfiguration> _configuration = new();
+    private readonly Mock<ILogger> _logger = new();
 
     public AtoZRepositoryTests()
     {
@@ -20,15 +20,13 @@ public class AtoZRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _configuration = new Mock<IConfiguration>();
-        _configuration.Setup(_ => _["redisExpiryTimes:AtoZ"]).Returns("60");
-        _cache = new Mock<ICache>();
+        _configuration
+            .Setup(conf => conf["redisExpiryTimes:AtoZ"])
+            .Returns("60");
 
-        _contentfulClientManager = new Mock<IContentfulClientManager>();
-        _client = new Mock<IContentfulClient>();
-        _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
-        _aToZFactory = new Mock<IContentfulFactory<ContentfulAtoZ, AtoZ>>();
-        _logger = new Mock<ILogger>();
+        _contentfulClientManager
+            .Setup(client => client.GetClient(_config))
+            .Returns(_client.Object);
     }
 
     [Fact]
