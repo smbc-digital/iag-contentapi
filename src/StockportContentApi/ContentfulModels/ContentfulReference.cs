@@ -10,6 +10,7 @@ public class ContentfulReference : IContentfulModel
     public string NavigationTitle { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
+    public Asset TeaserImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public string MetaDescription { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     public EColourScheme ColourScheme { get; set; } = EColourScheme.None;

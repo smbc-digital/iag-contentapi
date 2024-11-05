@@ -13,6 +13,7 @@ public class FooterContentfulFactoryTests
             .Returns(new SubItem("slug",
                                 "title",
                                 "teaser",
+                                "teaser image",
                                 "icon",
                                 "type",
                                 DateTime.MinValue,

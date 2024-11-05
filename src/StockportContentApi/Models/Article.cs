@@ -29,4 +29,5 @@ public class Article
     public bool HideLastUpdated { get; set; }
     public string Author { get; set; }
     public string Photographer { get; set; }
+    public List<InlineQuote> InlineQuotes { get; set; }
 }
