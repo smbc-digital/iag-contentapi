@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.ContentfulFactories;
+﻿using Microsoft.AspNetCore.Http.Features;
+
+namespace StockportContentApi.ContentfulFactories;
 
 public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
 {
@@ -21,7 +23,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SubItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
                 subItems.Add(newItem);
             }
         }
@@ -30,7 +32,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SecondaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
 
                 subItems.Add(newItem);
             }
@@ -40,7 +42,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.TertiaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
 
                 subItems.Add(newItem);
             }
@@ -50,7 +52,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
             {
-                SubItem newSection = new($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
+                SubItem newSection = new($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, GetTeaserImage(section), section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
 
                 subItems.Add(newSection);
             }
@@ -63,7 +65,7 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
 
         string handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
 
-        return new SubItem(handledSlug, title, entry.Teaser, entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
+        return new SubItem(handledSlug, title, entry.Teaser, GetTeaserImage(entry), entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
     }
 
     private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
@@ -81,6 +83,11 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
             ? entry.Image.File.Url
             : string.Empty;
 
+    private static string GetTeaserImage(ContentfulReference entry) =>
+        entry.TeaserImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.TeaserImage.SystemProperties)
+            ? entry.TeaserImage.File.Url
+            : string.Empty;
+    
     private static string GetEntryTitle(ContentfulReference entry) =>
         !string.IsNullOrEmpty(entry.NavigationTitle)
             ? entry.NavigationTitle

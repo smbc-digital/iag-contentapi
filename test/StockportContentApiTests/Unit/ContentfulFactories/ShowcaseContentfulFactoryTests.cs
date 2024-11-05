@@ -6,7 +6,7 @@ public class ShowcaseContentfulFactoryTests
     public void ShouldCreateAShowcaseFromAContentfulShowcase()
     {
         List<SubItem> subItems = new() {
-            new("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue) };
+            new("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue) };
         Crumb crumb = new("title", "slug", "type");
 
         ContentfulShowcase contentfulShowcase = new ContentfulShowcaseBuilder()
@@ -20,7 +20,7 @@ public class ShowcaseContentfulFactoryTests
             .Build();
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
-        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
+        topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
         Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
         _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty, string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
@@ -81,7 +81,7 @@ public class ShowcaseContentfulFactoryTests
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
@@ -149,7 +149,7 @@ public class ShowcaseContentfulFactoryTests
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
@@ -219,7 +219,7 @@ public class ShowcaseContentfulFactoryTests
 
         Mock<IContentfulFactory<ContentfulReference, SubItem>> topicFactory = new();
         topicFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
+            .Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue));
 
         Mock<IContentfulFactory<ContentfulReference, Crumb>> crumbFactory = new();
 
