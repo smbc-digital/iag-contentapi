@@ -59,7 +59,7 @@ public class ArticleRepository : BaseRepository
         QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
         ContentfulCollection<ContentfulArticleForSiteMap> entries = await GetAllEntriesAsync(_client, builder);
 
-        return entries?.Select(entry => _contentfulFactoryArticle.ToModel(entry));
+        return entries?.Select(_contentfulFactoryArticle.ToModel);
     }
 
     private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
@@ -79,19 +79,16 @@ public class ArticleRepository : BaseRepository
             .FieldEquals("fields.slug", articleSlug)
             .Include(3);
 
-        ContentfulCollection<ContentfulArticle> entries = await _client.GetEntries(builder);
-
-        return entries.FirstOrDefault();
+        return (await _client.GetEntries(builder)).FirstOrDefault();
     }
 
     private void ProcessArticleContent(Article article)
     {
         article.Body = _videoRepository.Process(article.Body);
         
-        foreach (Section section in article.Sections)
+        foreach (Section section in article.Sections.Where(section => section is not null))
         {
-            if (section is not null)
-                section.Body = _videoRepository.Process(section.Body);
+            section.Body = _videoRepository.Process(section.Body);
         }
     }
 }

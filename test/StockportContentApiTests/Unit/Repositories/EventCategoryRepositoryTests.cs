@@ -24,7 +24,7 @@ public class EventCategoryRepositoryTests
         _cacheWrapper = new Mock<ICache>();
         _configuration = new Mock<IConfiguration>();
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
-        _repository = new EventCategoryRepository(config, _contentfulEventCategoryFactory.Object, contentfulClientManager.Object, _cacheWrapper.Object, _configuration.Object);
+        _repository = new EventCategoryRepository(config, contentfulClientManager.Object, _contentfulEventCategoryFactory.Object, _cacheWrapper.Object, _configuration.Object);
     }
 
     [Fact]

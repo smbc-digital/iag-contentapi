@@ -10,7 +10,6 @@ public class ContentfulConfig
     public string ManagementKey;
     public string Environment = "master";
 
-
     // NEW
     public ContentfulConfig(string spaceKey, string accessKey, string managementKey, string environment = "master")
     {

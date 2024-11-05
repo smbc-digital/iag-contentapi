@@ -5,22 +5,16 @@ public class AuthenticationMiddleware
 {
     private readonly IAuthenticationHelper _authHelper;
     private readonly IConfiguration _configuration;
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly ILogger<AuthenticationMiddleware> _logger;
     private readonly RequestDelegate _next;
 
     public AuthenticationMiddleware(
         RequestDelegate next,
         IConfiguration configuration,
-        ILogger<AuthenticationMiddleware> logger,
-        IAuthenticationHelper authHelper,
-        Func<string, ContentfulConfig> createConfig)
+        IAuthenticationHelper authHelper)
     {
         _next = next;
         _configuration = configuration;
-        _logger = logger;
         _authHelper = authHelper;
-        _createConfig = createConfig;
     }
 
     public async Task Invoke(HttpContext context)
@@ -30,7 +24,6 @@ public class AuthenticationMiddleware
             await _next.Invoke(context);
             return;
         }
-            
 
         string apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
 

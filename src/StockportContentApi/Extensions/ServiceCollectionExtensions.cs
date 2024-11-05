@@ -8,7 +8,6 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    /// 
     public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
     {
         services.AddSingleton<IContentfulFactory<ContentfulVideo, Video>>(p => new VideoContentfulFactory());
@@ -151,8 +150,6 @@ public static class ServiceCollectionExtensions
                 .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", configuration[$"{businessId}:ManagementKey"])
                 .Add($"{businessId.ToUpper()}_ENVIRONMENT", configuration[$"{businessId}:Environment"])
                 .Build();
-
-        services.AddSingleton<ContentfulConfig>();
 
         services.AddTransient(_ => createConfig);
 

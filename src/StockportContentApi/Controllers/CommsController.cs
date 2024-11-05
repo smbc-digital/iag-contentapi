@@ -3,19 +3,16 @@
 public class CommsController : Controller
 {
     private readonly Func<string, CommsRepository> _createRepository;
-    private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly ResponseHandler _handler;
 
-    public CommsController(ResponseHandler handler, Func<string, ContentfulConfig> createConfig,
+    public CommsController(ResponseHandler handler,
         Func<string, CommsRepository> createRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _createRepository = createRepository;
     }
 
     [HttpGet]
-    [Route("{businessId}/comms")]
     [Route("v1/{businessId}/comms")]
     public async Task<IActionResult> Get(string businessId) =>
         await _handler.Get(() =>

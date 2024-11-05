@@ -8,7 +8,7 @@ public class AtoZRepository : BaseRepository
     private readonly ICache _cache;
     private readonly int _atoZTimeout;
     private readonly ILogger _logger;
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
     public AtoZRepository(
         ContentfulConfig config,
