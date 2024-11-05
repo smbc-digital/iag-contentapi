@@ -9,7 +9,7 @@ public class ParentTopicContentfulFactoryTests
     public ParentTopicContentfulFactoryTests()
     {
         _subitemContentfulFactory.Setup(subItem => subItem.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
+            .Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
                 "image", new(), EColourScheme.Green));
         _timeProvider.Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2017, 01, 02));
@@ -124,7 +124,7 @@ public class ParentTopicContentfulFactoryTests
             .Build();
 
         _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug.Equals("article-slug"))))
-            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, DateTime.MinValue,
+            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue,
                 DateTime.MaxValue, string.Empty, new(), EColourScheme.Teal));
 
         // Act

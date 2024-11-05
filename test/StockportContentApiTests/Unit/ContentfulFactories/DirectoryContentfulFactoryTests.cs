@@ -29,7 +29,7 @@ public class DirectoryContentfulFactoryTests
         // Arrange
         ContentfulDirectory directory = new DirectoryBuilder().Build();
 
-        SubItem subItem = new("slug1", "title", "teaser", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new(), EColourScheme.Teal);
+        SubItem subItem = new("slug1", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new(), EColourScheme.Teal);
         _subItemFactory
             .Setup(_ => _.ToModel(directory.SubItems.First()))
             .Returns(subItem);
