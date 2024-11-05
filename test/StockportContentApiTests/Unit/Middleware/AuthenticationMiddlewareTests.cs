@@ -16,7 +16,10 @@ public class AuthenticationMiddlewareTests
         _requestDelegate = new Mock<RequestDelegate>();
         _logger = new Mock<ILogger<AuthenticationMiddleware>>();
         _authHelper = new Mock<IAuthenticationHelper>();
-        _middleware = new AuthenticationMiddleware(_requestDelegate.Object, _configuration.Object, _logger.Object, _authHelper.Object, _createConfig.Object);
+      
+        _middleware = new AuthenticationMiddleware(_requestDelegate.Object,
+                                                _configuration.Object,
+                                                _authHelper.Object);
     }
 
     [Fact]
