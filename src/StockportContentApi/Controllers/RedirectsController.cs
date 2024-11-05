@@ -14,7 +14,6 @@ public class RedirectsController : Controller
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
-    [Route("redirects")]
     [Route("v1/redirects")]
     public async Task<IActionResult> GetRedirects() =>
         await _handler.Get(() => _repository.GetRedirects());

@@ -5,7 +5,8 @@ public class HealthcheckController : Controller
 {
     private readonly IHealthcheckService _healthcheckService;
 
-    public HealthcheckController(IHealthcheckService healthcheckService) => _healthcheckService = healthcheckService;
+    public HealthcheckController(IHealthcheckService healthcheckService) =>
+        _healthcheckService = healthcheckService;
 
     [HttpGet]
     [Route("/_healthcheck")]

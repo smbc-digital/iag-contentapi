@@ -2,26 +2,33 @@
 
 public class ArticleController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, ArticleRepository> _createRepository;
-    private readonly ArticleRepository _articleRepository;
+    private readonly Func<string, ArticleRepository> _createRepository;
     private readonly ResponseHandler _handler;
-    private readonly IContentfulConfigFactory _configFactory;
 
-    public ArticleController(ResponseHandler handler, ArticleRepository articleRepository, IContentfulConfigFactory configFactory)
+    public ArticleController(ResponseHandler handler,
+        Func<string, ArticleRepository> createRepository)
     {
         _handler = handler;
-        _articleRepository = articleRepository;
-        _configFactory = configFactory;
+        _createRepository = createRepository;
     }
 
     [HttpGet]
-    [Route("{businessId}/articles/{articleSlug}")]
     [Route("v1/{businessId}/articles/{articleSlug}")]
-    [Route("v2/{businessId}/articles/{articleSlug}")]
-    public async Task<IActionResult> GetArticle(string articleSlug, string businessId)
-    {
-        var config = _configFactory.CreateConfig(businessId);
-        return await _handler.Get(() => _articleRepository.GetArticle(articleSlug));
-    }
+    public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
+        await _handler.Get(() =>
+        {
+            ArticleRepository repository = _createRepository(businessId);
+            return repository.GetArticle(articleSlug);
+        });
+
+
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [HttpGet]
+    [Route("v1/{businessId}/articleSiteMap")]
+    public async Task<IActionResult> Index(string businessId) =>
+        await _handler.Get(() =>
+        {
+            ArticleRepository repository = _createRepository(businessId);
+            return repository.Get();
+        });
 }

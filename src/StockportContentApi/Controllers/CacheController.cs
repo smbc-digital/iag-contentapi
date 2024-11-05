@@ -1,6 +1,5 @@
 ﻿namespace StockportContentApi.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
 public class CacheController : Controller
 {
     private readonly ICache _cache;
@@ -12,9 +11,7 @@ public class CacheController : Controller
         _logger = logger;
     }
 
-    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
-    [Route("{businessId}/clearcache/{cacheKey}")]
     [Route("v1/{businessId}/clearcache/{cacheKey}")]
     public IActionResult ClearCache(string cacheKey)
     {

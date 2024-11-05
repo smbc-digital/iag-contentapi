@@ -9,11 +9,8 @@ public class ArticleRepository : BaseRepository
     private readonly IContentfulClient _client;
     private readonly IVideoRepository _videoRepository;
     private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
-    private readonly ContentfulConfigProvider _configProvider;
-    private readonly IContentfulClientManager _contentfulClientManager;
 
     public ArticleRepository(ContentfulConfig config,
-        ContentfulConfigProvider configProvider,
         IContentfulClientManager contentfulClientManager,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
@@ -22,21 +19,17 @@ public class ArticleRepository : BaseRepository
         ICache cache,
         IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
     {
-        _configProvider = configProvider;
         _contentfulFactory = contentfulFactory;
         _contentfulFactoryArticle = contentfulFactoryArticle;
         _videoRepository = videoRepository;
         _cache = cache;
         _redisExpiryConfiguration = redisExpiryConfiguration.Value;
         _dateComparer = new DateComparer(timeProvider);
-        // _client = contentfulClientManager.GetClient(config);
+        _client = contentfulClientManager.GetClient(config);
     }
 
-    public async Task<HttpResponse> Get(string businessId)
+    public async Task<HttpResponse> Get()
     {
-        var config = _configProvider.GetConfig(businessId);
-        var client = _contentfulClientManager.GetClient(config);
-
         IEnumerable<ArticleSiteMap> articles = await GetArticlesFromContentful();
 
         if (articles is null)
@@ -49,11 +42,8 @@ public class ArticleRepository : BaseRepository
             : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found within sunrise and sunset dates");
     }
 
-    public async Task<HttpResponse> GetArticle(string articleSlug, string businessId)
+    public async Task<HttpResponse> GetArticle(string articleSlug)
     {
-        var config = _configProvider.GetConfig(businessId);
-        var client = _contentfulClientManager.GetClient(config);
-
         Article article = await GetArticleFromCacheOrContentful(articleSlug);
 
         if (article is null)

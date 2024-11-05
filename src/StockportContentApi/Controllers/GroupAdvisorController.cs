@@ -2,22 +2,16 @@
 
 public class GroupAdvisorController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _createRepository;
+    private readonly Func<string, IGroupAdvisorRepository> _createRepository;
 
-    public GroupAdvisorController(Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, IGroupAdvisorRepository> createRepository)
-    {
-        _createRepository = createRepository;
-        _createConfig = createConfig;
-    }
+    public GroupAdvisorController(Func<string, IGroupAdvisorRepository> createRepository)
+        => _createRepository = createRepository;
 
     [HttpGet]
-    [Route("{businessId}/groups/{slug}/advisors/")]
     [Route("v1/{businessId}/groups/{slug}/advisors/")]
     public async Task<IActionResult> GroupAdvisorsByGroup(string businessId, string slug)
     {
-        IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
+        IGroupAdvisorRepository repository = _createRepository(businessId);
         List<GroupAdvisor> result = await repository.GetAdvisorsByGroup(slug);
 
         if (result is null || !result.Any())
@@ -27,11 +21,10 @@ public class GroupAdvisorController : Controller
     }
 
     [HttpGet]
-    [Route("{businessId}/groups/advisors/{email}")]
     [Route("v1/{businessId}/groups/advisors/{email}")]
     public async Task<IActionResult> GetGroupAdvisorsByEmail(string businessId, string email)
     {
-        IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
+        IGroupAdvisorRepository repository = _createRepository(businessId);
         GroupAdvisor result = await repository.Get(email);
 
         if (result is null)
@@ -41,11 +34,10 @@ public class GroupAdvisorController : Controller
     }
 
     [HttpGet]
-    [Route("{businessId}/groups/{slug}/advisors/{email}")]
     [Route("v1/{businessId}/groups/{slug}/advisors/{email}")]
     public async Task<IActionResult> CheckIfUserHasAccessToGroupBySlug(string businessId, string email, string slug)
     {
-        IGroupAdvisorRepository repository = _createRepository(_createConfig(businessId));
+        IGroupAdvisorRepository repository = _createRepository(businessId);
         bool result = await repository.CheckIfUserHasAccessToGroupBySlug(slug, email);
 
         if (!result)

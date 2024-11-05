@@ -2,25 +2,22 @@
 
 public class GroupController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
-    private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
-    private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
+    private readonly Func<string, EventRepository> _eventRepository;
+    private readonly Func<string, GroupCategoryRepository> _groupCategoryRepository;
+    private readonly Func<string, IGroupRepository> _groupRepository;
     private readonly ResponseHandler _handler;
-    private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
+    private readonly Func<string, ManagementRepository> _managementRepository;
     private readonly IMapper _mapper;
 
     public GroupController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, IGroupRepository> groupRepository,
-        Func<ContentfulConfig, EventRepository> eventRepository,
-        Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
-        Func<ContentfulConfig, ManagementRepository> managementRepository,
+        Func<string, IGroupRepository> groupRepository,
+        Func<string, EventRepository> eventRepository,
+        Func<string, GroupCategoryRepository> groupCategoryRepository,
+        Func<string, ManagementRepository> managementRepository,
         IMapper mapper
     )
     {
         _handler = handler;
-        _createConfig = createConfig;
         _groupRepository = groupRepository;
         _eventRepository = eventRepository;
         _groupCategoryRepository = groupCategoryRepository;
@@ -29,25 +26,20 @@ public class GroupController : Controller
     }
 
     [HttpGet]
-    [Route("{businessId}/groups")]
     [Route("v1/{businessId}/groups")]
     public async Task<IActionResult> GetGroups(string businessId)
-    {
-        return await _handler.Get(() =>
+        => await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
-
+            IGroupRepository groupRepository = _groupRepository(businessId);
             return groupRepository.Get();
         });
-    }
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
-    [Route("{businessId}/grouphomepage")]
     [Route("v1/{businessId}/grouphomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
-        IGroupRepository repository = _groupRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(businessId);
         HttpResponse response = await repository.GetGroupHomepage();
         GroupHomepage homepage = response.Get<GroupHomepage>();
 
@@ -55,68 +47,50 @@ public class GroupController : Controller
     }
 
     [HttpGet]
-    [Route("{businessId}/groups/{groupSlug}")]
     [Route("v1/{businessId}/groups/{groupSlug}")]
-    public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true) =>
+        await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
-
+            IGroupRepository groupRepository = _groupRepository(businessId);
             return groupRepository.GetGroup(groupSlug, onlyActive);
         });
-    }
 
     [HttpGet]
-    [Route("{businessId}/group-categories")]
     [Route("v1/{businessId}/group-categories")]
-    public async Task<IActionResult> GetGroupCategories(string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetGroupCategories(string businessId) =>
+        await _handler.Get(() =>
         {
-            GroupCategoryRepository groupRepository = _groupCategoryRepository(_createConfig(businessId));
-
+            GroupCategoryRepository groupRepository = _groupCategoryRepository(businessId);
             return groupRepository.GetGroupCategories();
         });
-    }
 
     [HttpGet]
-    [Route("{businessId}/group-results")]
     [Route("v1/{businessId}/group-results")]
-    public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch,
-        [FromQuery] string slugs = "")
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch, [FromQuery] string slugs = "") =>
+        await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
-
+            IGroupRepository groupRepository = _groupRepository(businessId);
             return groupRepository.GetGroupResults(groupSearch, slugs);
         });
-    }
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
-    [Route("{businessId}/groups/administrators/{email}")]
     [Route("v1/{businessId}/groups/administrators/{email}")]
-    public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email) =>
+        await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
-
+            IGroupRepository groupRepository = _groupRepository(businessId);
             return groupRepository.GetAdministratorsGroups(email);
         });
-    }
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut]
-    [Route("{businessId}/groups/{slug}")]
     [Route("v1/{businessId}/groups/{slug}")]
     public async Task<IActionResult> UpdateGroup([FromBody] Group group, string businessId)
     {
         try
         {
-            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId));
+            IGroupRepository groupRepository = _groupRepository(businessId);
             ContentfulGroup existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
 
             ContentfulCollection<ContentfulGroupCategory> existingCategories =
@@ -128,14 +102,14 @@ public class GroupController : Controller
 
             return await _handler.Get(async () =>
             {
-                ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+                ManagementRepository managementRepository = _managementRepository(businessId);
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
 
                 return await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -143,18 +117,17 @@ public class GroupController : Controller
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpDelete]
-    [Route("{businessId}/groups/{slug}")]
     [Route("v1/{businessId}/groups/{slug}")]
     public async Task<IActionResult> DeleteGroup(string slug, string businessId)
     {
-        IGroupRepository repository = _groupRepository(_createConfig(businessId));
-        EventRepository eventRepository = _eventRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(businessId);
+        EventRepository eventRepository = _eventRepository(businessId);
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
         IEnumerable<ContentfulEvent> groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+            ManagementRepository managementRepository = _managementRepository(businessId);
 
             foreach (ContentfulEvent groupEvent in groupEvents)
             {
@@ -175,11 +148,10 @@ public class GroupController : Controller
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpDelete]
-    [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
     {
-        IGroupRepository repository = _groupRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(businessId);
 
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
@@ -191,7 +163,7 @@ public class GroupController : Controller
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+            ManagementRepository managementRepository = _managementRepository(businessId);
             int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
             existingGroup.Sys.Version = version;
             HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
@@ -204,14 +176,12 @@ public class GroupController : Controller
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut]
-    [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> UpdateAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         => await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost]
-    [Route("{businessId}/groups/{slug}/administrators/{emailAddress}")]
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> AddAdministrator([FromBody] GroupAdministratorItems user, string slug, string emailAddress, string businessId)
         => await AddOrUpdateAdministrator(user, slug, emailAddress, businessId);
@@ -220,7 +190,7 @@ public class GroupController : Controller
     private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug,
         string emailAddress, string businessId)
     {
-        IGroupRepository repository = _groupRepository(_createConfig(businessId));
+        IGroupRepository repository = _groupRepository(businessId);
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
         existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items
@@ -234,7 +204,7 @@ public class GroupController : Controller
 
             return await _handler.Get(async () =>
             {
-                ManagementRepository managementRepository = _managementRepository(_createConfig(businessId));
+                ManagementRepository managementRepository = _managementRepository(businessId);
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
@@ -247,8 +217,9 @@ public class GroupController : Controller
         throw new("Invalid data received");
     }
 
-    private ManagementGroup ConvertToManagementGroup(Group group, List<ContentfulGroupCategory> referencedCategories,
-        ContentfulGroup existingGroup)
+    private ManagementGroup ConvertToManagementGroup(Group group,
+                                                    List<ContentfulGroupCategory> referencedCategories,
+                                                    ContentfulGroup existingGroup)
     {
         ContentfulGroup contentfulGroup = _mapper.Map<ContentfulGroup>(group);
         contentfulGroup.GroupBranding = existingGroup.GroupBranding;

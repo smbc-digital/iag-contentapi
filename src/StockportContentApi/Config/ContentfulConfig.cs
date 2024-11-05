@@ -1,57 +1,5 @@
 namespace StockportContentApi.Config;
 
-public interface IContentfulConfigFactory
-{
-    ContentfulConfig CreateConfig(string businessId);
-}
-
-public class ContentfulConfigFactory : IContentfulConfigFactory
-{
-    public ContentfulConfig CreateConfig(string businessId)
-    {
-        return new ContentfulConfig(businessId).Build();
-    }
-}
-
-public class ContentfulConfigProvider
-{
-    private readonly Dictionary<string, ContentfulConfig> _configurations;
-
-    public ContentfulConfigProvider(IConfiguration configuration)
-    {
-        _configurations = new Dictionary<string, ContentfulConfig>();
-
-        // Populate configurations for each business
-        foreach (var businessId in GetBusinessIds(configuration))
-        {
-            var config = new ContentfulConfig(businessId)
-                .Add("DELIVERY_URL", configuration["Contentful:DeliveryUrl"])
-                .Add($"{businessId.ToUpper()}_SPACE", configuration[$"{businessId}:Space"])
-                .Add($"{businessId.ToUpper()}_ACCESS_KEY", configuration[$"{businessId}:AccessKey"])
-                .Add($"{businessId.ToUpper()}_MANAGEMENT_KEY", configuration[$"{businessId}:ManagementKey"])
-                .Add($"{businessId.ToUpper()}_ENVIRONMENT", configuration[$"{businessId}:Environment"])
-                .Build();
-            
-            _configurations[businessId] = config;
-        }
-    }
-
-    public ContentfulConfig GetConfig(string businessId)
-    {
-        if (_configurations.TryGetValue(businessId, out var config))
-        {
-            return config;
-        }
-        throw new ArgumentException($"No configuration found for business ID '{businessId}'");
-    }
-
-    private IEnumerable<string> GetBusinessIds(IConfiguration configuration)
-    {
-        // Logic to retrieve all business IDs from configuration
-        return configuration.GetSection("BusinessIds").Get<string[]>() ?? Array.Empty<string>();
-    }
-}
-
 [ExcludeFromCodeCoverage]
 public class ContentfulConfig
 {

@@ -2,32 +2,23 @@
 
 public class DocumentPageController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, DocumentPageRepository> _createRepository;
-
+    private readonly Func<string, DocumentPageRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
-    public DocumentPageController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, DocumentPageRepository> createRepository)
+    public DocumentPageController(
+        ResponseHandler handler,
+        Func<string, DocumentPageRepository> createRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _createRepository = createRepository;
     }
 
     [HttpGet]
-    [Route("{businessId}/document-page/{documentPageSlug}")]
     [Route("v1/{businessId}/document-page/{documentPageSlug}")]
-    [Route("v2/{businessId}/document-page/{documentPageSlug}")]
-    public async Task<IActionResult> GetDocumentPage(string documentPageSlug, string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetDocumentPage(string documentPageSlug, string businessId) => 
+        await _handler.Get(() =>
         {
-            DocumentPageRepository repository = _createRepository(_createConfig(businessId));
-            Task<HttpResponse> article = repository.GetDocumentPage(documentPageSlug);
-
-            return article;
+            DocumentPageRepository repository = _createRepository(businessId);
+            return repository.GetDocumentPage(documentPageSlug);
         });
-    }
 }

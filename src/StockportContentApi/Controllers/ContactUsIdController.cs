@@ -3,16 +3,13 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ContactUsIdController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, ContactUsIdRepository> _createRepository;
+    private readonly Func<string, ContactUsIdRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
     public ContactUsIdController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, ContactUsIdRepository> createRepository)
+        Func<string, ContactUsIdRepository> createRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _createRepository = createRepository;
     }
 
@@ -20,12 +17,9 @@ public class ContactUsIdController : Controller
     [Route("{businessId}/contact-us-id/{slug}")]
     [Route("v1/{businessId}/contact-us-id/{slug}")]
     public async Task<IActionResult> Detail(string slug, string businessId)
-    {
-        return await _handler.Get(() =>
+        => await _handler.Get(() =>
         {
-            ContactUsIdRepository contactUsIdRepository = _createRepository(_createConfig(businessId));
-
+            ContactUsIdRepository contactUsIdRepository = _createRepository(businessId);
             return contactUsIdRepository.GetContactUsIds(slug);
         });
-    }
 }
