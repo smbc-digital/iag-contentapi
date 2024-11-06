@@ -12,6 +12,8 @@ public class EventBuilder
     private readonly string _location = "location";
     private readonly string _submittedby = "submittedBy";
     private readonly string _metaDescription = "metaDescription";
+    private readonly string _duration = "120 min";
+    private readonly string _languages = "English";
     private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private readonly string _startTime = "10:00";
     private readonly string _endTime = "17:00";
@@ -78,7 +80,9 @@ public class EventBuilder
             _phoneNumber,
             _email,
             _website,
-            _metaDescription);
+            _metaDescription,
+            _duration,
+            _languages);
 
     public EventBuilder Slug(string slug)
     {
