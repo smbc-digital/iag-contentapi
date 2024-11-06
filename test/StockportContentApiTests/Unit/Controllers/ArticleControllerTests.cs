@@ -5,176 +5,92 @@ namespace StockportContentApi.Tests.Controllers;
 
 public class ArticleControllerTests
 {
-    private readonly Mock<Func<string, ArticleRepository>> _createRepository = new();
-    private readonly Mock<ResponseHandler> _responseHandler = new();
-    private readonly Mock<ArticleRepository> _mockArticleRepository;
-    private readonly ArticleController _controller;
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
-    private readonly Mock<IContentfulClient> _contentfulClient = new();
-    private readonly Mock<IVideoRepository> _videoRepository = new();
-    private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory = new();
-    private readonly Mock<ICache> _cache = new();
+    private readonly Mock<Func<string, IArticleRepository>> _mockCreateRepository = new();
+    private readonly Mock<IArticleRepository> _articleRepository = new();
+    private readonly Mock<IResponseHandler> _mockHandler = new();
     private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions = new();
-    private readonly FakeLogger<ResponseHandler> _logger = new();
-    private readonly Mock<IConfiguration> _configuration = new();
-    private readonly ContentfulConfig _config;
+    private readonly ArticleController _controller;
 
     public ArticleControllerTests()
     {
-        _config = new ContentfulConfig("test")
+        ContentfulConfig config = new ContentfulConfig("test")
             .Add("DELIVERY_URL", "https://fake.url")
             .Add("TEST_SPACE", "SPACE")
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
-        
-        _responseHandler
+
+        _mockOptions
+            .Setup(options => options.Value)
+            .Returns(new RedisExpiryConfiguration { Articles = 60 });
+
+        _articleRepository
+            .Setup(repo => repo.GetArticle(It.IsAny<string>()))
+            .ReturnsAsync(HttpResponse.Successful(new Article() { Slug = "test-article", Title = "Test article" }));
+
+        _mockCreateRepository
+            .Setup(func => func(It.IsAny<string>()))
+            .Returns(_articleRepository.Object);
+
+        _mockHandler
             .Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
-            .Returns(async (Func<Task<HttpResponse>> func) =>
-            {
-                var response = await func();
-                return new OkObjectResult(response);
-            });
+            .ReturnsAsync(new OkObjectResult(new Article()));
 
-
-        _configuration
-            .Setup(conf => conf["redisExpiryTimes:Articles"])
-            .Returns("0");
-
-        ContentfulCollection<ContentfulArticle> collection = new()
-        {
-            Items = new List<ContentfulArticle>()
-        };
-
-        _contentfulClient
-            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulArticle>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(collection);
-
-        Mock<IContentfulClientManager> contentfulClientManager = new();
-        contentfulClientManager.Setup(_ => _.GetClient(_config)).Returns(_contentfulClient.Object);
-
-        
-        ArticleContentfulFactory contentfulFactory = new(
-            _sectionFactory.Object,
-            new Mock<IContentfulFactory<ContentfulReference, Crumb>>().Object,
-            new Mock<IContentfulFactory<ContentfulProfile, Profile>>().Object,
-            new Mock<IContentfulFactory<ContentfulArticle, Topic>>().Object,
-            new DocumentContentfulFactory(),
-            _videoRepository.Object,
-            _mockTimeProvider.Object,
-            new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
-            new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>().Object,
-            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object
-        );
-
-        _mockArticleRepository = new(_config,
-                    contentfulClientManager.Object,
-                    _mockTimeProvider.Object,
-                    contentfulFactory,
-                    new ArticleSiteMapContentfulFactory(),
-                    _videoRepository.Object,
-                    _cache.Object,
-                    _mockOptions.Object);
-
-
-        _controller = new ArticleController(
-            _responseHandler.Object,
-            _createRepository.Object
-        );
+        _controller = new ArticleController(_mockHandler.Object, _mockCreateRepository.Object);
     }
 
-    // [Fact]
-    // public async Task GetArticle_ShouldReturnOk_WhenArticleExists()
-    // {
-    //     // Arrange
-    //     HttpResponseMessage mockResponse = new(HttpStatusCode.OK) 
-    //     {
-    //         Content = new StringContent("{\"title\":\"Test Article\"}")
-    //     };
+    [Fact]
+    public async Task GetArticle_ReturnsArticle_WhenArticleExists()
+    {
+        // Act
+        IActionResult result = await _controller.GetArticle("test-slug", "test-business");
 
-    //     _createRepository
-    //         .Setup(f => f(It.IsAny<string>()))
-    //         .Returns(_mockArticleRepository.Object);
+        // Assert
+        Assert.IsType<OkObjectResult>(result);
+    }
 
-    //     _mockArticleRepository
-    //         .Setup(repo => repo.GetArticle("test-article"))
-    //         .ReturnsAsync(HttpResponse.Successful(new()));
+    [Fact]
+    public async Task GetArticle_ReturnsNotFound_WhenArticleDoesNotExist()
+    {
+        // Arrange
+        _mockHandler.Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
+                    .ReturnsAsync(new NotFoundObjectResult(null));
 
-    //     // Act
-    //     IActionResult result = await _controller.GetArticle("test-article", It.IsAny<string>());
+        // Act
+        IActionResult result = await _controller.GetArticle("test-slug", "test-business");
 
-    //     // Assert
-    //     OkObjectResult okResult = Assert.IsType<OkObjectResult>(result);
-    //     Assert.Equal(mockResponse, okResult.Value);
-    // }
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(result);
+        _articleRepository.Verify(repo => repo.GetArticle("test-slug"), Times.Never);
+    }
 
+    [Fact]
+    public async Task Index_ReturnsArticle_WhenArticleExists()
+    {
+        // Arrange
+        _mockHandler.Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
+                    .ReturnsAsync(new OkObjectResult(new Article()));
 
-    // [Fact]
-    // public async Task GetArticle_ShouldCallRepositoryGetArticle_WithCorrectParameters()
-    // {
-    //     // Arrange
-    //     HttpResponseMessage mockResponse = new(HttpStatusCode.OK)
-    //     {
-    //         Content = new StringContent("{\"title\":\"Test Article\"}")
-    //     };
+        // Act
+        IActionResult result = await _controller.Index("test-business");
 
-    //     _createRepository
-    //         .Setup(f => f(It.IsAny<string>()))
-    //         .Returns(_mockArticleRepository.Object);
-    
-    //     _responseHandler
-    //         .Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
-    //         .Returns(async (Func<Task<HttpResponseMessage>> func) => 
-    //         {
-    //             var response = await func();
-    //             return new OkObjectResult(response);
-    //         });
+        // Assert
+        Assert.IsType<OkObjectResult>(result);
+    }
 
-    //     // Act
-    //     await _controller.GetArticle("test-article", It.IsAny<string>());
+    [Fact]
+    public async Task Index_ReturnsNotFound_WhenArticleDoesNotExist()
+    {
+        // Arrange
+        _mockHandler.Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
+                    .ReturnsAsync(new NotFoundObjectResult(null));
 
-    //     // Assert
-    //     _mockArticleRepository.Verify(repo => repo.GetArticle("test-article"), Times.Once);
-    // }
+        // Act
+        IActionResult result = await _controller.Index("test-business");
 
-    // [Fact]
-    // public async Task GetArticle_ShouldCallRepositoryGetArticle_WithCorrectParameters()
-    // {
-    //     // Arrange
-    //     var businessId = "testBusiness";
-    //     var articleSlug = "test-article";
-    //     var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-    //     {
-    //         Content = new StringContent("{\"title\":\"Test Article\"}")
-    //     };
-
-    //     // Set up configuration and repository mocks
-    //     _createRepository
-    //         .Setup(f => f(It.IsAny<string>()))
-    //         .Returns(_mockArticleRepository.Object);
-
-    //     _mockArticleRepository
-    //         .Setup(repo => repo.GetArticle(articleSlug))
-    //         .Returns(mockResponse);
-
-    //     // Set up the ResponseHandler to return an OkObjectResult
-    //     _responseHandler
-    //         .Setup(handler => handler.Get(It.IsAny<Func<Task<HttpResponse>>>()))
-    //         .Returns(async (Func<Task<HttpResponseMessage>> func) => 
-    //         {
-    //             var response = await func();
-    //             return new OkObjectResult(response);
-    //         });
-
-    //     // Act
-    //     var result = await _controller.GetArticle(articleSlug, businessId);
-
-    //     // Assert
-    //     var okResult = Assert.IsType<OkObjectResult>(result);
-    //     Assert.Equal(mockResponse, okResult.Value);
-    //     _mockArticleRepository.Verify(repo => repo.GetArticle(articleSlug), Times.Once);
-    // }
-
-
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(result);
+        _articleRepository.Verify(repo => repo.GetArticle("test-slug"), Times.Never);
+    }
 }

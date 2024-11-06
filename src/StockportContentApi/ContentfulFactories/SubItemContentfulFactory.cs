@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
-
-namespace StockportContentApi.ContentfulFactories;
+﻿namespace StockportContentApi.ContentfulFactories;
 
 public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
 {

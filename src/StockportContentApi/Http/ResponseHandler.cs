@@ -1,7 +1,13 @@
 ﻿namespace StockportContentApi.Http;
 
+
+public interface IResponseHandler
+{
+    Task<IActionResult> Get(Func<Task<HttpResponse>> func);
+}
+
 [ExcludeFromCodeCoverage]
-public class ResponseHandler
+public class ResponseHandler : IResponseHandler
 {
     private readonly ILogger<ResponseHandler> _logger;
 

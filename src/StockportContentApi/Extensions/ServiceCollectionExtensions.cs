@@ -200,9 +200,9 @@ public static class ServiceCollectionExtensions
                 serviceProvider.GetService<ILogger<AssetRepository>>());
         });
 
-        services.AddSingleton<Func<string, ArticleRepository>>(serviceProvider => (businessId) =>
+        services.AddSingleton<Func<string, IArticleRepository>>(serviceProvider => (businessId) =>
         {
-            return new(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+            return new ArticleRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
                     serviceProvider.GetService<IContentfulClientManager>(),
                     serviceProvider.GetService<ITimeProvider>(),
                     serviceProvider.GetService<IContentfulFactory<ContentfulArticle, Article>>(),

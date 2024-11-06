@@ -2,11 +2,11 @@
 
 public class ArticleController : Controller
 {
-    private readonly Func<string, ArticleRepository> _createRepository;
-    private readonly ResponseHandler _handler;
+    private readonly Func<string, IArticleRepository> _createRepository;
+    private readonly IResponseHandler _handler;
 
-    public ArticleController(ResponseHandler handler,
-        Func<string, ArticleRepository> createRepository)
+    public ArticleController(IResponseHandler handler,
+        Func<string, IArticleRepository> createRepository)
     {
         _handler = handler;
         _createRepository = createRepository;
@@ -17,7 +17,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
         await _handler.Get(() =>
         {
-            ArticleRepository repository = _createRepository(businessId);
+            IArticleRepository repository = _createRepository(businessId);
             return repository.GetArticle(articleSlug);
         });
 
@@ -28,7 +28,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> Index(string businessId) =>
         await _handler.Get(() =>
         {
-            ArticleRepository repository = _createRepository(businessId);
+            IArticleRepository repository = _createRepository(businessId);
             return repository.Get();
         });
 }

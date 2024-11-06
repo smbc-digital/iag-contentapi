@@ -50,6 +50,7 @@ public class Startup
             $"{_contentRootPath}/sha.txt", new FileWrapper(), _appEnvironment));
 
         services.AddTransient<ResponseHandler>();
+        services.AddScoped<IResponseHandler, ResponseHandler>();
         services.AddSingleton<ITimeProvider>(new TimeProvider());
 
         _logger.Information($"CONTENTAPI: STARTUP : ConfigureServices : Adding Base Configuration");

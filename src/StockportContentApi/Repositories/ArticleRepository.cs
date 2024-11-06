@@ -1,6 +1,12 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class ArticleRepository : BaseRepository
+public interface IArticleRepository
+{
+    Task<HttpResponse> GetArticle(string articleSlug);
+    Task<HttpResponse> Get();
+}
+
+public class ArticleRepository : BaseRepository, IArticleRepository
 {
     private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
     private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
