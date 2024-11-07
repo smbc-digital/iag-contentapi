@@ -9,8 +9,8 @@ public class EventCategoryRepository
     private readonly IConfiguration _configuration;
 
     public EventCategoryRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory,
-        IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
+                                IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory,
+                                IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
     {
         _contentfulFactory = contentfulFactory;
         _client = contentfulClientManager.GetClient(config);

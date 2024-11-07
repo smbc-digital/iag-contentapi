@@ -180,7 +180,8 @@ public static class ServiceCollectionExtensions
             p.GetService<ITimeProvider>(),
             p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
             p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
+            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
+            p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>()
         ));
         services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>
         (p => new DocumentPageContentfulFactory(

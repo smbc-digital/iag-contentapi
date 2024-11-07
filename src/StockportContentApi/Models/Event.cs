@@ -114,7 +114,4 @@ public class Event
         Duration = duration;
         Languages = languages;
     }
-
-    public bool ShouldSerializeFrequency() =>
-        false;
 }

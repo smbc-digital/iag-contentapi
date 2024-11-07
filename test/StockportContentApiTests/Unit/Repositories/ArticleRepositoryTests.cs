@@ -36,7 +36,8 @@ public class ArticleRepositoryTests
             _mockTimeProvider.Object,
             new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
             new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>().Object,
-            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object
+            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object,
+            new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object
         );
 
         _mockTimeProvider.Setup(_ => _.Now()).Returns(new DateTime(2016, 10, 15));

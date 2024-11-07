@@ -17,7 +17,7 @@ public class EventRecurrenceFactory
 
     public List<Event> GetRecurringEventsOfEvent(Event eventItem)
     {
-        List<Event> recurringEventsByFrequency = new List<Event>();
+        List<Event> recurringEventsByFrequency = new();
         
         for (int i = 1; i < eventItem.Occurences; i++)
         {
