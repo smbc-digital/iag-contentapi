@@ -94,10 +94,42 @@ public class ShowcaseRepositoryTests
         ContentfulEvent rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new(2017, 4, 1)).Build();
         List<ContentfulEvent> events = new() { rawEvent };
 
-        Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
-            string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
-            string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
+        Event modelledEvent = new("title",
+                                "event-slug",
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                DateTime.MaxValue,
+                                string.Empty,
+                                string.Empty,
+                                1,
+                                EventFrequency.None,
+                                null,
+                                string.Empty,
+                                null,
+                                new(),
+                                null,
+                                false,
+                                string.Empty,
+                                DateTime.MinValue,
+                                new(),
+                                null,
+                                null,
+                                new() { new("event", "slug", "icon") },
+                                null,
+                                null,
+                                null,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty);
+                                
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         ContentfulCollection<ContentfulShowcase> collection = new();
@@ -150,10 +182,41 @@ public class ShowcaseRepositoryTests
         List<ContentfulEvent> events = new() { rawEvent };
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
-        Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
-            string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
-            string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
+        Event modelledEvent = new("title",
+                                "event-slug",
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                DateTime.MaxValue,
+                                string.Empty,
+                                string.Empty,
+                                1,
+                                EventFrequency.None,
+                                null,
+                                string.Empty,
+                                null,
+                                new(),
+                                null,
+                                false,
+                                string.Empty,
+                                DateTime.MinValue,
+                                new(),
+                                null,
+                                null,
+                                new() { new("event", "slug", "icon") },
+                                null,
+                                null,
+                                null,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty);
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         // Act

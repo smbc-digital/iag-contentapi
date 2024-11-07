@@ -87,21 +87,16 @@ public class EventRepository : BaseRepository
 
     public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
     {
+        // does this need to retrieve all events and their occurences??
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
-
         IEnumerable<Event> events = GetAllEventsAndTheirRecurrences(entries);
-
         Event eventItem = events.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
 
         eventItem = GetEventFromItsOccurrences(date, eventItem);
 
         if (eventItem is not null && !string.IsNullOrEmpty(eventItem.Group?.Slug) &&
-            !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
-            eventItem.Group = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new(), new(), new(),
-                new(), false, null, null, null, "published", new() { string.Empty }, string.Empty, string.Empty,
-                string.Empty, null, false, string.Empty, new(), new(), string.Empty, new(), null, new(), new(),
-                string.Empty, string.Empty, new List<Alert>(), new List<Alert>());
+                !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
+            eventItem.Group = new NullGroup();
 
         return eventItem is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
@@ -113,8 +108,9 @@ public class EventRepository : BaseRepository
         if (eventItem is null || !date.HasValue || eventItem.EventDate.Equals(date))
             return eventItem;
 
-        return new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem)
-                    .SingleOrDefault(x => x.EventDate.Equals(date));
+        return new EventRecurrenceFactory()
+                    .GetRecurringEventsOfEvent(eventItem)
+                    .SingleOrDefault(evnt => evnt.EventDate.Equals(date));
     }
 
     public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit,

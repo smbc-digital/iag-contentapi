@@ -12,6 +12,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
+    private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
 
     public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -22,7 +23,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
         IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory,
-        IContentfulFactory<ContentfulReference, SubItem> subitemFactory)
+        IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+        IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory)
     {
         _sectionFactory = sectionFactory;
         _crumbFactory = crumbFactory;
@@ -34,6 +36,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _alertFactory = alertFactory;
         _articleBrandingFactory = articleBrandingFactory;
         _subitemFactory = subitemFactory;
+        _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
     }
 
     public Article ToModel(ContentfulArticle entry)
@@ -71,33 +74,33 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             
             Sections = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                        .Select(section => _sectionFactory.ToModel(section)).ToList(),
+                        .Select(_sectionFactory.ToModel).ToList(),
             
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+                            .Select(_crumbFactory.ToModel).ToList(),
             
             Alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)),
+                        .Select(_alertFactory.ToModel),
             
             Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                        .Select(profile => _profileFactory.ToModel(profile)).ToList(),
+                        .Select(_profileFactory.ToModel).ToList(),
             
             ArticleBranding = entry.ArticleBranding is not null 
                 ? entry.ArticleBranding.Where(_ => _ is not null)
-                    .Select(branding => _articleBrandingFactory.ToModel(branding)).ToList() 
-                : new List<GroupBranding>(),
+                    .Select(_articleBrandingFactory.ToModel).ToList() 
+                : new(),
             
             LogoAreaTitle = entry.LogoAreaTitle,
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
             
             Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
-                            .Select(document => _documentFactory.ToModel(document)).ToList(),
+                            .Select(_documentFactory.ToModel).ToList(),
             
             RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
-                                .Select(item => _subitemFactory.ToModel(item)).ToList(),
+                                .Select(_subitemFactory.ToModel).ToList(),
             
             SunriseDate = entry.SunriseDate,
             SunsetDate = entry.SunsetDate,
@@ -105,7 +108,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             AlertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alertInline => _alertFactory.ToModel(alertInline)),
+                            .Select(_alertFactory.ToModel),
                         
             UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value 
                 ? sectionUpdatedAt 
@@ -116,7 +119,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             HideLastUpdated = entry.HideLastUpdated,
             Author = entry.Author,
             Photographer = entry.Photographer,
-            InlineQuotes = entry.InlineQuotes
+            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList()
         };
     }
 }

@@ -44,16 +44,16 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
         {
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                        .Select(_alertFactory.ToModel).ToList(),
             
             Author = entry.Author,
             Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
-                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+                            .Select(_crumbFactory.ToModel).ToList(),
 
             Image = image,    
             ImageCaption = entry.ImageCaption,
-            InlineQuotes = entry.InlineQuotes.Select(quote => _inlineQuoteContentfulFactory.ToModel(quote)).ToList(),
+            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
             
             Teaser = entry.Teaser,
             Slug = entry.Slug,
@@ -62,7 +62,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             Title = entry.Title,
             
             TriviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
-                            .Select(fact => _triviaFactory.ToModel(fact)).ToList(),
+                            .Select(_triviaFactory.ToModel).ToList(),
             
             TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                 ? entry.TriviaSubheading
@@ -73,7 +73,7 @@ public class ProfileContentfulFactory : IContentfulFactory<ContentfulProfile, Pr
             
             InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                            .Select(_alertFactory.ToModel).ToList(),
             
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic()
         };

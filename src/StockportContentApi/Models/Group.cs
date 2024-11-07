@@ -105,3 +105,49 @@ public class Group
         LinkedGroups = linkedGroups;
     }
 }
+
+[ExcludeFromCodeCoverage]
+public class NullGroup : Group
+{
+    public NullGroup() : base(
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        new(),
+        new(),
+        new(),
+        new(),
+        false,
+        null,
+        null,
+        null,
+        "published",
+        new() { string.Empty },
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        null,
+        false,
+        string.Empty,
+        new(),
+        new(),
+        string.Empty,
+        new(),
+        null,
+        new(),
+        new(),
+        string.Empty,
+        string.Empty,
+        new List<Alert>(),
+        new List<Alert>())
+    { }
+}

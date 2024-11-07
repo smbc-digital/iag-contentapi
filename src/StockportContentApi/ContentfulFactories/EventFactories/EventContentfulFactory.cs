@@ -3,14 +3,18 @@ namespace StockportContentApi.ContentfulFactories.EventFactories;
 public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
 {
     private readonly IContentfulFactory<Asset, Document> _documentFactory;
-
     private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
     private readonly DateComparer _dateComparer;
 
-    public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulGroup, Group> groupFactory, IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider)
+    public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
+                                IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                                IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
+                                IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
+                                IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                ITimeProvider timeProvider)
     {
         _documentFactory = documentFactory;
         _groupFactory = groupFactory;
@@ -40,11 +44,40 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
         
         List<GroupBranding> eventBranding = entry.EventBranding?.Select(_brandingFactory.ToModel).ToList();
 
-        return new Event(entry.Title, entry.Slug, entry.Teaser, imageUrl, entry.Description, entry.Fee,
-            entry.Location,
-            entry.SubmittedBy, entry.EventDate, entry.StartTime, entry.EndTime, entry.Occurences, entry.Frequency,
-            new List<Crumb> { new("Events", string.Empty, "events") },
-            ImageConverter.ConvertToThumbnail(imageUrl), eventDocuments, entry.Categories, entry.MapPosition,
-            entry.Featured, entry.BookingInformation, entry.Sys.UpdatedAt, entry.Tags, group, alerts, categories.ToList(), entry.Free, entry.Paid, entry.AccessibleTransportLink, eventBranding, entry.PhoneNumber, entry.Email, entry.Website, entry.MetaDescription);
+        return new Event(entry.Title,
+                        entry.Slug,
+                        entry.Teaser,
+                        imageUrl,
+                        entry.Description,
+                        entry.Fee,
+                        entry.Location,
+                        entry.SubmittedBy,
+                        entry.EventDate,
+                        entry.StartTime,
+                        entry.EndTime,
+                        entry.Occurences,
+                        entry.Frequency,
+                        new List<Crumb> { new("Events", string.Empty, "events") },
+                        ImageConverter.ConvertToThumbnail(imageUrl),
+                        eventDocuments,
+                        entry.Categories,
+                        entry.MapPosition,
+                        entry.Featured,
+                        entry.BookingInformation,
+                        entry.Sys.UpdatedAt,
+                        entry.Tags,
+                        group,
+                        alerts,
+                        categories.ToList(),
+                        entry.Free,
+                        entry.Paid,
+                        entry.AccessibleTransportLink,
+                        eventBranding,
+                        entry.PhoneNumber,
+                        entry.Email,
+                        entry.Website,
+                        entry.MetaDescription,
+                        entry.Duration,
+                        entry.Languages);
     }
 }

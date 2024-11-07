@@ -10,14 +10,13 @@ public class EventController : Controller
     private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
     private readonly IMapper _mapper;
 
-    public EventController(
-        ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, EventRepository> eventRepository,
-        Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
-        Func<ContentfulConfig, ManagementRepository> managementRepository,
-        IMapper mapper,
-        ILogger<EventController> logger)
+    public EventController(ResponseHandler handler,
+                        Func<string, ContentfulConfig> createConfig,
+                        Func<ContentfulConfig, EventRepository> eventRepository,
+                        Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
+                        Func<ContentfulConfig, ManagementRepository> managementRepository,
+                        IMapper mapper,
+                        ILogger<EventController> logger)
     {
         _handler = handler;
         _createConfig = createConfig;
@@ -28,19 +27,19 @@ public class EventController : Controller
         _logger = logger;
     }
 
+    // this will be removed
     [HttpGet]
     [Route("{businessId}/event-categories")]
     [Route("v1/{businessId}/event-categories")]
-    public async Task<IActionResult> GetEventCategories(string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetEventCategories(string businessId) =>
+        await _handler.Get(() =>
         {
             EventCategoryRepository eventRepository = _eventCategoryRepository(_createConfig(businessId));
 
             return eventRepository.GetEventCategories();
         });
-    }
 
+    // this is not used!!
     [HttpGet]
     [Route("{businessId}/eventhomepage")]
     [Route("v1/{businessId}/eventhomepage")]
@@ -61,15 +60,13 @@ public class EventController : Controller
     [HttpGet]
     [Route("{businessId}/events/{slug}")]
     [Route("v1/{businessId}/events/{slug}")]
-    public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date) =>
+        await _handler.Get(() =>
         {
             EventRepository repository = _eventRepository(_createConfig(businessId));
 
             return repository.GetEvent(slug, date);
         });
-    }
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut]
@@ -103,23 +100,22 @@ public class EventController : Controller
     [Route("{businessId}/events/latest/{limit}")]
     [Route("v1/{businessId}/events")]
     [Route("v1/{businessId}/events/latest/{limit}")]
-    public async Task<IActionResult> Index(
-        string businessId,
-        int limit = 0,
-        [FromQuery] DateTime? dateFrom = null,
-        [FromQuery] DateTime? dateTo = null,
-        [FromQuery] string category = null,
-        [FromQuery] bool? featured = null,
-        [FromQuery] string tag = null,
-        [FromQuery] string price = null, [FromQuery] double latitude = 0, [FromQuery] double longitude = 0)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> Index(string businessId,
+                                                int limit = 0,
+                                                [FromQuery] DateTime? dateFrom = null,
+                                                [FromQuery] DateTime? dateTo = null,
+                                                [FromQuery] string category = null,
+                                                [FromQuery] bool? featured = null,
+                                                [FromQuery] string tag = null,
+                                                [FromQuery] string price = null,
+                                                [FromQuery] double latitude = 0,
+                                                [FromQuery] double longitude = 0) =>
+        await _handler.Get(() =>
         {
             EventRepository repository = _eventRepository(_createConfig(businessId));
 
             return repository.Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude);
         });
-    }
 
     [HttpGet]
     [Route("{businessId}/events/by-category")]
@@ -154,7 +150,6 @@ public class EventController : Controller
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
-
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpDelete]

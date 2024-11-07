@@ -30,8 +30,10 @@ public class ContentfulEvent : IContentfulModel
     public bool? Free { get; set; } = null;
     public bool? Paid { get; set; } = null;
     public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
-    public List<ContentfulGroupBranding> EventBranding { get; set; } = new List<ContentfulGroupBranding>();
+    public List<ContentfulGroupBranding> EventBranding { get; set; } = new();
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Website { get; set; } = string.Empty;
+    public string Duration { get; set; } = string.Empty;
+    public string Languages { get; set; } = string.Empty;
 }
