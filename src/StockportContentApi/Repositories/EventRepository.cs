@@ -32,7 +32,7 @@ public class EventRepository : BaseRepository
         _timeProvider = timeProvider;
     }
 
-    public async Task<HttpResponse> GetEventHomepage()
+    public async Task<HttpResponse> GetEventHomepage(int quantity = 3)
     {
         QueryBuilder<ContentfulEventHomepage> builder = new QueryBuilder<ContentfulEventHomepage>().ContentTypeIs("eventHomepage").Include(1);
         ContentfulCollection<ContentfulEventHomepage> entries = await _client.GetEntries(builder);
@@ -40,7 +40,7 @@ public class EventRepository : BaseRepository
 
         return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No event homepage found")
-            : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry)));
+            : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry), quantity));
     }
 
     public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
@@ -51,7 +51,7 @@ public class EventRepository : BaseRepository
         return groupEvents;
     }
 
-    private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage)
+    private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage, int quantity = 3)
     {
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync("event-all", GetAllEvents, _eventsTimeout);
         
@@ -66,8 +66,8 @@ public class EventRepository : BaseRepository
 
         foreach (EventHomepageRow row in homepage.Rows)
             row.Events = row.IsLatest
-                ? liveEvents.Take(3) 
-                : liveEvents.Where(singleEvent => singleEvent.Tags.Contains(row.Tag.ToLower())).Take(3);
+                ? liveEvents.Take(quantity) 
+                : liveEvents.Where(singleEvent => singleEvent.Tags.Contains(row.Tag.ToLower())).Take(quantity);
 
         return homepage;
     }
