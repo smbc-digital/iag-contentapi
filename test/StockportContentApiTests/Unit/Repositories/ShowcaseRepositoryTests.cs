@@ -11,7 +11,6 @@ public class ShowcaseRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
     private readonly Mock<ILogger<ShowcaseRepository>> _mockLogger;
     private readonly ShowcaseRepository _repository;
-
     private readonly Mock<ITimeProvider> _timeprovider;
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _topicFactory;
 
@@ -23,6 +22,11 @@ public class ShowcaseRepositoryTests
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
+            .Build();
+
+        CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
             .Build();
 
         _topicFactory = new();
@@ -77,7 +81,7 @@ public class ShowcaseRepositoryTests
         _configuration = new();
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
-        EventRepository eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object,
+        EventRepository eventRepository = new(config, cacheKeyconfig, contentfulClientManager.Object, _timeprovider.Object,
             _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
 
@@ -144,7 +148,7 @@ public class ShowcaseRepositoryTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -180,7 +184,7 @@ public class ShowcaseRepositoryTests
 
         ContentfulEvent rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new(2017, 4, 1)).Build();
         List<ContentfulEvent> events = new() { rawEvent };
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
         Event modelledEvent = new("title",
                                 "event-slug",

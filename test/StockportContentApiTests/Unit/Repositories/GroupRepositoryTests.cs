@@ -1,4 +1,5 @@
-﻿using StockportContentApi.Constants;
+﻿using StockportContentApi.Config;
+using StockportContentApi.Constants;
 
 namespace StockportContentApiTests.Unit.Repositories;
 
@@ -7,6 +8,7 @@ public class GroupRepositoryTests
     private readonly Mock<ICache> _cacheWrapper;
     private readonly Mock<IContentfulClient> _client;
     private readonly Mock<IConfiguration> _configuration;
+    private readonly CacheKeyConfig _cacheKeyconfig;
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory;
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
     private readonly EventRepository _eventRepository;
@@ -25,6 +27,12 @@ public class GroupRepositoryTests
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
+        .Build();
+
+
+        _cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
             .Build();
 
         _groupFactory = new();
@@ -44,7 +52,7 @@ public class GroupRepositoryTests
         _client = new();
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
-        _eventRepository = new(config, contentfulClientManager.Object, _timeProvider.Object, _eventFactory.Object,
+        _eventRepository = new(config, _cacheKeyconfig, contentfulClientManager.Object, _timeProvider.Object, _eventFactory.Object,
             _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
         _repository = new(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object,
             _groupCategoryFactory.Object, _groupHomepageContentfulFactory.Object, _eventRepository,
@@ -69,7 +77,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -104,7 +112,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -141,7 +149,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -178,7 +186,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -214,7 +222,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -250,7 +258,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -451,7 +459,7 @@ public class GroupRepositoryTests
 
         _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -486,7 +494,7 @@ public class GroupRepositoryTests
             It.IsAny<CancellationToken>())).ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
         _groupFactory.Setup(o => o.ToModel(contentfulGroupWithlocation)).Returns(groupWithLocation);

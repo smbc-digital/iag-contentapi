@@ -69,6 +69,7 @@ public class Startup
         services.AddHelpers();
         services.AddRedirects(Configuration);
         services.AddContentfulConfig(Configuration);
+        services.AddCacheKeyConfig(Configuration);
         services.AddOptions();
 
         _logger.Information("CONTENTAPI: STARTUP : ConfigureServices : Adding Contentful Clients");

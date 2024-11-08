@@ -5,6 +5,7 @@ public class EventRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<ICache> _cacheWrapper = new();
     private readonly ContentfulConfig _config;
+    private readonly CacheKeyConfig _cacheKeyconfig;
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
@@ -30,6 +31,11 @@ public class EventRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
+        _cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
+            .Build();
+
         // Mock
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
@@ -49,7 +55,7 @@ public class EventRepositoryTests
         _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
-        _repository = new(_config, _contentfulClientManager.Object,
+        _repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object,
             _mockTimeProvider.Object, contentfulFactory, eventHomepageFactory, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
     }
@@ -66,7 +72,7 @@ public class EventRepositoryTests
         _eventCategoryFactory.Setup(o => o.ToModel(It.IsAny<ContentfulEventCategory>()))
             .Returns(new EventCategory("category", "category", "icon"));
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act - return events using a method which checks occurances
@@ -87,7 +93,7 @@ public class EventRepositoryTests
 
         List<ContentfulEvent> events = new() { rawEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -123,7 +129,7 @@ public class EventRepositoryTests
             Items = new List<ContentfulEvent> { anEvent }
         };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events")
@@ -145,7 +151,7 @@ public class EventRepositoryTests
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2015, 08, 5));
 
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<ContentfulEvent>());
 
@@ -163,7 +169,7 @@ public class EventRepositoryTests
         ContentfulEvent anEvent = new ContentfulEventBuilder().EventDate(new(2016, 09, 08)).Build();
         ContentfulEvent anotherEvent = new ContentfulEventBuilder().EventDate(new(2016, 10, 08)).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent };
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -240,7 +246,7 @@ public class EventRepositoryTests
                 .Occurrences(occurences)
                 .Build();
         List<ContentfulEvent> events = new() { anEvent };
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
@@ -266,7 +272,7 @@ public class EventRepositoryTests
 
         List<ContentfulEvent> events = new() { anEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
@@ -293,7 +299,7 @@ public class EventRepositoryTests
                 .Build();
         List<ContentfulEvent> events = new() { anEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response =
@@ -321,7 +327,7 @@ public class EventRepositoryTests
                 .Build();
         List<ContentfulEvent> events = new() { anEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
@@ -347,7 +353,7 @@ public class EventRepositoryTests
                 .Build();
         List<ContentfulEvent> events = new() { anEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
@@ -374,7 +380,7 @@ public class EventRepositoryTests
                 .Build();
         List<ContentfulEvent> events = new() { anEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 0, null, null, null, 0, 0));
@@ -398,7 +404,7 @@ public class EventRepositoryTests
         ContentfulEvent anotherEvent = new ContentfulEventBuilder().EventDate(new(2017, 04, 01)).Build();
 
         List<ContentfulEvent> events = new() { anEvent, anotherEvent };
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -428,7 +434,7 @@ public class EventRepositoryTests
         _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory1)).Returns(category1);
         _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory2)).Returns(category2);
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -455,7 +461,7 @@ public class EventRepositoryTests
             new ContentfulEventBuilder().EventCategoryList(new() { contentfulCategory2 }).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory1)).Returns(category1);
@@ -505,7 +511,7 @@ public class EventRepositoryTests
         _eventCategoryFactory.Setup(o => o.ToModel(contentfulCategory3))
             .Returns(new EventCategory("Category 3", "category-3", "icon3"));
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -527,7 +533,7 @@ public class EventRepositoryTests
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null, null, 0, 0));
@@ -550,7 +556,7 @@ public class EventRepositoryTests
 
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null, null, 0, 0));
@@ -570,10 +576,23 @@ public class EventRepositoryTests
             new ContentfulEventBuilder().Featured(false).EventDate(new(2017, 10, 10)).Build();
         ContentfulEvent aThirdEvent = new ContentfulEventBuilder().Featured(false).EventDate(new(2017, 09, 15)).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
+        ContentfulCollection<ContentfulEventCategory> categoryCollection = new (){
+            Items = new List<ContentfulEventCategory>() { new ContentfulEventCategory() { Name = "test", Slug="test"}}
+        };
 
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
-            It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
+
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(
+            It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
+            It.IsAny<Func<Task<IList<ContentfulEvent>>>>(),
+            It.Is<int>(s => s.Equals(60))))
+            .ReturnsAsync(events);
+
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(
+            It.Is<string>(s => s.Equals("testEventsCacheKey-categories")),
+            It.IsAny<Func<Task<ContentfulCollection<ContentfulEventCategory>>>>(), 
+            It.Is<int>(s => s.Equals(60))))
+            .ReturnsAsync(categoryCollection);
 
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, 2, true, null, null, 0, 0));
 
@@ -596,7 +615,7 @@ public class EventRepositoryTests
             .EventDate(new(2017, 09, 15)).Build();
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         Group group = new GroupBuilder().Slug("zumba-fitness").Build();
@@ -626,7 +645,7 @@ public class EventRepositoryTests
         aThirdEvent.Group.Slug = "kersal-rugby";
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         Group group = new GroupBuilder().Slug("zumba-fitness").Build();
@@ -658,7 +677,7 @@ public class EventRepositoryTests
         aThirdEvent.Group.Slug = "kersal-rugby";
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         Group group = new GroupBuilder().Slug("zumba-fitness").Build();
@@ -691,7 +710,7 @@ public class EventRepositoryTests
         aThirdEvent.Group.Slug = "zumba-fitness";
         List<ContentfulEvent> events = new() { anEvent, anotherEvent, aThirdEvent };
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         Group group = new GroupBuilder().Slug("zumba-fitness").Build();
@@ -714,7 +733,7 @@ public class EventRepositoryTests
     {
         //Arrange
         _cacheWrapper
-            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+            .Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
                 It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync((List<ContentfulEvent>)null);
 
@@ -737,12 +756,12 @@ public class EventRepositoryTests
         Event theEvent = new EventBuilder().EventCategories(new() { new("category", "category", "category") }).Build();
 
         // Mock
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
         _eventFactory.Setup(g => g.ToModel(It.IsAny<ContentfulEvent>())).Returns(theEvent);
 
         // Act
-        EventRepository repository = new(_config, _contentfulClientManager.Object, _mockTimeProvider.Object,
+        EventRepository repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object, _mockTimeProvider.Object,
             _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
         HttpResponse result = await repository.Get("category");
@@ -765,12 +784,12 @@ public class EventRepositoryTests
         Event theEvent = new EventBuilder().Tags(new() { "category-tag" }).Build();
 
         // Mock
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
         _eventFactory.Setup(g => g.ToModel(It.IsAny<ContentfulEvent>())).Returns(theEvent);
 
         // Act
-        EventRepository repository = new(_config, _contentfulClientManager.Object, _mockTimeProvider.Object,
+        EventRepository repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object, _mockTimeProvider.Object,
             _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
         HttpResponse result = await repository.Get("category-tag");
@@ -793,7 +812,7 @@ public class EventRepositoryTests
         List<ContentfulEvent> events = new() { firstEvent, secondEvent, thirdEvent };
 
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 08, 08));
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
