@@ -79,8 +79,11 @@ public class EventRepository : BaseRepository
         return homepage;
     }
 
-    public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
-        await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
+    public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() {
+        var categories = await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
+        return categories;
+    }
+        
 
     /// <summary>
     /// Get event categories from contentful event categories type
@@ -171,7 +174,12 @@ public class EventRepository : BaseRepository
         if (limit > 0)
             events = events.Take(limit).ToList();
 
-        IEnumerable<string> eventCategories = (await GetContentfulEventCategories()).Select(x => x.Name);
+        var eventCategoriesCollection = await GetContentfulEventCategories();
+        IEnumerable<string> eventCategories = Enumerable.Empty<string>();
+
+        if(eventCategoriesCollection is not null)
+            eventCategories = eventCategoriesCollection.Select(eventCategory => eventCategory.Name);
+
         EventCalender eventCalender = new();
         eventCalender.SetEvents(events, eventCategories.ToList());
 
