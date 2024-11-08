@@ -37,6 +37,13 @@ public class LandingPageRepositoryTests
     public LandingPageRepositoryTests()
     {
         ContentfulConfig config = BuildContentfulConfig();
+
+        
+        CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
+            .Build();
+
         _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
         
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
@@ -52,6 +59,7 @@ public class LandingPageRepositoryTests
                             _configuration.Object);
         
         _eventRepository = new(config,
+                            cacheKeyconfig,
                             contentfulClientManager.Object,
                             _timeprovider.Object,
                             _eventFactory.Object,
