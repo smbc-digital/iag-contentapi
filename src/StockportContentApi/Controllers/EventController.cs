@@ -5,7 +5,7 @@ public class EventController : Controller
     private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
     private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
-    private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, EventRepository> _eventRepository;
     private readonly ResponseHandler _handler;
     private readonly ILogger<EventController> _logger;
     private readonly Func<ContentfulConfig, ManagementRepository> _managementRepository;
@@ -14,7 +14,7 @@ public class EventController : Controller
     public EventController(ResponseHandler handler,
                         Func<string, ContentfulConfig> createConfig,
                         Func<string, CacheKeyConfig> cacheKeyConfig,
-                        Func<ContentfulConfig, EventRepository> eventRepository,
+                        Func<ContentfulConfig, CacheKeyConfig, EventRepository> eventRepository,
                         Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
                         Func<ContentfulConfig, ManagementRepository> managementRepository,
                         IMapper mapper,
@@ -49,12 +49,11 @@ public class EventController : Controller
     [Route("v1/{businessId}/eventhomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
-        CacheKeyConfig cacheKeyConfig = _cacheKeyConfig(businessId);
         EventCategoryRepository categoryRepository = _eventCategoryRepository(_createConfig(businessId));
         HttpResponse categoriesresponse = await categoryRepository.GetEventCategories();
         List<EventCategory> categories = categoriesresponse.Get<List<EventCategory>>();
 
-        EventRepository repository = _eventRepository(_createConfig(businessId));
+        EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         HttpResponse response = await repository.GetEventHomepage();
         EventHomepage homepage = response.Get<EventHomepage>();
         homepage.Categories = categories;
@@ -68,7 +67,7 @@ public class EventController : Controller
     public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date) =>
         await _handler.Get(() =>
         {
-            EventRepository repository = _eventRepository(_createConfig(businessId));
+            EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
 
             return repository.GetEvent(slug, date);
         });
@@ -79,7 +78,7 @@ public class EventController : Controller
     [Route("v1/{businessId}/events/{slug}")]
     public async Task<IActionResult> UpdateEvent([FromBody] Event eventDetail, string businessId)
     {
-        EventRepository repository = _eventRepository(_createConfig(businessId));
+        EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         ContentfulEvent existingEvent = await repository.GetContentfulEvent(eventDetail.Slug);
 
         ContentfulCollection<ContentfulEventCategory> existingCategories =
@@ -117,7 +116,7 @@ public class EventController : Controller
                                                 [FromQuery] double longitude = 0) =>
         await _handler.Get(() =>
         {
-            EventRepository repository = _eventRepository(_createConfig(businessId));
+            EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
 
             return repository.Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude);
         });
@@ -127,7 +126,7 @@ public class EventController : Controller
     [Route("v1/{businessId}/events/by-category")]
     public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
     {
-        EventRepository repository = _eventRepository(_createConfig(businessId));
+        EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
 
         if (string.IsNullOrEmpty(category))
             return new NotFoundObjectResult("No category was supplied");
@@ -162,7 +161,7 @@ public class EventController : Controller
     [Route("v1/{businessId}/events/{slug}")]
     public async Task<IActionResult> DeleteEvent(string slug, string businessId)
     {
-        EventRepository repository = _eventRepository(_createConfig(businessId));
+        EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         ContentfulEvent existingEvent = await repository.GetContentfulEvent(slug);
 
         return await _handler.Get(async () =>

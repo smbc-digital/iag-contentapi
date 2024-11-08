@@ -5,6 +5,7 @@ public class EventRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<ICache> _cacheWrapper = new();
     private readonly ContentfulConfig _config;
+    private readonly CacheKeyConfig _cacheKeyconfig;
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
@@ -30,6 +31,11 @@ public class EventRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
+        _cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEvetsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
+            .Build();
+
         // Mock
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 01, 01));
 
@@ -49,7 +55,7 @@ public class EventRepositoryTests
         _configuration.Setup(_ => _["redisExpiryTimes:Articles"]).Returns("60");
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
-        _repository = new(_config, _contentfulClientManager.Object,
+        _repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object,
             _mockTimeProvider.Object, contentfulFactory, eventHomepageFactory, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
     }
@@ -742,7 +748,7 @@ public class EventRepositoryTests
         _eventFactory.Setup(g => g.ToModel(It.IsAny<ContentfulEvent>())).Returns(theEvent);
 
         // Act
-        EventRepository repository = new(_config, _contentfulClientManager.Object, _mockTimeProvider.Object,
+        EventRepository repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object, _mockTimeProvider.Object,
             _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
         HttpResponse result = await repository.Get("category");
@@ -770,7 +776,7 @@ public class EventRepositoryTests
         _eventFactory.Setup(g => g.ToModel(It.IsAny<ContentfulEvent>())).Returns(theEvent);
 
         // Act
-        EventRepository repository = new(_config, _contentfulClientManager.Object, _mockTimeProvider.Object,
+        EventRepository repository = new(_config, _cacheKeyconfig, _contentfulClientManager.Object, _mockTimeProvider.Object,
             _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
             _configuration.Object);
         HttpResponse result = await repository.Get("category-tag");
