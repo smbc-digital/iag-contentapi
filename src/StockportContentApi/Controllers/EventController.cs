@@ -3,6 +3,7 @@
 public class EventController : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
     private readonly Func<ContentfulConfig, EventCategoryRepository> _eventCategoryRepository;
     private readonly Func<ContentfulConfig, EventRepository> _eventRepository;
     private readonly ResponseHandler _handler;
@@ -12,6 +13,7 @@ public class EventController : Controller
 
     public EventController(ResponseHandler handler,
                         Func<string, ContentfulConfig> createConfig,
+                        Func<string, CacheKeyConfig> cacheKeyConfig,
                         Func<ContentfulConfig, EventRepository> eventRepository,
                         Func<ContentfulConfig, EventCategoryRepository> eventCategoryRepository,
                         Func<ContentfulConfig, ManagementRepository> managementRepository,
@@ -20,6 +22,7 @@ public class EventController : Controller
     {
         _handler = handler;
         _createConfig = createConfig;
+        _cacheKeyConfig = cacheKeyConfig;
         _eventRepository = eventRepository;
         _managementRepository = managementRepository;
         _eventCategoryRepository = eventCategoryRepository;
@@ -34,6 +37,7 @@ public class EventController : Controller
     public async Task<IActionResult> GetEventCategories(string businessId) =>
         await _handler.Get(() =>
         {
+            
             EventCategoryRepository eventRepository = _eventCategoryRepository(_createConfig(businessId));
 
             return eventRepository.GetEventCategories();
@@ -45,6 +49,7 @@ public class EventController : Controller
     [Route("v1/{businessId}/eventhomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
+        CacheKeyConfig cacheKeyConfig = _cacheKeyConfig(businessId);
         EventCategoryRepository categoryRepository = _eventCategoryRepository(_createConfig(businessId));
         HttpResponse categoriesresponse = await categoryRepository.GetEventCategories();
         List<EventCategory> categories = categoriesresponse.Get<List<EventCategory>>();

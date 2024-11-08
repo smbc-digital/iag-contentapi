@@ -370,10 +370,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IVideoRepository>(p =>
            new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
 
-        services.AddSingleton<Func<ContentfulConfig, EventRepository>>(p =>
-            config =>
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventRepository>>(p =>
+            (contentfulConfig, cacheKeyConfig) =>
                 new(
-                    config,
+                    contentfulConfig,
+                    cacheKeyConfig,
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<ITimeProvider>(),
                     p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
