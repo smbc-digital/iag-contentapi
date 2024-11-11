@@ -112,6 +112,11 @@ public class EventRepository : BaseRepository
                 !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             eventItem.Group = new NullGroup();
 
+        eventItem.RelatedEvents = GetRelatedEvents(entries,
+                                                eventItem.Slug,
+                                                eventItem.Categories.Select(cat => cat).ToList(),
+                                                eventItem.Tags);
+
         return eventItem is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
             : HttpResponse.Successful(eventItem);
@@ -295,6 +300,22 @@ public class EventRepository : BaseRepository
                                 .ThenBy(c => TimeSpan.Parse(c.StartTime))
                                 .ThenBy(t => t.Title)
                                 .ToList();
+
+        return GetNextOccurenceOfEvents(events);
+    }
+
+    public List<Event> GetRelatedEvents(IList<ContentfulEvent> entries, string slug, List<string> categories, List<string> tags)
+    {
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries)
+            .Where(evnt => !evnt.Slug.Equals(slug))
+            .Where(evnt =>
+                evnt.Categories.Any(cat => categories.Contains(cat, StringComparer.OrdinalIgnoreCase) ||
+                                           categories.Contains(cat, StringComparer.OrdinalIgnoreCase)) ||
+                evnt.Tags.Any(tag => tags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
+            .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
+            .OrderBy(evnt => evnt.EventDate)
+            .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+            .ToList();
 
         return GetNextOccurenceOfEvents(events);
     }

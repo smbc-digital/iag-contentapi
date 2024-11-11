@@ -33,6 +33,11 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
             ? entry.Image?.File?.Url 
             : string.Empty;
 
+
+        string thumbnailImageUrl = entry.ThumbnailImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.ThumbnailImage.SystemProperties) 
+            ? entry.ThumbnailImage?.File?.Url 
+            : string.Empty;
+
         Group group = _groupFactory.ToModel(entry.Group);
 
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(ec => _eventCategoryFactory.ToModel(ec));
@@ -58,7 +63,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.Occurences,
                         entry.Frequency,
                         new List<Crumb> { new("Events", string.Empty, "events") },
-                        ImageConverter.ConvertToThumbnail(imageUrl),
+                        ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl),
                         eventDocuments,
                         entry.Categories,
                         entry.MapPosition,
