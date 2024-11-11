@@ -1,4 +1,7 @@
-﻿namespace StockportContentApi.Controllers;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+using StockportContentApi.Config;
+
+namespace StockportContentApi.Controllers;
 
 public class EventController : Controller
 {
@@ -35,13 +38,7 @@ public class EventController : Controller
     [Route("{businessId}/event-categories")]
     [Route("v1/{businessId}/event-categories")]
     public async Task<IActionResult> GetEventCategories(string businessId) =>
-        await _handler.Get(() =>
-        {
-            
-            EventCategoryRepository eventRepository = _eventCategoryRepository(_createConfig(businessId));
-
-            return eventRepository.GetEventCategories();
-        });
+        await _handler.Get(() => _eventCategoryRepository(_createConfig(businessId)).GetEventCategories());
 
     // this is not used!!
     [HttpGet]
@@ -65,12 +62,7 @@ public class EventController : Controller
     [Route("{businessId}/events/{slug}")]
     [Route("v1/{businessId}/events/{slug}")]
     public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date) =>
-        await _handler.Get(() =>
-        {
-            EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
-
-            return repository.GetEvent(slug, date);
-        });
+        await _handler.Get(() => _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId)).GetEvent(slug, date));
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut]
@@ -114,12 +106,7 @@ public class EventController : Controller
                                                 [FromQuery] string price = null,
                                                 [FromQuery] double latitude = 0,
                                                 [FromQuery] double longitude = 0) =>
-        await _handler.Get(() =>
-        {
-            EventRepository repository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
-
-            return repository.Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude);
-        });
+        await _handler.Get(() => _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId)).Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude));
 
     [HttpGet]
     [Route("{businessId}/events/by-category")]

@@ -297,13 +297,13 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddCacheKeyConfig(this IServiceCollection services, IConfiguration configuration)
     {
-        Func<string, CacheKeyConfig> cacheKeyConfig = businessId =>
+        Func<string, CacheKeyConfig> createCacheKeyConfig = businessId =>
             new CacheKeyConfig(businessId)
                 .Add($"{businessId.ToUpper()}_EventsCacheKey", configuration[$"{businessId}:EventsCacheKey"])
                 .Add($"{businessId.ToUpper()}_NewsCacheKey", configuration[$"{businessId}:NewsCacheKey"])
                 .Build();
        
-        services.AddTransient(_ => cacheKeyConfig);
+        services.AddTransient(_ => createCacheKeyConfig);
 
         return services;
     }
@@ -485,18 +485,21 @@ public static class ServiceCollectionExtensions
                 return x => new(x, p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>());
             });
+
         services.AddSingleton<Func<ContentfulConfig, GroupCategoryRepository>>(
             p =>
             {
                 return x => new(x, p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
                     p.GetService<IContentfulClientManager>());
             });
-        services.AddSingleton<Func<ContentfulConfig, EventCategoryRepository>>(
-            p =>
-            {
-                return x => new(x, p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
-                    p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>());
-            });
+            
+
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventCategoryRepository>>(p =>
+            (contentfulConfig, cacheKeyConfig) =>
+                new(contentfulConfig, cacheKeyConfig, p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
+                    p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>())
+            );
+
         services.AddSingleton<Func<ContentfulConfig, HomepageRepository>>(
             p =>
             {
