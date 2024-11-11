@@ -112,7 +112,8 @@ public class EventRepository : BaseRepository
                 !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
             eventItem.Group = new NullGroup();
 
-        eventItem.RelatedEvents = GetRelatedEvents(entries,
+        if (eventItem is not null)
+            eventItem.RelatedEvents = GetRelatedEvents(entries,
                                                 eventItem.Slug,
                                                 eventItem.Categories.Select(cat => cat).ToList(),
                                                 eventItem.Tags);
