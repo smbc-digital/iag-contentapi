@@ -3,15 +3,18 @@
 public class LandingPageController : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, LandingPageRepository> _createRepository;
+    private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, LandingPageRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
     public LandingPageController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, LandingPageRepository> createRepository)
+        Func<string, CacheKeyConfig> cacheKeyConfig,
+        Func<ContentfulConfig, CacheKeyConfig, LandingPageRepository> createRepository)
     {
         _handler = handler;
         _createConfig = createConfig;
+        _cacheKeyConfig = cacheKeyConfig;   
         _createRepository = createRepository;
     }
 
@@ -21,7 +24,7 @@ public class LandingPageController : Controller
     public async Task<IActionResult> GetLandingPage(string slug, string businessId) =>
         await _handler.Get(() =>
         {
-            LandingPageRepository repository = _createRepository(_createConfig(businessId));
+            LandingPageRepository repository = _createRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
             Task<HttpResponse> landingPage = repository.GetLandingPage(slug);
 
             return landingPage;

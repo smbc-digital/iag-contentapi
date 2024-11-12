@@ -3,16 +3,19 @@
 public class ShowcaseController : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, ShowcaseRepository> _createRepository;
+    private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, ShowcaseRepository> _createRepository;
 
     private readonly ResponseHandler _handler;
 
     public ShowcaseController(ResponseHandler handler,
         Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, ShowcaseRepository> createRepository)
+        Func<string, CacheKeyConfig> cacheKeyConfig,
+        Func<ContentfulConfig, CacheKeyConfig, ShowcaseRepository> createRepository)
     {
         _handler = handler;
         _createConfig = createConfig;
+        _cacheKeyConfig = cacheKeyConfig;
         _createRepository = createRepository;
     }
 
@@ -23,7 +26,7 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
             Task<HttpResponse> showcase = repository.GetShowcases(showcaseSlug);
 
             return showcase;
@@ -37,7 +40,7 @@ public class ShowcaseController : Controller
     {
         return await _handler.Get(() =>
         {
-            ShowcaseRepository repository = _createRepository(_createConfig(businessId));
+            ShowcaseRepository repository = _createRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
             Task<HttpResponse> showcase = repository.Get();
 
             return showcase;
