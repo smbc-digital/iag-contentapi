@@ -45,12 +45,43 @@ public class EventContentfulFactoryTests
         // Arrange
         _contentfulEvent.Documents.First().SystemProperties.LinkType = "Link";
         _contentfulEvent.Image.SystemProperties.LinkType = "Link";
+        _contentfulEvent.ThumbnailImage.SystemProperties.LinkType = "Link";
 
         // Act
         Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
 
         // Assert
         Assert.Empty(result.Documents);
+        Assert.Empty(result.ImageUrl);
+        Assert.Empty(result.ThumbnailImageUrl);
+    }
+
+    [Fact]
+    public void ToModel_ShouldNotAddImage_If_SystemPropertiesNull()
+    {
+        // Arrange
+        _contentfulEvent.Image.SystemProperties = null;
+        _contentfulEvent.ThumbnailImage.SystemProperties = null;
+
+        // Act
+        Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
+
+        // Assert
+        Assert.Empty(result.ImageUrl);
+        Assert.Empty(result.ThumbnailImageUrl);
+    }
+
+    [Fact]
+    public void ToModel_ShouldNotAddImage_If_Null()
+    {
+        // Arrange
+        _contentfulEvent.Image = null;
+        _contentfulEvent.ThumbnailImage = null;
+
+        // Act
+        Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
+
+        // Assert
         Assert.Empty(result.ImageUrl);
         Assert.Empty(result.ThumbnailImageUrl);
     }

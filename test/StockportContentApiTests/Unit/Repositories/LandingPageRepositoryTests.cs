@@ -65,7 +65,6 @@ public class LandingPageRepositoryTests
                             _eventFactory.Object,
                             _eventHomepageFactory.Object,
                             _cacheWrapper.Object,
-                            _logger.Object,
                             _configuration.Object);
 
         _repository = new(config,

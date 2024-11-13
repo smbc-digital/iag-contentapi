@@ -8,7 +8,7 @@ public class EventBuilder
     private readonly string _image = "image-url.jpg";
     private readonly string _thumbnailImage = "thumb-image-url.jpg";
     private readonly string _description = "description";
-    private readonly string _fee = "fee";
+    private string _fee = "fee";
     private readonly string _location = "location";
     private readonly string _submittedby = "submittedBy";
     private readonly string _metaDescription = "metaDescription";
@@ -31,7 +31,7 @@ public class EventBuilder
     private bool _featured = true;
     private readonly DateTime _updatedAt = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new();
-    private readonly Group _group = null;
+    private Group _group = null;
     private readonly List<Alert> _alerts = new()
         {
             new Alert("title",
@@ -132,9 +132,21 @@ public class EventBuilder
         return this;
     }
 
+    public EventBuilder Fee(string fee)
+    {
+        _fee = fee;
+        return this;
+    }
+
     public EventBuilder Tags(List<string> tags)
     {
         _tags = tags;
+        return this;
+    }
+
+    public EventBuilder Group(Group group)
+    {
+        _group = group;
         return this;
     }
 }

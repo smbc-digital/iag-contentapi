@@ -15,7 +15,6 @@ public class GroupRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulGroupCategory, GroupCategory>> _groupCategoryFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory;
     private readonly Mock<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>> _groupHomepageContentfulFactory;
-    private readonly Mock<ILogger<EventRepository>> _logger;
     private readonly GroupRepository _repository;
     private readonly Mock<ITimeProvider> _timeProvider;
 
@@ -42,7 +41,6 @@ public class GroupRepositoryTests
         _timeProvider = new();
         _groupCategoryFactory = new();
         _groupHomepageContentfulFactory = new();
-        _logger = new();
 
         _cacheWrapper = new();
         _configuration = new();
@@ -53,7 +51,7 @@ public class GroupRepositoryTests
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_client.Object);
 
         _eventRepository = new(config, _cacheKeyconfig, contentfulClientManager.Object, _timeProvider.Object, _eventFactory.Object,
-            _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object, _configuration.Object);
+            _eventHomepageFactory.Object, _cacheWrapper.Object, _configuration.Object);
         _repository = new(config, contentfulClientManager.Object, _timeProvider.Object, _groupFactory.Object,
             _groupCategoryFactory.Object, _groupHomepageContentfulFactory.Object, _eventRepository,
             _cacheWrapper.Object, _configuration.Object);

@@ -10,7 +10,6 @@ public class EventRepository : BaseRepository
     private readonly int _eventsTimeout;
     private readonly IConfiguration _configuration;
     private readonly CacheKeyConfig _cacheKeyConfig;
-    private ILogger<EventRepository> _logger;
     private readonly ITimeProvider _timeProvider;
     private readonly string _allEventsCacheKey;
     private readonly string _eventCategoriesCacheKey;
@@ -18,11 +17,11 @@ public class EventRepository : BaseRepository
     public EventRepository(
         ContentfulConfig contentfulConfig,
         CacheKeyConfig cacheKeyConfig,
-        IContentfulClientManager contentfulClientManager, ITimeProvider timeProvider,
+        IContentfulClientManager contentfulClientManager,
+        ITimeProvider timeProvider,
         IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
         IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
         ICache cache,
-        ILogger<EventRepository> logger,
         IConfiguration configuration)
     {
         _contentfulFactory = contentfulFactory;
@@ -31,7 +30,6 @@ public class EventRepository : BaseRepository
         _client = contentfulClientManager.GetClient(contentfulConfig);
         _cacheKeyConfig = cacheKeyConfig;
         _cache = cache;
-        _logger = logger;
         _configuration = configuration;
         int.TryParse(_configuration["redisExpiryTimes:Events"], out _eventsTimeout);
         _timeProvider = timeProvider;
@@ -79,10 +77,8 @@ public class EventRepository : BaseRepository
         return homepage;
     }
 
-    public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() {
-        var categories = await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
-        return categories;
-    }
+    public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
+        await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
         
 
     /// <summary>
@@ -101,7 +97,7 @@ public class EventRepository : BaseRepository
 
     public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
     {
-        // does this need to retrieve all events and their occurences??
+        // does this need to retrieve all events and their occurrences??
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
         IEnumerable<Event> events = GetAllEventsAndTheirRecurrences(entries);
         Event eventItem = events.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
@@ -159,7 +155,8 @@ public class EventRepository : BaseRepository
 
         GeoCoordinate searchCoord = new(latitude, longitude);
 
-        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => CheckDates(searchdateFrom, searchdateTo, e))
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries)
+                                .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                                 .Where(e => string.IsNullOrWhiteSpace(category) 
                                     || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
                                     || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
@@ -190,27 +187,6 @@ public class EventRepository : BaseRepository
         eventCalender.SetEvents(events, eventCategories.ToList());
 
         return HttpResponse.Successful(eventCalender);
-    }
-
-    public async Task<HttpResponse> Get(string category)
-    {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
-
-        if (entries is null || !entries.Any())
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
-
-        IEnumerable<Event> eventsAll = GetAllEventsAndTheirRecurrences(entries);
-
-        List<Event> events = eventsAll.Where(e => e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
-                                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower()))
-                                    || e.Tags.Contains(category.ToLower()))
-                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                                .OrderBy(o => o.EventDate)
-                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                .ThenBy(t => t.Title)
-                                .ToList();
-
-        return HttpResponse.Successful(events);
     }
 
     public virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence)
@@ -310,8 +286,7 @@ public class EventRepository : BaseRepository
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
             .Where(evnt => !evnt.Slug.Equals(slug))
             .Where(evnt =>
-                evnt.Categories.Any(cat => categories.Contains(cat, StringComparer.OrdinalIgnoreCase) ||
-                                           categories.Contains(cat, StringComparer.OrdinalIgnoreCase)) ||
+                evnt.Categories.Any(cat => categories.Contains(cat, StringComparer.OrdinalIgnoreCase)) ||
                 evnt.Tags.Any(tag => tags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
             .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
             .OrderBy(evnt => evnt.EventDate)
@@ -320,21 +295,6 @@ public class EventRepository : BaseRepository
 
         return GetNextOccurenceOfEvents(events);
     }
-
-    //[Obsolete]
-    //public async Task<List<string>> GetCategories() =>
-    //    await _cache.GetFromCacheOrDirectlyAsync("event-categories", GetCategoriesDirect, _eventsTimeout);
-
-    //[Obsolete]
-    //private async Task<List<string>> GetCategoriesDirect()
-    //{
-    //    ContentType eventType = await _client.GetContentType("events");
-    //    InValuesValidator validation = eventType.Fields.First(f => f.Name.Equals("Categories")).Items.Validations[0] as InValuesValidator;
-
-    //    return !validation.RequiredValues.Any()
-    //        ? null
-    //        : validation.RequiredValues;
-    //}
 
     public async Task<ContentfulEvent> GetContentfulEvent(string slug)
     {
