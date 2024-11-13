@@ -402,7 +402,6 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
                     p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                     p.GetService<ICache>(),
-                    p.GetService<ILogger<EventRepository>>(),
                     p.GetService<IConfiguration>()));
 
         services.AddSingleton<Func<ContentfulConfig, DirectoryRepository>>(p =>
@@ -436,7 +435,6 @@ public static class ServiceCollectionExtensions
                         p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
                         p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                         p.GetService<ICache>(),
-                        p.GetService<ILogger<EventRepository>>(),
                         p.GetService<IConfiguration>()),
                     p.GetService<ILogger<ShowcaseRepository>>()
                 )
@@ -454,7 +452,6 @@ public static class ServiceCollectionExtensions
                         p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
                         p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                         p.GetService<ICache>(),
-                        p.GetService<ILogger<EventRepository>>(),
                         p.GetService<IConfiguration>()),
                     new(contentfulConfig,
                         p.GetService<ITimeProvider>(),
@@ -564,7 +561,6 @@ public static class ServiceCollectionExtensions
                             p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
                             p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                             p.GetService<ICache>(),
-                            p.GetService<ILogger<EventRepository>>(),
                             p.GetService<IConfiguration>()),
                         p.GetService<ICache>(),
                         p.GetService<IConfiguration>())

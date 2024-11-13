@@ -77,12 +77,11 @@ public class ShowcaseRepositoryTests
         _eventFactory = new();
         _cacheWrapper = new();
 
-        Mock<ILogger<EventRepository>> _logger = new();
         _configuration = new();
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
         EventRepository eventRepository = new(config, cacheKeyconfig, contentfulClientManager.Object, _timeprovider.Object,
-            _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
+            _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object,
             _configuration.Object);
 
         _repository = new(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object,

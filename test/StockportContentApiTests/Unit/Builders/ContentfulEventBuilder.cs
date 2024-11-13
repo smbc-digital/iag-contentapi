@@ -6,6 +6,7 @@ public class ContentfulEventBuilder
     private readonly string _title = "title";
     private readonly string _teaser = "teaser";
     private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
+    private readonly Asset _thumbnailImage = new ContentfulAssetBuilder().Url("thumbnailImage-url.jpg").Build();
     private readonly string _description = "description";
     private readonly string _fee = "fee";
     private readonly string _location = "location";
@@ -36,6 +37,7 @@ public class ContentfulEventBuilder
             Slug = _slug,
             Teaser = _teaser,
             Image = _image,
+            ThumbnailImage = _thumbnailImage,
             Description = _description,
             Fee = _fee,
             Location = _location,

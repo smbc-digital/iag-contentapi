@@ -38,6 +38,7 @@ public class Event
     public string MetaDescription { get; }
     public string Duration { get; set; }
     public string Languages { get; set; }
+    public List<Event> RelatedEvents { get; set; }
 
     public Event(string title,
                 string slug,
