@@ -466,7 +466,7 @@ public class EventRepositoryTests
                 .Build);
 
         // Act
-        _repository.GetRelatedEvents(new List<ContentfulEvent> { new() }, "eventSlug", ["Category 1"], []);
+        _repository.GetRelatedEvents(new List<ContentfulEvent> { new() }, "eventSlug", ["Category name"], ["category-slug"], []);
 
         // Assert
         _mockEventFactory.Verify(factory => factory.ToModel(It.IsAny<ContentfulEvent>()), Times.Once);
@@ -484,7 +484,7 @@ public class EventRepositoryTests
                 .Build);
 
         // Act
-        _repository.GetRelatedEvents(new List<ContentfulEvent> { new() }, "eventSlug", [], ["tag"]);
+        _repository.GetRelatedEvents(new List<ContentfulEvent> { new() }, "eventSlug", [], [], ["tag"]);
 
         // Assert
         _mockEventFactory.Verify(factory => factory.ToModel(It.IsAny<ContentfulEvent>()), Times.Once);

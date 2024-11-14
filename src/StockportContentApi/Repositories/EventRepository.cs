@@ -111,7 +111,8 @@ public class EventRepository : BaseRepository
         if (eventItem is not null)
             eventItem.RelatedEvents = GetRelatedEvents(entries,
                                                 eventItem.Slug,
-                                                eventItem.Categories.Select(cat => cat).ToList(),
+                                                eventItem.EventCategories.Select(cat => cat.Name).ToList(),
+                                                eventItem.EventCategories.Select(cat => cat.Slug).ToList(),
                                                 eventItem.Tags);
 
         return eventItem is null
@@ -281,12 +282,13 @@ public class EventRepository : BaseRepository
         return GetNextOccurenceOfEvents(events);
     }
 
-    public List<Event> GetRelatedEvents(IList<ContentfulEvent> entries, string slug, List<string> categories, List<string> tags)
+    public List<Event> GetRelatedEvents(IList<ContentfulEvent> entries, string slug, List<string> categoryNames, List<string> categorySlugs, List<string> tags)
     {
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
             .Where(evnt => !evnt.Slug.Equals(slug))
             .Where(evnt =>
-                evnt.Categories.Any(cat => categories.Contains(cat, StringComparer.OrdinalIgnoreCase)) ||
+                evnt.EventCategories.Any(cat => categorySlugs.Contains(cat.Slug, StringComparer.OrdinalIgnoreCase) ||
+                                                categoryNames.Contains(cat.Name, StringComparer.OrdinalIgnoreCase)) ||
                 evnt.Tags.Any(tag => tags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
             .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
             .OrderBy(evnt => evnt.EventDate)
