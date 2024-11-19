@@ -88,7 +88,7 @@ public class LandingPageRepository : BaseRepository
             }
         }
 
-         return HttpResponse.Successful(landingPage);
+        return HttpResponse.Successful(landingPage);
     }
 
     internal async Task<ContentfulProfile> GetProfile(string slug)
