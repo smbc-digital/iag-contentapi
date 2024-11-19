@@ -95,6 +95,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             "EventCards" => subItemContentType.Equals("events"),
             "FindOutMoreBanner" or "FindOutMoreCards" or "ImageBannerContentWidth" or "ImageBannerScreenWidth" or
             "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
+            "ImageContentWidth" or "ImageDividerScreenWidth" => false, 
             "NewsBanner" => false,
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
