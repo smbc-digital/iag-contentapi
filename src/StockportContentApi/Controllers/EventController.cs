@@ -33,25 +33,24 @@ public class EventController : Controller
         _logger = logger;
     }
 
-    // this will be removed
     [HttpGet]
     [Route("{businessId}/event-categories")]
     [Route("v1/{businessId}/event-categories")]
     public async Task<IActionResult> GetEventCategories(string businessId) =>
         await _handler.Get(() => _eventCategoryRepository(_createConfig(businessId), _createCacheKeyConfig(businessId)).GetEventCategories());
 
-    // this is not used!!
     [HttpGet]
     [Route("{businessId}/eventhomepage")]
     [Route("v1/{businessId}/eventhomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
         EventCategoryRepository categoryRepository = _eventCategoryRepository(_createConfig(businessId), _createCacheKeyConfig(businessId));
-        HttpResponse categoriesresponse = await categoryRepository.GetEventCategories();
-        List<EventCategory> categories = categoriesresponse.Get<List<EventCategory>>();
+        HttpResponse categoriesResponse = await categoryRepository.GetEventCategories();
+        List<EventCategory> categories = categoriesResponse.Get<List<EventCategory>>();
 
         EventRepository repository = _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId));
-        HttpResponse response = await repository.GetEventHomepage();
+        int quantityWithinHomepageRows = businessId.Equals("stockroom") ? 6 : 3;
+        HttpResponse response = await repository.GetEventHomepage(quantityWithinHomepageRows);
         EventHomepage homepage = response.Get<EventHomepage>();
         homepage.Categories = categories;
 
