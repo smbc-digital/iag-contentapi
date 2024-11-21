@@ -9,6 +9,7 @@ public class EventBuilder
     private readonly string _thumbnailImage = "thumb-image-url.jpg";
     private readonly string _description = "description";
     private string _fee = "fee";
+    private bool? _free = true;
     private readonly string _location = "location";
     private readonly string _submittedby = "submittedBy";
     private readonly string _metaDescription = "metaDescription";
@@ -73,7 +74,7 @@ public class EventBuilder
             _group,
             _alerts,
             _eventCategories,
-            null,
+            _free,
             null,
             null,
             _branding,
@@ -135,6 +136,12 @@ public class EventBuilder
     public EventBuilder Fee(string fee)
     {
         _fee = fee;
+        return this;
+    }
+
+    public EventBuilder Free(bool? free)
+    {
+        _free = free;
         return this;
     }
 
