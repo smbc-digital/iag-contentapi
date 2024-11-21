@@ -37,4 +37,5 @@ public class ContentfulReference : IContentfulModel
     public string VideoPlaceholderPhotoId { get; set; } = string.Empty;
     public string AssociatedTagCategory { get; set; } = string.Empty;
     public string ScreenReader { get; set; } = string.Empty;
+    public string AccountName { get; set; }
 }

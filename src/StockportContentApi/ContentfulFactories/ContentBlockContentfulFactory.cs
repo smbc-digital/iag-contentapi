@@ -42,7 +42,9 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
                     VideoToken = item.VideoToken,
                     VideoPlaceholderPhotoId = item.VideoPlaceholderPhotoId,
                     AssociatedTagCategory = item.AssociatedTagCategory,
-                    ScreenReader = item.ScreenReader
+                    ScreenReader = item.ScreenReader,
+                    AccountName = item.AccountName
+
                 })
                 .ToList() ?? new List<ContentBlock>(),
             Link = entry.Link,
