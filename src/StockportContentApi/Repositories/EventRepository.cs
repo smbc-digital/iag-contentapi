@@ -208,6 +208,21 @@ public class EventRepository : BaseRepository
             : events;
     }
 
+    public async Task<List<Event>> GetFreeEvents()
+    {
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
+
+        List<Event> freeEvents = GetAllEventsAndTheirRecurrences(entries)
+            .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
+            .Where(e => e.Free is not null && e.Free is true)
+            .OrderBy(o => o.EventDate)
+            .ThenBy(c => TimeSpan.Parse(c.StartTime))
+            .ThenBy(t => t.Title)
+            .ToList();
+
+        return freeEvents;
+    }
+
     public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);

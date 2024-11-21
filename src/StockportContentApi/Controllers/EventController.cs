@@ -1,7 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using StockportContentApi.Config;
-
-namespace StockportContentApi.Controllers;
+﻿namespace StockportContentApi.Controllers;
 
 public class EventController : Controller
 {
@@ -136,6 +133,27 @@ public class EventController : Controller
         {
             _logger.LogError(new(0), ex,
                 $"There was an error with getting events by category / tag for category {category}");
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{businessId}/events/free")]
+    [Route("v1/{businessId}/events/free")]
+    public async Task<IActionResult> GetFreeEvents(string businessId)
+    {
+        EventRepository repository = _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId));
+
+        try
+        {
+            List<Event> freeEvents = await repository.GetFreeEvents();
+
+            return Ok(freeEvents);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError($"{nameof(EventController)}::{nameof(GetFreeEvents)}: An unexpected error occurred trying to retrieve free events - {exception.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
