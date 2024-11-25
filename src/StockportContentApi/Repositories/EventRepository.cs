@@ -208,7 +208,7 @@ public class EventRepository : BaseRepository
             : events;
     }
 
-    public async Task<List<Event>> GetFreeEvents()
+    public async Task<EventCalender> GetFreeEvents()
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
@@ -220,7 +220,10 @@ public class EventRepository : BaseRepository
             .ThenBy(t => t.Title)
             .ToList();
 
-        return freeEvents;
+        EventCalender eventCalender = new();
+        eventCalender.SetEvents(freeEvents, new List<string>());
+
+        return eventCalender;
     }
 
     public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)

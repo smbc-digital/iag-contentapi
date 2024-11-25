@@ -147,9 +147,7 @@ public class EventController : Controller
 
         try
         {
-            List<Event> freeEvents = await repository.GetFreeEvents();
-
-            return Ok(freeEvents);
+            return Ok(await repository.GetFreeEvents());
         }
         catch (Exception exception)
         {

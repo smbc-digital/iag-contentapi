@@ -409,22 +409,22 @@ public class EventRepositoryTests
             .Returns(new EventBuilder().EventDate(DateTime.Today.AddDays(2)).Slug("slug2").Free(free).Build);
 
         // Act
-        List<Event> result = await _repository.GetFreeEvents();
+        EventCalender result = await _repository.GetFreeEvents();
 
         // Assert
         _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-        Assert.Equal(expectedResult, result.Count);
+        Assert.Equal(expectedResult, result.Events.Count);
     }
 
     [Fact]
     public async Task GetFreeEvents_ShouldReturnOnlyFreeEvents()
     {
         // Act
-        List<Event> result = await _repository.GetFreeEvents();
+        EventCalender result = await _repository.GetFreeEvents();
 
         // Assert
         _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-        Assert.Single(result);
+        Assert.Single(result.Events);
     }
 
     [Fact]
