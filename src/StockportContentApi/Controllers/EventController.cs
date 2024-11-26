@@ -101,13 +101,14 @@ public class EventController : Controller
                                                 [FromQuery] string tag = null,
                                                 [FromQuery] string price = null,
                                                 [FromQuery] double latitude = 0,
-                                                [FromQuery] double longitude = 0) =>
-        await _handler.Get(() => _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId)).Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude));
+                                                [FromQuery] double longitude = 0,
+                                                [FromQuery] bool? free = null) =>
+        await _handler.Get(() => _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId)).Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude, free));
 
     [HttpGet]
     [Route("{businessId}/events/by-category")]
     [Route("v1/{businessId}/events/by-category")]
-    public async Task<IActionResult> GetEventsByCatrgoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
+    public async Task<IActionResult> GetEventsByCategoryOrTag(string businessId, [FromQuery] string category = "", bool onlyNextOccurrence = true)
     {
         EventRepository repository = _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId));
 
@@ -133,25 +134,6 @@ public class EventController : Controller
         {
             _logger.LogError(new(0), ex,
                 $"There was an error with getting events by category / tag for category {category}");
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-    }
-
-    [HttpGet]
-    [Route("{businessId}/events/free")]
-    [Route("v1/{businessId}/events/free")]
-    public async Task<IActionResult> GetFreeEvents(string businessId)
-    {
-        EventRepository repository = _eventRepository(_createConfig(businessId), _createCacheKeyConfig(businessId));
-
-        try
-        {
-            return Ok(await repository.GetFreeEvents());
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError($"{nameof(EventController)}::{nameof(GetFreeEvents)}: An unexpected error occurred trying to retrieve free events - {exception.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
