@@ -223,7 +223,7 @@ public class EventRepositoryTests
     public async Task Get_ShouldCallCache()
     {
         // Act
-        await _repository.Get(DateTime.Today.AddDays(1), DateTime.Today.AddDays(1), "Category", 0, true, "Tag", "Price", 0, 0);
+        await _repository.Get(DateTime.Today.AddDays(1), DateTime.Today.AddDays(1), "Category", 0, true, "Tag", "Price", 0, 0, false);
 
         // Assert
         _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
@@ -242,19 +242,20 @@ public class EventRepositoryTests
             .Returns(new EventBuilder().EventDate(DateTime.Today.AddDays(1)).Slug("None").Build);
 
         // Act
-        HttpResponse result = await _repository.Get(DateTime.Today.AddDays(1), DateTime.Today.AddDays(1), "Category", 0, true, string.Empty, string.Empty, 0, 0);
+        HttpResponse result = await _repository.Get(DateTime.Today.AddDays(1), DateTime.Today.AddDays(1), "Category", 0, true, string.Empty, string.Empty, 0, 0, false);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 
     [Theory]
-    [InlineData(true, true, "Slug", "", "paid,free", true, 0)]
-    [InlineData(false, true, "", null, "free,paid", null, 0)]
-    [InlineData(true, false, "Slug", "", "free", false, 1)]
-    [InlineData(true, false, "Slug", "tag", "paid", false, 1)]
-    [InlineData(true, false, "Slug", "tag", null, false, 1)]
-    public async Task Get_ShouldReturnSuccessful(bool dateFromNull, bool dateToNull, string category, string tag, string price, bool? displayFeatured, int limit)
+    [InlineData(true, true, "Slug", "", "paid,free", true, 0, true)]
+    [InlineData(false, true, "", null, "free,paid", null, 0, false)]
+    [InlineData(true, false, "Slug", "", "free", false, 1, null)]
+    [InlineData(true, false, "Slug", "tag", "paid", false, 1, false)]
+    [InlineData(true, false, "Slug", "tag", null, false, 1, false)]
+    [InlineData(true, false, "", "", null, false, 0, true)]
+    public async Task Get_ShouldReturnSuccessful(bool dateFromNull, bool dateToNull, string category, string tag, string price, bool? displayFeatured, int limit, bool? free)
     {
         // Arrange
         _mockEventFactory
@@ -263,6 +264,7 @@ public class EventRepositoryTests
                 .EventDate(DateTime.Today.AddDays(1))
                 .Slug("Slug")
                 .Fee(price)
+                .Free(!free)
                 .EventCategories(new List<EventCategory> { new("Slug", "Slug", "icon") })
                 .Build);
 
@@ -286,6 +288,23 @@ public class EventRepositoryTests
                             Name = "Slug"
                         }
                     }
+                },
+                new()
+                {
+                    EventDate = DateTime.Today.AddDays(1),
+                    StartTime = "07:00:00",
+                    Title = "Title",
+                    Slug = "Slug",
+                    Tags = ["Tag"],
+                    Free = false,
+                    EventCategories = new List<ContentfulEventCategory>
+                    {
+                        new()
+                        {
+                            Slug = "Slug",
+                            Name = "Slug"
+                        }
+                    }
                 }
             });
 
@@ -293,7 +312,7 @@ public class EventRepositoryTests
         DateTime? dateTo = dateToNull ? null : DateTime.Today.AddDays(1);
 
         // Act
-        HttpResponse result = await _repository.Get(dateFrom, dateTo, category, limit, displayFeatured, tag, price, 0, 0);
+        HttpResponse result = await _repository.Get(dateFrom, dateTo, category, limit, displayFeatured, tag, price, 0, 0, free);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
@@ -382,49 +401,6 @@ public class EventRepositoryTests
 
         // Assert
         _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-    }
-
-    [Theory]
-    [InlineData(false, 0)]
-    [InlineData(null, 0)]
-    public async Task GetFreeEvents_ShouldReturnEmptyIfNoFreeEvents(bool? free, int expectedResult)
-    {
-        // Arrange
-        _mockCacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<ContentfulEvent>
-            {
-                new()
-                {
-                    EventDate = DateTime.Today.AddDays(2),
-                    StartTime = "12:00:00",
-                    Title = "Title2",
-                    Slug = "slug2",
-                    Free = free
-                }
-            });
-
-        _mockEventFactory
-            .Setup(factory => factory.ToModel(It.IsAny<ContentfulEvent>()))
-            .Returns(new EventBuilder().EventDate(DateTime.Today.AddDays(2)).Slug("slug2").Free(free).Build);
-
-        // Act
-        EventCalender result = await _repository.GetFreeEvents();
-
-        // Assert
-        _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-        Assert.Equal(expectedResult, result.Events.Count);
-    }
-
-    [Fact]
-    public async Task GetFreeEvents_ShouldReturnOnlyFreeEvents()
-    {
-        // Act
-        EventCalender result = await _repository.GetFreeEvents();
-
-        // Assert
-        _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-        Assert.Single(result.Events);
     }
 
     [Fact]

@@ -131,7 +131,7 @@ public class EventRepository : BaseRepository
     }
 
     public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit,
-        bool? displayFeatured, string tag, string price, double latitude, double longitude)
+        bool? displayFeatured, string tag, string price, double latitude, double longitude, bool? free)
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
@@ -172,6 +172,15 @@ public class EventRepository : BaseRepository
                                 .ThenBy(t => t.Title)
                                 .ToList();
 
+        if (free is true)
+        {
+            List<Event> eventsToRemove = events.Where(entry => entry.Free is false).ToList();
+            foreach (Event entry in eventsToRemove)
+            {
+                events.Remove(entry);
+            }
+        }
+
         if (displayFeatured is not null && displayFeatured is true)
             events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
 
@@ -206,24 +215,6 @@ public class EventRepository : BaseRepository
         return onlyNextOccurrence
             ? GetNextOccurenceOfEvents(events)
             : events;
-    }
-
-    public async Task<EventCalender> GetFreeEvents()
-    {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
-
-        List<Event> freeEvents = GetAllEventsAndTheirRecurrences(entries)
-            .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-            .Where(e => e.Free is not null && e.Free is true)
-            .OrderBy(o => o.EventDate)
-            .ThenBy(c => TimeSpan.Parse(c.StartTime))
-            .ThenBy(t => t.Title)
-            .ToList();
-
-        EventCalender eventCalender = new();
-        eventCalender.SetEvents(freeEvents, new List<string>());
-
-        return eventCalender;
     }
 
     public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence)
