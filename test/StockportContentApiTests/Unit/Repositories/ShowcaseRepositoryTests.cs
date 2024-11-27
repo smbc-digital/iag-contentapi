@@ -129,10 +129,13 @@ public class ShowcaseRepositoryTests
                                 string.Empty,
                                 string.Empty,
                                 string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
                                 null,
                                 string.Empty,
                                 string.Empty);
-                                
+
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         ContentfulCollection<ContentfulShowcase> collection = new();
@@ -214,6 +217,9 @@ public class ShowcaseRepositoryTests
                                 null,
                                 null,
                                 null,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
                                 string.Empty,
                                 string.Empty,
                                 string.Empty,

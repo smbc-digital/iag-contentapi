@@ -21,6 +21,9 @@ public class EventBuilder
     private readonly string _phoneNumber = "01617481234";
     private readonly string _email = "test@email.com"; 
     private readonly string _website = "www.test.com";
+    private readonly string _facebook = "www.test.com";
+    private readonly string _instagram = "www.test.com";
+    private readonly string _linkedIn = "www.test.com";
     private List<GroupBranding> _branding = new();
     private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
@@ -81,6 +84,9 @@ public class EventBuilder
             _phoneNumber,
             _email,
             _website,
+            _facebook,
+            _instagram,
+            _linkedIn,
             _metaDescription,
             _duration,
             _languages);

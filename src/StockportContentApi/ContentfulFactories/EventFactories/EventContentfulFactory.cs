@@ -81,6 +81,9 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.PhoneNumber,
                         entry.Email,
                         entry.Website,
+                        entry.Facebook,
+                        entry.Instagram,
+                        entry.LinkedIn,
                         entry.MetaDescription,
                         entry.Duration,
                         entry.Languages);
