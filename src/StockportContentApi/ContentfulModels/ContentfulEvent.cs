@@ -37,7 +37,7 @@ public class ContentfulEvent : IContentfulModel
     public string Website { get; set; } = string.Empty;
     public string Facebook { get; set; } = string.Empty;
     public string Instagram { get; set; } = string.Empty;
-    public string Linkedin { get; set; } = string.Empty;
+    public string LinkedIn { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
 }

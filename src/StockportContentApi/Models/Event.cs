@@ -37,7 +37,7 @@ public class Event
     public string Website { get; set; }
     public string Facebook { get; set; }
     public string Instagram { get; set; }
-    public string Linkedin { get; set; }
+    public string LinkedIn { get; set; }
     public string MetaDescription { get; }
     public string Duration { get; set; }
     public string Languages { get; set; }
@@ -77,7 +77,7 @@ public class Event
                 string website,
                 string facebook,
                 string instagram,
-                string linkedin,
+                string linkedIn,
                 string metaDescription,
                 string duration,
                 string languages)
@@ -119,7 +119,7 @@ public class Event
         Website = website;
         Facebook = facebook;
         Instagram = instagram;
-        Linkedin = linkedin ;
+        LinkedIn = linkedIn ;
         MetaDescription = metaDescription;
         Duration = duration;
         Languages = languages;

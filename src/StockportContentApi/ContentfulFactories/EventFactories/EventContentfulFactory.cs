@@ -83,7 +83,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.Website,
                         entry.Facebook,
                         entry.Instagram,
-                        entry.Linkedin,
+                        entry.LinkedIn,
                         entry.MetaDescription,
                         entry.Duration,
                         entry.Languages);
