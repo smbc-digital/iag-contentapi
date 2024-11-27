@@ -35,6 +35,9 @@ public class Event
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string Website { get; set; }
+    public string Facebook { get; set; }
+    public string Instagram { get; set; }
+    public string Linkedin { get; set; }
     public string MetaDescription { get; }
     public string Duration { get; set; }
     public string Languages { get; set; }
@@ -72,6 +75,9 @@ public class Event
                 string phoneNumber,
                 string email,
                 string website,
+                string facebook,
+                string instagram,
+                string linkedin,
                 string metaDescription,
                 string duration,
                 string languages)
@@ -111,6 +117,9 @@ public class Event
         PhoneNumber = phoneNumber;
         Email = email;
         Website = website;
+        Facebook = facebook;
+        Instagram = instagram;
+        Linkedin = linkedin ;
         MetaDescription = metaDescription;
         Duration = duration;
         Languages = languages;
