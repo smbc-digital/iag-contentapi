@@ -214,13 +214,6 @@ public static class ServiceCollectionExtensions
                 serviceProvider.GetService<IContentfulClientManager>());
         });
 
-        // services.AddSingleton<Func<string, IAssetRepository>>(serviceProvider => (businessId) =>
-        // {
-        //     return new AssetRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
-        //         serviceProvider.GetService<IContentfulClientManager>(),
-        //         serviceProvider.GetService<ILogger<AssetRepository>>());
-        // });
-
         services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p =>
         {
             return x => new AssetRepository(x,
