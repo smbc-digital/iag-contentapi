@@ -8,16 +8,22 @@ public class EventBuilder
     private readonly string _image = "image-url.jpg";
     private readonly string _thumbnailImage = "thumb-image-url.jpg";
     private readonly string _description = "description";
-    private readonly string _fee = "fee";
+    private string _fee = "fee";
+    private bool? _free = true;
     private readonly string _location = "location";
     private readonly string _submittedby = "submittedBy";
     private readonly string _metaDescription = "metaDescription";
+    private readonly string _duration = "120 min";
+    private readonly string _languages = "English";
     private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private readonly string _startTime = "10:00";
     private readonly string _endTime = "17:00";
     private readonly string _phoneNumber = "01617481234";
     private readonly string _email = "test@email.com"; 
     private readonly string _website = "www.test.com";
+    private readonly string _facebook = "www.test.com";
+    private readonly string _instagram = "www.test.com";
+    private readonly string _linkedIn = "www.test.com";
     private List<GroupBranding> _branding = new();
     private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
@@ -29,7 +35,7 @@ public class EventBuilder
     private bool _featured = true;
     private readonly DateTime _updatedAt = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new();
-    private readonly Group _group = null;
+    private Group _group = null;
     private readonly List<Alert> _alerts = new()
         {
             new Alert("title",
@@ -71,14 +77,19 @@ public class EventBuilder
             _group,
             _alerts,
             _eventCategories,
-            null,
+            _free,
             null,
             null,
             _branding,
             _phoneNumber,
             _email,
             _website,
-            _metaDescription);
+            _facebook,
+            _instagram,
+            _linkedIn,
+            _metaDescription,
+            _duration,
+            _languages);
 
     public EventBuilder Slug(string slug)
     {
@@ -128,9 +139,27 @@ public class EventBuilder
         return this;
     }
 
+    public EventBuilder Fee(string fee)
+    {
+        _fee = fee;
+        return this;
+    }
+
+    public EventBuilder Free(bool? free)
+    {
+        _free = free;
+        return this;
+    }
+
     public EventBuilder Tags(List<string> tags)
     {
         _tags = tags;
+        return this;
+    }
+
+    public EventBuilder Group(Group group)
+    {
+        _group = group;
         return this;
     }
 }

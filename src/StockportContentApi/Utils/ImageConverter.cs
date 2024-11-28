@@ -8,4 +8,11 @@ public static class ImageConverter
         string.IsNullOrEmpty(imageUrl)
             ? string.Empty
             : $"{imageUrl}?h={ImageHeight}";
+
+    public static string SetThumbnailWithoutHeight(string imageUrl, string thumbnailImageUrl) =>
+        string.IsNullOrEmpty(thumbnailImageUrl)
+            ? string.IsNullOrEmpty(imageUrl)
+                ? string.Empty
+                : imageUrl
+            : thumbnailImageUrl;
 }

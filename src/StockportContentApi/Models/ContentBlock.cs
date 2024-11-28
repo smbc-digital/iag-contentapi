@@ -27,4 +27,5 @@ public class ContentBlock
     public Profile Profile { get; set; }
     public List<Event> Events { get; set; }
     public string ScreenReader { get; set; }
+    public string AccountName { get; set; }
 }

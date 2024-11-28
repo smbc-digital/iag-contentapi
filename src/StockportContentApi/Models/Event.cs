@@ -31,18 +31,56 @@ public class Event
     public bool? Paid { get; }
     public GeoCoordinate Coord { get; }
     public string AccessibleTransportLink { get; }
-    public List<GroupBranding> EventBranding { get; set; } = new List<GroupBranding>();
+    public List<GroupBranding> EventBranding { get; set; } = new();
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string Website { get; set; }
-
+    public string Facebook { get; set; }
+    public string Instagram { get; set; }
+    public string LinkedIn { get; set; }
     public string MetaDescription { get; }
+    public string Duration { get; set; }
+    public string Languages { get; set; }
+    public List<Event> RelatedEvents { get; set; }
 
-    public Event(string title, string slug, string teaser, string imageUrl, string description, string fee,
-                 string location, string submittedBy, DateTime eventDate, string startTime, string endTime,
-                 int occurences, EventFrequency frequency, List<Crumb> breadcrumbs, string thumbnailImageUrl,
-                 List<Document> documents, List<string> categories, MapPosition mapPosition, bool featured,
-                 string bookingInformation, DateTime? updatedAt, List<string> tags, Group group, List<Alert> alerts, List<EventCategory> eventCategories, bool? free, bool? paid, string accessibleTransportLink, List<GroupBranding> eventBranding, string phoneNumber, string email, string website, string metaDescription)
+    public Event(string title,
+                string slug,
+                string teaser,
+                string imageUrl,
+                string description,
+                string fee,
+                string location,
+                string submittedBy,
+                DateTime eventDate,
+                string startTime,
+                string endTime,
+                int occurences,
+                EventFrequency frequency,
+                List<Crumb> breadcrumbs,
+                string thumbnailImageUrl,
+                List<Document> documents,
+                List<string> categories,
+                MapPosition mapPosition,
+                bool featured,
+                string bookingInformation,
+                DateTime? updatedAt,
+                List<string> tags,
+                Group group,
+                List<Alert> alerts,
+                List<EventCategory> eventCategories,
+                bool? free,
+                bool? paid,
+                string accessibleTransportLink,
+                List<GroupBranding> eventBranding,
+                string phoneNumber,
+                string email,
+                string website,
+                string facebook,
+                string instagram,
+                string linkedIn,
+                string metaDescription,
+                string duration,
+                string languages)
     {
         Title = title;
         Slug = slug;
@@ -79,9 +117,11 @@ public class Event
         PhoneNumber = phoneNumber;
         Email = email;
         Website = website;
+        Facebook = facebook;
+        Instagram = instagram;
+        LinkedIn = linkedIn ;
         MetaDescription = metaDescription;
+        Duration = duration;
+        Languages = languages;
     }
-
-    public bool ShouldSerializeFrequency() =>
-        false;
 }

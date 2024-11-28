@@ -14,6 +14,7 @@ public class ArticleContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _articleBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
 
     public ArticleContentfulFactoryTests()
     {
@@ -23,8 +24,17 @@ public class ArticleContentfulFactoryTests
 
         _timeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 01, 01));
 
-        _articleFactory = new(_sectionFactory.Object, _crumbFactory.Object, _profileFactory.Object,
-            _parentTopicFactory.Object, _documentFactory.Object, _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, _articleBrandingFactory.Object, _subitemFactory.Object);
+        _articleFactory = new(_sectionFactory.Object,
+                              _crumbFactory.Object,
+                              _profileFactory.Object,
+                              _parentTopicFactory.Object,
+                              _documentFactory.Object,
+                              _videoRepository.Object,
+                              _timeProvider.Object,
+                              _alertFactory.Object,
+                              _articleBrandingFactory.Object,
+                              _subitemFactory.Object,
+                              _inlineQuoteFactory.Object);
     }
 
     [Fact]

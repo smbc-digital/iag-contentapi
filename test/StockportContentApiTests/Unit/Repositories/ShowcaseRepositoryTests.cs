@@ -11,7 +11,6 @@ public class ShowcaseRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory;
     private readonly Mock<ILogger<ShowcaseRepository>> _mockLogger;
     private readonly ShowcaseRepository _repository;
-
     private readonly Mock<ITimeProvider> _timeprovider;
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _topicFactory;
 
@@ -23,6 +22,11 @@ public class ShowcaseRepositoryTests
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
+            .Build();
+
+        CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
             .Build();
 
         _topicFactory = new();
@@ -73,12 +77,11 @@ public class ShowcaseRepositoryTests
         _eventFactory = new();
         _cacheWrapper = new();
 
-        Mock<ILogger<EventRepository>> _logger = new();
         _configuration = new();
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
 
-        EventRepository eventRepository = new(config, contentfulClientManager.Object, _timeprovider.Object,
-            _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object, _logger.Object,
+        EventRepository eventRepository = new(config, cacheKeyconfig, contentfulClientManager.Object, _timeprovider.Object,
+            _eventFactory.Object, _eventHomepageFactory.Object, _cacheWrapper.Object,
             _configuration.Object);
 
         _repository = new(config, contentfulFactory, contentfulClientManager.Object, newsListFactory.Object,
@@ -94,10 +97,45 @@ public class ShowcaseRepositoryTests
         ContentfulEvent rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new(2017, 4, 1)).Build();
         List<ContentfulEvent> events = new() { rawEvent };
 
-        Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
-            string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
-            string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
+        Event modelledEvent = new("title",
+                                "event-slug",
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                DateTime.MaxValue,
+                                string.Empty,
+                                string.Empty,
+                                1,
+                                EventFrequency.None,
+                                null,
+                                string.Empty,
+                                null,
+                                new(),
+                                null,
+                                false,
+                                string.Empty,
+                                DateTime.MinValue,
+                                new(),
+                                null,
+                                null,
+                                new() { new("event", "slug", "icon") },
+                                null,
+                                null,
+                                null,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty);
+
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         ContentfulCollection<ContentfulShowcase> collection = new();
@@ -112,7 +150,7 @@ public class ShowcaseRepositoryTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
 
         // Act
@@ -148,12 +186,46 @@ public class ShowcaseRepositoryTests
 
         ContentfulEvent rawEvent = new ContentfulEventBuilder().Slug(slug).EventDate(new(2017, 4, 1)).Build();
         List<ContentfulEvent> events = new() { rawEvent };
-        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("event-all")),
+        _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-all")),
             It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(events);
-        Event modelledEvent = new("title", "event-slug", string.Empty, string.Empty, string.Empty, string.Empty,
-            string.Empty, string.Empty, DateTime.MaxValue, string.Empty, string.Empty, 1, EventFrequency.None, null,
-            string.Empty, null, new(), null, false, string.Empty, DateTime.MinValue, new(), null, null,
-            new() { new("event", "slug", "icon") }, null, null, null, null, string.Empty, string.Empty, string.Empty, null);
+        Event modelledEvent = new("title",
+                                "event-slug",
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                DateTime.MaxValue,
+                                string.Empty,
+                                string.Empty,
+                                1,
+                                EventFrequency.None,
+                                null,
+                                string.Empty,
+                                null,
+                                new(),
+                                null,
+                                false,
+                                string.Empty,
+                                DateTime.MinValue,
+                                new(),
+                                null,
+                                null,
+                                new() { new("event", "slug", "icon") },
+                                null,
+                                null,
+                                null,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty);
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         // Act

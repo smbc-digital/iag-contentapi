@@ -2,22 +2,44 @@
 
 public class GroupController : Controller
 {
+<<<<<<< HEAD
     private readonly Func<string, EventRepository> _eventRepository;
     private readonly Func<string, GroupCategoryRepository> _groupCategoryRepository;
     private readonly Func<string, IGroupRepository> _groupRepository;
+=======
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, EventRepository> _eventRepository;
+    private readonly Func<ContentfulConfig, GroupCategoryRepository> _groupCategoryRepository;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, IGroupRepository> _groupRepository;
+>>>>>>> main
     private readonly ResponseHandler _handler;
     private readonly Func<string, ManagementRepository> _managementRepository;
     private readonly IMapper _mapper;
 
     public GroupController(ResponseHandler handler,
+<<<<<<< HEAD
         Func<string, IGroupRepository> groupRepository,
         Func<string, EventRepository> eventRepository,
         Func<string, GroupCategoryRepository> groupCategoryRepository,
         Func<string, ManagementRepository> managementRepository,
+=======
+        Func<string, ContentfulConfig> createConfig,
+        Func<string, CacheKeyConfig> cacheKeyConfig,
+        Func<ContentfulConfig, CacheKeyConfig, IGroupRepository> groupRepository,
+        Func<ContentfulConfig, CacheKeyConfig, EventRepository> eventRepository,
+        Func<ContentfulConfig, GroupCategoryRepository> groupCategoryRepository,
+        Func<ContentfulConfig, ManagementRepository> managementRepository,
+>>>>>>> main
         IMapper mapper
     )
     {
         _handler = handler;
+<<<<<<< HEAD
+=======
+        _createConfig = createConfig;
+        _cacheKeyConfig = cacheKeyConfig;
+>>>>>>> main
         _groupRepository = groupRepository;
         _eventRepository = eventRepository;
         _groupCategoryRepository = groupCategoryRepository;
@@ -30,7 +52,12 @@ public class GroupController : Controller
     public async Task<IActionResult> GetGroups(string businessId)
         => await _handler.Get(() =>
         {
+<<<<<<< HEAD
             IGroupRepository groupRepository = _groupRepository(businessId);
+=======
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+
+>>>>>>> main
             return groupRepository.Get();
         });
 
@@ -39,7 +66,11 @@ public class GroupController : Controller
     [Route("v1/{businessId}/grouphomepage")]
     public async Task<IActionResult> Homepage(string businessId)
     {
+<<<<<<< HEAD
         IGroupRepository repository = _groupRepository(businessId);
+=======
+        IGroupRepository repository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+>>>>>>> main
         HttpResponse response = await repository.GetGroupHomepage();
         GroupHomepage homepage = response.Get<GroupHomepage>();
 
@@ -51,7 +82,12 @@ public class GroupController : Controller
     public async Task<IActionResult> GetGroup(string groupSlug, string businessId, [FromQuery] bool onlyActive = true) =>
         await _handler.Get(() =>
         {
+<<<<<<< HEAD
             IGroupRepository groupRepository = _groupRepository(businessId);
+=======
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+
+>>>>>>> main
             return groupRepository.GetGroup(groupSlug, onlyActive);
         });
 
@@ -69,7 +105,8 @@ public class GroupController : Controller
     public async Task<IActionResult> GetGroupResults(string businessId, GroupSearch groupSearch, [FromQuery] string slugs = "") =>
         await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(businessId);
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+
             return groupRepository.GetGroupResults(groupSearch, slugs);
         });
 
@@ -79,7 +116,8 @@ public class GroupController : Controller
     public async Task<IActionResult> GetAdministratorsGroups(string businessId, string email) =>
         await _handler.Get(() =>
         {
-            IGroupRepository groupRepository = _groupRepository(businessId);
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+
             return groupRepository.GetAdministratorsGroups(email);
         });
 
@@ -90,7 +128,7 @@ public class GroupController : Controller
     {
         try
         {
-            IGroupRepository groupRepository = _groupRepository(businessId);
+            IGroupRepository groupRepository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
             ContentfulGroup existingGroup = await groupRepository.GetContentfulGroup(group.Slug);
 
             ContentfulCollection<ContentfulGroupCategory> existingCategories =
@@ -120,8 +158,9 @@ public class GroupController : Controller
     [Route("v1/{businessId}/groups/{slug}")]
     public async Task<IActionResult> DeleteGroup(string slug, string businessId)
     {
-        IGroupRepository repository = _groupRepository(businessId);
-        EventRepository eventRepository = _eventRepository(businessId);
+
+        IGroupRepository repository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
+        EventRepository eventRepository = _eventRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
         IEnumerable<ContentfulEvent> groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
 
@@ -151,8 +190,7 @@ public class GroupController : Controller
     [Route("v1/{businessId}/groups/{slug}/administrators/{emailAddress}")]
     public async Task<IActionResult> RemoveAdministrator(string slug, string emailAddress, string businessId)
     {
-        IGroupRepository repository = _groupRepository(businessId);
-
+        IGroupRepository repository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
         existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items
@@ -190,7 +228,7 @@ public class GroupController : Controller
     private async Task<IActionResult> AddOrUpdateAdministrator(GroupAdministratorItems user, string slug,
         string emailAddress, string businessId)
     {
-        IGroupRepository repository = _groupRepository(businessId);
+        IGroupRepository repository = _groupRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
 
         existingGroup.GroupAdministrators.Items = existingGroup.GroupAdministrators.Items

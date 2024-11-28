@@ -42,7 +42,9 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
                     VideoToken = item.VideoToken,
                     VideoPlaceholderPhotoId = item.VideoPlaceholderPhotoId,
                     AssociatedTagCategory = item.AssociatedTagCategory,
-                    ScreenReader = item.ScreenReader
+                    ScreenReader = item.ScreenReader,
+                    AccountName = item.AccountName
+
                 })
                 .ToList() ?? new List<ContentBlock>(),
             Link = entry.Link,
@@ -95,12 +97,10 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             "EventCards" => subItemContentType.Equals("events"),
             "FindOutMoreBanner" or "FindOutMoreCards" or "ImageBannerContentWidth" or "ImageBannerScreenWidth" or
             "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
-            "NewsBanner" => false,
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
-            "SubscriptionBanner" => false,
             "TriviaBanner" or "TriviaCards" or "TriviaList" => subItemContentType.Equals("informationList") || subItemContentType.Equals("trivia"),
-            "Video" => false,
+            "ImageContentWidth" or "ImageDividerScreenWidth" or "NewsBanner" or "SubscriptionBanner" or "Video" => false,
             _ => true
         };
 }
