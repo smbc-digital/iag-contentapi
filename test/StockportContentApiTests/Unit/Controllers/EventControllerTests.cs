@@ -48,7 +48,7 @@ public class EventControllerTests
             .ReturnsAsync(HttpResponse.Successful(new EventCategory("category name", "category-slug", "category icon")));
 
         // Act
-        var result = await _controller.GetEventCategories("test-business");
+        IActionResult result = await _controller.GetEventCategories("test-business");
 
         // Assert
         _mockCategoryRepository.Verify(factory => factory(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()), Times.Once);

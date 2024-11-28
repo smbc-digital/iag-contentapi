@@ -23,7 +23,7 @@ public class DocumentPageControllerTests
     public async Task GetDocumentPage_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        DocumentPage expectedDocumentPage = new()
+        DocumentPage documentPage = new()
         {
             Title = "document page",
             Slug = "document-page"
@@ -31,7 +31,7 @@ public class DocumentPageControllerTests
 
         _mockRepository
             .Setup(repo => repo.GetDocumentPage(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(new DocumentPage()));
+            .ReturnsAsync(HttpResponse.Successful(documentPage));
 
         // Act
         IActionResult result = await _controller.GetDocumentPage("document-page", "test-business");

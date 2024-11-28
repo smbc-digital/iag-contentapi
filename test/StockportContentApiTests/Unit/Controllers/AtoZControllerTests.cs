@@ -23,7 +23,7 @@ public class AtoZControllerTests
     public async Task Index_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        List<AtoZ> expectedAtoZItems = new()
+        List<AtoZ> atoZItems = new()
         {
             new AtoZ("Apple", "apple", "teaser", "article", new List<string>()),
             new AtoZ ("Avocado", "avocado", "teaser", "article", new List < string >())
@@ -31,11 +31,7 @@ public class AtoZControllerTests
 
         _mockRepository
             .Setup(repo => repo.Get(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(new List<AtoZ>
-            {
-                new("Apple", "apple", "teaser", "article", new List < string >()),
-                new("Avocado", "avocado", "teaser", "article", new List < string >())
-            }));
+            .ReturnsAsync(HttpResponse.Successful(atoZItems));
 
         // Act
         IActionResult result = await _controller.Index("A", "test-business");

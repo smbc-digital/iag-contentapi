@@ -23,7 +23,7 @@ public class PrivacyNoticeControllerTests
     public async Task GetPrivacyNotice_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        PrivacyNotice expectedPrivacyNotice = new()
+        PrivacyNotice privacyNotice = new()
         {
             Title = "Privacy notice",
             Slug = "privacy-notice"
@@ -31,7 +31,7 @@ public class PrivacyNoticeControllerTests
 
         _mockRepository
             .Setup(repo => repo.GetPrivacyNotice(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(new PrivacyNotice()));
+            .ReturnsAsync(HttpResponse.Successful(privacyNotice));
 
         // Act
         IActionResult result = await _controller.GetPrivacyNotice("privacy-notice", "test-business");
@@ -44,7 +44,7 @@ public class PrivacyNoticeControllerTests
     public async Task GetAllPrivacyNotices_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        List<PrivacyNotice> expectedPrivacyNotices = new()
+        List<PrivacyNotice> privacyNotices = new()
         {
             new PrivacyNotice()
             {
@@ -60,7 +60,7 @@ public class PrivacyNoticeControllerTests
 
         _mockRepository
             .Setup(repo => repo.GetAllPrivacyNotices())
-            .ReturnsAsync(HttpResponse.Successful(new List<PrivacyNotice>()));
+            .ReturnsAsync(HttpResponse.Successful(privacyNotices));
 
         // Act
         IActionResult result = await _controller.GetAllPrivacyNotices("test-business");

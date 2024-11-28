@@ -23,7 +23,7 @@ public class ArticleControllerTests
     public async Task GetArticle_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        Article expectedArticle = new()
+        Article article = new()
         {
             Title = "Article",
             Slug = "article"
@@ -31,7 +31,7 @@ public class ArticleControllerTests
 
         _mockRepository
             .Setup(repo => repo.GetArticle(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(new Article()));
+            .ReturnsAsync(HttpResponse.Successful(article));
 
         // Act
         IActionResult result = await _controller.GetArticle("article", "test-business");
@@ -44,7 +44,7 @@ public class ArticleControllerTests
     public async Task Index_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        List<ArticleSiteMap> expectedArticles = new()
+        List<ArticleSiteMap> articles = new()
         {
             new ArticleSiteMap("article", new DateTime(), new DateTime()),
             new ArticleSiteMap("article-site-map2", new DateTime().AddDays(2), new DateTime().AddDays(3)),
@@ -52,7 +52,7 @@ public class ArticleControllerTests
 
         _mockRepository
             .Setup(repo => repo.Get())
-            .ReturnsAsync(HttpResponse.Successful(new List<ArticleSiteMap>()));
+            .ReturnsAsync(HttpResponse.Successful(articles));
 
         // Act
         IActionResult result = await _controller.Index("test-business");
