@@ -1,6 +1,11 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class DocumentPageRepository : BaseRepository
+public interface IDocumentPageRepository
+{
+    Task<HttpResponse> GetDocumentPage(string documentPageSlug);
+}
+
+public class DocumentPageRepository : BaseRepository, IDocumentPageRepository
 {
     private readonly ICache _cache;
     private readonly IContentfulClient _client;

@@ -52,14 +52,14 @@ public class PrivacyNoticeRepositoryTests
         _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
 
         // Act
-        PrivacyNotice result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice(slug));
+        HttpResponse result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice(slug));
 
         // Assert
         _contentfulClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public void GetPrivacyNotice_ShouldReturnAPrivacyNotice()
+    public void GetPrivacyNotice_ShouldReturnHttpResponseWithPrivacyNotice()
     {
         // Arrange
         const string slug = "test-slug";
@@ -82,10 +82,10 @@ public class PrivacyNoticeRepositoryTests
         _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
 
         // Act
-        PrivacyNotice result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice(slug));
+        HttpResponse result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice(slug));
 
         // Assert
-        Assert.IsType<PrivacyNotice>(result);
+        Assert.IsType<HttpResponse>(result);
         _contentfulFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulPrivacyNotice>()), Times.Once);
     }
 
@@ -101,10 +101,10 @@ public class PrivacyNoticeRepositoryTests
         _contentfulClient.Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>())).ReturnsAsync(contentfulCollection);
 
         // Act
-        PrivacyNotice result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice("slug-that-returns-nothing"));
+        HttpResponse result = AsyncTestHelper.Resolve(_repository.GetPrivacyNotice("slug-that-returns-nothing"));
 
         // Assert
-        Assert.Null(result);
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         _contentfulFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulPrivacyNotice>()), Times.Never);
     }
 
@@ -132,7 +132,7 @@ public class PrivacyNoticeRepositoryTests
         _contentfulFactory.Setup(_ => _.ToModel(contentfulPrivacyNotice)).Returns(privacyNotice);
 
         // Act
-        List<PrivacyNotice> result = AsyncTestHelper.Resolve(_repository.GetAllPrivacyNotices());
+        HttpResponse result = AsyncTestHelper.Resolve(_repository.GetAllPrivacyNotices());
 
         // Assert
         _contentfulClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
