@@ -2,16 +2,13 @@
 
 public class PrivacyNoticeController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
     private readonly ResponseHandler _handler;
-    private readonly Func<ContentfulConfig, IPrivacyNoticeRepository> _privacyNoticeRepository;
+    private readonly Func<string, IPrivacyNoticeRepository> _privacyNoticeRepository;
 
     public PrivacyNoticeController(ResponseHandler handler,
-        Func<ContentfulConfig, IPrivacyNoticeRepository> privacyNoticeRepository,
-        Func<string, ContentfulConfig> createConfig)
+        Func<string, IPrivacyNoticeRepository> privacyNoticeRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _privacyNoticeRepository = privacyNoticeRepository;
     }
 
@@ -21,13 +18,10 @@ public class PrivacyNoticeController : Controller
     public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) =>
         await _handler.Get(async () =>
         {
-            IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));
-            PrivacyNotice privacyNotice = await repository.GetPrivacyNotice(slug);
+            IPrivacyNoticeRepository repository = _privacyNoticeRepository(businessId);
+            
+            return await repository.GetPrivacyNotice(slug);
 
-            if (privacyNotice is null)
-                return HttpResponse.Failure(HttpStatusCode.NotFound, "Privacy notice not found");
-
-            return HttpResponse.Successful(privacyNotice);
         });
 
     [HttpGet]
@@ -36,13 +30,8 @@ public class PrivacyNoticeController : Controller
     public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) =>
         await _handler.Get(async () =>
         {
-            IPrivacyNoticeRepository repository = _privacyNoticeRepository(_createConfig(businessId));
+            IPrivacyNoticeRepository repository = _privacyNoticeRepository(businessId);
 
-            List<PrivacyNotice> privacyNotices = await repository.GetAllPrivacyNotices();
-
-            if (!privacyNotices.Any() || privacyNotices is null)
-                return HttpResponse.Failure(HttpStatusCode.NotFound, "Privacy notices not found");
-
-            return HttpResponse.Successful(privacyNotices);
+            return await repository.GetAllPrivacyNotices();
         });
 }

@@ -1,8 +1,11 @@
-﻿using StockportContentApi.Config;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories;
+public interface IEventCategoryRepository
+{
+    public Task<HttpResponse> GetEventCategories();
+}
 
-public class EventCategoryRepository
+public class EventCategoryRepository : IEventCategoryRepository
 {
     private readonly ICache _cache;
     private readonly IContentfulClient _client;

@@ -3,29 +3,24 @@
 [ApiExplorerSettings(IgnoreApi = true)]
 public class AtoZController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, AtoZRepository> _createRepository;
+    private readonly Func<string, IAtoZRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
     public AtoZController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, AtoZRepository> createRepository)
+        Func<string, IAtoZRepository> createRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _createRepository = createRepository;
     }
 
     [HttpGet]
     [Route("{businessId}/atoz/{letter}")]
     [Route("v1/{businessId}/atoz/{letter}")]
-    public async Task<IActionResult> Index(string letter, string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> Index(string letter, string businessId) =>
+        await _handler.Get(() =>
         {
-            AtoZRepository repository = _createRepository(_createConfig(businessId));
+            IAtoZRepository repository = _createRepository(businessId);
 
             return repository.Get(letter);
         });
-    }
 }

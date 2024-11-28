@@ -13,215 +13,58 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddContentfulFactories(this IServiceCollection services)
     {
         services.AddSingleton<IContentfulFactory<ContentfulVideo, Video>>(p => new VideoContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>>(p =>
-            new PrivacyNoticeParentTopicContentfulFactory(
-                p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulProfile, Topic>>(p =>
-            new ProfileParentTopicContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-                p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(p =>
-            new PrivacyNoticeContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-                p.GetService<IContentfulFactory<ContentfulPrivacyNotice, Topic>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p =>
-            new OrganisationContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(p =>
-            new GroupSubCategoryContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>>(p =>
-            new OrganisationContentfulFactory());
-        services.AddSingleton<IContentfulFactory<Asset, Document>>(p => new DocumentContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(p =>
-            new ContactUsIdContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>>(p => new CrumbContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(p =>
-            new CarouselContentContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p =>
-            new SubItemContentfulFactory(p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulReference, ContentBlock>>(p =>
-            new ContentBlockContentfulFactory(p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>>(p =>
-            new HomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-                p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-                p.GetService<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>>(p => new AlertContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>(p =>
-            new ContactUsCategoryContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>(p =>
-            new RedirectContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(p =>
-            new EventHomepageContentfulFactory(p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulExternalLink, ExternalLink>>(p =>
-            new ExternalLinkContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(p =>
-            new GroupHomepageContentfulFactory(p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(),
-                p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>>(p =>
-            new EventBannerContentfulFactory());
-        services
-            .AddSingleton<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>(
-                p => new SpotlightOnBannerContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(p =>
-            new SocialMediaLinkContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulSection, Section>>(p =>
-            new SectionContentfulFactory(p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-                p.GetService<IContentfulFactory<Asset, Document>>(),
-                p.GetService<IVideoRepository>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>>(p =>
-            new EventContentfulFactory(p.GetService<IContentfulFactory<Asset, Document>>(),
-                p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(p =>
-            new InlineQuoteContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>>(p =>
-            new ProfileContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulTrivia, Trivia>>(),
-                p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>(),
-                p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
-                p.GetService<IContentfulFactory<ContentfulProfile, Topic>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>>(p =>
-            new GroupContentfulFactory(p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>>(),
-                p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<Asset, Document>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>>(p =>
-            new PaymentContentfulFactory(p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<ITimeProvider>(), p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>(p =>
-            new ServicePayPaymentContentfulFactory(
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>>(p => new TopicContentfulFactory(
-                p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-                p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
-                p.GetService<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>()
-            )
-        );
-        services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(p =>
-            new CallToActionBannerContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulDirectory, Directory>>(p => new DirectoryContentfulFactory(
-            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-            p.GetService<IContentfulFactory<ContentfulExternalLink, ExternalLink>>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-            p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulEventBanner, EventBanner>>(),
-            p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(p =>
-            new DirectoryEntryContentfulFactory(
-                p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-                p.GetService<ITimeProvider>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>>
-        (p => new ShowcaseContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-            p.GetService<IContentfulFactory<ContentfulTrivia, Trivia>>(),
-            p.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-            p.GetService<IContentfulFactory<ContentfulVideo, Video>>(),
-            p.GetService<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>>
-        (p => new LandingPageContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-            p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, ContentBlock>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>>
-        (p => new FooterContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(), p
-            .GetService<IContentfulFactory<ContentfulSocialMediaLink,
-                SocialMediaLink>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>
-        (p => new SiteHeaderContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => new NewsContentfulFactory(
-            p.GetService<IVideoRepository>(),
-            p.GetService<IContentfulFactory<Asset, Document>>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(), p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
-
-        services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(p =>
-            new NewsRoomContentfulFactory(p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-                p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(p =>
-            new GroupCategoryContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulEventCategory, EventCategory>>(p =>
-            new EventCategoryContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>>
-        (p => new ArticleContentfulFactory(p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-            p.GetService<IContentfulFactory<ContentfulProfile, Profile>>(),
-            p.GetService<IContentfulFactory<ContentfulArticle, Topic>>(),
-            p.GetService<IContentfulFactory<Asset, Document>>(),
-            p.GetService<IVideoRepository>(),
-            p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-            p.GetService<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>()
-        ));
-        services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>
-        (p => new DocumentPageContentfulFactory(
-            p.GetService<IContentfulFactory<Asset, Document>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(),
-            p.GetService<ITimeProvider>()
-        ));
-        services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>
-            (p => new TopicSiteMapContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulTrivia, Trivia>>
-            (p => new TriviaContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>
-            (p => new ArticleSiteMapContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>>
-            (p => new AtoZContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>>(
-            p => new ParentTopicContentfulFactory(
-                p.GetService<IContentfulFactory<ContentfulReference, SubItem>>()
-                , p.GetService<ITimeProvider>()));
-        services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>>
-        (p => new StartPageContentfulFactory(p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, Crumb>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>
-            (p => new GroupAdvisorContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>
-            (p => new GroupBrandingContentfulFactory());
-        services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>
-        (p => new ContactUsAreaContentfulFactory(p.GetService<IContentfulFactory<ContentfulReference, SubItem>>(),
-            p.GetService<IContentfulFactory<ContentfulReference, Crumb>>(), p.GetService<ITimeProvider>(),
-            p.GetService<IContentfulFactory<ContentfulAlert, Alert>>(),
-            p.GetService<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>>()));
-        services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>(_ =>
-            new CommsContentfulFactory(
-                _.GetService<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>(),
-                _.GetService<IContentfulFactory<ContentfulEvent, Event>>()
-            ));
+        services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>, PrivacyNoticeParentTopicContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulProfile, Topic>, ProfileParentTopicContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>, PrivacyNoticeContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>, OrganisationContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>, GroupSubCategoryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<Asset, Document>, DocumentContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>, ContactUsIdContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>, CrumbContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>, CarouselContentContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>, SubItemContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulReference, ContentBlock>, ContentBlockContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>, HomepageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>, AlertContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>, ContactUsCategoryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>, RedirectContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>, EventHomepageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulExternalLink, ExternalLink>, ExternalLinkContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>, GroupHomepageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>, EventBannerContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>, SpotlightOnBannerContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>, SocialMediaLinkContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulSection, Section>, SectionContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>, EventContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>, InlineQuoteContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>, ProfileContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>, GroupContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>, PaymentContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>, ServicePayPaymentContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>, TopicContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>, CallToActionBannerContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulDirectory, Directory>, DirectoryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>, ShowcaseContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>, LandingPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>, FooterContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulNews, News>, NewsContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>, NewsRoomContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>, GroupCategoryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulEventCategory, EventCategory>, EventCategoryContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>, ArticleContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>, DocumentPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>, TopicSiteMapContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulTrivia, Trivia>, TriviaContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>, ArticleSiteMapContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>, AtoZContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>, ParentTopicContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>, StartPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>, GroupAdvisorContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulGroupBranding, GroupBranding>, GroupBrandingContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>, ContactUsAreaContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>, CommsContentfulFactory>();
 
         return services;
     }
@@ -232,8 +75,12 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="useRedisSession"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCache(this IServiceCollection services, bool useRedisSession,
-        string _appEnvironment, IConfiguration configuration, Serilog.ILogger logger, bool useLocalCache = true)
+    public static IServiceCollection AddCache(this IServiceCollection services,
+                                            bool useRedisSession,
+                                            string _appEnvironment,
+                                            IConfiguration configuration,
+                                            Serilog.ILogger logger,
+                                            bool useLocalCache = true)
     {
         logger.Information(
             $"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
@@ -308,7 +155,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-
     /// <summary>
     ///     Add custom contentful configuration
     /// </summary>
@@ -350,43 +196,56 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<Func<ContentfulConfig, AtoZRepository>>(p =>
-            config =>
-                new(
-                    config,
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(),
-                    p.GetService<ITimeProvider>(),
-                    p.GetService<ICache>(),
-                    p.GetService<IConfiguration>(),
-                    p.GetService<ILogger>()));
-
-        services.AddSingleton<Func<ContentfulConfig, IPrivacyNoticeRepository>>(p =>
+        services.AddSingleton<Func<string, IAtoZRepository>>(serviceProvider => (businessId) =>
         {
-            return x => new PrivacyNoticeRepository(x,
-                p.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(),
-                p.GetService<IContentfulClientManager>());
+            return new AtoZRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                    serviceProvider.GetService<IContentfulClientManager>(),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(),
+                    serviceProvider.GetService<ITimeProvider>(),
+                    serviceProvider.GetService<ICache>(),
+                    serviceProvider.GetService<IConfiguration>(),
+                    serviceProvider.GetService<ILogger>());
         });
+
+        services.AddSingleton<Func<string, IPrivacyNoticeRepository>>(serviceProvider => (businessId) =>
+        {
+            return new PrivacyNoticeRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                serviceProvider.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(),
+                serviceProvider.GetService<IContentfulClientManager>());
+        });
+
+        // services.AddSingleton<Func<string, IAssetRepository>>(serviceProvider => (businessId) =>
+        // {
+        //     return new AssetRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+        //         serviceProvider.GetService<IContentfulClientManager>(),
+        //         serviceProvider.GetService<ILogger<AssetRepository>>());
+        // });
+
         services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p =>
         {
-            return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(),
+            return x => new AssetRepository(x,
+                p.GetService<IContentfulClientManager>(),
                 p.GetService<ILogger<AssetRepository>>());
         });
-        services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p =>
+        
+        services.AddSingleton<Func<string, IArticleRepository>>(serviceProvider => (businessId) =>
         {
-            return x => new(x, p.GetService<IContentfulClientManager>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
-                p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
-                p.GetService<IVideoRepository>(),
-                p.GetService<ICache>(),
-                p.GetService<IOptions<RedisExpiryConfiguration>>());
+            return new ArticleRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                    serviceProvider.GetService<IContentfulClientManager>(),
+                    serviceProvider.GetService<ITimeProvider>(),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
+                    serviceProvider.GetService<IVideoRepository>(),
+                    serviceProvider.GetService<ICache>(),
+                    serviceProvider.GetService<IOptions<RedisExpiryConfiguration>>());
         });
 
-        services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p =>
+        services.AddSingleton<Func<string, IDocumentPageRepository>>(serviceProvider => (businessId) =>
         {
-            return x => new(x, p.GetService<IContentfulClientManager>(),
-                p.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(), p.GetService<ICache>());
+            return new DocumentPageRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                    serviceProvider.GetService<IContentfulClientManager>(),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(),
+                    serviceProvider.GetService<ICache>());
         });
 
         services.AddSingleton<IVideoRepository>(p =>

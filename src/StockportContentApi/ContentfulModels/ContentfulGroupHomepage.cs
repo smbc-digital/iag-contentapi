@@ -8,7 +8,6 @@ public class ContentfulGroupHomepage : ContentfulReference
     public ContentfulGroupSubCategory FeaturedGroupsSubCategory { get; set; } = new();
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public string BodyHeading { get; set; } = string.Empty;
-    public string Body { get; set; } = string.Empty;
     public string SecondaryBodyHeading { get; set; } = string.Empty;
     public string SecondaryBody { get; set; } = string.Empty;
     public ContentfulEventBanner EventBanner { get; set; } = new()
