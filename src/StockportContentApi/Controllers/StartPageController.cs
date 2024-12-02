@@ -2,42 +2,35 @@
 
 public class StartPageController : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, StartPageRepository> _createRepository;
+    private readonly Func<string, IStartPageRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
     public StartPageController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, StartPageRepository> createRepository)
+        Func<string, IStartPageRepository> createRepository)
     {
         _handler = handler;
-        _createConfig = createConfig;
         _createRepository = createRepository;
     }
 
     [HttpGet]
     [Route("{businessId}/start-page/{slug}")]
     [Route("v1/{businessId}/start-page/{slug}")]
-    public async Task<IActionResult> GetStartPage(string slug, string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> GetStartPage(string slug, string businessId) =>
+        await _handler.Get(() =>
         {
-            StartPageRepository startPageRepository = _createRepository(_createConfig(businessId));
+            IStartPageRepository startPageRepository = _createRepository(businessId);
 
             return startPageRepository.GetStartPage(slug);
         });
-    }
 
     [HttpGet]
     [Route("{businessId}/start-page/")]
     [Route("v1/{businessId}/start-page/")]
-    public async Task<IActionResult> Get(string businessId)
-    {
-        return await _handler.Get(() =>
+    public async Task<IActionResult> Get(string businessId) =>
+        await _handler.Get(() =>
         {
-            StartPageRepository startRepository = _createRepository(_createConfig(businessId));
+            IStartPageRepository startRepository = _createRepository(businessId);
 
             return startRepository.Get();
         });
-    }
 }

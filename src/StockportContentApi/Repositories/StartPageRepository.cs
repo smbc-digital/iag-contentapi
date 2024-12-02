@@ -1,6 +1,12 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class StartPageRepository
+public interface IStartPageRepository
+{
+    public Task<HttpResponse> GetStartPage(string startPageSlug);
+    public Task<HttpResponse> Get();
+}
+
+public class StartPageRepository : IStartPageRepository
 {
     private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory;
     private readonly IContentfulClient _client;

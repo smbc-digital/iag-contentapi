@@ -25,8 +25,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
         IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
         ICache cache,
-        IOptions<RedisExpiryConfiguration> redisExpiryConfiguration,
-        ILogger<DirectoryRepository> logger)
+        IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
     {
         _client = clientManager.GetClient(config);
         _directoryFactory = directoryFactory;
@@ -53,7 +52,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No entries found");
 
         IEnumerable<ContentfulDirectory> contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
-        List<Directory> directoriesList = contentfulDirectories.Select(directory => _directoryFactory.ToModel(directory)).ToList();
+        List<Directory> directoriesList = contentfulDirectories.Select(_directoryFactory.ToModel).ToList();
 
         foreach (Directory directory in directoriesList)
         {
