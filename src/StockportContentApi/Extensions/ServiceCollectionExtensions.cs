@@ -363,12 +363,12 @@ public static class ServiceCollectionExtensions
                     serviceProvider.GetService<ITimeProvider>());
         });
 
-        services.AddSingleton<Func<ContentfulConfig, FooterRepository>>(
-            p =>
-            {
-                return x => new(x, p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulFooter, Footer>>());
-            });
+        services.AddSingleton<Func<string, IFooterRepository>>(serviceProvider => (businessId) =>
+        {
+            return new FooterRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                    serviceProvider.GetService<IContentfulClientManager>(),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulFooter, Footer>>());
+        });
 
         services.AddSingleton<Func<ContentfulConfig, SiteHeaderRepository>>(
             p =>

@@ -23,18 +23,31 @@ public class PaymentControllerTests
     public async Task GetPayment_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        Article article = new()
-        {
-            Title = "Article",
-            Slug = "article"
-        };
+        Payment payment = new("title",
+                            "slug",
+                            "teaser",
+                            "description",
+                            "payment details text",
+                            "reference label",
+                            "paris reference",
+                            "fund",
+                            string.Empty,
+                            "icon",
+                            new List<Crumb>(),
+                            EPaymentReferenceValidation.None,
+                            "meta description",
+                            "return url",
+                            "catalogue id",
+                            "account reference",
+                            "payment description",
+                            new List<Alert>());
 
         _mockRepository
             .Setup(repo => repo.GetPayment(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(article));
+            .ReturnsAsync(HttpResponse.Successful(payment));
 
         // Act
-        IActionResult result = await _controller.GetPayment("article", "test-business");
+        IActionResult result = await _controller.GetPayment("slug", "test-business");
 
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

@@ -1,6 +1,11 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class FooterRepository
+public interface IFooterRepository
+{
+    public Task<HttpResponse> GetFooter();
+}
+
+public class FooterRepository : IFooterRepository
 {
     private readonly IContentfulClient _client;
     private readonly IContentfulFactory<ContentfulFooter, Footer> _contentfulFactory;
