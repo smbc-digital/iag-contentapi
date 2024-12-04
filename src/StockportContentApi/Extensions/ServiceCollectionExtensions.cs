@@ -244,9 +244,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IVideoRepository>(p =>
            new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
 
-        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventRepository>>(p =>
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, IEventRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new(
+                new EventRepository(
                     contentfulConfig,
                     cacheKeyConfig,
                     p.GetService<IContentfulClientManager>(),
@@ -342,9 +342,9 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulClientManager>());
             });
             
-        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventCategoryRepository>>(p =>
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, IEventCategoryRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new(contentfulConfig, cacheKeyConfig, p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
+                new EventCategoryRepository(contentfulConfig, cacheKeyConfig, p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
                     p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>())
             );
 
