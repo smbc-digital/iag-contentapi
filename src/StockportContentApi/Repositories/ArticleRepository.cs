@@ -59,7 +59,7 @@ public class ArticleRepository : BaseRepository
         QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
         ContentfulCollection<ContentfulArticleForSiteMap> entries = await GetAllEntriesAsync(_client, builder);
 
-        return entries?.Select(entry => _contentfulFactoryArticle.ToModel(entry));
+        return entries?.Select(_contentfulFactoryArticle.ToModel);
     }
 
     private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
