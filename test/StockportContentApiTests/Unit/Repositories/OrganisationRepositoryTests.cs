@@ -28,10 +28,6 @@ public class OrganisationRepositoryTests
         groups.Add(new GroupBuilder().Organisation(organisation).Build());
         groups.Add(new GroupBuilder().Organisation(organisation).Build());
 
-    //    _groupRepository
-    //        .Setup(groupRepo => groupRepo.GetLinkedGroupsByOrganisation(It.IsAny<string>()))
-    //        .ReturnsAsync(groups);
-
         _repository = new OrganisationRepository
         (
             config,
