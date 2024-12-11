@@ -1,6 +1,28 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class EventRepository : BaseRepository
+public interface IEventRepository
+{
+    public Task<HttpResponse> GetEventHomepage(int quantity = 3);
+    public Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug);
+    public Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories();
+    public Task<HttpResponse> GetEvent(string slug, DateTime? date);
+    public Task<HttpResponse> Get(DateTime? dateFrom,
+                                DateTime? dateTo,
+                                string category,
+                                int limit,
+                                bool? displayFeatured,
+                                string tag,
+                                string price,
+                                double latitude,
+                                double longitude,
+                                bool? free);
+    public Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence);
+    public Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence);
+    public Task<List<Event>> GetLinkedEvents<T>(string slug);
+    public Task<ContentfulEvent> GetContentfulEvent(string slug);
+}
+
+public class EventRepository : BaseRepository, IEventRepository
 {
     private readonly ICache _cache;
     private readonly IContentfulClient _client;

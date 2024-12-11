@@ -2,8 +2,8 @@
 
 public interface IPrivacyNoticeRepository
 {
-    Task<PrivacyNotice> GetPrivacyNotice(string slug);
-    Task<List<PrivacyNotice>> GetAllPrivacyNotices();
+    Task<HttpResponse> GetPrivacyNotice(string slug);
+    Task<HttpResponse> GetAllPrivacyNotices();
     Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title);
 }
 
@@ -19,24 +19,33 @@ public class PrivacyNoticeRepository : IPrivacyNoticeRepository
         _client = contentfulClientManager.GetClient(config);
     }
 
-    public async Task<PrivacyNotice> GetPrivacyNotice(string slug)
+    public async Task<HttpResponse> GetPrivacyNotice(string slug)
     {
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").FieldEquals("fields.slug", slug).Include(2);
         ContentfulCollection<ContentfulPrivacyNotice> entries = await _client.GetEntries(builder);
         ContentfulPrivacyNotice entry = entries.FirstOrDefault();
 
-        return entry is not null
-            ? _contentfulFactory.ToModel(entry)
-            : null;
+        PrivacyNotice privacyNotice = entry is null
+            ? null
+            : _contentfulFactory.ToModel(entry);
+
+        return privacyNotice is null
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No privacy notice found for '{slug}'")
+            : HttpResponse.Successful(privacyNotice);
     }
 
-    public async Task<List<PrivacyNotice>> GetAllPrivacyNotices()
+    public async Task<HttpResponse> GetAllPrivacyNotices()
     {
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(2);
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);
-        List<PrivacyNotice> convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
+        
+        List<PrivacyNotice> privacyNotices = !entries.Any() || entries is null
+            ? null
+            : entries.Select(_contentfulFactory.ToModel).ToList();
 
-        return convertedEntries;
+        return !privacyNotices.Any()
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No privacy notices found")
+            : HttpResponse.Successful(privacyNotices);
     }
 
     public async Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title)

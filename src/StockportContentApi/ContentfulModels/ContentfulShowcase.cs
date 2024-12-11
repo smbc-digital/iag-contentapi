@@ -17,7 +17,6 @@ public class ContentfulShowcase : ContentfulReference
     public string NewsCategoryTag { get; set; } = string.Empty;
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
     public string BodySubheading { get; set; } = string.Empty;
-    public string Body { get; set; } = string.Empty;
     public ContentfulProfile Profile { get; set; } = null;
     public string ProfileHeading { get; set; } = string.Empty;
     public string ProfileLink { get; set; } = string.Empty;
