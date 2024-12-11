@@ -428,9 +428,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<Func<ContentfulConfig, OrganisationRepository>>(
             p =>
             {
-                return x => new(x, p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
+                return x => new(x,
+                    p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<Func<ContentfulConfig, IGroupRepository>>().Invoke(x));
+                    p.GetService<Func<ContentfulConfig, CacheKeyConfig, IGroupRepository>>());
             });
 
         services.AddSingleton<Func<ContentfulConfig, IGroupAdvisorRepository>>(
@@ -496,7 +497,8 @@ public static class ServiceCollectionExtensions
             new DocumentsService(p.GetService<Func<ContentfulConfig, IAssetRepository>>(),
                 p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(),
                 p.GetService<Func<ContentfulConfig, IGroupRepository>>(),
-                p.GetService<IContentfulFactory<Asset, Document>>(), p.GetService<IContentfulConfigBuilder>(),
+                p.GetService<IContentfulFactory<Asset, Document>>(),
+                p.GetService<IContentfulConfigBuilder>(),
                 p.GetService<ILoggedInHelper>()));
 
         return services;
