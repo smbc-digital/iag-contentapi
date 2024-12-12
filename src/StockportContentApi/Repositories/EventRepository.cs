@@ -172,12 +172,14 @@ public class EventRepository : BaseRepository
                                 .ThenBy(t => t.Title)
                                 .ToList();
 
-        List<Event> featuredEvents = [.. events
+        List<Event> featuredEvents = events
+            .Where(e => e.Featured)
             .GroupBy(e => e.Slug)
             .Select(g => g.First())
             .OrderBy(o => o.EventDate)
             .ThenBy(c => TimeSpan.Parse(c.StartTime))
-            .ThenBy(t => t.Title)];
+            .ThenBy(t => t.Title)
+            .ToList();
 
         if (free is true)
         {
@@ -192,7 +194,10 @@ public class EventRepository : BaseRepository
             events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
 
         if (limit > 0)
+        {
             events = events.Take(limit).ToList();
+            featuredEvents = featuredEvents.Take(limit).ToList();
+        }
 
         var eventCategoriesCollection = await GetContentfulEventCategories();
         IEnumerable<string> eventCategories = Enumerable.Empty<string>();
