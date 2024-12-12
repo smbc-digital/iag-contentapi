@@ -173,12 +173,12 @@ public class EventRepository : BaseRepository
                                 .ToList();
 
         List<Event> featuredEvents = events
-            .Where(e => e.Featured)
-            .GroupBy(e => e.Slug)
-            .Select(g => g.First())
-            .OrderBy(o => o.EventDate)
-            .ThenBy(c => TimeSpan.Parse(c.StartTime))
-            .ThenBy(t => t.Title)
+            .Where(evnt => evnt.Featured)
+            .GroupBy(evnt => evnt.Slug)
+            .Select(evnt => evnt.First())
+            .OrderBy(evnt => evnt.EventDate)
+            .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+            .ThenBy(evnt => evnt.Title)
             .ToList();
 
         if (free is true)
