@@ -10,5 +10,4 @@ public class ContentfulContactUsArea : ContentfulReference
     public string InsetTextTitle { get; set; } = string.Empty;
     public string InsetTextBody { get; set; } = string.Empty;
     public IEnumerable<ContentfulContactUsCategory> ContactUsCategories { get; set; } = new List<ContentfulContactUsCategory>();
-    public string MetaDescription { get; set; } = string.Empty;
 }

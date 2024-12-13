@@ -6,7 +6,6 @@ public class ContentfulTopic : ContentfulReference
     public string Summary { get; set; } = string.Empty;
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
-    public string VideoTitle { get; init; }
     public string VideoTeaser { get; init; }
     public string VideoTag { get; init; }
     public string TriviaSubheading { get; set; } = string.Empty;
