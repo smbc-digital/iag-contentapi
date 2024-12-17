@@ -60,10 +60,14 @@ public class ArticleRepository : BaseRepository
             foreach (string associatedTagCategory in associatedTagsCategories)
             {
                 List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(associatedTagCategory, true);
-                if (categoryEvents.Any())
+                if (categoryEvents is not null && categoryEvents.Any())
                     events.AddRange(categoryEvents);
                 else
-                    events.AddRange(await _eventRepository.GetEventsByTag(associatedTagCategory, true));
+                {
+                    var tagEvents = await _eventRepository.GetEventsByTag(associatedTagCategory, true);
+                    if (tagEvents is not null)
+                        events.AddRange(tagEvents);
+                }
             }
 
             article.Events = events.Distinct().Take(3).ToList();
