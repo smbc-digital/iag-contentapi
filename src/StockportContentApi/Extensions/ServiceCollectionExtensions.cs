@@ -372,17 +372,26 @@ public static class ServiceCollectionExtensions
             return x => new AssetRepository(x, p.GetService<IContentfulClientManager>(),
                 p.GetService<ILogger<AssetRepository>>());
         });
-        services.AddSingleton<Func<ContentfulConfig, ArticleRepository>>(p =>
-        {
-            return x => new(x, p.GetService<IContentfulClientManager>(),
-                p.GetService<ITimeProvider>(),
-                p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
-                p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
-                p.GetService<IVideoRepository>(),
-                p.GetService<EventRepository>(),
-                p.GetService<ICache>(),
-                p.GetService<IOptions<RedisExpiryConfiguration>>());
-        });
+
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, ArticleRepository>>(p =>
+            (contentfulConfig, cacheKeyConfig) =>
+                new(contentfulConfig,
+                    p.GetService<IContentfulClientManager>(),
+                    p.GetService<ITimeProvider>(),
+                    p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
+                    p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
+                    p.GetService<IVideoRepository>(),
+                    new(contentfulConfig,
+                        cacheKeyConfig,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                        p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
+                        p.GetService<ICache>(),
+                        p.GetService<IConfiguration>()),
+                    p.GetService<ICache>(),
+                    p.GetService<IOptions<RedisExpiryConfiguration>>())
+            );
 
         services.AddSingleton<Func<ContentfulConfig, DocumentPageRepository>>(p =>
         {
