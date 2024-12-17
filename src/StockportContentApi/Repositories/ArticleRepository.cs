@@ -54,11 +54,19 @@ public class ArticleRepository : BaseRepository
 
         if (!string.IsNullOrEmpty(article.AssociatedTagCategory))
         {
-            List<Event> events = await _eventRepository.GetEventsByCategory(article.AssociatedTagCategory, true);
-            if (!events.Any())
-                events = await _eventRepository.GetEventsByTag(article.AssociatedTagCategory, true);
+            List<string> associatedTagsCategories = article.AssociatedTagCategory.Split(",").ToList();
+            List<Event> events = new();
 
-            article.Events = events.Take(3).ToList();
+            foreach (string associatedTagCategory in associatedTagsCategories)
+            {
+                List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(associatedTagCategory, true);
+                if (categoryEvents.Any())
+                    events.AddRange(categoryEvents);
+                else
+                    events.AddRange(await _eventRepository.GetEventsByTag(associatedTagCategory, true));
+            }
+
+            article.Events = events.Distinct().Take(3).ToList();
         }
 
         ProcessArticleContent(article);
