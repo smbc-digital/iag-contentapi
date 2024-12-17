@@ -4,14 +4,20 @@ namespace StockportContentApiTests.Unit.Repositories;
 
 public class ArticleRepositoryTests
 {
+    private readonly Mock<ICache> _cacheWrapper = new();
+    private readonly Mock<IConfiguration> _configuration = new();
     private readonly ArticleRepository _repository;
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IVideoRepository> _videoRepository = new();
+    private readonly Mock<EventRepository> _eventRepository = new();
     private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory = new();
     private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions = new();
     private readonly Mock<ICache> _cache = new();
-
+    private readonly Mock<ITimeProvider> _timeprovider = new();
+    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
+    
     public ArticleRepositoryTests()
     {
         ContentfulConfig config = new ContentfulConfig("test")
@@ -20,6 +26,11 @@ public class ArticleRepositoryTests
             .Add("TEST_ACCESS_KEY", "KEY")
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
+            .Build();
+        
+        CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
             .Build();
 
         _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns(string.Empty);
@@ -53,6 +64,16 @@ public class ArticleRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
+        _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
+
+        _eventRepository = new(config,
+                            cacheKeyconfig,
+                            contentfulClientManager.Object,
+                            _timeprovider.Object,
+                            _eventFactory.Object,
+                            _eventHomepageFactory.Object,
+                            _cacheWrapper.Object,
+                            _configuration.Object);
 
         _repository = new(config,
                         contentfulClientManager.Object,
@@ -60,6 +81,7 @@ public class ArticleRepositoryTests
                         contentfulFactory,
                         new ArticleSiteMapContentfulFactory(),
                         _videoRepository.Object,
+                        _eventRepository.Object,
                         _cache.Object,
                         _mockOptions.Object);
     }

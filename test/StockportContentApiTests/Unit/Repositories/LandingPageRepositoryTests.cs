@@ -38,7 +38,6 @@ public class LandingPageRepositoryTests
     {
         ContentfulConfig config = BuildContentfulConfig();
 
-        
         CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
             .Add("TEST_EventsCacheKey", "testEventsCacheKey")
             .Add("TEST_NewsCacheKey", "testNewsCacheKey")

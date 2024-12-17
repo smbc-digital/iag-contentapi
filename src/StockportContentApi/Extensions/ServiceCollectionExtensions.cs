@@ -379,6 +379,7 @@ public static class ServiceCollectionExtensions
                 p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
                 p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
                 p.GetService<IVideoRepository>(),
+                p.GetService<EventRepository>(),
                 p.GetService<ICache>(),
                 p.GetService<IOptions<RedisExpiryConfiguration>>());
         });

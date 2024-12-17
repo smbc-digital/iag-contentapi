@@ -5,6 +5,7 @@ public class ArticleRepository : BaseRepository
     private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
     private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
     private readonly DateComparer _dateComparer;
+    private readonly EventRepository _eventRepository;
     private readonly ICache _cache;
     private readonly IContentfulClient _client;
     private readonly IVideoRepository _videoRepository;
@@ -16,12 +17,14 @@ public class ArticleRepository : BaseRepository
         IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
         IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
         IVideoRepository videoRepository,
+        EventRepository eventRepository,
         ICache cache,
         IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
     {
         _contentfulFactory = contentfulFactory;
         _contentfulFactoryArticle = contentfulFactoryArticle;
         _videoRepository = videoRepository;
+        _eventRepository = eventRepository;
         _cache = cache;
         _redisExpiryConfiguration = redisExpiryConfiguration.Value;
         _dateComparer = new DateComparer(timeProvider);
@@ -48,6 +51,15 @@ public class ArticleRepository : BaseRepository
 
         if (article is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+
+        if (!string.IsNullOrEmpty(article.AssociatedTagCategory))
+        {
+            List<Event> events = await _eventRepository.GetEventsByCategory(article.AssociatedTagCategory, true);
+            if (!events.Any())
+                events = await _eventRepository.GetEventsByTag(article.AssociatedTagCategory, true);
+
+            article.Events = events.Take(3).ToList();
+        }
 
         ProcessArticleContent(article);
 
