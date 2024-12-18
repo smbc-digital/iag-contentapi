@@ -64,7 +64,7 @@ public class ArticleRepository : BaseRepository
                     events.AddRange(categoryEvents);
                 else
                 {
-                    var tagEvents = await _eventRepository.GetEventsByTag(associatedTagCategory, true);
+                    List<Event> tagEvents = await _eventRepository.GetEventsByTag(associatedTagCategory, true);
                     if (tagEvents is not null)
                         events.AddRange(tagEvents);
                 }
