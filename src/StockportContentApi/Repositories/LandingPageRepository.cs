@@ -45,33 +45,46 @@ public class LandingPageRepository : BaseRepository
                 {
                     case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            News latestNewsResponse = await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
+                            List<string> associatedTagsCategories = contentBlock.AssociatedTagCategory.Split(',').ToList();
+                            News latestNewsResponse = null;
 
-                            if (latestNewsResponse is not null)
+                            foreach (string tagOrCategory in associatedTagsCategories)
                             {
-                                contentBlock.NewsArticle = latestNewsResponse;
-                                contentBlock.UseTag = false;
-                            }
-                            else
-                            {
-                                latestNewsResponse =
-                                    await _newsRepository.GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
+                                latestNewsResponse = await _newsRepository.GetLatestNewsByCategory(tagOrCategory.Trim());
+                                if (latestNewsResponse is not null)
+                                {
+                                    contentBlock.NewsArticle = latestNewsResponse;
+                                    contentBlock.UseTag = false;
+                                    break;
+                                }
+
+                                latestNewsResponse = await _newsRepository.GetLatestNewsByTag(tagOrCategory.Trim());
                                 if (latestNewsResponse is not null)
                                 {
                                     contentBlock.NewsArticle = latestNewsResponse;
                                     contentBlock.UseTag = true;
+                                    break;
                                 }
                             }
+
                             break;
                         }
                     case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
                         {
-                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
+                            List<string> associatedTagsCategories = contentBlock.AssociatedTagCategory.Split(",").ToList();
+                            List<Event> events = new();
 
-                            if (!events.Any())
-                                events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
+                            foreach (string associatedTagCategory in associatedTagsCategories)
+                            {
+                                List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(associatedTagCategory.Trim(), true);
+                                if (categoryEvents.Any())
+                                    events.AddRange(categoryEvents);
+                                else
+                                    events.AddRange(await _eventRepository.GetEventsByTag(associatedTagCategory.Trim(), true));
+                            }
 
-                            contentBlock.Events = events.Take(3).ToList();
+                            contentBlock.Events = events.Distinct().Take(3).ToList();
+
                             break;
                         }
                     case "ProfileBanner" when contentBlock.SubItems?.Any() is true:

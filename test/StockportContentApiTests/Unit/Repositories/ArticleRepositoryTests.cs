@@ -1,17 +1,24 @@
 ﻿using Microsoft.Extensions.Options;
+using Xunit.Sdk;
 
 namespace StockportContentApiTests.Unit.Repositories;
 
 public class ArticleRepositoryTests
 {
+    private readonly Mock<ICache> _cacheWrapper = new();
+    private readonly Mock<IConfiguration> _configuration = new();
     private readonly ArticleRepository _repository;
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IVideoRepository> _videoRepository = new();
+    private readonly Mock<EventRepository> _eventRepository = new();
     private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _sectionFactory = new();
     private readonly Mock<IOptions<RedisExpiryConfiguration>> _mockOptions = new();
     private readonly Mock<ICache> _cache = new();
-
+    private readonly Mock<ITimeProvider> _timeprovider = new();
+    private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
+    
     public ArticleRepositoryTests()
     {
         ContentfulConfig config = new ContentfulConfig("test")
@@ -21,10 +28,19 @@ public class ArticleRepositoryTests
             .Add("TEST_MANAGEMENT_KEY", "KEY")
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
+        
+        CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
+            .Add("TEST_EventsCacheKey", "testEventsCacheKey")
+            .Add("TEST_NewsCacheKey", "testNewsCacheKey")
+            .Build();
 
-        _videoRepository.Setup(_ => _.Process(It.IsAny<string>())).Returns(string.Empty);
+        _videoRepository
+            .Setup(_ => _.Process(It.IsAny<string>()))
+            .Returns(string.Empty);
 
-        _mockOptions.Setup(options => options.Value).Returns(new RedisExpiryConfiguration { Articles = 60 });
+        _mockOptions
+            .Setup(options => options.Value)
+            .Returns(new RedisExpiryConfiguration { Articles = 60 });
 
         ArticleContentfulFactory contentfulFactory = new(
             _sectionFactory.Object,
@@ -53,6 +69,16 @@ public class ArticleRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
+        _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
+
+        _eventRepository = new(config,
+                            cacheKeyconfig,
+                            contentfulClientManager.Object,
+                            _timeprovider.Object,
+                            _eventFactory.Object,
+                            _eventHomepageFactory.Object,
+                            _cacheWrapper.Object,
+                            _configuration.Object);
 
         _repository = new(config,
                         contentfulClientManager.Object,
@@ -60,6 +86,7 @@ public class ArticleRepositoryTests
                         contentfulFactory,
                         new ArticleSiteMapContentfulFactory(),
                         _videoRepository.Object,
+                        _eventRepository.Object,
                         _cache.Object,
                         _mockOptions.Object);
     }
@@ -138,13 +165,18 @@ public class ArticleRepositoryTests
         // Arrange
         _cache
             .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
-            .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").Build());
+            .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build());
 
         // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
 
         // Assert
+        Article resultArticle = response.Get<Article>();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Null(resultArticle.Events);
+
+        _eventRepository.Verify(repo => repo.GetEventsByCategory(It.IsAny<string>(), true), Times.Never);
+        _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), true), Times.Never);
     }
 
     [Fact]
@@ -201,7 +233,7 @@ public class ArticleRepositoryTests
     {
         // Arrange
         _mockTimeProvider.Setup(o => o.Now()).Returns(new DateTime(2016, 08, 01));
-        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article").Build();
+        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build();
 
         _cache
             .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
@@ -231,7 +263,7 @@ public class ArticleRepositoryTests
             }
         };
 
-        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-inline-alerts").AlertsInline(alertsInline).Build();
+        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-inline-alerts").WithAssociatedTagCategory(string.Empty).AlertsInline(alertsInline).Build();
         _cache
             .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(rawArticle);
@@ -251,7 +283,7 @@ public class ArticleRepositoryTests
         Alert alert = new AlertBuilder().Build();
 
         ContentfulCollection<ContentfulArticle> collection = new();
-        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-section-with-inline-alerts").Build();
+        ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-section-with-inline-alerts").WithAssociatedTagCategory(string.Empty).Build();
         collection.Items = new List<ContentfulArticle> { rawArticle };
         _cache
             .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-section-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
@@ -270,5 +302,50 @@ public class ArticleRepositoryTests
         // Assert
         Article article = response.Get<Article>();
         Assert.Equal(alert, article.Sections[0].AlertsInline.First());
+    }
+
+    [Fact]
+    public void GetArticle_WithMultipleAssociatedTagCategories_ShouldFetchDistinctTop3Events()
+    {
+        // Arrange
+        List<Event> eventsFromCategory = new()
+        {
+            new EventBuilder().Slug("event2").Build(),
+            new EventBuilder().Slug("event3").Build(),
+            new EventBuilder().Slug("event4").Build()
+        };
+
+        List<Event> eventsFromTag = new()
+        {
+            new EventBuilder().Slug("event4").Build(),
+            new EventBuilder().Slug("event5").Build(),
+            new EventBuilder().Slug("event6").Build()
+        };
+
+        ContentfulArticle article = new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory("dance, tag1").Build();
+        _cache
+            .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .ReturnsAsync(article);
+
+        _eventRepository
+            .Setup(repo => repo.GetEventsByCategory("dance", true))
+            .ReturnsAsync(eventsFromCategory);
+
+        _eventRepository
+            .Setup(repo => repo.GetEventsByTag("tag1", true))
+            .ReturnsAsync(eventsFromTag);
+
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+
+        // Assert
+        Article resultArticle = response.Get<Article>();
+        Assert.NotNull(resultArticle);
+        Assert.Equal(3, resultArticle.Events.Count);
+        Assert.Contains(resultArticle.Events, e => e.Slug.Equals("event2"));
+        Assert.Contains(resultArticle.Events, e => e.Slug.Equals("event3"));
+        Assert.Contains(resultArticle.Events, e => e.Slug.Equals("event4"));
+
+        _eventRepository.Verify(repo => repo.GetEventsByCategory("dance", true), Times.Once);
     }
 }

@@ -30,4 +30,6 @@ public class Article
     public string Author { get; set; }
     public string Photographer { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
+    public string AssociatedTagCategory { get; set; }
+    public List<Event> Events { get; set; }
 }

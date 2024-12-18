@@ -119,7 +119,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             HideLastUpdated = entry.HideLastUpdated,
             Author = entry.Author,
             Photographer = entry.Photographer,
-            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList()
+            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
+            AssociatedTagCategory = entry.AssociatedTagCategory
         };
     }
 }
