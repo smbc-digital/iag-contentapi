@@ -83,7 +83,13 @@ public class LandingPageRepository : BaseRepository
                                     events.AddRange(await _eventRepository.GetEventsByTag(associatedTagCategory.Trim(), true));
                             }
 
-                            contentBlock.Events = events.Distinct().OrderBy(evnt => evnt.EventDate).OrderBy(evnt => evnt.StartTime).Take(3).ToList();
+                            contentBlock.Events = events
+                                                .GroupBy(evnt => evnt.Slug)
+                                                .Select(evnt => evnt.First())
+                                                .OrderBy(evnt => evnt.EventDate)
+                                                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                                                .ThenBy(evnt => evnt.Title)
+                                                .Take(3).ToList();
 
                             break;
                         }

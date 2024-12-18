@@ -70,7 +70,13 @@ public class ArticleRepository : BaseRepository
                 }
             }
 
-            article.Events = events.Distinct().Take(3).ToList();
+            article.Events = events
+                            .GroupBy(evnt => evnt.Slug)
+                            .Select(evnt => evnt.First())
+                            .OrderBy(evnt => evnt.EventDate)
+                            .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                            .ThenBy(evnt => evnt.Title)
+                            .Take(3).ToList();
         }
 
         ProcessArticleContent(article);
