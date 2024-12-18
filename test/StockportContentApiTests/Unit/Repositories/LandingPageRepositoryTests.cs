@@ -160,9 +160,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
@@ -192,9 +192,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
