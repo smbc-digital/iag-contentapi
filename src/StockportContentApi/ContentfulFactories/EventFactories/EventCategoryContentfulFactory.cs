@@ -16,6 +16,10 @@ public class EventCategoryContentfulFactory : IContentfulFactory<ContentfulEvent
             ? entry.Icon
             : string.Empty;
 
-        return new EventCategory(name, slug, icon);
+        string imageUrl = entry.Image != null
+            ? entry.Image.File.Url
+            : string.Empty;
+
+        return new EventCategory(name, slug, icon, imageUrl);
     }
 }
