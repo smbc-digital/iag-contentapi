@@ -21,6 +21,7 @@ public class ContentfulArticleBuilder
     private string _contentTypeSystemId = "id";
     private readonly DateTime _updatedAt = DateTime.Now;
     private readonly DateTime _createdAt = DateTime.Now;
+    private  string _associatedTagCategory = "dance";
     public Asset Image { get => _image; set => _image = value; }
     private List<ContentfulGroupBranding> _articleBranding = new()
     {
@@ -64,7 +65,8 @@ public class ContentfulArticleBuilder
                 CreatedAt = _createdAt,
             },
             ArticleBranding = _articleBranding,
-            RelatedContent = _relatedContent
+            RelatedContent = _relatedContent,
+            AssociatedTagCategory = _associatedTagCategory
         };
 
     public ContentfulArticleBuilder Slug(string slug)
@@ -132,6 +134,12 @@ public class ContentfulArticleBuilder
         if (_breadcrumbs.Any())
             _breadcrumbs[0].Sys.ContentType.SystemProperties.Id = contentType;
 
+        return this;
+    }
+
+    public ContentfulArticleBuilder WithAssociatedTagCategory(string associatedTagCategory)
+    {
+        _associatedTagCategory = associatedTagCategory;
         return this;
     }
 }

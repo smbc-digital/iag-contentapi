@@ -38,7 +38,6 @@ public class LandingPageRepositoryTests
     {
         ContentfulConfig config = BuildContentfulConfig();
 
-        
         CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
             .Add("TEST_EventsCacheKey", "testEventsCacheKey")
             .Add("TEST_NewsCacheKey", "testNewsCacheKey")
@@ -161,9 +160,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
@@ -193,9 +192,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
