@@ -265,7 +265,7 @@ public class EventRepositoryTests
                 .Slug("Slug")
                 .Fee(price)
                 .Free(!free)
-                .EventCategories(new List<EventCategory> { new("Slug", "Slug", "icon") })
+                .EventCategories(new List<EventCategory> { new("Slug", "Slug", "icon", string.Empty) })
                 .Build);
 
         _mockCacheWrapper
@@ -355,7 +355,7 @@ public class EventRepositoryTests
             .Returns(new EventBuilder()
                 .EventDate(DateTime.Today.AddDays(1))
                 .Slug("Slug")
-                .EventCategories(new List<EventCategory> { new(name, slug, "icon") })
+                .EventCategories(new List<EventCategory> { new(name, slug, "icon", string.Empty) })
                 .Build);
 
         // Act

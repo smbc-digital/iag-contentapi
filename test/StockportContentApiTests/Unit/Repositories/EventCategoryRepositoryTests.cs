@@ -36,7 +36,7 @@ public class EventCategoryRepositoryTests
     public void ItGetsEventCategories()
     {
         // Arrange
-        EventCategory rawEventCategory = new("name", "slug", "icon");
+        EventCategory rawEventCategory = new("name", "slug", "icon", string.Empty);
         _cacheWrapper.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("testEventsCacheKey-categories-content-type")), It.IsAny<Func<Task<List<EventCategory>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<EventCategory> { rawEventCategory });
 
         // Act
