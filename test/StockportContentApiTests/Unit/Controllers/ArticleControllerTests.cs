@@ -4,7 +4,7 @@ namespace StockportContentApiTests.Unit.Controllers;
 
 public class ArticleControllerTests
 {
-    private readonly Mock<Func<string, IArticleRepository>> _mockCreateRepository = new();
+    private readonly Mock<Func<string, string, IArticleRepository>> _mockCreateRepository = new();
     private readonly Mock<IArticleRepository> _mockRepository = new();
     private readonly ArticleController _controller;
 
@@ -13,7 +13,7 @@ public class ArticleControllerTests
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
         _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>()))
+            Setup(createRepo => createRepo(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new ArticleController(new(mockLogger.Object), _mockCreateRepository.Object);
@@ -37,7 +37,7 @@ public class ArticleControllerTests
         IActionResult result = await _controller.GetArticle("article", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class ArticleControllerTests
         IActionResult result = await _controller.Index("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

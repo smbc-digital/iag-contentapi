@@ -1,4 +1,5 @@
-﻿using StockportContentApi.Config;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StockportContentApi.Config;
 
 namespace StockportContentApi.Extensions;
 
@@ -221,16 +222,16 @@ public static class ServiceCollectionExtensions
                 p.GetService<ILogger<AssetRepository>>());
         });
 
-        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, ArticleRepository>>(p =>
+        services.AddSingleton<Func<string, string, IArticleRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new(contentfulConfig,
+                new ArticleRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<ITimeProvider>(),
                     p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
                     p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
                     p.GetService<IVideoRepository>(),
-                    new(contentfulConfig,
-                        cacheKeyConfig,
+                    new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                        p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
                         p.GetService<IContentfulClientManager>(),
                         p.GetService<ITimeProvider>(),
                         p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
@@ -252,11 +253,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IVideoRepository>(p =>
            new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
 
-        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventRepository>>(p =>
+        services.AddSingleton<Func<string, string, IEventRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new(
-                    contentfulConfig,
-                    cacheKeyConfig,
+                new EventRepository(
+                    p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                    p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<ITimeProvider>(),
                     p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
@@ -276,10 +277,10 @@ public static class ServiceCollectionExtensions
                     p.GetService<ILogger<DirectoryRepository>>()
                 ));
 
-        services.AddSingleton<Func<ContentfulConfig, ManagementRepository>>(p =>
-            config =>
+        services.AddSingleton<Func<string, ManagementRepository>>(p =>
+            (contentfulConfig) =>
                 new(
-                    config,
+                    p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<ILogger<EventRepository>>()));
 
@@ -351,9 +352,11 @@ public static class ServiceCollectionExtensions
             });
             
 
-        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, EventCategoryRepository>>(p =>
+        services.AddSingleton<Func<string, string, IEventCategoryRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new(contentfulConfig, cacheKeyConfig, p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
+                new EventCategoryRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                    p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
+                    p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
                     p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>())
             );
 

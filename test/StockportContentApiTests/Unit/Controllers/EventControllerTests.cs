@@ -1,27 +1,19 @@
-using System.Net.Http.Headers;
 using AutoMapper;
-using Castle.Components.DictionaryAdapter;
 using StockportContentApi.Controllers;
 
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class EventControllerTests
 {
-    private readonly Mock<Func<string, ContentfulConfig>> _mockCreateConfig;
-    private readonly Mock<Func<string, CacheKeyConfig>> _mockCreateCacheKeyConfig;
-    private readonly Mock<Func<ContentfulConfig, CacheKeyConfig, IEventRepository>> _mockEventRepository;
-    private readonly Mock<Func<ContentfulConfig, CacheKeyConfig, IEventCategoryRepository>> _mockCategoryRepository;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<ILogger<EventController>> _mockLogger;
+    private readonly Mock<Func<string, string, IEventRepository>> _mockEventRepository = new();
+    private readonly Mock<Func<string, string, IEventCategoryRepository>> _mockCategoryRepository = new();
+    private readonly Mock<IMapper> _mockMapper = new();
+    private readonly Mock<ILogger<EventController>> _mockLogger = new();
 
     private readonly EventController _controller;
 
     public EventControllerTests()
     {
-        _mockCreateConfig = new Mock<Func<string, ContentfulConfig>>();
-        _mockCreateCacheKeyConfig = new Mock<Func<string, CacheKeyConfig>>();
-        _mockEventRepository = new Mock<Func<ContentfulConfig, CacheKeyConfig, IEventRepository>>();
-        _mockCategoryRepository = new Mock<Func<ContentfulConfig, CacheKeyConfig, IEventCategoryRepository>>();
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
         _mockMapper = new Mock<IMapper>();
@@ -29,8 +21,6 @@ public class EventControllerTests
 
         _controller = new EventController(
             new(mockLogger.Object),
-            _mockCreateConfig.Object,
-            _mockCreateCacheKeyConfig.Object,
             _mockEventRepository.Object,
             _mockCategoryRepository.Object,
             null,
@@ -44,14 +34,14 @@ public class EventControllerTests
     {
         // Arrange
         _mockCategoryRepository
-            .Setup(repo => repo(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()).GetEventCategories())
-            .ReturnsAsync(HttpResponse.Successful(new EventCategory("category name", "category-slug", "category icon")));
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
+            .ReturnsAsync(HttpResponse.Successful(new EventCategory("category name", "category-slug", "category icon", "category image")));
 
         // Act
         IActionResult result = await _controller.GetEventCategories("test-business");
 
         // Assert
-        _mockCategoryRepository.Verify(factory => factory(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()), Times.Once);
+        _mockCategoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -59,11 +49,11 @@ public class EventControllerTests
     {
         // Arrange
         _mockCategoryRepository
-            .Setup(repo => repo(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()).GetEventCategories())
-            .ReturnsAsync(HttpResponse.Successful(new List<EventCategory> { new("category name", "category-slug", "category icon") }));
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
+            .ReturnsAsync(HttpResponse.Successful(new List<EventCategory> { new("category name", "category-slug", "category icon", "category image") }));
 
         _mockEventRepository
-            .Setup(repo => repo(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()).GetEventHomepage(It.IsAny<int>()))
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventHomepage(It.IsAny<int>()))
             .ReturnsAsync(HttpResponse.Successful(new EventHomepage(new List<EventHomepageRow>() { new() })));
 
 
@@ -71,8 +61,8 @@ public class EventControllerTests
         IActionResult result = await _controller.Homepage("test-business");
 
         // Assert
-        _mockCategoryRepository.Verify(factory => factory(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()), Times.Once);
-        _mockEventRepository.Verify(factory => factory(It.IsAny<ContentfulConfig>(), It.IsAny<CacheKeyConfig>()), Times.Once);
+        _mockCategoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _mockEventRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
     }
 }
