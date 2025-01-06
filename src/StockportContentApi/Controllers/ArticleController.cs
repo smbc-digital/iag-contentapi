@@ -2,13 +2,19 @@
 
 public class ArticleController : Controller
 {
-    private readonly Func<string, IArticleRepository> _createRepository;
+    private readonly Func<string, ContentfulConfig> _createConfig;
+    private readonly Func<string, CacheKeyConfig> _cacheKeyConfig;
+    private readonly Func<ContentfulConfig, CacheKeyConfig, ArticleRepository> _createRepository;
     private readonly ResponseHandler _handler;
 
     public ArticleController(ResponseHandler handler,
-        Func<string, IArticleRepository> createRepository)
+        Func<string, ContentfulConfig> createConfig,
+        Func<string, CacheKeyConfig> cacheKeyConfig,
+        Func<ContentfulConfig, CacheKeyConfig, ArticleRepository> createRepository)
     {
         _handler = handler;
+        _createConfig = createConfig;
+        _cacheKeyConfig = cacheKeyConfig;
         _createRepository = createRepository;
     }
 
@@ -18,7 +24,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
         await _handler.Get(() =>
         {
-            IArticleRepository repository = _createRepository(businessId);
+            ArticleRepository repository = _createRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
 
             return repository.GetArticle(articleSlug);
         });
@@ -31,7 +37,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> Index(string businessId) =>
         await _handler.Get(() =>
         {
-            IArticleRepository repository = _createRepository(businessId);
+            ArticleRepository repository = _createRepository(_createConfig(businessId), _cacheKeyConfig(businessId));
 
             return repository.Get();
         });

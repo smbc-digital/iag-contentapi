@@ -220,18 +220,26 @@ public static class ServiceCollectionExtensions
                 p.GetService<IContentfulClientManager>(),
                 p.GetService<ILogger<AssetRepository>>());
         });
-        
-        services.AddSingleton<Func<string, IArticleRepository>>(serviceProvider => (businessId) =>
-        {
-            return new ArticleRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
-                    serviceProvider.GetService<IContentfulClientManager>(),
-                    serviceProvider.GetService<ITimeProvider>(),
-                    serviceProvider.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
-                    serviceProvider.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
-                    serviceProvider.GetService<IVideoRepository>(),
-                    serviceProvider.GetService<ICache>(),
-                    serviceProvider.GetService<IOptions<RedisExpiryConfiguration>>());
-        });
+
+        services.AddSingleton<Func<ContentfulConfig, CacheKeyConfig, ArticleRepository>>(p =>
+            (contentfulConfig, cacheKeyConfig) =>
+                new(contentfulConfig,
+                    p.GetService<IContentfulClientManager>(),
+                    p.GetService<ITimeProvider>(),
+                    p.GetService<IContentfulFactory<ContentfulArticle, Article>>(),
+                    p.GetService<IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap>>(),
+                    p.GetService<IVideoRepository>(),
+                    new(contentfulConfig,
+                        cacheKeyConfig,
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                        p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
+                        p.GetService<ICache>(),
+                        p.GetService<IConfiguration>()),
+                    p.GetService<ICache>(),
+                    p.GetService<IOptions<RedisExpiryConfiguration>>())
+            );
 
         services.AddSingleton<Func<string, IDocumentPageRepository>>(serviceProvider => (businessId) =>
         {
