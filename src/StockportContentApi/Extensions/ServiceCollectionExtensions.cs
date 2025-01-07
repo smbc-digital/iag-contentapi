@@ -445,13 +445,13 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulClientManager>())
                 );
 
-        services.AddSingleton<Func<string, IOrganisationRepository>>(p =>
-            (contentfulConfig) =>
-                new OrganisationRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                    p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<Func<string, string, IGroupRepository>>())
-            );
+        services.AddSingleton<Func<ContentfulConfig, IOrganisationRepository>>(p =>
+        {
+            return x => new OrganisationRepository(x,
+                p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
+                p.GetService<IContentfulClientManager>(),
+                p.GetService<Func<string, string, IGroupRepository>>());
+        });
 
         services.AddSingleton<Func<string, IGroupAdvisorRepository>>(p =>
             (contentfulConfig) =>

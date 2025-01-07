@@ -47,6 +47,9 @@ public class SectionRepository(ContentfulConfig config,
         
         ContentfulCollection<ContentfulSection> entries = await _client.GetEntries(builder);
         ContentfulSection entry = entries.FirstOrDefault();
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Section found");
+        
         Section section = _contentfulFactory.ToModel(entry);
 
         return section.GetType().Equals(typeof(NullHomepage))
