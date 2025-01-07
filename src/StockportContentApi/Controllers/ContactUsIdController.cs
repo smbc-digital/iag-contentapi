@@ -2,9 +2,9 @@
 
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ContactUsIdController(ResponseHandler handler,
-                                Func<string, ContactUsIdRepository> createRepository) : Controller
+                                Func<string, IContactUsIdRepository> createRepository) : Controller
 {
-    private readonly Func<string, ContactUsIdRepository> _createRepository = createRepository;
+    private readonly Func<string, IContactUsIdRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

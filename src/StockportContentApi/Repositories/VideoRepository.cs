@@ -5,18 +5,13 @@ public interface IVideoRepository
     string Process(string content);
 }
 
-public class VideoRepository : IVideoRepository
+public class VideoRepository(TwentyThreeConfig twentyThreeConfig,
+                            IHttpClient httpClient) : IVideoRepository
 {
-    private readonly TwentyThreeConfig _twentyThreeConfig;
-    private readonly IHttpClient _httpClient;
+    private readonly TwentyThreeConfig _twentyThreeConfig = twentyThreeConfig;
+    private readonly IHttpClient _httpClient = httpClient;
     private const string StartTag = "{{VIDEO:";
     private const string EndTag = "}}";
-
-    public VideoRepository(TwentyThreeConfig twentyThreeConfig, IHttpClient httpClient)
-    {
-        _twentyThreeConfig = twentyThreeConfig;
-        _httpClient = httpClient;
-    }
 
     public string Process(string content) =>
         ReplaceVideoTagsWithVideoContent(content);

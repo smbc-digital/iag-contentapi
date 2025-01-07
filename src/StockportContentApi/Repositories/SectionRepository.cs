@@ -1,17 +1,18 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class SectionRepository
+public interface ISectionRepository
 {
-    private readonly IContentfulFactory<ContentfulSection, Section> _contentfulFactory;
-    private readonly IContentfulClient _client;
+    Task<HttpResponse> Get();
+    Task<HttpResponse> GetSections(string slug);
+}
 
-    public SectionRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulSection, Section> SectionBuilder,
-        IContentfulClientManager contentfulClientManager)
-    {
-        _contentfulFactory = SectionBuilder;
-        _client = contentfulClientManager.GetClient(config);
-    }
+public class SectionRepository(ContentfulConfig config,
+                            IContentfulFactory<ContentfulSection, Section> SectionBuilder,
+                            IContentfulClientManager contentfulClientManager) : ISectionRepository
+{
+    private readonly IContentfulFactory<ContentfulSection, Section> _contentfulFactory = SectionBuilder;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+
     public async Task<HttpResponse> Get()
     {
         List<ContentfulSectionForSiteMap> sections = new();

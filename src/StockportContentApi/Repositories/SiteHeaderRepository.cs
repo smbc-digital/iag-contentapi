@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class SiteHeaderRepository
+public interface ISiteHeaderRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulSiteHeader, SiteHeader> _contentfulFactory;
+    Task<HttpResponse> GetSiteHeader();
+}
 
-    public SiteHeaderRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulSiteHeader, SiteHeader> contentfulFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _contentfulFactory = contentfulFactory;
-    }
+public class SiteHeaderRepository(ContentfulConfig config,
+                                IContentfulClientManager clientManager,
+                                IContentfulFactory<ContentfulSiteHeader, SiteHeader> contentfulFactory) : ISiteHeaderRepository
+{
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulSiteHeader, SiteHeader> _contentfulFactory = contentfulFactory;
 
     public async Task<HttpResponse> GetSiteHeader()
     {

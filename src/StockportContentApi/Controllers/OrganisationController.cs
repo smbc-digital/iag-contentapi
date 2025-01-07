@@ -3,12 +3,12 @@
 public class OrganisationController(ResponseHandler handler,
                                     Func<string, ContentfulConfig> createConfig,
                                     Func<string, CacheKeyConfig> createCacheKeyConfig,
-                                    Func<ContentfulConfig, OrganisationRepository> organisationRepository) : Controller
+                                    Func<ContentfulConfig, IOrganisationRepository> organisationRepository) : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig = createConfig;
     private readonly Func<string, CacheKeyConfig> _createCacheKeyConfig = createCacheKeyConfig;
     private readonly ResponseHandler _handler = handler;
-    private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository = organisationRepository;
+    private readonly Func<ContentfulConfig, IOrganisationRepository> _organisationRepository = organisationRepository;
 
     [HttpGet]
     [Route("{businessId}/organisations/{organisationSlug}")]
@@ -16,8 +16,7 @@ public class OrganisationController(ResponseHandler handler,
     public async Task<IActionResult> GetOrganisation(string organisationSlug, string businessId) =>
         await _handler.Get(() =>
         {
-            OrganisationRepository repository = _organisationRepository(_createConfig(businessId));
-
+            IOrganisationRepository repository = _organisationRepository(_createConfig(businessId));
             ContentfulConfig contentfulConfig = _createConfig(businessId);
             CacheKeyConfig cacheKeyConfig = _createCacheKeyConfig(businessId);
 

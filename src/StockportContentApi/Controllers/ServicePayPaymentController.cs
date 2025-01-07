@@ -2,9 +2,9 @@
 
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ServicePayPaymentController(ResponseHandler handler,
-                                        Func<string, ServicePayPaymentRepository> createRepository) : Controller
+                                        Func<string, IServicePayPaymentRepository> createRepository) : Controller
 {
-    private readonly Func<string, ServicePayPaymentRepository> _createRepository = createRepository;
+    private readonly Func<string, IServicePayPaymentRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

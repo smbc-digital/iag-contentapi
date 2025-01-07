@@ -1,26 +1,22 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class LandingPageRepository : BaseRepository
+public interface ILandingPageRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
-    private readonly EventRepository _eventRepository;
-    private readonly NewsRepository _newsRepository;
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
+    Task<HttpResponse> GetLandingPage(string slug);
+}
 
-    public LandingPageRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
-        IContentfulClientManager contentfulClientManager,
-        EventRepository eventRepository,
-        NewsRepository newsRepository,
-        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-        _eventRepository = eventRepository;
-        _newsRepository = newsRepository;
-        _profileFactory = profileFactory;
-    }
+public class LandingPageRepository(ContentfulConfig config,
+                                IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
+                                IContentfulClientManager contentfulClientManager,
+                                EventRepository eventRepository,
+                                NewsRepository newsRepository,
+                                IContentfulFactory<ContentfulProfile, Profile> profileFactory) : BaseRepository, ILandingPageRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory = contentfulFactory;
+    private readonly EventRepository _eventRepository = eventRepository;
+    private readonly NewsRepository _newsRepository = newsRepository;
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
 
     public async Task<HttpResponse> GetLandingPage(string slug)
     {

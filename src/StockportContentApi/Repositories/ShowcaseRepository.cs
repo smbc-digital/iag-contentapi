@@ -1,26 +1,23 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class ShowcaseRepository
+public interface IShowcaseRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
-    private readonly EventRepository _eventRepository;
-    private readonly ILogger<ShowcaseRepository> _logger;
-    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
+    Task<HttpResponse> Get();
+    Task<HttpResponse> GetShowcases(string slug);
+}
 
-    public ShowcaseRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
-        IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulNews, News> newsBuilder,
-        EventRepository eventRepository,
-        ILogger<ShowcaseRepository> logger)
-    {
-        _contentfulFactory = showcaseBuilder;
-        _newsFactory = newsBuilder;
-        _client = contentfulClientManager.GetClient(config);
-        _eventRepository = eventRepository;
-        _logger = logger;
-    }
+public class ShowcaseRepository(ContentfulConfig config,
+                                IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
+                                IContentfulClientManager contentfulClientManager,
+                                IContentfulFactory<ContentfulNews, News> newsBuilder,
+                                EventRepository eventRepository,
+                                ILogger<ShowcaseRepository> logger) : IShowcaseRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory = showcaseBuilder;
+    private readonly EventRepository _eventRepository = eventRepository;
+    private readonly ILogger<ShowcaseRepository> _logger = logger;
+    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory = newsBuilder;
 
     public async Task<HttpResponse> Get()
     {

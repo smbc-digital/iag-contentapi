@@ -1,9 +1,9 @@
 ﻿namespace StockportContentApi.Controllers;
 
 public class StartPageController(ResponseHandler handler,
-                                Func<string, StartPageRepository> createRepository) : Controller
+                                Func<string, IStartPageRepository> createRepository) : Controller
 {
-    private readonly Func<string, StartPageRepository> _createRepository = createRepository;
+    private readonly Func<string, IStartPageRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

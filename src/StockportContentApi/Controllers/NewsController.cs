@@ -1,10 +1,10 @@
 ﻿namespace StockportContentApi.Controllers;
 
 public class NewsController(ResponseHandler handler,
-                            Func<string, NewsRepository> newsRepository) : Controller
+                            Func<string, INewsRepository> newsRepository) : Controller
 {
     private readonly ResponseHandler _handler = handler;
-    private readonly Func<string, NewsRepository> _newsRepository = newsRepository;
+    private readonly Func<string, INewsRepository> _newsRepository = newsRepository;
 
     [HttpGet]
     [Route("{businessId}/news")]

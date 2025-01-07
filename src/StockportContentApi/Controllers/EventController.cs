@@ -3,7 +3,7 @@
 public class EventController(ResponseHandler handler,
                             Func<string, string, IEventRepository> eventRepository,
                             Func<string, string, IEventCategoryRepository> eventCategoryRepository,
-                            Func<string, ManagementRepository> managementRepository,
+                            Func<string, IManagementRepository> managementRepository,
                             IMapper mapper,
                             ILogger<EventController> logger) : Controller
 {
@@ -11,7 +11,7 @@ public class EventController(ResponseHandler handler,
     private readonly Func<string, string, IEventRepository> _eventRepository = eventRepository;
     private readonly ResponseHandler _handler = handler;
     private readonly ILogger<EventController> _logger = logger;
-    private readonly Func<string, ManagementRepository> _managementRepository = managementRepository;
+    private readonly Func<string, IManagementRepository> _managementRepository = managementRepository;
     private readonly IMapper _mapper = mapper;
 
     [HttpGet]
@@ -62,7 +62,7 @@ public class EventController(ResponseHandler handler,
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(businessId);
+            IManagementRepository managementRepository = _managementRepository(businessId);
             int version = await managementRepository.GetVersion(existingEvent.Sys.Id);
             existingEvent.Sys.Version = version;
             HttpResponse result = await managementRepository.CreateOrUpdate(managementEvent, existingEvent.Sys);
@@ -134,7 +134,7 @@ public class EventController(ResponseHandler handler,
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(businessId);
+            IManagementRepository managementRepository = _managementRepository(businessId);
             int version = await managementRepository.GetVersion(existingEvent.Sys.Id);
             existingEvent.Sys.Version = version;
 

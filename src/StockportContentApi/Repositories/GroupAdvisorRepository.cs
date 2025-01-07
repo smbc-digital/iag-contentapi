@@ -7,16 +7,12 @@ public interface IGroupAdvisorRepository
     Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email);
 }
 
-public class GroupAdvisorRepository : IGroupAdvisorRepository
+public class GroupAdvisorRepository(ContentfulConfig config,
+                                    IContentfulClientManager contentfulClientManager,
+                                    IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory) : IGroupAdvisorRepository
 {
-    readonly IContentfulClient _client;
-    readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory;
-
-    public GroupAdvisorRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory)
-    {
-        _client = contentfulClientManager.GetClient(config);
-        _contentfulFactory = contentfulFactory;
-    }
+    readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory = contentfulFactory;
 
     public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
     {

@@ -7,17 +7,12 @@ public interface IPrivacyNoticeRepository
     Task<List<PrivacyNotice>> GetPrivacyNoticesByTitle(string title);
 }
 
-public class PrivacyNoticeRepository : IPrivacyNoticeRepository
+public class PrivacyNoticeRepository(ContentfulConfig config,
+                                    IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> contentfulFactory,
+                                    IContentfulClientManager contentfulClientManager) : IPrivacyNoticeRepository
 {
-    private readonly IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> _contentfulFactory;
-    private readonly IContentfulClient _client;
-
-    public PrivacyNoticeRepository(ContentfulConfig config, IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> contentfulFactory,
-        IContentfulClientManager contentfulClientManager)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-    }
+    private readonly IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
 
     public async Task<HttpResponse> GetPrivacyNotice(string slug)
     {

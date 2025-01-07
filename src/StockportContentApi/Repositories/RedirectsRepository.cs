@@ -1,31 +1,27 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class RedirectsRepository : BaseRepository
+public interface IRedirectsRepository
 {
-    public IContentfulClientManager ClientManager;
-    private const string ContentType = "redirect";
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly RedirectBusinessIds _redirectBusinessIds;
-    private IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory;
-    private readonly ShortUrlRedirects _shortUrlRedirects;
-    private readonly LegacyUrlRedirects _legacyUrlRedirects;
+    Task<HttpResponse> GetRedirects();
+    Task<HttpResponse> GetUpdatedRedirects();
+}
 
-    public RedirectsRepository(IContentfulClientManager clientManager,
-            Func<string, ContentfulConfig> createConfig,
-            RedirectBusinessIds redirectBusinessIds,
-            IContentfulFactory<ContentfulRedirect,
-            BusinessIdToRedirects> contenfulFactory,
-            ShortUrlRedirects shortUrlRedirects,
-            LegacyUrlRedirects legacyUrlRedirects)
-    {
-        _createConfig = createConfig;
-        _redirectBusinessIds = redirectBusinessIds;
-        ClientManager = clientManager;
-        _contenfulFactory = contenfulFactory;
-        _shortUrlRedirects = shortUrlRedirects;
-        _legacyUrlRedirects = legacyUrlRedirects;
-    }
+public class RedirectsRepository(IContentfulClientManager clientManager,
+                                Func<string, ContentfulConfig> createConfig,
+                                RedirectBusinessIds redirectBusinessIds,
+                                IContentfulFactory<ContentfulRedirect,
+                                BusinessIdToRedirects> contenfulFactory,
+                                ShortUrlRedirects shortUrlRedirects,
+                                LegacyUrlRedirects legacyUrlRedirects) : BaseRepository
+{
+    public IContentfulClientManager ClientManager = clientManager;
+    private const string ContentType = "redirect";
+    private readonly Func<string, ContentfulConfig> _createConfig = createConfig;
+    private readonly RedirectBusinessIds _redirectBusinessIds = redirectBusinessIds;
+    private IContentfulClient _client;
+    private readonly IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects> _contenfulFactory = contenfulFactory;
+    private readonly ShortUrlRedirects _shortUrlRedirects = shortUrlRedirects;
+    private readonly LegacyUrlRedirects _legacyUrlRedirects = legacyUrlRedirects;
 
     public async Task<HttpResponse> GetRedirects()
     {

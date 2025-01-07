@@ -1,18 +1,17 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class PaymentRepository
+public interface IPaymentRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulPayment, Payment> _paymentFactory;
+    Task<HttpResponse> GetPayment(string slug);
+    Task<HttpResponse> Get();
+}
 
-    public PaymentRepository(ContentfulConfig config,
-                             IContentfulClientManager clientManager,
-                             IContentfulFactory<ContentfulPayment, Payment> paymentFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _paymentFactory = paymentFactory;
-
-    }
+public class PaymentRepository(ContentfulConfig config,
+                            IContentfulClientManager clientManager,
+                            IContentfulFactory<ContentfulPayment, Payment> paymentFactory) : IPaymentRepository
+{
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulPayment, Payment> _paymentFactory = paymentFactory;
 
     public async Task<HttpResponse> GetPayment(string slug)
     {

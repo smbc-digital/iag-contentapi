@@ -2,9 +2,9 @@
 
 [ApiExplorerSettings(IgnoreApi = false)]
 public class HomepageController(ResponseHandler handler,
-                                Func<string, HomepageRepository> createRepository) : Controller
+                                Func<string, IHomepageRepository> createRepository) : Controller
 {
-    private readonly Func<string, HomepageRepository> _createRepository = createRepository;
+    private readonly Func<string, IHomepageRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

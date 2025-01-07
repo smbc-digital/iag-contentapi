@@ -1,20 +1,18 @@
 namespace StockportContentApi.Repositories;
 
-public class TopicRepository
+public interface ITopicRepository
 {
-    private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory;
-    private readonly IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> _topicSiteMapFactory;
-    private readonly IContentfulClient _client;
+    Task<HttpResponse> GetTopicByTopicSlug(string slug);
+    Task<HttpResponse> Get();
+}
 
-    public TopicRepository(
-        ContentfulConfig config, IContentfulClientManager clientManager,
-        IContentfulFactory<ContentfulTopic, Topic> topicFactory,
-        IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> topicSiteMapFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _topicFactory = topicFactory;
-        _topicSiteMapFactory = topicSiteMapFactory;
-    }
+public class TopicRepository(ContentfulConfig config, IContentfulClientManager clientManager,
+                            IContentfulFactory<ContentfulTopic, Topic> topicFactory,
+                            IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> topicSiteMapFactory) : ITopicRepository
+{
+    private readonly IContentfulFactory<ContentfulTopic, Topic> _topicFactory = topicFactory;
+    private readonly IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap> _topicSiteMapFactory = topicSiteMapFactory;
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
 
     public async Task<HttpResponse> GetTopicByTopicSlug(string slug)
     {

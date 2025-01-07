@@ -1,9 +1,9 @@
 ﻿namespace StockportContentApi.Controllers;
 
 public class ShowcaseController(ResponseHandler handler,
-                                Func<string, string, ShowcaseRepository> createRepository) : Controller
+                                Func<string, string, IShowcaseRepository> createRepository) : Controller
 {
-    private readonly Func<string, string, ShowcaseRepository> _createRepository = createRepository;
+    private readonly Func<string, string, IShowcaseRepository> _createRepository = createRepository;
 
     private readonly ResponseHandler _handler = handler;
 

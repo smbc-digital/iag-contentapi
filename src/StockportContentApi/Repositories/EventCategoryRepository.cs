@@ -16,7 +16,7 @@ public class EventCategoryRepository : IEventCategoryRepository
     private readonly string _eventCategoriesCacheKey;
 
     public EventCategoryRepository(ContentfulConfig config,
-                                    CacheKeyConfig cacheKeyConfig,
+                                CacheKeyConfig cacheKeyConfig,
                                 IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory,
                                 IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
     {

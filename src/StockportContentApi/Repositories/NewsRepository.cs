@@ -1,6 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class NewsRepository : BaseRepository
+public interface INewsRepository
+{
+    Task<HttpResponse> GetNews(string slug);
+    Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate);
+    Task<HttpResponse> GetNewsByLimit(int limit);
+    Task<List<string>> GetCategories();
+    Task<News> GetLatestNewsByTag(string tag);
+    Task<News> GetLatestNewsByCategory(string category);
+}
+
+public class NewsRepository : BaseRepository, INewsRepository
 {
     private readonly ITimeProvider _timeProvider;
     private readonly IContentfulFactory<ContentfulNews, News> _newsContentfulFactory;
@@ -11,8 +21,13 @@ public class NewsRepository : BaseRepository
     private readonly IConfiguration _configuration;
     private readonly int _newsTimeout;
 
-    public NewsRepository(ContentfulConfig config, ITimeProvider timeProvider, IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulNews, News> newsContentfulFactory, IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory, ICache cache, IConfiguration configuration)
+    public NewsRepository(ContentfulConfig config,
+                        ITimeProvider timeProvider,
+                        IContentfulClientManager contentfulClientManager,
+                        IContentfulFactory<ContentfulNews, News> newsContentfulFactory,
+                        IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory,
+                        ICache cache,
+                        IConfiguration configuration)
     {
         _timeProvider = timeProvider;
         _newsContentfulFactory = newsContentfulFactory;

@@ -1,9 +1,9 @@
 ﻿namespace StockportContentApi.Controllers;
 
 public class ContactUsController(ResponseHandler handler,
-                                Func<string, ContactUsAreaRepository> createRepository) : Controller
+                                Func<string, IContactUsAreaRepository> createRepository) : Controller
 {
-    private readonly Func<string, ContactUsAreaRepository> _createRepository = createRepository;
+    private readonly Func<string, IContactUsAreaRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

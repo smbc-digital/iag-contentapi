@@ -28,15 +28,15 @@ public class GroupRepository : BaseRepository, IGroupRepository
     private readonly IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> _groupHomepageContentfulFactory;
     private readonly int _groupsTimeout;
 
-    public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulGroup, Group> groupFactory,
-        IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory,
-        IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
-        EventRepository eventRepository,
-        ICache cache,
-        IConfiguration configuration
-    )
+    public GroupRepository(ContentfulConfig config,
+                        IContentfulClientManager clientManager,
+                        ITimeProvider timeProvider,
+                        IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                        IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory,
+                        IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
+                        EventRepository eventRepository,
+                        ICache cache,
+                        IConfiguration configuration)
     {
         _dateComparer = new(timeProvider);
         _client = clientManager.GetClient(config);

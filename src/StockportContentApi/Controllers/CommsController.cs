@@ -1,9 +1,9 @@
 ﻿namespace StockportContentApi.Controllers;
 
 public class CommsController(ResponseHandler handler,
-                            Func<string, CommsRepository> commsRepository) : Controller
+                            Func<string, ICommsRepository> commsRepository) : Controller
 {
-    private readonly Func<string, CommsRepository> _commsRepository = commsRepository;
+    private readonly Func<string, ICommsRepository> _commsRepository = commsRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

@@ -2,16 +2,16 @@
 
 public class GroupController(ResponseHandler handler,
                             Func<string, string, IGroupRepository> groupRepository,
-                            Func<string, string, EventRepository> eventRepository,
-                            Func<string, GroupCategoryRepository> groupCategoryRepository,
-                            Func<string, ManagementRepository> managementRepository,
+                            Func<string, string, IEventRepository> eventRepository,
+                            Func<string, IGroupCategoryRepository> groupCategoryRepository,
+                            Func<string, IManagementRepository> managementRepository,
                             IMapper mapper) : Controller
 {
-    private readonly Func<string, string, EventRepository> _eventRepository = eventRepository;
-    private readonly Func<string, GroupCategoryRepository> _groupCategoryRepository = groupCategoryRepository;
+    private readonly Func<string, string, IEventRepository> _eventRepository = eventRepository;
+    private readonly Func<string, IGroupCategoryRepository> _groupCategoryRepository = groupCategoryRepository;
     private readonly Func<string, string, IGroupRepository> _groupRepository = groupRepository;
     private readonly ResponseHandler _handler = handler;
-    private readonly Func<string, ManagementRepository> _managementRepository = managementRepository;
+    private readonly Func<string, IManagementRepository> _managementRepository = managementRepository;
     private readonly IMapper _mapper = mapper;
 
     [HttpGet]
@@ -78,7 +78,7 @@ public class GroupController(ResponseHandler handler,
 
             return await _handler.Get(async () =>
             {
-                ManagementRepository managementRepository = _managementRepository(businessId);
+                IManagementRepository managementRepository = _managementRepository(businessId);
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
 
@@ -98,13 +98,13 @@ public class GroupController(ResponseHandler handler,
     public async Task<IActionResult> DeleteGroup(string slug, string businessId)
     {
         IGroupRepository repository = _groupRepository(businessId, businessId);
-        EventRepository eventRepository = _eventRepository(businessId, businessId);
+        IEventRepository eventRepository = _eventRepository(businessId, businessId);
         ContentfulGroup existingGroup = await repository.GetContentfulGroup(slug);
         IEnumerable<ContentfulEvent> groupEvents = await eventRepository.GetAllEventsForAGroup(slug);
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(businessId);
+            IManagementRepository managementRepository = _managementRepository(businessId);
 
             foreach (ContentfulEvent groupEvent in groupEvents)
             {
@@ -141,7 +141,7 @@ public class GroupController(ResponseHandler handler,
 
         return await _handler.Get(async () =>
         {
-            ManagementRepository managementRepository = _managementRepository(businessId);
+            IManagementRepository managementRepository = _managementRepository(businessId);
             int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
             existingGroup.Sys.Version = version;
             HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);
@@ -184,7 +184,7 @@ public class GroupController(ResponseHandler handler,
 
             return await _handler.Get(async () =>
             {
-                ManagementRepository managementRepository = _managementRepository(businessId);
+                IManagementRepository managementRepository = _managementRepository(businessId);
                 int version = await managementRepository.GetVersion(existingGroup.Sys.Id);
                 existingGroup.Sys.Version = version;
                 HttpResponse response = await managementRepository.CreateOrUpdate(managementGroup, existingGroup.Sys);

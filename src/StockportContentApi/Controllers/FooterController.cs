@@ -2,9 +2,9 @@
 
 [ApiExplorerSettings(IgnoreApi = true)]
 public class FooterController(ResponseHandler handler,
-                            Func<string, FooterRepository> createRepository) : Controller
+                            Func<string, IFooterRepository> createRepository) : Controller
 {
-    private readonly Func<string, FooterRepository> _createRepository = createRepository;
+    private readonly Func<string, IFooterRepository> _createRepository = createRepository;
     private readonly ResponseHandler _handler = handler;
 
     [HttpGet]

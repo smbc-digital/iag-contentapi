@@ -6,17 +6,12 @@ public interface IProfileRepository
     Task<HttpResponse> Get();
 }
 
-public class ProfileRepository : IProfileRepository
+public class ProfileRepository(ContentfulConfig config,
+                            IContentfulClientManager clientManager,
+                            IContentfulFactory<ContentfulProfile, Profile> profileFactory) : IProfileRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-
-    public ProfileRepository(ContentfulConfig config, IContentfulClientManager clientManager,
-        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _profileFactory = profileFactory;
-    }
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
 
     public async Task<HttpResponse> GetProfile(string slug)
     {

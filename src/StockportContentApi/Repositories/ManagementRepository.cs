@@ -1,16 +1,19 @@
 ﻿namespace StockportContentApi.Repositories;
 
-[ExcludeFromCodeCoverage]
-public class ManagementRepository
+public interface IManagementRepository
 {
-    private readonly IContentfulManagementClient _client;
-    private readonly ILogger _logger;
+    Task<HttpResponse> CreateOrUpdate(dynamic content, SystemProperties systemProperties);
+    Task<HttpResponse> Delete(SystemProperties systemProperties);
+    Task<int> GetVersion(string entryId);
+}
 
-    public ManagementRepository(ContentfulConfig config, IContentfulClientManager client, ILogger logger)
-    {
-        _client = client.GetManagementClient(config);
-        _logger = logger;
-    }
+[ExcludeFromCodeCoverage]
+public class ManagementRepository(ContentfulConfig config,
+                                IContentfulClientManager client,
+                                ILogger logger) : IManagementRepository
+{
+    private readonly IContentfulManagementClient _client = client.GetManagementClient(config);
+    private readonly ILogger _logger = logger;
 
     public async Task<HttpResponse> CreateOrUpdate(dynamic content, SystemProperties systemProperties)
     {

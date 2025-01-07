@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class GroupCategoryRepository
+public interface IGroupCategoryRepository
 {
-    private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulFactory;
-    private readonly IContentfulClient _client;
+    Task<HttpResponse> GetGroupCategories();
+}
 
-    public GroupCategoryRepository(ContentfulConfig config, IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulFactory, IContentfulClientManager contentfulClientManager)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-    }
+public class GroupCategoryRepository(ContentfulConfig config,
+                                    IContentfulFactory<ContentfulGroupCategory, GroupCategory> contentfulFactory,
+                                    IContentfulClientManager contentfulClientManager) : IGroupCategoryRepository
+{
+    private readonly IContentfulFactory<ContentfulGroupCategory, GroupCategory> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
 
     public async Task<HttpResponse> GetGroupCategories()
     {
