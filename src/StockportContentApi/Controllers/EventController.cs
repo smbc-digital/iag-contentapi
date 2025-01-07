@@ -1,28 +1,18 @@
 ﻿namespace StockportContentApi.Controllers;
 
-public class EventController : Controller
+public class EventController(ResponseHandler handler,
+                            Func<string, string, IEventRepository> eventRepository,
+                            Func<string, string, IEventCategoryRepository> eventCategoryRepository,
+                            Func<string, ManagementRepository> managementRepository,
+                            IMapper mapper,
+                            ILogger<EventController> logger) : Controller
 {
-    private readonly Func<string, string, IEventCategoryRepository> _eventCategoryRepository;
-    private readonly Func<string, string, IEventRepository> _eventRepository;
-    private readonly ResponseHandler _handler;
-    private readonly ILogger<EventController> _logger;
-    private readonly Func<string, ManagementRepository> _managementRepository;
-    private readonly IMapper _mapper;
-
-    public EventController(ResponseHandler handler,
-                        Func<string, string, IEventRepository> eventRepository,
-                        Func<string, string, IEventCategoryRepository> eventCategoryRepository,
-                        Func<string, ManagementRepository> managementRepository,
-                        IMapper mapper,
-                        ILogger<EventController> logger)
-    {
-        _handler = handler;
-        _eventRepository = eventRepository;
-        _managementRepository = managementRepository;
-        _eventCategoryRepository = eventCategoryRepository;
-        _mapper = mapper;
-        _logger = logger;
-    }
+    private readonly Func<string, string, IEventCategoryRepository> _eventCategoryRepository = eventCategoryRepository;
+    private readonly Func<string, string, IEventRepository> _eventRepository = eventRepository;
+    private readonly ResponseHandler _handler = handler;
+    private readonly ILogger<EventController> _logger = logger;
+    private readonly Func<string, ManagementRepository> _managementRepository = managementRepository;
+    private readonly IMapper _mapper = mapper;
 
     [HttpGet]
     [Route("{businessId}/event-categories")]

@@ -1,22 +1,14 @@
 ﻿namespace StockportContentApi.Controllers;
 
-public class OrganisationController : Controller
+public class OrganisationController(ResponseHandler handler,
+                                    Func<string, ContentfulConfig> createConfig,
+                                    Func<string, CacheKeyConfig> createCacheKeyConfig,
+                                    Func<ContentfulConfig, OrganisationRepository> organisationRepository) : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<string, CacheKeyConfig> _createCacheKeyConfig;
-    private readonly ResponseHandler _handler;
-    private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository;
-
-    public OrganisationController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<string, CacheKeyConfig> createCacheKeyConfig,
-        Func<ContentfulConfig, OrganisationRepository> organisationRepository)
-    {
-        _handler = handler;
-        _createConfig = createConfig;
-        _createCacheKeyConfig = createCacheKeyConfig;
-        _organisationRepository = organisationRepository;
-    }
+    private readonly Func<string, ContentfulConfig> _createConfig = createConfig;
+    private readonly Func<string, CacheKeyConfig> _createCacheKeyConfig = createCacheKeyConfig;
+    private readonly ResponseHandler _handler = handler;
+    private readonly Func<ContentfulConfig, OrganisationRepository> _organisationRepository = organisationRepository;
 
     [HttpGet]
     [Route("{businessId}/organisations/{organisationSlug}")]
