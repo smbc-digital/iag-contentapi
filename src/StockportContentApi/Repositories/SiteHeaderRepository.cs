@@ -19,11 +19,12 @@ public class SiteHeaderRepository(ContentfulConfig config,
         ContentfulCollection<ContentfulSiteHeader> entries = await _client.GetEntries(builder);
         ContentfulSiteHeader entry = entries.FirstOrDefault();
 
-        SiteHeader header = _contentfulFactory.ToModel(entry);
+        SiteHeader header = entry is null
+            ? null
+            : _contentfulFactory.ToModel(entry);
 
-        if (header is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No header found");
-
-        return HttpResponse.Successful(header);
+        return header is not null
+            ? HttpResponse.Successful(header)
+            : HttpResponse.Failure(HttpStatusCode.NotFound, "No header found");
     }
 }

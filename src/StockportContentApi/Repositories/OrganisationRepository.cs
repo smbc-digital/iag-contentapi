@@ -21,7 +21,7 @@ public class OrganisationRepository(ContentfulConfig config,
         ContentfulOrganisation entry = entries.FirstOrDefault();
 
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No organisation found");
 
         Organisation organisation = _contentfulFactory.ToModel(entry);
 

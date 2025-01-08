@@ -47,7 +47,7 @@ public class PrivacyNoticeRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>().ContentTypeIs("privacyNotice").Include(2);
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);
-        List<PrivacyNotice> convertedEntries = entries.Select(entry => _contentfulFactory.ToModel(entry)).ToList();
+        List<PrivacyNotice> convertedEntries = entries.Select(_contentfulFactory.ToModel).ToList();
 
         return convertedEntries;
     }

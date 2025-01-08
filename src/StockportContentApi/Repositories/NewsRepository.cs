@@ -93,7 +93,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (!filteredEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<News> newsArticles = filteredEntries.Select(item => _newsContentfulFactory.ToModel(item))
+        List<News> newsArticles = filteredEntries.Select(_newsContentfulFactory.ToModel)
                                     .GetNewsDates(out List<DateTime> dates, _timeProvider)
                                     .Where(news => CheckDates(startDate, endDate, news))
                                     .Where(news => string.IsNullOrWhiteSpace(category) 
@@ -121,7 +121,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (!newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<News> newsArticles = newsEntries.Select(item => _newsContentfulFactory.ToModel(item))
+        List<News> newsArticles = newsEntries.Select(_newsContentfulFactory.ToModel)
                                     .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                                     .OrderByDescending(o => o.SunriseDate)
                                     .Take(limit)
@@ -141,21 +141,19 @@ public class NewsRepository : BaseRepository, INewsRepository
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
         ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
 
-        if (contentfulNews is not null)
-            return _newsContentfulFactory.ToModel(contentfulNews);
-
-        return null;
+        return contentfulNews is not null
+            ? _newsContentfulFactory.ToModel(contentfulNews)
+            : null;
     }
 
     public virtual async Task<News> GetLatestNewsByCategory(string category)
     {
         QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldMatches(n => n.Categories, category).Include(1);
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
-
         ContentfulNews contentfulNews = newsEntries.FirstOrDefault(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate));
-        if (contentfulNews is not null)
-            return _newsContentfulFactory.ToModel(contentfulNews);
-
-        return null;
+        
+        return contentfulNews is not null
+            ? _newsContentfulFactory.ToModel(contentfulNews)
+            : null;
     }
 }

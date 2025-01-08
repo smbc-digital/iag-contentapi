@@ -21,8 +21,6 @@ public class ContactUsIdRepository(ContentfulConfig config,
         if (entry is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
 
-        ContactUsId contactUsId = _contentfulFactory.ToModel(entry);
-
-        return HttpResponse.Successful(contactUsId);
+        return HttpResponse.Successful(_contentfulFactory.ToModel(entry));
     }
 }

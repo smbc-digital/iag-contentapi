@@ -6,36 +6,24 @@ public interface IArticleRepository
     Task<HttpResponse> GetArticle(string articleSlug);
 }
 
-public class ArticleRepository : BaseRepository, IArticleRepository
+public class ArticleRepository(ContentfulConfig config,
+                            IContentfulClientManager contentfulClientManager,
+                            ITimeProvider timeProvider,
+                            IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
+                            IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
+                            IVideoRepository videoRepository,
+                            EventRepository eventRepository,
+                            ICache cache,
+                            IOptions<RedisExpiryConfiguration> redisExpiryConfiguration) : BaseRepository, IArticleRepository
 {
-    private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory;
-    private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle;
-    private readonly DateComparer _dateComparer;
-    private readonly EventRepository _eventRepository;
-    private readonly ICache _cache;
-    private readonly IContentfulClient _client;
-    private readonly IVideoRepository _videoRepository;
-    private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
-
-    public ArticleRepository(ContentfulConfig config,
-        IContentfulClientManager contentfulClientManager,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulArticle, Article> contentfulFactory,
-        IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> contentfulFactoryArticle,
-        IVideoRepository videoRepository,
-        EventRepository eventRepository,
-        ICache cache,
-        IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
-    {
-        _contentfulFactory = contentfulFactory;
-        _contentfulFactoryArticle = contentfulFactoryArticle;
-        _videoRepository = videoRepository;
-        _eventRepository = eventRepository;
-        _cache = cache;
-        _redisExpiryConfiguration = redisExpiryConfiguration.Value;
-        _dateComparer = new DateComparer(timeProvider);
-        _client = contentfulClientManager.GetClient(config);
-    }
+    private readonly IContentfulFactory<ContentfulArticle, Article> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulFactory<ContentfulArticleForSiteMap, ArticleSiteMap> _contentfulFactoryArticle = contentfulFactoryArticle;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly EventRepository _eventRepository = eventRepository;
+    private readonly ICache _cache = cache;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IVideoRepository _videoRepository = videoRepository;
+    private readonly RedisExpiryConfiguration _redisExpiryConfiguration = redisExpiryConfiguration.Value;
 
     public async Task<HttpResponse> Get()
     {
@@ -57,7 +45,16 @@ public class ArticleRepository : BaseRepository, IArticleRepository
 
         if (article is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+            
+        await GetArticleRelatedEvents(article);
 
+        ProcessArticleContent(article);
+
+        return HttpResponse.Successful(article);
+    }
+
+    private async Task GetArticleRelatedEvents(Article article)
+    {
         if (!string.IsNullOrEmpty(article.AssociatedTagCategory))
         {
             List<string> associatedTagsCategories = article.AssociatedTagCategory.Split(",").ToList();
@@ -84,10 +81,6 @@ public class ArticleRepository : BaseRepository, IArticleRepository
                             .ThenBy(evnt => evnt.Title)
                             .Take(3).ToList();
         }
-
-        ProcessArticleContent(article);
-
-        return HttpResponse.Successful(article);
     }
 
     private async Task<IEnumerable<ArticleSiteMap>> GetArticlesFromContentful()
@@ -124,10 +117,9 @@ public class ArticleRepository : BaseRepository, IArticleRepository
     {
         article.Body = _videoRepository.Process(article.Body);
         
-        foreach (Section section in article.Sections)
+        foreach (Section section in article.Sections.Where(section => section is not null))
         {
-            if (section is not null)
-                section.Body = _videoRepository.Process(section.Body);
+            section.Body = _videoRepository.Process(section.Body);
         }
     }
 }

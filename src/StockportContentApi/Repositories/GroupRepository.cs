@@ -57,10 +57,10 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
         contentfulGroups = contentfulGroups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
 
-        IEnumerable<Group> groupList = contentfulGroups.Select(group => _groupFactory.ToModel(group));
+        IEnumerable<Group> groupList = contentfulGroups.Select(_groupFactory.ToModel);
 
         return entries is null || !groupList.Any()
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Groups found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found")
             : HttpResponse.Successful(groupList.ToList());
     }
 

@@ -24,17 +24,15 @@ public class SectionRepository(ContentfulConfig config,
 
         ContentfulCollection<ContentfulArticleForSiteMap> articles = await _client.GetEntries(builder);
 
-        foreach (ContentfulArticleForSiteMap article in articles.Where(e => e.Sections.Any()))
-            foreach (ContentfulSectionForSiteMap section in article.Sections)
-                sections.Add(new ContentfulSectionForSiteMap
-                {
-                    Slug = $"{article.Slug}/{section.Slug}",
-                    SunriseDate = section.SunriseDate,
-                    SunsetDate = section.SunsetDate
-                });
-
+        sections.AddRange(articles.Where(e => e.Sections.Any()).SelectMany(article => article.Sections.Select(section => new ContentfulSectionForSiteMap
+        {
+            Slug = $"{article.Slug}/{section.Slug}",
+            SunriseDate = section.SunriseDate,
+            SunsetDate = section.SunsetDate
+        })));
+        
         return sections.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Sections found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No sections found")
             : HttpResponse.Successful(sections);
     }
 
@@ -47,13 +45,13 @@ public class SectionRepository(ContentfulConfig config,
         
         ContentfulCollection<ContentfulSection> entries = await _client.GetEntries(builder);
         ContentfulSection entry = entries.FirstOrDefault();
-        if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Section found");
-        
-        Section section = _contentfulFactory.ToModel(entry);
+
+        Section section = entry is null
+            ? null
+            : _contentfulFactory.ToModel(entry);
 
         return section.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Section found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No section found")
             : HttpResponse.Successful(section);
     }
 }

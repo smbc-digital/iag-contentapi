@@ -32,7 +32,7 @@ public class ProfileRepository(ContentfulConfig config,
         if (!entries.Any() || entries is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No profiles found");
 
-        IEnumerable<Profile> models = entries.Select(_ => _profileFactory.ToModel(_));
+        IEnumerable<Profile> models = entries.Select(_profileFactory.ToModel);
 
         return HttpResponse.Successful(models);
     }

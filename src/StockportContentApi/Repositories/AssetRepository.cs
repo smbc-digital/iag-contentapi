@@ -5,16 +5,12 @@ public interface IAssetRepository
     Task<Asset> Get(string assetId);
 }
 
-public class AssetRepository : IAssetRepository
+public class AssetRepository(ContentfulConfig config,
+                            IContentfulClientManager contentfulClientManager,
+                            ILogger<AssetRepository> logger) : IAssetRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly ILogger<AssetRepository> _logger;
-
-    public AssetRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, ILogger<AssetRepository> logger)
-    {
-        _logger = logger;
-        _client = contentfulClientManager.GetClient(config);
-    }
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly ILogger<AssetRepository> _logger = logger;
 
     public async Task<Asset> Get(string assetId)
     {

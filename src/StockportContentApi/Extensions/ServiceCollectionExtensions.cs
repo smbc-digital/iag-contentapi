@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using StockportContentApi.Config;
-
-namespace StockportContentApi.Extensions;
+﻿namespace StockportContentApi.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
@@ -197,23 +194,21 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<Func<string, IAtoZRepository>>(serviceProvider => (businessId) =>
-        {
-            return new AtoZRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+        services.AddSingleton<Func<string, IAtoZRepository>>(serviceProvider =>
+            (businessId) =>
+                new AtoZRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
                     serviceProvider.GetService<IContentfulClientManager>(),
                     serviceProvider.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(),
                     serviceProvider.GetService<ITimeProvider>(),
                     serviceProvider.GetService<ICache>(),
                     serviceProvider.GetService<IConfiguration>(),
-                    serviceProvider.GetService<ILogger>());
-        });
+                    serviceProvider.GetService<ILogger>()));
 
-        services.AddSingleton<Func<string, IPrivacyNoticeRepository>>(serviceProvider => (businessId) =>
-        {
-            return new PrivacyNoticeRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
-                serviceProvider.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(),
-                serviceProvider.GetService<IContentfulClientManager>());
-        });
+        services.AddSingleton<Func<string, IPrivacyNoticeRepository>>(serviceProvider =>
+            (businessId) =>
+                new PrivacyNoticeRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+                    serviceProvider.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(),
+                    serviceProvider.GetService<IContentfulClientManager>()));
 
         services.AddSingleton<Func<ContentfulConfig, IAssetRepository>>(p =>
         {
@@ -239,16 +234,14 @@ public static class ServiceCollectionExtensions
                         p.GetService<ICache>(),
                         p.GetService<IConfiguration>()),
                     p.GetService<ICache>(),
-                    p.GetService<IOptions<RedisExpiryConfiguration>>())
-            );
+                    p.GetService<IOptions<RedisExpiryConfiguration>>()));
 
-        services.AddSingleton<Func<string, IDocumentPageRepository>>(serviceProvider => (businessId) =>
-        {
-            return new DocumentPageRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+        services.AddSingleton<Func<string, IDocumentPageRepository>>(serviceProvider =>
+            (businessId) =>
+                new DocumentPageRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
                     serviceProvider.GetService<IContentfulClientManager>(),
                     serviceProvider.GetService<IContentfulFactory<ContentfulDocumentPage, DocumentPage>>(),
-                    serviceProvider.GetService<ICache>());
-        });
+                    serviceProvider.GetService<ICache>()));
 
         services.AddSingleton<IVideoRepository>(p =>
            new VideoRepository(p.GetService<TwentyThreeConfig>(), p.GetService<IHttpClient>()));
@@ -297,9 +290,7 @@ public static class ServiceCollectionExtensions
                         p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
                         p.GetService<ICache>(),
                         p.GetService<IConfiguration>()),
-                    p.GetService<ILogger<ShowcaseRepository>>()
-                )
-            );
+                    p.GetService<ILogger<ShowcaseRepository>>()));
 
         services.AddSingleton<Func<string, string, ILandingPageRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
@@ -321,74 +312,63 @@ public static class ServiceCollectionExtensions
                         p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                         p.GetService<ICache>(),
                         p.GetService<IConfiguration>()),
-                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()
-                )
-            );
+                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
         services.AddSingleton<Func<string, IProfileRepository>>(p =>
             (contentfulConfig) =>
                 new ProfileRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
         services.AddSingleton<Func<string, IPaymentRepository>>( p =>
             (contentfulConfig) =>
                 new PaymentRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulPayment, Payment>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulPayment, Payment>>()));
 
         services.AddSingleton<Func<string, IServicePayPaymentRepository>>(p =>
             (contentfulConfig) =>
                 new ServicePayPaymentRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>()));
 
         services.AddSingleton<Func<string, IGroupCategoryRepository>>(p =>
             (contentfulConfig) =>
                 new GroupCategoryRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
-                    p.GetService<IContentfulClientManager>())
-            );
+                    p.GetService<IContentfulClientManager>()));
             
         services.AddSingleton<Func<string, string, IEventCategoryRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
                 new EventCategoryRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
                     p.GetService<IContentfulFactory<ContentfulEventCategory, EventCategory>>(),
-                    p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>())
-            );
+                    p.GetService<IContentfulClientManager>(), p.GetService<ICache>(), p.GetService<IConfiguration>()));
 
         services.AddSingleton<Func<string, IHomepageRepository>>(p =>
             (contentfulConfig) =>
                 new HomepageRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>()));
 
         services.AddSingleton<Func<string, IStartPageRepository>>(p =>
             (contentfulConfig) =>
                 new StartPageRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulStartPage, StartPage>>(),
-                    p.GetService<ITimeProvider>())
-            );
+                    p.GetService<ITimeProvider>()));
         
         services.AddSingleton<Func<string, IFooterRepository>>(p =>
             (contentfulConfig) =>
                 new FooterRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulFooter, Footer>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulFooter, Footer>>()));
 
         services.AddSingleton<Func<string, ISiteHeaderRepository>>(p =>
             (contentfulConfig) =>
                 new SiteHeaderRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>()));
 
         services.AddSingleton<Func<string, INewsRepository>>(p =>
             (contentfulConfig) =>
@@ -398,23 +378,20 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulFactory<ContentfulNews, News>>(),
                     p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                     p.GetService<ICache>(),
-                    p.GetService<IConfiguration>())
-            );
+                    p.GetService<IConfiguration>()));
 
         services.AddSingleton<Func<string, ISectionRepository>>(p =>
             (contentfulConfig) =>
                 new SectionRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
-                    p.GetService<IContentfulClientManager>())
-            );
+                    p.GetService<IContentfulClientManager>()));
         
         services.AddSingleton<Func<string, ITopicRepository>>(p =>
             (contentfulConfig) =>
                 new TopicRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(),
-                    p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()));
         
         services.AddSingleton<RedirectsRepository>();
         services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper());
@@ -435,15 +412,13 @@ public static class ServiceCollectionExtensions
                             p.GetService<ICache>(),
                             p.GetService<IConfiguration>()),
                         p.GetService<ICache>(),
-                        p.GetService<IConfiguration>())
-        );
+                        p.GetService<IConfiguration>()));
 
         services.AddSingleton<Func<string, IContactUsIdRepository>>(p =>
             (contentfulConfig) =>
                 new ContactUsIdRepository( p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(),
-                    p.GetService<IContentfulClientManager>())
-                );
+                    p.GetService<IContentfulClientManager>()));
 
         services.AddSingleton<Func<ContentfulConfig, IOrganisationRepository>>(p =>
         {
@@ -458,23 +433,19 @@ public static class ServiceCollectionExtensions
                 new GroupAdvisorRepository(
                     p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>()));
 
         services.AddSingleton<Func<string, IContactUsAreaRepository>>( p =>
             (contentfulConfig) =>
                 new ContactUsAreaRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>())
-            );
+                    p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()));
 
         services.AddSingleton<Func<string, ICommsRepository>>(p =>
             (contentfulConfig) =>
                 new CommsRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()
-                )
-            );
+                    p.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()));
 
         return services;
     }

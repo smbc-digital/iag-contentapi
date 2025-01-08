@@ -18,10 +18,12 @@ public class GroupCategoryRepository(ContentfulConfig config,
         ContentfulCollection<ContentfulGroupCategory> entries = await _client.GetEntries(builder);
 
         if (entries is null || !entries.Any())
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No group catogories found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No group categories found");
 
-        List<GroupCategory> groupCategories = entries.Select(groupCatogory => _contentfulFactory.ToModel(groupCatogory)).ToList();
-        groupCategories = groupCategories.OrderBy(group => group.Name).ToList();
+        List<GroupCategory> groupCategories = entries
+                                                .Select(_contentfulFactory.ToModel)
+                                                .OrderBy(group => group.Name)
+                                                .ToList();
 
         return HttpResponse.Successful(groupCategories);
     }

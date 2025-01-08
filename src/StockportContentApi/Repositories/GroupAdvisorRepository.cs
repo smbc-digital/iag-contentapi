@@ -22,7 +22,7 @@ public class GroupAdvisorRepository(ContentfulConfig config,
         if (entries is null)
             return new List<GroupAdvisor>();
 
-        List<GroupAdvisor> result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
+        List<GroupAdvisor> result = entries.Select(_contentfulFactory.ToModel).ToList();
 
         return result.Where(item => item.Groups.Contains(slug)).ToList();
     }
@@ -35,7 +35,7 @@ public class GroupAdvisorRepository(ContentfulConfig config,
         if (entries is null)
             return null;
 
-        return entries.Select(item => _contentfulFactory.ToModel(item)).FirstOrDefault();
+        return entries.Select(_contentfulFactory.ToModel).FirstOrDefault();
     }
 
     public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)

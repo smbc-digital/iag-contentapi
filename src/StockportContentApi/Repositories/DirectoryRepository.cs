@@ -43,13 +43,13 @@ public class DirectoryRepository(ContentfulConfig config,
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No entries found");
 
         IEnumerable<ContentfulDirectory> contentfulDirectories = entries as IEnumerable<ContentfulDirectory> ?? entries.ToList();
-        List<Directory> directoriesList = contentfulDirectories.Select(directory => _directoryFactory.ToModel(directory)).ToList();
+        List<Directory> directoriesList = contentfulDirectories.Select(_directoryFactory.ToModel).ToList();
 
         foreach (Directory directory in directoriesList)
         {
             directory.Entries = (await GetAllDirectoryEntries())
-                .Where(directoryEntry => directoryEntry.Directories is not null &&
-                directoryEntry.Directories.Any(dir => dir.Slug.Equals(directory.Slug)));
+                                    .Where(directoryEntry => directoryEntry.Directories is not null &&
+                                        directoryEntry.Directories.Any(dir => dir.Slug.Equals(directory.Slug)));
         }
 
         return !directoriesList.Any()
@@ -96,7 +96,7 @@ public class DirectoryRepository(ContentfulConfig config,
     }
 
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() =>
-        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
+        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", GetAllDirectoryEntriesFromSource, _redisExpiryConfiguration.Directory);
 
     internal async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) =>
         (await GetAllDirectoryEntries())

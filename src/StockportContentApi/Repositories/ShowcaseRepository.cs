@@ -23,10 +23,10 @@ public class ShowcaseRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
-        IEnumerable<Showcase> showcases = entries.Select(e => _contentfulFactory.ToModel(e));
+        IEnumerable<Showcase> showcases = entries.Select(_contentfulFactory.ToModel);
 
         return showcases.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcases found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No showcases found")
             : HttpResponse.Successful(showcases);
     }
 
@@ -37,7 +37,7 @@ public class ShowcaseRepository(ContentfulConfig config,
         ContentfulShowcase entry = entries.FirstOrDefault();
 
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No showcase found");
 
         Showcase showcase = new();
 
@@ -47,7 +47,7 @@ public class ShowcaseRepository(ContentfulConfig config,
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Unable to serialize Showcase {slug}: {ex.Message}");
+            _logger.LogError(ex, $"Unable to serialize showcase {slug}: {ex.Message}");
         }
 
         if (!string.IsNullOrEmpty(showcase.EventCategory))
@@ -73,7 +73,7 @@ public class ShowcaseRepository(ContentfulConfig config,
         }
 
         return showcase.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No showcase found")
             : HttpResponse.Successful(showcase);
     }
 
