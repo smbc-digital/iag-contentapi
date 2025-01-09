@@ -12,8 +12,8 @@ public class ArticleControllerTests
     {
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
-        _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>(), It.IsAny<string>()))
+        _mockCreateRepository
+            .Setup(createRepo => createRepo(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new ArticleController(new(mockLogger.Object), _mockCreateRepository.Object);

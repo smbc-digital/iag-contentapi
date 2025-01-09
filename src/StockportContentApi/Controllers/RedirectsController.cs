@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
+[ExcludeFromCodeCoverage]
 public class RedirectsController(ResponseHandler handler,
                                 RedirectsRepository repository) : Controller
 {

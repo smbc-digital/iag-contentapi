@@ -10,10 +10,10 @@ public class NewsController(ResponseHandler handler,
     [Route("{businessId}/news")]
     [Route("v1/{businessId}/news")]
     public async Task<IActionResult> Index(string businessId,
-        [FromQuery] string tag = null,
-        [FromQuery] string category = null,
-        [FromQuery] DateTime? dateFrom = null,
-        [FromQuery] DateTime? dateTo = null) =>
+            [FromQuery] string tag = null,
+            [FromQuery] string category = null,
+            [FromQuery] DateTime? dateFrom = null,
+            [FromQuery] DateTime? dateTo = null) =>
         await _handler.Get(() => _newsRepository(businessId).Get(tag, category, dateFrom, dateTo));
 
     [HttpGet]

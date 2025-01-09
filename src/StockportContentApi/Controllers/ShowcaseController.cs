@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
+[ExcludeFromCodeCoverage]
 public class ShowcaseController(ResponseHandler handler,
                                 Func<string, string, IShowcaseRepository> createRepository) : Controller
 {

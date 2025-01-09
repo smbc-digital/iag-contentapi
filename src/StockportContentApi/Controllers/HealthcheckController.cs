@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
+[ExcludeFromCodeCoverage]
 [ApiExplorerSettings(IgnoreApi = true)]
 public class HealthcheckController(IHealthcheckService healthcheckService) : Controller
 {

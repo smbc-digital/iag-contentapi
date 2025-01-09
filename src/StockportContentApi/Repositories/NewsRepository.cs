@@ -118,7 +118,7 @@ public class NewsRepository : BaseRepository, INewsRepository
     {
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
 
-        if (!newsEntries.Any())
+        if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
         List<News> newsArticles = newsEntries.Select(_newsContentfulFactory.ToModel)

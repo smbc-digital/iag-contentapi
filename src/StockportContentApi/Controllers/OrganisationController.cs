@@ -1,5 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
+[ExcludeFromCodeCoverage]
 public class OrganisationController(ResponseHandler handler,
                                     Func<string, ContentfulConfig> createConfig,
                                     Func<string, CacheKeyConfig> createCacheKeyConfig,
