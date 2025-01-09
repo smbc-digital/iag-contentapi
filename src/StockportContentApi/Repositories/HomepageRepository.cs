@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class HomepageRepository
+public interface IHomepageRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory;
+    Task<HttpResponse> Get();
+}
 
-    public HomepageRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _homepageFactory = homepageFactory;
-    }
+public class HomepageRepository(ContentfulConfig config,
+                                IContentfulClientManager clientManager,
+                                IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory) : IHomepageRepository
+{
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory = homepageFactory;
 
     public async Task<HttpResponse> Get()
     {

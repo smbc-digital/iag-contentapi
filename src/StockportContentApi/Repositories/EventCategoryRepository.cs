@@ -1,8 +1,11 @@
-﻿using StockportContentApi.Config;
+﻿namespace StockportContentApi.Repositories;
 
-namespace StockportContentApi.Repositories;
+public interface IEventCategoryRepository
+{
+    public Task<HttpResponse> GetEventCategories();
+}
 
-public class EventCategoryRepository
+public class EventCategoryRepository : IEventCategoryRepository
 {
     private readonly ICache _cache;
     private readonly IContentfulClient _client;
@@ -13,7 +16,7 @@ public class EventCategoryRepository
     private readonly string _eventCategoriesCacheKey;
 
     public EventCategoryRepository(ContentfulConfig config,
-                                    CacheKeyConfig cacheKeyConfig,
+                                CacheKeyConfig cacheKeyConfig,
                                 IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory,
                                 IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
     {
@@ -46,8 +49,7 @@ public class EventCategoryRepository
         if (entries is null || !entries.Any())
             new List<EventCategory>();
 
-        List<EventCategory> eventCategories =
-            entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
+        List<EventCategory> eventCategories = entries.Select(_contentfulFactory.ToModel).ToList();
 
         return !eventCategories.Any()
             ? null

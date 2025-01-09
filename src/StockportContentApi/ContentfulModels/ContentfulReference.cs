@@ -27,7 +27,7 @@ public class ContentfulReference : IContentfulModel
     public SystemProperties Sys { get; set; } = new();
     public string ContentType { get; set; } = string.Empty;
     public string MailingListId { get; set; }
-    public string Body { get; set; }
+    public string Body { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
     public string ButtonText { get; set; } = string.Empty;
     public string Statistic { get; set; } = string.Empty;

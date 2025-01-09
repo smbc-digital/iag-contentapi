@@ -9,7 +9,11 @@ public class ContactUsId
     public string SuccessPageButtonText { get; }
     public string SuccessPageReturnUrl { get; }
 
-    public ContactUsId(string name, string slug, string emailAddress, string successPageButtonText, string successPageReturnUrl)
+    public ContactUsId(string name,
+                    string slug,
+                    string emailAddress,
+                    string successPageButtonText,
+                    string successPageReturnUrl)
     {
         Name = name;
         Slug = slug;

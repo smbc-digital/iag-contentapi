@@ -1,11 +1,10 @@
 ﻿namespace StockportContentApi.Controllers;
 
+[ExcludeFromCodeCoverage]
 [ApiExplorerSettings(IgnoreApi = true)]
-public class HealthcheckController : Controller
+public class HealthcheckController(IHealthcheckService healthcheckService) : Controller
 {
-    private readonly IHealthcheckService _healthcheckService;
-
-    public HealthcheckController(IHealthcheckService healthcheckService) => _healthcheckService = healthcheckService;
+    private readonly IHealthcheckService _healthcheckService = healthcheckService;
 
     [HttpGet]
     [Route("/_healthcheck")]

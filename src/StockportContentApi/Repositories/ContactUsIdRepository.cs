@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class ContactUsIdRepository
+public interface IContactUsIdRepository
 {
-    private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory;
-    private readonly IContentfulClient _client;
+    Task<HttpResponse> GetContactUsIds(string slug);
+}
 
-    public ContactUsIdRepository(ContentfulConfig config, IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory, IContentfulClientManager contentfulClientManager)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-    }
+public class ContactUsIdRepository(ContentfulConfig config,
+                                IContentfulFactory<ContentfulContactUsId, ContactUsId> contentfulFactory,
+                                IContentfulClientManager contentfulClientManager) : IContactUsIdRepository
+{
+    private readonly IContentfulFactory<ContentfulContactUsId, ContactUsId> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
 
     public async Task<HttpResponse> GetContactUsIds(string slug)
     {
@@ -20,8 +21,6 @@ public class ContactUsIdRepository
         if (entry is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No contact us id found for '{slug}'");
 
-        ContactUsId contactUsId = _contentfulFactory.ToModel(entry);
-
-        return HttpResponse.Successful(contactUsId);
+        return HttpResponse.Successful(_contentfulFactory.ToModel(entry));
     }
 }

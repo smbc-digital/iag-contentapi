@@ -21,7 +21,7 @@ public class OrganisationRepositoryTests
         _contentfulClient = new Mock<IContentfulClient>();
         contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
 
-        Mock<Func<ContentfulConfig, CacheKeyConfig, IGroupRepository>> _groupRepository = new();
+        Mock<Func<string, string, IGroupRepository>> _groupRepository = new();
         List<Group> groups = new();
         Organisation organisation = new() { Slug = "slug", Title = "Title" };
         groups.Add(new GroupBuilder().Organisation(organisation).Build());

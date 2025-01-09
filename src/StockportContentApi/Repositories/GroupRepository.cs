@@ -28,15 +28,15 @@ public class GroupRepository : BaseRepository, IGroupRepository
     private readonly IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> _groupHomepageContentfulFactory;
     private readonly int _groupsTimeout;
 
-    public GroupRepository(ContentfulConfig config, IContentfulClientManager clientManager,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulGroup, Group> groupFactory,
-        IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory,
-        IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
-        EventRepository eventRepository,
-        ICache cache,
-        IConfiguration configuration
-    )
+    public GroupRepository(ContentfulConfig config,
+                        IContentfulClientManager clientManager,
+                        ITimeProvider timeProvider,
+                        IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                        IContentfulFactory<ContentfulGroupCategory, GroupCategory> groupCategoryFactory,
+                        IContentfulFactory<ContentfulGroupHomepage, GroupHomepage> groupHomepageContentfulFactory,
+                        EventRepository eventRepository,
+                        ICache cache,
+                        IConfiguration configuration)
     {
         _dateComparer = new(timeProvider);
         _client = clientManager.GetClient(config);
@@ -57,10 +57,10 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
         contentfulGroups = contentfulGroups.Where(group => _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo));
 
-        IEnumerable<Group> groupList = contentfulGroups.Select(group => _groupFactory.ToModel(group));
+        IEnumerable<Group> groupList = contentfulGroups.Select(_groupFactory.ToModel);
 
         return entries is null || !groupList.Any()
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Groups found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No groups found")
             : HttpResponse.Successful(groupList.ToList());
     }
 

@@ -1,20 +1,18 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class DocumentPageRepository : BaseRepository
+public interface IDocumentPageRepository
 {
-    private readonly ICache _cache;
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulDocumentPage, DocumentPage> _contentfulFactory;
+    Task<HttpResponse> GetDocumentPage(string documentPageSlug);
+}
 
-    public DocumentPageRepository(ContentfulConfig config,
-        IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulDocumentPage, DocumentPage> contentfulFactory,
-        ICache cache)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-        _cache = cache;
-    }
+public class DocumentPageRepository(ContentfulConfig config,
+                                    IContentfulClientManager contentfulClientManager,
+                                    IContentfulFactory<ContentfulDocumentPage, DocumentPage> contentfulFactory,
+                                    ICache cache) : BaseRepository, IDocumentPageRepository
+{
+    private readonly ICache _cache = cache;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulDocumentPage, DocumentPage> _contentfulFactory = contentfulFactory;
 
     public async Task<HttpResponse> GetDocumentPage(string documentPageSlug)
     {

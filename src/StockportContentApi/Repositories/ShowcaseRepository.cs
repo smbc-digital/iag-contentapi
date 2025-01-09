@@ -1,35 +1,32 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class ShowcaseRepository
+public interface IShowcaseRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory;
-    private readonly EventRepository _eventRepository;
-    private readonly ILogger<ShowcaseRepository> _logger;
-    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory;
+    Task<HttpResponse> Get();
+    Task<HttpResponse> GetShowcases(string slug);
+}
 
-    public ShowcaseRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
-        IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulNews, News> newsBuilder,
-        EventRepository eventRepository,
-        ILogger<ShowcaseRepository> logger)
-    {
-        _contentfulFactory = showcaseBuilder;
-        _newsFactory = newsBuilder;
-        _client = contentfulClientManager.GetClient(config);
-        _eventRepository = eventRepository;
-        _logger = logger;
-    }
+public class ShowcaseRepository(ContentfulConfig config,
+                                IContentfulFactory<ContentfulShowcase, Showcase> showcaseBuilder,
+                                IContentfulClientManager contentfulClientManager,
+                                IContentfulFactory<ContentfulNews, News> newsBuilder,
+                                EventRepository eventRepository,
+                                ILogger<ShowcaseRepository> logger) : IShowcaseRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulShowcase, Showcase> _contentfulFactory = showcaseBuilder;
+    private readonly EventRepository _eventRepository = eventRepository;
+    private readonly ILogger<ShowcaseRepository> _logger = logger;
+    private readonly IContentfulFactory<ContentfulNews, News> _newsFactory = newsBuilder;
 
     public async Task<HttpResponse> Get()
     {
         QueryBuilder<ContentfulShowcase> builder = new QueryBuilder<ContentfulShowcase>().ContentTypeIs("showcase").Include(3);
         ContentfulCollection<ContentfulShowcase> entries = await _client.GetEntries(builder);
-        IEnumerable<Showcase> showcases = entries.Select(e => _contentfulFactory.ToModel(e));
+        IEnumerable<Showcase> showcases = entries.Select(_contentfulFactory.ToModel);
 
         return showcases.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcases found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No showcases found")
             : HttpResponse.Successful(showcases);
     }
 
@@ -40,7 +37,7 @@ public class ShowcaseRepository
         ContentfulShowcase entry = entries.FirstOrDefault();
 
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No showcase found");
 
         Showcase showcase = new();
 
@@ -50,7 +47,7 @@ public class ShowcaseRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Unable to serialize Showcase {slug}: {ex.Message}");
+            _logger.LogError(ex, $"Unable to serialize showcase {slug}: {ex.Message}");
         }
 
         if (!string.IsNullOrEmpty(showcase.EventCategory))
@@ -76,7 +73,7 @@ public class ShowcaseRepository
         }
 
         return showcase.GetType().Equals(typeof(NullHomepage))
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No Showcase found")
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No showcase found")
             : HttpResponse.Successful(showcase);
     }
 

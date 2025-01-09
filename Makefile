@@ -40,7 +40,7 @@ unit-test:
 coverage:
 	cd $(APPLICATION_TESTS_PATH);rm TestResults -r -f
 	dotnet build
-	dotnet test -l "console;verbosity=normal" -p:CollectCoverage=true -p:CoverletOutputFormat=\"opencover\" -p:CoverletOutput=TestResults/Coverage.xml -p:SkipAutoProps=true /p:Exclude=\"[*]StockportContentApi.Builders*,[*]StockportContentApi.Controllers*,**/Constants/*,[*]StockportContentApi.ContentfulModels*,[*]StockportContentApi.ManagementModels*,[*]StockportContentApi.Enums*,[*]StockportContentApi.Models.Enums*,[*]StockportContentApi.Models.Exceptions*\" -p:ExcludeByAttribute="ExcludeFromCodeCoverage"
+	dotnet test -l "console;verbosity=normal" -p:CollectCoverage=true -p:CoverletOutputFormat=\"opencover\" -p:CoverletOutput=TestResults/Coverage.xml -p:SkipAutoProps=true /p:Exclude=\"[*]StockportContentApi.Builders*,**/Constants/*,[*]StockportContentApi.ContentfulModels*,[*]StockportContentApi.ManagementModels*,[*]StockportContentApi.Enums*,[*]StockportContentApi.Models.Enums*,[*]StockportContentApi.Models.Exceptions*\" -p:ExcludeByAttribute="ExcludeFromCodeCoverage"
 
 # ---------------------------------------------------------------------------------------
 # -- Unit tests coverage with threshold

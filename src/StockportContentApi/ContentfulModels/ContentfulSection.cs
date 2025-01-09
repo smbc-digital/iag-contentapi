@@ -3,7 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class ContentfulSection : ContentfulReference
 {
-    public string Body { get; set; } = string.Empty;
     public List<ContentfulProfile> Profiles { get; set; } = new();
     public List<Asset> Documents { get; set; } = new();
     public List<ContentfulAlert> AlertsInline { get; set; } = new();

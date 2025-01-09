@@ -6,18 +6,13 @@ public interface ILoggedInHelper
 }
 
 [ExcludeFromCodeCoverage]
-public class LoggedInHelper : ILoggedInHelper
+public class LoggedInHelper(IHttpContextAccessor httpContextAccessor,
+                            IJwtDecoder decoder,
+                            ILogger<LoggedInHelper> logger) : ILoggedInHelper
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IJwtDecoder _decoder;
-    private readonly ILogger<LoggedInHelper> _logger;
-
-    public LoggedInHelper(IHttpContextAccessor httpContextAccessor, IJwtDecoder decoder, ILogger<LoggedInHelper> logger)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _decoder = decoder;
-        _logger = logger;
-    }
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IJwtDecoder _decoder = decoder;
+    private readonly ILogger<LoggedInHelper> _logger = logger;
 
     public LoggedInPerson GetLoggedInPerson()
     {

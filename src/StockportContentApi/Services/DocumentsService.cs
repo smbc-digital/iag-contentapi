@@ -5,27 +5,19 @@ public interface IDocumentService
     Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug);
 }
 
-public class DocumentsService : IDocumentService
+public class DocumentsService(Func<ContentfulConfig, IAssetRepository> documentRepository,
+                            Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository,
+                            Func<ContentfulConfig, IGroupRepository> groupRepository,
+                            IContentfulFactory<Asset, Document> documentFactory,
+                            IContentfulConfigBuilder contentfulConfigBuilder,
+                            ILoggedInHelper loggedInHelper) : IDocumentService
 {
-    private readonly IContentfulConfigBuilder _contentfulConfigBuilder;
-    private readonly IContentfulFactory<Asset, Document> _documentFactory;
-    private readonly Func<ContentfulConfig, IAssetRepository> _documentRepository;
-    private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _groupAdvisorRepository;
-    private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository;
-    private readonly ILoggedInHelper _loggedInHelper;
-
-    public DocumentsService(Func<ContentfulConfig, IAssetRepository> documentRepository,
-        Func<ContentfulConfig, IGroupAdvisorRepository> groupAdvisorRepository,
-        Func<ContentfulConfig, IGroupRepository> groupRepository, IContentfulFactory<Asset, Document> documentFactory,
-        IContentfulConfigBuilder contentfulConfigBuilder, ILoggedInHelper loggedInHelper)
-    {
-        _documentRepository = documentRepository;
-        _groupAdvisorRepository = groupAdvisorRepository;
-        _groupRepository = groupRepository;
-        _documentFactory = documentFactory;
-        _contentfulConfigBuilder = contentfulConfigBuilder;
-        _loggedInHelper = loggedInHelper;
-    }
+    private readonly IContentfulConfigBuilder _contentfulConfigBuilder = contentfulConfigBuilder;
+    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
+    private readonly Func<ContentfulConfig, IAssetRepository> _documentRepository = documentRepository;
+    private readonly Func<ContentfulConfig, IGroupAdvisorRepository> _groupAdvisorRepository = groupAdvisorRepository;
+    private readonly Func<ContentfulConfig, IGroupRepository> _groupRepository = groupRepository;
+    private readonly ILoggedInHelper _loggedInHelper = loggedInHelper;
 
     public async Task<Document> GetSecureDocumentByAssetId(string businessId, string assetId, string groupSlug)
     {

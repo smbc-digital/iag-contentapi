@@ -1,15 +1,10 @@
 ﻿namespace StockportContentApi.Controllers;
 
-public class DocumentsController : Controller
+public class DocumentsController(IDocumentService documentService,
+                                ILogger<DocumentsController> logger) : Controller
 {
-    private readonly IDocumentService _documentService;
-    private readonly ILogger<DocumentsController> _logger;
-
-    public DocumentsController(IDocumentService documentService, ILogger<DocumentsController> logger)
-    {
-        _documentService = documentService;
-        _logger = logger;
-    }
+    private readonly IDocumentService _documentService = documentService;
+    private readonly ILogger<DocumentsController> _logger = logger;
 
     [HttpGet]
     [Route("{businessId}/documents/{groupSlug}/{assetId}")]

@@ -3,7 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class SwaggerFilter : IDocumentFilter
 {
-
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
         string pathStart = "/{businessId}";
