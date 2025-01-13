@@ -60,6 +60,7 @@ public class EventRecurrenceFactory
                         entry.Free,
                         entry.Paid,
                         entry.AccessibleTransportLink,
+                        entry.LogoAreaTitle,
                         entry.EventBranding,
                         entry.PhoneNumber,
                         entry.Email,

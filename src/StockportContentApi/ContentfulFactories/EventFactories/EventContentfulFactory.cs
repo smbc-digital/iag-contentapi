@@ -77,6 +77,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.Free,
                         entry.Paid,
                         entry.AccessibleTransportLink,
+                        entry.LogoAreaTitle,
                         eventBranding,
                         entry.PhoneNumber,
                         entry.Email,
