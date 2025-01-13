@@ -31,6 +31,7 @@ public class Event
     public bool? Paid { get; }
     public GeoCoordinate Coord { get; }
     public string AccessibleTransportLink { get; }
+    public string LogoAreaTitle { get; set; }
     public List<GroupBranding> EventBranding { get; set; } = new();
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
@@ -71,6 +72,7 @@ public class Event
                 bool? free,
                 bool? paid,
                 string accessibleTransportLink,
+                string logoAreaTitle,
                 List<GroupBranding> eventBranding,
                 string phoneNumber,
                 string email,
@@ -113,6 +115,7 @@ public class Event
             ? null 
             : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
         AccessibleTransportLink = accessibleTransportLink;
+        LogoAreaTitle = logoAreaTitle;
         EventBranding = eventBranding;
         PhoneNumber = phoneNumber;
         Email = email;

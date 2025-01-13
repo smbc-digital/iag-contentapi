@@ -59,6 +59,7 @@ public class CommsControllerTests
                                                 true,
                                                 true,
                                                 "accessible transport link",
+                                                "Logo title",
                                                 new List<GroupBranding>(),
                                                 "01234564567",
                                                 "email",
