@@ -47,6 +47,5 @@ public class EventHomepageContentfulFactoryTests
 
         // Assert
         _callToActionFactory.Verify(callToAction => callToAction.ToModel(It.IsAny<ContentfulCallToActionBanner>()), Times.Once);
-
     }
 }
