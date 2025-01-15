@@ -22,7 +22,9 @@ public class ArticleContentfulFactoryTests
             .WithBreadcrumbContentType("topic")
             .Build();
 
-        _timeProvider.Setup(_ => _.Now()).Returns(new DateTime(2017, 01, 01));
+        _timeProvider
+            .Setup(provider => provider.Now())
+            .Returns(new DateTime(2017, 01, 01));
 
         _articleFactory = new(_sectionFactory.Object,
                               _crumbFactory.Object,

@@ -2,8 +2,7 @@
 
 public class EventHomepageContentfulFactoryTests
 {
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
-
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
     private readonly EventHomepageContentfulFactory _factory;
 
     private readonly ContentfulEventHomepage _entry = new()
@@ -22,18 +21,32 @@ public class EventHomepageContentfulFactoryTests
         Alerts = new List<ContentfulAlert> { new() }
     };
 
-    public EventHomepageContentfulFactoryTests()
-    {
-        _factory = new EventHomepageContentfulFactory(_mockTimeProvider.Object);
-    }
+    public EventHomepageContentfulFactoryTests() =>
+        _factory = new(_callToActionFactory.Object);
 
     [Fact]
     public void ToModel_ShouldReturnExpectedEventHomepage()
     {
         // Act
-        var result = _factory.ToModel(_entry);
+        EventHomepage result = _factory.ToModel(_entry);
 
         // Assert
         Assert.Equal(11, result.Rows.Count());
+    }
+
+    [Fact]
+    public void ToModel_ShouldCallCallToActionFactory_If_CallToActionNotNull()
+    {
+        // Arrange
+        _callToActionFactory
+            .Setup(callToActionFactory => callToActionFactory.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+            .Returns(new CallToActionBanner());
+
+        // Act
+        EventHomepage result = _factory.ToModel(_entry);
+
+        // Assert
+        _callToActionFactory.Verify(callToAction => callToAction.ToModel(It.IsAny<ContentfulCallToActionBanner>()), Times.Once);
+
     }
 }
