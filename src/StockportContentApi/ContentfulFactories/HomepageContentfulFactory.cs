@@ -1,31 +1,20 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class HomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, Homepage>
-{
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> _spotlightOnBanner;
-
-    public HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
                                     IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                     IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                     IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
                                     ITimeProvider timeProvider,
                                     IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-                                    IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightOnBanner)
-    {
-        _subitemFactory = subitemFactory;
-        _groupFactory = groupFactory;
-        _alertFactory = alertFactory;
-        _carouselFactory = carouselFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _callToActionFactory = callToActionFactory;
-        _spotlightOnBanner = spotlightOnBanner;
-    }
+                                    IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightOnBanner) : IContentfulFactory<ContentfulHomepage, Homepage>
+{
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
+    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory = groupFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory = carouselFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> _spotlightOnBanner = spotlightOnBanner;
 
     public Homepage ToModel(ContentfulHomepage entry)
     {

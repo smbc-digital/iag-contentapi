@@ -16,4 +16,5 @@ public class ContentfulEventHomepage : IContentfulModel
     public SystemProperties Sys { get; set; } = new();
     public string MetaDescription { get; set; } = string.Empty;
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+    public ContentfulCallToActionBanner CallToAction { get; set; } = null;
 }

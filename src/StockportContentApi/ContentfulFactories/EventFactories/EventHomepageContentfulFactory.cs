@@ -1,11 +1,9 @@
 ﻿namespace StockportContentApi.ContentfulFactories.EventFactories;
 
-public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
+public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+    : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
 {
-    private readonly DateComparer _dateComparer;
-
-    public EventHomepageContentfulFactory(ITimeProvider timeProvider)
-        => _dateComparer = new DateComparer(timeProvider);
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
 
     public EventHomepage ToModel(ContentfulEventHomepage entry)
     {
@@ -43,10 +41,13 @@ public class EventHomepageContentfulFactory : IContentfulFactory<ContentfulEvent
             });
         }
 
+        CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+
         EventHomepage eventHomePage = new(rows)
         {
             MetaDescription = entry.MetaDescription,
-            Alerts = entry.Alerts
+            Alerts = entry.Alerts,
+            CallToAction = callToAction
         };
 
         return eventHomePage;
