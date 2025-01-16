@@ -15,7 +15,6 @@ public class Section
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
-    public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
 
     public Section(string title,
                 string slug,
@@ -28,8 +27,7 @@ public class Section
                 DateTime sunriseDate,
                 DateTime sunsetDate,
                 DateTime updatedAt,
-                IEnumerable<Alert> alertsInline,
-                IEnumerable<CallToActionBanner> callToActionBanners)
+                IEnumerable<Alert> alertsInline)
     {
         Title = title;
         Slug = slug;
@@ -43,7 +41,6 @@ public class Section
         SunsetDate = sunsetDate;
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
-        CallToActionBanners = callToActionBanners;
     }
 
     public Section()
