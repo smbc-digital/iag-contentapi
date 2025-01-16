@@ -9,4 +9,5 @@ public class ContentfulSection : ContentfulReference
     public List<ContentfulGroupBranding> SectionBranding { get; set; } = new();
     public string LogoAreaTitle { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
 }

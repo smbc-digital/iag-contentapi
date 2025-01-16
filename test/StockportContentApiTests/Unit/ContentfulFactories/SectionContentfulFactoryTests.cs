@@ -3,28 +3,30 @@
 public class SectionContentfulFactoryTests
 {
     private readonly ContentfulSection _contentfulSection;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
-    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
-    private readonly Mock<IVideoRepository> _videoRepository;
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
+    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
+    private readonly Mock<IVideoRepository> _videoRepository = new();
     private readonly SectionContentfulFactory _sectionFactory;
-    private readonly Mock<ITimeProvider> _timeProvider;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory;
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionBannerFactory = new();
 
     public SectionContentfulFactoryTests()
     {
         _contentfulSection = new ContentfulSectionBuilder().Build();
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
-        _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-        _videoRepository = new Mock<IVideoRepository>();
-        _timeProvider = new Mock<ITimeProvider>();
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _brandingFactory = new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>();
 
-        _timeProvider.Setup(time => time.Now()).Returns(new DateTime(2017, 01, 01));
+        _timeProvider
+            .Setup(time => time.Now())
+            .Returns(new DateTime(2017, 01, 01));
 
-        _sectionFactory = new SectionContentfulFactory(_profileFactory.Object, _documentFactory.Object,
-            _videoRepository.Object, _timeProvider.Object, _alertFactory.Object, _brandingFactory.Object);
+        _sectionFactory = new SectionContentfulFactory(_profileFactory.Object,
+                                                    _documentFactory.Object,
+                                                    _videoRepository.Object,
+                                                    _timeProvider.Object,
+                                                    _alertFactory.Object,
+                                                    _brandingFactory.Object,
+                                                    _callToActionBannerFactory.Object);
     }
 
     [Fact]

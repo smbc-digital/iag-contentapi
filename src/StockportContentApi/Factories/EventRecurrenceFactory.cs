@@ -70,7 +70,8 @@ public class EventRecurrenceFactory
                         entry.LinkedIn,
                         entry.MetaDescription,
                         entry.Duration,
-                        entry.Languages);
+                        entry.Languages,
+                        entry.CallToActionBanners);
     }
 
     private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

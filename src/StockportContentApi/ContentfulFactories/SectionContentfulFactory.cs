@@ -8,11 +8,13 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _sectionBrandingFactory;
     private readonly IVideoRepository _videoRepository;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
 
     public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
         IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
         ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulGroupBranding, GroupBranding> sectionBrandingFactory)
+        IContentfulFactory<ContentfulGroupBranding, GroupBranding> sectionBrandingFactory,
+        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory)
     {
         _profileFactory = profileFactory;
         _documentFactory = documentFactory;
@@ -20,6 +22,7 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
         _sectionBrandingFactory = sectionBrandingFactory;
+        _callToActionContentfulFactory = callToActionContentfulFactory;
     }
 
     public Section ToModel(ContentfulSection entry)
@@ -54,6 +57,7 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
                 entry.SunriseDate,
                 entry.SunsetDate,
                 updatedAt,
-                alertsInline);
+                alertsInline,
+                entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList());
     }
 }

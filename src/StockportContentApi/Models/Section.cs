@@ -15,8 +15,21 @@ public class Section
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
+    public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
 
-    public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, string logoAreaTitle, List<GroupBranding> sectionBranding, DateTime sunriseDate, DateTime sunsetDate, DateTime updatedAt, IEnumerable<Alert> alertsInline)
+    public Section(string title,
+                string slug,
+                string metaDescription,
+                string body,
+                IEnumerable<Profile> profiles,
+                List<Document> documents,
+                string logoAreaTitle,
+                List<GroupBranding> sectionBranding,
+                DateTime sunriseDate,
+                DateTime sunsetDate,
+                DateTime updatedAt,
+                IEnumerable<Alert> alertsInline,
+                IEnumerable<CallToActionBanner> callToActionBanners)
     {
         Title = title;
         Slug = slug;
@@ -30,6 +43,7 @@ public class Section
         SunsetDate = sunsetDate;
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
+        CallToActionBanners = callToActionBanners;
     }
 
     public Section()

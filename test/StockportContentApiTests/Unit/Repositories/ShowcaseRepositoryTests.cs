@@ -135,7 +135,8 @@ public class ShowcaseRepositoryTests
                                 string.Empty,
                                 null,
                                 string.Empty,
-                                string.Empty);
+                                string.Empty,
+                                new List<CallToActionBanner>());
 
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
@@ -227,7 +228,8 @@ public class ShowcaseRepositoryTests
                                 string.Empty,
                                 null,
                                 string.Empty,
-                                string.Empty);
+                                string.Empty,
+                                new List<CallToActionBanner>());
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         // Act

@@ -69,7 +69,8 @@ public class CommsControllerTests
                                                 "linked in",
                                                 "meta description",
                                                 "duration",
-                                                "languages"),
+                                                "languages",
+                                                new List<CallToActionBanner>()),
                                         new CallToActionBanner(),
                                         "email alerts topic id");
 
