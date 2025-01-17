@@ -7,6 +7,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
     private readonly DateComparer _dateComparer;
 
     public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
@@ -14,6 +15,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                                 IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
                                 IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory,
                                 ITimeProvider timeProvider)
     {
         _documentFactory = documentFactory;
@@ -21,7 +23,9 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
         _alertFactory = alertFactory;
         _eventCategoryFactory = eventCategoryFactory;
         _brandingFactory = brandingFactory;
-        _dateComparer = new DateComparer(timeProvider);
+        _callToActionContentfulFactory = callToActionContentfulFactory;
+
+        _dateComparer = new(timeProvider);
     }
 
     public Event ToModel(ContentfulEvent entry)
@@ -40,12 +44,12 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
 
         Group group = _groupFactory.ToModel(entry.Group);
 
-        IEnumerable<EventCategory> categories = entry.EventCategories.Select(ec => _eventCategoryFactory.ToModel(ec));
+        IEnumerable<EventCategory> categories = entry.EventCategories.Select(_eventCategoryFactory.ToModel);
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                .Select(_alertFactory.ToModel).ToList();
         
         List<GroupBranding> eventBranding = entry.EventBranding?.Select(_brandingFactory.ToModel).ToList();
 
@@ -87,6 +91,7 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.LinkedIn,
                         entry.MetaDescription,
                         entry.Duration,
-                        entry.Languages);
+                        entry.Languages,
+                        entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList());
     }
 }

@@ -15,6 +15,7 @@ public class ArticleContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _articleBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
     public ArticleContentfulFactoryTests()
     {
@@ -36,7 +37,8 @@ public class ArticleContentfulFactoryTests
                               _alertFactory.Object,
                               _articleBrandingFactory.Object,
                               _subitemFactory.Object,
-                              _inlineQuoteFactory.Object);
+                              _inlineQuoteFactory.Object,
+                              _callToActionFactory.Object);
     }
 
     [Fact]

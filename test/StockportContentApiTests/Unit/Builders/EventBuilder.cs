@@ -51,6 +51,7 @@ public class EventBuilder
         };
     
     private List<EventCategory> _eventCategories = new();
+    private List<CallToActionBanner> _callToActionBanners = new();
 
     public Event Build()
         => new(_title,
@@ -91,7 +92,8 @@ public class EventBuilder
             _linkedIn,
             _metaDescription,
             _duration,
-            _languages);
+            _languages,
+            _callToActionBanners);
 
     public EventBuilder Slug(string slug)
     {
