@@ -64,9 +64,6 @@ public class Startup
         _logger.Information("CONTENTAPI: STARTUP : ConfigureServices : Adding Legacy URL Redirects");
         services.AddSingleton(_ => new LegacyUrlRedirects(new()));
 
-        _logger.Information("CONTENTAPI: STARTUP : ConfigureServices : Adding Group Configuration");
-        services.AddGroupConfiguration(Configuration, _logger);
-        services.AddHelpers();
         services.AddRedirects(Configuration);
         services.AddContentfulConfig(Configuration);
         services.AddCacheKeyConfig(Configuration);

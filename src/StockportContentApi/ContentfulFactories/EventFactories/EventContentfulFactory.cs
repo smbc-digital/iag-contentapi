@@ -3,7 +3,6 @@ namespace StockportContentApi.ContentfulFactories.EventFactories;
 public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
 {
     private readonly IContentfulFactory<Asset, Document> _documentFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
@@ -11,7 +10,6 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
     private readonly DateComparer _dateComparer;
 
     public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
-                                IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                 IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
                                 IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
@@ -19,7 +17,6 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                                 ITimeProvider timeProvider)
     {
         _documentFactory = documentFactory;
-        _groupFactory = groupFactory;
         _alertFactory = alertFactory;
         _eventCategoryFactory = eventCategoryFactory;
         _brandingFactory = brandingFactory;
@@ -41,8 +38,6 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
         string thumbnailImageUrl = entry.ThumbnailImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.ThumbnailImage.SystemProperties) 
             ? entry.ThumbnailImage?.File?.Url 
             : string.Empty;
-
-        Group group = _groupFactory.ToModel(entry.Group);
 
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(_eventCategoryFactory.ToModel);
 
@@ -75,7 +70,6 @@ public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
                         entry.BookingInformation,
                         entry.Sys.UpdatedAt,
                         entry.Tags,
-                        group,
                         alerts,
                         categories.ToList(),
                         entry.Free,

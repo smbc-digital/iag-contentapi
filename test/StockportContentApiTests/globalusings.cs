@@ -13,7 +13,6 @@ global using StockportContentApi.Config;
 global using StockportContentApi.ContentfulFactories;
 global using StockportContentApi.ContentfulFactories.ArticleFactories;
 global using StockportContentApi.ContentfulFactories.EventFactories;
-global using StockportContentApi.ContentfulFactories.GroupFactories;
 global using StockportContentApi.ContentfulFactories.NewsFactories;
 global using StockportContentApi.ContentfulFactories.TopicFactories;
 global using StockportContentApi.ContentfulModels;

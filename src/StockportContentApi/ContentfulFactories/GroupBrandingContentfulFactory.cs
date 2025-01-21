@@ -1,4 +1,4 @@
-﻿namespace StockportContentApi.ContentfulFactories.GroupFactories;
+namespace StockportContentApi.ContentfulFactories;
 
 public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulGroupBranding, GroupBranding>
 {

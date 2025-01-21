@@ -19,21 +19,17 @@ public class OrganisationRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+        contentfulClientManager
+            .Setup(client => client.GetClient(config))
+            .Returns(_contentfulClient.Object);
 
-        Mock<Func<string, string, IGroupRepository>> _groupRepository = new();
-        List<Group> groups = new();
         Organisation organisation = new() { Slug = "slug", Title = "Title" };
-        groups.Add(new GroupBuilder().Organisation(organisation).Build());
-        groups.Add(new GroupBuilder().Organisation(organisation).Build());
-        groups.Add(new GroupBuilder().Organisation(organisation).Build());
 
         _repository = new OrganisationRepository
         (
             config,
             contentfulFactory,
-            contentfulClientManager.Object,
-            _groupRepository.Object
+            contentfulClientManager.Object
         );
     }
 

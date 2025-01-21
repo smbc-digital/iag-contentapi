@@ -32,7 +32,6 @@ public class AuthenticationHelperTests
 
     [Theory]
     [InlineData("article", "articles")]
-    [InlineData("group", "groups")]
     [InlineData("payment", "payments")]
     [InlineData("event", "events")]
     [InlineData("topic", "topics")]

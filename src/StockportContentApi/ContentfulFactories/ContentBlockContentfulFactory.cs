@@ -9,7 +9,7 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
     public ContentBlock ToModel(ContentfulReference entry) =>
         new()
         {
-            Slug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug),
+            Slug = entry.Slug,
             Title = GetEntryTitle(entry),
             Teaser = entry.Teaser,
             Icon = entry.Icon,
@@ -57,11 +57,6 @@ public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulRefere
             VideoPlaceholderPhotoId = entry.VideoPlaceholderPhotoId,
             AssociatedTagCategory = entry.AssociatedTagCategory
         };
-
-    private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
-            ? "groups" 
-            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
         entry.Sys.ContentType.SystemProperties.Id.Equals("startPage") 

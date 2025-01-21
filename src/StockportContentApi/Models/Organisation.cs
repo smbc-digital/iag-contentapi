@@ -13,7 +13,6 @@ public class Organisation
     public string VolunteeringText { get; set; } = string.Empty;
     public string DonationsText { get; set; } = string.Empty;
     public string DonationsUrl { get; set; } = string.Empty;
-    public List<Group> Groups { get; set; } = new List<Group>();
     public bool Donations { get; set; }
 
     public Organisation() { }

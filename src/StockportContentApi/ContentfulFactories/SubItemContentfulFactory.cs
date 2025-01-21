@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
-
-namespace StockportContentApi.ContentfulFactories;
+﻿namespace StockportContentApi.ContentfulFactories;
 
 public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
 {
@@ -63,15 +61,8 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
                 ? "si-coin" 
                 : "si-default";
 
-        string handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
-
-        return new SubItem(handledSlug, title, entry.Teaser, GetTeaserImage(entry), entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
+        return new SubItem(entry.Slug, title, entry.Teaser, GetTeaserImage(entry), entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
     }
-
-    private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
-            ? "groups"
-            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
         entry.Sys.ContentType.SystemProperties.Id.Equals("startPage")

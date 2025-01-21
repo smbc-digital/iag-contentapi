@@ -25,9 +25,12 @@ public class OrganisationContentfulFactoryTests
     }
 
     [Fact]
-    public void ShouldCreateAGroupFromAContentfulGroup()
+    public void ShouldCreateAnOrganisationFromAContentfulOrganisation()
     {
-        Organisation group = _organisationContentfulFactory.ToModel(_contentfulOrganisation);
-        group.Should().BeEquivalentTo(_contentfulOrganisation, o => o.ExcludingMissingMembers());
+        // Act
+        Organisation organisation = _organisationContentfulFactory.ToModel(_contentfulOrganisation);
+        
+        // Assert
+        organisation.Should().BeEquivalentTo(_contentfulOrganisation, org => org.ExcludingMissingMembers());
     }
 }

@@ -30,13 +30,13 @@ public class DocumentsControllerTests
         };
 
         _mockService
-            .Setup(repo => repo.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Setup(repo => repo.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.FromResult(document));
 
         // Act
-        IActionResult result = await _controller.GetSecureDocument("test-business", "group-slug", "asset-id");
+        IActionResult result = await _controller.GetSecureDocument("test-business", "asset-id");
 
         // Assert
-        _mockService.Verify(service => service.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _mockService.Verify(service => service.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

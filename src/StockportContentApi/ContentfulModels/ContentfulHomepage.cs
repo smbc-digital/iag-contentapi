@@ -16,7 +16,6 @@ public class ContentfulHomepage : IContentfulModel
     public string ForegroundImageLink { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string FreeText { get; set; } = string.Empty;
-    public IEnumerable<ContentfulGroup> FeaturedGroups { get; set; } = new List<ContentfulGroup>();
     public string EventCategory { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; } = new();
     public string MetaDescription { get; set; } = string.Empty;

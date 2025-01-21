@@ -109,6 +109,6 @@ public class DirectoryRepository(ContentfulConfig config,
         ContentfulCollection<ContentfulDirectoryEntry> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulDirectoryEntry> contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();
         
-        return contentfulDirectoryEntries.Select(g => _directoryEntryFactory.ToModel(g));
+        return contentfulDirectoryEntries.Select(_directoryEntryFactory.ToModel);
     }
 }

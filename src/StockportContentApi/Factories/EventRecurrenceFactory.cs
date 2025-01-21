@@ -54,7 +54,6 @@ public class EventRecurrenceFactory
                         entry.BookingInformation,
                         entry.UpdatedAt,
                         entry.Tags,
-                        entry.Group,
                         entry.Alerts,
                         entry.EventCategories,
                         entry.Free,
