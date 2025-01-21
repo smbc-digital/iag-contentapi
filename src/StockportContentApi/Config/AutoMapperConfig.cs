@@ -38,7 +38,7 @@ public class AutoMapperConfig : AutoMapper.Profile
             .ForMember(d => d.Sys,
                 opts => opts.MapFrom(src => src.Sys));
 
-        CreateMap<GroupBranding, ContentfulGroupBranding>()
+        CreateMap<TrustedLogos, ContentfulTrustedLogos>()
             .ForMember(dest => dest.Sys,
                 opts => opts.Ignore())
             .ForMember(dest => dest.File,

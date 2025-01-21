@@ -1,8 +1,8 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulGroupBranding, GroupBranding>
+public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>
 {
-    public GroupBranding ToModel(ContentfulGroupBranding entry)
+    public TrustedLogos ToModel(ContentfulTrustedLogos entry)
     {
         MediaAsset file = new();
 
@@ -15,6 +15,6 @@ public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulGroup
             };
         }
 
-        return new GroupBranding(entry.Title, entry.Text, file, entry.Url);
+        return new TrustedLogos(entry.Title, entry.Text, file, entry.Url);
     }
 }

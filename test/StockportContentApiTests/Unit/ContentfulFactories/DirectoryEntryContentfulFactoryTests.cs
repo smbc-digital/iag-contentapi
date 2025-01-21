@@ -6,7 +6,7 @@ public class DirectoryEntryContentfulFactoryTests
 {
     private readonly DirectoryEntryContentfulFactory _factory;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>> _brandingFactory = new();
     private readonly ITimeProvider _timeProvider = new TimeProvider();
 
     public DirectoryEntryContentfulFactoryTests() =>

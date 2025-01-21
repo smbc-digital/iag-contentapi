@@ -2,15 +2,14 @@
 
 public class GroupBrandingContentfulFactoryTests
 {
-
     [Fact]
     public void ToModel_ShouldCreateGroupBrandingFromAContentfulGroupBranding()
     {
         // Arrange
-        ContentfulGroupBranding contentfulReference = new ContentfulGroupBrandingBuilder().Build();
+        ContentfulTrustedLogos contentfulReference = new ContentfulTrustedLogosBuilder().Build();
 
         // Act
-        GroupBranding result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
+        TrustedLogos result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
 
         // Assert
         Assert.Equal(contentfulReference.Title, result.Title);
@@ -23,7 +22,7 @@ public class GroupBrandingContentfulFactoryTests
     public void ToModel_ShouldMapEmptyValues()
     {
         // Arrange
-        ContentfulGroupBranding contentfulReference = new ContentfulGroupBrandingBuilder()
+        ContentfulTrustedLogos contentfulReference = new ContentfulTrustedLogosBuilder()
             .WithTitle(string.Empty)
             .WithText(string.Empty)
             .WithFile(null)
@@ -31,7 +30,7 @@ public class GroupBrandingContentfulFactoryTests
             .Build();
 
         // Act
-        GroupBranding result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
+        TrustedLogos result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
 
         // Assert
         Assert.Empty(result.Title);

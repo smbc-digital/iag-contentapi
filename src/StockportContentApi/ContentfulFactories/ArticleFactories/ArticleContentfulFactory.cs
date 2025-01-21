@@ -11,7 +11,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IVideoRepository _videoRepository;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogos, TrustedLogos> _articleBrandingFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
 
@@ -23,7 +23,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IVideoRepository videoRepository,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory,
+        IContentfulFactory<ContentfulTrustedLogos, TrustedLogos> articleBrandingFactory,
         IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
         IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory)

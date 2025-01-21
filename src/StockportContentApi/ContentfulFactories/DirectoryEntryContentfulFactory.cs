@@ -1,16 +1,11 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
-public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
+public class DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                            IContentfulFactory<ContentfulTrustedLogos, TrustedLogos> brandingFactory,
+                                            ITimeProvider timeProvider) : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
 {
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
-    private readonly DateComparer _dateComparer;
-
-    public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)
-    {
-        _alertFactory = alertFactory;
-        _brandingFactory = brandingFactory;
-        _dateComparer = new DateComparer(timeProvider);
-    }
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogos, TrustedLogos> _brandingFactory = brandingFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public DirectoryEntry ToModel(ContentfulDirectoryEntry entry)
     {

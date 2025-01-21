@@ -10,7 +10,7 @@ public class TopicContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
     public TopicContentfulFactoryTests()
@@ -21,18 +21,22 @@ public class TopicContentfulFactoryTests
         _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
         _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
         _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
-        _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
-        _topicContentfulFactory = new TopicContentfulFactory(
-            _subItemFactory.Object,
-            _crumbFactory.Object,
-            _alertFactory.Object,
-            _eventBannerFactory.Object,
-            _carouselContentFactory.Object,
-            _timeProvider.Object,
-            _callToActionFactory.Object,
-            _topicBrandingFactory.Object
-            );
+        _timeProvider
+            .Setup(provider => provider.Now())
+            .Returns(new DateTime(2017, 02, 02));
+        
+        _callToActionFactory
+            .Setup(cta => cta.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+            .Returns(new CallToActionBanner());
+        
+        _topicContentfulFactory = new(_subItemFactory.Object,
+                                    _crumbFactory.Object,
+                                    _alertFactory.Object,
+                                    _eventBannerFactory.Object,
+                                    _carouselContentFactory.Object,
+                                    _timeProvider.Object,
+                                    _callToActionFactory.Object,
+                                    _topicBrandingFactory.Object);
     }
 
     [Fact]

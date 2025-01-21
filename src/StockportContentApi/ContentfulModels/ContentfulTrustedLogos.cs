@@ -1,7 +1,7 @@
 ﻿namespace StockportContentApi.ContentfulModels;
 
 [ExcludeFromCodeCoverage]
-public class ContentfulGroupBranding : IContentfulModel
+public class ContentfulTrustedLogos : IContentfulModel
 {
     public string Title { get; set; } = string.Empty;
 

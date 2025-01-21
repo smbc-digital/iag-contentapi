@@ -1,7 +1,7 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class GroupBranding
+public class TrustedLogos
 {
     public string Title { get; set; }
 
@@ -11,7 +11,7 @@ public class GroupBranding
 
     public string Url { get; set; }
 
-    public GroupBranding(string title, string text, MediaAsset file, string url)
+    public TrustedLogos(string title, string text, MediaAsset file, string url)
     {
         Title = title;
         Text = text;

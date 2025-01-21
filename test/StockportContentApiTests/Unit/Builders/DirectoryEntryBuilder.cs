@@ -26,7 +26,7 @@ public class DirectoryEntryBuilder
         new ContentfulAlertBuilder().WithSeverity("Information").Build()
     };
     private readonly List<ContentfulFilter> _filters = new();
-    private readonly List<ContentfulGroupBranding> _branding = new()
+    private readonly List<ContentfulTrustedLogos> _branding = new()
     {
         new() {
             File = new Asset(),

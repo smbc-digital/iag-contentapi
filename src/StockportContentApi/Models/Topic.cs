@@ -27,7 +27,7 @@ public class Topic
     public CarouselContent CampaignBanner { get; set; }
     public CallToActionBanner CallToAction { get; init; }
     public string EventCategory { get; set; }
-    public List<GroupBranding> TopicBranding { get; set; }
+    public List<TrustedLogos> TopicBranding { get; set; }
     public string LogoAreaTitle { get; set; }
 
     public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems)
@@ -42,7 +42,7 @@ public class Topic
         string image, IEnumerable<SubItem> featuredTasks, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems, IEnumerable<Crumb> breadcrumbs,
         IEnumerable<Alert> alerts, DateTime sunriseDate, DateTime sunsetDate, bool emailAlerts,
         string emailAlertsTopicId, EventBanner eventBanner, CarouselContent campaignBanner, string eventCategory,
-        CallToActionBanner callToAction, List<GroupBranding> topicBranding, string logoAreaTitle,
+        CallToActionBanner callToAction, List<TrustedLogos> topicBranding, string logoAreaTitle,
         bool displayContactUs = true)
     {
         Slug = slug;

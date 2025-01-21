@@ -23,9 +23,9 @@ public class ContentfulArticleBuilder
     private readonly DateTime _createdAt = DateTime.Now;
     private  string _associatedTagCategory = "dance";
     public Asset Image { get => _image; set => _image = value; }
-    private List<ContentfulGroupBranding> _articleBranding = new()
+    private List<ContentfulTrustedLogos> _articleBranding = new()
     {
-        new ContentfulGroupBranding()
+        new ContentfulTrustedLogos()
         {
             Title = "branding title",
             Text = "branding text",

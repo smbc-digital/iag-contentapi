@@ -13,7 +13,7 @@ public class ArticleContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _articleBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>> _articleBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
@@ -168,8 +168,8 @@ public class ArticleContentfulFactoryTests
         ContentfulArticle contentfulArticle = new ContentfulArticleBuilder().Build();
 
         _articleBrandingFactory
-            .Setup(factory => factory.ToModel(It.IsAny<ContentfulGroupBranding>()))
-            .Returns(new GroupBranding("branding title", "branding text", new MediaAsset(), "branding-url"));
+            .Setup(factory => factory.ToModel(It.IsAny<ContentfulTrustedLogos>()))
+            .Returns(new TrustedLogos("branding title", "branding text", new MediaAsset(), "branding-url"));
 
         // Act
         Article article = _articleFactory.ToModel(contentfulArticle);
@@ -177,7 +177,7 @@ public class ArticleContentfulFactoryTests
         // Assert
         Assert.NotNull(article);
         Assert.Single(article.ArticleBranding);
-        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulGroupBranding>()), Times.Once);
+        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrustedLogos>()), Times.Once);
     }
 
     [Fact]

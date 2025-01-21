@@ -31,7 +31,7 @@ public class Event
     public GeoCoordinate Coord { get; }
     public string AccessibleTransportLink { get; }
     public string LogoAreaTitle { get; set; }
-    public List<GroupBranding> EventBranding { get; set; } = new();
+    public List<TrustedLogos> EventBranding { get; set; } = new();
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string Website { get; set; }
@@ -72,7 +72,7 @@ public class Event
                 bool? paid,
                 string accessibleTransportLink,
                 string logoAreaTitle,
-                List<GroupBranding> eventBranding,
+                List<TrustedLogos> eventBranding,
                 string phoneNumber,
                 string email,
                 string website,
