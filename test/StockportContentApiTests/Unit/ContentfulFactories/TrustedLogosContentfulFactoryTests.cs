@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApiTests.Unit.ContentfulFactories;
 
-public class GroupBrandingContentfulFactoryTests
+public class TrustedLogosContentfulFactoryTests
 {
     [Fact]
     public void ToModel_ShouldCreateGroupBrandingFromAContentfulGroupBranding()
@@ -9,7 +9,7 @@ public class GroupBrandingContentfulFactoryTests
         ContentfulTrustedLogos contentfulReference = new ContentfulTrustedLogosBuilder().Build();
 
         // Act
-        TrustedLogos result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
+        TrustedLogos result = new TrustedLogosContentfulFactory().ToModel(contentfulReference);
 
         // Assert
         Assert.Equal(contentfulReference.Title, result.Title);
@@ -30,7 +30,7 @@ public class GroupBrandingContentfulFactoryTests
             .Build();
 
         // Act
-        TrustedLogos result = new GroupBrandingContentfulFactory().ToModel(contentfulReference);
+        TrustedLogos result = new TrustedLogosContentfulFactory().ToModel(contentfulReference);
 
         // Assert
         Assert.Empty(result.Title);

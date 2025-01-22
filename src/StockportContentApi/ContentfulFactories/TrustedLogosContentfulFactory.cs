@@ -1,6 +1,6 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class GroupBrandingContentfulFactory : IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>
+public class TrustedLogosContentfulFactory : IContentfulFactory<ContentfulTrustedLogos, TrustedLogos>
 {
     public TrustedLogos ToModel(ContentfulTrustedLogos entry)
     {
