@@ -15,7 +15,7 @@
             ContentfulCollection<ContentfulContactUsArea> contentfulCollection = new() { Items = [contentfulContactUsArea] };
 
             _contentfulClient
-                .Setup(_ =>_.GetEntries(It.IsAny<QueryBuilder<ContentfulContactUsArea>>(), It.IsAny<CancellationToken>()))
+                .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulContactUsArea>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(contentfulCollection);
             
             _contentfulFactory
@@ -32,7 +32,7 @@
             Mock<IContentfulClientManager> contentfulClientManager = new();
             
             contentfulClientManager
-                .Setup(_ => _.GetClient(config))
+                .Setup(client => client.GetClient(config))
                 .Returns(_contentfulClient.Object);
         
             return contentfulClientManager;
