@@ -31,10 +31,6 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
             ? entry.Slug
             : string.Empty;
 
-        string categoriesTitle = !string.IsNullOrEmpty(entry.CategoriesTitle)
-            ? entry.CategoriesTitle
-            : string.Empty;
-
         string insetTextTitle = !string.IsNullOrEmpty(entry.InsetTextTitle)
             ? entry.InsetTextTitle
             : string.Empty;
@@ -58,6 +54,6 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
         List<ContactUsCategory> contactUsCategories = entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
                                                         .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
 
-        return new ContactUsArea(slug, title, categoriesTitle, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription);
+        return new ContactUsArea(slug, title, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription);
     }
 }
