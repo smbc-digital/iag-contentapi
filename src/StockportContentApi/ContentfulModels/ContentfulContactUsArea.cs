@@ -4,7 +4,6 @@ namespace StockportContentApi.ContentfulModels;
 public class ContentfulContactUsArea : ContentfulReference
 {
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
-    public string CategoriesTitle { get; set; } = string.Empty;
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public List<ContentfulReference> PrimaryItems { get; set; } = new();
     public string InsetTextTitle { get; set; } = string.Empty;

@@ -25,7 +25,6 @@ public class ContactUsControllerTests
         // Arrange
         ContactUsArea contactUsArea = new("slug",
                                         "title",
-                                        "categories title",
                                         new List<Crumb>(),
                                         new List<Alert>(),
                                         new List<SubItem>(),
