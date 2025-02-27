@@ -3,6 +3,8 @@
 public class EventHomepageContentfulFactoryTests
 {
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly EventHomepageContentfulFactory _factory;
 
     private readonly ContentfulEventHomepage _entry = new()
@@ -18,11 +20,18 @@ public class EventHomepageContentfulFactoryTests
         Tag9 = "Tag9",
         Tag10 = "Tag10",
         MetaDescription = "MetaDescription",
-        Alerts = new List<ContentfulAlert> { new() }
+        Alerts = new List<ContentfulAlert> { new() },
+        GlobalAlerts = new List<ContentfulAlert> { new() }
     };
 
-    public EventHomepageContentfulFactoryTests() =>
-        _factory = new(_callToActionFactory.Object);
+    public EventHomepageContentfulFactoryTests()
+    {
+        _timeProvider
+            .Setup(time => time.Now())
+            .Returns(new DateTime(2017, 01, 01));
+
+        _factory = new(_callToActionFactory.Object, _alertFactory.Object, _timeProvider.Object);
+    }
 
     [Fact]
     public void ToModel_ShouldReturnExpectedEventHomepage()
@@ -47,5 +56,20 @@ public class EventHomepageContentfulFactoryTests
 
         // Assert
         _callToActionFactory.Verify(callToAction => callToAction.ToModel(It.IsAny<ContentfulCallToActionBanner>()), Times.Once);
+    }
+
+    [Fact]
+    public void ToModel_ShouldCallAlertFactory_If_CallToActionNotNull()
+    {
+        // Arrange
+        _alertFactory
+            .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
+            .Returns(new Alert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()));
+
+        // Act
+        EventHomepage result = _factory.ToModel(_entry);
+
+        // Assert
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Exactly(2));
     }
 }

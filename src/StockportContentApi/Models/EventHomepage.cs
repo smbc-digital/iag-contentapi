@@ -13,7 +13,8 @@ public class EventHomepage(IEnumerable<EventHomepageRow> rows)
 {
     public IEnumerable<EventHomepageRow> Rows { get; } = rows;
     public IEnumerable<EventCategory> Categories { get; set; }
-    public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
+    public List<Alert> Alerts { get; set; } = new();
+    public List<Alert> GlobalAlerts { get; set; } = new();
     public CallToActionBanner CallToAction { get; set; }
     public string MetaDescription { get; set; }
 }

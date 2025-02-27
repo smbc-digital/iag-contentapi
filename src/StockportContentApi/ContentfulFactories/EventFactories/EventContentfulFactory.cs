@@ -1,37 +1,25 @@
 namespace StockportContentApi.ContentfulFactories.EventFactories;
 
-public class EventContentfulFactory : IContentfulFactory<ContentfulEvent, Event>
+public class EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
+                            IContentfulFactory<ContentfulGroup, Group> groupFactory,
+                            IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
+                            IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
+                            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory,
+                            ITimeProvider timeProvider) : IContentfulFactory<ContentfulEvent, Event>
 {
-    private readonly IContentfulFactory<Asset, Document> _documentFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
-    private readonly DateComparer _dateComparer;
-
-    public EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
-                                IContentfulFactory<ContentfulGroup, Group> groupFactory,
-                                IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
-                                IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
-                                IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-                                IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory,
-                                ITimeProvider timeProvider)
-    {
-        _documentFactory = documentFactory;
-        _groupFactory = groupFactory;
-        _alertFactory = alertFactory;
-        _eventCategoryFactory = eventCategoryFactory;
-        _brandingFactory = brandingFactory;
-        _callToActionContentfulFactory = callToActionContentfulFactory;
-
-        _dateComparer = new(timeProvider);
-    }
+    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
+    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory = groupFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory = eventCategoryFactory;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory = callToActionContentfulFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public Event ToModel(ContentfulEvent entry)
     {
         List<Document> eventDocuments = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                            .Select(document => _documentFactory.ToModel(document)).ToList();
+                                            .Select(_documentFactory.ToModel).ToList();
 
         string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
             ? entry.Image?.File?.Url 
