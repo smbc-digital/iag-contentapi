@@ -1,9 +1,14 @@
 ﻿namespace StockportContentApi.ContentfulFactories.EventFactories;
 
-public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory)
+public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToActionBanner,
+                                            CallToActionBanner> callToActionFactory,
+                                            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                            ITimeProvider timeProvider)
     : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
 {
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public EventHomepage ToModel(ContentfulEventHomepage entry)
     {
@@ -46,7 +51,14 @@ public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToA
         EventHomepage eventHomePage = new(rows)
         {
             MetaDescription = entry.MetaDescription,
-            Alerts = entry.Alerts,
+            Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(_alertFactory.ToModel).ToList(),
+            GlobalAlerts = entry.GlobalAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                .Where(alert => !alert.Severity.Equals("Condolence"))
+                                .Select(_alertFactory.ToModel).ToList(),
             CallToAction = callToAction
         };
 
