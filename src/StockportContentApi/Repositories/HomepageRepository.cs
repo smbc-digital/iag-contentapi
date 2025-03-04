@@ -2,19 +2,15 @@
 
 public interface IHomepageRepository
 {
-    public Task<HttpResponse> Get();
+    Task<HttpResponse> Get();
 }
 
-public class HomepageRepository : IHomepageRepository
+public class HomepageRepository(ContentfulConfig config,
+                                IContentfulClientManager clientManager,
+                                IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory) : IHomepageRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory;
-
-    public HomepageRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _homepageFactory = homepageFactory;
-    }
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory = homepageFactory;
 
     public async Task<HttpResponse> Get()
     {

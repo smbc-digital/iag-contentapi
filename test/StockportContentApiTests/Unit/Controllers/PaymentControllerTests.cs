@@ -12,8 +12,8 @@ public class PaymentControllerTests
     {
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
-        _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>()))
+        _mockCreateRepository
+            .Setup(createRepo => createRepo(It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new PaymentController(new(mockLogger.Object), _mockCreateRepository.Object);
@@ -27,11 +27,11 @@ public class PaymentControllerTests
                             "slug",
                             "teaser",
                             "description",
-                            "payment details text",
+                            "paymentDetails",
                             "reference label",
                             "paris reference",
                             "fund",
-                            string.Empty,
+                            "gl code cost centre number",
                             "icon",
                             new List<Crumb>(),
                             EPaymentReferenceValidation.None,
@@ -57,51 +57,28 @@ public class PaymentControllerTests
     public async Task Index_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        List<Payment> payments = new()
-        {
-            new Payment("title",
-                        "slug",
-                        "teaser",
-                        "description",
-                        "payment details text",
-                        "reference label",
-                        "paris reference",
-                        "fund",
-                        string.Empty,
-                        "icon",
-                        new List<Crumb>(),
-                        EPaymentReferenceValidation.None,
-                        "meta description",
-                        "return url",
-                        "catalogue id",
-                        "account reference",
-                        "payment description",
-                        new List<Alert>()
-            ),
-            new Payment("title two",
-                        "slug-two",
-                        "teaser two",
-                        "description two",
-                        "payment details text two",
-                        "reference label two",
-                        "paris reference two",
-                        "fund two",
-                        string.Empty,
-                        "icon two",
-                        new List<Crumb>(),
-                        EPaymentReferenceValidation.None,
-                        "meta description two",
-                        "return url two",
-                        "catalogue id two",
-                        "account reference two",
-                        "payment description two",
-                        new List<Alert>()
-            )
-        };
+        Payment payment = new("title",
+                            "slug",
+                            "teaser",
+                            "description",
+                            "paymentDetails",
+                            "reference label",
+                            "paris reference",
+                            "fund",
+                            "gl code cost centre number",
+                            "icon",
+                            new List<Crumb>(),
+                            EPaymentReferenceValidation.None,
+                            "meta description",
+                            "return url",
+                            "catalogue id",
+                            "account reference",
+                            "payment description",
+                            new List<Alert>());
 
         _mockRepository
             .Setup(repo => repo.Get())
-            .ReturnsAsync(HttpResponse.Successful(payments));
+            .ReturnsAsync(HttpResponse.Successful(payment));
 
         // Act
         IActionResult result = await _controller.Index("test-business");

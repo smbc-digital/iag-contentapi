@@ -15,4 +15,5 @@ public class ContentfulArticle : ContentfulReference
     public string Author { get; set; }
     public string Photographer { get; set; }
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
+    public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
 }

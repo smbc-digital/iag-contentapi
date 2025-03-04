@@ -20,21 +20,42 @@ public class ProfileControllerTests
     }
 
     [Fact]
+    public async Task GetProfile_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
+    {
+        // Arrange
+        Profile profile = new()
+        {
+            Title = "title",
+            Slug = "slug"
+        };
+
+        _mockRepository
+            .Setup(repo => repo.GetProfile(It.IsAny<string>()))
+            .ReturnsAsync(HttpResponse.Successful(profile));
+
+        // Act
+        IActionResult result = await _controller.GetProfile("slug", "test-business");
+
+        // Assert
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
     public async Task Get_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
         List<Profile> profiles = new()
         {
-            new()
+            new Profile()
             {
-                Title = "Profile one",
+                Title = "profile1",
                 Slug = "profile-one"
             },
-            new()
+            new Profile()
             {
-                Title = "Profile two",
+                Title = "profile2",
                 Slug = "profile-two"
-            }
+            },
         };
 
         _mockRepository
@@ -43,27 +64,6 @@ public class ProfileControllerTests
 
         // Act
         IActionResult result = await _controller.Get("test-business");
-
-        // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetProfile_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
-    {
-        // Arrange
-        Profile profile = new()
-        {
-            Title = "Test profile",
-            Slug = "profile"
-        };
-
-        _mockRepository
-            .Setup(repo => repo.GetProfile(It.IsAny<string>()))
-            .ReturnsAsync(HttpResponse.Successful(profile));
-
-        // Act
-        IActionResult result = await _controller.GetProfile("profile", "test-business");
 
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

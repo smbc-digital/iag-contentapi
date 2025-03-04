@@ -1,26 +1,22 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class LandingPageRepository : BaseRepository
+public interface ILandingPageRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory;
-    private readonly EventRepository _eventRepository;
-    private readonly NewsRepository _newsRepository;
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
+    Task<HttpResponse> GetLandingPage(string slug);
+}
 
-    public LandingPageRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
-        IContentfulClientManager contentfulClientManager,
-        EventRepository eventRepository,
-        NewsRepository newsRepository,
-        IContentfulFactory<ContentfulProfile, Profile> profileFactory)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-        _eventRepository = eventRepository;
-        _newsRepository = newsRepository;
-        _profileFactory = profileFactory;
-    }
+public class LandingPageRepository(ContentfulConfig config,
+                                IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
+                                IContentfulClientManager contentfulClientManager,
+                                EventRepository eventRepository,
+                                NewsRepository newsRepository,
+                                IContentfulFactory<ContentfulProfile, Profile> profileFactory) : BaseRepository, ILandingPageRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory = contentfulFactory;
+    private readonly EventRepository _eventRepository = eventRepository;
+    private readonly NewsRepository _newsRepository = newsRepository;
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
 
     public async Task<HttpResponse> GetLandingPage(string slug)
     {
@@ -30,65 +26,102 @@ public class LandingPageRepository : BaseRepository
         ContentfulLandingPage entry = entries.FirstOrDefault();
 
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Landing Page found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No landing page found");
 
         LandingPage landingPage = _contentfulFactory.ToModel(entry);
 
         if (landingPage is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}");
-
-        if (landingPage.PageSections is not null && landingPage.PageSections.Any())
-        {
-            foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
-            {
-                switch (contentBlock.ContentType)
-                {
-                    case "NewsBanner" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
-                        {
-                            News latestNewsResponse = await _newsRepository.GetLatestNewsByCategory(contentBlock.AssociatedTagCategory);
-
-                            if (latestNewsResponse is not null)
-                            {
-                                contentBlock.NewsArticle = latestNewsResponse;
-                                contentBlock.UseTag = false;
-                            }
-                            else
-                            {
-                                latestNewsResponse =
-                                    await _newsRepository.GetLatestNewsByTag(contentBlock.AssociatedTagCategory);
-                                if (latestNewsResponse is not null)
-                                {
-                                    contentBlock.NewsArticle = latestNewsResponse;
-                                    contentBlock.UseTag = true;
-                                }
-                            }
-                            break;
-                        }
-                    case "EventCards" when !string.IsNullOrEmpty(contentBlock.AssociatedTagCategory):
-                        {
-                            List<Event> events = await _eventRepository.GetEventsByCategory(contentBlock.AssociatedTagCategory, true);
-
-                            if (!events.Any())
-                                events = await _eventRepository.GetEventsByTag(contentBlock.AssociatedTagCategory, true);
-
-                            contentBlock.Events = events.Take(3).ToList();
-                            break;
-                        }
-                    case "ProfileBanner" when contentBlock.SubItems?.Any() is true:
-                        {
-                            ContentfulProfile profile = await GetProfile(contentBlock.SubItems.FirstOrDefault().Slug);
-
-                            if (profile is not null)
-                                contentBlock.Profile = _profileFactory.ToModel(profile);
-                            break;
-                        }
-                    default:
-                        break;
-                }
-            }
-        }
+        
+        await ProcessLandingPageContent(landingPage);
 
         return HttpResponse.Successful(landingPage);
+    }
+
+    private async Task ProcessLandingPageContent(LandingPage landingPage)
+    {
+        if (landingPage.PageSections is null || !landingPage.PageSections.Any()) return;
+
+        foreach (ContentBlock contentBlock in landingPage.PageSections.Where(contentBlock => !string.IsNullOrEmpty(contentBlock.ContentType)))
+        {
+            switch (contentBlock.ContentType)
+            {
+                 case "NewsBanner":
+                     await PopulateNewsContent(contentBlock);
+                     break;
+                
+                case "EventCards":
+                    await PopulateEventContent(contentBlock);
+                    break;
+
+                case "ProfileBanner":
+                    await PopulateProfileContent(contentBlock);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    private async Task PopulateNewsContent(ContentBlock contentBlock)
+    {
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)) return;
+
+        IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
+        foreach (string tagOrCategory in tagsOrCategories)
+        {
+            News news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory)
+                        ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory);
+
+            if (news is not null)
+            {
+                contentBlock.NewsArticle = news;
+                contentBlock.UseTag = news.Equals(await _newsRepository.GetLatestNewsByTag(tagOrCategory));
+                break;
+            }
+        }
+    }
+    
+    private async Task PopulateEventContent(ContentBlock contentBlock)
+    {
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)) return;
+
+        IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
+        List<Event> events = new();
+
+        IEnumerable<Task<List<Event>>> tasks = tagsOrCategories.Select(async tagOrCategory =>
+        {
+            List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(tagOrCategory, true);
+            return categoryEvents.Any()
+                ? categoryEvents
+                : await _eventRepository.GetEventsByTag(tagOrCategory, true);
+        });
+
+        foreach (List<Event> task in await Task.WhenAll(tasks))
+        {
+            events.AddRange(task);
+        }
+
+        contentBlock.Events = events
+            .GroupBy(e => e.Slug)
+            .Select(g => g.First())
+            .OrderBy(e => e.EventDate)
+            .ThenBy(e => TimeSpan.Parse(e.StartTime))
+            .ThenBy(e => e.Title)
+            .Take(3)
+            .ToList();
+    }
+
+    private async Task PopulateProfileContent(ContentBlock contentBlock)
+    {
+        if (contentBlock.SubItems?.Any() is false) return;
+
+        ContentBlock firstSubItem = contentBlock.SubItems.First();
+        ContentfulProfile profile = await GetProfile(firstSubItem.Slug);
+
+        if (profile is not null)
+            contentBlock.Profile = _profileFactory.ToModel(profile);
     }
 
     internal async Task<ContentfulProfile> GetProfile(string slug)

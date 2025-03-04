@@ -24,6 +24,7 @@ public class EventBuilder
     private readonly string _facebook = "www.test.com";
     private readonly string _instagram = "www.test.com";
     private readonly string _linkedIn = "www.test.com";
+    private readonly string _logoAreaTitle = "Logo title";
     private List<GroupBranding> _branding = new();
     private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
@@ -50,6 +51,7 @@ public class EventBuilder
         };
     
     private List<EventCategory> _eventCategories = new();
+    private List<CallToActionBanner> _callToActionBanners = new();
 
     public Event Build()
         => new(_title,
@@ -80,6 +82,7 @@ public class EventBuilder
             _free,
             null,
             null,
+            _logoAreaTitle,
             _branding,
             _phoneNumber,
             _email,
@@ -89,7 +92,8 @@ public class EventBuilder
             _linkedIn,
             _metaDescription,
             _duration,
-            _languages);
+            _languages,
+            _callToActionBanners);
 
     public EventBuilder Slug(string slug)
     {

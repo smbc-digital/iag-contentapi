@@ -7,7 +7,6 @@ public class ContactUsArea
     public string Slug { get; set; }
     public string Teaser { get; set; }
     public string Body { get; set; }
-    public string CategoriesTitle { get; set; }
     public IEnumerable<SubItem> PrimaryItems { get; set; }
     public IEnumerable<Crumb> Breadcrumbs { get; set; }
     public IEnumerable<Alert> Alerts { get; }
@@ -18,7 +17,6 @@ public class ContactUsArea
 
     public ContactUsArea(string slug,
         string title,
-        string categoriesTitle,
         IEnumerable<Crumb> breadcrumbs,
         IEnumerable<Alert> alerts,
         IEnumerable<SubItem> primaryItems,
@@ -29,7 +27,6 @@ public class ContactUsArea
     {
         Title = title;
         Slug = slug;
-        CategoriesTitle = categoriesTitle;
         Breadcrumbs = breadcrumbs;
         Alerts = alerts;
         PrimaryItems = primaryItems;

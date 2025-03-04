@@ -12,23 +12,23 @@ public class FooterControllerTests
     {
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
-        _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>()))
+        _mockCreateRepository
+            .Setup(createRepo => createRepo(It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new FooterController(new(mockLogger.Object), _mockCreateRepository.Object);
     }
 
     [Fact]
-    public async Task GetFooter_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
+    public async Task GetArticle_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        Footer footer = new("footer title",
-                            "footer-slug",
+        Footer footer = new("title",
+                            "slug",
                             new List<SubItem>(),
                             new List<SocialMediaLink>(),
-                            "footer content one",
-                            "footer content two",
+                            "footer content 1",
+                            "footer content 2",
                             "footer content 3");
 
         _mockRepository

@@ -12,8 +12,8 @@ public class HomepageControllerTests
     {
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
-        _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>()))
+        _mockCreateRepository
+            .Setup(createRepo => createRepo(It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new HomepageController(new(mockLogger.Object), _mockCreateRepository.Object);
@@ -24,16 +24,16 @@ public class HomepageControllerTests
     {
         // Arrange
         Homepage homepage = new(new List<string>(),
-                                "featured task heading",
-                                "featured tasks summary",
+                                "featured tasks heading",
+                                "featured tasks subheading",
                                 new List<SubItem>(),
                                 new List<SubItem>(),
                                 new List<Alert>(),
                                 new List<CarouselContent>(),
-                                "background-image.jpg",
-                                "foreground-image.png",
+                                "background image",
+                                "foreground image",
                                 "foreground image location",
-                                "forehround image link",
+                                "foreground image link",
                                 "foreground image alt",
                                 "free text",
                                 "title",
@@ -41,9 +41,9 @@ public class HomepageControllerTests
                                 "event category",
                                 "meta description",
                                 null,
-                                new CallToActionBanner(),
-                                new CallToActionBanner(),
-                                new List<SpotlightOnBanner>(),
+                                null,
+                                null,
+                                null,
                                 "image overlay text");
 
         _mockRepository

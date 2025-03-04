@@ -194,6 +194,15 @@ public class EventRepository : BaseRepository, IEventRepository
                                 .ThenBy(t => t.Title)
                                 .ToList();
 
+        List<Event> featuredEvents = events
+            .Where(evnt => evnt.Featured)
+            .GroupBy(evnt => evnt.Slug)
+            .Select(evnt => evnt.First())
+            .OrderBy(evnt => evnt.EventDate)
+            .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+            .ThenBy(evnt => evnt.Title)
+            .ToList();
+
         if (free is true)
         {
             List<Event> eventsToRemove = events.Where(entry => entry.Free is false).ToList();
@@ -207,7 +216,10 @@ public class EventRepository : BaseRepository, IEventRepository
             events = events.OrderBy(e => e.Featured ? 0 : 1).ToList();
 
         if (limit > 0)
+        {
             events = events.Take(limit).ToList();
+            featuredEvents = featuredEvents.Take(limit).ToList();
+        }
 
         var eventCategoriesCollection = await GetContentfulEventCategories();
         IEnumerable<string> eventCategories = Enumerable.Empty<string>();
@@ -216,7 +228,8 @@ public class EventRepository : BaseRepository, IEventRepository
             eventCategories = eventCategoriesCollection.Select(eventCategory => eventCategory.Name);
 
         EventCalender eventCalender = new();
-        eventCalender.SetEvents(events, eventCategories.ToList());
+
+        eventCalender.SetEvents(events, eventCategories.ToList(), featuredEvents);
 
         return HttpResponse.Successful(eventCalender);
     }

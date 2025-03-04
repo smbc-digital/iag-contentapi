@@ -13,8 +13,8 @@ public class DirectoryControllerTests
     {
         Mock<ILogger<ResponseHandler>> mockLogger = new();
 
-        _mockCreateRepository.
-            Setup(createRepo => createRepo(It.IsAny<string>()))
+        _mockCreateRepository
+            .Setup(createRepo => createRepo(It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
         _controller = new DirectoryController(new(mockLogger.Object), _mockCreateRepository.Object);
@@ -24,31 +24,20 @@ public class DirectoryControllerTests
     public async Task GetDirectories_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        List<Directory> directories = new()
+        Directory directory = new()
         {
-            new()
-            {
-                Title = "Test directory 1",
-                Slug = "test-directory-one",
-                Entries = new List<DirectoryEntry>()
-                {
-                    new()
-                    {
-                        Name = "Test directory entry 1",
-                        Slug = "test-directory-entry-one"
-                    }
-                }
-            },
-            new()
-            {
-                Title = "Test directory 2",
-                Slug = "test-directory-two"
-            }
+            Title = "Directory",
+            Slug = "directory",
+            ContentfulId = "contentful-id",
+            Teaser = "teaser",
+            MetaDescription = "meta-description",
+            BackgroundImage = "background-image",
+            Body = "body",
         };
 
         _mockRepository
             .Setup(repo => repo.Get())
-            .ReturnsAsync(HttpResponse.Successful(directories));
+            .ReturnsAsync(HttpResponse.Successful(directory));
 
         // Act
         IActionResult result = await _controller.GetDirectories("test-business");
@@ -63,16 +52,17 @@ public class DirectoryControllerTests
         // Arrange
         Directory directory = new()
         {
-            Title = "Test directory",
-            Slug = "directory"
+            Title = "Directory",
+            Slug = "directory",
+            ContentfulId = "contentful-id"
         };
 
         _mockRepository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(directory));
 
         // Act
-        IActionResult result = await _controller.GetDirectory("directory", "test-business");
+        IActionResult result = await _controller.GetDirectory("slug", "test-business");
 
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
@@ -82,18 +72,18 @@ public class DirectoryControllerTests
     public async Task GetDirectoryEntry_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        DirectoryEntry directoryEntry = new()
+        Directory directory = new()
         {
-            Name = "Directory entry",
-            Slug = "directory-entry"
+            Title = "Directory",
+            Slug = "directory"
         };
 
         _mockRepository
-            .Setup(repo => repo.GetEntry("directory-entry"))
-            .ReturnsAsync(HttpResponse.Successful(directoryEntry));
+            .Setup(repo => repo.GetEntry(It.IsAny<string>()))
+            .ReturnsAsync(HttpResponse.Successful(directory));
 
         // Act
-        IActionResult result = await _controller.GetDirectoryEntry("directory-entry", "test-business");
+        IActionResult result = await _controller.GetDirectoryEntry("slug", "test-business");
 
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

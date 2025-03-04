@@ -1,28 +1,17 @@
 ﻿namespace StockportContentApi.Controllers;
 
 [ApiController]
-public class DirectoryController : Controller
+public class DirectoryController(ResponseHandler handler,
+                                Func<string, IDirectoryRepository> createDirectoryRepository) : Controller
 {
-    private readonly Func<string, IDirectoryRepository> _createDirectoryRepository;
-    private readonly ResponseHandler _handler;
-
-    public DirectoryController(ResponseHandler handler,
-        Func<string, IDirectoryRepository> createDirectoryRepository)
-    {
-        _handler = handler;
-        _createDirectoryRepository = createDirectoryRepository;
-    }
+    private readonly Func<string, IDirectoryRepository> _createDirectoryRepository = createDirectoryRepository;
+    private readonly ResponseHandler _handler = handler;
 
     [HttpGet]
     [Route("{businessId}/directories")]
     [Route("v1/{businessId}/directories")]
     public async Task<IActionResult> GetDirectories(string businessId) =>
-        await _handler.Get(() =>
-        {
-            IDirectoryRepository directoryRepository = _createDirectoryRepository(businessId);
-
-            return directoryRepository.Get();
-        });
+        await _handler.Get(() => _createDirectoryRepository(businessId).Get());
 
     [HttpGet]
     [Route("{businessId}/directory/{slug}")]
@@ -31,8 +20,7 @@ public class DirectoryController : Controller
     {
         try
         {
-            IDirectoryRepository directoryRepository = _createDirectoryRepository(businessId);
-            HttpResponse response = await directoryRepository.Get(slug);
+            HttpResponse response = await _createDirectoryRepository(businessId).Get(slug);
 
             return response.CreateResult();
         }
@@ -46,10 +34,5 @@ public class DirectoryController : Controller
     [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
     [Route("v1/{businessId}/directory-entry/{directoryEntrySlug}")]
     public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId) =>
-        await _handler.Get(() =>
-        {
-            IDirectoryRepository directoryRepository = _createDirectoryRepository(businessId);
-
-            return directoryRepository.GetEntry(directoryEntrySlug);
-        });
+        await _handler.Get(() => _createDirectoryRepository(businessId).GetEntry(directoryEntrySlug));
 }

@@ -16,7 +16,18 @@ public class Section
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
 
-    public Section(string title, string slug, string metaDescription, string body, IEnumerable<Profile> profiles, List<Document> documents, string logoAreaTitle, List<GroupBranding> sectionBranding, DateTime sunriseDate, DateTime sunsetDate, DateTime updatedAt, IEnumerable<Alert> alertsInline)
+    public Section(string title,
+                string slug,
+                string metaDescription,
+                string body,
+                IEnumerable<Profile> profiles,
+                List<Document> documents,
+                string logoAreaTitle,
+                List<GroupBranding> sectionBranding,
+                DateTime sunriseDate,
+                DateTime sunsetDate,
+                DateTime updatedAt,
+                IEnumerable<Alert> alertsInline)
     {
         Title = title;
         Slug = slug;

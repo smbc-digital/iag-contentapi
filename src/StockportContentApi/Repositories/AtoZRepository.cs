@@ -35,9 +35,8 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
 
     public async Task<HttpResponse> Get(string letter)
     {
-        List<AtoZ> atozItems = new();
-        atozItems.AddRange(await GetAtoZ(letter));
-
+        List<AtoZ> atozItems = new(await GetAtoZ(letter));
+        
         atozItems = atozItems.OrderBy(atoZItem => atoZItem.Title).ToList();
 
         return !atozItems.Any()
@@ -50,9 +49,11 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
         string letterToLower = letter.ToLower();
 
         List<AtoZ> atozItems = new();
+
         atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-article-{letterToLower}", () => GetAtoZItemFromContentType("article", letterToLower), _atoZTimeout));
         atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-topic-{letterToLower}", () => GetAtoZItemFromContentType("topic", letterToLower), _atoZTimeout));
         atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-showcase-{letterToLower}", () => GetAtoZItemFromContentType("showcase", letterToLower), _atoZTimeout));
+        
         atozItems = atozItems.OrderBy(atozItem => atozItem.Title).ToList();
 
         return atozItems;

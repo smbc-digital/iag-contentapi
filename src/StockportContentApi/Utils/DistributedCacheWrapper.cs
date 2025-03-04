@@ -17,7 +17,8 @@ public class DistributedCacheWrapper : IDistributedCacheWrapper
     public async Task<string> GetString(string key, CancellationToken token = default)
         => await _distributedCache.GetStringAsync(key, token);
 
-    public Task RemoveAsync(string key, CancellationToken token = default) => _distributedCache.RemoveAsync(key, token);
+    public Task RemoveAsync(string key, CancellationToken token = default) =>
+        _distributedCache.RemoveAsync(key, token);
 
     public void SetString(string key, string value, int expiration)
     {

@@ -9,6 +9,13 @@ public class LandingPageRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
     private readonly Mock<EventRepository> _eventRepository = new();
+    private readonly Mock<ILogger<EventRepository>> _logger = new();
+    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
+    private readonly Mock<NewsRepository> _newsRepository = new();
+    private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
+    private readonly LandingPageRepository _repository;
+    private readonly Mock<ITimeProvider> _timeProvider = new();
 
     private readonly LandingPage _landingPage = new()
     {
@@ -18,7 +25,7 @@ public class LandingPageRepositoryTests
         Breadcrumbs = new List<Crumb>(),
         Alerts = new List<Alert>(),
         Teaser = "landing page teaser",
-        MetaDescription = "landing page metadescription",
+        MetaDescription = "landing page meta description",
         Image = new(),
         Icon = "icon",
         HeaderType = "full image",
@@ -26,32 +33,25 @@ public class LandingPageRepositoryTests
         PageSections = new List<ContentBlock> { new() { Title = "ContentBlock 1" }, new() { Title = "ContentBlock 2" } }
     };
 
-    private readonly Mock<ILogger<EventRepository>> _logger = new();
-    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
-    private readonly Mock<NewsRepository> _newsRepository = new();
-    private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
-    private readonly LandingPageRepository _repository;
-    private readonly Mock<ITimeProvider> _timeprovider = new();
-
     public LandingPageRepositoryTests()
     {
         ContentfulConfig config = BuildContentfulConfig();
 
-        
         CacheKeyConfig cacheKeyconfig = new CacheKeyConfig("test")
             .Add("TEST_EventsCacheKey", "testEventsCacheKey")
             .Add("TEST_NewsCacheKey", "testNewsCacheKey")
             .Build();
 
-        _timeprovider.Setup(time => time.Now()).Returns(DateTime.Today.AddDays(1));
+        _timeProvider
+            .Setup(time => time.Now())
+            .Returns(DateTime.Today.AddDays(1));
         
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
         
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
         
         _newsRepository = new(config,
-                            _timeprovider.Object,
+                            _timeProvider.Object,
                             contentfulClientManager.Object,
                             _newsFactory.Object,
                             _newsRoomFactory.Object,
@@ -61,7 +61,7 @@ public class LandingPageRepositoryTests
         _eventRepository = new(config,
                             cacheKeyconfig,
                             contentfulClientManager.Object,
-                            _timeprovider.Object,
+                            _timeProvider.Object,
                             _eventFactory.Object,
                             _eventHomepageFactory.Object,
                             _cacheWrapper.Object,
@@ -132,7 +132,7 @@ public class LandingPageRepositoryTests
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("No Landing Page found", response.Error);
+        Assert.Equal("No landing page found", response.Error);
     }
 
     [Fact]
@@ -161,9 +161,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
@@ -193,9 +193,9 @@ public class LandingPageRepositoryTests
 
         List<Event> events = new()
         {
-            new EventBuilder().Build(),
-            new EventBuilder().Build(),
-            new EventBuilder().Build()
+            new EventBuilder().Slug("slug1").Build(),
+            new EventBuilder().Slug("slug2").Build(),
+            new EventBuilder().Slug("slug3").Build()
         };
 
         _eventRepository
@@ -256,7 +256,7 @@ public class LandingPageRepositoryTests
         Assert.NotNull(result);
         Assert.Equal(news, responseNews);
         _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Never);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -300,7 +300,7 @@ public class LandingPageRepositoryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(news, responseNews);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Exactly(2));
         _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
     }
 

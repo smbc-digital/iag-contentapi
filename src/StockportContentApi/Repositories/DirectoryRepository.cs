@@ -9,30 +9,21 @@ public interface IDirectoryRepository
     Task<HttpResponse> GetEntry(string slug);
 }
 
-public class DirectoryRepository : BaseRepository, IDirectoryRepository
+public class DirectoryRepository(ContentfulConfig config,
+                                IContentfulClientManager clientManager,
+                                IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
+                                IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
+                                ICache cache,
+                                IOptions<RedisExpiryConfiguration> redisExpiryConfiguration) : BaseRepository, IDirectoryRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory;
-    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
-    private readonly ICache _cache;
-    private readonly RedisExpiryConfiguration _redisExpiryConfiguration;
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory = directoryFactory;
+    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = directoryEntryFactory;
+    private readonly ICache _cache = cache;
+    private readonly RedisExpiryConfiguration _redisExpiryConfiguration = redisExpiryConfiguration.Value;
 
     // TODO Move this to config!!
     private int DepthLimit { get; } = 5;
-
-    public DirectoryRepository(ContentfulConfig config,
-        IContentfulClientManager clientManager,
-        IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
-        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
-        ICache cache,
-        IOptions<RedisExpiryConfiguration> redisExpiryConfiguration)
-    {
-        _client = clientManager.GetClient(config);
-        _directoryFactory = directoryFactory;
-        _directoryEntryFactory = directoryEntryFactory;
-        _cache = cache;
-        _redisExpiryConfiguration = redisExpiryConfiguration.Value;
-    }
 
     public async Task<HttpResponse> Get(string slug)
     {
@@ -57,8 +48,8 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
         foreach (Directory directory in directoriesList)
         {
             directory.Entries = (await GetAllDirectoryEntries())
-                .Where(directoryEntry => directoryEntry.Directories is not null &&
-                directoryEntry.Directories.Any(dir => dir.Slug.Equals(directory.Slug)));
+                                    .Where(directoryEntry => directoryEntry.Directories is not null &&
+                                        directoryEntry.Directories.Any(dir => dir.Slug.Equals(directory.Slug)));
         }
 
         return !directoriesList.Any()
@@ -105,7 +96,7 @@ public class DirectoryRepository : BaseRepository, IDirectoryRepository
     }
 
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries() =>
-        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(), _redisExpiryConfiguration.Directory);
+        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", GetAllDirectoryEntriesFromSource, _redisExpiryConfiguration.Directory);
 
     internal async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug) =>
         (await GetAllDirectoryEntries())

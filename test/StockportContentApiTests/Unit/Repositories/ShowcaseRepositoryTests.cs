@@ -121,20 +121,22 @@ public class ShowcaseRepositoryTests
                                 new(),
                                 null,
                                 null,
-                                new() { new("event", "slug", "icon") },
+                                new() { new("event", "slug", "icon", string.Empty) },
                                 null,
                                 null,
                                 null,
-                                null,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
                                 string.Empty,
                                 null,
                                 string.Empty,
-                                string.Empty);
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                new List<CallToActionBanner>());
 
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
@@ -212,20 +214,22 @@ public class ShowcaseRepositoryTests
                                 new(),
                                 null,
                                 null,
-                                new() { new("event", "slug", "icon") },
+                                new() { new("event", "slug", "icon", string.Empty) },
                                 null,
                                 null,
                                 null,
-                                null,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
-                                string.Empty,
                                 string.Empty,
                                 null,
                                 string.Empty,
-                                string.Empty);
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                null,
+                                string.Empty,
+                                string.Empty,
+                                new List<CallToActionBanner>());
         _eventFactory.Setup(e => e.ToModel(It.IsAny<ContentfulEvent>())).Returns(modelledEvent);
 
         // Act

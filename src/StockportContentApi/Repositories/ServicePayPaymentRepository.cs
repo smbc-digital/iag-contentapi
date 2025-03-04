@@ -2,21 +2,15 @@
 
 public interface IServicePayPaymentRepository
 {
-    public Task<HttpResponse> GetPayment(string slug);
+    Task<HttpResponse> GetPayment(string slug);
 }
 
-public class ServicePayPaymentRepository : IServicePayPaymentRepository
+public class ServicePayPaymentRepository(ContentfulConfig config,
+                                        IContentfulClientManager clientManager,
+                                        IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> servicePayPaymentFactory) : IServicePayPaymentRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> _servicePayPaymentFactory;
-
-    public ServicePayPaymentRepository(ContentfulConfig config,
-        IContentfulClientManager clientManager,
-        IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> servicePayPaymentFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _servicePayPaymentFactory = servicePayPaymentFactory;
-    }
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> _servicePayPaymentFactory = servicePayPaymentFactory;
 
     public async Task<HttpResponse> GetPayment(string slug)
     {

@@ -16,7 +16,7 @@ public class EventCategoryRepository : IEventCategoryRepository
     private readonly string _eventCategoriesCacheKey;
 
     public EventCategoryRepository(ContentfulConfig config,
-                                    CacheKeyConfig cacheKeyConfig,
+                                CacheKeyConfig cacheKeyConfig,
                                 IContentfulFactory<ContentfulEventCategory, EventCategory> contentfulFactory,
                                 IContentfulClientManager contentfulClientManager, ICache cache, IConfiguration configuration)
     {
@@ -49,8 +49,7 @@ public class EventCategoryRepository : IEventCategoryRepository
         if (entries is null || !entries.Any())
             new List<EventCategory>();
 
-        List<EventCategory> eventCategories =
-            entries.Select(eventCatogory => _contentfulFactory.ToModel(eventCatogory)).ToList();
+        List<EventCategory> eventCategories = entries.Select(_contentfulFactory.ToModel).ToList();
 
         return !eventCategories.Any()
             ? null

@@ -56,7 +56,7 @@
 
     app.UseMiddleware<AuthenticationMiddleware>();
     app.UseRouting();
-    app.UseEndpoints(endpoints => endpoints.MapControllers());
+    app.MapControllers();
 
     Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)

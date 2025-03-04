@@ -13,6 +13,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
 
     public ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
         IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
@@ -24,7 +25,8 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
         IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory,
         IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
-        IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory)
+        IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
+        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory)
     {
         _sectionFactory = sectionFactory;
         _crumbFactory = crumbFactory;
@@ -37,6 +39,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _articleBrandingFactory = articleBrandingFactory;
         _subitemFactory = subitemFactory;
         _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
+        _callToActionContentfulFactory = callToActionContentfulFactory;
     }
 
     public Article ToModel(ContentfulArticle entry)
@@ -119,7 +122,9 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             HideLastUpdated = entry.HideLastUpdated,
             Author = entry.Author,
             Photographer = entry.Photographer,
-            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList()
+            InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
+            AssociatedTagCategory = entry.AssociatedTagCategory,
+            CallToActionBanners = entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList()
         };
     }
 }

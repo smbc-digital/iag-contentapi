@@ -1,37 +1,20 @@
 ﻿namespace StockportContentApi.Controllers;
 
-public class PrivacyNoticeController : Controller
+public class PrivacyNoticeController(ResponseHandler handler,
+                                    Func<string, IPrivacyNoticeRepository> privacyNoticeRepository) : Controller
 {
-    private readonly ResponseHandler _handler;
-    private readonly Func<string, IPrivacyNoticeRepository> _privacyNoticeRepository;
-
-    public PrivacyNoticeController(ResponseHandler handler,
-        Func<string, IPrivacyNoticeRepository> privacyNoticeRepository)
-    {
-        _handler = handler;
-        _privacyNoticeRepository = privacyNoticeRepository;
-    }
+    private readonly ResponseHandler _handler = handler;
+    private readonly Func<string, IPrivacyNoticeRepository> _privacyNoticeRepository = privacyNoticeRepository;
 
     [HttpGet]
     [Route("{businessId}/privacy-notices/{slug}")]
     [Route("v1/{businessId}/privacy-notices/{slug}")]
     public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) =>
-        await _handler.Get(async () =>
-        {
-            IPrivacyNoticeRepository repository = _privacyNoticeRepository(businessId);
-            
-            return await repository.GetPrivacyNotice(slug);
-
-        });
+        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetPrivacyNotice(slug));
 
     [HttpGet]
     [Route("{businessId}/privacy-notices")]
     [Route("v1/{businessId}/privacy-notices")]
     public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) =>
-        await _handler.Get(async () =>
-        {
-            IPrivacyNoticeRepository repository = _privacyNoticeRepository(businessId);
-
-            return await repository.GetAllPrivacyNotices();
-        });
+        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetAllPrivacyNotices());
 }
