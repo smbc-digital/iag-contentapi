@@ -1,6 +1,6 @@
 ﻿namespace StockportContentApi.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
+// [ApiExplorerSettings(IgnoreApi = true)]
 public class PaymentController(ResponseHandler handler,
                             Func<string, IPaymentRepository> createRepository) : Controller
 {

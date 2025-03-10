@@ -27,6 +27,7 @@ public class PaymentControllerTests
                             "slug",
                             "teaser",
                             "description",
+                            "default",
                             "paymentDetails",
                             "reference label",
                             "paris reference",
@@ -40,7 +41,8 @@ public class PaymentControllerTests
                             "catalogue id",
                             "account reference",
                             "payment description",
-                            new List<Alert>());
+                            new List<Alert>(),
+                            "21.06");
 
         _mockRepository
             .Setup(repo => repo.GetPayment(It.IsAny<string>()))
@@ -61,6 +63,7 @@ public class PaymentControllerTests
                             "slug",
                             "teaser",
                             "description",
+                            "default",
                             "paymentDetails",
                             "reference label",
                             "paris reference",
@@ -74,7 +77,8 @@ public class PaymentControllerTests
                             "catalogue id",
                             "account reference",
                             "payment description",
-                            new List<Alert>());
+                            new List<Alert>(),
+                            "19.99");
 
         _mockRepository
             .Setup(repo => repo.Get())
