@@ -18,7 +18,6 @@ public class ServicePayPayment
     public string AccountReference { get; set; }
     public string PaymentDescription { get; set; }
     public IEnumerable<Alert> Alerts { get; }
-    public string PaymentAmount { get; set; }
 
     public ServicePayPayment(
         string title,
@@ -35,8 +34,7 @@ public class ServicePayPayment
         string catalogueId,
         string accountReference,
         string paymentDescription,
-        IEnumerable<Alert> alerts,
-        string paymentAmount
+        IEnumerable<Alert> alerts
         )
     {
         Title = title;
@@ -54,6 +52,5 @@ public class ServicePayPayment
         AccountReference = accountReference;
         PaymentDescription = paymentDescription;
         Alerts = alerts;
-        PaymentAmount = paymentAmount;
     }
 }

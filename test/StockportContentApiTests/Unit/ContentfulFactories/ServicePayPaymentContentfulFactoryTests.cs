@@ -2,13 +2,14 @@
 
 public class ServicePayPaymentContentfulFactoryTests
 {
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private Mock<ITimeProvider> _timeProvider;
-    private Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
+    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private Mock<ITimeProvider> _timeProvider = new();
+    private Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
 
     [Fact]
     public void ShouldCreateAServicePayPaymentFromAContentfulServicePayPayment()
     {
+        // Arrange
         ContentfulServicePayPayment contentfulPayment = new ContentfulServicePayPaymentBuilder()
             .Slug("payment-slug")
             .Title("payment title")
@@ -17,18 +18,16 @@ public class ServicePayPaymentContentfulFactoryTests
             .PaymentAmount("15.23")
             .Build();
 
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _timeProvider = new Mock<ITimeProvider>();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
         ServicePayPaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
+        // Act
         ServicePayPayment payment = contentfulFactory.ToModel(contentfulPayment);
 
-        payment.Slug.Should().Be("payment-slug");
-        payment.Title.Should().Be("payment title");
-        payment.Teaser.Should().Be("payment teaser");
-        payment.ReferenceLabel.Should().Be("reference label");
-        payment.MetaDescription.Should().Be("metaDescription");
-        payment.PaymentAmount.Should().Be("15.23");
+        // Assert
+        Assert.Equal("payment-slug", payment.Slug);
+        Assert.Equal("payment title", payment.Title);
+        Assert.Equal("payment teaser", payment.Teaser);
+        Assert.Equal("reference label", payment.ReferenceLabel);
+        Assert.Equal("metaDescription", payment.MetaDescription);
     }
 }
