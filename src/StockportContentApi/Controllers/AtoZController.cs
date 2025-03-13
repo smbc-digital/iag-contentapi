@@ -1,6 +1,5 @@
 ﻿namespace StockportContentApi.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
 public class AtoZController : Controller
 {
     private readonly Func<string, ContentfulConfig> _createConfig;
@@ -20,12 +19,13 @@ public class AtoZController : Controller
     [Route("{businessId}/atoz/{letter}")]
     [Route("v1/{businessId}/atoz/{letter}")]
     public async Task<IActionResult> Index(string letter, string businessId)
-    {
-        return await _handler.Get(() =>
-        {
-            AtoZRepository repository = _createRepository(_createConfig(businessId));
-
-            return repository.Get(letter);
-        });
-    }
+        => await _handler.Get(() 
+            => _createRepository(_createConfig(businessId)).Get(letter));
+    
+    [HttpGet]
+    [Route("{businessId}/atoz/")]
+    [Route("v1/{businessId}/atoz/")]
+    public async Task<IActionResult> Index(string businessId)
+        => await _handler.Get(() 
+            => _createRepository(_createConfig(businessId)).Get());
 }
