@@ -7,16 +7,12 @@ public interface IGroupAdvisorRepository
     Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email);
 }
 
-public class GroupAdvisorRepository : IGroupAdvisorRepository
+public class GroupAdvisorRepository(ContentfulConfig config,
+                                    IContentfulClientManager contentfulClientManager,
+                                    IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory) : IGroupAdvisorRepository
 {
-    readonly IContentfulClient _client;
-    readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory;
-
-    public GroupAdvisorRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> contentfulFactory)
-    {
-        _client = contentfulClientManager.GetClient(config);
-        _contentfulFactory = contentfulFactory;
-    }
+    readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    readonly IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor> _contentfulFactory = contentfulFactory;
 
     public async Task<List<GroupAdvisor>> GetAdvisorsByGroup(string slug)
     {
@@ -26,7 +22,7 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
         if (entries is null)
             return new List<GroupAdvisor>();
 
-        List<GroupAdvisor> result = entries.Select(item => _contentfulFactory.ToModel(item)).ToList();
+        List<GroupAdvisor> result = entries.Select(_contentfulFactory.ToModel).ToList();
 
         return result.Where(item => item.Groups.Contains(slug)).ToList();
     }
@@ -39,7 +35,7 @@ public class GroupAdvisorRepository : IGroupAdvisorRepository
         if (entries is null)
             return null;
 
-        return entries.Select(item => _contentfulFactory.ToModel(item)).FirstOrDefault();
+        return entries.Select(_contentfulFactory.ToModel).FirstOrDefault();
     }
 
     public async Task<bool> CheckIfUserHasAccessToGroupBySlug(string slug, string email)

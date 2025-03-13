@@ -35,7 +35,6 @@ public class ContactUsAreaFactoryTests
         Assert.NotNull(result.PrimaryItems);
         Assert.NotNull(result.Slug);
         Assert.NotNull(result.Title);
-        Assert.NotNull(result.CategoriesTitle);
         Assert.Equal("title", result.Title);
         Assert.Equal("slug", result.Slug);
         Assert.NotNull(result.ContactUsCategories);
@@ -66,7 +65,6 @@ public class ContactUsAreaFactoryTests
         Assert.Single(result.PrimaryItems);
         Assert.NotNull(result.Slug);
         Assert.NotNull(result.Title);
-        Assert.NotNull(result.CategoriesTitle);
     }
 
     [Fact]
@@ -101,7 +99,6 @@ public class ContactUsAreaFactoryTests
         Assert.Single(result.ContactUsCategories);
         Assert.NotNull(result.Slug);
         Assert.NotNull(result.Title);
-        Assert.NotNull(result.CategoriesTitle);
         Assert.NotNull(result.InsetTextTitle);
         Assert.NotNull(result.InsetTextBody);
     }

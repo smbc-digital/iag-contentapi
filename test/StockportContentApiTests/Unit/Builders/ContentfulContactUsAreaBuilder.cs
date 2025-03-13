@@ -4,7 +4,6 @@ public class ContentfulContactUsAreaBuilder
 {
     private string _title { get; set; } = "title";
     private string _slug { get; set; } = "slug";
-    private string _categoriesTitle { get; set; } = "categoriesTitle";
     private string _metaDescription { get; set; } = "metaDescription";
     private string _insetTextTitle { get; set; } = "insetTextTitle";
     private string _insetTextBody { get; set; } = "insetTextBody";
@@ -31,7 +30,6 @@ public class ContentfulContactUsAreaBuilder
         {
             Title = _title,
             Slug = _slug,
-            CategoriesTitle = _categoriesTitle,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
             InsetTextTitle = _insetTextTitle,
@@ -50,12 +48,6 @@ public class ContentfulContactUsAreaBuilder
     public ContentfulContactUsAreaBuilder Title(string title)
     {
         _title = title;
-        return this;
-    }
-
-    public ContentfulContactUsAreaBuilder CategoriesTitle(string categoriesTitle)
-    {
-        _categoriesTitle = categoriesTitle;
         return this;
     }
 

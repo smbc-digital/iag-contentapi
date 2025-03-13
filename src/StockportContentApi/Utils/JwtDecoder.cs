@@ -6,16 +6,10 @@ public interface IJwtDecoder
 }
 
 [ExcludeFromCodeCoverage]
-public class JwtDecoder : IJwtDecoder
+public class JwtDecoder(GroupAuthenticationKeys keys, ILogger<JwtDecoder> logger) : IJwtDecoder
 {
-    private readonly GroupAuthenticationKeys _keys;
-    private readonly ILogger<JwtDecoder> _logger;
-
-    public JwtDecoder(GroupAuthenticationKeys keys, ILogger<JwtDecoder> logger)
-    {
-        _keys = keys;
-        _logger = logger;
-    }
+    private readonly GroupAuthenticationKeys _keys = keys;
+    private readonly ILogger<JwtDecoder> _logger = logger;
 
     public LoggedInPerson Decode(string token)
     {

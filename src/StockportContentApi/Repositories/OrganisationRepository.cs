@@ -1,20 +1,18 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class OrganisationRepository
+public interface IOrganisationRepository
 {
-    private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulFactory;
-    private readonly IContentfulClient _client;
-    private readonly Func<ContentfulConfig, CacheKeyConfig, IGroupRepository> _groupRepository;
+    Task<HttpResponse> GetOrganisation(string slug, ContentfulConfig config, CacheKeyConfig cacheKeyConfig);
+}
 
-    public OrganisationRepository(ContentfulConfig config,
-        IContentfulFactory<ContentfulOrganisation, Organisation> contentfulFactory,
-        IContentfulClientManager contentfulClientManager,
-        Func<ContentfulConfig, CacheKeyConfig, IGroupRepository> groupRepository)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-        _groupRepository = groupRepository;
-    }
+public class OrganisationRepository(ContentfulConfig config,
+                                    IContentfulFactory<ContentfulOrganisation, Organisation> contentfulFactory,
+                                    IContentfulClientManager contentfulClientManager,
+                                    Func<string, string, IGroupRepository> groupRepository) : IOrganisationRepository
+{
+    private readonly IContentfulFactory<ContentfulOrganisation, Organisation> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly Func<string, string, IGroupRepository> _groupRepository = groupRepository;
 
     public async Task<HttpResponse> GetOrganisation(string slug, ContentfulConfig config, CacheKeyConfig cacheKeyConfig)
     {
@@ -23,7 +21,7 @@ public class OrganisationRepository
         ContentfulOrganisation entry = entries.FirstOrDefault();
 
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No Organisation found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No organisation found");
 
         Organisation organisation = _contentfulFactory.ToModel(entry);
 
@@ -34,7 +32,7 @@ public class OrganisationRepository
 
     private async Task<List<Group>> GetGroup(string groupSlug, ContentfulConfig config, CacheKeyConfig cacheKeyConfig)
     {
-        IGroupRepository groupRepository = _groupRepository(config, cacheKeyConfig);
+        IGroupRepository groupRepository = _groupRepository(config.BusinessId, cacheKeyConfig.BusinessId);
         List<Group> groups = await groupRepository.GetLinkedGroupsByOrganisation(groupSlug);
 
         return groups;

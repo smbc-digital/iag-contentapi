@@ -32,4 +32,5 @@ public class Article
     public List<InlineQuote> InlineQuotes { get; set; }
     public string AssociatedTagCategory { get; set; }
     public List<Event> Events { get; set; }
+    public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
 }

@@ -1,17 +1,19 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class StartPageRepository
+public interface IStartPageRepository
 {
-    private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory;
-    private readonly IContentfulClient _client;
-    private readonly DateComparer _dateComparer;
+    Task<HttpResponse> GetStartPage(string startPageSlug);
+    Task<HttpResponse> Get();
+}
 
-    public StartPageRepository(ContentfulConfig config, IContentfulClientManager contentfulClientManager, IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory, ITimeProvider timeProvider)
-    {
-        _contentfulFactory = contentfulFactory;
-        _client = contentfulClientManager.GetClient(config);
-        _dateComparer = new DateComparer(timeProvider);
-    }
+public class StartPageRepository(ContentfulConfig config,
+                                IContentfulClientManager contentfulClientManager,
+                                IContentfulFactory<ContentfulStartPage, StartPage> contentfulFactory,
+                                ITimeProvider timeProvider) : IStartPageRepository
+{
+    private readonly IContentfulFactory<ContentfulStartPage, StartPage> _contentfulFactory = contentfulFactory;
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public async Task<HttpResponse> GetStartPage(string startPageSlug)
     {

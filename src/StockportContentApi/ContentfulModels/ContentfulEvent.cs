@@ -31,6 +31,7 @@ public class ContentfulEvent : IContentfulModel
     public bool? Free { get; set; } = null;
     public bool? Paid { get; set; } = null;
     public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
+    public string LogoAreaTitle { get; set; } = string.Empty;
     public List<ContentfulGroupBranding> EventBranding { get; set; } = new();
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -40,4 +41,5 @@ public class ContentfulEvent : IContentfulModel
     public string LinkedIn { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
+    public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
 }

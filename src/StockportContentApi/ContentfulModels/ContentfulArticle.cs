@@ -3,7 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class ContentfulArticle : ContentfulReference
 {
-    public string Body { get; set; } = string.Empty;
     public string AltText { get; set; }
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public List<ContentfulProfile> Profiles { get; set; } = new();
@@ -16,4 +15,5 @@ public class ContentfulArticle : ContentfulReference
     public string Author { get; set; }
     public string Photographer { get; set; }
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
+    public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
 }

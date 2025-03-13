@@ -1,27 +1,22 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class ServicePayPaymentContentfulFactory : IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>
+public class ServicePayPaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                                ITimeProvider timeProvider,
+                                                IContentfulFactory<ContentfulReference, Crumb> crumbFactory) : IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>
 {
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-
-    public ServicePayPaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
-    {
-        _alertFactory = alertFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _crumbFactory = crumbFactory;
-    }
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
 
     public ServicePayPayment ToModel(ContentfulServicePayPayment entry)
     {
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                                        .Select(alert => _alertFactory.ToModel(alert));
+                                        .Select(_alertFactory.ToModel);
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         return new ServicePayPayment(
             entry.Title,
@@ -38,7 +33,6 @@ public class ServicePayPaymentContentfulFactory : IContentfulFactory<ContentfulS
             entry.CatalogueId,
             entry.AccountReference,
             entry.PaymentDescription,
-            alerts,
-            entry.PaymentAmount);
+            alerts);
     }
 }

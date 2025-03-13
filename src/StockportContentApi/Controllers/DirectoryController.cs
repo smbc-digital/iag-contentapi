@@ -1,43 +1,26 @@
 ﻿namespace StockportContentApi.Controllers;
 
 [ApiController]
-public class DirectoryController : Controller
+public class DirectoryController(ResponseHandler handler,
+                                Func<string, IDirectoryRepository> createDirectoryRepository) : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly Func<ContentfulConfig, DirectoryRepository> _createDirectoryRepository;
-    private readonly ResponseHandler _handler;
-
-    public DirectoryController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, DirectoryRepository> createDirectoryRepository)
-    {
-        _handler = handler;
-        _createConfig = createConfig;
-        _createDirectoryRepository = createDirectoryRepository;
-    }
+    private readonly Func<string, IDirectoryRepository> _createDirectoryRepository = createDirectoryRepository;
+    private readonly ResponseHandler _handler = handler;
 
     [HttpGet]
     [Route("{businessId}/directories")]
-    [Route("v2/{businessId}/directories")]
-    public async Task<IActionResult> GetDirectories(string businessId)
-    {
-        return await _handler.Get(() =>
-        {
-            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-
-            return directoryRepository.Get();
-        });
-    }
+    [Route("v1/{businessId}/directories")]
+    public async Task<IActionResult> GetDirectories(string businessId) =>
+        await _handler.Get(() => _createDirectoryRepository(businessId).Get());
 
     [HttpGet]
     [Route("{businessId}/directory/{slug}")]
-    [Route("v2/{businessId}/directory/{slug}")]
+    [Route("v1/{businessId}/directory/{slug}")]
     public async Task<IActionResult> GetDirectory(string slug, string businessId)
     {
         try
         {
-            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-            HttpResponse response = await directoryRepository.Get(slug);
+            HttpResponse response = await _createDirectoryRepository(businessId).Get(slug);
 
             return response.CreateResult();
         }
@@ -49,14 +32,7 @@ public class DirectoryController : Controller
 
     [HttpGet]
     [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
-    [Route("v2/{businessId}/directory-entry/{directoryEntrySlug}")]
-    public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId)
-    {
-        return await _handler.Get(() =>
-        {
-            DirectoryRepository directoryRepository = _createDirectoryRepository(_createConfig(businessId));
-
-            return directoryRepository.GetEntry(directoryEntrySlug);
-        });
-    }
+    [Route("v1/{businessId}/directory-entry/{directoryEntrySlug}")]
+    public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId) =>
+        await _handler.Get(() => _createDirectoryRepository(businessId).GetEntry(directoryEntrySlug));
 }

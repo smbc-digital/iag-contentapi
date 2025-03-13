@@ -1,15 +1,16 @@
 ﻿namespace StockportContentApi.Repositories;
 
-public class ContactUsAreaRepository
+public interface IContactUsAreaRepository
 {
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory;
+    Task<HttpResponse> GetContactUsArea();
+}
 
-    public ContactUsAreaRepository(ContentfulConfig config, IContentfulClientManager clientManager, IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory)
-    {
-        _client = clientManager.GetClient(config);
-        _contentfulFactory = contentfulFactory;
-    }
+public class ContactUsAreaRepository(ContentfulConfig config,
+                                    IContentfulClientManager clientManager,
+                                    IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory) : IContactUsAreaRepository
+{
+    private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory = contentfulFactory;
 
     public async Task<HttpResponse> GetContactUsArea()
     {

@@ -2,7 +2,12 @@
 
 namespace StockportContentApi.Repositories;
 
-public class AtoZRepository : BaseRepository
+public interface IAtoZRepository
+{
+    Task<HttpResponse> Get(string letter);
+}
+
+public class AtoZRepository : BaseRepository, IAtoZRepository
 {
     private readonly DateComparer _dateComparer;
     private readonly IContentfulClient _client;
@@ -37,14 +42,17 @@ public class AtoZRepository : BaseRepository
                             ? await GetAtoZ() 
                             : await GetAtoZ(letter);
         
+
         return !atozItems.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No results found")
             : HttpResponse.Successful(atozItems.OrderBy(o => o.Title).ToList());
     }
 
     public async Task<IEnumerable<AtoZ>> GetAtoZ()
+
     {
         List<AtoZ> atozItems = new();
+
         foreach(var contentType in contentTypesToInclude)
         {
             var items = await _cache.GetFromCacheOrDirectlyAsync($"atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
@@ -72,10 +80,11 @@ public class AtoZRepository : BaseRepository
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
-        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(x => x.DisplayOnAZ.Equals("True") && x.Title.ToLower().StartsWith(letter)
-                                                                || x.Name.ToLower().StartsWith(letter) 
-                                                                || (x.AlternativeTitles is not null 
-                                                                && x.AlternativeTitles.Any(alt => alt.ToLower().StartsWith(letter))));
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True")
+                                                                && entry.Title.ToLower().StartsWith(letter)
+                                                                || entry.Name.ToLower().StartsWith(letter) 
+                                                                || (entry.AlternativeTitles is not null 
+                                                                && entry.AlternativeTitles.Any(alternativeTitle => alternativeTitle.ToLower().StartsWith(letter))));
 
         if (entriesWithDisplayOn is not null)
         {

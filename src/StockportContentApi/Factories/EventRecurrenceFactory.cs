@@ -60,6 +60,7 @@ public class EventRecurrenceFactory
                         entry.Free,
                         entry.Paid,
                         entry.AccessibleTransportLink,
+                        entry.LogoAreaTitle,
                         entry.EventBranding,
                         entry.PhoneNumber,
                         entry.Email,
@@ -69,7 +70,8 @@ public class EventRecurrenceFactory
                         entry.LinkedIn,
                         entry.MetaDescription,
                         entry.Duration,
-                        entry.Languages);
+                        entry.Languages,
+                        entry.CallToActionBanners);
     }
 
     private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)

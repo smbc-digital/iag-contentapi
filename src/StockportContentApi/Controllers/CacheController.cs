@@ -1,16 +1,10 @@
 ﻿namespace StockportContentApi.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
-public class CacheController : Controller
+public class CacheController(ICache cache, ILogger<CacheController> logger) : Controller
 {
-    private readonly ICache _cache;
-    private readonly ILogger<CacheController> _logger;
-
-    public CacheController(ICache cache, ILogger<CacheController> logger)
-    {
-        _cache = cache;
-        _logger = logger;
-    }
+    private readonly ICache _cache = cache;
+    private readonly ILogger<CacheController> _logger = logger;
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]

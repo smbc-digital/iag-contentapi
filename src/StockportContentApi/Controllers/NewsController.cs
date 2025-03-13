@@ -1,60 +1,30 @@
 ﻿namespace StockportContentApi.Controllers;
 
-public class NewsController : Controller
+public class NewsController(ResponseHandler handler,
+                            Func<string, INewsRepository> newsRepository) : Controller
 {
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly ResponseHandler _handler;
-    private readonly Func<ContentfulConfig, NewsRepository> _newsRepository;
-
-    public NewsController(ResponseHandler handler,
-        Func<string, ContentfulConfig> createConfig,
-        Func<ContentfulConfig, NewsRepository> newsRepository)
-    {
-        _handler = handler;
-        _createConfig = createConfig;
-        _newsRepository = newsRepository;
-    }
+    private readonly ResponseHandler _handler = handler;
+    private readonly Func<string, INewsRepository> _newsRepository = newsRepository;
 
     [HttpGet]
     [Route("{businessId}/news")]
     [Route("v1/{businessId}/news")]
     public async Task<IActionResult> Index(string businessId,
-        [FromQuery] string tag = null,
-        [FromQuery] string category = null,
-        [FromQuery] DateTime? dateFrom = null,
-        [FromQuery] DateTime? dateTo = null)
-    {
-        return await _handler.Get(() =>
-        {
-            NewsRepository repository = _newsRepository(_createConfig(businessId));
-
-            return repository.Get(tag, category, dateFrom, dateTo);
-        });
-    }
+            [FromQuery] string tag = null,
+            [FromQuery] string category = null,
+            [FromQuery] DateTime? dateFrom = null,
+            [FromQuery] DateTime? dateTo = null) =>
+        await _handler.Get(() => _newsRepository(businessId).Get(tag, category, dateFrom, dateTo));
 
     [HttpGet]
     [Route("{businessId}/news/latest/{limit}")]
     [Route("v1/{businessId}/news/latest/{limit}")]
-    public async Task<IActionResult> LatestNews(string businessId, int limit)
-    {
-        return await _handler.Get(() =>
-        {
-            NewsRepository repository = _newsRepository(_createConfig(businessId));
-
-            return repository.GetNewsByLimit(limit);
-        });
-    }
+    public async Task<IActionResult> LatestNews(string businessId, int limit) =>
+        await _handler.Get(() => _newsRepository(businessId).GetNewsByLimit(limit));
 
     [HttpGet]
     [Route("{businessId}/news/{slug}")]
     [Route("v1/{businessId}/news/{slug}")]
-    public async Task<IActionResult> Detail(string slug, string businessId)
-    {
-        return await _handler.Get(() =>
-        {
-            NewsRepository repository = _newsRepository(_createConfig(businessId));
-
-            return repository.GetNews(slug);
-        });
-    }
+    public async Task<IActionResult> Detail(string slug, string businessId) =>
+        await _handler.Get(() => _newsRepository(businessId).GetNews(slug));
 }
