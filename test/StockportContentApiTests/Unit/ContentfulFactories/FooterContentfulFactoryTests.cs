@@ -20,7 +20,7 @@ public class FooterContentfulFactoryTests
                                 DateTime.MaxValue,
                                 "image",
                                 new List<SubItem>(),
-                                EColourScheme.Orange));
+                                EColourScheme.Pink));
         
         _socialMediaFactory
             .Setup(_socialMediaFactory => _socialMediaFactory.ToModel(It.IsAny<ContentfulSocialMediaLink>()))
