@@ -59,12 +59,13 @@ public class AtoZRepositoryTests
         _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
             .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
                 "The vintage village turned 6 with a great reception", "article", new List<string>()));
+                
         AtoZRepository repository = new(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZArticle);
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZTopic);
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZShowcase);
-
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZArticle);
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZTopic);
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZShowcase);
+    
         HttpResponse response = AsyncTestHelper.Resolve(repository.Get(letter));
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -97,9 +98,9 @@ public class AtoZRepositoryTests
             new AtoZ("B atoztitle 3", "atozslug3", "atozteaser3", "topic", new List<string> {"V atoztitle"})
         };
 
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZArticle);
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZTopic);
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZShowcase);
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZArticle);
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZTopic);
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(aToZShowcase);
 
         _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
            .Returns(new AtoZ("Bintage Village turns 6 years old", "bintage-village-turns-6-years-old",
@@ -118,9 +119,9 @@ public class AtoZRepositoryTests
     public void ItReturnsANotFoundIfNoItemsMatch()
     {
         string letter = "b";
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
-        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-article-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
+        _cache.Setup(o => o.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60)))).ReturnsAsync(new List<AtoZ>());
 
         _aToZFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAtoZ>()))
            .Returns(new AtoZ("Vintage Village turns 6 years old", "vintage-village-turns-6-years-old",
@@ -158,7 +159,7 @@ public class AtoZRepositoryTests
             .Returns(new AtoZ("Because a Vintage Village turns 6 years old", "vintage-village-turns-6-years-old", "The vintage village turned 6 with a great reception", "article", new List<string> { alternativeTitle }));
 
         AtoZRepository repository = new(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
-        List<AtoZ> aToZListing = await repository.GetAtoZItemFromContentType("article", "d");
+        List<AtoZ> aToZListing = await repository.GetAtoZItemFromSource("article", "d");
 
         aToZListing.Count.Should().Be(5);
         aToZListing.FirstOrDefault().Title.Should().Be(alternativeTitle);
@@ -185,7 +186,7 @@ public class AtoZRepositoryTests
             .Returns(new AtoZ("title", "slug", "teaser", "article", alternateTitles));
         AtoZRepository repository = new(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
-        List<AtoZ> result = AsyncTestHelper.Resolve(repository.GetAtoZItemFromContentType("article", "t"));
+        List<AtoZ> result = AsyncTestHelper.Resolve(repository.GetAtoZItemFromSource("article", "t"));
 
         result.Count.Should().Be(3);
         result[0].Title.Should().Be("title");
