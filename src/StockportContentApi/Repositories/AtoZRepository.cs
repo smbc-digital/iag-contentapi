@@ -1,39 +1,33 @@
-﻿using System.Collections.Generic;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public interface IAtoZRepository
 {
-    Task<HttpResponse> Get(string letter);
+    Task<HttpResponse> Get(string letter = "");
 }
 
-public class AtoZRepository : BaseRepository, IAtoZRepository
-{
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
-    private readonly ICache _cache;
-    private readonly int _atoZTimeout;
-    private readonly ILogger _logger;
-    private IConfiguration _configuration;
-    private List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
-
-    public AtoZRepository(
+public class AtoZRepository(
         ContentfulConfig config,
-        IContentfulClientManager clientManager,
+        IContentfulClientManager contentfulClientManager,
         IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
         ITimeProvider timeProvider,
         ICache cache,
         IConfiguration configuration,
-        ILogger logger)
+        ILogger logger) : BaseRepository, IAtoZRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory = contentfulAtoZFactory;
+    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
+    private readonly ICache _cache = cache;
+    private readonly int _atoZTimeout = GetCacheConfiguration(configuration);
+    private readonly ILogger _logger = logger;
+    private List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
+
+    private static int GetCacheConfiguration(IConfiguration configuration)
     {
-        _client = clientManager.GetClient(config);
-        _contentfulAtoZFactory = contentfulAtoZFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _cache = cache;
-        _configuration = configuration;
-        _logger = logger;
-        int.TryParse(_configuration["redisExpiryTimes:AtoZ"], out _atoZTimeout);
+        int timeout = 0;
+        int.TryParse(configuration["redisExpiryTimes:AtoZ"], out timeout);
+
+        return timeout;
     }
 
     public async Task<HttpResponse> Get(string letter = "")
@@ -41,7 +35,6 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
         IEnumerable<AtoZ> atozItems = string.IsNullOrEmpty(letter) 
                             ? await GetAtoZ() 
                             : await GetAtoZ(letter);
-        
 
         return !atozItems.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No results found")
@@ -49,13 +42,11 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
     }
 
     public async Task<IEnumerable<AtoZ>> GetAtoZ()
-
     {
         List<AtoZ> atozItems = new();
-
         foreach(var contentType in contentTypesToInclude)
         {
-            var items = await _cache.GetFromCacheOrDirectlyAsync($"atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
+            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
             atozItems.AddRange(items);
         }    
 
@@ -67,8 +58,9 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
         List<AtoZ> atozItems = new();
         foreach (var contentType in contentTypesToInclude)
         {
-            var items = await _cache.GetFromCacheOrDirectlyAsync($"atoz-{contentType}-{letter.ToLower()}", () => GetAtoZItemFromSource(contentType, letter.ToLower()), _atoZTimeout);
-            atozItems.AddRange(items);
+            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}", () => GetAtoZItemFromSource(contentType, letter.ToLower()), _atoZTimeout);
+            if (items is not null && items.Any())
+                atozItems.AddRange(items);
         }
 
         return atozItems;
