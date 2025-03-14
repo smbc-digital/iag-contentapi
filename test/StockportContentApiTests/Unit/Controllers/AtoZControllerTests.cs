@@ -5,6 +5,7 @@ namespace StockportContentApiTests.Unit.Controllers;
 public class AtoZControllerTests
 {
     private readonly Mock<Func<string, IAtoZRepository>> _mockCreateRepository = new();
+    private readonly ContentfulConfig _config;
     private readonly Mock<IAtoZRepository> _mockRepository = new();
     private readonly AtoZController _controller;
 
