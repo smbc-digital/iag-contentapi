@@ -5,12 +5,13 @@ public interface ILandingPageRepository
     Task<HttpResponse> GetLandingPage(string slug);
 }
 
-public class LandingPageRepository(ContentfulConfig config,
-                                IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
-                                IContentfulClientManager contentfulClientManager,
-                                EventRepository eventRepository,
-                                NewsRepository newsRepository,
-                                IContentfulFactory<ContentfulProfile, Profile> profileFactory) : BaseRepository, ILandingPageRepository
+public class LandingPageRepository(
+        ContentfulConfig config,
+        IContentfulFactory<ContentfulLandingPage, LandingPage> contentfulFactory,
+        IContentfulClientManager contentfulClientManager,
+        EventRepository eventRepository,
+        NewsRepository newsRepository,
+        IContentfulFactory<ContentfulProfile, Profile> profileFactory) : BaseRepository, ILandingPageRepository
 {
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulLandingPage, LandingPage> _contentfulFactory = contentfulFactory;
