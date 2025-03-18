@@ -37,4 +37,21 @@ public class AtoZ
 
         return matchingItems;
     }
+
+    public List<AtoZ> SetTitles()
+    {
+        List<AtoZ> matchingItems = new();
+        
+        matchingItems.Add(this);
+
+        if (AlternativeTitles is not null)
+        {
+            foreach (string atozAlternativeTitle in AlternativeTitles)
+            {
+                matchingItems.Add(new AtoZ(atozAlternativeTitle, Slug, Teaser, Type, AlternativeTitles));
+            }
+        }
+
+        return matchingItems;
+    }
 }

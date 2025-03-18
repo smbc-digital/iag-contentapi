@@ -195,8 +195,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddSingleton<Func<string, IAtoZRepository>>(serviceProvider =>
-            (businessId) =>
-                new AtoZRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+            (contentfulConfig) =>
+                new AtoZRepository(
+                    serviceProvider.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     serviceProvider.GetService<IContentfulClientManager>(),
                     serviceProvider.GetService<IContentfulFactory<ContentfulAtoZ, AtoZ>>(),
                     serviceProvider.GetService<ITimeProvider>(),
@@ -205,8 +206,9 @@ public static class ServiceCollectionExtensions
                     serviceProvider.GetService<ILogger>()));
 
         services.AddSingleton<Func<string, IPrivacyNoticeRepository>>(serviceProvider =>
-            (businessId) =>
-                new PrivacyNoticeRepository(serviceProvider.GetService<Func<string, ContentfulConfig>>()(businessId),
+            (contentfulConfig) =>
+                new PrivacyNoticeRepository(
+                    serviceProvider.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     serviceProvider.GetService<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>>(),
                     serviceProvider.GetService<IContentfulClientManager>()));
 
@@ -294,7 +296,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<Func<string, string, ILandingPageRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
-                new LandingPageRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                new LandingPageRepository(
+                    p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulLandingPage, LandingPage>>(),
                     p.GetService<IContentfulClientManager>(),
                     new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),

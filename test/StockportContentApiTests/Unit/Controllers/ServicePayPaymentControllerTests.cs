@@ -37,8 +37,7 @@ public class ServicePayPaymentControllerTests
                             "catalogue id",
                             "account reference",
                             "payment description",
-                            new List<Alert>(),
-                            "123");
+                            new List<Alert>());
 
         _mockRepository
             .Setup(repo => repo.GetPayment(It.IsAny<string>()))

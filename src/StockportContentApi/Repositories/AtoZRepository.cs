@@ -2,64 +2,71 @@
 
 public interface IAtoZRepository
 {
-    Task<HttpResponse> Get(string letter);
+    Task<HttpResponse> Get(string letter = "");
 }
 
-public class AtoZRepository : BaseRepository, IAtoZRepository
-{
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulClient _client;
-    private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory;
-    private readonly ICache _cache;
-    private readonly int _atoZTimeout;
-    private readonly ILogger _logger;
-    private IConfiguration _configuration;
-
-    public AtoZRepository(
+public class AtoZRepository(
         ContentfulConfig config,
-        IContentfulClientManager clientManager,
+        IContentfulClientManager contentfulClientManager,
         IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
         ITimeProvider timeProvider,
         ICache cache,
         IConfiguration configuration,
-        ILogger logger)
+        ILogger logger) : BaseRepository, IAtoZRepository
+{
+    private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
+    private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory = contentfulAtoZFactory;
+    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
+    private readonly ICache _cache = cache;
+    private readonly int _atoZTimeout = GetCacheConfiguration(configuration);
+    private readonly ILogger _logger = logger;
+    private List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
+
+    private static int GetCacheConfiguration(IConfiguration configuration)
     {
-        _client = clientManager.GetClient(config);
-        _contentfulAtoZFactory = contentfulAtoZFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _cache = cache;
-        _configuration = configuration;
-        _logger = logger;
-        int.TryParse(_configuration["redisExpiryTimes:AtoZ"], out _atoZTimeout);
+        int timeout = 0;
+        int.TryParse(configuration["redisExpiryTimes:AtoZ"], out timeout);
+
+        return timeout;
     }
 
-    public async Task<HttpResponse> Get(string letter)
+    public async Task<HttpResponse> Get(string letter = "")
     {
-        List<AtoZ> atozItems = new(await GetAtoZ(letter));
-        
-        atozItems = atozItems.OrderBy(atoZItem => atoZItem.Title).ToList();
+        IEnumerable<AtoZ> atozItems = string.IsNullOrEmpty(letter) 
+                            ? await GetAtoZ() 
+                            : await GetAtoZ(letter);
 
         return !atozItems.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No results found")
-            : HttpResponse.Successful(atozItems);
+            : HttpResponse.Successful(atozItems.OrderBy(o => o.Title).ToList());
     }
 
-    private async Task<List<AtoZ>> GetAtoZ(string letter)
+    public async Task<IEnumerable<AtoZ>> GetAtoZ()
     {
-        string letterToLower = letter.ToLower();
-
         List<AtoZ> atozItems = new();
+        foreach(var contentType in contentTypesToInclude)
+        {
+            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
+            atozItems.AddRange(items);
+        }    
 
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-article-{letterToLower}", () => GetAtoZItemFromContentType("article", letterToLower), _atoZTimeout));
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-topic-{letterToLower}", () => GetAtoZItemFromContentType("topic", letterToLower), _atoZTimeout));
-        atozItems.AddRange(await _cache.GetFromCacheOrDirectlyAsync($"atoz-showcase-{letterToLower}", () => GetAtoZItemFromContentType("showcase", letterToLower), _atoZTimeout));
+        return atozItems;
+    }
         
-        atozItems = atozItems.OrderBy(atozItem => atozItem.Title).ToList();
+    public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter)
+    {
+        List<AtoZ> atozItems = new();
+        foreach (var contentType in contentTypesToInclude)
+        {
+            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}", () => GetAtoZItemFromSource(contentType, letter.ToLower()), _atoZTimeout);
+            if (items is not null && items.Any())
+                atozItems.AddRange(items);
+        }
 
         return atozItems;
     }
 
-    public async Task<List<AtoZ>> GetAtoZItemFromContentType(string contentType, string letter)
+    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType, string letter)
     {
         List<AtoZ> atozList = new();
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
@@ -84,6 +91,29 @@ public class AtoZRepository : BaseRepository, IAtoZRepository
                     List<AtoZ> matchingItems = buildItem.SetTitleStartingWithLetter(letter);
                     atozList.AddRange(matchingItems);
                 }
+            }
+        }
+
+        return atozList;
+    }
+
+    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType)
+    {
+        List<AtoZ> atozList = new();
+        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
+        ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
+
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(x => x.DisplayOnAZ.Equals("True"));
+
+        if (entriesWithDisplayOn is not null)
+        {
+            foreach (ContentfulAtoZ item in entriesWithDisplayOn)
+            {
+                DateTime sunriseDate = DateComparer.DateFieldToDate(item.SunriseDate);
+                DateTime sunsetDate = DateComparer.DateFieldToDate(item.SunsetDate);
+
+                if (_dateComparer.DateNowIsWithinSunriseAndSunsetDates(sunriseDate, sunsetDate))
+                    atozList.AddRange(_contentfulAtoZFactory.ToModel(item).SetTitles());
             }
         }
 

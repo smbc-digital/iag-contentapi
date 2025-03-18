@@ -20,7 +20,7 @@ public class SiteHeaderContentfulFactoryTests
                 SunsetDate = DateTime.MaxValue,
                 Image = "subItemImage",
                 SubItems = new List<SubItem>(),
-                ColourScheme = EColourScheme.Orange
+                ColourScheme = EColourScheme.Purple
             });
 
         _siteHeaderContentfulFactory = new SiteHeaderContentfulFactory(_mockSubItemFactory.Object);
