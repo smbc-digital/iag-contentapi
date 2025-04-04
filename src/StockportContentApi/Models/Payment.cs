@@ -19,8 +19,7 @@ public class Payment(string title,
                     string catalogueId,
                     string accountReference,
                     string paymentDescription,
-                    IEnumerable<Alert> alerts,
-                    string paymentAmount)
+                    IEnumerable<Alert> alerts)
 {
     public string Title { get; set; } = title;
     public string Slug { get; set; } = slug;
@@ -29,7 +28,6 @@ public class Payment(string title,
     public string PaymentType { get; set; } = paymentType;
     public string PaymentDetailsText { get; set; } = paymentDetailsText;
     public string ReferenceLabel { get; set; } = referenceLabel;
-    public string ParisReference { get; set; } = parisReference;
     public string Fund { get; set; } = fund;
     public string GlCodeCostCentreNumber { get; set; } = glCodeCostCentreNumber;
     public IEnumerable<Crumb> Breadcrumbs { get; } = breadcrumbs;
@@ -41,5 +39,4 @@ public class Payment(string title,
     public string AccountReference { get; set; } = accountReference;
     public string PaymentDescription { get; set; } = paymentDescription;
     public IEnumerable<Alert> Alerts { get; } = alerts;
-    public string PaymentAmount { get; set; } = paymentAmount;
 }

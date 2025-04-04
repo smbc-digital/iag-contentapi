@@ -18,5 +18,4 @@ public class ContentfulPayment : ContentfulReference
     public string AccountReference { get; set; } = string.Empty;
     public string PaymentDescription { get; set; } = string.Empty;
     public List<ContentfulAlert> Alerts { get; set; } = new();
-    public string PaymentAmount { get; set; } = string.Empty;
 }

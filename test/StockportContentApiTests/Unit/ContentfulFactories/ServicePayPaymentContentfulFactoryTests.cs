@@ -15,7 +15,6 @@ public class ServicePayPaymentContentfulFactoryTests
             .Title("payment title")
             .Teaser("payment teaser")
             .ReferenceLabel("reference label")
-            .PaymentAmount("15.23")
             .Build();
 
         ServicePayPaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);

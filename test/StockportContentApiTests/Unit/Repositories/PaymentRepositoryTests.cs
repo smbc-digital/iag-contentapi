@@ -93,7 +93,6 @@ public class PaymentRepositoryTests
         Assert.Equal(rawPayment.Teaser, paymentItem.Teaser);
         Assert.Equal(rawPayment.Slug, paymentItem.Slug);
         Assert.Equal(rawPayment.PaymentDetailsText, paymentItem.PaymentDetailsText);
-        Assert.Equal(rawPayment.ParisReference, paymentItem.ParisReference);
         Assert.Equal("title", paymentItem.Breadcrumbs.First().Title);
     }
 

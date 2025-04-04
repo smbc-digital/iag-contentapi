@@ -36,7 +36,6 @@ public class PaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert>
             entry.CatalogueId,
             entry.AccountReference,
             entry.PaymentDescription,
-            alerts,
-            entry.PaymentAmount);
+            alerts);
     }
 }
