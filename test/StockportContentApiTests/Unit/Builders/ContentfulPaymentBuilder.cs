@@ -8,7 +8,6 @@ internal class ContentfulPaymentBuilder
     private string _description = "description";
     private string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
-    private string _parisReference = "parisReference";
     private string _fund = "fund";
     private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
     private readonly string _metaDescription = "metaDescription";
@@ -24,7 +23,6 @@ internal class ContentfulPaymentBuilder
             Description = _description,
             PaymentDetailsText = _paymentDetailsText,
             ReferenceLabel = _referenceLabel,
-            ParisReference = _parisReference,
             Fund = _fund,
             GlCodeCostCentreNumber = _glCodeCostCentreNumber,
             Breadcrumbs = _breadcrumbs,
@@ -65,12 +63,6 @@ internal class ContentfulPaymentBuilder
     public ContentfulPaymentBuilder ReferenceLabel(string referenceLabel)
     {
         _referenceLabel = referenceLabel;
-        return this;
-    }
-
-    public ContentfulPaymentBuilder ParisReference(string parisReference)
-    {
-        _parisReference = parisReference;
         return this;
     }
 

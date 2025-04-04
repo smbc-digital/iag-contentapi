@@ -25,7 +25,6 @@ public class PaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert>
             entry.PaymentType,
             entry.PaymentDetailsText,
             entry.ReferenceLabel,
-            entry.ParisReference,
             entry.Fund,
             entry.GlCodeCostCentreNumber,
             entry.Icon,
