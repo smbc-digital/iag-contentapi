@@ -9,16 +9,16 @@ public class EventHomepageContentfulFactoryTests
 
     private readonly ContentfulEventHomepage _entry = new()
     {
-        Tag1 = "Tag1",
-        Tag2 = "Tag2",
-        Tag3 = "Tag3",
-        Tag4 = "Tag4",
-        Tag5 = "Tag5",
-        Tag6 = "Tag6",
-        Tag7 = "Tag7",
-        Tag8 = "Tag8",
-        Tag9 = "Tag9",
-        Tag10 = "Tag10",
+        TagOrCategory1 = "TagOrCategory1",
+        TagOrCategory2 = "TagOrCategory2",
+        TagOrCategory3 = "TagOrCategory3",
+        TagOrCategory4 = "TagOrCategory4",
+        TagOrCategory5 = "TagOrCategory5",
+        TagOrCategory6 = "TagOrCategory6",
+        TagOrCategory7 = "TagOrCategory7",
+        TagOrCategory8 = "TagOrCategory8",
+        TagOrCategory9 = "TagOrCategory9",
+        TagOrCategory10 = "TagOrCategory10",
         MetaDescription = "MetaDescription",
         Alerts = new List<ContentfulAlert> { new() },
         GlobalAlerts = new List<ContentfulAlert> { new() }
