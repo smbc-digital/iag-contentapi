@@ -5,12 +5,12 @@ internal class ContentfulServicePayPaymentBuilder
     private string _title = "title";
     private string _slug = "slug";
     private string _teaser = "teaser";
-    private string _description = "description";
-    private string _paymentDetailsText = "paymentDetailsText";
+    private readonly string _description = "description";
+    private readonly string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
     private readonly string _metaDescription = "metaDescription";
-    private List<ContentfulAlert> _alerts = new();
-    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
+    private readonly List<ContentfulAlert> _alerts = new();
+    private readonly List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
     private string _paymentAmount = "23.00";
     private readonly string _accountReference = "accountReference";
     private readonly string _catalogueId = "catalogueId";
@@ -50,33 +50,9 @@ internal class ContentfulServicePayPaymentBuilder
         return this;
     }
 
-    public ContentfulServicePayPaymentBuilder Description(string description)
-    {
-        _description = description;
-        return this;
-    }
-
-    public ContentfulServicePayPaymentBuilder PaymentDetailsText(string paymentDetailsText)
-    {
-        _paymentDetailsText = paymentDetailsText;
-        return this;
-    }
-
     public ContentfulServicePayPaymentBuilder ReferenceLabel(string referenceLabel)
     {
         _referenceLabel = referenceLabel;
-        return this;
-    }
-
-    public ContentfulServicePayPaymentBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
-    {
-        _breadcrumbs = breadcrumbs;
-        return this;
-    }
-
-    public ContentfulServicePayPaymentBuilder Alerts(List<ContentfulAlert> alerts)
-    {
-        _alerts = alerts;
         return this;
     }
 

@@ -2,12 +2,12 @@
 
 public class ServicePayPaymentContentfulFactoryTests
 {
-    private Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private Mock<ITimeProvider> _timeProvider = new();
-    private Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
 
     [Fact]
-    public void ShouldCreateAServicePayPaymentFromAContentfulServicePayPayment()
+    public void ToModel_ShouldCreateAServicePayPaymentFromAContentfulServicePayPayment()
     {
         // Arrange
         ContentfulServicePayPayment contentfulPayment = new ContentfulServicePayPaymentBuilder()

@@ -3,10 +3,10 @@
 public class PaymentRepositoryTests
 {
     private readonly PaymentRepository _repository;
-    private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private readonly Mock<ITimeProvider> _timeProvider;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
+    private readonly Mock<IContentfulClient> _contentfulClient = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
 
     public PaymentRepositoryTests()
     {
@@ -18,44 +18,38 @@ public class PaymentRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _timeProvider = new Mock<ITimeProvider>();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-
-        _crumbFactory.Setup(o => o.ToModel(It.IsAny<ContentfulReference>()))
+        _crumbFactory.Setup(crumb => crumb.ToModel(It.IsAny<ContentfulReference>()))
             .Returns(new Crumb("title", "slug", "title"));
 
         PaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
-        _repository = new PaymentRepository
-        (
-            config,
-            contentfulClientManager.Object,
-            contentfulFactory
-        );
+        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_contentfulClient.Object);
+        
+        _repository = new(config,
+                        contentfulClientManager.Object,
+                        contentfulFactory);
     }
 
     [Fact]
-    public void ShouldGetAllPayments()
+    public void Get_ShouldReturnAllPayments()
     {
         // Arrange          
-        List<ContentfulPayment> rawPayments = new();
-        rawPayments.Add(new ContentfulPaymentBuilder().Slug("firstPayment").Build());
-        rawPayments.Add(new ContentfulPaymentBuilder().Slug("secondPayment").Build());
-        rawPayments.Add(new ContentfulPaymentBuilder().Slug("thirdPayment").Build());
+        List<ContentfulPayment> rawPayments = new()
+        {
+            new ContentfulPaymentBuilder().Slug("firstPayment").Build(),
+            new ContentfulPaymentBuilder().Slug("secondPayment").Build(),
+            new ContentfulPaymentBuilder().Slug("thirdPayment").Build()
+        };
+
         ContentfulCollection<ContentfulPayment> collection = new()
         {
             Items = rawPayments
         };
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
-        _contentfulClient.Setup(o => o.GetEntries(
-            It.Is<QueryBuilder<ContentfulPayment>>(
-                 q => q.Build().Equals(builder.Build())),
-                 It.IsAny<CancellationToken>()))
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
@@ -63,15 +57,15 @@ public class PaymentRepositoryTests
         List<Payment> payments = response.Get<List<Payment>>();
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        payments.Count.Should().Be(rawPayments.Count);
-        payments[0].Slug.Should().Be(rawPayments[0].Slug);
-        payments[1].Slug.Should().Be(rawPayments[1].Slug);
-        payments[2].Slug.Should().Be(rawPayments[2].Slug);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(rawPayments.Count, payments.Count);
+        Assert.Equal(rawPayments[0].Slug, payments[0].Slug);
+        Assert.Equal(rawPayments[1].Slug, payments[1].Slug);
+        Assert.Equal(rawPayments[2].Slug, payments[2].Slug);
     }
 
     [Fact]
-    public void ShouldGetsASinglePaymentItemFromASlug()
+    public void GetPayment_ShouldGetsASinglePaymentItemFromASlug()
     {
         // Arrange
         const string slug = "any-payment";
@@ -83,10 +77,8 @@ public class PaymentRepositoryTests
         };
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-        _contentfulClient.Setup(o => o.GetEntries(
-            It.Is<QueryBuilder<ContentfulPayment>>(
-                 q => q.Build().Equals(builder.Build())),
-                 It.IsAny<CancellationToken>()))
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
@@ -94,39 +86,35 @@ public class PaymentRepositoryTests
         Payment paymentItem = response.Get<Payment>();
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        paymentItem.Description.Should().Be(rawPayment.Description);
-        paymentItem.Title.Should().Be(rawPayment.Title);
-        paymentItem.Teaser.Should().Be(rawPayment.Teaser);
-        paymentItem.Slug.Should().Be(rawPayment.Slug);
-        paymentItem.PaymentDetailsText.Should().Be(rawPayment.PaymentDetailsText);
-        paymentItem.ParisReference.Should().Be(rawPayment.ParisReference);
-        paymentItem.Breadcrumbs.First().Title.Should().Be("title");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(rawPayment.Slug, paymentItem.Slug);
+        Assert.Equal(rawPayment.Title, paymentItem.Title);
+        Assert.Equal(rawPayment.Teaser, paymentItem.Teaser);
+        Assert.Equal(rawPayment.Description, paymentItem.Description);
+        Assert.Equal(rawPayment.PaymentDetailsText, paymentItem.PaymentDetailsText);
+        Assert.Equal(rawPayment.ReferenceLabel, paymentItem.ReferenceLabel);
+        Assert.Equal(rawPayment.Breadcrumbs.First().Title, paymentItem.Breadcrumbs.First().Title);
     }
 
     [Fact]
-    public void ShouldReturn404ForNonExistentSlug()
+    public void GetPayment_ShouldReturn404ForNonExistentSlug()
     {
         // Arrange
-        const string slug = "invalid-url";
-
         ContentfulCollection<ContentfulPayment> collection = new()
         {
             Items = new List<ContentfulPayment>()
         };
 
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
-        _contentfulClient.Setup(o => o.GetEntries(
-            It.IsAny<QueryBuilder<ContentfulPayment>>(),
-                 It.IsAny<CancellationToken>()))
+        _contentfulClient
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url"));
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("No payment found for 'invalid-url'", response.Error);
+        Assert.Null(response.Get<Payment>());
     }
-
 }
-

@@ -1,27 +1,22 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class PaymentContentfulFactory : IContentfulFactory<ContentfulPayment, Payment>
+public class PaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                    ITimeProvider timeProvider,
+                                    IContentfulFactory<ContentfulReference, Crumb> crumbFactory) : IContentfulFactory<ContentfulPayment, Payment>
 {
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-
-    public PaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
-    {
-        _alertFactory = alertFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _crumbFactory = crumbFactory;
-    }
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
 
     public Payment ToModel(ContentfulPayment entry)
     {
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                                        .Select(alert => _alertFactory.ToModel(alert));
+                                        .Select(_alertFactory.ToModel);
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         return new Payment(entry.Title,
             entry.Slug,
