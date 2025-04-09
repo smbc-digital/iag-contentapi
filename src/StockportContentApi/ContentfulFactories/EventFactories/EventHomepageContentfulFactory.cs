@@ -14,16 +14,16 @@ public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToA
     {
         List<string> tags = new()
         {
-            entry.Tag1,
-            entry.Tag2,
-            entry.Tag3,
-            entry.Tag4,
-            entry.Tag5,
-            entry.Tag6,
-            entry.Tag7,
-            entry.Tag8,
-            entry.Tag9,
-            entry.Tag10
+            entry.TagOrCategory1,
+            entry.TagOrCategory2,
+            entry.TagOrCategory3,
+            entry.TagOrCategory4,
+            entry.TagOrCategory5,
+            entry.TagOrCategory6,
+            entry.TagOrCategory7,
+            entry.TagOrCategory8,
+            entry.TagOrCategory9,
+            entry.TagOrCategory10
         };
 
         List<EventHomepageRow> rows = new()
@@ -32,6 +32,7 @@ public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToA
             {
                 IsLatest = true,
                 Tag = string.Empty,
+                MatchedByTag = true,
                 Events = null
             }
         };
@@ -42,6 +43,7 @@ public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToA
             {
                 IsLatest = false,
                 Tag = tag,
+                MatchedByTag = true,
                 Events = null
             });
         }

@@ -92,9 +92,16 @@ public class EventRepository : BaseRepository, IEventRepository
         liveEvents = GetNextOccurenceOfEvents(liveEvents);
 
         foreach (EventHomepageRow row in homepage.Rows)
+        {
             row.Events = row.IsLatest
-                ? liveEvents.Take(quantity) 
-                : liveEvents.Where(singleEvent => singleEvent.Tags.Contains(row.Tag.ToLower())).Take(quantity);
+                ? liveEvents.Take(quantity)
+                : liveEvents.Where(singleEvent => singleEvent.EventCategories?.Any(category => (bool)(category?.Slug?.ToLower().Equals(row.Tag?.ToLower()))) is true ||
+                    singleEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag?.ToLower()) is true).Take(quantity);
+            
+            row.MatchedByTag = row.Events.Any(matchingEvent =>
+                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == tag) is true &&
+                    matchingEvent.EventCategories?.Any(category => category?.Slug?.ToLower() == row.Tag?.ToLower()) is not true);
+        }
 
         return homepage;
     }
@@ -102,7 +109,6 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
         await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
         
-
     /// <summary>
     /// Get event categories from contentful event categories type
     /// </summary>
