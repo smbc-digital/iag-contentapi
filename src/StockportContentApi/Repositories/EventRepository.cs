@@ -109,7 +109,6 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
         await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
         
-
     /// <summary>
     /// Get event categories from contentful event categories type
     /// </summary>
