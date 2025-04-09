@@ -15,6 +15,6 @@ public class AtoZController(ResponseHandler handler,
     [HttpGet]
     [Route("{businessId}/atoz/{letter}")]
     [Route("v1/{businessId}/atoz/{letter}")]
-    public async Task<IActionResult> Index(string letter, string businessId)
-        => await _handler.Get(() => _createRepository(businessId).Get(letter));
+    public async Task<IActionResult> Index(string letter, string businessId) =>
+        await _handler.Get(() => _createRepository(businessId).Get(letter));
 }
