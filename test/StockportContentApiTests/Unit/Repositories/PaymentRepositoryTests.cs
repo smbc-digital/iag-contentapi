@@ -18,13 +18,16 @@ public class PaymentRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _crumbFactory.Setup(crumb => crumb.ToModel(It.IsAny<ContentfulReference>()))
+        _crumbFactory
+            .Setup(crumb => crumb.ToModel(It.IsAny<ContentfulReference>()))
             .Returns(new Crumb("title", "slug", "title"));
 
         PaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_contentfulClient.Object);
+        contentfulClientManager
+            .Setup(client => client.GetClient(config))
+            .Returns(_contentfulClient.Object);
         
         _repository = new(config,
                         contentfulClientManager.Object,
@@ -68,21 +71,19 @@ public class PaymentRepositoryTests
     public void GetPayment_ShouldGetsASinglePaymentItemFromASlug()
     {
         // Arrange
-        const string slug = "any-payment";
-
-        ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
+        ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug("any-payment").Build();
         ContentfulCollection<ContentfulPayment> collection = new()
         {
             Items = new List<ContentfulPayment> { rawPayment }
         };
 
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "any-payment").Include(1);
         _contentfulClient
             .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("any-payment"));
         Payment paymentItem = response.Get<Payment>();
 
         // Assert

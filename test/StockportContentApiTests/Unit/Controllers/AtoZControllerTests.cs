@@ -39,4 +39,25 @@ public class AtoZControllerTests
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
+
+    [Fact]
+    public async Task Index_ReturnsOkResult_WhenRepositoryWithNoLetterReturnsSuccessfulResponse()
+    {
+        // Arrange
+        List<AtoZ> atoZItems = new()
+        {
+            new AtoZ("Apple", "apple", "teaser", "article", new List<string>()),
+            new AtoZ ("Avocado", "avocado", "teaser", "topic", new List < string >())
+        };
+
+        _mockRepository
+            .Setup(repo => repo.Get(It.IsAny<string>()))
+            .ReturnsAsync(HttpResponse.Successful(atoZItems));
+
+        // Act
+        IActionResult result = await _controller.Index("test-business");
+
+        // Assert
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+    }
 }

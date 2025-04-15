@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using Contentful.Core.Extensions;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class AtoZRepositoryTests
 {
@@ -33,7 +35,7 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfAtoZForLetterV()
+    public void Get_ShouldReturnListOfAtoZ_WhenLetterIsV()
     {
         string letter = "v";
         List<AtoZ> aToZArticles = new()
@@ -92,7 +94,7 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfAtoZForLetterB()
+    public void Get_ShouldReturnListOfAtoZ_WhenLetterIsB()
     {
         string letter = "b";
         List<AtoZ> aToZArticles = new()
@@ -151,7 +153,6 @@ public class AtoZRepositoryTests
         Assert.Equal(9, aToZListing.Count);
     }
     
-
     [Theory]
     [InlineData("v")]
     [InlineData("b")]
@@ -213,25 +214,22 @@ public class AtoZRepositoryTests
         Assert.Equal(9, aToZListing.Count);
     }
 
-
-
     [Fact]
-    public void ItReturnsANotFoundIfNoItemsMatch()
+    public void Get_ShouldReturnNotFoundIfNoItemsMatch()
     {
         // Arrange
-        string letter = "b";
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-article-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals("test-atoz-article-b")),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
                                                             It.Is<int>(cacheTime => cacheTime.Equals(60))))
             .ReturnsAsync(new List<AtoZ>());
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-topic-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("test-atoz-topic-b")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<AtoZ>());
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals($"test-atoz-showcase-{letter}")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("test-atoz-showcase-b")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
             .ReturnsAsync(new List<AtoZ>());
 
         _aToZFactory
@@ -249,23 +247,24 @@ public class AtoZRepositoryTests
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Equal("No A to Z results found", response.Error);
+        _aToZFactory.Verify(factory => factory.ToModel(It.IsAny<ContentfulAtoZ>()), Times.Never);
     }
 
     [Fact]
-    public async void ItGetsAnAtoZListingForTheLetterBWhereTheLetterMatchesWithAnAlterniveTitleAndSetsTheTitleAsTheAlternativeTitle()
+    public async Task GetAtoZItemFromSource_ShouldReturnItemsUsingAlternativeTitleWhenItMatchesTheSearchLetter()
     {
         // Arrange
         string alternativeTitle = "Do you know this started!";
         ContentfulCollection<ContentfulAtoZ> aToZcollection = new()
         {
             Items = new List<ContentfulAtoZ>
-        {
-            new ContentfulAToZBuilder().Title("Vintage Village 1").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
-            new ContentfulAToZBuilder().Title("Vintage Village 2").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
-            new ContentfulAToZBuilder().Title("Vintage Village 3").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
-            new ContentfulAToZBuilder().Title("Vintage Village 4").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
-            new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string> { alternativeTitle }).Build()
-        }
+            {
+                new ContentfulAToZBuilder().Title("Vintage Village 1").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                new ContentfulAToZBuilder().Title("Vintage Village 2").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                new ContentfulAToZBuilder().Title("Vintage Village 3").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                new ContentfulAToZBuilder().Title("Vintage Village 4").AlternativeTitles(new List<string> { alternativeTitle }).Build(),
+                new ContentfulAToZBuilder().Title("Vintage Village 5").AlternativeTitles(new List<string> { alternativeTitle }).Build()
+            }
         };
 
         _client
@@ -286,19 +285,20 @@ public class AtoZRepositoryTests
         // Assert
         Assert.Equal(5, aToZListing.Count);
         Assert.Equal(alternativeTitle, aToZListing[0].Title);
+        Assert.All(aToZListing, item => Assert.Equal(alternativeTitle, item.Title));
     }
 
     [Fact]
-    public void ItGetsAnAtoZListingItemWithMultipleAlternateTitles()
+    public void GetAtoZItemFromSource_ShouldReturnAnAtoZListingItemWithMultipleAlternateTitles()
     {
         // Arrange
         List<string> alternateTitles = new() { "This is alternate title", "this is also another alternate title" };
         ContentfulCollection<ContentfulAtoZ> aToZcollection = new()
         {
             Items = new List<ContentfulAtoZ>
-        {
-            new ContentfulAToZBuilder().Title("Vintage Village").AlternativeTitles(alternateTitles).Build()
-        }
+            {
+                new ContentfulAToZBuilder().Title("Vintage Village").AlternativeTitles(alternateTitles).Build()
+            }
         };
 
         _client
@@ -316,5 +316,49 @@ public class AtoZRepositoryTests
         Assert.Equal("title", result[0].Title);
         Assert.Equal("This is alternate title", result[1].Title);
         Assert.Equal("this is also another alternate title", result[2].Title);
+        Assert.All(result, item => Assert.Equal("slug", item.Slug));
+        Assert.All(result, item => Assert.Equal("article", item.Type));
+    }
+
+    [Fact]
+    public void Get_ShouldReturnAllAtoZItemsWhenNoLetterProvided()
+    {
+        // Arrange
+        AtoZ atozItem1 = new("Apple", "apple", "teaser apple", "article", new List<string>());
+        AtoZ atozItem2 = new("Banana", "banana", "teaser banana", "topic", new List<string>());
+        AtoZ atozItem3 = new("Zebra", "zebra", "teaser zebra", "landingPage", new List<string>());
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(key => key.Contains("article")),
+                                                            It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<AtoZ> { atozItem1 });
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(key => key.Contains("topic")),
+                                                            It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<AtoZ> { atozItem2 });
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(key => key.Contains("showcase")),
+                                                            It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<AtoZ>());
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(key => key.Contains("landingPage")),
+                                                            It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<AtoZ> { atozItem3 });
+
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+
+        // Assert
+        List<AtoZ> result = response.Get<List<AtoZ>>();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Count);
+        Assert.Equal("apple", result[0].Slug);
+        Assert.Equal("banana", result[1].Slug);
+        Assert.Equal("zebra", result[2].Slug);
     }
 }

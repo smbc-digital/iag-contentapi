@@ -2,6 +2,7 @@
 
 public class DocumentsServiceTests
 {
+    private readonly DocumentsService _documentsService;
     private readonly Mock<Func<ContentfulConfig, IAssetRepository>> _mockDocumentRepositoryFunc = new();
     private readonly Mock<IAssetRepository> _mockDocumentRepository = new();
     private readonly Mock<Func<ContentfulConfig, IGroupAdvisorRepository>> _mockGroupAdvisorRepositoryFunc = new();
@@ -14,14 +15,71 @@ public class DocumentsServiceTests
 
     public DocumentsServiceTests()
     {
-        _mockDocumentRepositoryFunc.Setup(_ => _(It.IsAny<ContentfulConfig>()))
+        _mockDocumentRepositoryFunc
+            .Setup(documentRepo => documentRepo(It.IsAny<ContentfulConfig>()))
             .Returns(_mockDocumentRepository.Object);
 
-        _mockGroupAdvisorRepositoryFunc.Setup(_ =>
-            _(It.IsAny<ContentfulConfig>())).Returns(_mockGroupAdvisorRepository.Object);
+        _mockGroupAdvisorRepositoryFunc
+            .Setup(groupAdvisorRepo => groupAdvisorRepo(It.IsAny<ContentfulConfig>()))
+            .Returns(_mockGroupAdvisorRepository.Object);
 
         _mockGroupRepositoryFunc
-            .Setup(_ => _(It.IsAny<ContentfulConfig>())).Returns(_mockGroupRepository.Object);
+            .Setup(groupRepo => groupRepo(It.IsAny<ContentfulConfig>()))
+            .Returns(_mockGroupRepository.Object);
+
+        _mockDocumentRepository
+            .Setup(documentRepo => documentRepo.Get(It.IsAny<string>()))
+            .ReturnsAsync(new Asset()
+            {
+                Description = "description",
+                DescriptionLocalized = new() { { "en-GB", "description" } },
+                File = new()
+                {
+                    Url = "url",
+                    Details = new()
+                    {
+                        Size = 22
+                    }
+                },
+                FilesLocalized = new() { { "en-GB", new File() } },
+                SystemProperties = new()
+                {
+                    Id = "asset id"
+                },
+                Title = "title",
+                TitleLocalized = new() { { "en-GB", "title" } }
+            });
+
+        _mockGroupAdvisorRepository
+            .Setup(groupAdvisorRepo => groupAdvisorRepo.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+
+        _mockGroupRepository
+            .Setup(groupRepo => groupRepo.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
+            .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document> { new DocumentBuilder().Build() }).Build()));
+
+        _mockDocumentFactory
+            .Setup(documentFactory => documentFactory.ToModel(It.IsAny<Asset>()))
+            .Returns(new DocumentBuilder().Build());
+
+        _mockContentfulConfigBuilder
+            .Setup(config => config.Build(It.IsAny<string>()))
+            .Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
+
+        _mockLoggedInHelper
+            .Setup(loggedInHelper => loggedInHelper.GetLoggedInPerson())
+            .Returns(new LoggedInPerson()
+            {
+                Email = "email",
+                Name = "name"
+            });
+
+        _documentsService = new(_mockDocumentRepositoryFunc.Object,
+                                                _mockGroupAdvisorRepositoryFunc.Object,
+                                                _mockGroupRepositoryFunc.Object,
+                                                _mockDocumentFactory.Object,
+                                                _mockContentfulConfigBuilder.Object,
+                                                _mockLoggedInHelper.Object);
     }
 
     [Fact]
@@ -30,50 +88,14 @@ public class DocumentsServiceTests
         // Arrange
         Document expectedResult = new DocumentBuilder().Build();
 
-        _mockDocumentRepository.Setup(_ => _.Get(It.IsAny<string>()))
-            .ReturnsAsync(new Asset()
-            {
-                Description = "description",
-                DescriptionLocalized = new() { { "en-GB", "description" } },
-                File = new()
-                {
-                    Url = "url",
-                    Details = new()
-                    {
-                        Size = 22
-                    }
-                },
-                FilesLocalized = new() { { "en-GB", new File() } },
-                SystemProperties = new()
-                {
-                    Id = "asset id"
-                },
-                Title = "title",
-                TitleLocalized = new() { { "en-GB", "title" } }
-            });
-
-        _mockGroupAdvisorRepository.Setup(_ => _.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
-
-        _mockGroupRepository.Setup(_ => _.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document> { expectedResult }).Build()));
-
-        _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(expectedResult);
-
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
-
-        _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
-        {
-            Email = "email",
-            Name = "name"
-        });
-
-        DocumentsService documentsService = new(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
-
         // Act
-        Document result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
+        Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
-        Assert.Equal(expectedResult, result);
+        Assert.Equal("title", result.Title);
+        Assert.Equal("url", result.Url);
+        Assert.Equal("asset id", result.AssetId);
+        Assert.Equal(22, result.Size);
     }
 
     [Fact]
@@ -82,48 +104,12 @@ public class DocumentsServiceTests
         // Arrange
         Document expectedResult = new DocumentBuilder().Build();
 
-        _mockDocumentRepository.Setup(_ => _.Get(It.IsAny<string>()))
-            .ReturnsAsync(new Asset()
-            {
-                Description = "description",
-                DescriptionLocalized = new() { { "en-GB", "description" } },
-                File = new()
-                {
-                    Url = "url",
-                    Details = new()
-                    {
-                        Size = 22
-                    }
-                },
-                FilesLocalized = new() { { "en-GB", new File() } },
-                SystemProperties = new()
-                {
-                    Id = "asset id"
-                },
-                Title = "title",
-                TitleLocalized = new() { { "en-GB", "title" } }
-            });
-
-        _mockGroupAdvisorRepository.Setup(_ => _.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
-
-        _mockGroupRepository.Setup(_ => _.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document> { expectedResult }).Build()));
-
-        _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(expectedResult);
-
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
-
-        _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
-        {
-            Email = "email",
-            Name = "name"
-        });
-
-        DocumentsService documentsService = new(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
-
+        _mockGroupAdvisorRepository
+            .Setup(groupAdvisorRepo => groupAdvisorRepo.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(false);
 
         // Act
-        Document result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
+        Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
         Assert.Null(result);
@@ -133,13 +119,12 @@ public class DocumentsServiceTests
     public async void GetSecureAssetByDocumentId_ShouldNotReturnDocument_ToNotLoggedInUser()
     {
         // Arrange
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
-        _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson());
-
-        DocumentsService documentsService = new(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
+        _mockLoggedInHelper
+            .Setup(loggedInHelper => loggedInHelper.GetLoggedInPerson())
+            .Returns(new LoggedInPerson());
 
         // Act
-        Document result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
+        Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
         Assert.Null(result);
@@ -151,28 +136,12 @@ public class DocumentsServiceTests
         // Arrange
         Document document = new DocumentBuilder().Build();
 
-        _mockDocumentRepository.Setup(_ => _.Get(It.IsAny<string>()))
+        _mockDocumentRepository
+            .Setup(documentRepo => documentRepo.Get(It.IsAny<string>()))
             .ReturnsAsync((Asset)null);
 
-        _mockGroupAdvisorRepository.Setup(_ => _.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
-
-        _mockGroupRepository.Setup(_ => _.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document> { document }).Build()));
-
-        _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
-
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
-
-        _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
-        {
-            Email = "email",
-            Name = "name"
-        });
-
-        DocumentsService documentsService = new(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
-
         // Act
-        Document result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
+        Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
         Assert.Null(result);
@@ -184,28 +153,12 @@ public class DocumentsServiceTests
         // Arrange
         Document document = new DocumentBuilder().Build();
 
-        _mockDocumentRepository.Setup(_ => _.Get(It.IsAny<string>()))
+        _mockDocumentRepository
+            .Setup(documentRepo => documentRepo.Get(It.IsAny<string>()))
             .ReturnsAsync((Asset)null);
 
-        _mockGroupAdvisorRepository.Setup(_ => _.CheckIfUserHasAccessToGroupBySlug(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
-
-        _mockGroupRepository.Setup(_ => _.GetGroup(It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(HttpResponse.Successful(new GroupBuilder().AdditionalDocuments(new List<Document>()).Build()));
-
-        _mockDocumentFactory.Setup(_ => _.ToModel(It.IsAny<Asset>())).Returns(document);
-
-        _mockContentfulConfigBuilder.Setup(_ => _.Build(It.IsAny<string>())).Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
-
-        _mockLoggedInHelper.Setup(_ => _.GetLoggedInPerson()).Returns(new LoggedInPerson()
-        {
-            Email = "email",
-            Name = "name"
-        });
-
-        DocumentsService documentsService = new(_mockDocumentRepositoryFunc.Object, _mockGroupAdvisorRepositoryFunc.Object, _mockGroupRepositoryFunc.Object, _mockDocumentFactory.Object, _mockContentfulConfigBuilder.Object, _mockLoggedInHelper.Object);
-
         // Act
-        Document result = await documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
+        Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
         Assert.Null(result);
