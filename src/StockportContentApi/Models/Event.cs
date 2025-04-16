@@ -18,7 +18,6 @@ public class Event
     public EventFrequency EventFrequency { get; set; }
     public List<Crumb> Breadcrumbs { get; }
     public List<Document> Documents { get; }
-    public List<string> Categories { get; }
     public MapPosition MapPosition { get; }
     public string BookingInformation { get; }
     public bool Featured { get; }
@@ -61,7 +60,6 @@ public class Event
                 List<Crumb> breadcrumbs,
                 string thumbnailImageUrl,
                 List<Document> documents,
-                List<string> categories,
                 MapPosition mapPosition,
                 bool featured,
                 string bookingInformation,
@@ -102,7 +100,6 @@ public class Event
         ThumbnailImageUrl = thumbnailImageUrl;
         ImageUrl = imageUrl;
         Documents = documents;
-        Categories = categories.Select(s => s).ToList();
         MapPosition = mapPosition;
         BookingInformation = bookingInformation;
         Featured = featured;

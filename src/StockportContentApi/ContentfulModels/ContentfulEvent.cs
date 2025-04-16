@@ -19,7 +19,6 @@ public class ContentfulEvent : IContentfulModel
     public int Occurences { get; set; } = 0;
     public EventFrequency Frequency { get; set; } = EventFrequency.None;
     public List<Asset> Documents { get; set; } = new();
-    public List<string> Categories { get; set; } = new();
     public MapPosition MapPosition { get; set; } = new();
     public string BookingInformation { get; set; } = string.Empty;
     public bool Featured { get; set; } = false;

@@ -43,7 +43,7 @@ public class AtoZRepository(ContentfulConfig config,
     public async Task<IEnumerable<AtoZ>> GetAtoZ()
     {
         List<AtoZ> atozItems = new();
-        foreach(var contentType in contentTypesToInclude)
+        foreach(string contentType in contentTypesToInclude)
         {
             List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
             atozItems.AddRange(items);
@@ -55,7 +55,7 @@ public class AtoZRepository(ContentfulConfig config,
     public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter)
     {
         List<AtoZ> atozItems = new();
-        foreach (var contentType in contentTypesToInclude)
+        foreach (string contentType in contentTypesToInclude)
         {
             List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}",
                                                                         () => GetAtoZItemFromSource(contentType, letter.ToLower()),

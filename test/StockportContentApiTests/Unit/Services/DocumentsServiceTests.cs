@@ -83,7 +83,7 @@ public class DocumentsServiceTests
     }
 
     [Fact]
-    public async void GetSecureAssetByDocumentId_ShouldReturnDocument_ToAuthorisedUser()
+    public async Task GetSecureAssetByDocumentId_ShouldReturnDocument_ToAuthorisedUser()
     {
         // Arrange
         Document expectedResult = new DocumentBuilder().Build();
@@ -99,7 +99,7 @@ public class DocumentsServiceTests
     }
 
     [Fact]
-    public async void GetSecureAssetByDocumentId_ShouldNotReturnDocument_ToUnauthorisedUser()
+    public async Task GetSecureAssetByDocumentId_ShouldNotReturnDocument_ToUnauthorisedUser()
     {
         // Arrange
         Document expectedResult = new DocumentBuilder().Build();
@@ -116,7 +116,7 @@ public class DocumentsServiceTests
     }
 
     [Fact]
-    public async void GetSecureAssetByDocumentId_ShouldNotReturnDocument_ToNotLoggedInUser()
+    public async Task GetSecureAssetByDocumentId_ShouldNotReturnDocument_ToNotLoggedInUser()
     {
         // Arrange
         _mockLoggedInHelper
@@ -131,7 +131,7 @@ public class DocumentsServiceTests
     }
 
     [Fact]
-    public async void GetSecureAssetByDocumentId_ShouldNotReturnDocument_IfAssetDoesNotExist()
+    public async Task GetSecureAssetByDocumentId_ShouldNotReturnDocument_IfAssetDoesNotExist()
     {
         // Arrange
         Document document = new DocumentBuilder().Build();
@@ -148,7 +148,7 @@ public class DocumentsServiceTests
     }
 
     [Fact]
-    public async void GetSecureAssetByDocumentId_ShouldNotReturnDocument_IfGroupDoesNotReferenceAsset()
+    public async Task GetSecureAssetByDocumentId_ShouldNotReturnDocument_IfGroupDoesNotReferenceAsset()
     {
         // Arrange
         Document document = new DocumentBuilder().Build();

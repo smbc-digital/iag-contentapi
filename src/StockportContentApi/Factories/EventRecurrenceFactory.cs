@@ -47,7 +47,6 @@ public class EventRecurrenceFactory
                 entry.Breadcrumbs,
                 entry.ThumbnailImageUrl,
                 entry.Documents,
-                entry.Categories,
                 entry.MapPosition,
                 entry.Featured,
                 entry.BookingInformation,

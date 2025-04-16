@@ -70,7 +70,6 @@ public class EventBuilder
             _breadcrumbs,
             _thumbnailImage,
             _documents,
-            _categories,
             _mapPosition,
             _featured,
             _bookingInformation,

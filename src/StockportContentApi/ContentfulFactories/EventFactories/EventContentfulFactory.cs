@@ -57,7 +57,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         new List<Crumb> { new("Events", string.Empty, "events") },
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl),
                         eventDocuments,
-                        entry.Categories,
                         entry.MapPosition,
                         entry.Featured,
                         entry.BookingInformation,

@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Extensions;
-
-namespace StockportContentApiTests.Unit.Repositories;
+﻿namespace StockportContentApiTests.Unit.Repositories;
 
 public class AtoZRepositoryTests
 {
