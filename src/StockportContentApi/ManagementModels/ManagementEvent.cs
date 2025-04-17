@@ -16,7 +16,6 @@ public class ManagementEvent
     public Dictionary<string, int> Occurences { get; set; }
     public Dictionary<string, EventFrequency> Frequency { get; set; }
     public Dictionary<string, List<LinkReference>> Documents { get; set; }
-    public Dictionary<string, List<string>> Categories { get; set; }
     public Dictionary<string, MapPosition> MapPosition { get; set; }
     public Dictionary<string, string> BookingInformation { get; set; }
     public Dictionary<string, bool> Featured { get; set; }

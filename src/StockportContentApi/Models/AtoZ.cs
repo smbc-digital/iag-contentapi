@@ -1,23 +1,14 @@
 ﻿namespace StockportContentApi.Models;
 
-public class AtoZ
+public class AtoZ(string title, string slug, string teaser, string type, List<string> alternativeTitles)
 {
-    public string Title { get; private set; }
-    public string Slug { get; }
-    public string Teaser { get; }
-    public string Type { get; }
+    public string Title { get; private set; } = title;
+    public string Slug { get; } = slug;
+    public string Teaser { get; } = teaser;
+    public string Type { get; } = type;
 
     [JsonIgnore]
-    public List<string> AlternativeTitles { get; }
-
-    public AtoZ(string title, string slug, string teaser, string type, List<string> alternativeTitles)
-    {
-        AlternativeTitles = alternativeTitles;
-        Title = title;
-        Slug = slug;
-        Teaser = teaser;
-        Type = type;
-    }
+    public List<string> AlternativeTitles { get; } = alternativeTitles;
 
     public List<AtoZ> SetTitleStartingWithLetter(string letter)
     {
@@ -40,10 +31,11 @@ public class AtoZ
 
     public List<AtoZ> SetTitles()
     {
-        List<AtoZ> matchingItems = new();
+        List<AtoZ> matchingItems = new()
+        {
+            this
+        };
         
-        matchingItems.Add(this);
-
         if (AlternativeTitles is not null)
         {
             foreach (string atozAlternativeTitle in AlternativeTitles)

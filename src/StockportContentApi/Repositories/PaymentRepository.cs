@@ -36,7 +36,7 @@ public class PaymentRepository(ContentfulConfig config,
             : HttpResponse.Successful(payments);
     }
 
-    private IEnumerable<Payment> GetAllPayments(IEnumerable<ContentfulPayment> entries)
+    private List<Payment> GetAllPayments(IEnumerable<ContentfulPayment> entries)
     {
         List<Payment> entriesList = new();
 

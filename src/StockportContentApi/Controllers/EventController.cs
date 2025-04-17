@@ -53,21 +53,18 @@ public class EventController(ResponseHandler handler,
         IEventRepository repository = _eventRepository(businessId, businessId);
         ContentfulEvent existingEvent = await repository.GetContentfulEvent(eventDetail.Slug);
 
-        ContentfulCollection<ContentfulEventCategory> existingCategories =
-            await repository.GetContentfulEventCategories();
+        ContentfulCollection<ContentfulEventCategory> existingCategories = await repository.GetContentfulEventCategories();
         List<ContentfulEventCategory> referencedCategories = existingCategories.Items
-            .Where(c => eventDetail.EventCategories.Any(ed => c.Name.Equals(ed.Name))).ToList();
+            .Where(c => eventDetail.EventCategories.Any(ed => c.Name.Equals(ed.Name)))
+            .ToList();
 
         ManagementEvent managementEvent = ConvertToManagementEvent(eventDetail, referencedCategories, existingEvent);
 
         return await _handler.Get(async () =>
         {
             IManagementRepository managementRepository = _managementRepository(businessId);
-            int version = await managementRepository.GetVersion(existingEvent.Sys.Id);
-            existingEvent.Sys.Version = version;
-            HttpResponse result = await managementRepository.CreateOrUpdate(managementEvent, existingEvent.Sys);
-
-            return result;
+            existingEvent.Sys.Version = await managementRepository.GetVersion(existingEvent.Sys.Id);
+            return await managementRepository.CreateOrUpdate(managementEvent, existingEvent.Sys);
         });
     }
 
@@ -116,8 +113,9 @@ public class EventController(ResponseHandler handler,
         }
         catch (Exception ex)
         {
-            _logger.LogError(new(0), ex,
-                $"There was an error with getting events by category / tag for category {category}");
+            _logger.LogError($"{nameof(EventController)}::{nameof(GetEventsByCategoryOrTag)}: " +
+                $"An unexpected error occurred getting events by category / tag for category {category}" + 
+                $"{ex.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

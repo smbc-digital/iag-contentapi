@@ -25,7 +25,7 @@ public class EventBuilder
     private readonly string _instagram = "www.test.com";
     private readonly string _linkedIn = "www.test.com";
     private readonly string _logoAreaTitle = "Logo title";
-    private List<GroupBranding> _branding = new();
+    private readonly List<GroupBranding> _branding = new();
     private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
@@ -38,17 +38,17 @@ public class EventBuilder
     private List<string> _tags = new();
     private Group _group = null;
     private readonly List<Alert> _alerts = new()
-        {
-            new Alert("title",
-                    "subHeading",
-                    "body",
-                    "severity",
-                    new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
-                    "slug",
-                    false,
-                    string.Empty)
-        };
+    {
+        new Alert("title",
+                "subHeading",
+                "body",
+                "severity",
+                new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                "slug",
+                false,
+                string.Empty)
+    };
     
     private List<EventCategory> _eventCategories = new();
     private List<CallToActionBanner> _callToActionBanners = new();
@@ -70,7 +70,6 @@ public class EventBuilder
             _breadcrumbs,
             _thumbnailImage,
             _documents,
-            _categories,
             _mapPosition,
             _featured,
             _bookingInformation,

@@ -47,7 +47,6 @@ public class CommsControllerTests
                                                 new List<Crumb>(),
                                                 "thumbnail image url",
                                                 new List<Document>(),
-                                                new List<string>(),
                                                 new MapPosition(),
                                                 false,
                                                 "booking information",
