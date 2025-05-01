@@ -49,15 +49,7 @@ public class LandingPageRepositoryTests
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
         
         _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
-        
-        _newsRepository = new(config,
-                            _timeProvider.Object,
-                            contentfulClientManager.Object,
-                            _newsFactory.Object,
-                            _newsRoomFactory.Object,
-                            _cacheWrapper.Object,
-                            _configuration.Object);
-        
+
         _eventRepository = new(config,
                             cacheKeyconfig,
                             contentfulClientManager.Object,
@@ -67,6 +59,15 @@ public class LandingPageRepositoryTests
                             _cacheWrapper.Object,
                             _configuration.Object);
 
+        _newsRepository = new(config,
+                            _timeProvider.Object,
+                            contentfulClientManager.Object,
+                            _newsFactory.Object,
+                            _newsRoomFactory.Object,
+                            _cacheWrapper.Object,
+                            _configuration.Object,
+                            _eventRepository.Object);
+        
         _repository = new(config,
                         _contentfulFactory.Object,
                         contentfulClientManager.Object,
@@ -234,6 +235,8 @@ public class LandingPageRepositoryTests
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
                         It.IsAny<DateTime>(),
                         It.IsAny<DateTime>(),
                         It.IsAny<DateTime>(),
@@ -242,7 +245,13 @@ public class LandingPageRepositoryTests
                         It.IsAny<List<string>>(),
                         It.IsAny<List<Document>>(),
                         It.IsAny<List<string>>(),
-                        It.IsAny<List<Profile>>());
+                        It.IsAny<List<Profile>>(),
+                        It.IsAny<List<InlineQuote>>(),
+                        It.IsAny<CallToActionBanner>(),
+                        It.IsAny<string>(),
+                        It.IsAny<List<GroupBranding>>(),
+                        It.IsAny<GroupBranding>(),
+                        It.IsAny<string>());
 
         _newsRepository
             .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
@@ -275,6 +284,8 @@ public class LandingPageRepositoryTests
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
                         It.IsAny<DateTime>(),
                         It.IsAny<DateTime>(),
                         It.IsAny<DateTime>(),
@@ -283,7 +294,13 @@ public class LandingPageRepositoryTests
                         It.IsAny<List<string>>(),
                         It.IsAny<List<Document>>(),
                         It.IsAny<List<string>>(),
-                        It.IsAny<List<Profile>>());
+                        It.IsAny<List<Profile>>(),
+                        It.IsAny<List<InlineQuote>>(),
+                        It.IsAny<CallToActionBanner>(),
+                        It.IsAny<string>(),
+                        It.IsAny<List<GroupBranding>>(),
+                        It.IsAny<GroupBranding>(),
+                        It.IsAny<string>());
 
         _newsRepository
             .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))

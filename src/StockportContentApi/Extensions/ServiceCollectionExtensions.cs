@@ -314,7 +314,15 @@ public static class ServiceCollectionExtensions
                         p.GetService<IContentfulFactory<ContentfulNews, News>>(),
                         p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                         p.GetService<ICache>(),
-                        p.GetService<IConfiguration>()),
+                        p.GetService<IConfiguration>(),
+                        new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                            p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
+                            p.GetService<IContentfulClientManager>(),
+                            p.GetService<ITimeProvider>(),
+                            p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                            p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
+                            p.GetService<ICache>(),
+                            p.GetService<IConfiguration>())),
                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
         services.AddSingleton<Func<string, IProfileRepository>>(p =>
@@ -381,7 +389,15 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulFactory<ContentfulNews, News>>(),
                     p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                     p.GetService<ICache>(),
-                    p.GetService<IConfiguration>()));
+                    p.GetService<IConfiguration>(),
+                    new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                        p.GetService<Func<string, CacheKeyConfig>>()(contentfulConfig),
+                        p.GetService<IContentfulClientManager>(),
+                        p.GetService<ITimeProvider>(),
+                        p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
+                        p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
+                        p.GetService<ICache>(),
+                        p.GetService<IConfiguration>())));
 
         services.AddSingleton<Func<string, ISectionRepository>>(p =>
             (contentfulConfig) =>

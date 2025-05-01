@@ -2,23 +2,29 @@
 
 public class NewsContentfulFactoryTests
 {
-    private readonly Mock<IVideoRepository> _videoRepository;
-    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder;
+    private readonly Mock<IVideoRepository> _videoRepository = new();
+    private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertBuilder = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly NewsContentfulFactory _newsContentfulFactory;
     private readonly ContentfulNews _contentfulNews;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory;
+    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
 
     public NewsContentfulFactoryTests()
     {
         _contentfulNews = new ContentfulNewsBuilder().Document().Build();
-        _videoRepository = new Mock<IVideoRepository>();
-        _documentFactory = new Mock<IContentfulFactory<Asset, Document>>();
-        _alertBuilder = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _profileFactory = new Mock<IContentfulFactory<ContentfulProfile, Profile>>();
 
-        _newsContentfulFactory = new NewsContentfulFactory(_videoRepository.Object, _documentFactory.Object, _alertBuilder.Object, _timeProvider.Object, _profileFactory.Object);
+        _newsContentfulFactory = new(_videoRepository.Object,
+                                    _documentFactory.Object,
+                                    _alertBuilder.Object,
+                                    _timeProvider.Object,
+                                    _profileFactory.Object,
+                                    _inlineQuoteFactory.Object,
+                                    _callToActionFactory.Object,
+                                    _brandingFactory.Object);
     }
 
     [Fact]
@@ -28,16 +34,17 @@ public class NewsContentfulFactoryTests
         _contentfulNews.Documents.First().SystemProperties.LinkType = "Link";
         _contentfulNews.Image.SystemProperties.LinkType = "Link";
 
-        // Mock
-        _videoRepository.Setup(o => o.Process(_contentfulNews.Body)).Returns(_contentfulNews.Body);
+        _videoRepository
+            .Setup(videoRepo => videoRepo.Process(_contentfulNews.Body))
+            .Returns(_contentfulNews.Body);
 
         // Act
         News news = _newsContentfulFactory.ToModel(_contentfulNews);
 
         // Assert
-        _documentFactory.Verify(o => o.ToModel(It.IsAny<Asset>()), Times.Never);
-        news.Documents.Count.Should().Be(0);
-        news.Image.Should().BeEmpty();
-        news.ThumbnailImage.Should().BeEmpty();
+        _documentFactory.Verify(docFactory => docFactory.ToModel(It.IsAny<Asset>()), Times.Never);
+        Assert.Empty(news.Documents);
+        Assert.Empty(news.Image);
+        Assert.Empty(news.ThumbnailImage);
     }
 }

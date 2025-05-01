@@ -20,6 +20,7 @@ public class NewsRepository : BaseRepository, INewsRepository
     private readonly IContentfulClient _client;
     private readonly IConfiguration _configuration;
     private readonly int _newsTimeout;
+    private readonly EventRepository _eventRepository;
 
     public NewsRepository(ContentfulConfig config,
                         ITimeProvider timeProvider,
@@ -27,7 +28,8 @@ public class NewsRepository : BaseRepository, INewsRepository
                         IContentfulFactory<ContentfulNews, News> newsContentfulFactory,
                         IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory,
                         ICache cache,
-                        IConfiguration configuration)
+                        IConfiguration configuration,
+                        EventRepository eventRepository)
     {
         _timeProvider = timeProvider;
         _newsContentfulFactory = newsContentfulFactory;
@@ -36,6 +38,8 @@ public class NewsRepository : BaseRepository, INewsRepository
         _client = contentfulClientManager.GetClient(config);
         _cache = cache;
         _configuration = configuration;
+        _eventRepository = eventRepository;
+
         int.TryParse(_configuration["redisExpiryTimes:News"], out _newsTimeout);
     }
 
@@ -72,7 +76,37 @@ public class NewsRepository : BaseRepository, INewsRepository
 
         if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate))
             entry = null;
+        
+        if (!string.IsNullOrEmpty(entry?.EventsByTagOrCategory))
+        {
+            IEnumerable<string> tagsOrCategories = entry?.EventsByTagOrCategory.Split(',').Select(tag => tag.Trim());
+            List<Event> events = new();
 
+            IEnumerable<Task<List<Event>>> tasks = tagsOrCategories?.Select(async tagOrCategory =>
+            {
+                List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(tagOrCategory, true);
+                return categoryEvents.Any()
+                    ? categoryEvents
+                    : await _eventRepository.GetEventsByTag(tagOrCategory, true);
+            });
+
+            foreach (List<Event> task in await Task.WhenAll(tasks))
+            {
+                events.AddRange(task);
+            }
+
+            News newsArticle = _newsContentfulFactory.ToModel(entry);
+
+            newsArticle.Events = events
+                .GroupBy(e => e.Slug)
+                .Select(g => g.First())
+                .OrderBy(e => e.EventDate)
+                .ThenBy(e => TimeSpan.Parse(e.StartTime))
+                .ThenBy(e => e.Title)
+                .Take(3)
+                .ToList();
+        }
+        
         return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
             : HttpResponse.Successful(_newsContentfulFactory.ToModel(entry));
