@@ -5,9 +5,9 @@ public class Payment(string title,
                     string slug,
                     string teaser,
                     string description,
+                    string paymentType,
                     string paymentDetailsText,
                     string referenceLabel,
-                    string parisReference,
                     string fund,
                     string glCodeCostCentreNumber,
                     string icon,
@@ -24,9 +24,9 @@ public class Payment(string title,
     public string Slug { get; set; } = slug;
     public string Teaser { get; set; } = teaser;
     public string Description { get; set; } = description;
+    public string PaymentType { get; set; } = paymentType;
     public string PaymentDetailsText { get; set; } = paymentDetailsText;
     public string ReferenceLabel { get; set; } = referenceLabel;
-    public string ParisReference { get; set; } = parisReference;
     public string Fund { get; set; } = fund;
     public string GlCodeCostCentreNumber { get; set; } = glCodeCostCentreNumber;
     public IEnumerable<Crumb> Breadcrumbs { get; } = breadcrumbs;
