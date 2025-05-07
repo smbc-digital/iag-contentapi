@@ -16,7 +16,7 @@ public class ServicePayPaymentControllerTests
             .Setup(createRepo => createRepo(It.IsAny<string>()))
             .Returns(_mockRepository.Object);
 
-        _controller = new ServicePayPaymentController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new(new(mockLogger.Object), _mockCreateRepository.Object);
     }
 
     [Fact]

@@ -5,8 +5,8 @@ internal class ContentfulServicePayPaymentBuilder
     private string _title = "title";
     private string _slug = "slug";
     private string _teaser = "teaser";
-    private string _description = "description";
-    private string _paymentDetailsText = "paymentDetailsText";
+    private readonly string _description = "description";
+    private readonly string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
     private readonly string _metaDescription = "metaDescription";
     private List<ContentfulAlert> _alerts = new();
@@ -45,18 +45,6 @@ internal class ContentfulServicePayPaymentBuilder
     public ContentfulServicePayPaymentBuilder Teaser(string teaser)
     {
         _teaser = teaser;
-        return this;
-    }
-
-    public ContentfulServicePayPaymentBuilder Description(string description)
-    {
-        _description = description;
-        return this;
-    }
-
-    public ContentfulServicePayPaymentBuilder PaymentDetailsText(string paymentDetailsText)
-    {
-        _paymentDetailsText = paymentDetailsText;
         return this;
     }
 

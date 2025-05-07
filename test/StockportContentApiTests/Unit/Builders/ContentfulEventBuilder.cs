@@ -48,7 +48,6 @@ public class ContentfulEventBuilder
             Occurences = _occurences,
             Frequency = _eventFrequency,
             Documents = _documents,
-            Categories = _categories,
             MapPosition = _mapPosition,
             BookingInformation = _bookingInformation,
             Featured = _featured,

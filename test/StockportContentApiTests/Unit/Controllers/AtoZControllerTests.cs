@@ -5,7 +5,6 @@ namespace StockportContentApiTests.Unit.Controllers;
 public class AtoZControllerTests
 {
     private readonly Mock<Func<string, IAtoZRepository>> _mockCreateRepository = new();
-    private readonly ContentfulConfig _config;
     private readonly Mock<IAtoZRepository> _mockRepository = new();
     private readonly AtoZController _controller;
 
@@ -36,6 +35,27 @@ public class AtoZControllerTests
 
         // Act
         IActionResult result = await _controller.Index("A", "test-business");
+
+        // Assert
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Index_ReturnsOkResult_WhenRepositoryWithNoLetterReturnsSuccessfulResponse()
+    {
+        // Arrange
+        List<AtoZ> atoZItems = new()
+        {
+            new AtoZ("Apple", "apple", "teaser", "article", new List<string>()),
+            new AtoZ ("Avocado", "avocado", "teaser", "topic", new List < string >())
+        };
+
+        _mockRepository
+            .Setup(repo => repo.Get(It.IsAny<string>()))
+            .ReturnsAsync(HttpResponse.Successful(atoZItems));
+
+        // Act
+        IActionResult result = await _controller.Index("test-business");
 
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

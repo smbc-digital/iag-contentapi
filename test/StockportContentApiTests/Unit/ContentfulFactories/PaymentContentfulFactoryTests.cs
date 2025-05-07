@@ -7,7 +7,7 @@ public class PaymentContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
 
     [Fact]
-    public void ShouldCreateAPaymentFromAContentfulPayment()
+    public void ToModel_ShouldCreateAPaymentFromAContentfulPayment()
     {
         // Arrange
         ContentfulPayment contentfulPayment = new ContentfulPaymentBuilder()

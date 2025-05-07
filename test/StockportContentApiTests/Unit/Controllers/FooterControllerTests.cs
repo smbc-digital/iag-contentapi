@@ -20,7 +20,7 @@ public class FooterControllerTests
     }
 
     [Fact]
-    public async Task GetArticle_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
+    public async Task GetFooter_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
         Footer footer = new("title",

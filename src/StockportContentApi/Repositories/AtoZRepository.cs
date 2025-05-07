@@ -5,22 +5,21 @@ public interface IAtoZRepository
     Task<HttpResponse> Get(string letter = "");
 }
 
-public class AtoZRepository(
-        ContentfulConfig config,
-        IContentfulClientManager contentfulClientManager,
-        IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
-        ITimeProvider timeProvider,
-        ICache cache,
-        IConfiguration configuration,
-        ILogger logger) : BaseRepository, IAtoZRepository
+public class AtoZRepository(ContentfulConfig config,
+                            IContentfulClientManager contentfulClientManager,
+                            IContentfulFactory<ContentfulAtoZ, AtoZ> contentfulAtoZFactory,
+                            ITimeProvider timeProvider,
+                            ICache cache,
+                            IConfiguration configuration,
+                            ILogger logger) : BaseRepository, IAtoZRepository
 {
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory = contentfulAtoZFactory;
-    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
+    private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly ICache _cache = cache;
     private readonly int _atoZTimeout = GetCacheConfiguration(configuration);
     private readonly ILogger _logger = logger;
-    private List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
+    private readonly List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
 
     private static int GetCacheConfiguration(IConfiguration configuration)
     {
@@ -32,33 +31,35 @@ public class AtoZRepository(
 
     public async Task<HttpResponse> Get(string letter = "")
     {
-        IEnumerable<AtoZ> atozItems = string.IsNullOrEmpty(letter) 
+        IEnumerable<AtoZ> aToZItems = string.IsNullOrEmpty(letter) 
                             ? await GetAtoZ() 
                             : await GetAtoZ(letter);
 
-        return !atozItems.Any()
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No results found")
-            : HttpResponse.Successful(atozItems.OrderBy(o => o.Title).ToList());
+        return !aToZItems.Any()
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No A to Z results found")
+            : HttpResponse.Successful(aToZItems.OrderBy(aToZ => aToZ.Title).ToList());
     }
 
     public async Task<IEnumerable<AtoZ>> GetAtoZ()
     {
         List<AtoZ> atozItems = new();
-        foreach(var contentType in contentTypesToInclude)
+        foreach(string contentType in contentTypesToInclude)
         {
-            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
+            List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
             atozItems.AddRange(items);
-        }    
+        }
 
         return atozItems;
     }
-        
+    
     public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter)
     {
         List<AtoZ> atozItems = new();
-        foreach (var contentType in contentTypesToInclude)
+        foreach (string contentType in contentTypesToInclude)
         {
-            var items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}", () => GetAtoZItemFromSource(contentType, letter.ToLower()), _atoZTimeout);
+            List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}",
+                                                                        () => GetAtoZItemFromSource(contentType, letter.ToLower()),
+                                                                        _atoZTimeout);
             if (items is not null && items.Any())
                 atozItems.AddRange(items);
         }
@@ -73,10 +74,10 @@ public class AtoZRepository(
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
         IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True")
-                                                                && entry.Title.ToLower().StartsWith(letter)
-                                                                || entry.Name.ToLower().StartsWith(letter) 
+                                                                && entry.Title.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase)
+                                                                || entry.Name.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase)
                                                                 || (entry.AlternativeTitles is not null 
-                                                                && entry.AlternativeTitles.Any(alternativeTitle => alternativeTitle.ToLower().StartsWith(letter))));
+                                                                && entry.AlternativeTitles.Any(alternativeTitle => alternativeTitle.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase))));
 
         if (entriesWithDisplayOn is not null)
         {
@@ -103,7 +104,7 @@ public class AtoZRepository(
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
-        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(x => x.DisplayOnAZ.Equals("True"));
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True"));
 
         if (entriesWithDisplayOn is not null)
         {

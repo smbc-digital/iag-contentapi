@@ -33,7 +33,7 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void ShouldGetAllPayments()
+    public void Get_ShouldReturnAllPayments()
     {
         // Arrange          
         List<ContentfulPayment> rawPayments = new()
@@ -66,24 +66,22 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void ShouldGetsASinglePaymentItemFromASlug()
+    public void GetPayment_ShouldGetsASinglePaymentItemFromASlug()
     {
         // Arrange
-        const string slug = "any-payment";
-
-        ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug(slug).Build();
+        ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug("any-payment").Build();
         ContentfulCollection<ContentfulPayment> collection = new()
         {
             Items = new List<ContentfulPayment> { rawPayment }
         };
 
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "any-payment").Include(1);
         _contentfulClient
             .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("any-payment"));
         Payment paymentItem = response.Get<Payment>();
 
         // Assert
@@ -97,23 +95,21 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void ShouldReturn404ForNonExistentSlug()
+    public void GetPayment_ShouldReturn404ForNonExistentSlug()
     {
         // Arrange
-        const string slug = "invalid-url";
-
         ContentfulCollection<ContentfulPayment> collection = new()
         {
             Items = new List<ContentfulPayment>()
         };
 
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "slug").Include(1);
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

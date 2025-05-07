@@ -92,9 +92,16 @@ public class EventRepository : BaseRepository, IEventRepository
         liveEvents = GetNextOccurenceOfEvents(liveEvents);
 
         foreach (EventHomepageRow row in homepage.Rows)
+        {
             row.Events = row.IsLatest
-                ? liveEvents.Take(quantity) 
-                : liveEvents.Where(singleEvent => singleEvent.Tags.Contains(row.Tag.ToLower())).Take(quantity);
+                ? liveEvents.Take(quantity)
+                : liveEvents.Where(singleEvent => singleEvent.EventCategories?.Any(category => (bool)(category?.Slug?.ToLower().Equals(row.Tag?.ToLower()))) is true ||
+                    singleEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag?.ToLower()) is true).Take(quantity);
+            
+            row.MatchedByTag = row.Events.Any(matchingEvent =>
+                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == tag) is true &&
+                    matchingEvent.EventCategories?.Any(category => category?.Slug?.ToLower() == row.Tag?.ToLower()) is not true);
+        }
 
         return homepage;
     }
@@ -102,7 +109,6 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
         await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
         
-
     /// <summary>
     /// Get event categories from contentful event categories type
     /// </summary>
@@ -120,26 +126,29 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<HttpResponse> GetEvent(string slug, DateTime? date)
     {
         // does this need to retrieve all events and their occurrences??
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
-        IEnumerable<Event> events = GetAllEventsAndTheirRecurrences(entries);
-        Event eventItem = events.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
+        IList<ContentfulEvent> cachedEntries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
+        IEnumerable<Event> allEvents = GetAllEventsAndTheirRecurrences(cachedEntries);
+        Event selectedEvent = allEvents.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
 
-        eventItem = GetEventFromItsOccurrences(date, eventItem);
+        selectedEvent = GetEventFromItsOccurrences(date, selectedEvent);
 
-        if (eventItem is not null && !string.IsNullOrEmpty(eventItem.Group?.Slug) &&
-                !_dateComparer.DateNowIsNotBetweenHiddenRange(eventItem.Group.DateHiddenFrom, eventItem.Group.DateHiddenTo))
-            eventItem.Group = new NullGroup();
+        if (selectedEvent is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
 
-        if (eventItem is not null)
-            eventItem.RelatedEvents = GetRelatedEvents(entries,
-                                                eventItem.Slug,
-                                                eventItem.EventCategories.Select(cat => cat.Name).ToList(),
-                                                eventItem.EventCategories.Select(cat => cat.Slug).ToList(),
-                                                eventItem.Tags);
+        if (selectedEvent is not null && !string.IsNullOrEmpty(selectedEvent.Group?.Slug) &&
+                !_dateComparer.DateNowIsNotBetweenHiddenRange(selectedEvent.Group.DateHiddenFrom, selectedEvent.Group.DateHiddenTo))
+            selectedEvent.Group = new NullGroup();
 
-        return eventItem is null
+        if (selectedEvent is not null)
+            selectedEvent.RelatedEvents = GetRelatedEvents(cachedEntries,
+                                                selectedEvent.Slug,
+                                                selectedEvent.EventCategories.Select(cat => cat.Name).ToList(),
+                                                selectedEvent.EventCategories.Select(cat => cat.Slug).ToList(),
+                                                selectedEvent.Tags);
+
+        return selectedEvent is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'")
-            : HttpResponse.Successful(eventItem);
+            : HttpResponse.Successful(selectedEvent);
     }
 
     private static Event GetEventFromItsOccurrences(DateTime? date, Event eventItem)

@@ -188,7 +188,6 @@ public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
             { "en-GB", source.Alerts.Select(o => context.Mapper.Map<ContentfulAlert, ManagementAlert>(o)).ToList() }
         };
         destination.BookingInformation = new() { { "en-GB", source.BookingInformation } };
-        destination.Categories = new() { { "en-GB", source.Categories } };
         destination.Description = new() { { "en-GB", source.Description } };
         destination.Documents = new()
             { { "en-GB", source.Documents.Select(o => context.Mapper.Map<Asset, LinkReference>(o)).ToList() } };
@@ -198,7 +197,7 @@ public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
             {
                 "en-GB",
                 source.EventCategories
-                    .Select(o => context.Mapper.Map<ContentfulEventCategory, ManagementEventCategory>(o)).ToList()
+                    .Select(context.Mapper.Map<ContentfulEventCategory, ManagementEventCategory>).ToList()
             }
         };
         destination.EventDate = new() { { "en-GB", source.EventDate } };

@@ -5,8 +5,8 @@ internal class ContentfulPaymentBuilder
     private string _title = "title";
     private string _slug = "slug";
     private string _teaser = "teaser";
-    private string _description = "description";
-    private string _paymentDetailsText = "paymentDetailsText";
+    private readonly string _description = "description";
+    private readonly string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
     private string _fund = "fund";
     private string _glCodeCostCentreNumber = "glCodeCostCentreNumber";
@@ -45,18 +45,6 @@ internal class ContentfulPaymentBuilder
     public ContentfulPaymentBuilder Teaser(string teaser)
     {
         _teaser = teaser;
-        return this;
-    }
-
-    public ContentfulPaymentBuilder Description(string description)
-    {
-        _description = description;
-        return this;
-    }
-
-    public ContentfulPaymentBuilder PaymentDetailsText(string paymentDetailsText)
-    {
-        _paymentDetailsText = paymentDetailsText;
         return this;
     }
 

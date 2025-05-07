@@ -69,11 +69,9 @@ public class ServicePayPaymentRepositoryTests
     }
 
     [Fact]
-    public void ShouldReturn404ForNonExistentSlug()
+    public void GetPayment_ShouldReturn404ForNonExistentSlug()
     {
         // Arrange
-        const string slug = "invalid-url";
-
         ContentfulCollection<ContentfulServicePayPayment> collection = new()
         {
             Items = new List<ContentfulServicePayPayment>()
@@ -84,7 +82,7 @@ public class ServicePayPaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
