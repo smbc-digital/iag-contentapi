@@ -9,11 +9,10 @@ internal class ContentfulServicePayPaymentBuilder
     private readonly string _paymentDetailsText = "paymentDetailsText";
     private string _referenceLabel = "referenceLabel";
     private readonly string _metaDescription = "metaDescription";
-    private readonly List<ContentfulAlert> _alerts = new();
-    private readonly List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
-    private string _paymentAmount = "23.00";
-    private readonly string _accountReference = "accountReference";
-    private readonly string _catalogueId = "catalogueId";
+    private List<ContentfulAlert> _alerts = new();
+    private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
+    private string _accountReference = "accountReference";
+    private string _catalogueId = "catalogueId";
 
     public ContentfulServicePayPayment Build()
         => new()
@@ -27,7 +26,6 @@ internal class ContentfulServicePayPaymentBuilder
             Breadcrumbs = _breadcrumbs,
             MetaDescription = _metaDescription,
             Alerts = _alerts,
-            PaymentAmount = _paymentAmount,
             AccountReference = _accountReference,
             CatalogueId = _catalogueId
         };
@@ -56,21 +54,27 @@ internal class ContentfulServicePayPaymentBuilder
         return this;
     }
 
-    public ContentfulServicePayPaymentBuilder PaymentAmount(string paymentAmount)
+    public ContentfulServicePayPaymentBuilder Breadcrumbs(List<ContentfulReference> breadcrumbs)
     {
-        _paymentAmount = paymentAmount;
+        _breadcrumbs = breadcrumbs;
+        return this;
+    }
+
+    public ContentfulServicePayPaymentBuilder Alerts(List<ContentfulAlert> alerts)
+    {
+        _alerts = alerts;
         return this;
     }
 
     public ContentfulServicePayPaymentBuilder AccountReference(string accountReference)
     {
-        _paymentAmount = accountReference;
+        _accountReference = accountReference;
         return this;
     }
 
     public ContentfulServicePayPaymentBuilder CatalogueId(string catalogueId)
     {
-        _paymentAmount = catalogueId;
+        _catalogueId = catalogueId;
         return this;
     }
 }

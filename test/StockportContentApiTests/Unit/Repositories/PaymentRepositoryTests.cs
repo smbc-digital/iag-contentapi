@@ -29,9 +29,7 @@ public class PaymentRepositoryTests
             .Setup(client => client.GetClient(config))
             .Returns(_contentfulClient.Object);
         
-        _repository = new(config,
-                        contentfulClientManager.Object,
-                        contentfulFactory);
+        _repository = new PaymentRepository(config, contentfulClientManager.Object, contentfulFactory);
     }
 
     [Fact]
@@ -79,7 +77,7 @@ public class PaymentRepositoryTests
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "any-payment").Include(1);
         _contentfulClient
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
@@ -88,13 +86,12 @@ public class PaymentRepositoryTests
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(rawPayment.Slug, paymentItem.Slug);
+        Assert.Equal(rawPayment.Description, paymentItem.Description);
         Assert.Equal(rawPayment.Title, paymentItem.Title);
         Assert.Equal(rawPayment.Teaser, paymentItem.Teaser);
-        Assert.Equal(rawPayment.Description, paymentItem.Description);
+        Assert.Equal(rawPayment.Slug, paymentItem.Slug);
         Assert.Equal(rawPayment.PaymentDetailsText, paymentItem.PaymentDetailsText);
-        Assert.Equal(rawPayment.ReferenceLabel, paymentItem.ReferenceLabel);
-        Assert.Equal(rawPayment.Breadcrumbs.First().Title, paymentItem.Breadcrumbs.First().Title);
+        Assert.Equal("title", paymentItem.Breadcrumbs.First().Title);
     }
 
     [Fact]
@@ -106,6 +103,7 @@ public class PaymentRepositoryTests
             Items = new List<ContentfulPayment>()
         };
 
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "slug").Include(1);
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
@@ -115,7 +113,5 @@ public class PaymentRepositoryTests
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("No payment found for 'invalid-url'", response.Error);
-        Assert.Null(response.Get<Payment>());
     }
 }

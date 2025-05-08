@@ -5,7 +5,7 @@ public class ServicePayPaymentContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
-
+    
     [Fact]
     public void ToModel_ShouldCreateAServicePayPaymentFromAContentfulServicePayPayment()
     {
@@ -15,7 +15,6 @@ public class ServicePayPaymentContentfulFactoryTests
             .Title("payment title")
             .Teaser("payment teaser")
             .ReferenceLabel("reference label")
-            .PaymentAmount("15.23")
             .Build();
 
         ServicePayPaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
