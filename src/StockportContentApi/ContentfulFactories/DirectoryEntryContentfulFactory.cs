@@ -1,16 +1,11 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
-public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
+public class DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                            IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
+                                            ITimeProvider timeProvider) : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
 {
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory;
-    private readonly DateComparer _dateComparer;
-
-    public DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory, ITimeProvider timeProvider)
-    {
-        _alertFactory = alertFactory;
-        _brandingFactory = brandingFactory;
-        _dateComparer = new DateComparer(timeProvider);
-    }
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
+    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
 
     public DirectoryEntry ToModel(ContentfulDirectoryEntry entry)
     {
@@ -46,12 +41,12 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
             Alerts = entry.Alerts?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)),
+                        .Select(_alertFactory.ToModel),
 
             AlertsInline = entry.AlertsInline?.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                 && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
-                            .Select(alert => _alertFactory.ToModel(alert)),
+                            .Select(_alertFactory.ToModel),
             
             Themes = entry.Filters?.Select(filter => filter.Theme)
                         .Distinct()
@@ -64,7 +59,7 @@ public class DirectoryEntryContentfulFactory : IContentfulFactory<ContentfulDire
                                 .Select(filter => new Filter(filter))
                         }),
             
-            Branding = entry.GroupBranding?.Select(branding => _brandingFactory.ToModel(branding))
+            Branding = entry.GroupBranding?.Select(_brandingFactory.ToModel)
         };
 
         return directoryEntry;

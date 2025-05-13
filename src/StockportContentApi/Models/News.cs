@@ -1,42 +1,54 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class News
+public class News(string title,
+                string slug,
+                string teaser,
+                string purpose,
+                string image,
+                string heroImage,
+                string thumbnailImage,
+                string heroImageCaption,
+                string body,
+                DateTime sunriseDate,
+                DateTime sunsetDate,
+                DateTime updatedAt,
+                List<Crumb> breadcrumbs,
+                List<Alert> alerts,
+                List<string> tags,
+                List<Document> documents,
+                List<string> categories,
+                IEnumerable<Profile> profiles,
+                List<InlineQuote> inlineQuotes,
+                CallToActionBanner callToAction,
+                string logoAreaTitle,
+                List<GroupBranding> newsBranding,
+                GroupBranding featuredLogo,
+                string eventsByTagOrCategory)
 {
-    public string Title { get; }
-    public string Slug { get; }
-    public string Teaser { get; }
-    public string Purpose { get; set; }
-    public string Image { get; }
-    public string ThumbnailImage { get; }
-    public string Body { get; }
-    public DateTime SunriseDate { get; }
-    public DateTime SunsetDate { get; }
-    public DateTime UpdatedAt { get; }
-    public List<Crumb> Breadcrumbs { get; }
-    public List<string> Tags { get; set; }
-    public List<Alert> Alerts { get; }
-    public List<Document> Documents { get; }
-    public List<string> Categories { get; }
-    public IEnumerable<Profile> Profiles { get; }
-
-    public News(string title, string slug, string teaser, string purpose, string image, string thumbnailImage, string body, DateTime sunriseDate, DateTime sunsetDate, DateTime updatedAt, List<Crumb> breadcrumbs, List<Alert> alerts, List<string> tags, List<Document> documents, List<string> categories, IEnumerable<Profile> profiles)
-    {
-        Title = title;
-        Slug = slug;
-        Teaser = teaser;
-        Purpose = purpose;
-        Image = image;
-        ThumbnailImage = thumbnailImage;
-        Body = body;
-        SunriseDate = sunriseDate;
-        SunsetDate = sunsetDate;
-        UpdatedAt = updatedAt;
-        Breadcrumbs = breadcrumbs;
-        Alerts = alerts;
-        Tags = tags;
-        Documents = documents;
-        Categories = categories;
-        Profiles = profiles;
-    }
+    public string Title { get; } = title;
+    public string Slug { get; } = slug;
+    public string Teaser { get; } = teaser;
+    public string Purpose { get; set; } = purpose;
+    public string Image { get; } = image;
+    public string HeroImage { get; } = heroImage;
+    public string ThumbnailImage { get; } = thumbnailImage;
+    public string HeroImageCaption { get; } = heroImageCaption;
+    public string Body { get; } = body;
+    public DateTime SunriseDate { get; } = sunriseDate;
+    public DateTime SunsetDate { get; } = sunsetDate;
+    public DateTime UpdatedAt { get; } = updatedAt;
+    public List<Crumb> Breadcrumbs { get; } = breadcrumbs;
+    public List<string> Tags { get; set; } = tags;
+    public List<Alert> Alerts { get; } = alerts;
+    public List<Document> Documents { get; } = documents;
+    public List<string> Categories { get; } = categories;
+    public IEnumerable<Profile> Profiles { get; } = profiles;
+    public List<InlineQuote> InlineQuotes { get; set; } = inlineQuotes;
+    public CallToActionBanner CallToAction { get; init; } = callToAction;
+    public string LogoAreaTitle { get; set; } = logoAreaTitle;
+    public List<GroupBranding> NewsBranding { get; set; } = newsBranding;
+    public GroupBranding FeaturedLogo { get; set; } = featuredLogo;
+    public string EventsByTagOrCategory { get; set;} = eventsByTagOrCategory;
+    public List<Event> Events { get; set; }
 }

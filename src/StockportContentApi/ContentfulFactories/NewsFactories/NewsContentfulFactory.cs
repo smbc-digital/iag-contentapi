@@ -1,46 +1,81 @@
 namespace StockportContentApi.ContentfulFactories.NewsFactories;
 
-public class NewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
+public class NewsContentfulFactory(IVideoRepository videoRepository,
+                                IContentfulFactory<Asset, Document> documentFactory,
+                                IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                ITimeProvider timeProvider,
+                                IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+                                IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
+                                IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+                                IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory) : IContentfulFactory<ContentfulNews, News>
 {
-    private readonly IVideoRepository _videoRepository;
-    private readonly IContentfulFactory<Asset, Document> _documentFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-
-    public NewsContentfulFactory(IVideoRepository videoRepository, IContentfulFactory<Asset, Document> documentFactory, IContentfulFactory<ContentfulAlert, Alert> alertFactory, ITimeProvider timeProvider, IContentfulFactory<ContentfulProfile, Profile> profileFactory)
-    {
-        _videoRepository = videoRepository;
-        _documentFactory = documentFactory;
-        _alertFactory = alertFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _profileFactory = profileFactory;
-    }
+    private readonly IVideoRepository _videoRepository = videoRepository;
+    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
+    private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
 
     public News ToModel(ContentfulNews entry)
     {
         List<Document> documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                    .Select(document => _documentFactory.ToModel(document))
+                                    .Select(_documentFactory.ToModel)
                                     .ToList();
 
         string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
             ? entry.Image.File.Url 
             : string.Empty;
 
+        string heroImageUrl = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) 
+            ? entry.HeroImage.File.Url 
+            : string.Empty;
+
+        string teaserImageUrl = entry.TeaserImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.TeaserImage.SystemProperties) 
+            ? entry.TeaserImage.File.Url 
+            : string.Empty;
+
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                                        .Select(alert => _alertFactory.ToModel(alert));
+                                        .Select(_alertFactory.ToModel);
 
         DateTime? updatedAt = entry.Sys.UpdatedAt is not null
             ? entry.Sys.UpdatedAt
             : entry.SunriseDate;
 
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(profile => _profileFactory.ToModel(profile)).ToList();
+                                    .Select(_profileFactory.ToModel).ToList();
 
-        return new News(entry.Title, entry.Slug, entry.Teaser, entry.Purpose, imageUrl, ImageConverter.ConvertToThumbnail(imageUrl),
-            entry.Body, entry.SunriseDate, entry.SunsetDate, entry.Sys.UpdatedAt.Value, new List<Crumb> { new("News", string.Empty, "news") },
-            alerts.ToList(), entry.Tags, documents, entry.Categories, profiles);
+        return new News(entry.Title,
+                        entry.Slug,
+                        entry.Teaser,
+                        entry.Purpose,
+                        imageUrl,
+                        heroImageUrl,
+                        ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
+                        entry.HeroImageCaption,
+                        entry.Body,
+                        entry.SunriseDate,
+                        entry.SunsetDate,
+                        entry.Sys.UpdatedAt.Value,
+                        new List<Crumb> { new("News", string.Empty, "news") },
+                        alerts.ToList(),
+                        entry.Tags,
+                        documents,
+                        entry.Categories,
+                        profiles,
+                        entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
+                        _callToActionFactory.ToModel(entry.CallToAction),
+                        entry.LogoAreaTitle,
+                        entry.NewsBranding is not null 
+                            ? entry.NewsBranding.Where(branding => branding is not null)
+                                                .Select(_brandingFactory.ToModel).ToList() 
+                            : new(),
+                        entry.FeaturedLogo is not null
+                            ? _brandingFactory.ToModel(entry.FeaturedLogo)
+                            : null,
+                        entry.EventsByTagOrCategory);
     }
 }

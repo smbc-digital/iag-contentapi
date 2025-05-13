@@ -36,26 +36,26 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         List<SubItem> featuredTasks = entry.FeaturedTasks
                                         .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(item => _subItemFactory.ToModel(item)).ToList();
+                                        .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> subItems = entry.SubItems
                                     .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                    .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = entry.SecondaryItems
                                         .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                        .Select(_subItemFactory.ToModel).ToList();
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs
                                     .Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                .Select(_alertFactory.ToModel).ToList();
 
         string backgroundImage = entry.BackgroundImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.BackgroundImage.SystemProperties)
             ? entry.BackgroundImage.File.Url 
@@ -76,7 +76,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         List<GroupBranding> topicBranding = entry.TopicBranding is not null 
             ? entry.TopicBranding
                 .Where(_ => _ is not null)
-                .Select(branding => _topicBrandingFactory.ToModel(branding)).ToList() 
+                .Select(_topicBrandingFactory.ToModel).ToList() 
             : new List<GroupBranding>();
 
         string logoAreaTitle = entry.LogoAreaTitle;
@@ -90,7 +90,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),
-            CallToAction = _callToActionFactory.ToModel(entry.CallToAction),
+            CallToAction = _callToActionFactory.ToModel(entry.CallToAction)
         };
     }
 }
