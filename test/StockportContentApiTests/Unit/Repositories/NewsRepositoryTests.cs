@@ -238,7 +238,7 @@ public class NewsRepositoryTests
             .Returns(new DateTime(2016, 08, 5));
         
         ContentfulNewsRoom contentfulNewsRoom = new() { Title = "test" };
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -363,7 +363,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
         
-        Newsroom newsRoom = new(new(), true, string.Empty);
+        Newsroom newsRoom = new(new(), true, string.Empty, null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -473,7 +473,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -568,7 +568,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -663,7 +663,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         _newsRoomContentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
 
         News news = new(Title,
@@ -755,7 +755,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 09, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -848,7 +848,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 09, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -940,7 +940,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1030,7 +1030,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1112,7 +1112,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1202,7 +1202,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1294,7 +1294,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2020, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1403,7 +1403,7 @@ public class NewsRepositoryTests
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
 
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
@@ -1604,7 +1604,7 @@ public class NewsRepositoryTests
             .Returns(new DateTime(2016, 08, 5));
 
         ContentfulNewsRoom contentfulNewsRoom = new() { Title = "test" };
-        Newsroom newsRoom = new(_alerts, true, "test-id");
+        Newsroom newsRoom = new(_alerts, true, "test-id", null);
         
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))

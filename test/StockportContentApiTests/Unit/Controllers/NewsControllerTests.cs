@@ -25,7 +25,8 @@ public class NewsControllerTests
         // Arrange
         Newsroom newsroom = new(new List<Alert>(),
                                 false,
-                                "email alerts topic id");
+                                "email alerts topic id",
+                                null);
 
         _mockRepository
             .Setup(repo => repo.GetNewsByLimit(It.IsAny<int>()))
@@ -44,7 +45,8 @@ public class NewsControllerTests
         // Arrange
         Newsroom newsroom = new(new List<Alert>(),
                                 false,
-                                "email alerts topic id");
+                                "email alerts topic id",
+                                null);
 
         _mockRepository
             .Setup(repo => repo.GetNews(It.IsAny<string>()))
