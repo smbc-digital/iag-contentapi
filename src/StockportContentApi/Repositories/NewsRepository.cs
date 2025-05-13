@@ -114,7 +114,7 @@ public class NewsRepository : BaseRepository, INewsRepository
 
     public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate)
     {
-        Newsroom newsroom = new(new List<Alert>(), false, string.Empty);
+        Newsroom newsroom = new(new List<Alert>(), false, string.Empty, null);
         ContentfulNewsRoom newsRoomEntry = await _cache.GetFromCacheOrDirectlyAsync("newsroom", GetNewsRoom, _newsTimeout);
         List<string> categories;
 
