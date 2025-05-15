@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Repositories;
+﻿using StockportContentApi.Models;
+
+namespace StockportContentApi.Repositories;
 
 public interface INewsRepository
 {
@@ -8,6 +10,7 @@ public interface INewsRepository
     Task<List<string>> GetCategories();
     Task<News> GetLatestNewsByTag(string tag);
     Task<News> GetLatestNewsByCategory(string category);
+    Task<HttpResponse> GetArchivedNews(string category, DateTime? startDate, DateTime? endDate);
 }
 
 public class NewsRepository : BaseRepository, INewsRepository
@@ -129,6 +132,7 @@ public class NewsRepository : BaseRepository, INewsRepository
 
         List<News> newsArticles = filteredEntries.Select(_newsContentfulFactory.ToModel)
                                     .GetNewsDates(out List<DateTime> dates, _timeProvider)
+                                    .GetNewsYears(out List<int> years, _timeProvider)
                                     .Where(news => CheckDates(startDate, endDate, news))
                                     .Where(news => string.IsNullOrWhiteSpace(category) 
                                         || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
@@ -139,6 +143,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         newsroom.SetNews(newsArticles);
         newsroom.SetCategories(categories);
         newsroom.SetDates(dates.Distinct().ToList());
+        newsroom.SetYears(years);
 
         return HttpResponse.Successful(newsroom);
     }
@@ -189,5 +194,36 @@ public class NewsRepository : BaseRepository, INewsRepository
         return contentfulNews is not null
             ? _newsContentfulFactory.ToModel(contentfulNews)
             : null;
+    }
+
+    public async Task<HttpResponse> GetArchivedNews(string category, DateTime? startDate, DateTime? endDate)
+    {
+        Newsroom newsroom = new(new List<Alert>(), false, string.Empty, null);
+        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
+        List<string> categories;
+
+        if (newsEntries is null || !newsEntries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
+
+        var archivedNewsEntries = newsEntries
+            .Select(_newsContentfulFactory.ToModel)
+            .Where(news => !CheckDates(null, null, news))
+            .GetNewsDates(out List<DateTime> dates, _timeProvider)
+            .GetNewsYears(out List<int> years, _timeProvider)
+            .Where(news => string.IsNullOrWhiteSpace(category)
+                                || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
+            .OrderByDescending(n => n.SunriseDate)
+            .ToList();
+
+        if (!archivedNewsEntries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No archived news found");
+
+        categories = await GetCategories();
+        newsroom.SetNews(archivedNewsEntries);
+        newsroom.SetCategories(categories);
+        newsroom.SetDates(dates.Distinct().ToList());
+        newsroom.SetYears(years);
+
+        return HttpResponse.Successful(newsroom);
     }
 }

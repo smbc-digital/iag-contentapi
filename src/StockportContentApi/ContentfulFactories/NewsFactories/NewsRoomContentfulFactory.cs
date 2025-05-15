@@ -13,10 +13,11 @@ public class NewsRoomContentfulFactory(IContentfulFactory<ContentfulAlert, Alert
     {
         IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                        .Where(alert => !alert.Severity.Equals("Condolence"))
                                         .Select(_alertFactory.ToModel);
 
-        CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
+        CallToActionBanner callToAction = entry.CallToAction is null 
+            ? null 
+            : _callToActionFactory.ToModel(entry.CallToAction);
 
         return new Newsroom(alerts.ToList(), entry.EmailAlerts, entry.EmailAlertsTopicId, callToAction);
     }
