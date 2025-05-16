@@ -153,6 +153,14 @@ public class NewsRepository : BaseRepository, INewsRepository
             ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value)
             : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
 
+
+    private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news)
+    {
+        return startDate.HasValue && endDate.HasValue
+            ? _dateComparer.SunriseAndSunsetDatesAreBetweenStartAndEndDates(news.SunriseDate, news.SunsetDate, startDate.Value, endDate.Value)
+            : _dateComparer.SunsetDateIsInThePast(news.SunsetDate);
+    }
+
     public async Task<HttpResponse> GetNewsByLimit(int limit)
     {
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
@@ -205,18 +213,15 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        var archivedNewsEntries = newsEntries
+        List<News> archivedNewsEntries = newsEntries
             .Select(_newsContentfulFactory.ToModel)
-            .Where(news => !CheckDates(null, null, news))
             .GetNewsDates(out List<DateTime> dates, _timeProvider)
             .GetNewsYears(out List<int> years, _timeProvider)
+            .Where(news => CheckArchivedDates(startDate, endDate, news))
             .Where(news => string.IsNullOrWhiteSpace(category)
-                                || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
+                        || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
             .OrderByDescending(n => n.SunriseDate)
             .ToList();
-
-        if (!archivedNewsEntries.Any())
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No archived news found");
 
         categories = await GetCategories();
         newsroom.SetNews(archivedNewsEntries);

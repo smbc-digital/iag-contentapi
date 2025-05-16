@@ -41,6 +41,14 @@ public class DateComparer
             && sunriseDate.Date <= endDate.Date
             && sunriseDate <= _timeProvider.Now();
 
+    public bool SunsetDateIsInThePast(DateTime sunsetDate) =>
+        sunsetDate.Date < _timeProvider.Now();
+
+    public bool SunriseAndSunsetDatesAreBetweenStartAndEndDates(DateTime sunriseDate, DateTime sunsetDate, DateTime startDate, DateTime endDate) =>
+        sunriseDate.Date >= startDate.Date
+            && sunriseDate.Date <= endDate.Date
+            && sunriseDate <= _timeProvider.Now();
+
     public bool EventDateIsBetweenStartAndEndDates(DateTime eventDate, DateTime startDate, DateTime endDate) =>
         eventDate.Date >= startDate.Date
             && eventDate.Date <= endDate.Date;
