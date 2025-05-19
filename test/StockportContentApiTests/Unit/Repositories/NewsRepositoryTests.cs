@@ -1964,10 +1964,6 @@ public class NewsRepositoryTests
                         null,
                         string.Empty);
 
-        //_newsContentfulFactory
-        //    .Setup(factory => factory.ToModel(It.IsAny<ContentfulNews>()))
-        //    .Returns(news);
-
         _newsContentfulFactory
             .Setup(factory => factory.ToModel(It.IsAny<ContentfulNews>()))
             .Returns<ContentfulNews>(contentfulNews => new News(

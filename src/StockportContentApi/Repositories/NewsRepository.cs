@@ -1,6 +1,4 @@
-﻿using StockportContentApi.Models;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public interface INewsRepository
 {
