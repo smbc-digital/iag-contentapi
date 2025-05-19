@@ -157,7 +157,7 @@ public class NewsRepository : BaseRepository, INewsRepository
     private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news)
     {
         return startDate.HasValue && endDate.HasValue
-            ? _dateComparer.SunriseAndSunsetDatesAreBetweenStartAndEndDates(news.SunriseDate, news.SunsetDate, startDate.Value, endDate.Value)
+            ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateIsInThePast(news.SunsetDate)
             : _dateComparer.SunsetDateIsInThePast(news.SunsetDate);
     }
 
