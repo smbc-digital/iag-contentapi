@@ -10,7 +10,7 @@ public interface INewsRepository
     Task<List<string>> GetCategories();
     Task<News> GetLatestNewsByTag(string tag);
     Task<News> GetLatestNewsByCategory(string category);
-    Task<HttpResponse> GetArchivedNews(string category, DateTime? startDate, DateTime? endDate);
+    Task<HttpResponse> GetArchivedNews(string tag, string category, DateTime? startDate, DateTime? endDate);
 }
 
 public class NewsRepository : BaseRepository, INewsRepository
@@ -153,13 +153,10 @@ public class NewsRepository : BaseRepository, INewsRepository
             ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value)
             : _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate);
 
-
-    private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news)
-    {
-        return startDate.HasValue && endDate.HasValue
+    private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news) =>
+        startDate.HasValue && endDate.HasValue
             ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateIsInThePast(news.SunsetDate)
             : _dateComparer.SunsetDateIsInThePast(news.SunsetDate);
-    }
 
     public async Task<HttpResponse> GetNewsByLimit(int limit)
     {
@@ -204,7 +201,7 @@ public class NewsRepository : BaseRepository, INewsRepository
             : null;
     }
 
-    public async Task<HttpResponse> GetArchivedNews(string category, DateTime? startDate, DateTime? endDate)
+    public async Task<HttpResponse> GetArchivedNews(string tag, string category, DateTime? startDate, DateTime? endDate)
     {
         Newsroom newsroom = new(new List<Alert>(), false, string.Empty, null);
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
@@ -213,7 +210,9 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<News> archivedNewsEntries = newsEntries
+        IEnumerable<ContentfulNews> filteredEntries = newsEntries.Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
+
+        List<News> archivedNewsEntries = filteredEntries
             .Select(_newsContentfulFactory.ToModel)
             .GetNewsDates(out List<DateTime> dates, _timeProvider)
             .GetNewsYears(out List<int> years, _timeProvider)

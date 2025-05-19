@@ -1,5 +1,3 @@
-using System.Diagnostics.Eventing.Reader;
-
 namespace StockportContentApi.ContentfulModels;
 
 [ExcludeFromCodeCoverage]
