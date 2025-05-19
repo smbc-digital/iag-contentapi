@@ -15,7 +15,7 @@ public class ContentfulNewsBuilder
     private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
     private List<Asset> _documents = new();
 
-    private readonly List<string> _categories = new() { "A category" };
+    private List<string> _categories = new() { "A category" };
 
     public ContentfulNews Build()
         => new()
@@ -86,6 +86,12 @@ public class ContentfulNewsBuilder
     public ContentfulNewsBuilder Tags(List<string> tags)
     {
         _tags = tags;
+        return this;
+    }
+
+    public ContentfulNewsBuilder Categories(List<string> categories)
+    {
+        _categories = categories;
         return this;
     }
 }
