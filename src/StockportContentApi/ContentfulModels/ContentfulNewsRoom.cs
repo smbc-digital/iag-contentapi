@@ -9,4 +9,5 @@ public class ContentfulNewsRoom : IContentfulModel
     public string EmailAlertsTopicId { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; } = new();
     public ContentfulCallToActionBanner CallToAction { get; set; } = null;
+    public ContentfulNews FeaturedNews { get; set; } = null;
 }

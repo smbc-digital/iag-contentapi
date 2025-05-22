@@ -7,6 +7,7 @@ public class Newsroom(List<Alert> alerts, bool emailAlerts, string emailAlertsTo
     public readonly bool EmailAlerts = emailAlerts;
     public readonly string EmailAlertsTopicId = emailAlertsTopicId;
     public List<News> News { get; private set; }
+    public News FeaturedNews { get; set; }
     public List<string> Categories { get; private set; }
     public List<DateTime> Dates { get; private set; }
     public List<int> Years { get; private set; }
