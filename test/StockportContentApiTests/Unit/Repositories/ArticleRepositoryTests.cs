@@ -256,7 +256,6 @@ public class ArticleRepositoryTests
             new()
             {
                 Title = "title",
-                SubHeading = "subHeading",
                 Body = "body",
                 Severity = "severity",
                 SunriseDate = new DateTime(2017, 05, 01),

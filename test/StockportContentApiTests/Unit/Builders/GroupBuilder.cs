@@ -38,7 +38,6 @@ public class GroupBuilder
     private readonly List<Alert> _alerts = new()
     {
         new Alert("title",
-            "subHeading",
             "body",
             "severity",
             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -49,7 +48,6 @@ public class GroupBuilder
     private readonly List<Alert> _alertsInline = new()
     {
         new Alert("title",
-            "subHeading",
             "body",
             "severity",
             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),

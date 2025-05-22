@@ -32,7 +32,7 @@ public class GroupHomepageContentfulFactoryTests
         Group featuredGroup = new GroupBuilder().Build();
         GroupCategory category = new("title", "slug", "icon", "image");
         GroupSubCategory subCategory = new("title", "slug");
-        Alert alert = new("title", "subheading", "body", "severity", DateTime.MinValue, DateTime.MinValue,
+        Alert alert = new("title", "body", "severity", DateTime.MinValue, DateTime.MinValue,
             "slug", false, string.Empty);
 
         _groupFactory.Setup(o => o.ToModel(It.IsAny<ContentfulGroup>())).Returns(featuredGroup);

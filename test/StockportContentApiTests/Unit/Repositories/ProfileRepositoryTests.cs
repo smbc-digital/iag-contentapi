@@ -48,7 +48,6 @@ public class ProfileRepositoryTests
             Alerts = new List<Alert>
             {
                 new("title",
-                    "subheading",
                     "body",
                     "severity",
                     DateTime.MinValue,

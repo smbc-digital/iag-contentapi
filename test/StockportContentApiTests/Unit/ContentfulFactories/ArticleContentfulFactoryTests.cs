@@ -79,7 +79,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2016, 12, 01),
@@ -90,7 +89,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _invisibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2017, 05, 01),
@@ -116,7 +114,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2016, 12, 01),
@@ -127,7 +124,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _invisibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2017, 05, 01),

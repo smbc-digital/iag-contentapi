@@ -65,7 +65,7 @@ public class SectionContentfulFactoryTests
 
         _videoRepository.Setup(videoFactory => videoFactory.Process(_contentfulSection.Body)).Returns("this is processed body");
 
-        Alert alert = new("title", "subHeading", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
+        Alert alert = new("title", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
         _alertFactory.Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
 
         // Act

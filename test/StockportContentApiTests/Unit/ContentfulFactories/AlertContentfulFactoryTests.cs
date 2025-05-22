@@ -29,7 +29,6 @@ public class AlertContentfulFactoryTests
         ContentfulAlert contentfulReference = new ContentfulAlertBuilder()
             .WithSlug(string.Empty)
             .WithTitle(string.Empty)
-            .WithSubHeading(string.Empty)
             .WithBody(string.Empty)
             .WithSeverity(string.Empty)
             .WithSunriseDate(new DateTime())
@@ -41,7 +40,6 @@ public class AlertContentfulFactoryTests
 
         // Assert
         Assert.Empty(result.Slug);
-        Assert.Empty(result.SubHeading);
         Assert.Empty(result.Body);
         Assert.Empty(result.Severity);
     }

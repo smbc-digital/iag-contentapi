@@ -23,7 +23,6 @@ public class EventContentfulFactoryTests
         _alertFactory
             .Setup(alert => alert.ToModel(It.IsAny<ContentfulAlert>()))
             .Returns(new Alert("title",
-                            "subHeading",
                             "body",
                             "severity",
                             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),

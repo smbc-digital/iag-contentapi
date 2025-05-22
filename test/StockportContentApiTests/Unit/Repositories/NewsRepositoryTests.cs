@@ -13,7 +13,6 @@ public class NewsRepositoryTests
     private readonly List<Alert> _alerts = new()
     {
         new("title",
-            "subheading",
             "body",
             "severity",
             new(2016, 08, 5),

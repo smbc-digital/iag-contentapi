@@ -3,7 +3,6 @@
 public class Alert
 {
     public string Title { get; }
-    public string SubHeading { get; }
     public string Body { get; }
     public string Severity { get; }
     public DateTime SunriseDate { get; }
@@ -12,11 +11,16 @@ public class Alert
     public bool IsStatic { get; set; }
     public string ImageUrl { get; }
 
-    public Alert(string title, string subHeading, string body, string severity, DateTime sunriseDate,
-        DateTime sunsetDate, string slug, bool isStatic, string imageUrl)
+    public Alert(string title,
+                string body,
+                string severity,
+                DateTime sunriseDate,
+                DateTime sunsetDate,
+                string slug,
+                bool isStatic,
+                string imageUrl)
     {
         Title = title;
-        SubHeading = subHeading;
         Body = body;
         Severity = severity;
         SunriseDate = sunriseDate;
