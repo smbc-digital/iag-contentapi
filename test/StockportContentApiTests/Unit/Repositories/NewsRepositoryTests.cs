@@ -288,6 +288,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -413,6 +422,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -523,6 +541,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -618,6 +645,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -710,6 +746,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -805,6 +850,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -898,6 +952,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -990,6 +1053,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -1080,6 +1152,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -1164,6 +1245,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -1254,6 +1344,15 @@ public class NewsRepositoryTests
                     .Teaser("Read more for the news")
                     .SunriseDate(new(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                     .SunsetDate(new(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                    .Build(),
+                new ContentfulNewsBuilder()
+                    .Title("This is a news with no sunrise/sunset")
+                    .Slug("news-with-no-sunrise-sunset")
+                    .Teaser("Read more for the news")
+                    .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                    .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                    .Categories(new List<string>() { "Benefits" })
+                    .Tags(new List<string>() { "sports" })
                     .Build()
             }
         };
@@ -2009,6 +2108,15 @@ public class NewsRepositoryTests
                 .Teaser("Read more for the news")
                 .SunriseDate(new DateTime(2016, 08, 24, 23, 30, 0, DateTimeKind.Utc))
                 .SunsetDate(new DateTime(2016, 08, 23, 23, 0, 0, DateTimeKind.Utc))
+                .Tags(new List<string>() { "sports" })
+                .Build(),
+            new ContentfulNewsBuilder()
+                .Title("This is a news with no sunrise/sunset")
+                .Slug("news-with-no-sunrise-sunset")
+                .Teaser("Read more for the news")
+                .SunriseDate(DateTime.MinValue.ToUniversalTime())
+                .SunsetDate(DateTime.MinValue.ToUniversalTime())
+                .Categories(new List<string>() { "Benefits" })
                 .Tags(new List<string>() { "sports" })
                 .Build()
         };

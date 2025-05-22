@@ -123,7 +123,9 @@ public class NewsRepository : BaseRepository, INewsRepository
             newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
 
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
-        IEnumerable<ContentfulNews> filteredEntries = newsEntries.Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
+        IEnumerable<ContentfulNews> filteredEntries = newsEntries
+            .Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)))
+            .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue));
 
         if (!filteredEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
@@ -136,6 +138,14 @@ public class NewsRepository : BaseRepository, INewsRepository
                                         || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
                                     .OrderByDescending(o => o.SunriseDate)
                                     .ToList();
+
+        if (newsRoomEntry.FeaturedNews is not null
+            && !newsRoomEntry.FeaturedNews.SunriseDate.Equals(DateTime.MinValue)
+            && !newsRoomEntry.FeaturedNews.SunsetDate.Equals(DateTime.MinValue)
+            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(newsRoomEntry.FeaturedNews.SunriseDate, newsRoomEntry.FeaturedNews.SunsetDate))
+        {
+            newsroom.FeaturedNews = _newsContentfulFactory.ToModel(newsRoomEntry.FeaturedNews);
+        }
 
         categories = await GetCategories();
         newsroom.SetNews(newsArticles);
@@ -208,7 +218,9 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        IEnumerable<ContentfulNews> filteredEntries = newsEntries.Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)));
+        IEnumerable<ContentfulNews> filteredEntries = newsEntries
+            .Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)))
+            .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue));
 
         List<News> archivedNewsEntries = filteredEntries
             .Select(_newsContentfulFactory.ToModel)
