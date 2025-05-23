@@ -57,7 +57,6 @@ public class CommsControllerTests
                                                 new List<EventCategory>(),
                                                 true,
                                                 true,
-                                                "accessible transport link",
                                                 "Logo title",
                                                 new List<GroupBranding>(),
                                                 "01234564567",

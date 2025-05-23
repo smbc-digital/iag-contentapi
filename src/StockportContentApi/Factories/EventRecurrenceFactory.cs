@@ -57,7 +57,6 @@ public class EventRecurrenceFactory
                 entry.EventCategories,
                 entry.Free,
                 entry.Paid,
-                entry.AccessibleTransportLink,
                 entry.LogoAreaTitle,
                 entry.EventBranding,
                 entry.PhoneNumber,

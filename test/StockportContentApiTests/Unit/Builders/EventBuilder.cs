@@ -79,7 +79,6 @@ public class EventBuilder
             _eventCategories,
             _free,
             null,
-            null,
             _logoAreaTitle,
             _branding,
             _phoneNumber,

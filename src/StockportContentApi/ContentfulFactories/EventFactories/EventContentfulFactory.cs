@@ -67,7 +67,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         categories.ToList(),
                         entry.Free,
                         entry.Paid,
-                        entry.AccessibleTransportLink,
                         entry.LogoAreaTitle,
                         eventBranding,
                         entry.PhoneNumber,
