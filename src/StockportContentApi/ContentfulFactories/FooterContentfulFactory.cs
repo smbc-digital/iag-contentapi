@@ -21,10 +21,6 @@ public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Foot
             ? entry.Slug
             : string.Empty;
 
-        string copyrightSection = !string.IsNullOrEmpty(entry.CopyrightSection)
-            ? entry.CopyrightSection
-            : string.Empty;
-
         string footerContent1 = !string.IsNullOrEmpty(entry.FooterContent1)
             ? entry.FooterContent1
             : string.Empty;
