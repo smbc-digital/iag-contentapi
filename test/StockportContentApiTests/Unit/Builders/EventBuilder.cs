@@ -36,7 +36,6 @@ public class EventBuilder
     private bool _featured = true;
     private readonly DateTime _updatedAt = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new();
-    private Group _group = null;
     private readonly List<Alert> _alerts = new()
     {
         new Alert("title",
@@ -74,7 +73,6 @@ public class EventBuilder
             _bookingInformation,
             _updatedAt,
             _tags,
-            _group,
             _alerts,
             _eventCategories,
             _free,
@@ -155,12 +153,6 @@ public class EventBuilder
     public EventBuilder Tags(List<string> tags)
     {
         _tags = tags;
-        return this;
-    }
-
-    public EventBuilder Group(Group group)
-    {
-        _group = group;
         return this;
     }
 }

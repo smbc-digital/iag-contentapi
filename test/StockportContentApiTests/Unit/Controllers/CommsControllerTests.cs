@@ -52,7 +52,6 @@ public class CommsControllerTests
                                                 "booking information",
                                                 new DateTime(),
                                                 new List<string>(),
-                                                null,
                                                 new List<Alert>(),
                                                 new List<EventCategory>(),
                                                 true,

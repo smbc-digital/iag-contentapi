@@ -1,7 +1,6 @@
 namespace StockportContentApi.ContentfulFactories.EventFactories;
 
 public class EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
-                            IContentfulFactory<ContentfulGroup, Group> groupFactory,
                             IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
                             IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
                             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
@@ -9,7 +8,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                             ITimeProvider timeProvider) : IContentfulFactory<ContentfulEvent, Event>
 {
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory = groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory = eventCategoryFactory;
     private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
@@ -29,8 +27,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
         string thumbnailImageUrl = entry.ThumbnailImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.ThumbnailImage.SystemProperties) 
             ? entry.ThumbnailImage?.File?.Url 
             : string.Empty;
-
-        Group group = _groupFactory.ToModel(entry.Group);
 
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(_eventCategoryFactory.ToModel);
 
@@ -62,7 +58,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.BookingInformation,
                         entry.Sys.UpdatedAt,
                         entry.Tags,
-                        group,
                         alerts,
                         categories.ToList(),
                         entry.Free,

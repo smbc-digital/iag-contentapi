@@ -54,5 +54,4 @@ global using HttpClient = StockportContentApi.Http.HttpClient;
 global using HttpResponse = StockportContentApi.Http.HttpResponse;
 global using Directory = StockportContentApi.Models.Directory;
 global using Document = StockportContentApi.Models.Document;
-global using Group = StockportContentApi.Models.Group;
 global using Profile = StockportContentApi.Models.Profile;

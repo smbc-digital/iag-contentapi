@@ -18,7 +18,6 @@ public class Homepage
     public string FreeText { get; }
     public string Title { get; }
     public string ImageOverlayText { get; set; }
-    public Group FeaturedGroup { get; }
     public string EventCategory { get; }
     public string MetaDescription { get; set; }
     public CarouselContent CampaignBanner { get; set; }
@@ -40,7 +39,6 @@ public class Homepage
                     string foregroundImageAlt,
                     string freeText,
                     string title,
-                    Group featuredGroup,
                     string eventCategory,
                     string metaDescription,
                     CarouselContent campaignBanner,
@@ -62,7 +60,6 @@ public class Homepage
         ForegroundImageLink = foregroundImageLink;
         ForegroundImageAlt = foregroundImageAlt;
         FreeText = freeText;
-        FeaturedGroup = featuredGroup;
         EventCategory = eventCategory;
         MetaDescription = metaDescription;
         CampaignBanner = campaignBanner;
@@ -91,7 +88,6 @@ public class NullHomepage : Homepage
                                 string.Empty,
                                 string.Empty,
                                 string.Empty,
-                                null,
                                 string.Empty,
                                 string.Empty,
                                 new CarouselContent(),

@@ -3,7 +3,6 @@
 public interface IEventRepository
 {
     public Task<HttpResponse> GetEventHomepage(int quantity = 3);
-    public Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug);
     public Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories();
     public Task<HttpResponse> GetEvent(string slug, DateTime? date);
     public Task<HttpResponse> Get(DateTime? dateFrom,
@@ -70,14 +69,6 @@ public class EventRepository : BaseRepository, IEventRepository
             : HttpResponse.Successful(await AddHomepageRowEvents(_contentfulEventHomepageFactory.ToModel(entry), quantity));
     }
 
-    public async Task<IEnumerable<ContentfulEvent>> GetAllEventsForAGroup(string groupSlug)
-    {
-        IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
-        IEnumerable<ContentfulEvent> groupEvents = events.Where(singleEvent => singleEvent.Group.Slug.Equals(groupSlug));
-        
-        return groupEvents;
-    }
-
     private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage, int quantity = 3)
     {
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
@@ -134,10 +125,6 @@ public class EventRepository : BaseRepository, IEventRepository
 
         if (selectedEvent is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No event found for '{slug}'");
-
-        if (selectedEvent is not null && !string.IsNullOrEmpty(selectedEvent.Group?.Slug) &&
-                !_dateComparer.DateNowIsNotBetweenHiddenRange(selectedEvent.Group.DateHiddenFrom, selectedEvent.Group.DateHiddenTo))
-            selectedEvent.Group = new NullGroup();
 
         if (selectedEvent is not null)
             selectedEvent.RelatedEvents = GetRelatedEvents(cachedEntries,
@@ -295,11 +282,8 @@ public class EventRepository : BaseRepository, IEventRepository
     {
         QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
         ContentfulCollection<ContentfulEvent> entries = await GetAllEntriesAsync(_client, builder);
-        IEnumerable<ContentfulEvent> publishedEvents = entries.Where(e => _dateComparer.DateNowIsNotBetweenHiddenRange(e.Group.DateHiddenFrom, e.Group.DateHiddenTo));
         
-        return !publishedEvents.Any()
-            ? null 
-            : publishedEvents.ToList();
+        return entries.Any() ? entries.ToList() : null;
     }
 
     public IEnumerable<Event> GetAllEventsAndTheirRecurrences(IEnumerable<ContentfulEvent> entries)
@@ -325,7 +309,7 @@ public class EventRepository : BaseRepository, IEventRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => e.Group.Slug.Equals(slug))
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
                                 .OrderBy(o => o.EventDate)
                                 .ThenBy(c => TimeSpan.Parse(c.StartTime))

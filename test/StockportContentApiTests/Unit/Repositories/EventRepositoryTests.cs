@@ -155,16 +155,6 @@ public class EventRepositoryTests
     }
 
     [Fact]
-    public async Task GetAllEventsForAGroup_ShouldCallCache()
-    {
-        // Act
-        await _repository.GetAllEventsForAGroup("Slug");
-
-        // Assert
-        _mockCacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
-    }
-
-    [Fact]
     public async Task GetContentfulEventCategories_ShouldCallCache()
     {
         // Act
@@ -415,7 +405,7 @@ public class EventRepositoryTests
             });
 
         // Act
-        var result = await _repository.GetAllEvents();
+        IList<ContentfulEvent> result = await _repository.GetAllEvents();
 
         // Assert
         Assert.NotNull(result);
@@ -433,7 +423,7 @@ public class EventRepositoryTests
             });
 
         // Act
-        var result = await _repository.GetAllEvents();
+        IList<ContentfulEvent> result = await _repository.GetAllEvents();
 
         // Assert
         Assert.Null(result);
@@ -453,11 +443,7 @@ public class EventRepositoryTests
                     StartTime = "07:00:00",
                     Title = "Title",
                     Slug = "Slug",
-                    Free = true,
-                    Group = new ContentfulGroup
-                    {
-                        Slug = "Slug"
-                    }
+                    Free = true
                 }
             });
 
@@ -466,10 +452,6 @@ public class EventRepositoryTests
             .Returns(new EventBuilder()
                 .EventDate(DateTime.Today.AddDays(1))
                 .Slug("Slug")
-                .Group(new Group
-                {
-                    Slug = "Slug"
-                })
                 .Build);
 
         // Act

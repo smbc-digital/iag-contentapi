@@ -14,8 +14,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, Topic>, PrivacyNoticeParentTopicContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulProfile, Topic>, ProfileParentTopicContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>, PrivacyNoticeContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulOrganisation, Organisation>, OrganisationContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulGroupSubCategory, GroupSubCategory>, GroupSubCategoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<Asset, Document>, DocumentContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>, ContactUsIdContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>, CrumbContentfulFactory>();
@@ -28,7 +26,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>, RedirectContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulEventHomepage, EventHomepage>, EventHomepageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulExternalLink, ExternalLink>, ExternalLinkContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>, GroupHomepageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulEventBanner, EventBanner>, EventBannerContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner>, SpotlightOnBannerContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink>, SocialMediaLinkContentfulFactory>();
@@ -36,7 +33,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulEvent, Event>, EventContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulInlineQuote, InlineQuote>, InlineQuoteContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulProfile, Profile>, ProfileContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulGroup, Group>, GroupContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulPayment, Payment>, PaymentContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>, ServicePayPaymentContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulTopic, Topic>, TopicContentfulFactory>();
@@ -49,7 +45,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>, NewsContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>, NewsRoomContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulGroupCategory, GroupCategory>, GroupCategoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulEventCategory, EventCategory>, EventCategoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>, ArticleContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulDocumentPage, DocumentPage>, DocumentPageContentfulFactory>();
@@ -59,7 +54,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulAtoZ, AtoZ>, AtoZContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>, ParentTopicContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>, StartPageContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>, GroupAdvisorContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulGroupBranding, GroupBranding>, GroupBrandingContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>, ContactUsAreaContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>, CommsContentfulFactory>();
@@ -343,12 +337,6 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment>>()));
 
-        services.AddSingleton<Func<string, IGroupCategoryRepository>>(p =>
-            (contentfulConfig) =>
-                new GroupCategoryRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                    p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
-                    p.GetService<IContentfulClientManager>()));
-            
         services.AddSingleton<Func<string, string, IEventCategoryRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
                 new EventCategoryRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
@@ -414,45 +402,12 @@ public static class ServiceCollectionExtensions
         
         services.AddSingleton<RedirectsRepository>();
         services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper());
-        services.AddSingleton<Func<string, string, IGroupRepository>>(p =>
-                (contentfulConfig, cacheKeyConfig) =>
-                    new GroupRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                        p.GetService<IContentfulClientManager>(),
-                        p.GetService<ITimeProvider>(),
-                        p.GetService<IContentfulFactory<ContentfulGroup, Group>>(),
-                        p.GetService<IContentfulFactory<ContentfulGroupCategory, GroupCategory>>(),
-                        p.GetService<IContentfulFactory<ContentfulGroupHomepage, GroupHomepage>>(),
-                        new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                            p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
-                            p.GetService<IContentfulClientManager>(),
-                            p.GetService<ITimeProvider>(),
-                            p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
-                            p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
-                            p.GetService<ICache>(),
-                            p.GetService<IConfiguration>()),
-                        p.GetService<ICache>(),
-                        p.GetService<IConfiguration>()));
-
+        
         services.AddSingleton<Func<string, IContactUsIdRepository>>(p =>
             (contentfulConfig) =>
                 new ContactUsIdRepository( p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(),
                     p.GetService<IContentfulClientManager>()));
-
-        services.AddSingleton<Func<ContentfulConfig, IOrganisationRepository>>(p =>
-        {
-            return x => new OrganisationRepository(x,
-                p.GetService<IContentfulFactory<ContentfulOrganisation, Organisation>>(),
-                p.GetService<IContentfulClientManager>(),
-                p.GetService<Func<string, string, IGroupRepository>>());
-        });
-
-        services.AddSingleton<Func<string, IGroupAdvisorRepository>>(p =>
-            (contentfulConfig) =>
-                new GroupAdvisorRepository(
-                    p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulGroupAdvisor, GroupAdvisor>>()));
 
         services.AddSingleton<Func<string, IContactUsAreaRepository>>( p =>
             (contentfulConfig) =>
@@ -502,11 +457,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IDocumentService>(p =>
             new DocumentsService(p.GetService<Func<ContentfulConfig, IAssetRepository>>(),
-                p.GetService<Func<ContentfulConfig, IGroupAdvisorRepository>>(),
-                p.GetService<Func<ContentfulConfig, IGroupRepository>>(),
                 p.GetService<IContentfulFactory<Asset, Document>>(),
-                p.GetService<IContentfulConfigBuilder>(),
-                p.GetService<ILoggedInHelper>()));
+                p.GetService<IContentfulConfigBuilder>()));
 
         return services;
     }
@@ -515,31 +467,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IContentfulConfigBuilder>(p =>
             new ContentfulConfigBuilder(p.GetService<IConfiguration>()));
-
-        return services;
-    }
-
-    public static IServiceCollection AddGroupConfiguration(this IServiceCollection services,
-        IConfiguration configuration, Serilog.ILogger logger)
-    {
-        if (!string.IsNullOrEmpty(configuration["group:authenticationKey"]))
-        {
-            GroupAuthenticationKeys groupKeys = new() { Key = configuration["group:authenticationKey"] };
-            services.AddSingleton(groupKeys);
-
-            services.AddSingleton<IJwtDecoder>(p =>
-                new JwtDecoder(p.GetService<GroupAuthenticationKeys>(), p.GetService<ILogger<JwtDecoder>>()));
-        }
-        else
-            logger.Information("Group authenticationKey not found.");
-
-        return services;
-    }
-
-    public static IServiceCollection AddHelpers(this IServiceCollection services)
-    {
-        services.AddTransient<ILoggedInHelper>(p => new LoggedInHelper(p.GetService<IHttpContextAccessor>(),
-            p.GetService<IJwtDecoder>(), p.GetService<ILogger<LoggedInHelper>>()));
 
         return services;
     }

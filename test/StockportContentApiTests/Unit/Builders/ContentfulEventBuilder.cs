@@ -28,8 +28,6 @@ public class ContentfulEventBuilder
     {
         new ContentfulAlertBuilder().Build()};
 
-    private ContentfulGroup _group = new ContentfulGroupBuilder().Build();
-
     public ContentfulEvent Build()
         => new()
         {
@@ -53,7 +51,6 @@ public class ContentfulEventBuilder
             Featured = _featured,
             Sys = _sys,
             Tags = _tags,
-            Group = _group,
             Alerts = _alerts,
             EventCategories = _eventCategories
         };
@@ -115,12 +112,6 @@ public class ContentfulEventBuilder
     public ContentfulEventBuilder Tags(List<string> tags)
     {
         _tags = tags;
-        return this;
-    }
-
-    public ContentfulEventBuilder Group(ContentfulGroup group)
-    {
-        _group = group;
         return this;
     }
 

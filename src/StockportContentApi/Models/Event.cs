@@ -23,7 +23,6 @@ public class Event
     public bool Featured { get; }
     public DateTime? UpdatedAt { get; }
     public List<string> Tags { get; }
-    public Group Group { get; set; }
     public List<Alert> Alerts { get; }
     public List<EventCategory> EventCategories { get; }
     public bool? Free { get; }
@@ -64,7 +63,6 @@ public class Event
                 string bookingInformation,
                 DateTime? updatedAt,
                 List<string> tags,
-                Group group,
                 List<Alert> alerts,
                 List<EventCategory> eventCategories,
                 bool? free,
@@ -103,7 +101,6 @@ public class Event
         Featured = featured;
         UpdatedAt = updatedAt;
         Tags = tags.Select(s => s.ToLower()).ToList();
-        Group = group;
         Alerts = alerts;
         EventCategories = eventCategories;
         Paid = paid;

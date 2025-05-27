@@ -37,7 +37,6 @@ public class HomepageControllerTests
                                 "foreground image alt",
                                 "free text",
                                 "title",
-                                null,
                                 "event category",
                                 "meta description",
                                 null,

@@ -51,7 +51,6 @@ public class HomepageRepositoryTests
                                 string.Empty,
                                 string.Empty,
                                 string.Empty,
-                                null,
                                 string.Empty,
                                 string.Empty,
                                 new CarouselContent(),

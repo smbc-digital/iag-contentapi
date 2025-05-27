@@ -25,7 +25,6 @@ public class ContentfulEvent : IContentfulModel
     public SystemProperties Sys { get; set; } = new();
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
-    public ContentfulGroup Group { get; set; } = new();
     public List<ContentfulEventCategory> EventCategories { get; set; } = new();
     public bool? Free { get; set; } = null;
     public bool? Paid { get; set; } = null;
