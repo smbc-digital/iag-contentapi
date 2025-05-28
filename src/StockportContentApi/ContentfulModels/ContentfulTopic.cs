@@ -21,6 +21,6 @@ public class ContentfulTopic : ContentfulReference
     public bool DisplayContactUs { get; set; } = true;
     public string EventCategory { get; set; }
     public ContentfulCarouselContent CampaignBanner { get; set; } = new();
-    public List<ContentfulGroupBranding> TopicBranding { get; set; } = new();
+    public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
     public string LogoAreaTitle { get; set; }
 }

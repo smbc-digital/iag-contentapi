@@ -9,7 +9,7 @@ public class SectionContentfulFactoryTests
     private readonly SectionContentfulFactory _sectionFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
 
     public SectionContentfulFactoryTests()
     {

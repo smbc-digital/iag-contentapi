@@ -22,9 +22,9 @@ public class ContentfulNews : IContentfulModel
     public List<ContentfulProfile> Profiles { get; set; } = new();
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
     public ContentfulCallToActionBanner CallToAction { get; init; }
-    public ContentfulGroupBranding FeaturedLogo { get; set; }
+    public ContentfulTrustedLogo FeaturedLogo { get; set; }
     public string LogoAreaTitle { get; set; }
-    public List<ContentfulGroupBranding> NewsBranding { get; set; } = new();
+    public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
     public string EventsByTagOrCategory { get; set; } = string.Empty;
     public List<ContentfulEvent> Events { get; set; } = new();
 }

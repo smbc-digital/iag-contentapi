@@ -26,7 +26,7 @@ public class DirectoryEntryBuilder
         new ContentfulAlertBuilder().WithSeverity("Information").Build()
     };
     private readonly List<ContentfulFilter> _filters = new();
-    private readonly List<ContentfulGroupBranding> _branding = new()
+    private readonly List<ContentfulTrustedLogo> _trustedLogos = new()
     {
         new() {
             File = new Asset(),
@@ -65,7 +65,7 @@ public class DirectoryEntryBuilder
             Alerts = _alerts,
             AlertsInline = _alertsInline,
             MapPosition = _mapPosition,
-            GroupBranding = _branding,
+            TrustedLogos = _trustedLogos,
             Directories = _directories,
         };
 

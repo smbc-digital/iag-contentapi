@@ -9,7 +9,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _topicBrandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory;
 
     public TopicContentfulFactory(
         IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
@@ -19,7 +19,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-        IContentfulFactory<ContentfulGroupBranding, GroupBranding> topicBrandingFactory)
+        IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory)
     {
         _subItemFactory = subItemFactory;
         _crumbFactory = crumbFactory;
@@ -28,7 +28,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         _dateComparer = new DateComparer(timeProvider);
         _eventBannerFactory = eventBannerFactory;
         _callToActionFactory = callToActionFactory;
-        _topicBrandingFactory = topicBrandingFactory;
+        _trustedLogoFactory = trustedLogoFactory;
     }
 
     public Topic ToModel(ContentfulTopic entry)
@@ -73,11 +73,11 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
         CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
-        List<GroupBranding> topicBranding = entry.TopicBranding is not null 
-            ? entry.TopicBranding
-                .Where(_ => _ is not null)
-                .Select(_topicBrandingFactory.ToModel).ToList() 
-            : new List<GroupBranding>();
+        List<TrustedLogo> trustedLogos = entry.TrustedLogos is not null 
+            ? entry.TrustedLogos
+                .Where(trustedLogo => trustedLogo is not null)
+                .Select(_trustedLogoFactory.ToModel).ToList() 
+            : new List<TrustedLogo>();
 
         string logoAreaTitle = entry.LogoAreaTitle;
 
@@ -86,7 +86,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             : new List<Trivia>();
 
         return new Topic(entry.Slug, entry.Name, entry.Teaser, entry.MetaDescription, entry.Summary, entry.Icon, backgroundImage, image, featuredTasks, subItems, secondaryItems, breadcrumbs, alerts, entry.SunriseDate, entry.SunsetDate, entry.EmailAlerts, entry.EmailAlertsTopicId, eventBanner, campaignBanner,
-        entry.EventCategory, callToAction, topicBranding, logoAreaTitle, displayContactUs)
+        entry.EventCategory, callToAction, trustedLogos, logoAreaTitle, displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
             Video = new Video(entry.VideoTitle, entry.VideoTeaser, entry.VideoTag),

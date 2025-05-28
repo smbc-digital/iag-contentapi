@@ -11,7 +11,7 @@ public class NewsContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
 
     public NewsContentfulFactoryTests()
     {

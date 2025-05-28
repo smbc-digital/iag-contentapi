@@ -14,7 +14,7 @@ public class Event
     public DateTime EventDate { get; }
     public string StartTime { get; }
     public string EndTime { get; }
-    public int Occurences { get; }
+    public int Occurrences { get; }
     public EventFrequency EventFrequency { get; set; }
     public List<Crumb> Breadcrumbs { get; }
     public List<Document> Documents { get; }
@@ -29,7 +29,7 @@ public class Event
     public bool? Paid { get; }
     public GeoCoordinate Coord { get; }
     public string LogoAreaTitle { get; set; }
-    public List<GroupBranding> EventBranding { get; set; } = new();
+    public List<TrustedLogo> TrustedLogos { get; set; } = new();
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string Website { get; set; }
@@ -53,7 +53,7 @@ public class Event
                 DateTime eventDate,
                 string startTime,
                 string endTime,
-                int occurences,
+                int occurrences,
                 EventFrequency frequency,
                 List<Crumb> breadcrumbs,
                 string thumbnailImageUrl,
@@ -68,7 +68,7 @@ public class Event
                 bool? free,
                 bool? paid,
                 string logoAreaTitle,
-                List<GroupBranding> eventBranding,
+                List<TrustedLogo> trustedLogos,
                 string phoneNumber,
                 string email,
                 string website,
@@ -90,7 +90,7 @@ public class Event
         EventDate = eventDate;
         StartTime = startTime;
         EndTime = endTime;
-        Occurences = occurences;
+        Occurrences = occurrences;
         EventFrequency = frequency;
         Breadcrumbs = breadcrumbs;
         ThumbnailImageUrl = thumbnailImageUrl;
@@ -109,7 +109,7 @@ public class Event
             ? null 
             : new GeoCoordinate(MapPosition.Lat, MapPosition.Lon);
         LogoAreaTitle = logoAreaTitle;
-        EventBranding = eventBranding;
+        TrustedLogos = trustedLogos;
         PhoneNumber = phoneNumber;
         Email = email;
         Website = website;

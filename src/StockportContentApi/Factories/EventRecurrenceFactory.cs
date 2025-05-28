@@ -19,7 +19,7 @@ public class EventRecurrenceFactory
     {
         List<Event> recurringEventsByFrequency = new();
         
-        for (int i = 1; i < eventItem.Occurences; i++)
+        for (int i = 1; i < eventItem.Occurrences; i++)
         {
             Event recurringEvent = _recurrenceDictionary[eventItem.EventFrequency].Invoke(eventItem, i);
 
@@ -42,7 +42,7 @@ public class EventRecurrenceFactory
                 newDate,
                 entry.StartTime,
                 entry.EndTime,
-                entry.Occurences,
+                entry.Occurrences,
                 entry.EventFrequency,
                 entry.Breadcrumbs,
                 entry.ThumbnailImageUrl,
@@ -57,7 +57,7 @@ public class EventRecurrenceFactory
                 entry.Free,
                 entry.Paid,
                 entry.LogoAreaTitle,
-                entry.EventBranding,
+                entry.TrustedLogos,
                 entry.PhoneNumber,
                 entry.Email,
                 entry.Website,

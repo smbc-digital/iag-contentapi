@@ -5,21 +5,21 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<Asset, Document> _documentFactory;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _sectionBrandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory;
     private readonly IVideoRepository _videoRepository;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
 
     public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
         IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
         ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulGroupBranding, GroupBranding> sectionBrandingFactory)
+        IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory)
     {
         _profileFactory = profileFactory;
         _documentFactory = documentFactory;
         _videoRepository = videoRepository;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
-        _sectionBrandingFactory = sectionBrandingFactory;
+        _trustedLogoFactory = trustedLogoFactory;
     }
 
     public Section ToModel(ContentfulSection entry)
@@ -37,8 +37,8 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
                                             .Where(alert => !alert.Severity.Equals("Condolence"))
                                             .Select(_alertFactory.ToModel);
 
-        List<GroupBranding> sectionBranding = entry.SectionBranding is not null
-            ? entry.SectionBranding.Where(branding => branding is not null).Select(_sectionBrandingFactory.ToModel).ToList()
+        List<TrustedLogo> trustedLogos = entry.TrustedLogos is not null
+            ? entry.TrustedLogos.Where(trustedLogo => trustedLogo is not null).Select(_trustedLogoFactory.ToModel).ToList()
             : new();
 
         DateTime updatedAt = entry.Sys.UpdatedAt.Value;
@@ -50,7 +50,7 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
                 profiles,
                 documents,
                 entry.LogoAreaTitle,
-                sectionBranding,
+                trustedLogos,
                 entry.SunriseDate,
                 entry.SunsetDate,
                 updatedAt,

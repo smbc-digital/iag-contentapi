@@ -52,7 +52,7 @@ public class ArticleRepositoryTests
             _videoRepository.Object,
             _mockTimeProvider.Object,
             new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
-            new Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>>().Object,
+            new Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>>().Object,
             new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object,
             new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
             new Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>>().Object

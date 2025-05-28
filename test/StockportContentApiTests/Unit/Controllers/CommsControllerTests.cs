@@ -57,7 +57,7 @@ public class CommsControllerTests
                                                 true,
                                                 true,
                                                 "Logo title",
-                                                new List<GroupBranding>(),
+                                                new List<TrustedLogo>(),
                                                 "01234564567",
                                                 "email",
                                                 "website",

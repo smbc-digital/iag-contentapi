@@ -25,7 +25,7 @@ public class EventBuilder
     private readonly string _instagram = "www.test.com";
     private readonly string _linkedIn = "www.test.com";
     private readonly string _logoAreaTitle = "Logo title";
-    private readonly List<GroupBranding> _branding = new();
+    private readonly List<TrustedLogo> _branding = new();
     private int _occurences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };

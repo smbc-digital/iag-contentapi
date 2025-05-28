@@ -11,7 +11,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
     private readonly IVideoRepository _videoRepository;
     private readonly DateComparer _dateComparer;
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _articleBrandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory;
 
@@ -23,7 +23,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         IVideoRepository videoRepository,
         ITimeProvider timeProvider,
         IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulGroupBranding, GroupBranding> articleBrandingFactory,
+        IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
         IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
         IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
         IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory)
@@ -36,7 +36,7 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
         _parentTopicFactory = parentTopicFactory;
         _dateComparer = new DateComparer(timeProvider);
         _alertFactory = alertFactory;
-        _articleBrandingFactory = articleBrandingFactory;
+        _trustedLogoFactory = trustedLogoFactory;
         _subitemFactory = subitemFactory;
         _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
         _callToActionContentfulFactory = callToActionContentfulFactory;
@@ -90,9 +90,9 @@ public class ArticleContentfulFactory : IContentfulFactory<ContentfulArticle, Ar
             Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                         .Select(_profileFactory.ToModel).ToList(),
             
-            ArticleBranding = entry.ArticleBranding is not null 
-                ? entry.ArticleBranding.Where(_ => _ is not null)
-                    .Select(_articleBrandingFactory.ToModel).ToList() 
+            TrustedLogos = entry.TrustedLogos is not null 
+                ? entry.TrustedLogos.Where(trustedLogo => trustedLogo is not null)
+                    .Select(_trustedLogoFactory.ToModel).ToList() 
                 : new(),
             
             LogoAreaTitle = entry.LogoAreaTitle,

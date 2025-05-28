@@ -11,7 +11,7 @@ public class Section
     public IEnumerable<Alert> AlertsInline { get; set; }
     public List<Document> Documents { get; }
     public string LogoAreaTitle { get; set; }
-    public List<GroupBranding> SectionBranding { get; set; }
+    public List<TrustedLogo> TrustedLogos { get; set; }
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
@@ -23,7 +23,7 @@ public class Section
                 IEnumerable<Profile> profiles,
                 List<Document> documents,
                 string logoAreaTitle,
-                List<GroupBranding> sectionBranding,
+                List<TrustedLogo> trustedLogos,
                 DateTime sunriseDate,
                 DateTime sunsetDate,
                 DateTime updatedAt,
@@ -36,7 +36,7 @@ public class Section
         Profiles = profiles;
         Documents = documents;
         LogoAreaTitle = logoAreaTitle;
-        SectionBranding = sectionBranding;
+        TrustedLogos = trustedLogos;
         SunriseDate = sunriseDate;
         SunsetDate = sunsetDate;
         UpdatedAt = updatedAt;
