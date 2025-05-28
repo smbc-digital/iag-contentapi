@@ -7,9 +7,9 @@ public class ContentfulTrustedLogo : IContentfulModel
 
     public string Text { get; set; } = string.Empty;
 
-    public Asset File { get; set; } = new();
+    public Asset Image { get; set; } = new();
 
-    public string Url { get; set; } = string.Empty;
+    public string Link { get; set; } = string.Empty;
 
     public SystemProperties Sys { get; set; } = new();
 }

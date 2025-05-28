@@ -4,16 +4,16 @@ public class ContentfuTrustedLogoBuilder
 {
     private string _title = "title";
     private string _text = "text";
-    private Asset _file = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
-    private string _url = "url";
+    private Asset _image= new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
+    private string _link = "url";
 
     public ContentfulTrustedLogo Build()
         => new()
         {
             Title = _title,
             Text = _text,
-            File = _file,
-            Url = _url,
+            Image = _image,
+            Link = _link,
         };
 
     public ContentfuTrustedLogoBuilder WithTitle(string title)
@@ -28,15 +28,15 @@ public class ContentfuTrustedLogoBuilder
         return this;
     }
 
-    public ContentfuTrustedLogoBuilder WithFile(Asset file)
+    public ContentfuTrustedLogoBuilder WithFile(Asset image)
     {
-        _file = file;
+        _image = image;
         return this;
     }
     
-    public ContentfuTrustedLogoBuilder WithUrl(string url)
+    public ContentfuTrustedLogoBuilder WithUrl(string link)
     {
-        _url = url;
+        _link = link;
         return this;
     }
 }

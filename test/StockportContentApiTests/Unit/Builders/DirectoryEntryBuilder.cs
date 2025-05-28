@@ -29,11 +29,11 @@ public class DirectoryEntryBuilder
     private readonly List<ContentfulTrustedLogo> _trustedLogos = new()
     {
         new() {
-            File = new Asset(),
+            Image = new Asset(),
             Sys = new SystemProperties(),
             Text = "test",
             Title = "test",
-            Url = "test"
+            Link = "test"
         }
     };
 

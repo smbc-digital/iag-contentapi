@@ -41,7 +41,7 @@ public class AutoMapperConfig : AutoMapper.Profile
         CreateMap<TrustedLogo, ContentfulTrustedLogo>()
             .ForMember(dest => dest.Sys,
                 opts => opts.Ignore())
-            .ForMember(dest => dest.File,
+            .ForMember(dest => dest.Image,
                 opts => opts.Ignore());
 
         CreateMap<Asset, LinkReference>()

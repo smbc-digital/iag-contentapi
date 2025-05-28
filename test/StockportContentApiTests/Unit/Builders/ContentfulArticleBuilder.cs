@@ -29,8 +29,8 @@ public class ContentfulArticleBuilder
         {
             Title = "branding title",
             Text = "branding text",
-            File = new Asset(),
-            Url = "branding-url"
+            Image = new Asset(),
+            Link = "branding-url"
         }
     };
 

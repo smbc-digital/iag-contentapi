@@ -4,17 +4,17 @@ public class TrustedLogoContentfulFactory : IContentfulFactory<ContentfulTrusted
 {
     public TrustedLogo ToModel(ContentfulTrustedLogo entry)
     {
-        MediaAsset file = new();
+        MediaAsset image = new();
 
-        if (entry is not null && entry.File is not null && entry.File.File is not null)
+        if (entry is not null && entry.Image is not null && entry.Image.File is not null)
         {
-            file = new MediaAsset
+            image = new MediaAsset
             {
-                Url = entry.File.File.Url,
-                Description = entry.File.Description
+                Url = entry.Image.File.Url,
+                Description = entry.Image.Description
             };
         }
 
-        return new TrustedLogo(entry.Title, entry.Text, file, entry.Url);
+        return new TrustedLogo(entry.Title, entry.Text, image, entry.Link);
     }
 }

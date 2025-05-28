@@ -15,8 +15,8 @@ public class TrustedLogoContentfulFactoryTests
         // Assert
         Assert.Equal(contentfulReference.Title, result.Title);
         Assert.Equal(contentfulReference.Text, result.Text);
-        Assert.Equal(contentfulReference.File.File.Url, result.File.Url);
-        Assert.Equal(contentfulReference.Url, result.Url);
+        Assert.Equal(contentfulReference.Image.File.Url, result.Image.Url);
+        Assert.Equal(contentfulReference.Link, result.Link);
     }
 
     [Fact]
@@ -36,8 +36,8 @@ public class TrustedLogoContentfulFactoryTests
         // Assert
         Assert.Empty(result.Title);
         Assert.Empty(result.Text);
-        Assert.NotNull(result.File);
-        Assert.IsType<MediaAsset>(result.File);
-        Assert.Empty(result.Url);
+        Assert.NotNull(result.Image);
+        Assert.IsType<MediaAsset>(result.Image);
+        Assert.Empty(result.Link);
     }
 }
