@@ -2,7 +2,7 @@
 
 public class ContentfulTriviaBuilder
 {
-    private string _name = "name";
+    private string _title= "title";
     private string _icon = "icon";
     private string _body = "body";
     private string _link = "link";
@@ -12,17 +12,17 @@ public class ContentfulTriviaBuilder
     public ContentfulTrivia Build()
         => new()
         {
-            Name = _name,
+            Title = _title,
             Icon = _icon,
-            Body = _body,
+            BodyText = _body,
             Link = _link,
             Statistic = _statistic,
             StatisticSubHeading = _statisticSubHeading,
         };
     
-    public ContentfulTriviaBuilder WithName(string name)
+    public ContentfulTriviaBuilder WithTitle(string title)
     {
-        _name = name;
+        _title = title;
         return this;
     }
 

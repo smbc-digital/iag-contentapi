@@ -22,13 +22,13 @@ public class ContentfulProfileBuilder
             Subject = "subject",
             TriviaSection = new List<ContentfulTrivia>() {
                 new() {
-                    Name = "trivia name",
+                    Title = "trivia title",
                     Icon = "trivia icon",
                     Link = "trivia link",
                     Statistic = "statistic",
                     StatisticSubHeading = "statistic subheading",
                     Sys = new SystemProperties(),
-                    Body = "trivia text"
+                    BodyText = "trivia text"
                 }
             },
             TriviaSubheading = "trivia heading",
