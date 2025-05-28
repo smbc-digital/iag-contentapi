@@ -87,12 +87,10 @@ public class TopicContentfulFactoryTests
         Assert.Equal("background-image-url.jpg", result.BackgroundImage);
         Assert.Single(result.Breadcrumbs);
         Assert.Equal(crumb, result.Breadcrumbs.First());
-        Assert.False(result.EmailAlerts);
-        Assert.Equal("id", result.EmailAlertsTopicId);
         Assert.Equal("icon", result.Icon);
         Assert.Equal("background-image-url.jpg", result.Image);
         Assert.Equal("slug", result.Slug);
-        Assert.Equal("name", result.Name);
+        Assert.Equal("name", result.Title);
         Assert.Equal("summary", result.Summary);
         Assert.Equal(DateTime.MinValue, result.SunriseDate);
         Assert.Equal(DateTime.MaxValue, result.SunsetDate);

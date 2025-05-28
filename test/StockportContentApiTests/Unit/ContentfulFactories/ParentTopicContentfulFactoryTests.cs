@@ -40,7 +40,7 @@ public class ParentTopicContentfulFactoryTests
         Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
 
         // Assert
-        Assert.Equal("test topic", result.Name);
+        Assert.Equal("test topic", result.Title);
         Assert.Equal("test-topic", result.Slug);
         Assert.Single(result.SubItems);
     }

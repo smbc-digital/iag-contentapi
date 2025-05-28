@@ -13,8 +13,6 @@ public class ContentfulTopicBuilder
     private Asset _backgroundImage = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
     private Asset _image = new ContentfulAssetBuilder().Url("background-image-url.jpg").Build();
     private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().SystemContentTypeId("topic").Build() };
-    private bool _emailAlerts = false;
-    private string _emailAlertsTopicId = "id";
     private List<ContentfulAlert> _alerts = new(){ new ContentfulAlertBuilder().Build() };
     private List<ContentfulReference> _subItems = new() { new ContentfulReferenceBuilder().Slug("sub-slug").Build() };
     private List<ContentfulReference> _secondaryItems = new() { new ContentfulReferenceBuilder().Slug("secondary-slug").Build() };
@@ -23,8 +21,7 @@ public class ContentfulTopicBuilder
     private string _systemId = "id";
     private string _contentTypeSystemId = "id";
 
-    public ContentfulTopic Build()
-        => new()
+    public ContentfulTopic Build() => new()
         {
             Slug = _slug,
             Name = _name,
@@ -41,8 +38,6 @@ public class ContentfulTopicBuilder
             Alerts = _alerts,
             SunriseDate = _sunriseDate,
             SunsetDate = _sunsetDate,
-            EmailAlerts = _emailAlerts,
-            EmailAlertsTopicId = _emailAlertsTopicId,
             EventBanner = _eventBanner,
             DisplayContactUs = false,
             Sys = new SystemProperties()
@@ -138,18 +133,6 @@ public class ContentfulTopicBuilder
     public ContentfulTopicBuilder SunsetDate(DateTime date)
     {
         _sunsetDate = date;
-        return this;
-    }
-
-    public ContentfulTopicBuilder EmailAlerts(bool emailAlerts)
-    {
-        _emailAlerts = emailAlerts;
-        return this;
-    }
-
-    public ContentfulTopicBuilder EmailAlertsTopicId(string topicId)
-    {
-        _emailAlertsTopicId = topicId;
         return this;
     }
 
