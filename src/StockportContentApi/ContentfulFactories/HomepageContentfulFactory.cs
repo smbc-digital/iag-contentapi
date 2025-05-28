@@ -52,8 +52,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
             ? entry.Title 
             : string.Empty;
 
-        IEnumerable<string> popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
-
         List<SubItem> featuredTasks = entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                         .Select(_subitemFactory.ToModel).ToList();
@@ -80,8 +78,7 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
                                                             .Where(spotlightOnBanner => ContentfulHelpers.EntryIsNotALink(spotlightOnBanner.Sys))
                                                             .Select(_spotlightOnBanner.ToModel).ToList();
 
-        return new Homepage(popularSearchTerms,
-                            featuredTasksHeading,
+        return new Homepage(featuredTasksHeading,
                             featuredTasksSummary,
                             featuredTasks,
                             featuredTopics,

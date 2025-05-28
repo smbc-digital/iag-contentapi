@@ -2,7 +2,6 @@
 
 public class ContentfulHomepageBuilder
 {
-    private readonly List<string> _popularSearchTerms = new() { "popular search term" };
     private readonly string _featuredTasksHeading = "Featured tasks heading";
     private readonly string _featuredTasksSummary = "Featured tasks summary";
     private readonly Asset _backgroundImage = new() { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
@@ -36,7 +35,6 @@ public class ContentfulHomepageBuilder
     public ContentfulHomepage Build()
         => new()
         {
-            PopularSearchTerms = _popularSearchTerms,
             FeaturedTasksHeading = _featuredTasksHeading,
             FeaturedTasksSummary = _featuredTasksSummary,
             FeaturedTasks = _featuredTasks,

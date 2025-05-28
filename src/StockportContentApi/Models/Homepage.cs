@@ -3,7 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class Homepage
 {
-    public IEnumerable<string> PopularSearchTerms { get; }
     public string FeaturedTasksHeading { get; }
     public string FeaturedTasksSummary { get; }
     public IEnumerable<SubItem> FeaturedTasks { get; }
@@ -25,8 +24,7 @@ public class Homepage
     public CallToActionBanner CallToActionPrimary { get; set; }
     public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; }
 
-    public Homepage(IEnumerable<string> popularSearchTerms,
-                    string featuredTasksHeading,
+    public Homepage(string featuredTasksHeading,
                     string featuredTasksSummary,
                     IEnumerable<SubItem> featuredTasks,
                     IEnumerable<SubItem> featuredTopics,
@@ -47,7 +45,6 @@ public class Homepage
                     IEnumerable<SpotlightOnBanner> spotlightOnBanner,
                     string imageOverlayText)
     {
-        PopularSearchTerms = popularSearchTerms;
         FeaturedTasksHeading = featuredTasksHeading;
         FeaturedTasksSummary = featuredTasksSummary;
         FeaturedTasks = featuredTasks;
@@ -74,8 +71,7 @@ public class Homepage
 [ExcludeFromCodeCoverage]
 public class NullHomepage : Homepage
 {
-    public NullHomepage() : base(Enumerable.Empty<string>(),
-                                string.Empty,
+    public NullHomepage() : base(string.Empty,
                                 string.Empty,
                                 new List<SubItem>(),
                                 new List<SubItem>(),

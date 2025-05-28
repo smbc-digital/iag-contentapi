@@ -3,7 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class ContentfulHomepage : IContentfulModel
 {
-    public IEnumerable<string> PopularSearchTerms { get; set; } = new List<string>();
     public string FeaturedTasksHeading { get; set; } = string.Empty;
     public string FeaturedTasksSummary { get; set; } = string.Empty;
     public IEnumerable<ContentfulReference> FeaturedTasks { get; set; } = new List<ContentfulReference>();
