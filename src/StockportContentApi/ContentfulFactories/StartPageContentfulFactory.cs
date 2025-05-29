@@ -15,16 +15,16 @@ public class StartPageContentfulFactory : IContentfulFactory<ContentfulStartPage
 
     public StartPage ToModel(ContentfulStartPage entry)
     {
-        List<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(_alertFactory.ToModel).ToList();
 
-        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                                     .Select(_crumbFactory.ToModel).ToList();
 
-        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                             .Where(alert => !alert.Severity.Equals("Condolence"))
                                             .Select(_alertFactory.ToModel);
 
@@ -37,15 +37,12 @@ public class StartPageContentfulFactory : IContentfulFactory<ContentfulStartPage
             entry.Teaser,
             entry.Summary,
             entry.UpperBody,
-            entry.FormLinkLabel,
             entry.FormLink,
             entry.LowerBody,
             backgroundImage,
             entry.Icon,
             breadcrumbs,
             alerts,
-            alertsInline,
-            entry.SunriseDate,
-            entry.SunsetDate);
+            alertsInline);
     }
 }
