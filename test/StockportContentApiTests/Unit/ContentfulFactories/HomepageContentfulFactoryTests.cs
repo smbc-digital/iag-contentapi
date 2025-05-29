@@ -34,7 +34,7 @@ public class HomepageContentfulFactoryTests
         
         _spotlightOnFactory
             .Setup(spotlightOnFactory => spotlightOnFactory.ToModel(It.IsAny<ContentfulSpotlightOnBanner>()))
-            .Returns(new SpotlightOnBanner(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new DateTime()));
+            .Returns(new SpotlightOnBanner(string.Empty, null, string.Empty, string.Empty, new DateTime()));
 
         _homepageContentfulFactory = new HomepageContentfulFactory(_subitemFactory.Object,
             _alertFactory.Object,

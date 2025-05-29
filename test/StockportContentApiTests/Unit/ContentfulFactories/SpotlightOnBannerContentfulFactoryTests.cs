@@ -21,7 +21,6 @@ public class SpotlightOnBannerContentfulFactoryTests
                     Url = "ImageUrl"
                 }
             },
-            AltText = "AltText",
             Link = "Link",
             Sys = new SystemProperties {
                 PublishedAt = DateTime.MinValue,
@@ -34,8 +33,7 @@ public class SpotlightOnBannerContentfulFactoryTests
 
         // Assert
         Assert.Equal(entry.Title, result.Title);
-        Assert.Equal(entry.Image.File.Url, result.Image);
-        Assert.Equal(entry.AltText, result.AltText);
+        Assert.Equal(entry.Image.File.Url, result.Image.Url);
         Assert.Equal(entry.Link, result.Link);
         Assert.Equal(entry.Sys.UpdatedAt, result.LastUpdated); ;
     }
@@ -52,7 +50,6 @@ public class SpotlightOnBannerContentfulFactoryTests
                     Url = "ImageUrl"
                 }
             },
-            AltText = "AltText",
             Link = "Link",
             Sys = new SystemProperties {
                 PublishedAt = DateTime.MinValue
