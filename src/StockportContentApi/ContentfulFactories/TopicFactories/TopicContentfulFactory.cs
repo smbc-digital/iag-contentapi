@@ -82,7 +82,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
         string logoAreaTitle = entry.LogoAreaTitle;
 
         IEnumerable<Trivia> trivia = entry.TriviaSection is not null && entry.TriviaSection.Any() 
-            ? entry.TriviaSection.Select(trivia => new Trivia(trivia.Title, trivia.Icon, trivia.BodyText, trivia.Link, trivia.Statistic, trivia.StatisticSubHeading))
+            ? entry.TriviaSection.Select(trivia => new Trivia(trivia.Title, trivia.Icon, trivia.Body, trivia.Link, trivia.Statistic, trivia.StatisticSubHeading))
             : new List<Trivia>();
 
         return new Topic(entry.Slug,

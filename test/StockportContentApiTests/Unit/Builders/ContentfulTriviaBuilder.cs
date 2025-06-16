@@ -14,7 +14,7 @@ public class ContentfulTriviaBuilder
         {
             Title = _title,
             Icon = _icon,
-            BodyText = _body,
+            Body = _body,
             Link = _link,
             Statistic = _statistic,
             StatisticSubHeading = _statisticSubHeading,

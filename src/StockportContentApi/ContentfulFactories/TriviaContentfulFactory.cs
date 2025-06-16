@@ -5,7 +5,7 @@ public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Triv
     public Trivia ToModel(ContentfulTrivia entry)
         => new(entry.Title,
                entry.Icon,
-               entry.BodyText,
+               entry.Body,
                entry.Link,
                entry.Statistic,
                entry.StatisticSubHeading);

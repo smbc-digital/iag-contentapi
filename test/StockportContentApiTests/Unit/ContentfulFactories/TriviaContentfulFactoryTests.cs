@@ -14,7 +14,7 @@ public class TriviaContentfulFactoryTests
         // Assert
         Assert.Equal(contentfulReference.Title, result.Title);
         Assert.Equal(contentfulReference.Icon, result.Icon);
-        Assert.Equal(contentfulReference.BodyText, result.BodyText);
+        Assert.Equal(contentfulReference.Body, result.Body);
         Assert.Equal(contentfulReference.Link, result.Link);
         Assert.Equal(contentfulReference.Statistic, result.Statistic);
         Assert.Equal(contentfulReference.StatisticSubHeading, result.StatisticSubheading);
@@ -39,7 +39,7 @@ public class TriviaContentfulFactoryTests
         // Assert
         Assert.Empty(result.Title);
         Assert.Empty(result.Icon);
-        Assert.Empty(result.BodyText);
+        Assert.Empty(result.Body);
         Assert.Empty(result.Link);
         Assert.Empty(result.Statistic);
         Assert.Empty(result.StatisticSubheading);
