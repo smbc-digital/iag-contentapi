@@ -48,7 +48,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.EventDate,
                         entry.StartTime,
                         entry.EndTime,
-                        entry.Occurences,
+                        entry.Occurrences,
                         entry.Frequency,
                         new List<Crumb> { new("Events", string.Empty, "events") },
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl),

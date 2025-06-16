@@ -26,7 +26,7 @@ public class EventBuilder
     private readonly string _linkedIn = "www.test.com";
     private readonly string _logoAreaTitle = "Logo title";
     private readonly List<TrustedLogo> _branding = new();
-    private int _occurences = -1;              
+    private int _occurrences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
     private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
@@ -63,7 +63,7 @@ public class EventBuilder
             _eventDate,
             _startTime,
             _endTime,
-            _occurences,
+            _occurrences,
             _eventFrequency,
             _breadcrumbs,
             _thumbnailImage,
@@ -98,7 +98,7 @@ public class EventBuilder
 
     public EventBuilder Occurrences(int occurrences)
     {
-        _occurences = occurrences;
+        _occurrences = occurrences;
         return this;
     }
 

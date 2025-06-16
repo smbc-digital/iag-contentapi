@@ -82,7 +82,7 @@ public class EventConverter : ITypeConverter<ContentfulEvent, ManagementEvent>
         if (!source.Frequency.Equals(EventFrequency.None))
         {
             destination.Frequency = new() { { "en-GB", source.Frequency } };
-            destination.Occurences = new() { { "en-GB", source.Occurences } };
+            destination.Occurrences = new() { { "en-GB", source.Occurrences } };
         }
 
         destination.Image = string.IsNullOrWhiteSpace(source.Image.SystemProperties.Id)

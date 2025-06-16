@@ -16,7 +16,7 @@ public class ContentfulEvent : IContentfulModel
     public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public string StartTime { get; set; } = string.Empty;
     public string EndTime { get; set; } = string.Empty;
-    public int Occurences { get; set; } = 0;
+    public int Occurrences { get; set; } = 0;
     public EventFrequency Frequency { get; set; } = EventFrequency.None;
     public List<Asset> Documents { get; set; } = new();
     public MapPosition MapPosition { get; set; } = new();

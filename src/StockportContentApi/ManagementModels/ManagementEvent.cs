@@ -13,7 +13,7 @@ public class ManagementEvent
     public Dictionary<string, DateTime> EventDate { get; set; }
     public Dictionary<string, string> StartTime { get; set; }
     public Dictionary<string, string> EndTime { get; set; }
-    public Dictionary<string, int> Occurences { get; set; }
+    public Dictionary<string, int> Occurrences { get; set; }
     public Dictionary<string, EventFrequency> Frequency { get; set; }
     public Dictionary<string, List<LinkReference>> Documents { get; set; }
     public Dictionary<string, MapPosition> MapPosition { get; set; }
