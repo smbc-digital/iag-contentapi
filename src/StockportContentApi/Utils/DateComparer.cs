@@ -51,6 +51,35 @@ public class DateComparer
     public bool EventDateIsBetweenTodayAndLater(DateTime eventDate) =>
         eventDate.Date >= _timeProvider.Now().Date;
 
+    public bool EventIsInTheFuture(DateTime eventDate, string startTime, string endTime)
+    {
+        DateTime now = DateTime.Now;
+        
+        if (eventDate.Date > now.Date) return true;
+
+        if (eventDate.Date < now.Date) return false;
+
+        bool hasValidEnd = TimeSpan.TryParse(endTime, out var end);
+        bool hasValidStart = TimeSpan.TryParse(startTime, out var start);
+
+        if (!hasValidStart || !hasValidEnd)
+            return false;
+
+        if (hasValidEnd)
+        {
+            DateTime eventEndDateTime = eventDate.Date + end;
+            return eventEndDateTime > now;
+        }
+
+        if (hasValidStart)
+        {
+            DateTime eventStartDateTime = eventDate.Date + start;
+            return eventStartDateTime > now;
+        }
+
+        return false;
+    }
+
     private static bool IsValidDateTime(dynamic date) =>
         date is not null
             && DateTime.TryParse(date.ToString(), out DateTime datetime);
