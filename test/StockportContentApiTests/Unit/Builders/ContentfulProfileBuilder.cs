@@ -28,7 +28,7 @@ public class ContentfulProfileBuilder
                     Statistic = "statistic",
                     StatisticSubHeading = "statistic subheading",
                     Sys = new SystemProperties(),
-                    BodyText = "trivia text"
+                    Body = "trivia text"
                 }
             },
             TriviaSubheading = "trivia heading",
