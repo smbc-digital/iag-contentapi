@@ -3,129 +3,256 @@
 public class DateComparerTests
 {
     private readonly DateComparer _comparer;
-    private readonly Mock<ITimeProvider> _dateNow;
+    private readonly Mock<ITimeProvider> _dateNow = new();
 
-    public DateComparerTests()
-    {
-        _dateNow = new Mock<ITimeProvider>();
-        _comparer = new DateComparer(_dateNow.Object);
-    }
+    public DateComparerTests() =>
+        _comparer = new(_dateNow.Object);
 
     [Fact]
-    public void ShouldReturnTrueIfSunriseDateIsWithinTheToAndFromDates()
+    public void SunriseDateIsBetweenStartAndEndDates_ShouldReturnTrueIfSunriseDateIsWithinTheToAndFromDates()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 10));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 12, 10));
 
+        // Act
         bool isWithin = _comparer.SunriseDateIsBetweenStartAndEndDates(new DateTime(2016, 8, 5), new DateTime(2016, 8, 1), new DateTime(2016, 8, 31));
 
-        isWithin.Should().BeTrue();
+        // Assert
+        Assert.True(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnTrueIfSunriseDateIsWithinTheToAndFromDatesWithTimes()
+    public void SunriseDateIsBetweenStartAndEndDates_ShouldReturnTrueIfSunriseDateIsWithinTheToAndFromDatesWithTimes()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 10, 9, 35, 07));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 12, 10, 9, 35, 07));
 
+        // Act
         bool isWithin = _comparer.SunriseDateIsBetweenStartAndEndDates(new DateTime(2016, 8, 5, 15, 15, 0), new DateTime(2016, 8, 1, 0, 0, 0), new DateTime(2016, 8, 31, 0, 0, 0));
 
-        isWithin.Should().BeTrue();
+        // Assert
+        Assert.True(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnFalseIfSunriseDateIsOutsideTheToAndFromDates()
+    public void SunriseDateIsBetweenStartAndEndDates_ShouldReturnFalseIfSunriseDateIsOutsideTheToAndFromDates()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 12, 10));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 12, 10));
 
+        // Act
         bool isWithin = _comparer.SunriseDateIsBetweenStartAndEndDates(new DateTime(2016, 7, 5), new DateTime(2016, 8, 1), new DateTime(2016, 8, 31));
 
-        isWithin.Should().BeFalse();
+        // Assert
+        Assert.False(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnFalseIfSunriseDateIsWithinTheToAndFromDatesButIsAfterTodaysDate()
+    public void SunriseDateIsBetweenStartAndEndDates_ShouldReturnFalseIfSunriseDateIsWithinTheToAndFromDatesButIsAfterTodaysDate()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
+        // Act
         bool isWithin = _comparer.SunriseDateIsBetweenStartAndEndDates(new DateTime(2016, 8, 10), new DateTime(2016, 8, 1), new DateTime(2016, 8, 31));
 
-        isWithin.Should().BeFalse();
+        // Assert
+        Assert.False(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnADateTimeFromAOffsetDateTime()
+    public void DateFieldToDate_ShouldReturnADateTimeFromAOffsetDateTime()
     {
+        // Arrange
         DateTimeOffset offsetDateTime = new(2016, 09, 21, 0, 0, 0, new TimeSpan(+1, 0, 0));
 
+        // Act
         DateTime date = DateComparer.DateFieldToDate(offsetDateTime);
 
-        date.Should().Be(new DateTime(2016, 09, 20, 23, 0, 0));
+        // Assert
+        Assert.Equal(new DateTime(2016, 09, 20, 23, 0, 0), date);
     }
 
     [Fact]
-    public void ShouldReturnADateTimeFromANormalDateTime()
+    public void DateFieldToDate_ShouldReturnADateTimeFromANormalDateTime()
     {
+        // Arrange
         DateTime inputDate = new(2016, 01, 20);
 
+        // Act
         DateTime date = DateComparer.DateFieldToDate(inputDate);
 
-        date.Should().Be(inputDate);
+        // Assert
+        Assert.Equal(inputDate, date);
     }
 
     [Fact]
-    public void ShouldReturnMinimumDateTimePossibleFromAInvalidDateString()
+    public void DateFieldToDate_ShouldReturnMinimumDateTimePossibleFromAInvalidDateString()
     {
+        // Act
         DateTime date = DateComparer.DateFieldToDate("not-valid");
 
-        date.Should().Be(DateTime.MinValue);
+        // Assert
+        Assert.Equal(DateTime.MinValue, date);
     }
 
     [Fact]
-    public void ShouldReturnTrueForSunriseDateIsWithinAndNoSunsetDate()
+    public void DateNowIsWithinSunriseAndSunsetDates_ShouldReturnTrueForSunriseDateIsWithinAndNoSunsetDate()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
+        // Act
         bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 4), DateTime.MinValue);
 
-        isWithin.Should().BeTrue();
+        // Assert
+        Assert.True(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnTrueForNoSunriseDateIsWithinAndASunsetDateWhenSunsetDate()
+    public void DateNowIsWithinSunriseAndSunsetDates_ShouldReturnTrueForNoSunriseDateIsWithinAndASunsetDateWhenSunsetDate()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
+        // Act
         bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(DateTime.MinValue, new DateTime(2016, 8, 6));
 
-        isWithin.Should().BeTrue();
+        // Assert
+        Assert.True(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnTrueForSunriseDateIsWithinAndSunsetDateWithin()
+    public void DateNowIsWithinSunriseAndSunsetDates_ShouldReturnTrueForSunriseDateIsWithinAndSunsetDateWithin()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
+        // Act
         bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 4), new DateTime(2016, 8, 6));
 
-        isWithin.Should().BeTrue();
+        // Assert
+        Assert.True(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnFalseForSunriseDateIsWithinAndSunsetDateOutside()
+    public void DateNowIsWithinSunriseAndSunsetDates_ShouldReturnFalseForSunriseDateIsWithinAndSunsetDateOutside()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
-        bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 1), new DateTime(2016, 8, 4));
+        // Act
+        bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 4), new DateTime(2016, 8, 1));
 
-        isWithin.Should().BeFalse();
+        // Assert
+        Assert.False(isWithin);
     }
 
     [Fact]
-    public void ShouldReturnFalseForSunriseDateIsOutsideAndSunsetDateWithin()
+    public void DateNowIsWithinSunriseAndSunsetDates_ShouldReturnFalseForSunriseDateIsOutsideAndSunsetDateWithin()
     {
-        _dateNow.Setup(o => o.Now()).Returns(new DateTime(2016, 8, 5));
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(new DateTime(2016, 8, 5));
 
+        // Act
         bool isWithin = _comparer.DateNowIsWithinSunriseAndSunsetDates(new DateTime(2016, 8, 6), new DateTime(2016, 8, 10));
 
-        isWithin.Should().BeFalse();
+        // Assert
+        Assert.False(isWithin);
+    }
+
+    [Fact]
+    public void EventIsInTheFuture_ShouldReturnTrue_WhenEventDateIsInTheFuture()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now.AddDays(1), "10:00", "11:00");
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void EventIsInTheFuture_ShouldReturnFalse_WhenEventDateIsInThePast()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now.AddDays(-1), "10:00", "11:00");
+        
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void EventIsInTheFuture_ShouldReturnTrue_WhenEventIsToday_AndEndTimeIsInTheFuture()
+    {
+        // Arrange
+        DateTime fixedNow = new(2025, 6, 17, 13, 0, 0);
+
+        DateTime eventDate = fixedNow.Date;
+        string endTime = fixedNow.AddHours(2).ToString("HH:mm");
+        string startTime = fixedNow.AddHours(-2).ToString("HH:mm");
+
+        // Act
+        bool result = _comparer.EventIsInTheFuture(eventDate, startTime, endTime);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void EventIsInTheFuture_ShouldReturnFalse_WhenEventIsToday_AndEndTimeIsInThePast()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, "09:00", "10:00");
+       
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void EventIsInTheFuture_ShouldReturnFalse_WhenEventIsToday_AndStartTimeIsInTheFuture_ButEndTimeIsInvalid()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, "13:00", "invalid");
+        
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ReturnsFalse_WhenEventIsToday_AndStartTimeIsInThePast_AndEndTimeInvalid()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, "10:00", "invalid");
+        
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ReturnsFalse_WhenEventIsToday_AndBothTimesAreInvalid()
+    {
+        // Act
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, "notatime", "alsoBad");
+        
+        // Assert
+        Assert.False(result);
     }
 }
