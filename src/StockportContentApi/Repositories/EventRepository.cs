@@ -74,7 +74,7 @@ public class EventRepository : BaseRepository, IEventRepository
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
         
         List<Event> liveEvents = GetAllEventsAndTheirRecurrences(events)
-                                    .Where(singleEvent => _dateComparer.EventDateIsBetweenTodayAndLater(singleEvent.EventDate))
+                                    .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
                                     .OrderBy(singleEvent => singleEvent.EventDate)
                                     .ThenBy(singleEvent => TimeSpan.Parse(singleEvent.StartTime))
                                     .ThenBy(singleEvent => singleEvent.Title)
