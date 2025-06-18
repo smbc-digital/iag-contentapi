@@ -203,11 +203,9 @@ public class DateComparerTests
     public void EventIsInTheFuture_ShouldReturnTrue_WhenEventIsToday_AndEndTimeIsInTheFuture()
     {
         // Arrange
-        DateTime fixedNow = new(2025, 6, 17, 13, 0, 0);
-
-        DateTime eventDate = fixedNow.Date;
-        string endTime = fixedNow.AddHours(2).ToString("HH:mm");
-        string startTime = fixedNow.AddHours(-2).ToString("HH:mm");
+        DateTime eventDate = DateTime.Now.Date;
+        string endTime = DateTime.Now.AddHours(2).ToString("HH:mm");
+        string startTime = DateTime.Now.AddHours(-2).ToString("HH:mm");
 
         // Act
         bool result = _comparer.EventIsInTheFuture(eventDate, startTime, endTime);
@@ -220,7 +218,7 @@ public class DateComparerTests
     public void EventIsInTheFuture_ShouldReturnFalse_WhenEventIsToday_AndEndTimeIsInThePast()
     {
         // Act
-        bool result = _comparer.EventIsInTheFuture(DateTime.Now, "09:00", "10:00");
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, DateTime.Now.AddHours(-1).ToString("HH:mm"), DateTime.Now.ToString("HH:mm"));
        
         // Assert
         Assert.False(result);
