@@ -20,7 +20,7 @@ public class ContentfulEventTests
             EventDate = DateTime.MinValue.ToUniversalTime(),
             StartTime = string.Empty,
             EndTime = string.Empty,
-            Occurences = 0,
+            Occurrences = 0,
             Frequency = EventFrequency.None,
             Documents = new List<Asset>(),
             MapPosition = new MapPosition(),

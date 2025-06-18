@@ -23,8 +23,7 @@ public class HomepageControllerTests
     public async Task Get_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        Homepage homepage = new(new List<string>(),
-                                "featured tasks heading",
+        Homepage homepage = new("featured tasks heading",
                                 "featured tasks subheading",
                                 new List<SubItem>(),
                                 new List<SubItem>(),
@@ -37,7 +36,6 @@ public class HomepageControllerTests
                                 "foreground image alt",
                                 "free text",
                                 "title",
-                                null,
                                 "event category",
                                 "meta description",
                                 null,

@@ -1,10 +1,10 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 public class DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-                                            IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
+                                            IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
                                             ITimeProvider timeProvider) : IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>
 {
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
     private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
 
     public DirectoryEntry ToModel(ContentfulDirectoryEntry entry)
@@ -59,7 +59,7 @@ public class DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert,
                                 .Select(filter => new Filter(filter))
                         }),
             
-            Branding = entry.GroupBranding?.Select(_brandingFactory.ToModel)
+            TrustedLogos = entry.TrustedLogos?.Select(_trustedLogoFactory.ToModel)
         };
 
         return directoryEntry;

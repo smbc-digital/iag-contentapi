@@ -28,16 +28,13 @@ public class StartPageControllerTests
                             "teaser",
                             "summary",
                             "upper body",
-                            "form link label",
                             "form link",
                             "lower body",
                             "background image",
                             "icon",
                             new List<Crumb>(),
                             new List<Alert>(),
-                            new List<Alert>(),
-                            new DateTime(),
-                            new DateTime());
+                            new List<Alert>());
 
         _mockRepository
             .Setup(repo => repo.GetStartPage(It.IsAny<string>()))
@@ -61,31 +58,25 @@ public class StartPageControllerTests
                         "teaser",
                         "summary",
                         "upper body",
-                        "form link label",
                         "form link",
                         "lower body",
                         "background image",
                         "icon",
                         new List<Crumb>(),
                         new List<Alert>(),
-                        new List<Alert>(),
-                        new DateTime(),
-                        new DateTime()),
+                        new List<Alert>()),
             new StartPage("title2",
                         "slug2",
                         "teaser2",
                         "summary2",
                         "upper body2",
-                        "form link label2",
                         "form link2",
                         "lower body2",
                         "background image2",
                         "icon2",
                         new List<Crumb>(),
                         new List<Alert>(),
-                        new List<Alert>(),
-                        new DateTime(),
-                        new DateTime())
+                        new List<Alert>())
         };
 
         _mockRepository

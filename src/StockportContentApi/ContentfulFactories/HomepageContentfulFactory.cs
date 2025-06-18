@@ -1,7 +1,6 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
 public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
-                                    IContentfulFactory<ContentfulGroup, Group> groupFactory,
                                     IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                     IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
                                     ITimeProvider timeProvider,
@@ -10,7 +9,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
 {
     private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory = groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory = carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
@@ -54,8 +52,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
             ? entry.Title 
             : string.Empty;
 
-        IEnumerable<string> popularSearchTerms = ContentfulHelpers.ConvertToListOfStrings(entry.PopularSearchTerms);
-
         List<SubItem> featuredTasks = entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
                                         .Select(_subitemFactory.ToModel).ToList();
@@ -74,10 +70,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
 
         CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
 
-        Group featuredGroup = entry.FeaturedGroups.Where(group => ContentfulHelpers.EntryIsNotALink(group.Sys)
-                                    && _dateComparer.DateNowIsNotBetweenHiddenRange(group.DateHiddenFrom, group.DateHiddenTo))
-                                .Select(_groupFactory.ToModel).FirstOrDefault();
-
         CallToActionBanner callToAction = _callToActionFactory.ToModel(entry.CallToAction);
 
         CallToActionBanner callToActionPrimary = _callToActionFactory.ToModel(entry.CallToActionPrimary);
@@ -86,8 +78,7 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
                                                             .Where(spotlightOnBanner => ContentfulHelpers.EntryIsNotALink(spotlightOnBanner.Sys))
                                                             .Select(_spotlightOnBanner.ToModel).ToList();
 
-        return new Homepage(popularSearchTerms,
-                            featuredTasksHeading,
+        return new Homepage(featuredTasksHeading,
                             featuredTasksSummary,
                             featuredTasks,
                             featuredTopics,
@@ -100,7 +91,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
                             foregroundImageAlt,
                             freeText,
                             title,
-                            featuredGroup,
                             entry.EventCategory,
                             entry.MetaDescription,
                             campaignBanner,

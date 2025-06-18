@@ -3,7 +3,7 @@
 public class TriviaContentfulFactory : IContentfulFactory<ContentfulTrivia, Trivia>
 {
     public Trivia ToModel(ContentfulTrivia entry)
-        => new(entry.Name,
+        => new(entry.Title,
                entry.Icon,
                entry.Body,
                entry.Link,

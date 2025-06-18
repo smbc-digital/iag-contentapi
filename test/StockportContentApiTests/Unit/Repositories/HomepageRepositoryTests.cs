@@ -37,8 +37,7 @@ public class HomepageRepositoryTests
 
         _homepageFactory
             .Setup(homepage => homepage.ToModel(It.IsAny<ContentfulHomepage>()))
-            .Returns(new Homepage(new List<string>(),
-                                string.Empty,
+            .Returns(new Homepage(string.Empty,
                                 string.Empty,
                                 new List<SubItem>(),
                                 new List<SubItem>(),
@@ -51,7 +50,6 @@ public class HomepageRepositoryTests
                                 string.Empty,
                                 string.Empty,
                                 string.Empty,
-                                null,
                                 string.Empty,
                                 string.Empty,
                                 new CarouselContent(),

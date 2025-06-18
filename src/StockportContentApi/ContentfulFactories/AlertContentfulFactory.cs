@@ -4,7 +4,6 @@ public class AlertContentfulFactory : IContentfulFactory<ContentfulAlert, Alert>
 {
     public Alert ToModel(ContentfulAlert entry) =>
         new(entry.Title,
-            entry.SubHeading,
             entry.Body,
             entry.Severity,
             entry.SunriseDate,

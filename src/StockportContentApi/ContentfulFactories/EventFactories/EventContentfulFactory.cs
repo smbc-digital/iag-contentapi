@@ -1,18 +1,16 @@
 namespace StockportContentApi.ContentfulFactories.EventFactories;
 
 public class EventContentfulFactory(IContentfulFactory<Asset, Document> documentFactory,
-                            IContentfulFactory<ContentfulGroup, Group> groupFactory,
                             IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
-                            IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory,
+                            IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
                             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                             IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory,
                             ITimeProvider timeProvider) : IContentfulFactory<ContentfulEvent, Event>
 {
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
-    private readonly IContentfulFactory<ContentfulGroup, Group> _groupFactory = groupFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory = eventCategoryFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory = callToActionContentfulFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
 
@@ -30,8 +28,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
             ? entry.ThumbnailImage?.File?.Url 
             : string.Empty;
 
-        Group group = _groupFactory.ToModel(entry.Group);
-
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(_eventCategoryFactory.ToModel);
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
@@ -39,7 +35,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(_alertFactory.ToModel).ToList();
         
-        List<GroupBranding> eventBranding = entry.EventBranding?.Select(_brandingFactory.ToModel).ToList();
+        List<TrustedLogo> trustedLogos = entry.TrustedLogos?.Select(_trustedLogoFactory.ToModel).ToList();
 
         return new Event(entry.Title,
                         entry.Slug,
@@ -52,7 +48,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.EventDate,
                         entry.StartTime,
                         entry.EndTime,
-                        entry.Occurences,
+                        entry.Occurrences,
                         entry.Frequency,
                         new List<Crumb> { new("Events", string.Empty, "events") },
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl),
@@ -62,14 +58,12 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.BookingInformation,
                         entry.Sys.UpdatedAt,
                         entry.Tags,
-                        group,
                         alerts,
                         categories.ToList(),
                         entry.Free,
                         entry.Paid,
-                        entry.AccessibleTransportLink,
                         entry.LogoAreaTitle,
-                        eventBranding,
+                        trustedLogos,
                         entry.PhoneNumber,
                         entry.Email,
                         entry.Website,

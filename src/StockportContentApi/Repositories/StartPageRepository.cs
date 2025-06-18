@@ -26,7 +26,7 @@ public class StartPageRepository(ContentfulConfig config,
         ContentfulStartPage startPageEntry = entries.FirstOrDefault();
         StartPage startPage = _contentfulFactory.ToModel(startPageEntry);
 
-        if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate))
+        if (!_dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPageEntry.SunriseDate, startPageEntry.SunsetDate))
             startPage = new NullStartPage();
 
         return startPage.GetType().Equals(typeof(NullStartPage))
@@ -42,8 +42,7 @@ public class StartPageRepository(ContentfulConfig config,
         if (!entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-        IEnumerable<StartPage> startPages = entries.Select(_contentfulFactory.ToModel).ToList()
-                                                .Where(startPage => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(startPage.SunriseDate, startPage.SunsetDate));
+        IEnumerable<StartPage> startPages = entries.Select(_contentfulFactory.ToModel);
 
         return startPages is null || !startPages.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No start page found")

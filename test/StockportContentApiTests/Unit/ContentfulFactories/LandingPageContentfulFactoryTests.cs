@@ -31,7 +31,7 @@ public class LandingPageContentfulFactoryTests
     {
         // Arrange
         Crumb crumb = new("title", "slug", "type");
-        Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
+        Alert alert = new("title", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
         _contentfulLandingPage.Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
         _contentfulLandingPage.Alerts = new List<ContentfulAlert>() { new ContentfulAlertBuilder().Build() };
         _contentfulLandingPage.PageSections = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };

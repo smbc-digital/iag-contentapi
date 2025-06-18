@@ -10,7 +10,7 @@ public class TopicContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
     private readonly TopicContentfulFactory _topicContentfulFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _topicBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
     public TopicContentfulFactoryTests()
@@ -65,7 +65,7 @@ public class TopicContentfulFactoryTests
         EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", EColourScheme.Green);
         _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
 
-        Alert alert = new("title", "subheading", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
+        Alert alert = new("title", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
         _alertFactory.Setup(_ => _.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
 
         CarouselContent carouselContent = new("title", "slug", "teaser", "image", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(2), "url");
@@ -87,12 +87,10 @@ public class TopicContentfulFactoryTests
         Assert.Equal("background-image-url.jpg", result.BackgroundImage);
         Assert.Single(result.Breadcrumbs);
         Assert.Equal(crumb, result.Breadcrumbs.First());
-        Assert.False(result.EmailAlerts);
-        Assert.Equal("id", result.EmailAlertsTopicId);
         Assert.Equal("icon", result.Icon);
         Assert.Equal("background-image-url.jpg", result.Image);
         Assert.Equal("slug", result.Slug);
-        Assert.Equal("name", result.Name);
+        Assert.Equal("name", result.Title);
         Assert.Equal("summary", result.Summary);
         Assert.Equal(DateTime.MinValue, result.SunriseDate);
         Assert.Equal(DateTime.MaxValue, result.SunsetDate);

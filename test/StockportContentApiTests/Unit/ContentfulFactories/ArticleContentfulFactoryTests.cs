@@ -13,7 +13,7 @@ public class ArticleContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _articleBrandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _articleBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
 
@@ -79,7 +79,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2016, 12, 01),
@@ -90,7 +89,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _invisibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2017, 05, 01),
@@ -116,7 +114,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _visibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2016, 12, 01),
@@ -127,7 +124,6 @@ public class ArticleContentfulFactoryTests
         ContentfulAlert _invisibleAlert = new()
         {
             Title = "title",
-            SubHeading = "subHeading",
             Body = "body",
             Severity = "severity",
             SunriseDate = new DateTime(2017, 05, 01),
@@ -168,16 +164,16 @@ public class ArticleContentfulFactoryTests
         ContentfulArticle contentfulArticle = new ContentfulArticleBuilder().Build();
 
         _articleBrandingFactory
-            .Setup(factory => factory.ToModel(It.IsAny<ContentfulGroupBranding>()))
-            .Returns(new GroupBranding("branding title", "branding text", new MediaAsset(), "branding-url"));
+            .Setup(factory => factory.ToModel(It.IsAny<ContentfulTrustedLogo>()))
+            .Returns(new TrustedLogo("branding title", "branding text", new MediaAsset(), "branding-url"));
 
         // Act
         Article article = _articleFactory.ToModel(contentfulArticle);
 
         // Assert
         Assert.NotNull(article);
-        Assert.Single(article.ArticleBranding);
-        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulGroupBranding>()), Times.Once);
+        Assert.Single(article.TrustedLogos);
+        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrustedLogo>()), Times.Once);
     }
 
     [Fact]

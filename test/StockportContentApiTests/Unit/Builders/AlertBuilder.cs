@@ -5,7 +5,6 @@ class AlertBuilder
     private readonly string _title = "title";
     private readonly string _body = "body";
     private readonly string _severity = "severity";
-    private readonly string _subHeading = "subHeading";
     private readonly DateTime _sunriseDate = new(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     private readonly DateTime _sunsetDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private readonly string _slug = "slug";
@@ -17,7 +16,6 @@ class AlertBuilder
 
     public Alert Build()
         => new(_title,
-                _subHeading,
                 _body,
                 _severity,
                 _sunriseDate,

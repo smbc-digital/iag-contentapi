@@ -13,7 +13,7 @@ public class DirectoryEntry
     public IEnumerable<MinimalDirectory> Directories { get; set; }
     public IEnumerable<Alert> Alerts { get; set; }
     public IEnumerable<Alert> AlertsInline { get; set; }
-    public IEnumerable<GroupBranding> Branding { get; set; } = new List<GroupBranding>();
+    public IEnumerable<TrustedLogo> TrustedLogos { get; set; } = new List<TrustedLogo>();
     public IEnumerable<string> Tags { get; set; } = new List<string>();
     public string Image { get; set; }
     public MapPosition MapPosition { get; set; } = new();

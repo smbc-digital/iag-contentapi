@@ -42,7 +42,7 @@ public class ShowcaseRepositoryTests
             new SocialMediaLink("sm-link-title", "sm-link-slug", "sm-link-icon", "https://link.url",
                 "sm-link-accountName", "sm-link-screenReader"));
 
-        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title", string.Empty,
+        _alertFactory.Setup(o => o.ToModel(It.IsAny<ContentfulAlert>())).Returns(new Alert("title",
             string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
 
         Mock<IContentfulFactory<ContentfulVideo, Video>> _videoFactory = new();
@@ -119,9 +119,7 @@ public class ShowcaseRepositoryTests
                                 DateTime.MinValue,
                                 new(),
                                 null,
-                                null,
                                 new() { new("event", "slug", "icon", string.Empty) },
-                                null,
                                 null,
                                 null,
                                 string.Empty,
@@ -211,9 +209,7 @@ public class ShowcaseRepositoryTests
                                 DateTime.MinValue,
                                 new(),
                                 null,
-                                null,
                                 new() { new("event", "slug", "icon", string.Empty) },
-                                null,
                                 null,
                                 null,
                                 string.Empty,

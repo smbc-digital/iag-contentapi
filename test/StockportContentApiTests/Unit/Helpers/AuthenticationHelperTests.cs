@@ -32,13 +32,11 @@ public class AuthenticationHelperTests
 
     [Theory]
     [InlineData("article", "articles")]
-    [InlineData("group", "groups")]
     [InlineData("payment", "payments")]
     [InlineData("event", "events")]
     [InlineData("topic", "topics")]
     [InlineData("profile", "profiles")]
     [InlineData("start-page", "start pages")]
-    [InlineData("organisation", "organisations")]
     public void GetApiEndPoint_ShouldReturnCorrectEndpoint(string requestedEndpoint, string result)
     {
         // Act

@@ -6,8 +6,7 @@ public class EventContentfulFactoryTests
     private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroup, Group>> _groupFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
     private readonly EventContentfulFactory _eventContentfulFactory;
@@ -23,7 +22,6 @@ public class EventContentfulFactoryTests
         _alertFactory
             .Setup(alert => alert.ToModel(It.IsAny<ContentfulAlert>()))
             .Returns(new Alert("title",
-                            "subHeading",
                             "body",
                             "severity",
                             new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -33,7 +31,6 @@ public class EventContentfulFactoryTests
                             string.Empty));
 
         _eventContentfulFactory = new(_documentFactory.Object,
-                                    _groupFactory.Object,
                                     _eventCategoryFactory.Object,
                                     _brandingFactory.Object,
                                     _alertFactory.Object,
@@ -86,20 +83,5 @@ public class EventContentfulFactoryTests
         // Assert
         Assert.Empty(result.ImageUrl);
         Assert.Empty(result.ThumbnailImageUrl);
-    }
-
-    [Fact]
-    public void ToModel_ShouldReturnGroupLinkedToEvent()
-    {
-        // Arrange
-        _groupFactory
-            .Setup(factory => factory.ToModel(It.IsAny<ContentfulGroup>()))
-            .Returns(new GroupBuilder().Name("Test Group").Build());
-
-        // Act
-        Event result = _eventContentfulFactory.ToModel(_contentfulEvent);
-
-        // Assert
-        Assert.Equal("Test Group", result.Group.Name);
     }
 }

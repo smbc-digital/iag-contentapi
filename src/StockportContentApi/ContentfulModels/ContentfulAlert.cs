@@ -4,7 +4,6 @@
 public class ContentfulAlert : IContentfulModel
 {
     public string Title { get; set; } = string.Empty;
-    public string SubHeading { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
     public string Severity { get; set; } = string.Empty;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();

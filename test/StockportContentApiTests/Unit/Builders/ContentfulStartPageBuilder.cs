@@ -7,7 +7,6 @@ public class ContentfulStartPageBuilder
     private string _teaser { get; set; } = "this is a teaser";
     private string _summary { get; set; } = "This is a summary";
     private string _upperBody { get; set; } = "An upper body";
-    private string _formLinkLabel { get; set; } = "Start now";
     private string _formLink { get; set; } = "http://start.com";
     private string _lowerBody { get; set; } = "Lower body";
     private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
@@ -32,7 +31,6 @@ public class ContentfulStartPageBuilder
             Teaser = _teaser,
             Summary = _summary,
             UpperBody = _upperBody,
-            FormLinkLabel = _formLinkLabel,
             FormLink = _formLink,
             LowerBody = _lowerBody,
             BackgroundImage = _image,

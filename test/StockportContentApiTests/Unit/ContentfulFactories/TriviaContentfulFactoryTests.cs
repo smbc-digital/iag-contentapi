@@ -12,7 +12,7 @@ public class TriviaContentfulFactoryTests
         Trivia result = new TriviaContentfulFactory().ToModel(contentfulReference);
 
         // Assert
-        Assert.Equal(contentfulReference.Name, result.Name);
+        Assert.Equal(contentfulReference.Title, result.Title);
         Assert.Equal(contentfulReference.Icon, result.Icon);
         Assert.Equal(contentfulReference.Body, result.Body);
         Assert.Equal(contentfulReference.Link, result.Link);
@@ -25,7 +25,7 @@ public class TriviaContentfulFactoryTests
     {
         // Arrange
         ContentfulTrivia contentfulReference = new ContentfulTriviaBuilder()
-            .WithName(string.Empty)
+            .WithTitle(string.Empty)
             .WithIcon(string.Empty)
             .WithBody(string.Empty)
             .WithLink(string.Empty)
@@ -37,7 +37,7 @@ public class TriviaContentfulFactoryTests
         Trivia result = new TriviaContentfulFactory().ToModel(contentfulReference);
 
         // Assert
-        Assert.Empty(result.Name);
+        Assert.Empty(result.Title);
         Assert.Empty(result.Icon);
         Assert.Empty(result.Body);
         Assert.Empty(result.Link);

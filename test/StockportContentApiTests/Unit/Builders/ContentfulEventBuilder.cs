@@ -14,7 +14,7 @@ public class ContentfulEventBuilder
     private DateTime _eventDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private string _startTime = "10:00";
     private readonly string _endTime = "17:00";
-    private int _occurences = -1;
+    private int _occurrences = -1;
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
     private List<string> _categories = new() { "category 1", "category 2" };
@@ -27,8 +27,6 @@ public class ContentfulEventBuilder
     private readonly List<ContentfulAlert> _alerts = new()
     {
         new ContentfulAlertBuilder().Build()};
-
-    private ContentfulGroup _group = new ContentfulGroupBuilder().Build();
 
     public ContentfulEvent Build()
         => new()
@@ -45,7 +43,7 @@ public class ContentfulEventBuilder
             EventDate = _eventDate,
             StartTime = _startTime,
             EndTime = _endTime,
-            Occurences = _occurences,
+            Occurrences = _occurrences,
             Frequency = _eventFrequency,
             Documents = _documents,
             MapPosition = _mapPosition,
@@ -53,7 +51,6 @@ public class ContentfulEventBuilder
             Featured = _featured,
             Sys = _sys,
             Tags = _tags,
-            Group = _group,
             Alerts = _alerts,
             EventCategories = _eventCategories
         };
@@ -66,7 +63,7 @@ public class ContentfulEventBuilder
 
     public ContentfulEventBuilder Occurrences(int occurrences)
     {
-        _occurences = occurrences;
+        _occurrences = occurrences;
         return this;
     }
 
@@ -115,12 +112,6 @@ public class ContentfulEventBuilder
     public ContentfulEventBuilder Tags(List<string> tags)
     {
         _tags = tags;
-        return this;
-    }
-
-    public ContentfulEventBuilder Group(ContentfulGroup group)
-    {
-        _group = group;
         return this;
     }
 

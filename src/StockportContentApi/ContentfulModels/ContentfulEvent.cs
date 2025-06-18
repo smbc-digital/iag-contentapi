@@ -16,7 +16,7 @@ public class ContentfulEvent : IContentfulModel
     public DateTime EventDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public string StartTime { get; set; } = string.Empty;
     public string EndTime { get; set; } = string.Empty;
-    public int Occurences { get; set; } = 0;
+    public int Occurrences { get; set; } = 0;
     public EventFrequency Frequency { get; set; } = EventFrequency.None;
     public List<Asset> Documents { get; set; } = new();
     public MapPosition MapPosition { get; set; } = new();
@@ -25,13 +25,11 @@ public class ContentfulEvent : IContentfulModel
     public SystemProperties Sys { get; set; } = new();
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
-    public ContentfulGroup Group { get; set; } = new();
     public List<ContentfulEventCategory> EventCategories { get; set; } = new();
     public bool? Free { get; set; } = null;
     public bool? Paid { get; set; } = null;
-    public string AccessibleTransportLink { get; set; } = "/accessibleTransport";
     public string LogoAreaTitle { get; set; } = string.Empty;
-    public List<ContentfulGroupBranding> EventBranding { get; set; } = new();
+    public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Website { get; set; } = string.Empty;

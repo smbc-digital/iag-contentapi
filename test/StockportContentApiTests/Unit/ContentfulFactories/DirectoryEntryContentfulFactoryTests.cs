@@ -6,7 +6,7 @@ public class DirectoryEntryContentfulFactoryTests
 {
     private readonly DirectoryEntryContentfulFactory _factory;
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulGroupBranding, GroupBranding>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
     private readonly ITimeProvider _timeProvider = new TimeProvider();
 
     public DirectoryEntryContentfulFactoryTests() =>
@@ -42,7 +42,7 @@ public class DirectoryEntryContentfulFactoryTests
         Assert.Equal(entry.MapPosition.Lon, result.MapPosition.Lon);
         Assert.Equal(2, result.Themes.Count());
         Assert.Single(result.Alerts);
-        Assert.Single(result.Branding);
+        Assert.Single(result.TrustedLogos);
     }
 
     [Fact]

@@ -21,9 +21,7 @@ public class ContentfulTopicTests
             Breadcrumbs = new List<ContentfulReference>(),
             Alerts = new List<ContentfulAlert>(),
             SunriseDate = DateTime.MinValue.ToUniversalTime(),
-            SunsetDate = DateTime.MaxValue.ToUniversalTime(),
-            EmailAlerts = false,
-            EmailAlertsTopicId = string.Empty
+            SunsetDate = DateTime.MaxValue.ToUniversalTime()
         };
 
         // Assert

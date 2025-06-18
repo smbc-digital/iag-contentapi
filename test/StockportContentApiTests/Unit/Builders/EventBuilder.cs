@@ -25,8 +25,8 @@ public class EventBuilder
     private readonly string _instagram = "www.test.com";
     private readonly string _linkedIn = "www.test.com";
     private readonly string _logoAreaTitle = "Logo title";
-    private readonly List<GroupBranding> _branding = new();
-    private int _occurences = -1;              
+    private readonly List<TrustedLogo> _branding = new();
+    private int _occurrences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
     private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
@@ -36,11 +36,9 @@ public class EventBuilder
     private bool _featured = true;
     private readonly DateTime _updatedAt = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new();
-    private Group _group = null;
     private readonly List<Alert> _alerts = new()
     {
         new Alert("title",
-                "subHeading",
                 "body",
                 "severity",
                 new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -65,7 +63,7 @@ public class EventBuilder
             _eventDate,
             _startTime,
             _endTime,
-            _occurences,
+            _occurrences,
             _eventFrequency,
             _breadcrumbs,
             _thumbnailImage,
@@ -75,11 +73,9 @@ public class EventBuilder
             _bookingInformation,
             _updatedAt,
             _tags,
-            _group,
             _alerts,
             _eventCategories,
             _free,
-            null,
             null,
             _logoAreaTitle,
             _branding,
@@ -102,7 +98,7 @@ public class EventBuilder
 
     public EventBuilder Occurrences(int occurrences)
     {
-        _occurences = occurrences;
+        _occurrences = occurrences;
         return this;
     }
 
@@ -157,12 +153,6 @@ public class EventBuilder
     public EventBuilder Tags(List<string> tags)
     {
         _tags = tags;
-        return this;
-    }
-
-    public EventBuilder Group(Group group)
-    {
-        _group = group;
         return this;
     }
 }

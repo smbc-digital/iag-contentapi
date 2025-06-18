@@ -9,7 +9,7 @@ public class ContentfulDirectoryEntry : ContentfulReference
     public MapPosition MapPosition { get; set; } = new MapPosition();
     public IEnumerable<ContentfulAlert> Alerts { get; set; }
     public IEnumerable<ContentfulAlert> AlertsInline { get; set; }
-    public List<ContentfulGroupBranding> GroupBranding { get; set; } = new(); // TODO : This should be renamed at some point to just "Branding" or "Logo"
+    public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
     public List<string> Tags { get; set; } = new List<string>();
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;

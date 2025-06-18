@@ -30,7 +30,7 @@ public class SectionControllerTests
                             new List<Profile>(),
                             new List<Document>(),
                             "logo area title",
-                            new List<GroupBranding>(),
+                            new List<TrustedLogo>(),
                             new DateTime(),
                             new DateTime(),
                             new DateTime(),

@@ -145,7 +145,6 @@ public class EventController(ResponseHandler handler,
         ContentfulEvent contentfulEvent = _mapper.Map<ContentfulEvent>(eventDetail);
         contentfulEvent.EventCategories = categories;
         contentfulEvent.Image = existingEvent.Image;
-        contentfulEvent.Group = existingEvent.Group;
         contentfulEvent.Documents = existingEvent.Documents;
         ManagementEvent managementEvent = new();
         _mapper.Map(contentfulEvent, managementEvent);

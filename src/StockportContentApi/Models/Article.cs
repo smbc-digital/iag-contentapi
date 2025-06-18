@@ -18,7 +18,7 @@ public class Article
     public IEnumerable<Alert> AlertsInline { get; set; }
     public IEnumerable<Profile> Profiles { get; set; }
     public string LogoAreaTitle { get; set; }
-    public List<GroupBranding> ArticleBranding { get; set; }
+    public List<TrustedLogo> TrustedLogos { get; set; }
     public Topic ParentTopic { get; set; }
     public List<Document> Documents { get; set; }
     public DateTime SunriseDate { get; set; }

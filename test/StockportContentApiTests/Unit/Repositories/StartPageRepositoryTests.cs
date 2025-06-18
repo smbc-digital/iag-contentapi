@@ -73,16 +73,13 @@ public class StartPageRepositoryTests : TestingBaseClass
                                     "this is a teaser",
                                     "This is a summary",
                                     "An upper body",
-                                    "Start now",
                                     "http://start.com",
                                     "Lower body",
                                     "image.jpg",
                                     "icon",
                                     new List<Crumb> { new("title", "slug", "type") },
                                     _alerts,
-                                    _inlineAlerts,
-                                    DateTime.MinValue,
-                                    DateTime.MaxValue);
+                                    _inlineAlerts);
 
         _startPageFactory
             .Setup(startPageFactory => startPageFactory.ToModel(It.IsAny<ContentfulStartPage>()))
@@ -100,7 +97,6 @@ public class StartPageRepositoryTests : TestingBaseClass
         Assert.Equal("This is a summary", startPage.Summary);
         Assert.Equal("An upper body", startPage.UpperBody);
         Assert.Equal("http://start.com", startPage.FormLink);
-        Assert.Equal("Start now", startPage.FormLinkLabel);
         Assert.Equal("Lower body", startPage.LowerBody);
         Assert.Equal("image.jpg", startPage.BackgroundImage);
         Assert.Equal("icon", startPage.Icon);

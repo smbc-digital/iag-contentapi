@@ -249,8 +249,8 @@ public class LandingPageRepositoryTests
                         It.IsAny<List<InlineQuote>>(),
                         It.IsAny<CallToActionBanner>(),
                         It.IsAny<string>(),
-                        It.IsAny<List<GroupBranding>>(),
-                        It.IsAny<GroupBranding>(),
+                        It.IsAny<List<TrustedLogo>>(),
+                        It.IsAny<TrustedLogo>(),
                         It.IsAny<string>());
 
         _newsRepository
@@ -298,8 +298,8 @@ public class LandingPageRepositoryTests
                         It.IsAny<List<InlineQuote>>(),
                         It.IsAny<CallToActionBanner>(),
                         It.IsAny<string>(),
-                        It.IsAny<List<GroupBranding>>(),
-                        It.IsAny<GroupBranding>(),
+                        It.IsAny<List<TrustedLogo>>(),
+                        It.IsAny<TrustedLogo>(),
                         It.IsAny<string>());
 
         _newsRepository

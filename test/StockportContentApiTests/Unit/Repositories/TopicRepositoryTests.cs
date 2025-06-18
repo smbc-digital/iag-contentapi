@@ -18,8 +18,27 @@ public class TopicRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _topic = new Topic("slug", "name", "teaser", "metaDescription", "summary", "icon", "backgroundImage", "image", new List<SubItem>(), new List<SubItem>(),
-            new List<SubItem>(), new List<Crumb>(), new List<Alert>(), DateTime.MinValue, DateTime.MinValue, true, "test-id", new NullEventBanner(), new CarouselContent(), "eventCategory", new CallToActionBanner(), null, string.Empty);
+        _topic = new Topic("slug",
+                        "name",
+                        "teaser",
+                        "metaDescription",
+                        "summary",
+                        "icon",
+                        "backgroundImage",
+                        "image",
+                        new List<SubItem>(),
+                        new List<SubItem>(),
+                        new List<SubItem>(),
+                        new List<Crumb>(),
+                        new List<Alert>(),
+                        DateTime.MinValue,
+                        DateTime.MinValue,
+                        new NullEventBanner(),
+                        new CarouselContent(),
+                        "eventCategory",
+                        new CallToActionBanner(),
+                        null,
+                        string.Empty);
 
         _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
         _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();

@@ -49,14 +49,12 @@ public class AuthenticationHelper : IAuthenticationHelper
         return endpoint.ToLower() switch
         {
             "article" or "articles" => "articles",
-            "group" or "groups" or "group-categories" or "group-results" => "groups",
             "payment" or "payments" => "payments",
             "event" or "events" or "event-categories" or "eventhomepage" => "events",
             "topic" or "topics" => "topics",
             "profile" or "profiles" => "profiles",
             "start-page" or "start-pages" => "start pages",
             "showcase" or "showcases" => "showcase",
-            "organisation" or "organisations" => "organisations",
             _ => endpoint.ToLower(),
         };
     }

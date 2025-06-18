@@ -7,7 +7,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                                 IContentfulFactory<ContentfulProfile, Profile> profileFactory,
                                 IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
                                 IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-                                IContentfulFactory<ContentfulGroupBranding, GroupBranding> brandingFactory) : IContentfulFactory<ContentfulNews, News>
+                                IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulNews, News>
 {
     private readonly IVideoRepository _videoRepository = videoRepository;
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
@@ -16,7 +16,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
-    private readonly IContentfulFactory<ContentfulGroupBranding, GroupBranding> _brandingFactory = brandingFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
 
     public News ToModel(ContentfulNews entry)
     {
@@ -69,12 +69,12 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
                         _callToActionFactory.ToModel(entry.CallToAction),
                         entry.LogoAreaTitle,
-                        entry.NewsBranding is not null 
-                            ? entry.NewsBranding.Where(branding => branding is not null)
-                                                .Select(_brandingFactory.ToModel).ToList() 
+                        entry.TrustedLogos is not null 
+                            ? entry.TrustedLogos.Where(trustedLogo => trustedLogo is not null)
+                                                .Select(_trustedLogoFactory.ToModel).ToList() 
                             : new(),
                         entry.FeaturedLogo is not null
-                            ? _brandingFactory.ToModel(entry.FeaturedLogo)
+                            ? _trustedLogoFactory.ToModel(entry.FeaturedLogo)
                             : null,
                         entry.EventsByTagOrCategory);
     }

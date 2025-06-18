@@ -64,7 +64,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTests
         // Assert
         Assert.IsType<Topic>(topic);
         Assert.Equal("slug", topic.Slug);
-        Assert.Equal("name", topic.Name);
+        Assert.Equal("name", topic.Title);
     }
 
     [Fact]

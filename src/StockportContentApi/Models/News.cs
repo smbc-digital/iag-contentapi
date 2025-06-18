@@ -22,8 +22,8 @@ public class News(string title,
                 List<InlineQuote> inlineQuotes,
                 CallToActionBanner callToAction,
                 string logoAreaTitle,
-                List<GroupBranding> newsBranding,
-                GroupBranding featuredLogo,
+                List<TrustedLogo> trustedLogos,
+                TrustedLogo featuredLogo,
                 string eventsByTagOrCategory)
 {
     public string Title { get; } = title;
@@ -47,8 +47,8 @@ public class News(string title,
     public List<InlineQuote> InlineQuotes { get; set; } = inlineQuotes;
     public CallToActionBanner CallToAction { get; init; } = callToAction;
     public string LogoAreaTitle { get; set; } = logoAreaTitle;
-    public List<GroupBranding> NewsBranding { get; set; } = newsBranding;
-    public GroupBranding FeaturedLogo { get; set; } = featuredLogo;
+    public List<TrustedLogo> TrustedLogos { get; set; } = trustedLogos;
+    public TrustedLogo FeaturedLogo { get; set; } = featuredLogo;
     public string EventsByTagOrCategory { get; set;} = eventsByTagOrCategory;
     public List<Event> Events { get; set; }
 }
