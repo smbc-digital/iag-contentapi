@@ -12,7 +12,7 @@ public class ArticleController(ResponseHandler handler,
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
         await _handler.Get(() => _createRepository(businessId, businessId).GetArticle(articleSlug));
 
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
     [Route("{businessId}/articleSiteMap")]
     [Route("v1/{businessId}/articleSiteMap")]
