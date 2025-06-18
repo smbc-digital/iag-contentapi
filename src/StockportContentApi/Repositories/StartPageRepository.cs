@@ -42,7 +42,7 @@ public class StartPageRepository(ContentfulConfig config,
         if (!entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No start page found");
 
-        IEnumerable<StartPage> startPages = entries.Select(_contentfulFactory.ToModel).ToList();
+        IEnumerable<StartPage> startPages = entries.Select(_contentfulFactory.ToModel);
 
         return startPages is null || !startPages.Any()
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No start page found")
