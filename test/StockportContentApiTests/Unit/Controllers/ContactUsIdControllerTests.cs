@@ -25,9 +25,7 @@ public class ContactUsIdControllerTests
         // Arrange
         ContactUsId contactUsArea = new("name",
                                         "slug",
-                                        "email address",
-                                        "success page button text",
-                                        "success page return url");
+                                        "email address");
 
         _mockRepository
             .Setup(repo => repo.GetContactUsIds(It.IsAny<string>()))
