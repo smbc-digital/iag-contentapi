@@ -50,8 +50,8 @@ public class DateComparer(ITimeProvider timeProvider)
 
     public bool EventIsInTheFuture(DateTime eventDate, string startTime, string endTime)
     {
-        var ukZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
-        var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ukZone);
+        TimeZoneInfo ukZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
+        DateTime now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ukZone);
 
         if (eventDate.Date > now.Date) return true;
 
