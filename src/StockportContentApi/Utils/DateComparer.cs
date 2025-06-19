@@ -1,11 +1,8 @@
 ﻿namespace StockportContentApi.Utils;
 
-public class DateComparer
+public class DateComparer(ITimeProvider timeProvider)
 {
-    private readonly ITimeProvider _timeProvider;
-
-    public DateComparer(ITimeProvider timeProvider) =>
-        _timeProvider = timeProvider;
+    private readonly ITimeProvider _timeProvider = timeProvider;
 
     public static DateTime DateFieldToDate(dynamic date) =>
         !IsValidDateTime(date)
@@ -53,7 +50,7 @@ public class DateComparer
 
     public bool EventIsInTheFuture(DateTime eventDate, string startTime, string endTime)
     {
-        DateTime now = DateTime.Now;
+        DateTime now = _timeProvider.Now();
         
         if (eventDate.Date > now.Date) return true;
 

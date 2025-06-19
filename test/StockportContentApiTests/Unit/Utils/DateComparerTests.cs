@@ -192,6 +192,11 @@ public class DateComparerTests
     [Fact]
     public void EventIsInTheFuture_ShouldReturnFalse_WhenEventDateIsInThePast()
     {
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(DateTime.Now);
+
         // Act
         bool result = _comparer.EventIsInTheFuture(DateTime.Now.AddDays(-1), "10:00", "11:00");
         
@@ -217,8 +222,13 @@ public class DateComparerTests
     [Fact]
     public void EventIsInTheFuture_ShouldReturnFalse_WhenEventIsToday_AndEndTimeIsInThePast()
     {
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(DateTime.Now);
+
         // Act
-        bool result = _comparer.EventIsInTheFuture(DateTime.Now, DateTime.Now.AddHours(-1).ToString("HH:mm"), DateTime.Now.ToString("HH:mm"));
+        bool result = _comparer.EventIsInTheFuture(DateTime.Now, DateTime.Now.AddHours(-3).ToString("HH:mm"), DateTime.Now.AddHours(-1).ToString("HH:mm"));
        
         // Assert
         Assert.False(result);
@@ -227,6 +237,11 @@ public class DateComparerTests
     [Fact]
     public void EventIsInTheFuture_ShouldReturnFalse_WhenEventIsToday_AndStartTimeIsInTheFuture_ButEndTimeIsInvalid()
     {
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(DateTime.Now);
+
         // Act
         bool result = _comparer.EventIsInTheFuture(DateTime.Now, "13:00", "invalid");
         
@@ -237,6 +252,11 @@ public class DateComparerTests
     [Fact]
     public void ReturnsFalse_WhenEventIsToday_AndStartTimeIsInThePast_AndEndTimeInvalid()
     {
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(DateTime.Now);
+        
         // Act
         bool result = _comparer.EventIsInTheFuture(DateTime.Now, "10:00", "invalid");
         
@@ -247,6 +267,11 @@ public class DateComparerTests
     [Fact]
     public void ReturnsFalse_WhenEventIsToday_AndBothTimesAreInvalid()
     {
+        // Arrange
+        _dateNow
+            .Setup(date => date.Now())
+            .Returns(DateTime.Now);
+        
         // Act
         bool result = _comparer.EventIsInTheFuture(DateTime.Now, "notatime", "alsoBad");
         
