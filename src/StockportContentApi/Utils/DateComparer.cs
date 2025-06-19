@@ -50,7 +50,7 @@ public class DateComparer(ITimeProvider timeProvider)
 
     public bool EventIsInTheFuture(DateTime eventDate, string startTime, string endTime)
     {
-        DateTime now = _timeProvider.Now();
+        DateTime now = DateTime.Now;
         
         if (eventDate.Date > now.Date) return true;
 
