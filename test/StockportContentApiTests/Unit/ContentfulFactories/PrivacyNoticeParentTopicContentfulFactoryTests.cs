@@ -46,7 +46,7 @@ public class PrivacyNoticeParentTopicContentfulFactoryTests
         ContentfulReference contentfulReference = new()
         {
             Slug = "slug",
-            Name = "name",
+            Title = "name",
             Sys = new SystemProperties { Id = "valid-id", ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "topic" } } },
             SubItems = new List<ContentfulReference>(),
             SecondaryItems = new List<ContentfulReference>()

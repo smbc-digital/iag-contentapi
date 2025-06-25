@@ -2,7 +2,7 @@
 
 public class ContentfulTopicBuilder
 {
-    private string _name = "name";
+    private string _title = "name";
     private string _slug = "slug";
     private string _icon = "icon";
     private string _summary = "summary";
@@ -24,7 +24,7 @@ public class ContentfulTopicBuilder
     public ContentfulTopic Build() => new()
         {
             Slug = _slug,
-            Name = _name,
+            Title = _title,
             Teaser = _teaser,
             MetaDescription = _metaDescription,
             Summary = _summary,
@@ -53,9 +53,9 @@ public class ContentfulTopicBuilder
         return this;
     }
 
-    public ContentfulTopicBuilder Name(string name)
+    public ContentfulTopicBuilder Title(string title)
     {
-        _name = name;
+        _title = title;
         return this;
     }
 

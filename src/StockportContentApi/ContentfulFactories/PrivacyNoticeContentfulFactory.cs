@@ -1,15 +1,10 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>
+public class PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                            IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory) : IContentfulFactory<ContentfulPrivacyNotice, PrivacyNotice>
 {
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-    private readonly IContentfulFactory<ContentfulPrivacyNotice, Topic> _parentTopicFactory;
-
-    public PrivacyNoticeContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory, IContentfulFactory<ContentfulPrivacyNotice, Topic> parentTopicFactory)
-    {
-        _crumbFactory = crumbFactory;
-        _parentTopicFactory = parentTopicFactory;
-    }
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
+    private readonly IContentfulFactory<ContentfulPrivacyNotice, Topic> _parentTopicFactory = parentTopicFactory;
 
     public PrivacyNotice ToModel(ContentfulPrivacyNotice entry)
     {
@@ -18,7 +13,7 @@ public class PrivacyNoticeContentfulFactory : IContentfulFactory<ContentfulPriva
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs
                                     .Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         Topic topic = _parentTopicFactory.ToModel(entry) ?? new NullTopic();
 
