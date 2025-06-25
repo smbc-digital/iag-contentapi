@@ -1,17 +1,10 @@
 namespace StockportContentApi.ContentfulFactories.TopicFactories;
 
-public class ProfileParentTopicContentfulFactory : IContentfulFactory<ContentfulProfile, Topic>
+public class ProfileParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
+                                                ITimeProvider timeProvider) : IContentfulFactory<ContentfulProfile, Topic>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
-    private readonly DateComparer _dateComparer;
-
-    public ProfileParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
-        ITimeProvider timeProvider)
-    {
-        _subItemFactory = subItemFactory;
-        _dateComparer = new DateComparer(timeProvider);
-    }
-
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = subItemFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
     private ContentfulProfile _entry;
 
     public Topic ToModel(ContentfulProfile entry)
@@ -28,13 +21,13 @@ public class ProfileParentTopicContentfulFactory : IContentfulFactory<Contentful
 
         List<SubItem> subItems = topicInBreadcrumb.SubItems.Select(CheckCurrentProfile)
                                     .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                    .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems.Select(CheckCurrentProfile)
                                         .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                        .Select(_subItemFactory.ToModel).ToList();
 
-        return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
+        return new Topic(topicInBreadcrumb.Title, topicInBreadcrumb.Slug, subItems, secondaryItems);
     }
 
     private ContentfulReference CheckCurrentProfile(ContentfulReference item)

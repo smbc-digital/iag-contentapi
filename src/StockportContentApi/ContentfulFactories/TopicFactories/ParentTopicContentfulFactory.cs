@@ -1,17 +1,11 @@
 namespace StockportContentApi.ContentfulFactories.TopicFactories;
 
-public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle, Topic>
+public class ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
+                                        ITimeProvider timeProvider) : IContentfulFactory<ContentfulArticle, Topic>
 {
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = subItemFactory;
     private ContentfulArticle _entry;
-
-    public ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
-        ITimeProvider timeProvider)
-    {
-        _subItemFactory = subItemFactory;
-        _dateComparer = new(timeProvider);
-    }
 
     public Topic ToModel(ContentfulArticle entry)
     {
@@ -25,14 +19,14 @@ public class ParentTopicContentfulFactory : IContentfulFactory<ContentfulArticle
         List<SubItem> subItems = topicInBreadcrumb.SubItems.Select(CheckCurrentArticle)
                                     .Where(subItem => subItem is not null 
                                         && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                    .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems.Select(CheckCurrentArticle)
                                         .Where(subItem => subItem is not null
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                        .Select(_subItemFactory.ToModel).ToList();
 
-        return new(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
+        return new(topicInBreadcrumb.Title, topicInBreadcrumb.Slug, subItems, secondaryItems);
     }
 
     private ContentfulReference CheckCurrentArticle(ContentfulReference item)

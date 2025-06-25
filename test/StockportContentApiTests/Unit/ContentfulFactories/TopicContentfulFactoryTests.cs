@@ -39,16 +39,52 @@ public class TopicContentfulFactoryTests
     public void ToModel_ShouldCreateATopicFromAContentfulTopic()
     {
         // Arrange
-        Crumb crumb = new("title", "slug", "type");
-        _crumbFactory.Setup(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First())).Returns(crumb);
+        Crumb breadcrumb = new("title", "slug", "type");
+        _crumbFactory
+            .Setup(crumb => crumb.ToModel(_contentfulTopic.Breadcrumbs.First()))
+            .Returns(breadcrumb);
 
-        SubItem subItem = new("slug1", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
-        _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SubItems.First())).Returns(subItem);
+        SubItem subItem = new("slug1",
+                            "title",
+                            "teaser",
+                            "teaser image",
+                            "icon",
+                            "type",
+                            DateTime.MinValue,
+                            DateTime.MaxValue,
+                            "image",
+                            new List<SubItem>(),
+                            EColourScheme.Blue);
+        _subItemFactory
+            .Setup(subItemFactory => subItemFactory.ToModel(_contentfulTopic.SubItems.First()))
+            .Returns(subItem);
 
-        SubItem secondaryItem = new("slug2", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
-        _subItemFactory.Setup(_ => _.ToModel(_contentfulTopic.SecondaryItems.First())).Returns(secondaryItem);
+        SubItem secondaryItem = new("slug2",
+                                    "title",
+                                    "teaser",
+                                    "teaser image",
+                                    "icon",
+                                    "type",
+                                    DateTime.MinValue,
+                                    DateTime.MaxValue,
+                                    "image",
+                                    new List<SubItem>(),
+                                    EColourScheme.Blue);
+        _subItemFactory
+            .Setup(subItemFactory => subItemFactory.ToModel(_contentfulTopic.SecondaryItems.First()))
+            .Returns(secondaryItem);
 
-        SubItem tertiaryItem = new("slug3", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new List<SubItem>(), EColourScheme.Blue);
+        SubItem tertiaryItem = new("slug3",
+                                "title",
+                                "teaser",
+                                "teaser image",
+                                "icon",
+                                "type",
+                                DateTime.MinValue,
+                                DateTime.MaxValue,
+                                "image",
+                                new List<SubItem>(),
+                                EColourScheme.Blue);
 
         CallToActionBanner callToAction = new()
         {
@@ -60,16 +96,37 @@ public class TopicContentfulFactoryTests
             Teaser = "teaser",
             Title = "title"
         };
-        _callToActionFactory.Setup(_ => _.ToModel(_contentfulTopic.CallToAction)).Returns(callToAction);
+        
+        _callToActionFactory
+            .Setup(callToActionFactory => callToActionFactory.ToModel(_contentfulTopic.CallToAction))
+            .Returns(callToAction);
 
         EventBanner eventBanner = new("Title", "Teaser", "Icon", "Link", EColourScheme.Green);
-        _eventBannerFactory.Setup(_ => _.ToModel(_contentfulTopic.EventBanner)).Returns(eventBanner);
+        _eventBannerFactory
+            .Setup(eventBannerFactory => eventBannerFactory.ToModel(_contentfulTopic.EventBanner))
+            .Returns(eventBanner);
 
-        Alert alert = new("title", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
-        _alertFactory.Setup(_ => _.ToModel(_contentfulTopic.Alerts.First())).Returns(alert);
+        Alert alert = new("title",
+                        "body",
+                        "test",
+                        new DateTime(2017, 01, 01),
+                        new DateTime(2017, 04, 10),
+                        string.Empty,
+                        false,
+                        string.Empty);
+        _alertFactory
+            .Setup(alertFactory => alertFactory.ToModel(_contentfulTopic.Alerts.First()))
+            .Returns(alert);
 
-        CarouselContent carouselContent = new("title", "slug", "teaser", "image", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(2), "url");
-        _carouselContentFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCarouselContent>()))
+        CarouselContent carouselContent = new("title",
+                                            "slug",
+                                            "teaser",
+                                            "image",
+                                            DateTime.Now.AddDays(-1),
+                                            DateTime.Now.AddDays(2),
+                                            "url");
+        _carouselContentFactory
+            .Setup(carouselFactory => carouselFactory.ToModel(It.IsAny<ContentfulCarouselContent>()))
             .Returns(carouselContent);
 
         // Act
@@ -86,7 +143,7 @@ public class TopicContentfulFactoryTests
         Assert.Equal(alert, result.Alerts.First());
         Assert.Equal("background-image-url.jpg", result.BackgroundImage);
         Assert.Single(result.Breadcrumbs);
-        Assert.Equal(crumb, result.Breadcrumbs.First());
+        Assert.Equal(breadcrumb, result.Breadcrumbs.First());
         Assert.Equal("icon", result.Icon);
         Assert.Equal("background-image-url.jpg", result.Image);
         Assert.Equal("slug", result.Slug);

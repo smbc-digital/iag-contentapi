@@ -27,7 +27,7 @@ public class ParentTopicContentfulFactoryTests
         };
 
         ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
-            .Name("test topic")
+            .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("topic")
@@ -55,7 +55,7 @@ public class ParentTopicContentfulFactoryTests
         };
 
         ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
-            .Name("test topic")
+            .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("id")
@@ -107,7 +107,7 @@ public class ParentTopicContentfulFactoryTests
         };
 
         ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
-            .Name("test topic")
+            .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntryList)
             .SystemContentTypeId("topic")

@@ -104,8 +104,7 @@ public class SubItemContentfulFactoryTests
     {
         // Arrange
         ContentfulReference ContentfulReference = new ContentfulReferenceBuilder()
-            .Name("custom name")
-            .Title(string.Empty)
+            .Title("custom name")
             .SubItems(null)
             .TertiaryItems(null)
             .SecondaryItems(null)
@@ -173,7 +172,7 @@ public class SubItemContentfulFactoryTests
         // Arrange
         ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Slug("test-group-homepage")
-            .Name("custom name")
+            .Title("custom name")
             .Title(string.Empty)
             .SubItems(null)
             .TertiaryItems(null)
@@ -194,7 +193,7 @@ public class SubItemContentfulFactoryTests
         // Arrange
         ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Slug("test-payment-group")
-            .Name("custom name")
+            .Title("custom name")
             .Title("title")
             .SubItems(null)
             .TertiaryItems(null)

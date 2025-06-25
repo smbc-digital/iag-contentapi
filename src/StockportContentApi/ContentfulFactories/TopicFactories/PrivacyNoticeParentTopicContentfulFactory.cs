@@ -1,16 +1,11 @@
 namespace StockportContentApi.ContentfulFactories.TopicFactories;
 
-public class PrivacyNoticeParentTopicContentfulFactory : IContentfulFactory<ContentfulPrivacyNotice, Topic>
+public class PrivacyNoticeParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
+                                                    ITimeProvider timeProvider) : IContentfulFactory<ContentfulPrivacyNotice, Topic>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
-    private readonly DateComparer _dateComparer;
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = subItemFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
     private ContentfulPrivacyNotice _entry;
-
-    public PrivacyNoticeParentTopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory, ITimeProvider timeProvider)
-    {
-        _subItemFactory = subItemFactory;
-        _dateComparer = new DateComparer(timeProvider);
-    }
 
     public Topic ToModel(ContentfulPrivacyNotice entry)
     {
@@ -26,13 +21,13 @@ public class PrivacyNoticeParentTopicContentfulFactory : IContentfulFactory<Cont
 
         List<SubItem> subItems = topicInBreadcrumb.SubItems.Select(CheckCurrentPrivacyNotice)
                                     .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                    .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                    .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems.Select(CheckCurrentPrivacyNotice)
                                         .Where(subItem => subItem is not null && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(subItem => _subItemFactory.ToModel(subItem)).ToList();
+                                        .Select(_subItemFactory.ToModel).ToList();
 
-        return new Topic(topicInBreadcrumb.Name, topicInBreadcrumb.Slug, subItems, secondaryItems);
+        return new Topic(topicInBreadcrumb.Title, topicInBreadcrumb.Slug, subItems, secondaryItems);
     }
 
     private ContentfulReference CheckCurrentPrivacyNotice(ContentfulReference item)

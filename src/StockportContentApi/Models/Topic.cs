@@ -110,8 +110,7 @@ public class NullTopic : Topic
         null,
         null,
         string.Empty,
-        true
-        )
+        true)
     {
     }
 }

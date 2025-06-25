@@ -86,7 +86,7 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
             : new List<Trivia>();
 
         return new Topic(entry.Slug,
-                        entry.Name,
+                        entry.Title,
                         entry.Teaser,
                         entry.MetaDescription,
                         entry.Summary,

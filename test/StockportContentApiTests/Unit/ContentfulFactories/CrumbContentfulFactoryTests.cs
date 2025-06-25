@@ -21,7 +21,7 @@ public class CrumbContentfulFactoryTests
     public void ToModel_ShouldCreateACrumbWithNameIfSet()
     {
         // Arrange
-        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().Name("name").Title(string.Empty).Build();
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().Title(string.Empty).Build();
         
         // Act
         Crumb crumb = new CrumbContentfulFactory().ToModel(contentfulReference);

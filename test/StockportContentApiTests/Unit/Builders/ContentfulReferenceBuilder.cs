@@ -21,7 +21,6 @@ public class ContentfulReferenceBuilder
         {
             Slug = _slug,
             Title = _title,
-            Name = _name,
             Teaser = _teaser,
             Icon = _icon,
             SunriseDate = _sunriseDate,
@@ -46,12 +45,6 @@ public class ContentfulReferenceBuilder
     public ContentfulReferenceBuilder Title(string title)
     {
         _title = title;
-        return this;
-    }
-
-    public ContentfulReferenceBuilder Name(string name)
-    {
-        _name = name;
         return this;
     }
 
