@@ -67,7 +67,16 @@ public class LandingPageRepository(
 
     private async Task PopulateNewsContent(ContentBlock contentBlock)
     {
-        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)) return;
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
+        {
+            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(1);
+            List<News> latestNews = latestNewsResponse.Get<List<News>>();
+            if (latestNews is not null && latestNews.Any())
+            {
+                contentBlock.NewsArticle = latestNews.First();
+                contentBlock.UseTag = false;
+            }
+        }
 
         IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
         foreach (string tagOrCategory in tagsOrCategories)
