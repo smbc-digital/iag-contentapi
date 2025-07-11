@@ -47,9 +47,13 @@ public class LandingPageRepository(
         {
             switch (contentBlock.ContentType)
             {
-                 case "NewsBanner":
-                     await PopulateNewsContent(contentBlock);
-                     break;
+                case "NewsBanner":
+                    await PopulateNewsContent(contentBlock);
+                    break;
+
+                case "NewsCards":
+                    await PopulateNewsCardsContent(contentBlock);
+                    break;
                 
                 case "EventCards":
                     await PopulateEventContent(contentBlock);
@@ -67,17 +71,26 @@ public class LandingPageRepository(
 
     private async Task PopulateNewsContent(ContentBlock contentBlock)
     {
-        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)) return;
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
+        {
+            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(1);
+            List<News> latestNews = latestNewsResponse.Get<List<News>>();
+            if (latestNews is not null && latestNews.Any())
+            {
+                contentBlock.NewsArticle = latestNews.First();
+                contentBlock.UseTag = false;
+            }
+        }
 
         IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
         foreach (string tagOrCategory in tagsOrCategories)
         {
-            News news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory)
+            List<News> news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory)
                         ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory);
 
             if (news is not null)
             {
-                contentBlock.NewsArticle = news;
+                contentBlock.NewsArticle = news.FirstOrDefault();
                 contentBlock.UseTag = news.Equals(await _newsRepository.GetLatestNewsByTag(tagOrCategory));
                 break;
             }
@@ -86,7 +99,17 @@ public class LandingPageRepository(
     
     private async Task PopulateEventContent(ContentBlock contentBlock)
     {
-        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory)) return;
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
+        {
+            HttpResponse upcomingEventsResponse = await _eventRepository.GetUpcomingEvents(3);
+            List<Event> upcomingEvents = upcomingEventsResponse.Get<List<Event>>();
+
+            if (upcomingEvents is not null && upcomingEvents.Any())
+            {
+                contentBlock.Events = upcomingEvents;
+                return;
+            }
+        }
 
         IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
         List<Event> events = new();
@@ -123,6 +146,39 @@ public class LandingPageRepository(
 
         if (profile is not null)
             contentBlock.Profile = _profileFactory.ToModel(profile);
+    }
+
+    private async Task PopulateNewsCardsContent(ContentBlock contentBlock, int quantity = 3)
+    {
+        if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
+        {
+            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(quantity);
+            List<News> upcomingNews = latestNewsResponse.Get<List<News>>();
+
+            if (upcomingNews is not null && upcomingNews.Any())
+            {
+                contentBlock.News = upcomingNews;
+                contentBlock.IsLatest = true;
+                return;
+            }
+        }
+
+        IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
+        List<News> news = new();
+
+        foreach (string tagOrCategory in tagsOrCategories)
+        {
+            news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, quantity)
+                   ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity);
+
+            if (news is not null)
+            {
+                contentBlock.News = news;
+                contentBlock.UseTag = news.Equals(await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity));
+                contentBlock.IsLatest = false;
+                break;
+            }
+        }
     }
 
     internal async Task<ContentfulProfile> GetProfile(string slug)

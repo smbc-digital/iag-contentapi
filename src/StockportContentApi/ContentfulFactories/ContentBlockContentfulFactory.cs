@@ -1,10 +1,8 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class ContentBlockContentfulFactory : IContentfulFactory<ContentfulReference, ContentBlock>
+public class ContentBlockContentfulFactory(ITimeProvider timeProvider) : IContentfulFactory<ContentfulReference, ContentBlock>
 {
-    private readonly DateComparer _dateComparer;
-
-    public ContentBlockContentfulFactory(ITimeProvider timeProvider) => _dateComparer = new DateComparer(timeProvider);
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public ContentBlock ToModel(ContentfulReference entry) =>
         new()

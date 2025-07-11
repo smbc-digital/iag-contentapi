@@ -21,7 +21,7 @@ public class DocumentsController(IDocumentService documentService,
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error getting secrure document with assetId: {assetId} with exception: {ex.Message}");
+            _logger.LogError($"Error getting secure document with assetId: {assetId} with exception: {ex.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
