@@ -168,13 +168,17 @@ public class LandingPageRepository(
 
         foreach (string tagOrCategory in tagsOrCategories)
         {
-            news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, quantity)
-                   ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity);
+            news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, quantity);
+
+            if (news is null)
+            {
+                news = await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity);
+                contentBlock.UseTag = true;
+            }
 
             if (news is not null)
             {
                 contentBlock.News = news;
-                contentBlock.UseTag = news.Equals(await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity));
                 contentBlock.IsLatest = false;
                 break;
             }
