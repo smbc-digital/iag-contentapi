@@ -58,4 +58,44 @@ public class NewsControllerTests
         // Assert
         _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
+
+    [Fact]
+    public async Task Index_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
+    {
+        // Arrange
+        Newsroom newsroom = new(new List<Alert>(),
+                                false,
+                                "email alerts topic id",
+                                null);
+
+        _mockRepository
+            .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ReturnsAsync(HttpResponse.Successful(newsroom));
+
+        // Act
+        IActionResult result = await _controller.Index("test-business");
+
+        // Assert
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ArchivedNews_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
+    {
+        // Arrange
+        Newsroom newsroom = new(new List<Alert>(),
+                                false,
+                                "email alerts topic id",
+                                null);
+
+        _mockRepository
+            .Setup(repo => repo.GetArchivedNews(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ReturnsAsync(HttpResponse.Successful(newsroom));
+
+        // Act
+        IActionResult result = await _controller.ArchivedNews("test-business");
+
+        // Assert
+        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+    }
 }

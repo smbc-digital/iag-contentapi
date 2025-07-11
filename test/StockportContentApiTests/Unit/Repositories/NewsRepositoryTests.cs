@@ -226,6 +226,41 @@ public class NewsRepositoryTests
         Assert.Equal("No news found for 'news-of-the-century'", response.Error);
     }
 
+    
+    [Fact]
+    public void GetNews_ShouldCallGetAllNews_If_NewsNotCached()
+    {
+        // Arrange
+        List<ContentfulNews> expectedNewsList = new()
+        {
+            new ContentfulNews { Slug = "news-1", Title = "First News" },
+            new ContentfulNews { Slug = "news-2", Title = "Second News" }
+        };
+
+        ContentfulCollection<ContentfulNews> collection = new()
+        {
+            Items = new List<ContentfulNews>()
+        };
+
+        _mockTimeProvider
+            .Setup(timeProvider => timeProvider.Now())
+            .Returns(DateTime.Now);
+        
+        _cacheWrapper
+            .Setup(x => x.GetFromCacheOrDirectlyAsync(
+                "news-all",
+                It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+                It.Is<int>(s => s.Equals(60))))
+            .ReturnsAsync(expectedNewsList);
+
+        // Act
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews("news-of-the-century"));
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("No news found for 'news-of-the-century'", response.Error);
+    }
+
     [Fact]
     public void Get_ShouldReturnAllNewsItems()
     {
@@ -1855,11 +1890,11 @@ public class NewsRepositoryTests
             .Returns(expectedNews);
 
         // Act
-        News result = await _repository.GetLatestNewsByTag("tech");
+        List<News> result = await _repository.GetLatestNewsByTag("tech", 1);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedNews, result);
+        Assert.Equal(expectedNews, result.FirstOrDefault());
     }
 
     [Fact]
@@ -1873,7 +1908,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
 
         // Act
-        News result = await _repository.GetLatestNewsByTag("tech");
+        List<News> result = await _repository.GetLatestNewsByTag("tech");
 
         // Assert
         Assert.Null(result);
@@ -1932,11 +1967,11 @@ public class NewsRepositoryTests
             .Returns(expectedNews);
 
         // Act
-        News result = await _repository.GetLatestNewsByCategory("sports");
+        List<News> result = await _repository.GetLatestNewsByCategory("sports");
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedNews, result);
+        Assert.Equal(expectedNews, result.FirstOrDefault());
     }
 
     [Fact]
@@ -1963,7 +1998,7 @@ public class NewsRepositoryTests
             .Returns(nowDateTime);
 
         // Act
-        News result = await _repository.GetLatestNewsByCategory("sports");
+        List<News> result = await _repository.GetLatestNewsByCategory("sports");
 
         // Assert
         Assert.Null(result);

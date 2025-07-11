@@ -228,33 +228,36 @@ public class LandingPageRepositoryTests
             new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-category" }
         };
 
-        News news = new(It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<List<Crumb>>(),
-                        It.IsAny<List<Alert>>(),
-                        It.IsAny<List<string>>(),
-                        It.IsAny<List<Document>>(),
-                        It.IsAny<List<string>>(),
-                        It.IsAny<List<Profile>>(),
-                        It.IsAny<List<InlineQuote>>(),
-                        It.IsAny<CallToActionBanner>(),
-                        It.IsAny<string>(),
-                        It.IsAny<List<TrustedLogo>>(),
-                        It.IsAny<TrustedLogo>(),
-                        It.IsAny<string>());
+        List<News> news = new()
+        {
+            new(It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<List<Crumb>>(),
+                It.IsAny<List<Alert>>(),
+                It.IsAny<List<string>>(),
+                It.IsAny<List<Document>>(),
+                It.IsAny<List<string>>(),
+                It.IsAny<List<Profile>>(),
+                It.IsAny<List<InlineQuote>>(),
+                It.IsAny<CallToActionBanner>(),
+                It.IsAny<string>(),
+                It.IsAny<List<TrustedLogo>>(),
+                It.IsAny<TrustedLogo>(),
+                It.IsAny<string>())
+        };
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
+            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1))
             .ReturnsAsync(news);
 
         // Act
@@ -263,9 +266,9 @@ public class LandingPageRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(news, responseNews);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Once);
+        Assert.Equal(news.FirstOrDefault(), responseNews);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Once);
     }
 
     [Fact]
@@ -277,37 +280,40 @@ public class LandingPageRepositoryTests
             new() { ContentType = "NewsBanner", AssociatedTagCategory = "some-tag" }
         };
 
-        News news = new(It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<List<Crumb>>(),
-                        It.IsAny<List<Alert>>(),
-                        It.IsAny<List<string>>(),
-                        It.IsAny<List<Document>>(),
-                        It.IsAny<List<string>>(),
-                        It.IsAny<List<Profile>>(),
-                        It.IsAny<List<InlineQuote>>(),
-                        It.IsAny<CallToActionBanner>(),
-                        It.IsAny<string>(),
-                        It.IsAny<List<TrustedLogo>>(),
-                        It.IsAny<TrustedLogo>(),
-                        It.IsAny<string>());
+        List<News> news = new()
+        {
+            new News(It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<List<Crumb>>(),
+                    It.IsAny<List<Alert>>(),
+                    It.IsAny<List<string>>(),
+                    It.IsAny<List<Document>>(),
+                    It.IsAny<List<string>>(),
+                    It.IsAny<List<Profile>>(),
+                    It.IsAny<List<InlineQuote>>(),
+                    It.IsAny<CallToActionBanner>(),
+                    It.IsAny<string>(),
+                    It.IsAny<List<TrustedLogo>>(),
+                    It.IsAny<TrustedLogo>(),
+                    It.IsAny<string>())
+        };
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()))
-            .ReturnsAsync((News)null);
+            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1))
+            .ReturnsAsync((List<News>)null);
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>()))
+            .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1))
             .ReturnsAsync(news);
 
         // Act
@@ -316,9 +322,9 @@ public class LandingPageRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(news, responseNews);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>()), Times.Exactly(2));
-        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>()), Times.Once);
+        Assert.Equal(news.FirstOrDefault(), responseNews);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Exactly(2));
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Once);
     }
 
     [Fact]

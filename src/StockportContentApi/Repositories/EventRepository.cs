@@ -19,6 +19,8 @@ public interface IEventRepository
     public Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence);
     public Task<List<Event>> GetLinkedEvents<T>(string slug);
     public Task<ContentfulEvent> GetContentfulEvent(string slug);
+    public Task<HttpResponse> GetUpcomingEvents(int quantity = 3);
+
 }
 
 public class EventRepository : BaseRepository, IEventRepository
@@ -72,7 +74,7 @@ public class EventRepository : BaseRepository, IEventRepository
     private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage, int quantity = 3)
     {
         IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
-        
+
         List<Event> liveEvents = GetAllEventsAndTheirRecurrences(events)
                                     .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
                                     .OrderBy(singleEvent => singleEvent.EventDate)
@@ -88,9 +90,9 @@ public class EventRepository : BaseRepository, IEventRepository
                 ? liveEvents.Take(quantity)
                 : liveEvents.Where(singleEvent => singleEvent.EventCategories?.Any(category => (bool)(category?.Slug?.ToLower().Equals(row.Tag?.ToLower()))) is true ||
                     singleEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag?.ToLower()) is true).Take(quantity);
-            
+
             row.MatchedByTag = row.Events.Any(matchingEvent =>
-                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == tag) is true &&
+                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag) is true &&
                     matchingEvent.EventCategories?.Any(category => category?.Slug?.ToLower() == row.Tag?.ToLower()) is not true);
         }
 
@@ -99,7 +101,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     public async Task<ContentfulCollection<ContentfulEventCategory>> GetContentfulEventCategories() =>
         await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetContentfulEventCategoriesDirect, _eventsTimeout);
-        
+
     /// <summary>
     /// Get event categories from contentful event categories type
     /// </summary>
@@ -109,8 +111,8 @@ public class EventRepository : BaseRepository, IEventRepository
         QueryBuilder<ContentfulEventCategory> eventCategoryBuilder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory").Include(1);
         ContentfulCollection<ContentfulEventCategory> result = await _client.GetEntries(eventCategoryBuilder);
 
-        return !result.Any() 
-            ? null 
+        return !result.Any()
+            ? null
             : result;
     }
 
@@ -176,12 +178,12 @@ public class EventRepository : BaseRepository, IEventRepository
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                                .Where(e => string.IsNullOrWhiteSpace(category) 
-                                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower())) 
+                                .Where(e => string.IsNullOrWhiteSpace(category)
+                                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower()))
                                     || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
                                 .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
-                                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free") 
-                                    || price.ToLower().Equals("free,paid") 
+                                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free")
+                                    || price.ToLower().Equals("free,paid")
                                     || price.ToLower().Equals("free") && (e.Free ?? false)
                                     || price.ToLower().Equals("paid") && (e.Paid ?? false))
                                 .Where(e => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
@@ -220,7 +222,7 @@ public class EventRepository : BaseRepository, IEventRepository
         var eventCategoriesCollection = await GetContentfulEventCategories();
         IEnumerable<string> eventCategories = Enumerable.Empty<string>();
 
-        if(eventCategoriesCollection is not null)
+        if (eventCategoriesCollection is not null)
             eventCategories = eventCategoriesCollection.Select(eventCategory => eventCategory.Name);
 
         EventCalender eventCalender = new();
@@ -282,7 +284,7 @@ public class EventRepository : BaseRepository, IEventRepository
     {
         QueryBuilder<ContentfulEvent> builder = new QueryBuilder<ContentfulEvent>().ContentTypeIs("events").Include(2);
         ContentfulCollection<ContentfulEvent> entries = await GetAllEntriesAsync(_client, builder);
-        
+
         return entries.Any() ? entries.ToList() : null;
     }
 
@@ -342,5 +344,27 @@ public class EventRepository : BaseRepository, IEventRepository
         ContentfulEvent entry = entries.FirstOrDefault();
 
         return entry;
+    }
+
+    public async Task<HttpResponse> GetUpcomingEvents(int quantity = 3)
+    {
+        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
+
+        if (entries is null || !entries.Any())
+            return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found.");
+
+        List<Event> allEvents = GetAllEventsAndTheirRecurrences(entries).ToList();
+
+        List<Event> futureEvents = allEvents
+            .Where(evnt => _dateComparer.EventIsInTheFuture(evnt.EventDate, evnt.StartTime, evnt.EndTime))
+            .OrderBy(evnt => evnt.EventDate)
+            .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+            .ThenBy(evnt => evnt.Title)
+            .Take(quantity)
+            .ToList();
+
+        return futureEvents is null || !futureEvents.Any()
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No events found")
+            : HttpResponse.Successful(futureEvents);
     }
 }
