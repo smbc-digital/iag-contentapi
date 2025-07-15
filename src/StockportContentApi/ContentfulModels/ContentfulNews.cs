@@ -12,10 +12,8 @@ public class ContentfulNews : IContentfulModel
     public Asset TeaserImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public string HeroImageCaption { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
-    public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
-    public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
-    public DateTime SunriseDate2 { get; set; }
-    public DateTime SunsetDate2 { get; set; }
+    public DateTime SunriseDate { get; set; } = DateTime.MinValue;
+    public DateTime SunsetDate { get; set; } = DateTime.MaxValue;
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public List<Asset> Documents { get; set; } = new();

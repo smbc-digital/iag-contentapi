@@ -173,8 +173,6 @@ public class NewsRepositoryTests
                             "hero image caption",
                             Body,
                             _sunriseDate,
-                            _sunriseDate,
-                            _sunsetDate,
                             _sunsetDate,
                             _updatedAt,
                             _crumbs,
@@ -263,7 +261,7 @@ public class NewsRepositoryTests
         Assert.Equal("No news found for 'news-of-the-century'", response.Error);
     }
 
-    [Fact(Skip ="Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnAllNewsItems()
     {
         // Arrange
@@ -288,8 +286,6 @@ public class NewsRepositoryTests
                         "hero caption image",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -400,7 +396,7 @@ public class NewsRepositoryTests
         Assert.Equal("news-category-2", firstNews.Categories[1]);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnAllNewsItemsWhenNoNewsroomIsPresent()
     {
         // Arrange
@@ -424,8 +420,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -521,7 +515,7 @@ public class NewsRepositoryTests
         Assert.Equal(2016, newsroom.Dates[0].Year);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnListOfNewsForTag()
     {
         // Arrange
@@ -545,8 +539,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -627,7 +619,7 @@ public class NewsRepositoryTests
         Assert.Equal(Slug, newsroom.News.First().Slug);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnListOfNewsForCategory()
     {
         // Arrange
@@ -651,8 +643,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -733,7 +723,7 @@ public class NewsRepositoryTests
         Assert.Equal(Slug, newsroom.News.First().Slug);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnListOfNewsForCategoryAndTag()
     {
         // Arrange
@@ -742,7 +732,9 @@ public class NewsRepositoryTests
             .Returns(new DateTime(2016, 08, 5));
 
         Newsroom newsRoom = new(_alerts, true, "test-id", null);
-        _newsRoomContentfulFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulNewsRoom>())).Returns(newsRoom);
+        _newsRoomContentfulFactory
+            .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
+            .Returns(newsRoom);
 
         News news = new(Title,
                         Slug,
@@ -754,8 +746,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -836,7 +826,7 @@ public class NewsRepositoryTests
         Assert.Equal(Slug, newsroom.News.First().Slug);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnListOfNewsForDateRange()
     {
         // Arrange
@@ -860,8 +850,6 @@ public class NewsRepositoryTests
                         "hero caption image",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -965,8 +953,6 @@ public class NewsRepositoryTests
                         Body,
                         _sunriseDate,
                         _sunriseDate,
-                        _sunsetDate,
-                        _sunsetDate,
                         _updatedAt,
                         _crumbs,
                         _alerts,
@@ -1067,8 +1053,6 @@ public class NewsRepositoryTests
                         "hero caption image",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1168,8 +1152,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1261,8 +1243,6 @@ public class NewsRepositoryTests
                         "hero caption image",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1336,7 +1316,7 @@ public class NewsRepositoryTests
         Assert.Contains(newsroom.News.First().Tags, t => t.Equals(tag));
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
     {
         // Arrange
@@ -1362,8 +1342,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1441,7 +1419,7 @@ public class NewsRepositoryTests
         Assert.Contains(newsroom.News[1].Tags, t => t.Equals(expectedTagQueryValue));
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void GetNewsByLimit_ShouldReturnTopNewsItems()
     {
         // Arrange
@@ -1457,19 +1435,17 @@ public class NewsRepositoryTests
         
         _newsContentfulFactory
             .Setup(newsFactory => newsFactory.ToModel(It.IsAny<ContentfulNews>()))
-            .Returns<ContentfulNews>(_ => new(_.Title,
-                                            _.Slug,
-                                            _.Teaser,
+            .Returns<ContentfulNews>(entry => new(entry.Title,
+                                            entry.Slug,
+                                            entry.Teaser,
                                             null,
                                             null,
                                             null,
                                             null,
                                             null,
                                             null,
-                                            _.SunriseDate,
-                                            _.SunriseDate,
-                                            _.SunsetDate,
-                                            _.SunsetDate,
+                                            entry.SunriseDate,
+                                            entry.SunsetDate,
                                             DateTime.MinValue,
                                             null,
                                             null,
@@ -1552,7 +1528,7 @@ public class NewsRepositoryTests
         Assert.Equal(latestNewsItem.SunsetDate, newsList.First().SunsetDate);
     }
 
-    [Fact(Skip = "Temp while I test this date time issue")]
+    [Fact]
     public void GetNewsByLimit_ShouldReturnTopTwoNewsItems()
     {
         // Arrange
@@ -1576,8 +1552,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1779,8 +1753,6 @@ public class NewsRepositoryTests
                         "hero image caption",
                         Body,
                         _sunriseDate,
-                        _sunriseDate,
-                        _sunsetDate,
                         _sunsetDate,
                         _updatedAt,
                         _crumbs,
@@ -1893,8 +1865,6 @@ public class NewsRepositoryTests
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
-                                It.IsAny<DateTime>(),
-                                It.IsAny<DateTime>(),
                                 It.IsAny<List<Crumb>>(),
                                 It.IsAny<List<Alert>>(),
                                 It.IsAny<List<string>>(),
@@ -1969,8 +1939,6 @@ public class NewsRepositoryTests
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
-                                It.IsAny<DateTime>(),
-                                It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
@@ -2117,8 +2085,6 @@ public class NewsRepositoryTests
                         Body,
                         _sunriseDate,
                         _sunriseDate,
-                        _sunsetDate,
-                        _sunsetDate,
                         _updatedAt,
                         _crumbs,
                         _alerts,
@@ -2146,8 +2112,6 @@ public class NewsRepositoryTests
                 "hero caption image",
                 Body,
                 contentfulNews.SunriseDate,
-                contentfulNews.SunriseDate,
-                contentfulNews.SunsetDate,
                 contentfulNews.SunsetDate,
                 _updatedAt,
                 _crumbs,
