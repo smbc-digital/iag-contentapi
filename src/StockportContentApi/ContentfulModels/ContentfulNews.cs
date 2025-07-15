@@ -14,6 +14,8 @@ public class ContentfulNews : IContentfulModel
     public string Body { get; set; } = string.Empty;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
+    public DateTime SunriseDate2 { get; set; }
+    public DateTime SunsetDate2 { get; set; }
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public List<Asset> Documents { get; set; } = new();
