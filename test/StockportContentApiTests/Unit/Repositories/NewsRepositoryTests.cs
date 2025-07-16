@@ -1468,7 +1468,7 @@ public class NewsRepositoryTests
                                             null,
                                             null,
                                             null,
-                                            entry.SunriseDate,
+                                            entry.SunriseDate.DateTime,
                                             entry.SunsetDate,
                                             false,
                                             entry.SunriseDate,
@@ -1507,7 +1507,7 @@ public class NewsRepositoryTests
                                             .Title("This is the news")
                                             .Slug("news-of-the-century")
                                             .Teaser("Read more for the news")
-                                            .SunriseDate(new(2018, 08, 24, 23, 30, 0, DateTimeKind.Utc))
+                                            .SunriseDate(new(2018, 08, 24, 23, 30, 0, DateTimeKind.Unspecified))
                                             .SunsetDate(new(2025, 08, 23, 23, 0, 0, DateTimeKind.Utc))
                                             .Build();
 
@@ -2147,7 +2147,7 @@ public class NewsRepositoryTests
                 ThumbnailImage,
                 "hero caption image",
                 Body,
-                contentfulNews.SunriseDate,
+                contentfulNews.SunriseDate.DateTime,
                 contentfulNews.SunsetDate,
                 false,
                 contentfulNews.SunriseDate,

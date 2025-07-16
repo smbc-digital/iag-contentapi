@@ -43,19 +43,18 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
 
         DateTime? updatedAt = entry.Sys.UpdatedAt is not null
             ? entry.Sys.UpdatedAt
-            : entry.SunriseDate;
+            : entry.SunriseDate.DateTime;
 
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
-        DateTimeOffset sunriseWithOffset = DateTimeOffset.Parse(entry.SunriseDate.ToString("o"));
-        DateTime utcDateTime = sunriseWithOffset.UtcDateTime;
 
-        DateTime sunrise = sunriseWithOffset.Offset.Hours > 0
+        DateTime utcDateTime = entry.SunriseDate.UtcDateTime;
+        DateTime sunrise = entry.SunriseDate.Offset.Hours > 0
             ? utcDateTime.AddHours(1)
             : utcDateTime;
 
-        bool hasOffset = sunriseWithOffset.Offset.Hours > 0;
+        bool hasOffset = entry.SunriseDate.Offset.Hours > 0;
         
         return new News(entry.Title,
                         entry.Slug,
@@ -69,7 +68,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         sunrise,
                         entry.SunsetDate,
                         hasOffset,
-                        sunriseWithOffset,
+                        entry.SunriseDate,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
                         alerts.ToList(),
