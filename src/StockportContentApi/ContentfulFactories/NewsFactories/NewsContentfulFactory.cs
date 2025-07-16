@@ -48,6 +48,13 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
+        DateTimeOffset sunriseWithOffset = DateTimeOffset.Parse(entry.SunriseDate.ToString("o"));
+        DateTime utcDateTime = sunriseWithOffset.UtcDateTime;
+
+        DateTime sunrise = !sunriseWithOffset.Equals(TimeSpan.Zero)
+            ? utcDateTime.AddHours(1)
+            : utcDateTime;
+
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -57,7 +64,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
                         entry.HeroImageCaption,
                         entry.Body,
-                        entry.SunriseDate,
+                        sunrise,
                         entry.SunsetDate,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
@@ -69,9 +76,9 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
                         _callToActionFactory.ToModel(entry.CallToAction),
                         entry.LogoAreaTitle,
-                        entry.TrustedLogos is not null 
+                        entry.TrustedLogos is not null
                             ? entry.TrustedLogos.Where(trustedLogo => trustedLogo is not null)
-                                                .Select(_trustedLogoFactory.ToModel).ToList() 
+                                                .Select(_trustedLogoFactory.ToModel).ToList()
                             : new(),
                         entry.FeaturedLogo is not null
                             ? _trustedLogoFactory.ToModel(entry.FeaturedLogo)
