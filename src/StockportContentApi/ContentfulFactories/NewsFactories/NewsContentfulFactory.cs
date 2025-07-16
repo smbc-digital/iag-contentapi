@@ -51,10 +51,12 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         DateTimeOffset sunriseWithOffset = DateTimeOffset.Parse(entry.SunriseDate.ToString("o"));
         DateTime utcDateTime = sunriseWithOffset.UtcDateTime;
 
-        DateTime sunrise = !sunriseWithOffset.Offset.Equals(TimeSpan.Zero)
+        DateTime sunrise = sunriseWithOffset.Offset.Hours > 0
             ? utcDateTime.AddHours(1)
             : utcDateTime;
 
+        bool hasOffset = sunriseWithOffset.Offset.Hours > 0;
+        
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -66,6 +68,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Body,
                         sunrise,
                         entry.SunsetDate,
+                        hasOffset,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
                         alerts.ToList(),
