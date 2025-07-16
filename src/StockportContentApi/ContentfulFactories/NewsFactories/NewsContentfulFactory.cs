@@ -51,7 +51,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         DateTimeOffset sunriseWithOffset = DateTimeOffset.Parse(entry.SunriseDate.ToString("o"));
         DateTime utcDateTime = sunriseWithOffset.UtcDateTime;
 
-        DateTime sunrise = !sunriseWithOffset.Equals(TimeSpan.Zero)
+        DateTime sunrise = !sunriseWithOffset.Offset.Equals(TimeSpan.Zero)
             ? utcDateTime.AddHours(1)
             : utcDateTime;
 
