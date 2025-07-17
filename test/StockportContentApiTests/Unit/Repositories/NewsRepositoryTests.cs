@@ -1456,8 +1456,8 @@ public class NewsRepositoryTests
                                             null,
                                             null,
                                             null,
-                                            entry.SunriseDate,
-                                            entry.SunriseDate,
+                                            DateTime.Parse(entry.SunriseDate),
+                                            DateTime.Parse(entry.SunriseDate),
                                             entry.SunsetDate,
                                             DateTime.MinValue,
                                             null,
@@ -1537,7 +1537,7 @@ public class NewsRepositoryTests
         Assert.Equal(latestNewsItem.Title, newsList.First().Title);
         Assert.Equal(latestNewsItem.Slug, newsList.First().Slug);
         Assert.Equal(latestNewsItem.Teaser, newsList.First().Teaser);
-        Assert.Equal(latestNewsItem.SunriseDate, newsList.First().SunriseDate);
+        Assert.Equal(latestNewsItem.SunriseDate, newsList.First().SunriseDate.ToString());
         Assert.Equal(latestNewsItem.SunsetDate, newsList.First().SunsetDate);
     }
 
@@ -1863,7 +1863,7 @@ public class NewsRepositoryTests
             new()
             {
                 Tags = new() { "tech" },
-                SunriseDate = DateTime.Now.AddDays(-1),
+                SunriseDate = DateTime.Now.AddDays(-1).ToString(),
                 SunsetDate = DateTime.Now.AddDays(1)
             }
         };
@@ -1941,7 +1941,7 @@ public class NewsRepositoryTests
             new()
             {
                 Categories = new() { "sports" },
-                SunriseDate = DateTime.Now.AddDays(-1),
+                SunriseDate = DateTime.Now.AddDays(-1).ToString(),
                 SunsetDate = DateTime.Now.AddDays(1)
             } // Out of date range
         };
@@ -2002,7 +2002,7 @@ public class NewsRepositoryTests
             new()
             {
                 Categories = new() { "sports" },
-                SunriseDate = DateTime.Now.AddDays(-10),
+                SunriseDate = DateTime.Now.AddDays(-10).ToString(),
                 SunsetDate = DateTime.Now.AddDays(-5)
             } // Out of date range
         };
@@ -2129,8 +2129,8 @@ public class NewsRepositoryTests
                 ThumbnailImage,
                 "hero caption image",
                 Body,
-                contentfulNews.SunriseDate,
-                contentfulNews.SunriseDate,
+                DateTime.Parse(contentfulNews.SunriseDate),
+                DateTime.Parse(contentfulNews.SunriseDate),
                 contentfulNews.SunsetDate,
                 _updatedAt,
                 _crumbs,

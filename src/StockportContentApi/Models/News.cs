@@ -40,6 +40,7 @@ public class News(string title,
     public DateTime DisplaySunriseDate => displaySunriseDate;
     public DateTime SunsetDate { get; } = sunsetDate;
     public DateTime UpdatedAt { get; } = updatedAt;
+    public string SunriseDateRaw { get; set; }
     public List<Crumb> Breadcrumbs { get; } = breadcrumbs;
     public List<string> Tags { get; set; } = tags;
     public List<Alert> Alerts { get; } = alerts;

@@ -105,7 +105,7 @@ public class ShowcaseRepository(ContentfulConfig config,
         if (newsEntry is not null && newsEntry.Any())
         {
             DateTime now = DateTime.Now.AddMinutes(5);
-            ContentfulNews article = newsEntry.Where(entry => now > entry.SunriseDate)
+            ContentfulNews article = newsEntry.Where(entry => now > DateTime.Parse(entry.SunriseDate))
                 .Where(entry => now < entry.SunsetDate)
                 .OrderByDescending(news => news.SunriseDate)
                 .Take(1)

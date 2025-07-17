@@ -43,7 +43,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
 
         DateTime? updatedAt = entry.Sys.UpdatedAt is not null
             ? entry.Sys.UpdatedAt
-            : entry.SunriseDate;
+            : DateTime.Parse(entry.SunriseDate);
 
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
@@ -57,8 +57,8 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
                         entry.HeroImageCaption,
                         entry.Body,
-                        entry.SunriseDate,
-                        entry.SunriseDate.Date,
+                        DateTime.Parse(entry.SunriseDate),
+                        DateTime.Parse(entry.SunriseDate),
                         entry.SunsetDate,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
