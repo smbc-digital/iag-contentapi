@@ -14,7 +14,7 @@ public class ContentfulNewsTests
             Documents = new List<Asset>(),
             Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
             Slug = string.Empty,
-            SunriseDate = DateTime.MinValue.ToString("o"),
+            SunriseDate = DateTime.MinValue,
             SunsetDate = DateTime.MaxValue,
             Tags = new List<string>(),
             Teaser = string.Empty,
