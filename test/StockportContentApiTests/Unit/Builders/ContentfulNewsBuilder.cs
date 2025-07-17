@@ -26,7 +26,7 @@ public class ContentfulNewsBuilder
             Purpose = _purpose,
             Image = new ContentfulAssetBuilder().Url(_imageUrl).Build(),
             Body = _body,
-            SunriseDate = _sunriseDate,
+            SunriseDate = _sunriseDate.ToString(),
             SunsetDate = _sunsetDate,
             Tags = _tags,
             Alerts = _alerts,
