@@ -43,19 +43,16 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
 
         DateTime? updatedAt = entry.Sys.UpdatedAt is not null
             ? entry.Sys.UpdatedAt
-            : entry.SunriseDate.DateTime;
+            : entry.SunriseDate;
 
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
+        TimeZoneInfo ukTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
 
-        DateTime utcDateTime = entry.SunriseDate.UtcDateTime;
-        DateTime sunrise = entry.SunriseDate.Offset.Hours > 0
-            ? utcDateTime.AddHours(1)
-            : utcDateTime;
+        DateTime unspecified = DateTime.SpecifyKind(entry.SunriseDate, DateTimeKind.Unspecified);
+        DateTime sunrise = TimeZoneInfo.ConvertTime(unspecified, ukTimeZone);
 
-        bool hasOffset = entry.SunriseDate.Offset.Hours > 0;
-        
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -67,8 +64,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Body,
                         sunrise,
                         entry.SunsetDate,
-                        hasOffset,
-                        entry.SunriseDate,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
                         alerts.ToList(),

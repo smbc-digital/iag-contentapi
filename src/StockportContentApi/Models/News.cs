@@ -12,8 +12,6 @@ public class News(string title,
                 string body,
                 DateTime sunriseDate,
                 DateTime sunsetDate,
-                bool hasOffset,
-                DateTimeOffset sunriseDateOffset,
                 DateTime updatedAt,
                 List<Crumb> breadcrumbs,
                 List<Alert> alerts,
@@ -39,8 +37,6 @@ public class News(string title,
     public string Body { get; } = body;
     public DateTime SunriseDate { get; } = sunriseDate;
     public DateTime SunsetDate { get; } = sunsetDate;
-    public bool HasOffset { get; set; } = hasOffset;
-    public DateTimeOffset SunriseDateOffset { get; } = sunriseDateOffset;
     public DateTime UpdatedAt { get; } = updatedAt;
     public List<Crumb> Breadcrumbs { get; } = breadcrumbs;
     public List<string> Tags { get; set; } = tags;
