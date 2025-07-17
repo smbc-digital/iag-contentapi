@@ -48,11 +48,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
-        TimeZoneInfo ukTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
-
-        DateTime unspecified = DateTime.SpecifyKind(entry.SunriseDate, DateTimeKind.Unspecified);
-        DateTime sunrise = TimeZoneInfo.ConvertTime(unspecified, ukTimeZone);
-
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -62,7 +57,8 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
                         entry.HeroImageCaption,
                         entry.Body,
-                        sunrise,
+                        entry.SunriseDate,
+                        entry.SunriseDate.Date,
                         entry.SunsetDate,
                         entry.Sys.UpdatedAt.Value,
                         new List<Crumb> { new("News", string.Empty, "news") },
