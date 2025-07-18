@@ -45,7 +45,7 @@ public class CacheTests
     private string testFallbackMethod() => "Contentful Data";
 
     [Fact]
-    public async void ShouldCallContentfulIfCacheIsEmptyAsync()
+    public async Task ShouldCallContentfulIfCacheIsEmptyAsync()
     {
         // Arrange
         _distributedCacheWrapper
@@ -61,7 +61,7 @@ public class CacheTests
     }
 
     [Fact]
-    public async void ShouldNotCallContentfulIfCacheIsFullAsync()
+    public async Task ShouldNotCallContentfulIfCacheIsFullAsync()
     {
         // Arrange
         _distributedCacheWrapper

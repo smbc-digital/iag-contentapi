@@ -4,7 +4,6 @@ public class ContentfulReferenceBuilder
 {
     private string _slug = "slug";
     private string _title = "title";
-    private string _name = "name";
     private readonly string _teaser = "teaser";
     private string _icon = "icon";
     private readonly DateTime _sunriseDate = new(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);

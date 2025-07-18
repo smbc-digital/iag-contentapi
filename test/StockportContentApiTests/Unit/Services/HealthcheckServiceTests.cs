@@ -35,7 +35,7 @@ public class HealthcheckServiceTests
 
 
     [Fact]
-    public async void ShouldContainTheAppVersionInTheResponse()
+    public async Task ShouldContainTheAppVersionInTheResponse()
     {
         Healthcheck check = await _healthcheckService.Get();
 
@@ -43,7 +43,7 @@ public class HealthcheckServiceTests
     }
 
     [Fact]
-    public async void ShouldContainTheGitShaInTheResponse()
+    public async Task ShouldContainTheGitShaInTheResponse()
     {
         Healthcheck check = await _healthcheckService.Get();
 
@@ -51,7 +51,7 @@ public class HealthcheckServiceTests
     }
 
     [Fact]
-    public async void ShouldSetAppVersionToDevIfFileNotFound()
+    public async Task ShouldSetAppVersionToDevIfFileNotFound()
     {
         string notFoundVersionPath = "notfound";
         _fileWrapperMock.Setup(x => x.Exists(notFoundVersionPath)).Returns(false);
@@ -64,7 +64,7 @@ public class HealthcheckServiceTests
     }
 
     [Fact]
-    public async void ShouldSetShaToEmptyIfFileNotFound()
+    public async Task ShouldSetShaToEmptyIfFileNotFound()
     {
         string notFoundShaPath = "notfound";
         _fileWrapperMock.Setup(x => x.Exists(notFoundShaPath)).Returns(false);
@@ -77,7 +77,7 @@ public class HealthcheckServiceTests
     }
 
     [Fact]
-    public async void ShouldSetAppVersionToDevIfFileEmpty()
+    public async Task ShouldSetAppVersionToDevIfFileEmpty()
     {
         string newFile = "newFile";
         _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
@@ -90,7 +90,7 @@ public class HealthcheckServiceTests
     }
 
     [Fact]
-    public async void ShouldSetAppVersionToDevIfFileHasAnEmptyAString()
+    public async Task ShouldSetAppVersionToDevIfFileHasAnEmptyAString()
     {
         string newFile = "newFile";
         _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);

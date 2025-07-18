@@ -85,7 +85,7 @@ public class ContentfulConfigTests
         try
         {
             new ContentfulConfig(value).Build();
-            Assert.True(false, string.Empty);
+            Assert.Fail(string.Empty);
         }
         catch (ArgumentException e)
         {

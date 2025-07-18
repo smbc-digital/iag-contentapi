@@ -155,7 +155,7 @@ public class ProfileRepositoryTests
     }
 
     [Fact]
-    public async void Get_ShouldReturnSuccessfulResponse()
+    public async Task Get_ShouldReturnSuccessfulResponse()
     {
         // Arrange
         ContentfulProfile contentfulProfileA = new ContentfulProfileBuilder().Slug("a-slug").Build();
@@ -168,8 +168,9 @@ public class ProfileRepositoryTests
 
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
 
-        _client.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(collection);
+        _client
+            .Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulProfile>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
         // Act
         HttpResponse response = await _repository.Get();

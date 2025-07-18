@@ -9,7 +9,6 @@ public class EventControllerTests
     private readonly Mock<Func<string, string, IEventCategoryRepository>> _mockCategoryRepository = new();
     private readonly Mock<IMapper> _mockMapper = new();
     private readonly Mock<ILogger<EventController>> _mockLogger = new();
-    private readonly Mock<ResponseHandler> _mockHandler;
 
     private readonly EventController _controller;
 

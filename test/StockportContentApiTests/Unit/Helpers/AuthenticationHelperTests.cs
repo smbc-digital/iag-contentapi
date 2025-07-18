@@ -15,7 +15,7 @@ public class AuthenticationHelperTests
         // Arrange
         DefaultHttpContext context = new();
         context.Request.Path = "/v1/stockportgov/articles/test";
-        context.Request.Headers.Add("Authorization", "test");
+        context.Request.Headers.Append("Authorization", "test");
         context.Request.Method = "GET";
 
         // Act
@@ -70,7 +70,7 @@ public class AuthenticationHelperTests
         // Arrange
         DefaultHttpContext context = new();
         context.Request.Path = "/v1/stockportgov/articles/test";
-        context.Request.Headers.Add("Authorization", "test");
+        context.Request.Headers.Append("Authorization", "test");
         context.Request.Method = "GET";
     }
 }

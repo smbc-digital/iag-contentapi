@@ -8,12 +8,13 @@ public class AssetRepositoryTests
 
     public AssetRepositoryTests()
     {
-        _contentfulClientManager.Setup(o => o.GetClient(It.IsAny<ContentfulConfig>()))
+        _contentfulClientManager
+            .Setup(o => o.GetClient(It.IsAny<ContentfulConfig>()))
             .Returns(_contentfulClient.Object);
     }
 
     [Fact]
-    public async void ShouldReturnAsset()
+    public async Task ShouldReturnAsset()
     {
         _contentfulClient.Setup(o => o.GetAsset("asset", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Asset());
@@ -27,10 +28,10 @@ public class AssetRepositoryTests
     }
 
     [Fact]
-    public async void ShouldReturnNullIfNoAssetIsFoundAndLogWarning()
+    public async Task ShouldReturnNullIfNoAssetIsFoundAndLogWarning()
     {
-        _contentfulClient.Setup(o =>
-                o.GetAsset("asset-fail", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
+        _contentfulClient
+            .Setup(o => o.GetAsset("asset-fail", It.IsAny<QueryBuilder<Asset>>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ContentfulException(500, "There was a problem with getting assetid: asset-fail from contentful"));
 
         AssetRepository assetRepository = new(new ContentfulConfig(string.Empty, string.Empty, string.Empty), _contentfulClientManager.Object,

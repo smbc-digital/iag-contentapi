@@ -20,7 +20,7 @@ public class LoggingHttpClientTests
     }
 
     [Fact]
-    public async void DoesNotLogAccessKey()
+    public async Task DoesNotLogAccessKey()
     {
         string urlWithKey = "https://fake.url/spaces/SPACE/entries?access_token=KEY&content_type=topic";
 

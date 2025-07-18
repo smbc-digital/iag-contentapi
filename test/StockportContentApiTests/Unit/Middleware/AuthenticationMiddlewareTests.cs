@@ -20,12 +20,12 @@ public class AuthenticationMiddlewareTests
     }
 
     [Fact]
-    public async void Invoke_ShouldReturnIfNoApiKeyIsInTheConfig()
+    public async Task Invoke_ShouldReturnIfNoApiKeyIsInTheConfig()
     {
         // Arrange
         DefaultHttpContext context = new();
         context.Request.Path = "/v1/stockportgov/articles/test";
-        context.Request.Headers.Add("Authorization", "test");
+        context.Request.Headers.Append("Authorization", "test");
         context.Request.Method = "GET";
 
         // Act
@@ -36,7 +36,7 @@ public class AuthenticationMiddlewareTests
     }
 
     [Fact]
-    public async void Invoke_ShouldReturnIfNoApiKeyIsInTheRequest()
+    public async Task Invoke_ShouldReturnIfNoApiKeyIsInTheRequest()
     {
         // Arrange
         DefaultHttpContext context = new();
@@ -60,7 +60,7 @@ public class AuthenticationMiddlewareTests
     }
 
     [Fact]
-    public async void Invoke_ShouldInvokeNextIfKeysMatch()
+    public async Task Invoke_ShouldInvokeNextIfKeysMatch()
     {
         // Arrange
         DefaultHttpContext context = new();
