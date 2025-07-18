@@ -13,6 +13,7 @@ public class ContentfulNews : IContentfulModel
     public string HeroImageCaption { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
+    public DateTime PublishingDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue;
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();

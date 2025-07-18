@@ -48,8 +48,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
-        string publishingDate = entry.SunriseDate.ToString("yyyy-MM-dd");
-
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -80,7 +78,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                             : null,
                         entry.EventsByTagOrCategory)
         {
-            PublishingDate = publishingDate
+            PublishingDate = entry.PublishingDate.ToString("yyyy-MM-dd")
         };
     }
 }
