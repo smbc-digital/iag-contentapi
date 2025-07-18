@@ -48,6 +48,8 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
         List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
                                     .Select(_profileFactory.ToModel).ToList();
 
+        string sunriseDate2 = entry.SunriseDate2.ToString("yyyy-MM-dd");
+
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -57,7 +59,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
                         entry.HeroImageCaption,
                         entry.Body,
-                        entry.SunriseDate,
                         entry.SunriseDate,
                         entry.SunsetDate,
                         entry.Sys.UpdatedAt.Value,
@@ -77,6 +78,9 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.FeaturedLogo is not null
                             ? _trustedLogoFactory.ToModel(entry.FeaturedLogo)
                             : null,
-                        entry.EventsByTagOrCategory);
+                        entry.EventsByTagOrCategory)
+        {
+            SunriseDate2 = sunriseDate2
+        };
     }
 }

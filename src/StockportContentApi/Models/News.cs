@@ -11,7 +11,6 @@ public class News(string title,
                 string heroImageCaption,
                 string body,
                 DateTime sunriseDate,
-                DateTime displaySunriseDate,
                 DateTime sunsetDate,
                 DateTime updatedAt,
                 List<Crumb> breadcrumbs,
@@ -37,7 +36,7 @@ public class News(string title,
     public string HeroImageCaption { get; } = heroImageCaption;
     public string Body { get; } = body;
     public DateTime SunriseDate { get; } = sunriseDate;
-    public DateTime DisplaySunriseDate => displaySunriseDate;
+    public string SunriseDate2 { get; set; }
     public DateTime SunsetDate { get; } = sunsetDate;
     public DateTime UpdatedAt { get; } = updatedAt;
     public string SunriseDateRaw { get; set; }
