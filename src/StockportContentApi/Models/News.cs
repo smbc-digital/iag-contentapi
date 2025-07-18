@@ -36,10 +36,9 @@ public class News(string title,
     public string HeroImageCaption { get; } = heroImageCaption;
     public string Body { get; } = body;
     public DateTime SunriseDate { get; } = sunriseDate;
-    public string SunriseDate2 { get; set; }
+    public string PublishingDate { get; set; }
     public DateTime SunsetDate { get; } = sunsetDate;
     public DateTime UpdatedAt { get; } = updatedAt;
-    public string SunriseDateRaw { get; set; }
     public List<Crumb> Breadcrumbs { get; } = breadcrumbs;
     public List<string> Tags { get; set; } = tags;
     public List<Alert> Alerts { get; } = alerts;
