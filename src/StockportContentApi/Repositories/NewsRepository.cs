@@ -75,7 +75,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         IList<ContentfulNews> entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
         ContentfulNews entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
 
-        if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate.DateTime.ToUniversalTime()))
+        if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate))
             entry = null;
         
         if (!string.IsNullOrEmpty(entry?.EventsByTagOrCategory))
@@ -142,7 +142,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         if (newsRoomEntry.FeaturedNews is not null
             && !newsRoomEntry.FeaturedNews.SunriseDate.Equals(DateTime.MinValue)
             && !newsRoomEntry.FeaturedNews.SunsetDate.Equals(DateTime.MinValue)
-            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(newsRoomEntry.FeaturedNews.SunriseDate.DateTime.ToUniversalTime(), newsRoomEntry.FeaturedNews.SunsetDate))
+            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(newsRoomEntry.FeaturedNews.SunriseDate, newsRoomEntry.FeaturedNews.SunsetDate))
         {
             newsroom.FeaturedNews = _newsContentfulFactory.ToModel(newsRoomEntry.FeaturedNews);
         }
@@ -192,7 +192,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldMatches(n => n.Tags, tag).Include(1);
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
         List<ContentfulNews> contentfulNews = newsEntries
-                                                .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate.DateTime.ToUniversalTime(), news.SunsetDate))
+                                                .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                                                 .OrderByDescending(n => n.SunriseDate)
                                                 .Take(quantity)
                                                 .ToList();
@@ -210,7 +210,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>().ContentTypeIs("news").FieldMatches(n => n.Categories, category).Include(1);
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
         List<ContentfulNews> contentfulNews = newsEntries
-                                                .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate.DateTime.ToUniversalTime(), news.SunsetDate))
+                                                .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                                                 .OrderByDescending(n => n.SunriseDate)
                                                 .Take(quantity)
                                                 .ToList();
@@ -234,7 +234,9 @@ public class NewsRepository : BaseRepository, INewsRepository
 
         IEnumerable<ContentfulNews> filteredEntries = newsEntries
             .Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)))
-            .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue));
+            .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue))
+            .Where(news => news.SunriseDate <= _timeProvider.Now());
+
 
         List<News> archivedNewsEntries = filteredEntries
             .Select(_newsContentfulFactory.ToModel)
