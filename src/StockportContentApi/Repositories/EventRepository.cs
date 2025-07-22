@@ -177,6 +177,7 @@ public class EventRepository : BaseRepository, IEventRepository
         GeoCoordinate searchCoord = new(latitude, longitude);
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
+                                .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
                                 .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
                                 .Where(e => string.IsNullOrWhiteSpace(category)
                                     || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower()))
