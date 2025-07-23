@@ -70,7 +70,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         return validation?.RequiredValues;
     }
 
-    public async Task<HttpResponse> GetNews(string slug)
+    public virtual async Task<HttpResponse> GetNews(string slug)
     {
         IList<ContentfulNews> entries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
         ContentfulNews entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();

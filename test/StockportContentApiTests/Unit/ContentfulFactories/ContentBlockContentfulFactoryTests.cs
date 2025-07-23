@@ -103,7 +103,7 @@ public class ContentBlockContentfulFactoryTests
     [InlineData("FindOutMoreCards", "invalidContentType", false)]
     [InlineData("ImageContentWidth", "topic", false)]
     [InlineData("ImageDividerScreenWidth", "directory", false)]
-    [InlineData("NewsBanner", "news", false)]
+    [InlineData("NewsBanner", "news", true)]
     [InlineData("ProfileBanner", "profile", true)]
     [InlineData("ProfileBanner", "informationList", false)]
     [InlineData("SocialMedia", "socialMediaLink", true)]
