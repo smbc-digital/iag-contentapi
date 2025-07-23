@@ -97,8 +97,9 @@ public class ContentBlockContentfulFactory(ITimeProvider timeProvider) : IConten
             "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
+            "NewsBanner" => subItemContentType.Equals("news"),
             "TriviaBanner" or "TriviaCards" or "TriviaList" => subItemContentType.Equals("informationList") || subItemContentType.Equals("trivia"),
-            "ImageContentWidth" or "ImageDividerScreenWidth" or "NewsBanner" or "SubscriptionBanner" or "Video" => false,
+            "ImageContentWidth" or "ImageDividerScreenWidth" or "SubscriptionBanner" or "Video" => false,
             _ => true
         };
 }

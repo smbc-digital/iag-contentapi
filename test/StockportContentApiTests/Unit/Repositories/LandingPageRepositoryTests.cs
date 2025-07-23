@@ -80,7 +80,7 @@ public class LandingPageRepositoryTests
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = [contentfulLandingPage] };
 
         _contentfulClient
-            .Setup(_ =>_.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
+            .Setup(client =>client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
 
         _contentfulFactory
@@ -101,7 +101,7 @@ public class LandingPageRepositoryTests
     {
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager
-            .Setup(_ => _.GetClient(config))
+            .Setup(client => client.GetClient(config))
             .Returns(_contentfulClient.Object);
         
         return contentfulClientManager;
@@ -125,7 +125,7 @@ public class LandingPageRepositoryTests
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = Enumerable.Empty<ContentfulLandingPage>() };
         
         _contentfulClient
-            .Setup(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
 
         // Act
@@ -315,7 +315,7 @@ public class LandingPageRepositoryTests
         _newsRepository
             .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1))
             .ReturnsAsync(news);
-
+    
         // Act
         HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
         News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
@@ -325,6 +325,74 @@ public class LandingPageRepositoryTests
         Assert.Equal(news.FirstOrDefault(), responseNews);
         _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Exactly(2));
         _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Once);
+    }
+
+    [Fact]
+    public async Task PopulateNewsContent_ShouldUseNewsSubItem_WhenValidSubItemExists()
+    {
+        // Arrange
+        var subItemSlug = "news-subitem-slug";
+        List<News> news = new()
+        {
+            new News("this is the title",
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<List<Crumb>>(),
+                    It.IsAny<List<Alert>>(),
+                    It.IsAny<List<string>>(),
+                    It.IsAny<List<Document>>(),
+                    It.IsAny<List<string>>(),
+                    It.IsAny<List<Profile>>(),
+                    It.IsAny<List<InlineQuote>>(),
+                    It.IsAny<CallToActionBanner>(),
+                    It.IsAny<string>(),
+                    It.IsAny<List<TrustedLogo>>(),
+                    It.IsAny<TrustedLogo>(),
+                    It.IsAny<string>())
+        };
+
+        _landingPage.PageSections = new List<ContentBlock>
+        {
+            new()
+            {
+                ContentType = "NewsBanner",
+                AssociatedTagCategory = "some-tag",
+                SubItems = new List<ContentBlock>
+                {
+                    new() { Slug = subItemSlug }
+                }
+            }
+        };
+
+        _newsRepository
+            .Setup(repo => repo.GetNews(subItemSlug ))
+            .ReturnsAsync(HttpResponse.Successful(news.FirstOrDefault()));
+        _newsRepository
+            .Setup(repo => repo.GetNews("news-subitem-slug"))
+            .ReturnsAsync(HttpResponse.Successful(news.First()));
+
+        // Act
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        var section = result.Get<LandingPage>().PageSections.FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(section.NewsArticle);
+        Assert.Equal(news.FirstOrDefault(), section.NewsArticle);
+        Assert.False(section.UseTag);
+
+        _newsRepository.Verify(repo => repo.GetNews(subItemSlug), Times.Once);
+        _newsRepository.Verify(repo => repo.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Never);
+        _newsRepository.Verify(repo => repo.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Never);
     }
 
     [Fact]

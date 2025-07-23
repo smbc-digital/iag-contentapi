@@ -71,6 +71,20 @@ public class LandingPageRepository(
 
     private async Task PopulateNewsContent(ContentBlock contentBlock)
     {
+        if (contentBlock.SubItems?.Any() is true)
+        {
+            ContentBlock firstSubItem = contentBlock.SubItems.FirstOrDefault();
+            HttpResponse newsResponse = await _newsRepository.GetNews(firstSubItem.Slug);
+            News newsSubItem = newsResponse.Get<News>();
+            
+            if (newsSubItem is not null)
+            {
+                contentBlock.NewsArticle = newsSubItem;
+                contentBlock.UseTag = false;
+                return;
+            }
+        }
+
         if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
         {
             HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(1);
