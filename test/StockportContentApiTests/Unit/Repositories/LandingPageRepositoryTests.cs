@@ -231,7 +231,7 @@ public class LandingPageRepositoryTests
         List<News> news = new()
         {
             new(It.IsAny<string>(),
-                It.IsAny<string>(),
+                "slug",
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
@@ -246,7 +246,7 @@ public class LandingPageRepositoryTests
                 It.IsAny<List<Alert>>(),
                 It.IsAny<List<string>>(),
                 It.IsAny<List<Document>>(),
-                It.IsAny<List<string>>(),
+                new List<string>() { "some-category" },
                 It.IsAny<List<Profile>>(),
                 It.IsAny<List<InlineQuote>>(),
                 It.IsAny<CallToActionBanner>(),
@@ -283,7 +283,7 @@ public class LandingPageRepositoryTests
         List<News> news = new()
         {
             new News(It.IsAny<string>(),
-                    It.IsAny<string>(),
+                    "slug",
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
@@ -296,7 +296,7 @@ public class LandingPageRepositoryTests
                     It.IsAny<DateTime>(),
                     It.IsAny<List<Crumb>>(),
                     It.IsAny<List<Alert>>(),
-                    It.IsAny<List<string>>(),
+                    new List<string>() { "some-tag" },
                     It.IsAny<List<Document>>(),
                     It.IsAny<List<string>>(),
                     It.IsAny<List<Profile>>(),

@@ -105,7 +105,7 @@ public class LandingPageRepository(
             if (news is not null)
             {
                 contentBlock.NewsArticle = news.FirstOrDefault();
-                contentBlock.UseTag = news.Equals(await _newsRepository.GetLatestNewsByTag(tagOrCategory));
+                contentBlock.UseTag = news.First().Slug.Equals((await _newsRepository.GetLatestNewsByTag(tagOrCategory))?.First().Slug);
                 break;
             }
         }
