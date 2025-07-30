@@ -19,7 +19,7 @@ public class AtoZRepository(ContentfulConfig config,
     private readonly ICache _cache = cache;
     private readonly int _atoZTimeout = GetCacheConfiguration(configuration);
     private readonly ILogger _logger = logger;
-    private readonly List<string> contentTypesToInclude = new() { "article", "topic", "showcase", "landingPage" };
+    private readonly List<string> contentTypesToInclude = new() { "article", "topic", "landingPage" };
 
     private static int GetCacheConfiguration(IConfiguration configuration)
     {

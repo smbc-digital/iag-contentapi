@@ -54,7 +54,6 @@ public class AuthenticationHelper : IAuthenticationHelper
             "topic" or "topics" => "topics",
             "profile" or "profiles" => "profiles",
             "start-page" or "start-pages" => "start pages",
-            "showcase" or "showcases" => "showcase",
             _ => endpoint.ToLower(),
         };
     }

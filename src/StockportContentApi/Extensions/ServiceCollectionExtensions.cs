@@ -39,7 +39,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>, CallToActionBannerContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulDirectory, Directory>, DirectoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulShowcase, Showcase>, ShowcaseContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>, LandingPageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>, FooterContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
@@ -271,22 +270,6 @@ public static class ServiceCollectionExtensions
                     p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<ILogger<EventRepository>>()));
-
-        services.AddSingleton<Func<string, string, IShowcaseRepository>>(p =>
-            (contentfulConfig, cacheKeyConfig) =>
-                new ShowcaseRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                    p.GetService<IContentfulFactory<ContentfulShowcase, Showcase>>(),
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulNews, News>>(),
-                    new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                        p.GetService<Func<string, CacheKeyConfig>>()(cacheKeyConfig),
-                        p.GetService<IContentfulClientManager>(),
-                        p.GetService<ITimeProvider>(),
-                        p.GetService<IContentfulFactory<ContentfulEvent, Event>>(),
-                        p.GetService<IContentfulFactory<ContentfulEventHomepage, EventHomepage>>(),
-                        p.GetService<ICache>(),
-                        p.GetService<IConfiguration>()),
-                    p.GetService<ILogger<ShowcaseRepository>>()));
 
         services.AddSingleton<Func<string, string, ILandingPageRepository>>(p =>
             (contentfulConfig, cacheKeyConfig) =>
