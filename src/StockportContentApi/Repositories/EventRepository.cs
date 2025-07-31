@@ -178,19 +178,19 @@ public class EventRepository : BaseRepository, IEventRepository
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
-                                .Where(e => CheckDates(searchdateFrom, searchdateTo, e))
-                                .Where(e => string.IsNullOrWhiteSpace(category)
-                                    || e.EventCategories.Any(c => c.Slug.ToLower().Equals(category.ToLower()))
-                                    || e.EventCategories.Any(c => c.Name.ToLower().Equals(category.ToLower())))
-                                .Where(e => string.IsNullOrWhiteSpace(tag) || e.Tags.Contains(tag.ToLower()))
-                                .Where(e => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free")
+                                .Where(evnt => CheckDates(searchdateFrom, searchdateTo, evnt))
+                                .Where(evnt => string.IsNullOrWhiteSpace(category)
+                                    || evnt.EventCategories.Any(cat => cat.Slug.ToLower().Equals(category.ToLower()))
+                                    || evnt.EventCategories.Any(cat => cat.Name.ToLower().Equals(category.ToLower())))
+                                .Where(evnt => string.IsNullOrWhiteSpace(tag) || evnt.Tags.Contains(tag.ToLower()))
+                                .Where(evnt => string.IsNullOrWhiteSpace(price) || price.ToLower().Equals("paid,free")
                                     || price.ToLower().Equals("free,paid")
-                                    || price.ToLower().Equals("free") && (e.Free ?? false)
-                                    || price.ToLower().Equals("paid") && (e.Paid ?? false))
-                                .Where(e => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(e.Coord) < 3200)
-                                .OrderBy(o => o.EventDate)
-                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                .ThenBy(t => t.Title)
+                                    || price.ToLower().Equals("free") && (evnt.Free ?? false)
+                                    || price.ToLower().Equals("paid") && (evnt.Paid ?? false))
+                                .Where(evnt => latitude.Equals(0) && longitude.Equals(0) || searchCoord.GetDistanceTo(evnt.Coord) < 3200)
+                                .OrderBy(evnt => evnt.EventDate)
+                                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                                .ThenBy(evnt => evnt.Title)
                                 .ToList();
 
         List<Event> featuredEvents = events
@@ -237,13 +237,15 @@ public class EventRepository : BaseRepository, IEventRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => string.IsNullOrWhiteSpace(category)
-                                    || e.EventCategories.Select(c => c.Slug.ToLower()).Contains(category.ToLower())
-                                    || e.EventCategories.Select(c => c.Name.ToLower()).Contains(category.ToLower()))
-                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                                .OrderBy(o => o.EventDate)
-                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                .ThenBy(t => t.Title)
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries)
+                                .Where(evnt => string.IsNullOrWhiteSpace(category)
+                                    || evnt.EventCategories.Select(cat => cat.Slug.ToLower()).Contains(category.ToLower())
+                                    || evnt.EventCategories.Select(cat => cat.Name.ToLower()).Contains(category.ToLower()))
+                                .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
+                                .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
+                                .OrderBy(evnt => evnt.EventDate)
+                                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                                .ThenBy(evnt => evnt.Title)
                                 .ToList();
 
         return onlyNextOccurrence
@@ -255,12 +257,14 @@ public class EventRepository : BaseRepository, IEventRepository
     {
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
-        List<Event> events = GetAllEventsAndTheirRecurrences(entries).Where(e => string.IsNullOrWhiteSpace(tag)
-                                    || e.Tags.Contains(tag.ToLower()))
-                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                                .OrderBy(o => o.EventDate)
-                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                .ThenBy(t => t.Title)
+        List<Event> events = GetAllEventsAndTheirRecurrences(entries)
+                                .Where(evnt => string.IsNullOrWhiteSpace(tag)
+                                    || evnt.Tags.Contains(tag.ToLower()))
+                                .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
+                                .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
+                                .OrderBy(evnt => evnt.EventDate)
+                                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                                .ThenBy(evnt => evnt.Title)
                                 .ToList();
 
         return onlyNextOccurrence
@@ -313,10 +317,10 @@ public class EventRepository : BaseRepository, IEventRepository
         IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyAsync(_allEventsCacheKey, GetAllEvents, _eventsTimeout);
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
-                                .Where(e => _dateComparer.EventDateIsBetweenTodayAndLater(e.EventDate))
-                                .OrderBy(o => o.EventDate)
-                                .ThenBy(c => TimeSpan.Parse(c.StartTime))
-                                .ThenBy(t => t.Title)
+                                .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
+                                .OrderBy(evnt => evnt.EventDate)
+                                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                                .ThenBy(evnt => evnt.Title)
                                 .ToList();
 
         return GetNextOccurenceOfEvents(events);
@@ -358,6 +362,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
         List<Event> futureEvents = allEvents
             .Where(evnt => _dateComparer.EventIsInTheFuture(evnt.EventDate, evnt.StartTime, evnt.EndTime))
+            .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
             .OrderBy(evnt => evnt.EventDate)
             .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
             .ThenBy(evnt => evnt.Title)
