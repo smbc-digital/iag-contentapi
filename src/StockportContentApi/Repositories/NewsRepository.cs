@@ -237,7 +237,6 @@ public class NewsRepository : BaseRepository, INewsRepository
             .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue))
             .Where(news => news.SunriseDate <= _timeProvider.Now());
 
-
         List<News> archivedNewsEntries = filteredEntries
             .Select(_newsContentfulFactory.ToModel)
             .GetNewsDates(out List<DateTime> dates, _timeProvider)

@@ -8,18 +8,10 @@ public interface IContentfulClientManager
     IContentfulManagementClient GetManagementClient(ContentfulConfig config);
 }
 
-public class ContentfulClientManager : IContentfulClientManager
+public class ContentfulClientManager(System.Net.Http.HttpClient httpClient, IConfiguration configuration) : IContentfulClientManager
 {
-    private readonly System.Net.Http.HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
-
-    public ContentfulClientManager(
-        System.Net.Http.HttpClient httpClient,
-        IConfiguration configuration)
-    {
-        _httpClient = httpClient;
-        _configuration = configuration;
-    }
+    private readonly System.Net.Http.HttpClient _httpClient = httpClient;
+    private readonly IConfiguration _configuration = configuration;
 
     public IContentfulClient GetClient(ContentfulConfig config)
     {
