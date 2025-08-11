@@ -33,4 +33,5 @@ public class Article
     public string AssociatedTagCategory { get; set; }
     public List<Event> Events { get; set; }
     public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
+    public string ContentfulId { get; set; }
 }
