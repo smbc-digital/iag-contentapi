@@ -35,8 +35,6 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
                                         .OrderByDescending(section => section)
                                         .FirstOrDefault();
 
-        string contentfulId = entry.Sys.Id;
-
         return new()
         {
             Body = !string.IsNullOrEmpty(entry.Body)
@@ -111,7 +109,7 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
             InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
             AssociatedTagCategory = entry.AssociatedTagCategory,
             CallToActionBanners = entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList(),
-            ContentfulId = contentfulId
+            ContentfulId = entry.Sys.Id
         };
     }
 }
