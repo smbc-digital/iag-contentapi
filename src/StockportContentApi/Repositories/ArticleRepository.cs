@@ -4,6 +4,7 @@ public interface IArticleRepository
 {
     Task<HttpResponse> Get();
     Task<HttpResponse> GetArticle(string articleSlug);
+    Task<HttpResponse> GetRawArticle(string articleSlug);
 }
 
 public class ArticleRepository(ContentfulConfig config,
@@ -45,12 +46,30 @@ public class ArticleRepository(ContentfulConfig config,
 
         if (article is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
-            
+
         await GetArticleRelatedEvents(article);
 
         ProcessArticleContent(article);
 
         return HttpResponse.Successful(article);
+    }
+
+    public async Task<HttpResponse> GetRawArticle(string articleSlug)
+    {
+        ContentfulArticle entry = await GetArticleEntry(articleSlug);
+
+        if (entry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+
+        return HttpResponse.Successful(
+            new
+            {
+                sys = new { id = entry.Sys.Id },
+                fields = new
+                {
+                    title = entry.Title
+                }
+            });
     }
 
     private async Task GetArticleRelatedEvents(Article article)
