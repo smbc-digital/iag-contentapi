@@ -102,7 +102,27 @@ public class ArticleRepository(ContentfulConfig config,
 
         Article article = _contentfulFactory.ToModel(entry);
 
-        article.RawContentful = JObject.FromObject(entry);
+        var contentfulEntry = new
+        {
+            sys = new
+            {
+                id = entry.Sys.Id,
+                type = "Entry",
+                contentType = new { sys = new { id = "article", type = "Link", linkType = "ContentType" } },
+                locale = "en-GB"
+            },
+            fields = new
+            {
+                title = entry.Title,
+                slug = entry.Slug,
+                teaser = entry.Teaser,
+                body = entry.Body,
+                teaserImage = entry.TeaserImage,
+                image = entry.Image
+            }
+        };
+
+        article.RawContentful = JObject.FromObject(contentfulEntry);
 
         return article;
     }

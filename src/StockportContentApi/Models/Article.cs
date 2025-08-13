@@ -36,6 +36,5 @@ public class Article
     public List<Event> Events { get; set; }
     public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
     public string ContentfulId { get; set; }
-    public Dictionary<string, object> Fields { get; set; }
     public JObject RawContentful { get; set; }
 }
