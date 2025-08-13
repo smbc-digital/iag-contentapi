@@ -12,13 +12,6 @@ public class ArticleController(ResponseHandler handler,
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
         await _handler.Get(() => _createRepository(businessId, businessId).GetArticle(articleSlug));
 
-    [HttpGet]
-    [Route("{businessId}/articles/{articleSlug}/raw")]
-    [Route("v1/{businessId}/articles/{articleSlug}/raw")]
-
-    public async Task<IActionResult> GetRawContentfulData(string articleSlug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId, businessId).GetRawArticle(articleSlug));
-
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
     [Route("{businessId}/articleSiteMap")]

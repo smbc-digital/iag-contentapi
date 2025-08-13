@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Models;
+﻿using Newtonsoft.Json.Linq;
+
+namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
 public class Article
@@ -35,4 +37,5 @@ public class Article
     public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
     public string ContentfulId { get; set; }
     public Dictionary<string, object> Fields { get; set; }
+    public JObject RawContentful { get; set; }
 }

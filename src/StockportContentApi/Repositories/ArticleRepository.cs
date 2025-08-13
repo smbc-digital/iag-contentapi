@@ -1,10 +1,11 @@
-﻿namespace StockportContentApi.Repositories;
+﻿using Newtonsoft.Json.Linq;
+
+namespace StockportContentApi.Repositories;
 
 public interface IArticleRepository
 {
     Task<HttpResponse> Get();
     Task<HttpResponse> GetArticle(string articleSlug);
-    Task<HttpResponse> GetRawArticle(string articleSlug);
 }
 
 public class ArticleRepository(ContentfulConfig config,
@@ -54,24 +55,6 @@ public class ArticleRepository(ContentfulConfig config,
         return HttpResponse.Successful(article);
     }
 
-    public async Task<HttpResponse> GetRawArticle(string articleSlug)
-    {
-        ContentfulArticle entry = await GetArticleEntry(articleSlug);
-
-        if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
-
-        return HttpResponse.Successful(
-            new
-            {
-                sys = new { id = entry.Sys.Id },
-                fields = new
-                {
-                    title = entry.Title
-                }
-            });
-    }
-
     private async Task GetArticleRelatedEvents(Article article)
     {
         if (!string.IsNullOrEmpty(article.AssociatedTagCategory))
@@ -110,14 +93,18 @@ public class ArticleRepository(ContentfulConfig config,
         return entries?.Select(_contentfulFactoryArticle.ToModel);
     }
 
-    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
+    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug, bool preview = false)
     {
         ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug), _redisExpiryConfiguration.Articles);
 
         if (entry is null)
             return null;
 
-        return _contentfulFactory.ToModel(entry);
+        Article article = _contentfulFactory.ToModel(entry);
+
+        article.RawContentful = JObject.FromObject(entry);
+
+        return article;
     }
 
     private async Task<ContentfulArticle> GetArticleEntry(string articleSlug)

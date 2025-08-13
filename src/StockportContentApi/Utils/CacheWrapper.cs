@@ -22,21 +22,15 @@ public interface ICache
 }
 
 [ExcludeFromCodeCoverage]
-public class Cache : ICache
+public class Cache(IDistributedCacheWrapper memoryCache,
+                ILogger<ICache> logger,
+                bool useRedisCache,
+                bool useLocalCache = true) : ICache
 {
-    private readonly ILogger<ICache> _logger;
-    private readonly IDistributedCacheWrapper _memoryCache;
-    private readonly bool _useLocalCache;
-    private readonly bool _useRedisCache;
-
-    public Cache(IDistributedCacheWrapper memoryCache, ILogger<ICache> logger, bool useRedisCache,
-        bool useLocalCache = true)
-    {
-        _memoryCache = memoryCache;
-        _logger = logger;
-        _useRedisCache = useRedisCache;
-        _useLocalCache = useLocalCache;
-    }
+    private readonly ILogger<ICache> _logger = logger;
+    private readonly IDistributedCacheWrapper _memoryCache = memoryCache;
+    private readonly bool _useLocalCache = useLocalCache;
+    private readonly bool _useRedisCache = useRedisCache;
 
     public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod) =>
         GetFromCacheOrDirectly(cacheKey, fallbackMethod, 60);
