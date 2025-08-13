@@ -104,21 +104,13 @@ public class ArticleRepository(ContentfulConfig config,
 
         var contentfulEntry = new
         {
-            sys = new
-            {
-                id = entry.Sys.Id,
-                type = "Entry",
-                contentType = new { sys = new { id = "article", type = "Link", linkType = "ContentType" } },
-                locale = "en-GB"
-            },
+            sys = entry.Sys,
             fields = new
             {
                 title = entry.Title,
                 slug = entry.Slug,
                 teaser = entry.Teaser,
-                body = entry.Body,
-                teaserImage = entry.TeaserImage,
-                image = entry.Image
+                body = entry.Body
             }
         };
 
