@@ -105,12 +105,24 @@ public class ArticleRepository(ContentfulConfig config,
         var contentfulEntry = new
         {
             sys = entry.Sys,
-            title = entry.Title,
-            slug = entry.Slug,
-            teaser = entry.Teaser,
-            body = entry.Body
+            fields = new
+            {
+                title = entry.Title,
+                body = entry.Body,
+                breadcrumbs = entry.Breadcrumbs,
+                image = entry.Image,
+                alerts = entry.Alerts,
+                sections = entry.Sections,
+                alertsInline = entry.AlertsInline,
+                documents = entry.Documents,
+                profiles = entry.Profiles,
+                inlineQuotes = entry.InlineQuotes,
+                logoAreaTitle = entry.LogoAreaTitle,
+                trustedLogos = entry.TrustedLogos,
+                hideLastUpdated = entry.HideLastUpdated
+            }
         };
-
+    
         article.RawContentful = JObject.FromObject(contentfulEntry);
 
         return article;
