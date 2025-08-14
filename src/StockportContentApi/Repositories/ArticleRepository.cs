@@ -105,13 +105,10 @@ public class ArticleRepository(ContentfulConfig config,
         var contentfulEntry = new
         {
             sys = entry.Sys,
-            fields = new
-            {
-                title = entry.Title,
-                slug = entry.Slug,
-                teaser = entry.Teaser,
-                body = entry.Body
-            }
+            title = entry.Title,
+            slug = entry.Slug,
+            teaser = entry.Teaser,
+            body = entry.Body
         };
 
         article.RawContentful = JObject.FromObject(contentfulEntry);
