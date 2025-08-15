@@ -34,7 +34,8 @@ public class SectionControllerTests
                             new DateTime(),
                             new DateTime(),
                             new DateTime(),
-                            new List<Alert>());
+                            new List<Alert>(),
+                            new List<InlineQuote>());
 
         _mockRepository
             .Setup(repo => repo.GetSections(It.IsAny<string>()))
