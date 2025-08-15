@@ -10,4 +10,5 @@ public class ContentfulSection : ContentfulReference
     public string LogoAreaTitle { get; set; }
     public DateTime UpdatedAt { get; set; }
     public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
+    public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
 }

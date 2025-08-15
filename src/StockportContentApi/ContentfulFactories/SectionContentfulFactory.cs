@@ -1,26 +1,18 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Section>
+public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+    IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
+    ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
+    IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory) : IContentfulFactory<ContentfulSection, Section>
 {
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<Asset, Document> _documentFactory;
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory;
-    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory;
-    private readonly IVideoRepository _videoRepository;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-
-    public SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-        IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
-        ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory)
-    {
-        _profileFactory = profileFactory;
-        _documentFactory = documentFactory;
-        _videoRepository = videoRepository;
-        _dateComparer = new DateComparer(timeProvider);
-        _alertFactory = alertFactory;
-        _trustedLogoFactory = trustedLogoFactory;
-    }
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
+    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
+    private readonly IVideoRepository _videoRepository = videoRepository;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
 
     public Section ToModel(ContentfulSection entry)
     {
@@ -54,6 +46,7 @@ public class SectionContentfulFactory : IContentfulFactory<ContentfulSection, Se
                 entry.SunriseDate,
                 entry.SunsetDate,
                 updatedAt,
-                alertsInline);
+                alertsInline,
+                entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList());
     }
 }

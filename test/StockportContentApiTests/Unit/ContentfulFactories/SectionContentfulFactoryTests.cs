@@ -10,6 +10,7 @@ public class SectionContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory = new();
 
     public SectionContentfulFactoryTests()
     {
@@ -24,7 +25,8 @@ public class SectionContentfulFactoryTests
                                                     _videoRepository.Object,
                                                     _timeProvider.Object,
                                                     _alertFactory.Object,
-                                                    _brandingFactory.Object);
+                                                    _brandingFactory.Object,
+                                                    _inlineQuoteContentfulFactory.Object);
     }
 
     [Fact]
@@ -61,12 +63,18 @@ public class SectionContentfulFactoryTests
             .Returns(profile);
 
         Document document = new DocumentBuilder().Build();
-        _documentFactory.Setup(documentFactory => documentFactory.ToModel(_contentfulSection.Documents.First())).Returns(document);
+        _documentFactory
+            .Setup(documentFactory => documentFactory.ToModel(_contentfulSection.Documents.First()))
+            .Returns(document);
 
-        _videoRepository.Setup(videoFactory => videoFactory.Process(_contentfulSection.Body)).Returns("this is processed body");
+        _videoRepository
+            .Setup(videoFactory => videoFactory.Process(_contentfulSection.Body))
+            .Returns("this is processed body");
 
         Alert alert = new("title", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
-        _alertFactory.Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>())).Returns(alert);
+        _alertFactory
+            .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
+            .Returns(alert);
 
         // Act
         Section result = _sectionFactory.ToModel(_contentfulSection);

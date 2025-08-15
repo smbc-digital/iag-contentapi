@@ -15,6 +15,7 @@ public class Section
     public DateTime SunriseDate { get; }
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
+    public List<InlineQuote> InlineQuotes { get; set; }
 
     public Section(string title,
                 string slug,
@@ -27,7 +28,8 @@ public class Section
                 DateTime sunriseDate,
                 DateTime sunsetDate,
                 DateTime updatedAt,
-                IEnumerable<Alert> alertsInline)
+                IEnumerable<Alert> alertsInline,
+                List<InlineQuote> inlineQuotes)
     {
         Title = title;
         Slug = slug;
@@ -41,6 +43,7 @@ public class Section
         SunsetDate = sunsetDate;
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
+        InlineQuotes = inlineQuotes;
     }
 
     public Section()
