@@ -104,7 +104,15 @@ public class ArticleRepository(ContentfulConfig config,
 
         var contentfulEntry = new
         {
-            sys = entry.Sys,
+            sys = new
+            {
+                id = entry.Sys.Id,
+                type = entry.Sys.Type,
+                locale = entry.Sys.Locale,
+                contentType = entry.Sys.ContentType,
+                environment = entry.Sys.Environment,
+                space = entry.Sys.Space
+            },
             fields = new
             {
                 title = entry.Title,
@@ -119,7 +127,7 @@ public class ArticleRepository(ContentfulConfig config,
                 hideLastUpdated = entry.HideLastUpdated
             }
         };
-    
+
         article.RawContentful = JObject.FromObject(contentfulEntry);
 
         return article;
