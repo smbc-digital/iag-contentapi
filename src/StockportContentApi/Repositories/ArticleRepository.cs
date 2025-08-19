@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public interface IArticleRepository
 {
@@ -93,7 +91,7 @@ public class ArticleRepository(ContentfulConfig config,
         return entries?.Select(_contentfulFactoryArticle.ToModel);
     }
 
-    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug, bool preview = false)
+    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
     {
         ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug), _redisExpiryConfiguration.Articles);
 

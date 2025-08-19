@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace StockportContentApi.Models;
+﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
 public class Article
