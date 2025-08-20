@@ -50,32 +50,6 @@ public class SectionRepository(ContentfulConfig config,
             ? null
             : _contentfulFactory.ToModel(entry);
 
-        var contentfulEntry = new
-        {
-            sys = new
-            {
-                id = entry.Sys.Id,
-                type = entry.Sys.Type,
-                locale = entry.Sys.Locale,
-                contentType = entry.Sys.ContentType,
-                environment = entry.Sys.Environment,
-                space = entry.Sys.Space
-            },
-            fields = new
-            {
-                title = entry.Title,
-                body = entry.Body,
-                alertsInline = entry.AlertsInline,
-                inlineQuotes = entry.InlineQuotes,
-                logoAreaTitle = entry.LogoAreaTitle,
-                trustedLogos = entry.TrustedLogos,
-                documents = entry.Documents,
-                profiles = entry.Profiles
-            }
-        };
-
-        section.RawContentful = JObject.FromObject(contentfulEntry);
-
         return section.GetType().Equals(typeof(NullHomepage))
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No section found")
             : HttpResponse.Successful(section);

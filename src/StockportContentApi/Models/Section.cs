@@ -16,7 +16,6 @@ public class Section
     public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
-    public JObject RawContentful { get; set; }
 
     public Section(string title,
                 string slug,
