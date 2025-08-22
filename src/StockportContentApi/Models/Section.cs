@@ -12,8 +12,6 @@ public class Section
     public List<Document> Documents { get; }
     public string LogoAreaTitle { get; set; }
     public List<TrustedLogo> TrustedLogos { get; set; }
-    public DateTime SunriseDate { get; }
-    public DateTime SunsetDate { get; }
     public DateTime UpdatedAt { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
 
@@ -25,8 +23,6 @@ public class Section
                 List<Document> documents,
                 string logoAreaTitle,
                 List<TrustedLogo> trustedLogos,
-                DateTime sunriseDate,
-                DateTime sunsetDate,
                 DateTime updatedAt,
                 IEnumerable<Alert> alertsInline,
                 List<InlineQuote> inlineQuotes)
@@ -39,8 +35,6 @@ public class Section
         Documents = documents;
         LogoAreaTitle = logoAreaTitle;
         TrustedLogos = trustedLogos;
-        SunriseDate = sunriseDate;
-        SunsetDate = sunsetDate;
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
         InlineQuotes = inlineQuotes;

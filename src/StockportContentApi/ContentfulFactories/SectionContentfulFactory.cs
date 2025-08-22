@@ -24,8 +24,8 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
 
         string body = _videoRepository.Process(entry.Body);
 
-        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+        IEnumerable<Alert> alertsInline = entry.AlertsInline.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                             .Where(alert => !alert.Severity.Equals("Condolence"))
                                             .Select(_alertFactory.ToModel);
 
@@ -43,8 +43,6 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
                 documents,
                 entry.LogoAreaTitle,
                 trustedLogos,
-                entry.SunriseDate,
-                entry.SunsetDate,
                 updatedAt,
                 alertsInline,
                 entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList());

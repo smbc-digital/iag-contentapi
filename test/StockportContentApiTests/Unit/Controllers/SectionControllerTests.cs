@@ -32,8 +32,6 @@ public class SectionControllerTests
                             "logo area title",
                             new List<TrustedLogo>(),
                             new DateTime(),
-                            new DateTime(),
-                            new DateTime(),
                             new List<Alert>(),
                             new List<InlineQuote>());
 

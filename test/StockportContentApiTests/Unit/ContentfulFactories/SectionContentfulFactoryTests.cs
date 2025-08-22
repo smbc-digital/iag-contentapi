@@ -88,8 +88,6 @@ public class SectionContentfulFactoryTests
         Assert.Single(result.Profiles);
         Assert.Equal(profile, result.Profiles.First());
         Assert.Equal("slug", result.Slug);
-        Assert.Equal(DateTime.MinValue, result.SunriseDate);
-        Assert.Equal(DateTime.MinValue, result.SunsetDate);
         Assert.Equal("title", result.Title);
     }
 
