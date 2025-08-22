@@ -53,8 +53,6 @@ public class SectionContentfulFactoryTests
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
-            Author = "author",
-            Subject = "subject",
             Colour = EColourScheme.Teal
         };
 
