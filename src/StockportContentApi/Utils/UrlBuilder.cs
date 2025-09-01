@@ -4,6 +4,7 @@ public interface IUrlBuilder
 {
     string UrlFor(string type, int referenceLevel = -1, bool displayOnAtoZ = false, string slug = null, int limit = -1, string tag = null);
 }
+
 public class UrlBuilder(string contentfulApiUrl) : IUrlBuilder
 {
     private readonly string _contentfulApiUrl = contentfulApiUrl;

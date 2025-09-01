@@ -1,30 +1,7 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class Homepage
-{
-    public string FeaturedTasksHeading { get; }
-    public string FeaturedTasksSummary { get; }
-    public IEnumerable<SubItem> FeaturedTasks { get; }
-    public IEnumerable<SubItem> FeaturedTopics { get; }
-    public IEnumerable<Alert> Alerts { get; }
-    public IEnumerable<CarouselContent> CarouselContents { get; }
-    public string BackgroundImage { get; }
-    public string ForegroundImage { get; }
-    public string ForegroundImageLocation { get; }
-    public string ForegroundImageLink { get; }
-    public string ForegroundImageAlt { get; }
-    public string FreeText { get; }
-    public string Title { get; }
-    public string ImageOverlayText { get; set; }
-    public string EventCategory { get; }
-    public string MetaDescription { get; set; }
-    public CarouselContent CampaignBanner { get; set; }
-    public CallToActionBanner CallToAction { get; set; }
-    public CallToActionBanner CallToActionPrimary { get; set; }
-    public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; }
-
-    public Homepage(string featuredTasksHeading,
+public class Homepage(string featuredTasksHeading,
                     string featuredTasksSummary,
                     IEnumerable<SubItem> featuredTasks,
                     IEnumerable<SubItem> featuredTopics,
@@ -44,28 +21,27 @@ public class Homepage
                     CallToActionBanner callToActionPrimary,
                     IEnumerable<SpotlightOnBanner> spotlightOnBanner,
                     string imageOverlayText)
-    {
-        FeaturedTasksHeading = featuredTasksHeading;
-        FeaturedTasksSummary = featuredTasksSummary;
-        FeaturedTasks = featuredTasks;
-        FeaturedTopics = featuredTopics;
-        Alerts = alerts;
-        CarouselContents = carouselContents;
-        BackgroundImage = backgroundImage;
-        ForegroundImage = foregroundImage;
-        ForegroundImageLocation = foregroundImageLocation;
-        ForegroundImageLink = foregroundImageLink;
-        ForegroundImageAlt = foregroundImageAlt;
-        FreeText = freeText;
-        EventCategory = eventCategory;
-        MetaDescription = metaDescription;
-        CampaignBanner = campaignBanner;
-        CallToAction = callToAction;
-        CallToActionPrimary = callToActionPrimary;
-        SpotlightOnBanner = spotlightOnBanner;
-        Title = title;
-        ImageOverlayText = imageOverlayText;
-    }
+{
+    public string FeaturedTasksHeading { get; } = featuredTasksHeading;
+    public string FeaturedTasksSummary { get; } = featuredTasksSummary;
+    public IEnumerable<SubItem> FeaturedTasks { get; } = featuredTasks;
+    public IEnumerable<SubItem> FeaturedTopics { get; } = featuredTopics;
+    public IEnumerable<Alert> Alerts { get; } = alerts;
+    public IEnumerable<CarouselContent> CarouselContents { get; } = carouselContents;
+    public string BackgroundImage { get; } = backgroundImage;
+    public string ForegroundImage { get; } = foregroundImage;
+    public string ForegroundImageLocation { get; } = foregroundImageLocation;
+    public string ForegroundImageLink { get; } = foregroundImageLink;
+    public string ForegroundImageAlt { get; } = foregroundImageAlt;
+    public string FreeText { get; } = freeText;
+    public string Title { get; } = title;
+    public string ImageOverlayText { get; set; } = imageOverlayText;
+    public string EventCategory { get; } = eventCategory;
+    public string MetaDescription { get; set; } = metaDescription;
+    public CarouselContent CampaignBanner { get; set; } = campaignBanner;
+    public CallToActionBanner CallToAction { get; set; } = callToAction;
+    public CallToActionBanner CallToActionPrimary { get; set; } = callToActionPrimary;
+    public IEnumerable<SpotlightOnBanner> SpotlightOnBanner { get; set; } = spotlightOnBanner;
 }
 
 [ExcludeFromCodeCoverage]

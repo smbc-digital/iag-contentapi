@@ -36,8 +36,8 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
             ? entry.TeaserImage.File.Url 
             : string.Empty;
 
-        IEnumerable<Alert> alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys) 
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+        IEnumerable<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
                                         .Select(_alertFactory.ToModel);
 

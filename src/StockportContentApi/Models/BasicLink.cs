@@ -1,15 +1,9 @@
 ﻿namespace StockportContentApi.Models;
 [ExcludeFromCodeCoverage]
 
-public class BasicLink
+public class BasicLink(string url, string text)
 {
-    public string Url { get; }
+    public string Url { get; } = url;
 
-    public string Text { get; }
-
-    public BasicLink(string url, string text)
-    {
-        Url = url;
-        Text = text;
-    }
+    public string Text { get; } = text;
 }

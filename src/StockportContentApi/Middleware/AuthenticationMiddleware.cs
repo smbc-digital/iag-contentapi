@@ -1,27 +1,11 @@
 ﻿namespace StockportContentApi.Middleware;
 
 [ExcludeFromCodeCoverage]
-public class AuthenticationMiddleware
+public class AuthenticationMiddleware(RequestDelegate next, IConfiguration configuration, IAuthenticationHelper authHelper)
 {
-    private readonly IAuthenticationHelper _authHelper;
-    private readonly IConfiguration _configuration;
-    private readonly Func<string, ContentfulConfig> _createConfig;
-    private readonly ILogger<AuthenticationMiddleware> _logger;
-    private readonly RequestDelegate _next;
-
-    public AuthenticationMiddleware(
-        RequestDelegate next,
-        IConfiguration configuration,
-        ILogger<AuthenticationMiddleware> logger,
-        IAuthenticationHelper authHelper,
-        Func<string, ContentfulConfig> createConfig)
-    {
-        _next = next;
-        _configuration = configuration;
-        _logger = logger;
-        _authHelper = authHelper;
-        _createConfig = createConfig;
-    }
+    private readonly IAuthenticationHelper _authHelper = authHelper;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly RequestDelegate _next = next;
 
     public async Task Invoke(HttpContext context)
     {
@@ -30,7 +14,6 @@ public class AuthenticationMiddleware
             await _next.Invoke(context);
             return;
         }
-            
 
         string apiConfigurationkey = _configuration["Authorization"] ?? string.Empty;
 

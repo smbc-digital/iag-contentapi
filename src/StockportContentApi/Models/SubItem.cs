@@ -17,7 +17,17 @@ public class SubItem
 
     public SubItem() { }
 
-    public SubItem(string slug, string title, string teaser, string teaserImage, string icon, string type, DateTime sunriseDate, DateTime sunsetDate, string image, List<SubItem> subItems, EColourScheme colourScheme)
+    public SubItem(string slug,
+                string title,
+                string teaser,
+                string teaserImage,
+                string icon,
+                string type,
+                DateTime sunriseDate,
+                DateTime sunsetDate,
+                string image,
+                List<SubItem> subItems,
+                EColourScheme colourScheme)
     {
         Slug = slug;
         Teaser = teaser;

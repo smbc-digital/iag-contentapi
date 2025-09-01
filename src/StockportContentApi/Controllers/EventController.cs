@@ -55,7 +55,7 @@ public class EventController(ResponseHandler handler,
 
         ContentfulCollection<ContentfulEventCategory> existingCategories = await repository.GetContentfulEventCategories();
         List<ContentfulEventCategory> referencedCategories = existingCategories.Items
-            .Where(c => eventDetail.EventCategories.Any(ed => c.Name.Equals(ed.Name)))
+            .Where(category => eventDetail.EventCategories.Any(eventCategory => category.Name.Equals(eventCategory.Name)))
             .ToList();
 
         ManagementEvent managementEvent = ConvertToManagementEvent(eventDetail, referencedCategories, existingEvent);

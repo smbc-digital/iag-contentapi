@@ -22,8 +22,8 @@ public class ParentTopicContentfulFactory(IContentfulFactory<ContentfulReference
                                     .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = topicInBreadcrumb.SecondaryItems.Select(CheckCurrentArticle)
-                                        .Where(subItem => subItem is not null
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Where(secondaryItem => secondaryItem is not null
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(secondaryItem.SunriseDate, secondaryItem.SunsetDate))
                                         .Select(_subItemFactory.ToModel).ToList();
 
         return new(topicInBreadcrumb.Title, topicInBreadcrumb.Slug, subItems, secondaryItems);

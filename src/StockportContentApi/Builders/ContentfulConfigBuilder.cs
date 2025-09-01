@@ -5,14 +5,9 @@ public interface IContentfulConfigBuilder
     ContentfulConfig Build(string businessId);
 }
 
-public class ContentfulConfigBuilder : IContentfulConfigBuilder
+public class ContentfulConfigBuilder(IConfiguration configuration) : IContentfulConfigBuilder
 {
-    private readonly IConfiguration _configuration;
-
-    public ContentfulConfigBuilder(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
+    private readonly IConfiguration _configuration = configuration;
 
     public ContentfulConfig Build(string businessId)
     {

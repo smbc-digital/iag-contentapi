@@ -1,16 +1,10 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class BusinessIdToRedirects
+public class BusinessIdToRedirects(IDictionary<string, string> shortUrlRedirects, IDictionary<string, string> legacyUrlRedirects)
 {
-    public readonly RedirectDictionary ShortUrlRedirects;
-    public readonly RedirectDictionary LegacyUrlRedirects;
-
-    public BusinessIdToRedirects(IDictionary<string, string> shortUrlRedirects, IDictionary<string, string> legacyUrlRedirects)
-    {
-        ShortUrlRedirects = new RedirectDictionary(shortUrlRedirects);
-        LegacyUrlRedirects = new RedirectDictionary(legacyUrlRedirects);
-    }
+    public readonly RedirectDictionary ShortUrlRedirects = new(shortUrlRedirects);
+    public readonly RedirectDictionary LegacyUrlRedirects = new(legacyUrlRedirects);
 }
 
 public class NullBusinessIdToRedirects : BusinessIdToRedirects

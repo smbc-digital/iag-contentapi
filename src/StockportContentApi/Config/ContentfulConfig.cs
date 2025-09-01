@@ -23,7 +23,7 @@ public class ContentfulConfig
     // OLD (FUNC)
     public ContentfulConfig(string businessId)
     {
-        Utils.Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
+        Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
         BusinessId = businessId;
     }
 

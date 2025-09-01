@@ -5,9 +5,7 @@ public abstract class BaseRepository
     public async Task<ContentfulCollection<T>> GetAllEntriesAsync<T>(IContentfulClient _client, QueryBuilder<T> builder, ILogger logger = null)
     {
         if (!BuilderHasProperty(builder, "limit"))
-        {
             builder.Limit(ContentfulQueryValues.LIMIT_MAX);
-        }
 
         builder.Skip(0);
         ContentfulCollection<T> result;
@@ -24,8 +22,6 @@ public abstract class BaseRepository
         return result;
     }
 
-    private static bool BuilderHasProperty<T>(QueryBuilder<T> builder, string property)
-    {
-        return builder.Build().Contains(property);
-    }
+    private static bool BuilderHasProperty<T>(QueryBuilder<T> builder, string property) =>
+        builder.Build().Contains(property);
 }

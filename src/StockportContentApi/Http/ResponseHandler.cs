@@ -1,12 +1,9 @@
 ﻿namespace StockportContentApi.Http;
 
 [ExcludeFromCodeCoverage]
-public class ResponseHandler
+public class ResponseHandler(ILogger<ResponseHandler> logger)
 {
-    private readonly ILogger<ResponseHandler> _logger;
-
-    public ResponseHandler(ILogger<ResponseHandler> logger) =>
-        _logger = logger;
+    private readonly ILogger<ResponseHandler> _logger = logger;
 
     // TODO: Possibly not the most elegant way of doing this.
     public async Task<IActionResult> Get(Func<Task<HttpResponse>> doGet)

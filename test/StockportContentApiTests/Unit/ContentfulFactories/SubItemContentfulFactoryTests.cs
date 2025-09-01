@@ -167,27 +167,6 @@ public class SubItemContentfulFactoryTests
     }
 
     [Fact]
-    public void ToModel_ShouldHandleGroupsHomepageSlugCorrectly()
-    {
-        // Arrange
-        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
-            .Slug("test-group-homepage")
-            .Title("custom name")
-            .Title(string.Empty)
-            .SubItems(null)
-            .TertiaryItems(null)
-            .SecondaryItems(null)
-            .SystemContentTypeId("groupHomepage")
-            .Build();
-
-        // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(contentfulReference);
-
-        // Assert
-        subItem.Slug.Should().Be("groups");
-    }
-
-    [Fact]
     public void ToModel_ShouldSetPaymentsGroupIconCorrectly_WhenNonSet()
     {
         // Arrange

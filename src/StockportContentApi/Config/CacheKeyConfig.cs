@@ -16,7 +16,7 @@ public class CacheKeyConfig
 
     public CacheKeyConfig(string businessId)
     {
-        Utils.Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
+        Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
         BusinessId = businessId;
     }
 

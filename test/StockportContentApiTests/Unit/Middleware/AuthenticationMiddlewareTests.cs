@@ -5,18 +5,14 @@ public class AuthenticationMiddlewareTests
     private readonly AuthenticationMiddleware _middleware;
     private readonly Mock<RequestDelegate> _requestDelegate;
     private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<ILogger<AuthenticationMiddleware>> _logger;
     private readonly Mock<IAuthenticationHelper> _authHelper;
-    private readonly Mock<Func<string, ContentfulConfig>> _createConfig;
 
     public AuthenticationMiddlewareTests()
     {
-        _createConfig = new Mock<Func<string, ContentfulConfig>>();
         _configuration = new Mock<IConfiguration>();
         _requestDelegate = new Mock<RequestDelegate>();
-        _logger = new Mock<ILogger<AuthenticationMiddleware>>();
         _authHelper = new Mock<IAuthenticationHelper>();
-        _middleware = new AuthenticationMiddleware(_requestDelegate.Object, _configuration.Object, _logger.Object, _authHelper.Object, _createConfig.Object);
+        _middleware = new AuthenticationMiddleware(_requestDelegate.Object, _configuration.Object, _authHelper.Object);
     }
 
     [Fact]

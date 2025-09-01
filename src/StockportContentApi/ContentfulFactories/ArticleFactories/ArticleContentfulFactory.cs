@@ -1,17 +1,17 @@
 ﻿namespace StockportContentApi.ContentfulFactories.ArticleFactories;
 
 public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Section> sectionFactory,
-    IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
-    IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-    IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
-    IContentfulFactory<Asset, Document> documentFactory,
-    IVideoRepository videoRepository,
-    ITimeProvider timeProvider,
-    IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
-    IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
-    IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
-    IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory) : IContentfulFactory<ContentfulArticle, Article>
+                                    IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                    IContentfulFactory<ContentfulProfile, Profile> profileFactory,
+                                    IContentfulFactory<ContentfulArticle, Topic> parentTopicFactory,
+                                    IContentfulFactory<Asset, Document> documentFactory,
+                                    IVideoRepository videoRepository,
+                                    ITimeProvider timeProvider,
+                                    IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
+                                    IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                    IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
+                                    IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory) : IContentfulFactory<ContentfulArticle, Article>
 {
     private readonly IContentfulFactory<ContentfulSection, Section> _sectionFactory = sectionFactory;
     private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
@@ -63,15 +63,15 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                         .Select(_sectionFactory.ToModel).ToList(),
 
-            Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+            Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                             .Select(_crumbFactory.ToModel).ToList(),
 
-            Alerts = entry.Alerts.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
+            Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(_alertFactory.ToModel),
 
-            Profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
+            Profiles = entry.Profiles.Where(profile => ContentfulHelpers.EntryIsNotALink(profile.Sys))
                         .Select(_profileFactory.ToModel).ToList(),
 
             TrustedLogos = entry.TrustedLogos is not null
@@ -82,19 +82,19 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
             LogoAreaTitle = entry.LogoAreaTitle,
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
 
-            Documents = entry.Documents.Where(section => ContentfulHelpers.EntryIsNotALink(section.SystemProperties))
+            Documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
                             .Select(_documentFactory.ToModel).ToList(),
 
-            RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+            RelatedContent = entry.RelatedContent.Where(relatedContent => ContentfulHelpers.EntryIsNotALink(relatedContent.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(relatedContent.SunriseDate, relatedContent.SunsetDate))
                                 .Select(_subitemFactory.ToModel).ToList(),
 
             SunriseDate = entry.SunriseDate,
             SunsetDate = entry.SunsetDate,
 
-            AlertsInline = entry.AlertsInline.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                            .Where(alert => !alert.Severity.Equals("Condolence"))
+            AlertsInline = entry.AlertsInline.Where(alertInline => ContentfulHelpers.EntryIsNotALink(alertInline.Sys)
+                                && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alertInline.SunriseDate, alertInline.SunsetDate))
+                            .Where(alertInline => !alertInline.Severity.Equals("Condolence"))
                             .Select(_alertFactory.ToModel),
 
             UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value

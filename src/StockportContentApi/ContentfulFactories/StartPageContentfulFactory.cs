@@ -1,17 +1,12 @@
 namespace StockportContentApi.ContentfulFactories;
 
-public class StartPageContentfulFactory : IContentfulFactory<ContentfulStartPage, StartPage>
+public class StartPageContentfulFactory(ITimeProvider timeProvider,
+                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                        IContentfulFactory<ContentfulReference, Crumb> crumbFactory) : IContentfulFactory<ContentfulStartPage, StartPage>
 {
-    private readonly DateComparer _dateComparer;
-    private IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-
-    public StartPageContentfulFactory(ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory, IContentfulFactory<ContentfulReference, Crumb> crumbFactory)
-    {
-        _dateComparer = new DateComparer(timeProvider);
-        _alertFactory = alertFactory;
-        _crumbFactory = crumbFactory;
-    }
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
 
     public StartPage ToModel(ContentfulStartPage entry)
     {

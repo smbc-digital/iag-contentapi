@@ -13,7 +13,6 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400.27" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
-    <PackageReference Include="jose-jwt" Version="5.0.0" />
     <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />

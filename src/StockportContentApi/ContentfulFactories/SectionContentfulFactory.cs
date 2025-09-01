@@ -1,10 +1,10 @@
 namespace StockportContentApi.ContentfulFactories;
 
 public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Profile> profileFactory,
-    IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
-    ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
-    IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory) : IContentfulFactory<ContentfulSection, Section>
+                                    IContentfulFactory<Asset, Document> documentFactory, IVideoRepository videoRepository,
+                                    ITimeProvider timeProvider, IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
+                                    IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory) : IContentfulFactory<ContentfulSection, Section>
 {
     private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;

@@ -1,17 +1,10 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class CommsContentfulFactory : IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>
+public class CommsContentfulFactory(IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+                                    IContentfulFactory<ContentfulEvent, Event> eventFactory) : IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>
 {
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly IContentfulFactory<ContentfulEvent, Event> _eventFactory;
-
-    public CommsContentfulFactory(
-        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-        IContentfulFactory<ContentfulEvent, Event> eventFactory)
-    {
-        _callToActionFactory = callToActionFactory;
-        _eventFactory = eventFactory;
-    }
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly IContentfulFactory<ContentfulEvent, Event> _eventFactory = eventFactory;
 
     public CommsHomepage ToModel(ContentfulCommsHomepage model)
     {
