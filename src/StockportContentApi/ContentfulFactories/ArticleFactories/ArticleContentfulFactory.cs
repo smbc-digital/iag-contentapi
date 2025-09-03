@@ -20,7 +20,7 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IVideoRepository _videoRepository = videoRepository;
-    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
+    private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;

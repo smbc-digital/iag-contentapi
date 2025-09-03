@@ -8,12 +8,6 @@ public class CacheKeyConfig
     public string EventsCacheKey;
     public string NewsCacheKey;
 
-    public CacheKeyConfig(string eventsCacheKey, string newsCacheKey)
-    {
-        EventsCacheKey = eventsCacheKey;
-        NewsCacheKey = newsCacheKey;
-    }
-
     public CacheKeyConfig(string businessId)
     {
         Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
