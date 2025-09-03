@@ -7,22 +7,7 @@ public class EventHomepageContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly EventHomepageContentfulFactory _factory;
 
-    private readonly ContentfulEventHomepage _entry = new()
-    {
-        TagOrCategory1 = "TagOrCategory1",
-        TagOrCategory2 = "TagOrCategory2",
-        TagOrCategory3 = "TagOrCategory3",
-        TagOrCategory4 = "TagOrCategory4",
-        TagOrCategory5 = "TagOrCategory5",
-        TagOrCategory6 = "TagOrCategory6",
-        TagOrCategory7 = "TagOrCategory7",
-        TagOrCategory8 = "TagOrCategory8",
-        TagOrCategory9 = "TagOrCategory9",
-        TagOrCategory10 = "TagOrCategory10",
-        MetaDescription = "MetaDescription",
-        Alerts = new List<ContentfulAlert> { new() },
-        GlobalAlerts = new List<ContentfulAlert> { new() }
-    };
+    private readonly ContentfulEventHomepage _entry = new ContentfulEventHomepageBuilder().Build();
 
     public EventHomepageContentfulFactoryTests()
     {

@@ -2,13 +2,13 @@
 
 public class SiteHeaderContentfulFactoryTests
 {
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubItemFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory = new();
 
-    private readonly SiteHeaderContentfulFactory _siteHeaderContentfulFactory;
+    private readonly SiteHeaderContentfulFactory _siteHeaderFactory;
 
     public SiteHeaderContentfulFactoryTests()
     {
-        _mockSubItemFactory
+        _subItemFactory
             .Setup(factory => factory.ToModel(It.IsAny<ContentfulReference>()))
             .Returns(new SubItem
             {
@@ -23,7 +23,7 @@ public class SiteHeaderContentfulFactoryTests
                 ColourScheme = EColourScheme.Purple
             });
 
-        _siteHeaderContentfulFactory = new SiteHeaderContentfulFactory(_mockSubItemFactory.Object);
+        _siteHeaderFactory = new SiteHeaderContentfulFactory(_subItemFactory.Object);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class SiteHeaderContentfulFactoryTests
         ContentfulSiteHeader contentfulSiteHeader = new ContentfulSiteHeaderBuilder().Build();
 
         // Act
-        SiteHeader siteHeader = _siteHeaderContentfulFactory.ToModel(contentfulSiteHeader);
+        SiteHeader siteHeader = _siteHeaderFactory.ToModel(contentfulSiteHeader);
         SubItem siteHeaderSubItem = siteHeader.Items.FirstOrDefault();
 
         // Assert
@@ -56,8 +56,7 @@ public class SiteHeaderContentfulFactoryTests
         contentfulSiteHeader.Logo.File.Url = string.Empty;
 
         // Act
-        SiteHeader siteHeader = _siteHeaderContentfulFactory.ToModel(contentfulSiteHeader);
-        SubItem siteHeaderSubItem = siteHeader.Items.FirstOrDefault();
+        SiteHeader siteHeader = _siteHeaderFactory.ToModel(contentfulSiteHeader);
 
         // Assert
         Assert.Equal(contentfulSiteHeader.Title, siteHeader.Title);

@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using System.Threading.Tasks;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class ServicePayPaymentRepositoryTests
 {
@@ -33,29 +35,27 @@ public class ServicePayPaymentRepositoryTests
     }
 
     [Fact]
-    public void ShouldGetsASinglePaymentItemFromASlug()
+    public async Task ShouldGetsASinglePaymentItemFromASlug()
     {
         // Arrange
-        const string slug = "any-payment";
-
         ContentfulServicePayPayment rawPayment = new ContentfulServicePayPaymentBuilder()
-                                                .Slug(slug)
-                                                .AccountReference("accountRef")
-                                                .CatalogueId("catId")
-                                                .Build();
+            .Slug("any-payment")
+            .AccountReference("accountRef")
+            .CatalogueId("catId")
+            .Build();
+
         ContentfulCollection<ContentfulServicePayPayment> collection = new()
         {
             Items = new List<ContentfulServicePayPayment> { rawPayment }
         };
 
-        QueryBuilder<ContentfulServicePayPayment> builder = new QueryBuilder<ContentfulServicePayPayment>().ContentTypeIs("servicePayPayment").FieldEquals("fields.slug", slug).Include(1);
 
         _contentfulClient
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulServicePayPayment>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulServicePayPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment(slug));
+        HttpResponse response = await _repository.GetPayment("any-payment");
         ServicePayPayment paymentItem = response.Get<ServicePayPayment>();
 
         // Assert

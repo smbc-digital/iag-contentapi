@@ -1,23 +1,22 @@
-using StockportContentApi.Controllers;
 using Directory = StockportContentApi.Models.Directory;
 
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class DirectoryControllerTests
 {
-    private readonly Mock<Func<string, IDirectoryRepository>> _mockCreateRepository = new();
-    private readonly Mock<IDirectoryRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IDirectoryRepository>> _createRepository = new();
+    private readonly Mock<IDirectoryRepository> _repository = new();
     private readonly DirectoryController _controller;
 
     public DirectoryControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new DirectoryController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new DirectoryController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -35,7 +34,7 @@ public class DirectoryControllerTests
             Body = "body",
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(directory));
 
@@ -43,7 +42,7 @@ public class DirectoryControllerTests
         IActionResult result = await _controller.GetDirectories("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -57,7 +56,7 @@ public class DirectoryControllerTests
             ContentfulId = "contentful-id"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(directory));
 
@@ -65,7 +64,7 @@ public class DirectoryControllerTests
         IActionResult result = await _controller.GetDirectory("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -78,7 +77,7 @@ public class DirectoryControllerTests
             Slug = "directory"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetEntry(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(directory));
 
@@ -86,6 +85,6 @@ public class DirectoryControllerTests
         IActionResult result = await _controller.GetDirectoryEntry("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

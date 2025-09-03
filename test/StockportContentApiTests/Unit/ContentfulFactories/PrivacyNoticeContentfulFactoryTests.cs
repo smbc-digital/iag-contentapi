@@ -2,11 +2,11 @@
 
 public class PrivacyNoticeContentfulFactoryTests
 {
-    private readonly PrivacyNoticeContentfulFactory _privacyNoticeContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
+    private readonly PrivacyNoticeContentfulFactory _privacyNoticeFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulPrivacyNotice, Topic>> _parentTopicFactory = new();
 
-    public PrivacyNoticeContentfulFactoryTests() => _privacyNoticeContentfulFactory = new PrivacyNoticeContentfulFactory(_mockCrumbFactory.Object, _parentTopicFactory.Object);
+    public PrivacyNoticeContentfulFactoryTests() => _privacyNoticeFactory = new PrivacyNoticeContentfulFactory(_crumbFactory.Object, _parentTopicFactory.Object);
 
     [Fact]
     public void ToModel_ShouldReturnPrivacyNotice()
@@ -15,7 +15,7 @@ public class PrivacyNoticeContentfulFactoryTests
         ContentfulPrivacyNotice contentfulPrivacyNotice = new();
 
         // Act
-        PrivacyNotice privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
+        PrivacyNotice privacyNotice = _privacyNoticeFactory.ToModel(contentfulPrivacyNotice);
 
         // Assert
         Assert.IsType<PrivacyNotice>(privacyNotice);
@@ -25,71 +25,47 @@ public class PrivacyNoticeContentfulFactoryTests
     public void ToModel_ShouldConvertContentfulPrivacyNoticeToPrivacyNotice()
     {
         // Arrange
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
-        {
-            Slug = "test-slug",
-            Title = "test-title",
-            Category = "test-category",
-            Purpose = "test-purpose",
-            TypeOfData = "test-type-of-data",
-            Legislation = "test-legislation",
-            Obtained = "test-obtained",
-            ExternallyShared = "test-externally-shared",
-            RetentionPeriod = "test-retention-period",
-            OutsideEu = false,
-            AutomatedDecision = false,
-            Breadcrumbs = new List<ContentfulReference>()
-        };
+        ContentfulPrivacyNotice contentfulPrivacyNotice = new ContentfulPrivacyNoticeBuilder().Build();
 
         // Act
-        PrivacyNotice privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
+        PrivacyNotice privacyNotice = _privacyNoticeFactory.ToModel(contentfulPrivacyNotice);
 
         // Assert
-        privacyNotice
-            .Should()
-            .BeEquivalentTo(contentfulPrivacyNotice, p => p
-            .ExcludingMissingMembers());
+        Assert.Equal(contentfulPrivacyNotice.Slug, privacyNotice.Slug);
+        Assert.Equal(contentfulPrivacyNotice.Title, privacyNotice.Title);
+        Assert.Equal(contentfulPrivacyNotice.Category, privacyNotice.Category);
+        Assert.Equal(contentfulPrivacyNotice.Purpose, privacyNotice.Purpose);
+        Assert.Equal(contentfulPrivacyNotice.TypeOfData, privacyNotice.TypeOfData);
+        Assert.Equal(contentfulPrivacyNotice.Legislation, privacyNotice.Legislation);
+        Assert.Equal(contentfulPrivacyNotice.Obtained, privacyNotice.Obtained);
+        Assert.Equal(contentfulPrivacyNotice.ExternallyShared, privacyNotice.ExternallyShared);
+        Assert.Equal(contentfulPrivacyNotice.RetentionPeriod, privacyNotice.RetentionPeriod);
+        Assert.Equal(contentfulPrivacyNotice.OutsideEu, privacyNotice.OutsideEu);
+        Assert.Equal(contentfulPrivacyNotice.AutomatedDecision, privacyNotice.AutomatedDecision);
     }
 
     [Fact]
     public void ToModel_ShouldNotAddLinks()
     {
         // Arrange
-        ContentfulPrivacyNotice contentfulPrivacyNotice = new()
-        {
-            Slug = "test-slug",
-            Title = "test-title",
-            Category = "test-category",
-            Purpose = "test-purpose",
-            TypeOfData = "test-type-of-data",
-            Legislation = "test-legislation",
-            Obtained = "test-obtained",
-            ExternallyShared = "test-externally-shared",
-            RetentionPeriod = "test-retention-period",
-            OutsideEu = false,
-            AutomatedDecision = false,
-            Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
-        };
-
+        ContentfulPrivacyNotice contentfulPrivacyNotice = new ContentfulPrivacyNoticeBuilder().Build();
+        contentfulPrivacyNotice.Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() };
         contentfulPrivacyNotice.Image.SystemProperties.LinkType = "Link";
         contentfulPrivacyNotice.Breadcrumbs.First().Sys.LinkType = "Link";
 
         // Act
-        PrivacyNotice privacyNotice = _privacyNoticeContentfulFactory.ToModel(contentfulPrivacyNotice);
+        PrivacyNotice privacyNotice = _privacyNoticeFactory.ToModel(contentfulPrivacyNotice);
 
         // Assert
         Assert.Empty(privacyNotice.Breadcrumbs);
-        _mockCrumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _parentTopicFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulPrivacyNotice>()), Times.Once);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _parentTopicFactory.Verify(parentTopicFactory => parentTopicFactory.ToModel(It.IsAny<ContentfulPrivacyNotice>()), Times.Once);
     }
 
     [Fact]
     public void ToModel_ShouldReturnNull()
     {
-        // Act
-        PrivacyNotice privacyNotice = _privacyNoticeContentfulFactory.ToModel(null);
-
-        // Assert
-        Assert.Null(privacyNotice);
+        // Act & Assert
+        Assert.Null(_privacyNoticeFactory.ToModel(null));
     }
 }

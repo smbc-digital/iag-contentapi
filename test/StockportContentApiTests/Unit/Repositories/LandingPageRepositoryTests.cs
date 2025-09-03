@@ -9,7 +9,6 @@ public class LandingPageRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
     private readonly Mock<EventRepository> _eventRepository = new();
-    private readonly Mock<ILogger<EventRepository>> _logger = new();
     private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
     private readonly Mock<NewsRepository> _newsRepository = new();
     private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomFactory = new();
@@ -47,8 +46,10 @@ public class LandingPageRepositoryTests
             .Returns(DateTime.Today.AddDays(1));
         
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
-        
-        _configuration.Setup(_ => _["redisExpiryTimes:Events"]).Returns("60");
+
+        _configuration
+            .Setup(configuration => configuration["redisExpiryTimes:Events"])
+            .Returns("60");
 
         _eventRepository = new(config,
                             cacheKeyconfig,
@@ -376,20 +377,20 @@ public class LandingPageRepositoryTests
         _newsRepository
             .Setup(repo => repo.GetNews(subItemSlug ))
             .ReturnsAsync(HttpResponse.Successful(news.FirstOrDefault()));
+
         _newsRepository
             .Setup(repo => repo.GetNews("news-subitem-slug"))
             .ReturnsAsync(HttpResponse.Successful(news.First()));
 
         // Act
         HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
-        var section = result.Get<LandingPage>().PageSections.FirstOrDefault();
+        ContentBlock section = result.Get<LandingPage>().PageSections.FirstOrDefault();
 
         // Assert
         Assert.NotNull(result);
         Assert.NotNull(section.NewsArticle);
         Assert.Equal(news.FirstOrDefault(), section.NewsArticle);
         Assert.False(section.UseTag);
-
         _newsRepository.Verify(repo => repo.GetNews(subItemSlug), Times.Once);
         _newsRepository.Verify(repo => repo.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Never);
         _newsRepository.Verify(repo => repo.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Never);
@@ -477,7 +478,7 @@ public class LandingPageRepositoryTests
 
         // Act
         HttpResponse response = await _repository.GetLandingPage("test-slug");
-        ContentBlock contentBlock = _landingPage.PageSections.FirstOrDefault();
+        ContentBlock contentBlock = response.Get<LandingPage>().PageSections.FirstOrDefault();
 
         // Assert
         Assert.NotNull(contentBlock);
@@ -506,8 +507,8 @@ public class LandingPageRepositoryTests
 
         // Act
         HttpResponse response = await _repository.GetLandingPage("test-slug");
-        ContentBlock contentBlock = _landingPage.PageSections.FirstOrDefault();
-        
+        ContentBlock contentBlock = response.Get<LandingPage>().PageSections.FirstOrDefault();
+
         // Assert
         Assert.NotNull(contentBlock);
         Assert.Equal("TriviaList", contentBlock.ContentType);

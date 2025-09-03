@@ -1,14 +1,10 @@
-namespace StockportContentApiTests.Builders;
+namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulContactUsAreaBuilder
 {
-    private string _title { get; set; } = "title";
-    private string _slug { get; set; } = "slug";
-    private string _metaDescription { get; set; } = "metaDescription";
-    private string _insetTextTitle { get; set; } = "insetTextTitle";
-    private string _insetTextBody { get; set; } = "insetTextBody";
+    private string _slug = "slug";
 
-    private List<ContentfulReference> _primaryItems { get; set; } = new List<ContentfulReference>();
+    private List<ContentfulReference> _primaryItems = new();
 
     private List<ContentfulReference> _breadcrumbs = new()
     {
@@ -28,26 +24,20 @@ public class ContentfulContactUsAreaBuilder
     public ContentfulContactUsArea Build()
         => new()
         {
-            Title = _title,
+            Title = "title",
             Slug = _slug,
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
-            InsetTextTitle = _insetTextTitle,
-            InsetTextBody = _insetTextBody,
+            InsetTextTitle = "insetTextTitle",
+            InsetTextBody = "insetTextBody",
             PrimaryItems = _primaryItems,
             ContactUsCategories = _contactUsCategories,
-            MetaDescription = _metaDescription
+            MetaDescription = "metaDescription"
         };
 
     public ContentfulContactUsAreaBuilder Slug(string slug)
     {
         _slug = slug;
-        return this;
-    }
-
-    public ContentfulContactUsAreaBuilder Title(string title)
-    {
-        _title = title;
         return this;
     }
 
@@ -66,18 +56,6 @@ public class ContentfulContactUsAreaBuilder
     public ContentfulContactUsAreaBuilder Alerts(List<ContentfulAlert> alerts)
     {
         _alerts = alerts;
-        return this;
-    }
-
-    public ContentfulContactUsAreaBuilder InsetTextTitle(string insetTextTitle)
-    {
-        _insetTextTitle = insetTextTitle;
-        return this;
-    }
-
-    public ContentfulContactUsAreaBuilder InsetTextBody(string insetTextBody)
-    {
-        _insetTextTitle = insetTextBody;
         return this;
     }
 

@@ -2,11 +2,10 @@
 
 public class CommsRepositoryTests
 {
-    private readonly Mock<IContentfulClientManager> _mockClientManager = new();
-    private readonly Mock<IContentfulClient> _mockClient = new();
-    private readonly Mock<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>> _mockCommsHomepageFactory = new();
+    private readonly Mock<IContentfulClientManager> _clientManager = new();
+    private readonly Mock<IContentfulClient> _client = new();
+    private readonly Mock<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>> _commsHomepageFactory = new();
     private readonly CommsRepository _repository;
-
 
     public CommsRepositoryTests()
     {
@@ -18,18 +17,19 @@ public class CommsRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _mockClientManager.Setup(_ => _.GetClient(It.IsAny<ContentfulConfig>())).Returns(_mockClient.Object);
+        _clientManager
+            .Setup(clientManager => clientManager.GetClient(It.IsAny<ContentfulConfig>()))
+            .Returns(_client.Object);
 
-        _repository = new CommsRepository(config, _mockClientManager.Object, _mockCommsHomepageFactory.Object);
+        _repository = new CommsRepository(config, _clientManager.Object, _commsHomepageFactory.Object);
     }
 
     [Fact]
     public async Task Get_ShouldReturnCommsHomepageModel()
     {
         // Arrange
-        _mockCommsHomepageFactory
-            .Setup(_ => _
-                .ToModel(It.IsAny<ContentfulCommsHomepage>()))
+        _commsHomepageFactory
+            .Setup(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()))
             .Returns(new CommsHomepage(
                 string.Empty,
                 string.Empty,
@@ -44,11 +44,8 @@ public class CommsRepositoryTests
                 string.Empty
             ));
 
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulCommsHomepage>
                 {
@@ -65,8 +62,8 @@ public class CommsRepositoryTests
         CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
-        _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _commsHomepageFactory.Verify(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         Assert.IsType<CommsHomepage>(parsedResult);
     }
@@ -77,9 +74,8 @@ public class CommsRepositoryTests
         // Arrange
         ContentfulCommsHomepage commsCallback = new();
 
-        _mockCommsHomepageFactory
-            .Setup(_ => _
-                .ToModel(It.IsAny<ContentfulCommsHomepage>()))
+        _commsHomepageFactory
+            .Setup(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()))
             .Returns(new CommsHomepage(
                 string.Empty,
                 string.Empty,
@@ -95,11 +91,8 @@ public class CommsRepositoryTests
             ))
             .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
 
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulCommsHomepage>
                 {
@@ -109,11 +102,8 @@ public class CommsRepositoryTests
                     }
                 });
 
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulEvent>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulEvent>
                 {
@@ -125,9 +115,9 @@ public class CommsRepositoryTests
         CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
-        _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _commsHomepageFactory.Verify(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()), Times.Once);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         Assert.IsType<CommsHomepage>(parsedResult);
         Assert.Null(commsCallback.WhatsOnInStockportEvent);
@@ -140,9 +130,8 @@ public class CommsRepositoryTests
         ContentfulEvent expectedEvent = new ContentfulEventBuilder().Build();
         ContentfulCommsHomepage commsCallback = new();
 
-        _mockCommsHomepageFactory
-            .Setup(_ => _
-                .ToModel(It.IsAny<ContentfulCommsHomepage>()))
+        _commsHomepageFactory
+            .Setup(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()))
             .Returns(new CommsHomepage(
                 string.Empty,
                 string.Empty,
@@ -156,13 +145,10 @@ public class CommsRepositoryTests
                 new CallToActionBanner(),
                 string.Empty
             ))
-            .Callback<ContentfulCommsHomepage>(x => commsCallback = x);
+            .Callback<ContentfulCommsHomepage>(contentfulCommsHomepage => commsCallback = contentfulCommsHomepage);
 
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulCommsHomepage>
                 {
@@ -172,11 +158,8 @@ public class CommsRepositoryTests
                     }
                 });
 
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulEvent>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulEvent>
                 {
@@ -191,9 +174,9 @@ public class CommsRepositoryTests
         CommsHomepage parsedResult = result.Get<CommsHomepage>();
 
         // Assert
-        _mockCommsHomepageFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _commsHomepageFactory.Verify(commsHomepageFactory => commsHomepageFactory.ToModel(It.IsAny<ContentfulCommsHomepage>()), Times.Once);
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulEvent>>(), It.IsAny<CancellationToken>()), Times.Once);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         Assert.IsType<CommsHomepage>(parsedResult);
         Assert.NotNull(commsCallback.WhatsOnInStockportEvent);
@@ -204,11 +187,8 @@ public class CommsRepositoryTests
     public async Task Get_ShouldReturnStatus500()
     {
         // Arrange
-        _mockClient
-            .Setup(_ =>
-                _.GetEntries(
-                    It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(),
-                    It.IsAny<CancellationToken>()))
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ContentfulCollection<ContentfulCommsHomepage>
                 {
@@ -219,9 +199,9 @@ public class CommsRepositoryTests
         HttpResponse result = await _repository.Get();
 
         // Assert
-        _mockClient.Verify(_ => _.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockCommsHomepageFactory.VerifyNoOtherCalls();
-        _mockClient.VerifyNoOtherCalls();
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulCommsHomepage>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _commsHomepageFactory.VerifyNoOtherCalls();
+        _client.VerifyNoOtherCalls();
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.Equal("No comms homepage found", result.Error);
     }

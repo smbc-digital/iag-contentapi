@@ -1,16 +1,9 @@
-namespace StockportContentApiTests.Builders;
+namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulStartPageBuilder
 {
-    private string _title { get; set; } = "Start Page";
-    private string _slug { get; set; } = "startPageSlug";
-    private string _teaser { get; set; } = "this is a teaser";
-    private string _summary { get; set; } = "This is a summary";
-    private string _upperBody { get; set; } = "An upper body";
-    private string _formLink { get; set; } = "http://start.com";
-    private string _lowerBody { get; set; } = "Lower body";
+    private string _slug = "startPageSlug";
     private readonly Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
-    private string _icon { get; set; } = "icon";
 
     private readonly List<ContentfulReference> _breadcrumbs = new()
     {
@@ -26,15 +19,15 @@ public class ContentfulStartPageBuilder
     public ContentfulStartPage Build()
         => new()
         {
-            Title = _title,
+            Title = "Start Page",
             Slug = _slug,
-            Teaser = _teaser,
-            Summary = _summary,
-            UpperBody = _upperBody,
-            FormLink = _formLink,
-            LowerBody = _lowerBody,
+            Teaser = "this is a teaser",
+            Summary = "This is a summary",
+            UpperBody = "An upper body",
+            FormLink = "http://start.com",
+            LowerBody = "Lower body",
             BackgroundImage = _image,
-            Icon = _icon,
+            Icon = "icon",
             Breadcrumbs = _breadcrumbs,
             Alerts = _alerts,
             AlertsInline = _alerts
@@ -43,18 +36,6 @@ public class ContentfulStartPageBuilder
     public ContentfulStartPageBuilder Slug(string slug)
     {
         _slug = slug;
-        return this;
-    }
-
-    public ContentfulStartPageBuilder Title(string title)
-    {
-        _title = title;
-        return this;
-    }
-
-    public ContentfulStartPageBuilder Teaser(string teaser)
-    {
-        _teaser = teaser;
         return this;
     }
 }

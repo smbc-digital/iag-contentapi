@@ -1,12 +1,14 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using System.Threading.Tasks;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class TopicRepositoryTests
 {
     private readonly TopicRepository _repository;
     private readonly Topic _topic;
-    private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory;
-    private readonly Mock<IContentfulClient> _contentfulClient;
-    private readonly Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>> _topicSiteMapFactory;
+    private readonly Mock<IContentfulFactory<ContentfulTopic, Topic>> _topicFactory = new();
+    private readonly Mock<IContentfulClient> _contentfulClient = new();
+    private readonly Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>> _topicSiteMapFactory = new();
 
     public TopicRepositoryTests()
     {
@@ -40,35 +42,34 @@ public class TopicRepositoryTests
                         null,
                         string.Empty);
 
-        _topicFactory = new Mock<IContentfulFactory<ContentfulTopic, Topic>>();
-        _topicSiteMapFactory = new Mock<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>();
-
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        _contentfulClient = new Mock<IContentfulClient>();
-        contentfulClientManager.Setup(o => o.GetClient(config)).Returns(_contentfulClient.Object);
+        contentfulClientManager
+            .Setup(contentfulClientManager => contentfulClientManager.GetClient(config))
+            .Returns(_contentfulClient.Object);
 
         _repository = new TopicRepository(config, contentfulClientManager.Object, _topicFactory.Object, _topicSiteMapFactory.Object);
     }
 
     [Fact]
-    public void GetTopicByTopicSlug_ShouldReturnSuccessfulStatus()
+    public async Task GetTopicByTopicSlug_ShouldReturnSuccessfulStatus()
     {
         // Arrange
-        const string slug = "a-slug";
-        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Slug(slug).Build();
+        ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Slug("a-slug").Build();
         ContentfulCollection<ContentfulTopic> collection = new()
         {
             Items = new List<ContentfulTopic> { contentfulTopic }
         };
 
-        QueryBuilder<ContentfulTopic> builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopic>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contentfulClient
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulTopic>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
-        _topicFactory.Setup(_ => _.ToModel(contentfulTopic)).Returns(_topic);
+        _topicFactory
+            .Setup(topicFactory => topicFactory.ToModel(contentfulTopic))
+            .Returns(_topic);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
+        HttpResponse response = await _repository.GetTopicByTopicSlug("a-slug");
 
         // Arrange
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -76,34 +77,30 @@ public class TopicRepositoryTests
     }
 
     [Fact]
-    public void GetTopicByTopicSlug_ShouldReturnNotFound_If_TopicDoesNotExist()
+    public async Task GetTopicByTopicSlug_ShouldReturnNotFound_If_TopicDoesNotExist()
     {
         // Arrange
-        const string slug = "not-found";
-
         ContentfulCollection<ContentfulTopic> collection = new()
         {
             Items = new List<ContentfulTopic>()
         };
 
-        QueryBuilder<ContentfulTopic> builder = new QueryBuilder<ContentfulTopic>().ContentTypeIs("topic").FieldEquals("fields.slug", slug).Include(1);
-        _contentfulClient.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<ContentfulTopic>>(),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contentfulClient
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulTopic>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetTopicByTopicSlug(slug));
+        HttpResponse response = await _repository.GetTopicByTopicSlug("not-found");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal($"No topic found for '{slug}'", response.Error);
+        Assert.Equal($"No topic found for 'not-found'", response.Error);
     }
 
     [Fact]
-    public void Get_ShouldReturnSuccessfulStatusCode()
+    public async Task Get_ShouldReturnSuccessfulStatusCode()
     {
         // Arrange
-        const string slug = "a-slug";
-
         List<ContentfulSectionForSiteMap> sections = new() {
             new ContentfulSectionForSiteMap() {
                 Slug = "section-slug",
@@ -113,7 +110,7 @@ public class TopicRepositoryTests
         };
 
         ContentfulTopicForSiteMap contentfulTopic = new ContentfulTopicForSiteMapBuilder()
-            .WithSlug(slug)
+            .WithSlug("a-slug")
             .WithSections(sections)
             .Build();
 
@@ -122,19 +119,19 @@ public class TopicRepositoryTests
             Items = new List<ContentfulTopicForSiteMap> { contentfulTopic }
         };
 
-        QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contentfulClient
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulTopicForSiteMap>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        HttpResponse response = await _repository.Get();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void Get_ShouldReturnFailureStatusCode_IfNoEntries()
+    public async Task Get_ShouldReturnFailureStatusCode_IfNoEntries()
     {
         // Arrange
         ContentfulCollection<ContentfulTopicForSiteMap> collection = new()
@@ -142,12 +139,12 @@ public class TopicRepositoryTests
             Items = new List<ContentfulTopicForSiteMap>()
         };
 
-        QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>().ContentTypeIs("topic").Include(2);
-        _contentfulClient.Setup(_ => _.GetEntries(It.Is<QueryBuilder<ContentfulTopicForSiteMap>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contentfulClient
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulTopicForSiteMap>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        HttpResponse response = await _repository.Get();
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

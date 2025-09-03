@@ -2,11 +2,7 @@
 
 public class ContentfulHomepageBuilder
 {
-    private readonly string _featuredTasksHeading = "Featured tasks heading";
-    private readonly string _featuredTasksSummary = "Featured tasks summary";
     private readonly Asset _backgroundImage = new() { File = new File { Url = "image.jpg" }, SystemProperties = new SystemProperties { Type = "Asset" } };
-    private readonly string _freeText = "homepage text";
-    private readonly string _metaDescription = "meta description";
    
     private readonly List<ContentfulCarouselContent> _carouselContents = new()
     {
@@ -35,16 +31,16 @@ public class ContentfulHomepageBuilder
     public ContentfulHomepage Build()
         => new()
         {
-            FeaturedTasksHeading = _featuredTasksHeading,
-            FeaturedTasksSummary = _featuredTasksSummary,
+            FeaturedTasksHeading =  "Featured tasks heading",
+            FeaturedTasksSummary = "Featured tasks summary",
             FeaturedTasks = _featuredTasks,
             FeaturedTopics = _featuredTopics,
             Alerts = _alerts,
             CarouselContents = _carouselContents,
             BackgroundImage = _backgroundImage,
-            FreeText = _freeText,
+            FreeText = "homepage text",
             Sys = _sys,
-            MetaDescription = _metaDescription,
+            MetaDescription = "meta description",
             CampaignBanner = _campaignBanner
         };
 }

@@ -17,7 +17,9 @@ public class HomepageRepositoryTests
             .Build();
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        contentfulClientManager.Setup(client => client.GetClient(config)).Returns(_client.Object);
+        contentfulClientManager
+            .Setup(client => client.GetClient(config))
+            .Returns(_client.Object);
 
         _repository = new HomepageRepository(config, contentfulClientManager.Object, _homepageFactory.Object);
     }
@@ -32,8 +34,10 @@ public class HomepageRepositoryTests
         };
 
         QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _client
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(query => query.Build().Equals(builder.Build())),
+                                            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
         _homepageFactory
             .Setup(homepage => homepage.ToModel(It.IsAny<ContentfulHomepage>()))

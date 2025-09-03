@@ -8,7 +8,7 @@ public class ImageConverterTests
     public void ConvertToThumbnail_ShouldReturnExpectedResult(string imageUrl, string expectedResult)
     {
         // Act
-        var result = ImageConverter.ConvertToThumbnail(imageUrl);
+        string result = ImageConverter.ConvertToThumbnail(imageUrl);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -21,7 +21,7 @@ public class ImageConverterTests
     public void SetThumbnailWithoutHeight_ShouldReturnExpectedResult(string imageUrl, string thumbnailImageUrl, string expectedResult)
     {
         // Act
-        var result = ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl);
+        string result = ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl);
 
         // Assert
         Assert.Equal(expectedResult, result);

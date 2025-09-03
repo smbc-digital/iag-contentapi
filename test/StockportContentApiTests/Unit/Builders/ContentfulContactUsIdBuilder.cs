@@ -1,19 +1,18 @@
 ﻿namespace StockportContentApiTests.Unit.Builders;
 
-public class ContentfulContactUsCategoryBuilder
+public class ContentfulContactUsIdBuilder
 {
     private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }
     };
 
-    public ContentfulContactUsCategory Build()
+    public ContentfulContactUsId Build()
         => new()
         {
-            Title = "title",
-            BodyTextLeft = "body",
-            BodyTextRight = "body",
-            Sys = _sys,
-            Icon = "icon"
+            Name = "name",
+            Slug = "slug",
+            EmailAddress = "email@example.com",
+            Sys = _sys
         };
 }

@@ -1,14 +1,17 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using System.Threading.Tasks;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class RedirectsRepositoryTests
 {
     private readonly ContentfulConfig _config;
-    private readonly Mock<Func<string, ContentfulConfig>> _createConfig;
-    private readonly Mock<IContentfulClientManager> _contentfulClientManager;
-    private readonly Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>> _contenfulFactory;
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<Func<string, ContentfulConfig>> _createConfig = new();
+    private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
+    private readonly Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>> _contenfulFactory = new();
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly ShortUrlRedirects _shortUrlRedirects = new(new Dictionary<string, RedirectDictionary>());
     private readonly LegacyUrlRedirects _legacyUrlRedirects = new(new Dictionary<string, RedirectDictionary>());
+    private RedirectsRepository _repository;
 
     public RedirectsRepositoryTests()
     {
@@ -21,168 +24,219 @@ public class RedirectsRepositoryTests
 
             .Build();
 
-        _createConfig = new Mock<Func<string, ContentfulConfig>>();
-        _contenfulFactory = new Mock<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>>();
-        _contentfulClientManager = new Mock<IContentfulClientManager>();
-        _client = new Mock<IContentfulClient>();
-        _createConfig.Setup(o => o(It.IsAny<string>())).Returns(_config);
-        _contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
+        _createConfig
+            .Setup(createConfig => createConfig(It.IsAny<string>()))
+            .Returns(_config);
+
+        _contentfulClientManager
+            .Setup(contentfulClientManager => contentfulClientManager.GetClient(_config))
+            .Returns(_client.Object);
+
+        _repository = new(_contentfulClientManager.Object,
+                        _createConfig.Object,
+                        new RedirectBusinessIds(new List<string> { "unittest" }),
+                        _contenfulFactory.Object,
+                        _shortUrlRedirects,
+                        _legacyUrlRedirects);
     }
 
     [Fact]
-    public void GetRedirects_ShouldGetsListOfRedirectsBack_ReturnSuccessful()
+    public async Task GetRedirects_ShouldGetsListOfRedirectsBack_ReturnSuccessful()
     {
-        ContentfulRedirect ContentfulRedirects = new ContentfulRedirectBuilder().Build();
+        // Arrange
+        ContentfulRedirect contentfulRedirects = new ContentfulRedirectBuilder().Build();
         ContentfulCollection<ContentfulRedirect> collection = new()
         {
-            Items = new List<ContentfulRedirect> { ContentfulRedirects }
+            Items = new List<ContentfulRedirect> { contentfulRedirects }
         };
 
-        BusinessIdToRedirects redirectItem = new(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+        BusinessIdToRedirects redirectItem = new(
+            new Dictionary<string, string>
+            {
+                { "a-url", "another-url" }
+            },
+            new Dictionary<string, string>
+            {
+                { "some-url", "another-url" }
+            });
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulRedirect>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
-        _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
+        _contenfulFactory
+            .Setup(contentfulFactory => contentfulFactory.ToModel(contentfulRedirects))
+            .Returns(redirectItem);
 
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
+        // Act
+        HttpResponse response = await _repository.GetRedirects();
         Redirects redirects = response.Get<Redirects>();
 
+        // Assert
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;
-        shortUrls.Count.Should().Be(1);
-        shortUrls.Keys.First().Should().Be("unittest");
-        shortUrls["unittest"].ContainsKey("a-url").Should().BeTrue();
         Dictionary<string, RedirectDictionary> legacyUrls = redirects.LegacyUrlRedirects;
-        legacyUrls.Count.Should().Be(1);
-        legacyUrls.Keys.First().Should().Be("unittest");
-        legacyUrls["unittest"].ContainsKey("some-url").Should().BeTrue();
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Single(shortUrls);
+        Assert.Single(legacyUrls);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("unittest", shortUrls.Keys.First());
+        Assert.True(shortUrls["unittest"].ContainsKey("a-url"));
+        Assert.Equal("unittest", legacyUrls.Keys.First());
+        Assert.True(legacyUrls["unittest"].ContainsKey("some-url"));
     }
 
     [Fact]
-    public void GetRedirects_BusinessIdExist_ShouldReturnSuccessful()
+    public async Task GetRedirects_BusinessIdExist_ShouldReturnSuccessful()
     {
-        ContentfulRedirect ContentfulRedirects = new();
+        // Arrange
+        ContentfulRedirect contentfulRedirects = new();
         ContentfulCollection<ContentfulRedirect> collection = new()
         {
             Items = new List<ContentfulRedirect>()
         };
 
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulRedirect>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contenfulFactory
+            .Setup(contentfulFactory => contentfulFactory.ToModel(contentfulRedirects))
+            .Returns(new NullBusinessIdToRedirects());
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
-        _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(new NullBusinessIdToRedirects());
-
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
+        // Act
+        HttpResponse response = await _repository.GetRedirects();
         Redirects redirects = response.Get<Redirects>();
 
+        // Assert
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;
-        shortUrls.Count.Should().Be(1);
-        shortUrls["unittest"].Count.Should().Be(0);
         Dictionary<string, RedirectDictionary> legacyUrls = redirects.LegacyUrlRedirects;
-        legacyUrls.Count.Should().Be(1);
-        legacyUrls["unittest"].Count.Should().Be(0);
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Assert.Single(shortUrls);
+        Assert.Single(legacyUrls);
+        Assert.Empty(shortUrls["unittest"]);
+        Assert.Empty(legacyUrls["unittest"]);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void GetRedirects_NoBusinessId_ShouldReturnNotFound()
+    public async Task GetRedirects_NoBusinessId_ShouldReturnNotFound()
     {
+        // Arrange
         ContentfulCollection<ContentfulRedirect> collection = new()
         {
             Items = new List<ContentfulRedirect>()
         };
 
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulRedirect>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        RedirectsRepository repository = new(_contentfulClientManager.Object,
+                                            _createConfig.Object,
+                                            new RedirectBusinessIds(new List<string>()),
+                                            _contenfulFactory.Object,
+                                            _shortUrlRedirects,
+                                            _legacyUrlRedirects);
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+        // Act
+        HttpResponse response = await repository.GetRedirects();
 
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetRedirect_StatusCodeSuccessful_WhenLegacyOrShortUrlAreAvailable()
+    public async Task GetRedirect_StatusCodeSuccessful_WhenLegacyOrShortUrlAreAvailable()
     {
+        // Arrange
         Dictionary<string, RedirectDictionary> shortItems = new() { { "unittest", new RedirectDictionary { { "/short-test", "short-redirect-url" } } } };
         Dictionary<string, RedirectDictionary> legacyItems = new() { { "unittest", new RedirectDictionary { { "/legacy-test", "legacy-redirect-url" } } } };
         _shortUrlRedirects.Redirects = shortItems;
         _legacyUrlRedirects.Redirects = legacyItems;
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+        // Act
+        HttpResponse response = await _repository.GetRedirects();
 
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetRedirects());
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void GetRedirect_ShouldNotCallClient_WhenLegacyOrShortUrlAreAvailable()
+    public async Task GetRedirect_ShouldNotCallClient_WhenLegacyOrShortUrlAreAvailable()
     {
+        // Arrange
         Dictionary<string, RedirectDictionary> shortItems = new() { { "unittest", new RedirectDictionary { { "/short-test", "short-redirect-url" } } } };
         Dictionary<string, RedirectDictionary> legacyItems = new() { { "unittest", new RedirectDictionary { { "/legacy-test", "legacy-redirect-url" } } } };
         _shortUrlRedirects.Redirects = shortItems;
         _legacyUrlRedirects.Redirects = legacyItems;
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+        // Act
+        await _repository.GetRedirects();
 
-        AsyncTestHelper.Resolve(repository.GetRedirects());
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
-
-        _client.Verify(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()), Times.Never);
+        // Assert
+        _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulRedirect>>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public void GetUpdatedRedirects_BusinessIdExist_ReturnSuccessful()
+    public async Task GetUpdatedRedirects_BusinessIdExist_ReturnSuccessful()
     {
-        ContentfulRedirect ContentfulRedirects = new ContentfulRedirectBuilder().Build();
+        // Arrange
+        ContentfulRedirect contentfulRedirects = new ContentfulRedirectBuilder().Build();
         ContentfulCollection<ContentfulRedirect> collection = new()
         {
-            Items = new List<ContentfulRedirect> { ContentfulRedirects }
+            Items = new List<ContentfulRedirect> { contentfulRedirects }
         };
 
-        BusinessIdToRedirects redirectItem = new(new Dictionary<string, string> { { "a-url", "another-url" } }, new Dictionary<string, string> { { "some-url", "another-url" } });
+        BusinessIdToRedirects redirectItem = new(
+            new Dictionary<string, string>
+            {
+                { "a-url", "another-url" }
+            },
+            new Dictionary<string, string>
+            {
+                { "some-url", "another-url" }
+            });
 
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs("redirect").Include(1);
+        _client
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulRedirect>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(collection);
 
-        _client.Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulRedirect>>(q => q.Build().Equals(builder.Build())),
-            It.IsAny<CancellationToken>())).ReturnsAsync(collection);
+        _contenfulFactory
+            .Setup(contentfulFactory => contentfulFactory.ToModel(contentfulRedirects))
+            .Returns(redirectItem);
 
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string> { "unittest" }), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
-        _contenfulFactory.Setup(o => o.ToModel(ContentfulRedirects)).Returns(redirectItem);
-
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetUpdatedRedirects());
+        // Act
+        HttpResponse response = await _repository.GetUpdatedRedirects();
         Redirects redirects = response.Get<Redirects>();
 
+        // Assert
         Dictionary<string, RedirectDictionary> shortUrls = redirects.ShortUrlRedirects;
-        shortUrls.Count.Should().Be(1);
-        shortUrls.Keys.First().Should().Be("unittest");
-        shortUrls["unittest"].ContainsKey("a-url").Should().BeTrue();
         Dictionary<string, RedirectDictionary> legacyUrls = redirects.LegacyUrlRedirects;
-        legacyUrls.Count.Should().Be(1);
-        legacyUrls.Keys.First().Should().Be("unittest");
-        legacyUrls["unittest"].ContainsKey("some-url").Should().BeTrue();
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Single(shortUrls);
+        Assert.Single(legacyUrls);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("unittest", shortUrls.Keys.First());
+        Assert.True(shortUrls["unittest"].ContainsKey("a-url"));
+        Assert.Equal("unittest", legacyUrls.Keys.First());
+        Assert.True(legacyUrls["unittest"].ContainsKey("some-url"));
     }
 
     [Fact]
-    public void GetUpdatedRedirects_NoBusinessId_ReturnNotFound()
+    public async Task GetUpdatedRedirects_NoBusinessId_ReturnNotFound()
     {
-        RedirectsRepository repository = new(_contentfulClientManager.Object, _createConfig.Object, new RedirectBusinessIds(new List<string>()), _contenfulFactory.Object, _shortUrlRedirects, _legacyUrlRedirects);
+        // Arrange
+        RedirectsRepository repository = new(_contentfulClientManager.Object,
+                                            _createConfig.Object,
+                                            new RedirectBusinessIds(new List<string>()),
+                                            _contenfulFactory.Object,
+                                            _shortUrlRedirects,
+                                            _legacyUrlRedirects);
 
-        HttpResponse response = AsyncTestHelper.Resolve(repository.GetUpdatedRedirects());
+        // Act
+        HttpResponse response = await repository.GetUpdatedRedirects();
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

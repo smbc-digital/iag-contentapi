@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class FooterControllerTests
 {
-    private readonly Mock<Func<string, IFooterRepository>> _mockCreateRepository = new();
-    private readonly Mock<IFooterRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IFooterRepository>> _categoryRepository = new();
+    private readonly Mock<IFooterRepository> _repository = new();
     private readonly FooterController _controller;
 
     public FooterControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _categoryRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new FooterController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new FooterController(new(logger.Object), _categoryRepository.Object);
     }
 
     [Fact]
@@ -31,7 +29,7 @@ public class FooterControllerTests
                             "footer content 2",
                             "footer content 3");
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetFooter())
             .ReturnsAsync(HttpResponse.Successful(footer));
 
@@ -39,6 +37,6 @@ public class FooterControllerTests
         IActionResult result = await _controller.GetFooter("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _categoryRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

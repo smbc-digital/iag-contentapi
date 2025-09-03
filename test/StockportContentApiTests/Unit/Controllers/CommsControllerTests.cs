@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class CommsControllerTests
 {
-    private readonly Mock<Func<string, ICommsRepository>> _mockCreateRepository = new();
-    private readonly Mock<ICommsRepository> _mockRepository = new();
+    private readonly Mock<Func<string, ICommsRepository>> _createRepository = new();
+    private readonly Mock<ICommsRepository> _repository = new();
     private readonly CommsController _controller;
 
     public CommsControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new CommsController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new CommsController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -71,7 +69,7 @@ public class CommsControllerTests
                                         new CallToActionBanner(),
                                         "email alerts topic id");
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(commsHomepage));
 
@@ -79,6 +77,6 @@ public class CommsControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

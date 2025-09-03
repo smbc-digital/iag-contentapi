@@ -7,10 +7,8 @@ public class FakeLogger<T> : ILogger<T>
     public string DebugMessage;
     public Exception Exception;
 
-    public void Error(string message)
-    {
+    public void Error(string message) =>
         ErrorMessage = message;
-    }
 
     public void Error(string message, Exception exception)
     {
@@ -18,15 +16,11 @@ public class FakeLogger<T> : ILogger<T>
         Exception = exception;
     }
 
-    public void Debug(string message)
-    {
+    public void Debug(string message) =>
         DebugMessage = message;
-    }
 
-    public void Info(string message)
-    {
+    public void Info(string message) =>
         InfoMessage = message;
-    }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {

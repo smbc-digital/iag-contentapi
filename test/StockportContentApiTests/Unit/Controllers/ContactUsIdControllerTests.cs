@@ -1,33 +1,29 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class ContactUsIdControllerTests
 {
-    private readonly Mock<Func<string, IContactUsIdRepository>> _mockCreateRepository = new();
-    private readonly Mock<IContactUsIdRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IContactUsIdRepository>> _createRepository = new();
+    private readonly Mock<IContactUsIdRepository> _repository = new();
     private readonly ContactUsIdController _controller;
 
     public ContactUsIdControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new ContactUsIdController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new ContactUsIdController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
     public async Task GetContactUsIds_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        ContactUsId contactUsArea = new("name",
-                                        "slug",
-                                        "email address");
+        ContactUsId contactUsArea = new("name", "slug", "email address");
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetContactUsIds(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(contactUsArea));
 
@@ -35,6 +31,6 @@ public class ContactUsIdControllerTests
         IActionResult result = await _controller.Detail("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

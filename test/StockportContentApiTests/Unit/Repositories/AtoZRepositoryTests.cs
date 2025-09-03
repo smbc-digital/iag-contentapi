@@ -33,8 +33,9 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfAtoZ_WhenLetterIsV()
+    public async Task Get_ShouldReturnListOfAtoZ_WhenLetterIsV()
     {
+        // Arrange
         string letter = "v";
         List<AtoZ> aToZArticles = new()
         {
@@ -83,7 +84,8 @@ public class AtoZRepositoryTests
                                                             It.Is<int>(cacheTime => cacheTime.Equals(60))))
             .ReturnsAsync(aToZLandingPages);
     
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(letter));
+        // Act
+        HttpResponse response = await _repository.Get(letter);
         List<AtoZ> aToZListing = response.Get<List<AtoZ>>();
 
         // Assert
@@ -92,8 +94,9 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfAtoZ_WhenLetterIsB()
+    public async Task Get_ShouldReturnListOfAtoZ_WhenLetterIsB()
     {
+        // Arrange
         string letter = "b";
         List<AtoZ> aToZArticles = new()
         {
@@ -143,7 +146,7 @@ public class AtoZRepositoryTests
                             new List<string>()));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("b"));
+        HttpResponse response = await _repository.Get("b");
         List<AtoZ> aToZListing = response.Get<List<AtoZ>>();
 
         // Assert
@@ -154,8 +157,9 @@ public class AtoZRepositoryTests
     [Theory]
     [InlineData("v")]
     [InlineData("b")]
-    public void Get_ShouldReturnListOfAtoZForGivenLetter(string letter)
+    public async Task Get_ShouldReturnListOfAtoZForGivenLetter(string letter)
     {
+        // Arrange
         List<AtoZ> aToZArticles = new()
         {
             new AtoZ($"{letter.ToUpper()} atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string> { $"{letter.ToUpper()} atoztitle" }),
@@ -204,7 +208,7 @@ public class AtoZRepositoryTests
                             new List<string>()));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(letter));
+        HttpResponse response = await _repository.Get(letter);
         List<AtoZ> aToZListing = response.Get<List<AtoZ>>();
 
         // Assert
@@ -213,7 +217,7 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnNotFoundIfNoItemsMatch()
+    public async Task Get_ShouldReturnNotFoundIfNoItemsMatch()
     {
         // Arrange
         _cache
@@ -240,7 +244,8 @@ public class AtoZRepositoryTests
 
         AtoZRepository repository = new(_config, _contentfulClientManager.Object, _aToZFactory.Object, null, _cache.Object, _configuration.Object, _logger.Object);
 
-        HttpResponse response = AsyncTestHelper.Resolve(repository.Get("b"));
+        // Act
+        HttpResponse response = await repository.Get("b");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -287,7 +292,7 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void GetAtoZItemFromSource_ShouldReturnAnAtoZListingItemWithMultipleAlternateTitles()
+    public async Task GetAtoZItemFromSource_ShouldReturnAnAtoZListingItemWithMultipleAlternateTitles()
     {
         // Arrange
         List<string> alternateTitles = new() { "This is alternate title", "this is also another alternate title" };
@@ -308,7 +313,7 @@ public class AtoZRepositoryTests
             .Returns(new AtoZ("title", "slug", "teaser", "article", alternateTitles));
 
         // Act
-        List<AtoZ> result = AsyncTestHelper.Resolve(_repository.GetAtoZItemFromSource("article", "t"));
+        List<AtoZ> result = await _repository.GetAtoZItemFromSource("article", "t");
 
         Assert.Equal(3, result.Count);
         Assert.Equal("title", result[0].Title);
@@ -319,7 +324,7 @@ public class AtoZRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnAllAtoZItemsWhenNoLetterProvided()
+    public async Task Get_ShouldReturnAllAtoZItemsWhenNoLetterProvided()
     {
         // Arrange
         AtoZ atozItem1 = new("Apple", "apple", "teaser apple", "article", new List<string>());
@@ -342,7 +347,7 @@ public class AtoZRepositoryTests
             .ReturnsAsync(new List<AtoZ> { atozItem3 });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        HttpResponse response = await _repository.Get();
 
         // Assert
         List<AtoZ> result = response.Get<List<AtoZ>>();

@@ -4,10 +4,6 @@ public class DirectoryBuilder
     private string _slug = "slug";
     private string _title = "title";
     private string _body = "body";
-    private readonly string _teaser = "teaser";
-    private readonly string _metaDescription = "meta description";
-    private readonly string _id = "XXX123456";
-    private readonly string _backgroundImageUrl = "//TESTIMAGE.JPG";
     private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
     private readonly List<ContentfulAlert> _alertsInline = new()
     {
@@ -27,17 +23,17 @@ public class DirectoryBuilder
             Slug = _slug,
             Title = _title,
             Body = _body,
-            MetaDescription = _metaDescription,
-            Teaser = _teaser,
+            MetaDescription = "meta description",
+            Teaser = "teaser",
             Sys = new SystemProperties()
             {
-                Id = _id
+                Id = "XXX123456"
             },
             BackgroundImage = new Asset()
             {
                 File = new File
                 {
-                    Url = _backgroundImageUrl
+                    Url = "//TESTIMAGE.JPG"
                 },
                 SystemProperties = new SystemProperties()
                 {

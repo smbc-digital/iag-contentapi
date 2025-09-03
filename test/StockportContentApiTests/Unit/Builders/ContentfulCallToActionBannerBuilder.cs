@@ -2,12 +2,6 @@
 
 public class ContentfulCallToActionBannerBuilder
 {
-    private readonly string _title = "title";
-    private readonly string _teaser = "teaser";
-    private readonly string _link = "link";
-    private readonly string _altText = "altText";
-    private readonly string _buttonText = "buttonText";
-    private readonly EColourScheme _colour = EColourScheme.Blue;
     private readonly Asset _image = new()
     {
         File = new File
@@ -19,12 +13,12 @@ public class ContentfulCallToActionBannerBuilder
     public ContentfulCallToActionBanner Build()
         => new()
         {
-            Title = _title,
-            Teaser = _teaser,
-            Link = _link,
-            AltText = _altText,
-            ButtonText = _buttonText,
-            Colour = _colour,
+            Title = "title",
+            Teaser = "teaser",
+            Link = "link",
+            AltText = "altText",
+            ButtonText = "buttonText",
+            Colour = EColourScheme.Blue,
             Image = _image
         };
 }

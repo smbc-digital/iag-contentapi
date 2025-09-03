@@ -2,35 +2,35 @@
 
 public class SubItemContentfulFactoryTests
 {
-    private readonly SubItemContentfulFactory _subItemContentfulFactory;
+    private readonly SubItemContentfulFactory _subItemFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
 
     public SubItemContentfulFactoryTests()
     {
-        _timeProvider.Setup(time => time.Now()).Returns(new DateTime(2017, 01, 01));
-        _subItemContentfulFactory = new SubItemContentfulFactory(_timeProvider.Object);
+        _timeProvider
+            .Setup(time => time.Now())
+            .Returns(new DateTime(2017, 01, 01));
+
+        _subItemFactory = new SubItemContentfulFactory(_timeProvider.Object);
     }
 
     [Fact]
     public void ShouldCreateASubItemFromAContentfulReference()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new()
-        {
-            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } } }
-        };
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().SystemContentTypeId("id").Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
-        Assert.Equal(ContentfulReference.Slug, subItem.Slug);
-        Assert.Equal(ContentfulReference.Title, subItem.Title);
-        Assert.Equal(ContentfulReference.Icon, subItem.Icon);
-        Assert.Equal(ContentfulReference.Teaser, subItem.Teaser);
-        Assert.Equal(ContentfulReference.SunriseDate, subItem.SunriseDate);
-        Assert.Equal(ContentfulReference.SunsetDate, subItem.SunsetDate);
-        Assert.Equal(ContentfulReference.Sys.ContentType.SystemProperties.Id, subItem.Type);
+        Assert.Equal(contentfulReference.Slug, subItem.Slug);
+        Assert.Equal(contentfulReference.Title, subItem.Title);
+        Assert.Equal(contentfulReference.Icon, subItem.Icon);
+        Assert.Equal(contentfulReference.Teaser, subItem.Teaser);
+        Assert.Equal(contentfulReference.SunriseDate, subItem.SunriseDate);
+        Assert.Equal(contentfulReference.SunsetDate, subItem.SunsetDate);
+        Assert.Equal(contentfulReference.Sys.ContentType.SystemProperties.Id, subItem.Type);
     }
 
     // TODO: remove start page inconsistency
@@ -38,13 +38,10 @@ public class SubItemContentfulFactoryTests
     public void ShouldSetStartPageToADifferentIdThanProvided()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new()
-        {
-            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-        };
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().SystemContentTypeId("startPage").Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
         Assert.Equal("start-page", subItem.Type);
@@ -54,56 +51,47 @@ public class SubItemContentfulFactoryTests
     public void ShouldCreateSubItemWithNameForTitleWhenNoTitleProvided()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new()
-        {
-            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-        };
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().SystemContentTypeId("startPage").Build();
+        contentfulReference.Name = "title";
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
-        Assert.Equal(ContentfulReference.Name, subItem.Title);
+        Assert.Equal(contentfulReference.Name, subItem.Title);
     }
 
     [Fact]
     public void ShouldCreateSubItemWithDefaultIconIfNotSet()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new()
-        {
-            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } }
-        };
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().SystemContentTypeId("startPage").Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
-        Assert.Equal("si-default", subItem.Icon);
+        Assert.Equal(contentfulReference.Icon, subItem.Icon);
     }
 
     [Fact]
     public void ShouldCreateSubItemWithIcon()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new()
-        {
-            Sys = new SystemProperties { ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "startPage" } } },
-            Icon = "fa-unique"
-        };
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder().Icon("fa-unique").SystemContentTypeId("startPage").Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
-        Assert.Equal("fa-unique", subItem.Icon);
+        Assert.Equal(contentfulReference.Icon, subItem.Icon);
     }
 
     [Fact]
     public void ShouldCreateSubItemWithoutSubItems()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new ContentfulReferenceBuilder()
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Title("custom name")
             .SubItems(null)
             .TertiaryItems(null)
@@ -112,12 +100,12 @@ public class SubItemContentfulFactoryTests
             .Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
         Assert.NotNull(subItem);
         Assert.IsType<SubItem>(subItem);
-        Assert.Equal("custom name", subItem.Title);
+        Assert.Equal(contentfulReference.Title, subItem.Title);
         Assert.Empty(subItem.SubItems);
     }
 
@@ -125,7 +113,7 @@ public class SubItemContentfulFactoryTests
     public void ShouldCreateSubItemWithSubItems()
     {
         // Arrange
-        ContentfulReference ContentfulReference = new ContentfulReferenceBuilder()
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .SubItems(new List<ContentfulReference>()
             {
                 new()
@@ -161,9 +149,11 @@ public class SubItemContentfulFactoryTests
             })
             .Build();
 
-        SubItem subItem = _subItemContentfulFactory.ToModel(ContentfulReference);
+        // Act
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
-        subItem.SubItems.Should().HaveCount(6);
+        // Assert
+        Assert.Equal(6, subItem.SubItems.Count);
     }
 
     [Fact]
@@ -182,9 +172,9 @@ public class SubItemContentfulFactoryTests
             .Build();
 
         // Act
-        SubItem subItem = _subItemContentfulFactory.ToModel(contentfulReference);
+        SubItem subItem = _subItemFactory.ToModel(contentfulReference);
 
         // Assert
-        subItem.Icon.Should().Be("si-coin");
+        Assert.Equal(contentfulReference.Icon, subItem.Icon);
     }
 }

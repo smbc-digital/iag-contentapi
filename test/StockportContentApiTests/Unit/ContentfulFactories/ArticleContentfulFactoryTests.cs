@@ -65,11 +65,11 @@ public class ArticleContentfulFactoryTests
         Assert.Equivalent(new NullTopic(), article.ParentTopic);
         Assert.Empty(article.Documents);
 
-        _sectionFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulSection>()), Times.Never);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _sectionFactory.Verify(sectionFactory => sectionFactory.ToModel(It.IsAny<ContentfulSection>()), Times.Never);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _profileFactory.Verify(profileFactory => profileFactory.ToModel(It.IsAny<ContentfulProfile>()), Times.Never);
+        _documentFactory.Verify(documentFactory => documentFactory.ToModel(It.IsAny<Asset>()), Times.Never);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class ArticleContentfulFactoryTests
         // Assert
         Assert.NotNull(article);
         Assert.Single(article.TrustedLogos);
-        _articleBrandingFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrustedLogo>()), Times.Once);
+        _articleBrandingFactory.Verify(brandingFactory => brandingFactory.ToModel(It.IsAny<ContentfulTrustedLogo>()), Times.Once);
     }
 
     [Fact]
@@ -192,6 +192,6 @@ public class ArticleContentfulFactoryTests
         // Assert
         Assert.NotNull(article);
         Assert.Single(article.RelatedContent);
-        _subitemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
+        _subitemFactory.Verify(subitemFactory => subitemFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
     }
 }

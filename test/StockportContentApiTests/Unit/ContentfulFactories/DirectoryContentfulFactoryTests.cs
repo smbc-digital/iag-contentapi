@@ -28,10 +28,10 @@ public class DirectoryContentfulFactoryTests
     {
         // Arrange
         ContentfulDirectory directory = new DirectoryBuilder().Build();
-
-        SubItem subItem = new("slug1", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue, "image", new(), EColourScheme.Teal);
+        SubItem subItem = new SubItemBuilder().Build();
+        
         _subItemFactory
-            .Setup(_ => _.ToModel(directory.SubItems.First()))
+            .Setup(subItemFactory => subItemFactory.ToModel(directory.SubItems.First()))
             .Returns(subItem);
 
         // Act
@@ -79,7 +79,7 @@ public class DirectoryContentfulFactoryTests
         Assert.Single(result.AlertsInline);
         Assert.Empty(result.SubDirectories);
         Assert.Empty(result.RelatedContent);
-        _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
+        _subItemFactory.Verify(subItemFactory => subItemFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
     }
 }

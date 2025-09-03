@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class PrivacyNoticeControllerTests
 {
-    private readonly Mock<Func<string, IPrivacyNoticeRepository>> _mockCreateRepository = new();
-    private readonly Mock<IPrivacyNoticeRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IPrivacyNoticeRepository>> _createRepository = new();
+    private readonly Mock<IPrivacyNoticeRepository> _repository = new();
     private readonly PrivacyNoticeController _controller;
 
     public PrivacyNoticeControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository.
+        _createRepository.
             Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new PrivacyNoticeController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new PrivacyNoticeController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class PrivacyNoticeControllerTests
             Slug = "privacy-notice"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetPrivacyNotice(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(privacyNotice));
 
@@ -37,7 +35,7 @@ public class PrivacyNoticeControllerTests
         IActionResult result = await _controller.GetPrivacyNotice("privacy-notice", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -58,7 +56,7 @@ public class PrivacyNoticeControllerTests
             },
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetAllPrivacyNotices())
             .ReturnsAsync(HttpResponse.Successful(privacyNotices));
 
@@ -66,6 +64,6 @@ public class PrivacyNoticeControllerTests
         IActionResult result = await _controller.GetAllPrivacyNotices("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

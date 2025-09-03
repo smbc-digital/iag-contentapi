@@ -10,7 +10,7 @@ public class SectionContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
 
     public SectionContentfulFactoryTests()
     {
@@ -26,7 +26,7 @@ public class SectionContentfulFactoryTests
                                                     _timeProvider.Object,
                                                     _alertFactory.Object,
                                                     _brandingFactory.Object,
-                                                    _inlineQuoteContentfulFactory.Object);
+                                                    _inlineQuoteFactory.Object);
     }
 
     [Fact]
