@@ -92,7 +92,7 @@ public class EventRepository : BaseRepository, IEventRepository
                     singleEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag?.ToLower()) is true).Take(quantity);
 
             row.MatchedByTag = row.Events.Any(matchingEvent =>
-                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag) is true &&
+                    matchingEvent.Tags?.Any(tag => tag?.ToLower() == row.Tag.ToLower()) is true &&
                     matchingEvent.EventCategories?.Any(category => category?.Slug?.ToLower() == row.Tag?.ToLower()) is not true);
         }
 
