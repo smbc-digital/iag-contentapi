@@ -13,7 +13,6 @@ public class News(string title,
                 DateTime sunriseDate,
                 DateTime sunsetDate,
                 DateTime updatedAt,
-                List<Crumb> breadcrumbs,
                 List<Alert> alerts,
                 List<string> tags,
                 List<Document> documents,
@@ -39,7 +38,6 @@ public class News(string title,
     public string PublishingDate { get; set; }
     public DateTime SunsetDate { get; } = sunsetDate;
     public DateTime UpdatedAt { get; } = updatedAt;
-    public List<Crumb> Breadcrumbs { get; } = breadcrumbs;
     public List<string> Tags { get; set; } = tags;
     public List<Alert> Alerts { get; } = alerts;
     public List<Document> Documents { get; } = documents;

@@ -35,7 +35,6 @@ public class NewsRepositoryTests
 
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
-    private readonly List<Crumb> _crumbs = new() { new("title", "slug", "type") };
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly List<string> _newsCategories = new() { "news-category-1", "news-category-2" };
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
@@ -175,7 +174,6 @@ public class NewsRepositoryTests
                             _sunriseDate,
                             _sunsetDate,
                             _updatedAt,
-                            _crumbs,
                             alerts,
                             null,
                             new(),
@@ -288,7 +286,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "tag1", "tag2" },
                         new(),
@@ -389,7 +386,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, firstNews.UpdatedAt);
         Assert.Equal(Image, firstNews.Image);
         Assert.Equal(ThumbnailImage, firstNews.ThumbnailImage);
-        Assert.Equal(_crumbs, firstNews.Breadcrumbs);
         Assert.Equal(_alerts, firstNews.Alerts);
         Assert.Equal(2, firstNews.Categories.Count);
         Assert.Equal("news-category-1", firstNews.Categories[0]);
@@ -422,7 +418,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         null,
                         new(),
@@ -508,7 +503,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, newsroom.News.First().UpdatedAt);
         Assert.Equal(Image, newsroom.News.First().Image);
         Assert.Equal(ThumbnailImage, newsroom.News.First().ThumbnailImage);
-        Assert.Equal(_crumbs, newsroom.News.First().Breadcrumbs);
         Assert.Equal(_alerts, newsroom.News.First().Alerts);
         Assert.Single(newsroom.Dates);
         Assert.Equal(8, newsroom.Dates[0].Month);
@@ -541,7 +535,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "Events" },
                         new(),
@@ -645,7 +638,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "Events" },
                         new(),
@@ -748,7 +740,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "Events" },
                         new(),
@@ -852,7 +843,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         null,
                         new(),
@@ -954,7 +944,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         null,
                         new(),
@@ -1055,7 +1044,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "tag1", "tag2" },
                         new(),
@@ -1154,7 +1142,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "tag1", "tag2" },
                         new(),
@@ -1245,7 +1232,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "testTag" },
                         new(),
@@ -1344,7 +1330,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { expectedTagQueryValue },
                         new(),
@@ -1447,7 +1432,6 @@ public class NewsRepositoryTests
                                             entry.SunriseDate,
                                             entry.SunsetDate,
                                             DateTime.MinValue,
-                                            null,
                                             null,
                                             null,
                                             new(),
@@ -1554,7 +1538,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         null,
                         new(),
@@ -1638,7 +1621,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, newsList.First().UpdatedAt);
         Assert.Equal(Image, newsList.First().Image);
         Assert.Equal(ThumbnailImage, newsList.First().ThumbnailImage);
-        Assert.Equal(_crumbs, newsList.First().Breadcrumbs);
         Assert.Equal(_alerts, newsList.First().Alerts);
     }
 
@@ -1755,7 +1737,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "tag1", "tag2" },
                         new(),
@@ -1865,7 +1846,6 @@ public class NewsRepositoryTests
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
-                                It.IsAny<List<Crumb>>(),
                                 It.IsAny<List<Alert>>(),
                                 It.IsAny<List<string>>(),
                                 It.IsAny<List<Document>>(),
@@ -1942,7 +1922,6 @@ public class NewsRepositoryTests
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
-                                It.IsAny<List<Crumb>>(),
                                 It.IsAny<List<Alert>>(),
                                 It.IsAny<List<string>>(),
                                 It.IsAny<List<Document>>(),
@@ -2086,7 +2065,6 @@ public class NewsRepositoryTests
                         _sunriseDate,
                         _sunsetDate,
                         _updatedAt,
-                        _crumbs,
                         _alerts,
                         new() { "tag1", "tag2" },
                         new(),
@@ -2114,7 +2092,6 @@ public class NewsRepositoryTests
                 contentfulNews.SunriseDate,
                 contentfulNews.SunsetDate,
                 _updatedAt,
-                _crumbs,
                 _alerts,
                 new() { "tag1", "tag2" },
                 new(),
