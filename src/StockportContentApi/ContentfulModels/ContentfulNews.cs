@@ -16,7 +16,6 @@ public class ContentfulNews : IContentfulModel
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue;
     public List<string> Tags { get; set; } = new();
     public List<ContentfulAlert> Alerts { get; set; } = new();
-    public List<Asset> Documents { get; set; } = new();
     public List<string> Categories { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();

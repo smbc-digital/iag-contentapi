@@ -14,7 +14,6 @@ public class News(string title,
                 DateTime updatedAt,
                 List<Alert> alerts,
                 List<string> tags,
-                List<Document> documents,
                 List<string> categories,
                 List<InlineQuote> inlineQuotes,
                 CallToActionBanner callToAction,
@@ -37,7 +36,6 @@ public class News(string title,
     public DateTime UpdatedAt { get; } = updatedAt;
     public List<string> Tags { get; set; } = tags;
     public List<Alert> Alerts { get; } = alerts;
-    public List<Document> Documents { get; } = documents;
     public List<string> Categories { get; } = categories;
     public List<InlineQuote> InlineQuotes { get; set; } = inlineQuotes;
     public CallToActionBanner CallToAction { get; init; } = callToAction;

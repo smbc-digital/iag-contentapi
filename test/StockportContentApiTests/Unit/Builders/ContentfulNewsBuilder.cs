@@ -12,7 +12,6 @@ public class ContentfulNewsBuilder
     private DateTime _updatedAt = new(2017, 01, 30, 23, 0, 0, DateTimeKind.Utc);
     private List<string> _tags = new() { "Bramall Hall", "Events" };
     private readonly List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
-    private List<Asset> _documents = new();
 
     private List<string> _categories = new() { "A category" };
 
@@ -28,7 +27,6 @@ public class ContentfulNewsBuilder
             SunsetDate = _sunsetDate,
             Tags = _tags,
             Alerts = _alerts,
-            Documents = _documents,
             Categories = _categories,
             Sys = { UpdatedAt = _updatedAt }
         };
@@ -72,12 +70,6 @@ public class ContentfulNewsBuilder
     public ContentfulNewsBuilder Body(string body)
     {
         _body = body;
-        return this;
-    }
-
-    public ContentfulNewsBuilder Document()
-    {
-        _documents = new List<Asset> { new ContentfulDocumentBuilder().Build() };
         return this;
     }
 

@@ -1,7 +1,6 @@
 namespace StockportContentApi.ContentfulFactories.NewsFactories;
 
 public class NewsContentfulFactory(IVideoRepository videoRepository,
-                                IContentfulFactory<Asset, Document> documentFactory,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                 ITimeProvider timeProvider,
                                 IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
@@ -9,7 +8,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                                 IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulNews, News>
 {
     private readonly IVideoRepository _videoRepository = videoRepository;
-    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
@@ -18,10 +16,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
 
     public News ToModel(ContentfulNews entry)
     {
-        List<Document> documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
-                                    .Select(_documentFactory.ToModel)
-                                    .ToList();
-
         string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
             ? entry.Image.File.Url 
             : string.Empty;
@@ -56,7 +50,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Sys.UpdatedAt.Value,
                         alerts.ToList(),
                         entry.Tags,
-                        documents,
                         entry.Categories,
                         entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
                         _callToActionFactory.ToModel(entry.CallToAction),
