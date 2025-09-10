@@ -4,7 +4,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                                 IContentfulFactory<Asset, Document> documentFactory,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                 ITimeProvider timeProvider,
-                                IContentfulFactory<ContentfulProfile, Profile> profileFactory,
                                 IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
                                 IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
                                 IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulNews, News>
@@ -13,7 +12,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
-    private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
@@ -45,9 +43,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
             ? entry.Sys.UpdatedAt
             : entry.SunriseDate;
 
-        List<Profile> profiles = entry.Profiles.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(_profileFactory.ToModel).ToList();
-
         return new News(entry.Title,
                         entry.Slug,
                         entry.Teaser,
@@ -63,7 +58,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Tags,
                         documents,
                         entry.Categories,
-                        profiles,
                         entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
                         _callToActionFactory.ToModel(entry.CallToAction),
                         entry.LogoAreaTitle,
