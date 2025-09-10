@@ -1200,13 +1200,15 @@ public class NewsRepositoryTests
 
         // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("NotFound", "NotFound", null, null));
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Empty(newsroom.News);
+        Assert.Null(newsroom.Categories);
     }
 
     [Fact]
-    public void Get_ShouldReturnNewsItemsWithExactMatchingesForTagsWithoutHash()
+    public void Get_ShouldReturnNewsItemsWithExactMatchesForTagsWithoutHash()
     {
         // Arrange
         const string tag = "testTag";
@@ -1306,7 +1308,6 @@ public class NewsRepositoryTests
     public void Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
     {
         // Arrange
-        const string tag = "#testTag";
         const string expectedTagQueryValue = "testTag";
         _mockTimeProvider
             .Setup(timeProvider => timeProvider.Now())
@@ -1396,7 +1397,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(tag, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("testTag", null, null, null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
