@@ -11,7 +11,6 @@ public class ContentfulNewsTests
             Alerts = new List<ContentfulAlert>(),
             Body = string.Empty,
             Categories = new List<string>(),
-            Documents = new List<Asset>(),
             Image = new Asset { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } },
             Slug = string.Empty,
             SunriseDate = DateTime.MinValue,
