@@ -238,7 +238,6 @@ public class LandingPageRepositoryTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
-                It.IsAny<string>(),
                 It.IsAny<DateTime>(),
                 It.IsAny<DateTime>(),
                 It.IsAny<DateTime>(),
@@ -289,7 +288,6 @@ public class LandingPageRepositoryTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
@@ -333,7 +331,6 @@ public class LandingPageRepositoryTests
         List<News> news = new()
         {
             new News("this is the title",
-                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
