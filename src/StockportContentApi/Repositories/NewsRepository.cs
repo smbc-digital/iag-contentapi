@@ -124,7 +124,6 @@ public class NewsRepository : BaseRepository, INewsRepository
 
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyAsync("news-all", GetAllNews, _newsTimeout);
         IEnumerable<ContentfulNews> filteredEntries = newsEntries
-            .Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)))
             .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue));
 
         if (!filteredEntries.Any())
@@ -136,7 +135,8 @@ public class NewsRepository : BaseRepository, INewsRepository
                                     .Where(news => CheckDates(startDate, endDate, news))
                                     .Where(news => string.IsNullOrWhiteSpace(category) 
                                         || news.Categories.Any(cat => string.Equals(cat, category, StringComparison.InvariantCultureIgnoreCase)))
-                                    .OrderByDescending(o => o.SunriseDate)
+                                    .Where(news => tag is null || news.Tags.Any(tagItem => string.Equals(tagItem, tag, StringComparison.InvariantCultureIgnoreCase)))
+                                    .OrderByDescending(news => news.SunriseDate)
                                     .ToList();
 
         if (newsRoomEntry.FeaturedNews is not null
