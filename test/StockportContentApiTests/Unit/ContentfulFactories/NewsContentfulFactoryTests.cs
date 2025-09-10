@@ -8,7 +8,6 @@ public class NewsContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly NewsContentfulFactory _newsContentfulFactory;
     private readonly ContentfulNews _contentfulNews;
-    private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
@@ -21,7 +20,6 @@ public class NewsContentfulFactoryTests
                                     _documentFactory.Object,
                                     _alertBuilder.Object,
                                     _timeProvider.Object,
-                                    _profileFactory.Object,
                                     _inlineQuoteFactory.Object,
                                     _callToActionFactory.Object,
                                     _brandingFactory.Object);
