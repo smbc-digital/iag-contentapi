@@ -20,10 +20,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
             ? entry.Image.File.Url 
             : string.Empty;
 
-        string heroImageUrl = entry.HeroImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.HeroImage.SystemProperties) 
-            ? entry.HeroImage.File.Url 
-            : string.Empty;
-
         string teaserImageUrl = entry.TeaserImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.TeaserImage.SystemProperties) 
             ? entry.TeaserImage.File.Url 
             : string.Empty;
@@ -41,7 +37,6 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Slug,
                         entry.Teaser,
                         imageUrl,
-                        heroImageUrl,
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, teaserImageUrl),
                         entry.ImageCaption,
                         entry.Body,
