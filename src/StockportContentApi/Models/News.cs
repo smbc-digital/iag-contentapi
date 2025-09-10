@@ -7,7 +7,7 @@ public class News(string title,
                 string image,
                 string heroImage,
                 string thumbnailImage,
-                string heroImageCaption,
+                string imageCaption,
                 string body,
                 DateTime sunriseDate,
                 DateTime sunsetDate,
@@ -28,7 +28,7 @@ public class News(string title,
     public string Image { get; } = image;
     public string HeroImage { get; } = heroImage;
     public string ThumbnailImage { get; } = thumbnailImage;
-    public string HeroImageCaption { get; } = heroImageCaption;
+    public string ImageCaption { get; } = imageCaption;
     public string Body { get; } = body;
     public DateTime SunriseDate { get; } = sunriseDate;
     public string PublishingDate { get; set; }
