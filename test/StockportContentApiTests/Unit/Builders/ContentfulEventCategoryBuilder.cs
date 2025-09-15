@@ -1,10 +1,10 @@
-namespace StockportContentApiTests.Builders;
+namespace StockportContentApiTests.Unit.Builders;
 
 public class ContentfulEventCategoryBuilder
 {
-    private string _name { get; set; } = "name";
-    private string _slug { get; set; } = "slug";
-    private string _icon { get; set; } = "icon";
+    private string _name = "name";
+    private string _slug = "slug";
+    private string _icon = "icon";
     private readonly SystemProperties _sys = new()
     {
         ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } }

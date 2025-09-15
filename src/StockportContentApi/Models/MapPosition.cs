@@ -9,8 +9,6 @@ public class MapPosition
     [JsonIgnore]
     public GeoCoordinate Coordinates { get => new(Lat, Lon); }
 
-    public double Distance(MapPosition destination)
-    {
-        return Coordinates.GetDistanceTo(new(destination.Lat, Lon));
-    }
+    public double Distance(MapPosition destination) =>
+        Coordinates.GetDistanceTo(new(destination.Lat, destination.Lon));
 }

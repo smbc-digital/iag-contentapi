@@ -23,7 +23,6 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
             ? entry.Image?.File?.Url 
             : string.Empty;
 
-
         string thumbnailImageUrl = entry.ThumbnailImage?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.ThumbnailImage.SystemProperties) 
             ? entry.ThumbnailImage?.File?.Url 
             : string.Empty;

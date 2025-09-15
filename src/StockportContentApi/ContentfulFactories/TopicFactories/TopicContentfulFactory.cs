@@ -1,41 +1,28 @@
 namespace StockportContentApi.ContentfulFactories.TopicFactories;
 
-public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
+public class TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
+                                    IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                    IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                    IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
+                                    IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
+                                    ITimeProvider timeProvider,
+                                    IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+                                    IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulTopic, Topic>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory;
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory;
-
-    public TopicContentfulFactory(
-        IContentfulFactory<ContentfulReference, SubItem> subItemFactory,
-        IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
-        IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-        IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory)
-    {
-        _subItemFactory = subItemFactory;
-        _crumbFactory = crumbFactory;
-        _alertFactory = alertFactory;
-        _carouselFactory = carouselFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _eventBannerFactory = eventBannerFactory;
-        _callToActionFactory = callToActionFactory;
-        _trustedLogoFactory = trustedLogoFactory;
-    }
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subItemFactory = subItemFactory;
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = eventBannerFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory = carouselFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
 
     public Topic ToModel(ContentfulTopic entry)
     {
         List<SubItem> featuredTasks = entry.FeaturedTasks
-                                        .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Where(featuredTask => ContentfulHelpers.EntryIsNotALink(featuredTask.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(featuredTask.SunriseDate, featuredTask.SunsetDate))
                                         .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> subItems = entry.SubItems
@@ -44,8 +31,8 @@ public class TopicContentfulFactory : IContentfulFactory<ContentfulTopic, Topic>
                                     .Select(_subItemFactory.ToModel).ToList();
 
         List<SubItem> secondaryItems = entry.SecondaryItems
-                                        .Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys) 
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                        .Where(secondaryItem => ContentfulHelpers.EntryIsNotALink(secondaryItem.Sys) 
+                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(secondaryItem.SunriseDate, secondaryItem.SunsetDate))
                                         .Select(_subItemFactory.ToModel).ToList();
 
         List<Crumb> breadcrumbs = entry.Breadcrumbs

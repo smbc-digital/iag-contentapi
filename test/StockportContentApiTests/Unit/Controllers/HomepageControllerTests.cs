@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class HomepageControllerTests
 {
-    private readonly Mock<Func<string, IHomepageRepository>> _mockCreateRepository = new();
-    private readonly Mock<IHomepageRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IHomepageRepository>> _createRepository = new();
+    private readonly Mock<IHomepageRepository> _repository = new();
     private readonly HomepageController _controller;
 
     public HomepageControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new HomepageController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new HomepageController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -44,7 +42,7 @@ public class HomepageControllerTests
                                 null,
                                 "image overlay text");
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(homepage));
 
@@ -52,6 +50,6 @@ public class HomepageControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

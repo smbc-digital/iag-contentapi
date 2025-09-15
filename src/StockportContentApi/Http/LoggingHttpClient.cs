@@ -1,17 +1,11 @@
 ﻿namespace StockportContentApi.Http;
 
 [ExcludeFromCodeCoverage]
-public class LoggingHttpClient : IHttpClient
+public class LoggingHttpClient(IHttpClient inner,
+    ILogger<LoggingHttpClient> logger) : IHttpClient
 {
-    private readonly IHttpClient _inner;
-    private readonly ILogger<LoggingHttpClient> _logger;
-
-    public LoggingHttpClient(IHttpClient inner,
-        ILogger<LoggingHttpClient> logger)
-    {
-        _inner = inner;
-        _logger = logger;
-    }
+    private readonly IHttpClient _inner = inner;
+    private readonly ILogger<LoggingHttpClient> _logger = logger;
 
     public async Task<HttpResponse> Get(string url)
     {

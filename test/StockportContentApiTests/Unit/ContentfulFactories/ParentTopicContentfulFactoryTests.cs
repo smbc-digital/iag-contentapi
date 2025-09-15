@@ -2,23 +2,35 @@
 
 public class ParentTopicContentfulFactoryTests
 {
-    private readonly ParentTopicContentfulFactory _parentTopicContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemContentfulFactory = new();
+    private readonly ParentTopicContentfulFactory _parentTopicFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
 
     public ParentTopicContentfulFactoryTests()
     {
-        _subitemContentfulFactory.Setup(subItem => subItem.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new SubItem("slug", "title", "teaser", "teaser image", "icon", "type", DateTime.MinValue, DateTime.MaxValue,
-                "image", new(), EColourScheme.Green));
-        _timeProvider.Setup(timeProvider => timeProvider.Now())
+        _subItemFactory
+            .Setup(subItem => subItem.ToModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItem("slug",
+                                "title",
+                                "teaser",
+                                "teaser image",
+                                "icon",
+                                "type",
+                                DateTime.MinValue,
+                                DateTime.MaxValue,
+                                "image",
+                                new(),
+                                EColourScheme.Green));
+
+        _timeProvider
+            .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2017, 01, 02));
 
-        _parentTopicContentfulFactory = new(_subitemContentfulFactory.Object, _timeProvider.Object);
+        _parentTopicFactory = new(_subItemFactory.Object, _timeProvider.Object);
     }
 
     [Fact]
-    public void ShouldReturnATopicFromAContentfulArticleBasedOnTheBreadcrumbs()
+    public void ToModel_ShouldReturnATopicFromAContentfulArticleBasedOnTheBreadcrumbs()
     {
         // Arrange
         List<ContentfulReference> subItemEntry = new()
@@ -26,18 +38,17 @@ public class ParentTopicContentfulFactoryTests
             new ContentfulReferenceBuilder().Slug("sub-slug").Build()
         };
 
-        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("topic")
             .Build();
 
-        ContentfulArticle contentfulArticleEntry =
-            new ContentfulArticleBuilder().Breadcrumbs(new() { ContentfulReferences }).Build();
+        ContentfulArticle contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new() { contentfulReference }).Build();
 
         // Act
-        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
+        Topic result = _parentTopicFactory.ToModel(contentfulArticleEntry);
 
         // Assert
         Assert.Equal("test topic", result.Title);
@@ -46,7 +57,7 @@ public class ParentTopicContentfulFactoryTests
     }
 
     [Fact]
-    public void ShouldReturnNullTopicIfBreadcrumbDoesNotHaveTypeOfTopic()
+    public void ToModel_ShouldReturnNullTopicIfBreadcrumbDoesNotHaveTypeOfTopic()
     {
         // Arrange
         List<ContentfulReference> subItemEntry = new()
@@ -54,18 +65,17 @@ public class ParentTopicContentfulFactoryTests
             new ContentfulReferenceBuilder().Slug("sub-slug").Build()
         };
 
-        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntry)
             .SystemContentTypeId("id")
             .Build();
 
-        ContentfulArticle contentfulArticleEntry =
-            new ContentfulArticleBuilder().Breadcrumbs(new() { ContentfulReferences }).Build();
+        ContentfulArticle contentfulArticleEntry = new ContentfulArticleBuilder().Breadcrumbs(new() { contentfulReference }).Build();
 
         // Act
-        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticleEntry);
+        Topic result = _parentTopicFactory.ToModel(contentfulArticleEntry);
 
         // Assert
         Assert.IsType<NullTopic>(result);
@@ -80,7 +90,7 @@ public class ParentTopicContentfulFactoryTests
             .Build();
 
         // Act
-        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
+        Topic result = _parentTopicFactory.ToModel(contentfulArticle);
 
         // Assert
         Assert.IsType<NullTopic>(result);
@@ -106,7 +116,7 @@ public class ParentTopicContentfulFactoryTests
             subItemEntryOther
         };
 
-        ContentfulReference ContentfulReferences = new ContentfulReferenceBuilder()
+        ContentfulReference contentfulReference = new ContentfulReferenceBuilder()
             .Title("test topic")
             .Slug("test-topic")
             .SubItems(subItemEntryList)
@@ -116,19 +126,29 @@ public class ParentTopicContentfulFactoryTests
         ContentfulArticle contentfulArticle = new ContentfulArticleBuilder()
             .Breadcrumbs(new()
             {
-                ContentfulReferences
+                contentfulReference
             })
             .Title("title")
             .Slug("slug")
             .SystemId("same-id-as-article")
             .Build();
 
-        _subitemContentfulFactory.Setup(o => o.ToModel(It.Is<ContentfulReference>(x => x.Slug.Equals("article-slug"))))
-            .Returns(new SubItem("slug", "title", string.Empty, string.Empty, string.Empty, string.Empty, DateTime.MinValue,
-                DateTime.MaxValue, string.Empty, new(), EColourScheme.Teal));
+        _subItemFactory
+            .Setup(subItemFactory => subItemFactory.ToModel(It.Is<ContentfulReference>(contentfulRef => contentfulRef.Slug.Equals("article-slug"))))
+            .Returns(new SubItem("slug",
+                                "title",
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                string.Empty,
+                                DateTime.MinValue,
+                                DateTime.MaxValue,
+                                string.Empty,
+                                new(),
+                                EColourScheme.Teal));
 
         // Act
-        Topic result = _parentTopicContentfulFactory.ToModel(contentfulArticle);
+        Topic result = _parentTopicFactory.ToModel(contentfulArticle);
 
         // Assert
         Assert.IsType<Topic>(result);

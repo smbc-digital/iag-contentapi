@@ -2,12 +2,10 @@
 
 public class SectionRepositoryTests
 {
-    private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulSection, Section>> _contentfulFactory = new();
     private readonly SectionRepository _repository;
-
-    private Section _section = new();
+    private readonly Section _section = new();
 
     public SectionRepositoryTests()
     {
@@ -15,16 +13,14 @@ public class SectionRepositoryTests
         
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
         
-        _repository = new(config,
-                        _contentfulFactory.Object,
-                        contentfulClientManager.Object);
+        _repository = new(config, _contentfulFactory.Object, contentfulClientManager.Object);
 
         ContentfulSection contentfulSection = new ContentfulSectionBuilder().Build();
 
         ContentfulCollection<ContentfulSection> contentfulCollection = new() { Items = [contentfulSection] };
 
         _contentfulClient
-            .Setup(_ =>_.GetEntries(It.IsAny<QueryBuilder<ContentfulSection>>(), It.IsAny<CancellationToken>()))
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulSection>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
 
         _contentfulFactory
@@ -45,7 +41,7 @@ public class SectionRepositoryTests
     {
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager
-            .Setup(_ => _.GetClient(config))
+            .Setup(contentfulClientManager => contentfulClientManager.GetClient(config))
             .Returns(_contentfulClient.Object);
         
         return contentfulClientManager;

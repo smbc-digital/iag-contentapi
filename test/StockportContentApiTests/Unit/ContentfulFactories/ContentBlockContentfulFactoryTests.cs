@@ -2,10 +2,11 @@
 
 public class ContentBlockContentfulFactoryTests
 {
-    private readonly Mock<ITimeProvider> _timeProviderMock = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly ContentBlockContentfulFactory _factory;
 
-    public ContentBlockContentfulFactoryTests() => _factory = new ContentBlockContentfulFactory(_timeProviderMock.Object);
+    public ContentBlockContentfulFactoryTests() =>
+        _factory = new ContentBlockContentfulFactory(_timeProvider.Object);
 
     [Fact]
     public void ToModel_ShouldReturnContentBlock_WithCorrectFields()

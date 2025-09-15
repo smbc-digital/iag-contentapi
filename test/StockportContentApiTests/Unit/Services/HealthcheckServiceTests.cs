@@ -6,8 +6,8 @@ public class HealthcheckServiceTests
     private const string Key = "Key";
     private const int NumberOfItems = 4;
     private readonly string _appVersionPath;
-    private readonly Mock<ICache> _cacheWrapper;
-    private readonly Mock<IFileWrapper> _fileWrapperMock;
+    private readonly Mock<ICache> _cacheWrapper = new();
+    private readonly Mock<IFileWrapper> _fileWrapperMock = new();
     private readonly HealthcheckService _healthcheckService;
     private readonly string _shaPath;
 
@@ -15,90 +15,126 @@ public class HealthcheckServiceTests
     {
         _appVersionPath = "./Unit/version.txt";
         _shaPath = "./Unit/sha.txt";
-        _fileWrapperMock = new();
         SetUpFakeFileSystem();
-        _cacheWrapper = new();
 
         _healthcheckService = CreateHealthcheckService(_appVersionPath, _shaPath);
     }
 
     private void SetUpFakeFileSystem()
     {
-        _fileWrapperMock.Setup(x => x.Exists(_appVersionPath)).Returns(true);
-        _fileWrapperMock.Setup(x => x.ReadAllLines(_appVersionPath)).Returns(new[] { "0.0.3" });
-        _fileWrapperMock.Setup(x => x.Exists(_shaPath)).Returns(true);
-        _fileWrapperMock.Setup(x => x.ReadAllLines(_shaPath)).Returns(new[] { "sha" });
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists(_appVersionPath))
+            .Returns(true);
+
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.ReadAllLines(_appVersionPath))
+            .Returns(["0.0.3"]);
+
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists(_shaPath))
+            .Returns(true);
+
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.ReadAllLines(_shaPath))
+            .Returns(["sha"]);
     }
 
     private HealthcheckService CreateHealthcheckService(string appVersionPath, string shaPath) =>
         new(appVersionPath, shaPath, _fileWrapperMock.Object, "local");
 
-
     [Fact]
     public async Task ShouldContainTheAppVersionInTheResponse()
     {
+        // Act
         Healthcheck check = await _healthcheckService.Get();
 
-        check.AppVersion.Should().Be("0.0.3");
+        // Assert
+        Assert.Equal("0.0.3", check.AppVersion);
     }
 
     [Fact]
     public async Task ShouldContainTheGitShaInTheResponse()
     {
+        // Act
         Healthcheck check = await _healthcheckService.Get();
 
-        check.SHA.Should().Be("sha");
+        // Assert
+        Assert.Equal("sha", check.SHA);
     }
 
     [Fact]
     public async Task ShouldSetAppVersionToDevIfFileNotFound()
     {
-        string notFoundVersionPath = "notfound";
-        _fileWrapperMock.Setup(x => x.Exists(notFoundVersionPath)).Returns(false);
+        // Arrange
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists("notfound"))
+            .Returns(false);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion =
-            CreateHealthcheckService(notFoundVersionPath, _shaPath);
+        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService("notfound", _shaPath);
+
+        // Act
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
-        check.AppVersion.Should().Be("dev");
+        // Assert
+        Assert.Equal("dev", check.AppVersion);
     }
 
     [Fact]
     public async Task ShouldSetShaToEmptyIfFileNotFound()
     {
-        string notFoundShaPath = "notfound";
-        _fileWrapperMock.Setup(x => x.Exists(notFoundShaPath)).Returns(false);
+        // Arrange
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists("notfound"))
+            .Returns(false);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion =
-            CreateHealthcheckService(_appVersionPath, notFoundShaPath);
+        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(_appVersionPath, "notfound");
+
+        // Act
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
-        check.SHA.Should().Be(string.Empty);
+        // Assert
+        Assert.Empty(check.SHA);
     }
 
     [Fact]
     public async Task ShouldSetAppVersionToDevIfFileEmpty()
     {
-        string newFile = "newFile";
-        _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
-        _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new string[] { });
+        // Arrange
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists("newFile"))
+            .Returns(true);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.ReadAllLines("newFile"))
+            .Returns(Array.Empty<string>());
+
+        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService("newFile", _shaPath);
+
+        // Act
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
-        check.AppVersion.Should().Be("dev");
+        // Assert
+        Assert.Equal("dev", check.AppVersion);
     }
 
     [Fact]
     public async Task ShouldSetAppVersionToDevIfFileHasAnEmptyAString()
     {
-        string newFile = "newFile";
-        _fileWrapperMock.Setup(x => x.Exists(newFile)).Returns(true);
-        _fileWrapperMock.Setup(x => x.ReadAllLines(newFile)).Returns(new[] { string.Empty });
+        // Arrange
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.Exists("newFile"))
+            .Returns(true);
 
-        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService(newFile, _shaPath);
+        _fileWrapperMock
+            .Setup(fileWrapperMock => fileWrapperMock.ReadAllLines("newFile"))
+            .Returns([string.Empty]);
+
+        HealthcheckService healthCheckServiceWithNotFoundVersion = CreateHealthcheckService("newFile", _shaPath);
+
+        // Act
         Healthcheck check = await healthCheckServiceWithNotFoundVersion.Get();
 
-        check.AppVersion.Should().Be("dev");
+        // Assert
+        Assert.Equal("dev", check.AppVersion);
     }
 }

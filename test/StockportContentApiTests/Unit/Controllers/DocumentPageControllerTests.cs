@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class DocumentPageControllerTests
 {
-    private readonly Mock<Func<string, IDocumentPageRepository>> _mockCreateRepository = new();
-    private readonly Mock<IDocumentPageRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IDocumentPageRepository>> _createRepository = new();
+    private readonly Mock<IDocumentPageRepository> _repository = new();
     private readonly DocumentPageController _controller;
 
     public DocumentPageControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository.
+        _createRepository.
             Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new DocumentPageController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new DocumentPageController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class DocumentPageControllerTests
             Slug = "document-page"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetDocumentPage(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(documentPage));
 
@@ -37,6 +35,6 @@ public class DocumentPageControllerTests
         IActionResult result = await _controller.GetDocumentPage("document-page", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

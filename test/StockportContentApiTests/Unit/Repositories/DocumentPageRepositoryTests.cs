@@ -5,7 +5,7 @@ public class DocumentPageRepositoryTests
     private readonly DocumentPageRepository _repository;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<ICache> _cache = new();
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
 
     public DocumentPageRepositoryTests()
     {
@@ -17,17 +17,19 @@ public class DocumentPageRepositoryTests
             .Add("TEST_ENVIRONMENT", "master")
             .Build();
 
-        _mockTimeProvider.Setup(timeProvider => timeProvider.Now()).Returns(new DateTime(2016, 10, 15));
+        _timeProvider
+            .Setup(timeProvider => timeProvider.Now())
+            .Returns(new DateTime(2016, 10, 15));
 
-        DocumentPageContentfulFactory contentfulFactory = new(
-            new Mock<IContentfulFactory<Asset, Document>>().Object,
-            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object,
-            new Mock<IContentfulFactory<ContentfulReference, Crumb>>().Object,
-            _mockTimeProvider.Object
-        );
+        DocumentPageContentfulFactory contentfulFactory = new(new Mock<IContentfulFactory<Asset, Document>>().Object,
+                                                            new Mock<IContentfulFactory<ContentfulReference, SubItem>>().Object,
+                                                            new Mock<IContentfulFactory<ContentfulReference, Crumb>>().Object,
+                                                            _timeProvider.Object);
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
-        contentfulClientManager.Setup(_ => _.GetClient(config)).Returns(_contentfulClient.Object);
+        contentfulClientManager
+            .Setup(contentfulClientManager => contentfulClientManager.GetClient(config))
+            .Returns(_contentfulClient.Object);
         
         _repository = new(config,
                         contentfulClientManager.Object,
@@ -52,7 +54,7 @@ public class DocumentPageRepositoryTests
         ContentfulDocumentPage contentfulDocumentPage = new ContentfulDocumentPageBuilder().Build();
 
         _cache
-            .Setup(_ => _.GetFromCacheOrDirectlyAsync(It.Is<string>(slug => slug.Equals($"documentPage-slug")), It.IsAny<Func<Task<ContentfulDocumentPage>>>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(slug => slug.Equals($"documentPage-slug")), It.IsAny<Func<Task<ContentfulDocumentPage>>>()))
             .ReturnsAsync(contentfulDocumentPage);
 
         // Act
@@ -93,7 +95,6 @@ public class DocumentPageRepositoryTests
             Items = new List<ContentfulDocumentPage>()
         };
 
-        // Setup mock behavior for GetEntries method
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulDocumentPage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);

@@ -2,7 +2,7 @@
 
 public class ContactUsIdContentfulFactoryTests
 {
-    private readonly ContentfulContactUsId _contentfulContactUsId = new() { EmailAddress = "test@stockport.gov.uk", Name = "Test email", Slug = "test-email" };
+    readonly ContentfulContactUsId _contentfulContactUsId = new ContentfulContactUsIdBuilder().Build();
     private readonly ContactUsIdContentfulFactory _contactUsIdContentfulFactory = new();
 
     [Fact]

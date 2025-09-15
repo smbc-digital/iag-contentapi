@@ -8,8 +8,8 @@ public class ContentfulClientManagerTests
     private readonly System.Net.Http.HttpClient _httpClient = new();
     private readonly ContentfulClientManager _clientManager;
 
-    public ContentfulClientManagerTests()
-        => _clientManager = new ContentfulClientManager(_httpClient, _mockConfiguration.Object);
+    public ContentfulClientManagerTests() =>
+        _clientManager = new ContentfulClientManager(_httpClient, _mockConfiguration.Object);
 
     [Fact]
     public void GetClient_ShouldReturnContentfulClient_WhenUsePreviewApiIsFalse()

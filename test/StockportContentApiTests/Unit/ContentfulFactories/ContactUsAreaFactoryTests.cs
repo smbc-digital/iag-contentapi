@@ -3,20 +3,18 @@
 public class ContactUsAreaFactoryTests
 {
     private readonly ContactUsAreaContentfulFactory _factory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _mockSubitemFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _mockCrumbFactory = new();
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _mockAlertFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _mockContactUsCategoryFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
+    private readonly Mock<ITimeProvider> _timeProvider = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>> _contactUsCategoryFactory = new();
 
-    public ContactUsAreaFactoryTests()
-    {
-        _factory = new ContactUsAreaContentfulFactory(_mockSubitemFactory.Object,
-            _mockCrumbFactory.Object,
-            _mockTimeProvider.Object,
-            _mockAlertFactory.Object,
-            _mockContactUsCategoryFactory.Object);
-    }
+    public ContactUsAreaFactoryTests() =>
+        _factory = new ContactUsAreaContentfulFactory(_subItemFactory.Object,
+                                                    _crumbFactory.Object,
+                                                    _timeProvider.Object,
+                                                    _alertFactory.Object,
+                                                    _contactUsCategoryFactory.Object);
 
     [Fact]
     public void ShouldCreate_ValidContentfulContactUsAreModel()
@@ -52,7 +50,9 @@ public class ContactUsAreaFactoryTests
                             .PrimaryItems(primaryItems)
                             .Build();
 
-        _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
+        _subItemFactory
+            .Setup(subItemFactory => subItemFactory.ToModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItem());
 
         // Act
         ContactUsArea result = _factory.ToModel(entry);
@@ -87,7 +87,9 @@ public class ContactUsAreaFactoryTests
                             .ContentfulContactUsCategories(contactUsCategories)
                             .Build();
 
-        _mockSubitemFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulReference>())).Returns(new SubItem());
+        _subItemFactory
+            .Setup(subItemFactory => subItemFactory.ToModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItem());
 
         // Act
         ContactUsArea result = _factory.ToModel(entry);

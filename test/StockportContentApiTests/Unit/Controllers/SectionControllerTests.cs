@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class SectionControllerTests
 {
-    private readonly Mock<Func<string, ISectionRepository>> _mockCreateRepository = new();
-    private readonly Mock<ISectionRepository> _mockRepository = new();
+    private readonly Mock<Func<string, ISectionRepository>> _createRepository = new();
+    private readonly Mock<ISectionRepository> _repository = new();
     private readonly SectionController _controller;
 
     public SectionControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository.
+        _createRepository.
             Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new SectionController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new SectionController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -32,12 +30,10 @@ public class SectionControllerTests
                             "logo area title",
                             new List<TrustedLogo>(),
                             new DateTime(),
-                            new DateTime(),
-                            new DateTime(),
                             new List<Alert>(),
                             new List<InlineQuote>());
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetSections(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(section));
 
@@ -45,7 +41,7 @@ public class SectionControllerTests
         IActionResult result = await _controller.GetSection("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -64,7 +60,7 @@ public class SectionControllerTests
             },
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(sections));
 
@@ -72,6 +68,6 @@ public class SectionControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

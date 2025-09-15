@@ -2,17 +2,6 @@
 public class DirectoryEntryBuilder
 {
     private string _slug = "slug";
-    private readonly string _title = "title";
-    private readonly string _provider = "provider";
-    private readonly string _description = "description";
-    private readonly string _teaser = "teaser";
-    private readonly string _metaDescription = "meta description";
-    private readonly string _phoneNumber = "0123456789";
-    private readonly string _email = "email";
-    private readonly string _website = "website";
-    private readonly string _twitter = "twitter";
-    private readonly string _facebook = "facebook";
-    private readonly string _address = "address";
     private readonly MapPosition _mapPosition = new()
     {
         Lat = 53.393310,
@@ -50,17 +39,17 @@ public class DirectoryEntryBuilder
         => new()
         {
             Slug = _slug,
-            Title = _title,
-            Provider = _provider,
-            Description = _description,
-            MetaDescription = _metaDescription,
-            Teaser = _teaser,
-            PhoneNumber = _phoneNumber,
-            Email = _email,
-            Website = _website,
-            Twitter = _twitter,
-            Facebook = _facebook,
-            Address = _address,
+            Title = "title",
+            Provider = "provider",
+            Description = "description",
+            MetaDescription = "meta description",
+            Teaser = "teaser",
+            PhoneNumber = "0123456789",
+            Email = "email",
+            Website = "website",
+            Twitter = "twitter",
+            Facebook = "facebook",
+            Address = "address",
             Filters = _filters,
             Alerts = _alerts,
             AlertsInline = _alertsInline,

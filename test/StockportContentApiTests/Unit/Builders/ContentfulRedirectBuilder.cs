@@ -14,20 +14,6 @@ public class ContentfulRedirectBuilder
             Redirects = _redirects
         };
 
-    public ContentfulRedirect BuildForRouteTest()
-        => new()
-        {
-            LegacyUrls = new Dictionary<string, string> { { "a-url", "another-url" }, { "start-url", "end-url" } },
-            Redirects = new Dictionary<string, string>
-            {
-                { "starturl.fake/this-is-another-article", "redirecturl.fake/another-article" },
-                { "starturl.fake/this-is-an-article/ghjgjk/gjyuy", "an article" },
-                { "starturl.fake/counciltax", "an-article" },
-                { "starturl.fake/bins", "redirecturl.fake/bins" },
-                { "starturl.fake/healthystockport", "redirecturl.fake" }
-            }
-        };
-
     public ContentfulRedirectBuilder WithTitle(string title)
     {
         _title = title;

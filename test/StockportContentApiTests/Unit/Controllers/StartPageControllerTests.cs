@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class StartPageControllerTests
 {
-    private readonly Mock<Func<string, IStartPageRepository>> _mockCreateRepository = new();
-    private readonly Mock<IStartPageRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IStartPageRepository>> _createRepository = new();
+    private readonly Mock<IStartPageRepository> _repository = new();
     private readonly StartPageController _controller;
 
     public StartPageControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new StartPageController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new StartPageController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -36,7 +34,7 @@ public class StartPageControllerTests
                             new List<Alert>(),
                             new List<Alert>());
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetStartPage(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(startPage));
 
@@ -44,7 +42,7 @@ public class StartPageControllerTests
         IActionResult result = await _controller.GetStartPage("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -79,7 +77,7 @@ public class StartPageControllerTests
                         new List<Alert>())
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(startPages));
 
@@ -87,6 +85,6 @@ public class StartPageControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }
