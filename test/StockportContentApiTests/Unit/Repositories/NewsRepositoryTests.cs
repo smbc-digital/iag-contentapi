@@ -27,7 +27,6 @@ public class NewsRepositoryTests
 
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly Mock<IContentfulClientManager> _contentfulClientManager = new();
-    private readonly List<Crumb> _crumbs = new() { new("title", "slug", "type") };
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly List<string> _newsCategories = new() { "news-category-1", "news-category-2" };
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
@@ -77,17 +76,12 @@ public class NewsRepositoryTests
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
-                                It.IsAny<string>(),
-                                It.IsAny<string>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
                                 It.IsAny<DateTime>(),
-                                It.IsAny<List<Crumb>>(),
                                 It.IsAny<List<Alert>>(),
                                 It.IsAny<List<string>>(),
-                                It.IsAny<List<Document>>(),
                                 It.IsAny<List<string>>(),
-                                It.IsAny<List<Profile>>(),
                                 It.IsAny<List<InlineQuote>>(),
                                 It.IsAny<CallToActionBanner>(),
                                 It.IsAny<string>(),
@@ -355,7 +349,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, firstNews.UpdatedAt);
         Assert.Equal("image.jpg", firstNews.Image);
         Assert.Equal("thumbnail.jpg", firstNews.ThumbnailImage);
-        Assert.Equal(_crumbs, firstNews.Breadcrumbs);
         Assert.Equal(_alerts, firstNews.Alerts);
         Assert.Equal(2, firstNews.Categories.Count);
         Assert.Equal("news-category-1", firstNews.Categories[0]);
@@ -427,7 +420,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, newsroom.News.First().UpdatedAt);
         Assert.Equal("image.jpg", newsroom.News.First().Image);
         Assert.Equal("thumbnail.jpg", newsroom.News.First().ThumbnailImage);
-        Assert.Equal(_crumbs, newsroom.News.First().Breadcrumbs);
         Assert.Equal(_alerts, newsroom.News.First().Alerts);
         Assert.Single(newsroom.Dates);
         Assert.Equal(8, newsroom.Dates[0].Month);
@@ -449,6 +441,7 @@ public class NewsRepositoryTests
             .Returns(newsRoom);
         
         News news = CreateTestNews("This is the news", "news-of-the-century");
+        news.Tags = new() { "Events" };
 
         _newsFactory
             .Setup(newsFactory => newsFactory.ToModel(It.IsAny<ContentfulNews>()))
@@ -566,6 +559,7 @@ public class NewsRepositoryTests
             .Returns(newsRoom);
 
         News news = CreateTestNews("This is the news", "news-of-the-century");
+        news.Tags = new() { "Events" };
 
         _newsFactory
             .Setup(newsFactory => newsFactory.ToModel(It.IsAny<ContentfulNews>()))
@@ -822,9 +816,11 @@ public class NewsRepositoryTests
 
         // Act
         HttpResponse response = await _repository.Get("NotFound", "NotFound", null, null);
+        Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Empty(newsroom.News);
+        Assert.Null(newsroom.Categories);
     }
 
     [Fact]
@@ -877,17 +873,18 @@ public class NewsRepositoryTests
         Assert.Equal(2, newsroom.News.Count);
         Assert.Contains(newsroom.News.First().Tags, t => t.Equals("testTag"));
     }
-
-    [Fact]
-    public async Task Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
+    
+     [Fact]
+    public void Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
     {
         // Arrange
+        const string expectedTagQueryValue = "testTag";
         _timeProvider
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 08, 5));
 
         Newsroom newsRoom = new(_alerts, true, "test-id", null);
-
+        
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
             .Returns(newsRoom);
@@ -901,6 +898,7 @@ public class NewsRepositoryTests
 
         contentfulNews.Tags = new() { "#testTag", "foo" };
         contentfulNews3.Tags = new() { "#testTag", "foo" };
+        contentfulNews2.Tags = new() { "sports" };
 
         ContentfulCollection<ContentfulNews> newsListCollection = new()
         {
@@ -921,6 +919,7 @@ public class NewsRepositoryTests
                                                             It.IsAny<CancellationToken>()))
             .ReturnsAsync(newsListCollection);
 
+
         _cacheWrapper
             .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
@@ -930,12 +929,12 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.Get("#testTag", null, null, null);
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("testTag", null, null, null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
         Assert.Equal(2, newsroom.News.Count);
-        Assert.Contains(newsroom.News[1].Tags, t => t.Equals("testTag"));
+        Assert.Contains(newsroom.News[1].Tags, tag => tag.Equals(expectedTagQueryValue));
     }
 
     [Fact]
@@ -1071,7 +1070,6 @@ public class NewsRepositoryTests
         Assert.Equal(_updatedAt, newsList.First().UpdatedAt);
         Assert.Equal("image.jpg", newsList.First().Image);
         Assert.Equal("thumbnail.jpg", newsList.First().ThumbnailImage);
-        Assert.Equal(_crumbs, newsList.First().Breadcrumbs);
         Assert.Equal(_alerts, newsList.First().Alerts);
     }
 
@@ -1383,21 +1381,16 @@ public class NewsRepositoryTests
                 contentfulNews.Title,
                 contentfulNews.Slug,
                 contentfulNews.Teaser,
-                "Purpose",
                 "image.jpg",
-                "hero image",
                 "thumbnail.jpg",
                 "hero caption image",
                 "The news",
                 contentfulNews.SunriseDate,
                 contentfulNews.SunsetDate,
                 _updatedAt,
-                _crumbs,
                 _alerts,
                 new() { "tag1", "tag2" },
-                new(),
                 contentfulNews.Categories,
-                new List<Profile>(),
                 null,
                 null,
                 string.Empty,
@@ -1442,21 +1435,16 @@ public class NewsRepositoryTests
         new(title,
             slug,
             "Read more",
-            "Purpose",
             "image.jpg",
-            "hero image",
             "thumbnail.jpg",
             "hero caption",
             "The body",
             sunriseDate ?? _sunriseDate,
             sunsetDate ?? _sunsetDate,
             _updatedAt,
-            _crumbs,
             _alerts,
             new(),
-            new(),
             _newsCategories,
-            new List<Profile>(),
             null,
             null,
             string.Empty,
