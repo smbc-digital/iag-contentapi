@@ -99,11 +99,11 @@ public class NewsRepository : BaseRepository, INewsRepository
             News newsArticle = _newsContentfulFactory.ToModel(entry);
 
             newsArticle.Events = events
-                .GroupBy(e => e.Slug)
+                .GroupBy(evnt => evnt.Slug)
                 .Select(g => g.First())
-                .OrderBy(e => e.EventDate)
-                .ThenBy(e => TimeSpan.Parse(e.StartTime))
-                .ThenBy(e => e.Title)
+                .OrderBy(evnt => evnt.EventDate)
+                .ThenBy(evnt => TimeSpan.Parse(evnt.StartTime))
+                .ThenBy(evnt => evnt.Title)
                 .Take(3)
                 .ToList();
         }
@@ -163,8 +163,8 @@ public class NewsRepository : BaseRepository, INewsRepository
 
     private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news) =>
         startDate.HasValue && endDate.HasValue
-            ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateIsInThePast(news.SunsetDate)
-            : _dateComparer.SunsetDateIsInThePast(news.SunsetDate);
+            ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate)
+            : _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate);
 
     public async Task<HttpResponse> GetNewsByLimit(int limit)
     {
