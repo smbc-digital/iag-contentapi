@@ -2,60 +2,69 @@
 
 public class HttpClientTests
 {
-    private readonly Mock<IMsHttpClientWrapper> _msHttpClient;
-    private readonly Mock<ILogger<HttpClient>> _logger;
+    private readonly Mock<IMsHttpClientWrapper> _msHttpClient = new();
+    private readonly Mock<ILogger<HttpClient>> _logger = new();
     private readonly HttpClient _httpClient;
 
-    public HttpClientTests()
-    {
-        _msHttpClient = new Mock<IMsHttpClientWrapper>();
-        _logger = new Mock<ILogger<HttpClient>>();
+    public HttpClientTests() =>
         _httpClient = new HttpClient(_msHttpClient.Object, _logger.Object);
-    }
 
     [Fact]
-    public void ShouldReturnFailureForHttpRequestException()
+    public async Task ShouldReturnFailureForHttpRequestException()
     {
-        _msHttpClient.Setup(o => o.GetAsync(It.IsAny<string>())).Throws(new HttpRequestException());
+        // Arrange
+        _msHttpClient
+            .Setup(msHttpClient => msHttpClient.GetAsync(It.IsAny<string>()))
+            .Throws(new HttpRequestException());
 
-        Task<HttpResponse> response = _httpClient.Get("http://www.nourl.com");
+        // Act
+        HttpResponse response = await _httpClient.Get("http://www.nourl.com");
 
+        // Assert
         LogTesting.Assert(_logger, LogLevel.Error, "An error occured while communicating with the remote service.");
-        response.Result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
     }
 
     [Fact]
-    public void ShouldReturnNotFoundForNon200StatusCode()
+    public async Task ShouldReturnNotFoundForNon200StatusCode()
     {
+        // Arrange
         HttpResponseMessage expectedMessage = new(HttpStatusCode.NotFound)
         {
             ReasonPhrase = "404"
         };
 
-        _msHttpClient.Setup(o => o.GetAsync(It.IsAny<string>()))
+        _msHttpClient
+            .Setup(msHttpClient => msHttpClient.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(expectedMessage);
 
-        HttpResponse response = AsyncTestHelper.Resolve(_httpClient.Get("http://www.nourl.com"));
+        // Act
+        HttpResponse response = await _httpClient.Get("http://www.nourl.com");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        response.Error.Should().Be("404");
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("404", response.Error);
     }
 
     [Fact]
-    public void ShouldReturnSuccessFor200StatusCode()
+    public async Task ShouldReturnSuccessFor200StatusCode()
     {
+        // Arrange
         HttpResponseMessage expectedMessage = new(HttpStatusCode.OK)
         {
             Content = new StringContent("200")
         };
 
-        _msHttpClient.Setup(o => o.GetAsync(It.IsAny<string>()))
+        _msHttpClient
+            .Setup(msHttpClient => msHttpClient.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(expectedMessage);
 
-        HttpResponse response = AsyncTestHelper.Resolve(_httpClient.Get("http://www.nourl.com"));
+        // Act
+        HttpResponse response = await _httpClient.Get("http://www.nourl.com");
         string content = response.Get<string>();
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        content.Should().Be("200");
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("200", content);
     }
 }

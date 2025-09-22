@@ -1,22 +1,14 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLandingPage, LandingPage>
+public class LandingPageContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                        ITimeProvider timeProvider,
+                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                        IContentfulFactory<ContentfulReference, ContentBlock> contentBlockFactory) : IContentfulFactory<ContentfulLandingPage, LandingPage>
 {
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulReference, ContentBlock> _contentBlockFactory;
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-    private readonly DateComparer _dateComparer;
-
-    public LandingPageContentfulFactory(IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulReference, ContentBlock> contentBlockFactory)
-    {
-        _crumbFactory = crumbFactory;
-        _dateComparer = new(timeProvider);
-        _alertFactory = alertFactory;
-        _contentBlockFactory = contentBlockFactory;
-    }
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulReference, ContentBlock> _contentBlockFactory = contentBlockFactory;
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public LandingPage ToModel(ContentfulLandingPage entry)
     {
@@ -47,12 +39,12 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             Title = entry.Title,
             Subtitle = entry.Subtitle,
             Breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                            .Select(crumb => _crumbFactory.ToModel(crumb)).ToList(),
+                            .Select(_crumbFactory.ToModel).ToList(),
             
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
-                        .Select(alert => _alertFactory.ToModel(alert)).ToList(),
+                        .Select(_alertFactory.ToModel).ToList(),
 
             Teaser = entry.Teaser,
             MetaDescription = entry.MetaDescription,
@@ -62,7 +54,7 @@ public class LandingPageContentfulFactory : IContentfulFactory<ContentfulLanding
             HeaderImage = headerImage,
             HeaderColourScheme = entry.HeaderColourScheme,
             PageSections = entry.PageSections.Where(contentBlock => ContentfulHelpers.EntryIsNotALink(contentBlock.Sys))
-                            .Select(contentBlock => _contentBlockFactory.ToModel(contentBlock)).ToList()
+                            .Select(_contentBlockFactory.ToModel).ToList()
         };
     }
 }

@@ -3,8 +3,8 @@
 public class FooterRepositoryTests
 {
     private readonly ContentfulConfig _config;
-    private readonly Mock<IContentfulClient> _client = new();
     private readonly FooterRepository _repository;
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly Mock<IContentfulFactory<ContentfulFooter, Footer>> _contentfulFactory = new();
 
     public FooterRepositoryTests()
@@ -19,7 +19,9 @@ public class FooterRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
 
-        contentfulClientManager.Setup(client=> client.GetClient(_config)).Returns(_client.Object);
+        contentfulClientManager
+            .Setup(client => client.GetClient(_config))
+            .Returns(_client.Object);
 
         _repository = new(_config, contentfulClientManager.Object, _contentfulFactory.Object);
     }
@@ -38,13 +40,14 @@ public class FooterRepositoryTests
             }
         };
 
-        _client.Setup(o => o.GetEntries(
-                            It.Is<QueryBuilder<ContentfulFooter>>(q => q.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
-                            It.IsAny<CancellationToken>())).ReturnsAsync(footerCollection);
+        _client
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulFooter>>(query => query.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
+                                            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(footerCollection);
 
-        _contentfulFactory.Setup(o => o.ToModel(It.IsAny<ContentfulFooter>()))
-            .Returns(new Footer("Title", "a-slug", new List<SubItem>(),
-                new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3"));
+        _contentfulFactory
+            .Setup(contentfulFactory => contentfulFactory.ToModel(It.IsAny<ContentfulFooter>()))
+            .Returns(new Footer("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3"));
 
         // Act
         HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter());
@@ -52,7 +55,7 @@ public class FooterRepositoryTests
         // Assert
         Assert.Equal(mockFooter.Title, footer.Get<Footer>().Title);
         Assert.Equal(mockFooter.Slug, footer.Get<Footer>().Slug);
-        footer.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, footer.StatusCode);
     }
 
     [Fact]
@@ -70,13 +73,12 @@ public class FooterRepositoryTests
         };
 
         _client
-            .Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulFooter>>(
-                    q => q.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
-                It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulFooter>>(query => query.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
+                                            It.IsAny<CancellationToken>()))
             .ReturnsAsync(footerCollection);
 
         _contentfulFactory
-            .Setup(o => o.ToModel(It.IsAny<ContentfulFooter>()))
+            .Setup(contentfulFactory => contentfulFactory.ToModel(It.IsAny<ContentfulFooter>()))
             .Returns((Footer)null);
 
         // Act

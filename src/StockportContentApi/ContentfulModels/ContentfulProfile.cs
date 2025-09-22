@@ -11,8 +11,6 @@ public class ContentfulProfile : ContentfulReference
     public List<ContentfulAlert> Alerts { get; set; } = new();
     public string TriviaSubheading { get; set; }
     public List<ContentfulTrivia> TriviaSection { get; set; } = new();
-    public string Author { get; set; } = string.Empty;
-    public string Subject { get; set; } = string.Empty;
     public ContentfulEventBanner EventsBanner { get; set; } = new();
     public EColourScheme Colour { get; set; } = EColourScheme.Teal;
 }

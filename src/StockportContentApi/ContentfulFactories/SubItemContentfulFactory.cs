@@ -2,11 +2,9 @@
 
 namespace StockportContentApi.ContentfulFactories;
 
-public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
+public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulFactory<ContentfulReference, SubItem>
 {
-    private readonly DateComparer _dateComparer;
-
-    public SubItemContentfulFactory(ITimeProvider timeProvider) => _dateComparer = new DateComparer(timeProvider);
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public SubItem ToModel(ContentfulReference entry)
     {
@@ -23,7 +21,18 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SubItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug,
+                                    GetEntryTitle(item),
+                                    item.Teaser,
+                                    GetTeaserImage(item),
+                                    item.Icon,
+                                    GetEntryType(item),
+                                    item.SunriseDate,
+                                    item.SunsetDate,
+                                    GetEntryImage(item),
+                                    new List<SubItem>(),
+                                    item.ColourScheme);
+                
                 subItems.Add(newItem);
             }
         }
@@ -32,7 +41,17 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.SecondaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug,
+                                    GetEntryTitle(item),
+                                    item.Teaser,
+                                    GetTeaserImage(item),
+                                    item.Icon,
+                                    GetEntryType(item),
+                                    item.SunriseDate,
+                                    item.SunsetDate,
+                                    GetEntryImage(item),
+                                    new List<SubItem>(),
+                                    item.ColourScheme);
 
                 subItems.Add(newItem);
             }
@@ -42,7 +61,17 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulReference item in entry.TertiaryItems.Where(EntryIsValid))
             {
-                SubItem newItem = new(item.Slug, GetEntryTitle(item), item.Teaser, GetTeaserImage(item), item.Icon, GetEntryType(item), item.SunriseDate, item.SunsetDate, GetEntryImage(item), new List<SubItem>(), item.ColourScheme);
+                SubItem newItem = new(item.Slug,
+                                    GetEntryTitle(item),
+                                    item.Teaser,
+                                    GetTeaserImage(item),
+                                    item.Icon,
+                                    GetEntryType(item),
+                                    item.SunriseDate,
+                                    item.SunsetDate,
+                                    GetEntryImage(item),
+                                    new List<SubItem>(),
+                                    item.ColourScheme);
 
                 subItems.Add(newItem);
             }
@@ -52,7 +81,17 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
         {
             foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
             {
-                SubItem newSection = new($"{entry.Slug}/{section.Slug}", section.Title, section.Teaser, GetTeaserImage(section), section.Icon, GetEntryType(section), section.SunriseDate, section.SunsetDate, GetEntryImage(section), new List<SubItem>(), section.ColourScheme);
+                SubItem newSection = new($"{entry.Slug}/{section.Slug}",
+                                        section.Title,
+                                        section.Teaser,
+                                        GetTeaserImage(section),
+                                        section.Icon,
+                                        GetEntryType(section),
+                                        section.SunriseDate,
+                                        section.SunsetDate,
+                                        GetEntryImage(section),
+                                        new List<SubItem>(),
+                                        section.ColourScheme);
 
                 subItems.Add(newSection);
             }
@@ -63,15 +102,18 @@ public class SubItemContentfulFactory : IContentfulFactory<ContentfulReference, 
                 ? "si-coin" 
                 : "si-default";
 
-        string handledSlug = HandleSlugForGroupsHomepage(entry.Sys, entry.Slug);
-
-        return new SubItem(handledSlug, title, entry.Teaser, GetTeaserImage(entry), entry.Icon, type, entry.SunriseDate, entry.SunsetDate, image, subItems, entry.ColourScheme);
+        return new SubItem(entry.Slug,
+                        title,
+                        entry.Teaser,
+                        GetTeaserImage(entry),
+                        entry.Icon,
+                        type,
+                        entry.SunriseDate,
+                        entry.SunsetDate,
+                        image,
+                        subItems,
+                        entry.ColourScheme);
     }
-
-    private static string HandleSlugForGroupsHomepage(SystemProperties sys, string entrySlug) =>
-        sys.ContentType.SystemProperties.Id.Equals("groupHomepage") 
-            ? "groups"
-            : entrySlug;
 
     private static string GetEntryType(ContentfulReference entry) =>
         entry.Sys.ContentType.SystemProperties.Id.Equals("startPage")

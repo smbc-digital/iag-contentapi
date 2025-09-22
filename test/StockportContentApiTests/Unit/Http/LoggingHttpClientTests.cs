@@ -6,14 +6,18 @@ public class LoggingHttpClientTests
     private readonly FakeLogger<LoggingHttpClient> _fakeLogger = new();
 
     [Fact]
-    public void HandlesSuccessFromRemote()
+    public async Task HandlesSuccessFromRemote()
     {
-        _fakeHttpClient.For("a url")
+        // Arrange
+        _fakeHttpClient
+            .For("a url")
             .Return(HttpResponse.Successful("some data"));
 
+        // Act
         LoggingHttpClient httpClient = new(_fakeHttpClient, _fakeLogger);
-        HttpResponse response = AsyncTestHelper.Resolve(httpClient.Get("a url"));
+        HttpResponse response = await httpClient.Get("a url");
 
+        // Assert
         Assert.Equal("Querying: a url", _fakeLogger.InfoMessage);
         Assert.Equal($"Response: {response}", _fakeLogger.DebugMessage);
         Assert.Null(_fakeLogger.ErrorMessage);
@@ -22,16 +26,20 @@ public class LoggingHttpClientTests
     [Fact]
     public async Task DoesNotLogAccessKey()
     {
+        // Arrange
         string urlWithKey = "https://fake.url/spaces/SPACE/entries?access_token=KEY&content_type=topic";
 
-        _fakeHttpClient.For(urlWithKey).Return(HttpResponse.Successful("A response"));
+        _fakeHttpClient
+            .For(urlWithKey)
+            .Return(HttpResponse.Successful("A response"));
 
+        // Act
         LoggingHttpClient httpClient = new(_fakeHttpClient, _fakeLogger);
         await httpClient.Get(urlWithKey);
 
+        // Assert
         Assert.DoesNotContain("KEY", _fakeLogger.InfoMessage);
         Assert.Contains("access_token=*****", _fakeLogger.InfoMessage);
-        Assert.Equal("Querying: https://fake.url/spaces/SPACE/entries?access_token=*****&content_type=topic",
-            _fakeLogger.InfoMessage);
+        Assert.Equal("Querying: https://fake.url/spaces/SPACE/entries?access_token=*****&content_type=topic", _fakeLogger.InfoMessage);
     }
 }

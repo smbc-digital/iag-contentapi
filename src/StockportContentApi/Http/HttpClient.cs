@@ -6,16 +6,10 @@ public interface IHttpClient
 }
 
 [ExcludeFromCodeCoverage]
-public class HttpClient : IHttpClient
+public class HttpClient(IMsHttpClientWrapper client, ILogger<HttpClient> logger) : IHttpClient
 {
-    private readonly IMsHttpClientWrapper _client;
-    private readonly ILogger<HttpClient> _logger;
-
-    public HttpClient(IMsHttpClientWrapper client, ILogger<HttpClient> logger)
-    {
-        _client = client;
-        _logger = logger;
-    }
+    private readonly IMsHttpClientWrapper _client = client;
+    private readonly ILogger<HttpClient> _logger = logger;
 
     public async Task<HttpResponse> Get(string url)
     {

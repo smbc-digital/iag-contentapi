@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class TopicControllerTests
 {
-    private readonly Mock<Func<string, ITopicRepository>> _mockCreateRepository = new();
-    private readonly Mock<ITopicRepository> _mockRepository = new();
+    private readonly Mock<Func<string, ITopicRepository>> _createRepository = new();
+    private readonly Mock<ITopicRepository> _repository = new();
     private readonly TopicController _controller;
 
     public TopicControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new TopicController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new TopicController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -28,7 +26,7 @@ public class TopicControllerTests
                         new List<SubItem>(),
                         new List<SubItem>());
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetTopicByTopicSlug(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(topic));
 
@@ -36,7 +34,7 @@ public class TopicControllerTests
         IActionResult result = await _controller.GetTopicByTopicSlug("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -55,7 +53,7 @@ public class TopicControllerTests
                 new List<SubItem>())
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(topics));
 
@@ -63,6 +61,6 @@ public class TopicControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

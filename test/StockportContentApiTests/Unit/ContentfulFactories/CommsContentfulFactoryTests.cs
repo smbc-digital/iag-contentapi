@@ -6,23 +6,19 @@ public class CommsContentfulFactoryTests
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly CommsContentfulFactory _factory;
 
-    public CommsContentfulFactoryTests()
-    {
-        _factory = new CommsContentfulFactory(
-            _callToActionFactory.Object,
-            _eventFactory.Object
-        );
-    }
+    public CommsContentfulFactoryTests() =>
+        _factory = new CommsContentfulFactory(_callToActionFactory.Object, _eventFactory.Object);
 
     [Fact]
     public void ToModel_ShouldReturnLinkList()
     {
         // Arrange
         _callToActionFactory
-            .Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+            .Setup(callToActionFactory => callToActionFactory.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
             .Returns(new CallToActionBanner());
+        
         _eventFactory
-            .Setup(_ => _.ToModel(It.IsAny<ContentfulEvent>()))
+            .Setup(eventFactory => eventFactory.ToModel(It.IsAny<ContentfulEvent>()))
             .Returns(new EventBuilder().Build());
 
         ContentfulCommsHomepage model = new()

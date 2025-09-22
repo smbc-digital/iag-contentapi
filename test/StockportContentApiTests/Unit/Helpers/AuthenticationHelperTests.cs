@@ -4,10 +4,8 @@ public class AuthenticationHelperTests
 {
     private readonly AuthenticationHelper _helper;
 
-    public AuthenticationHelperTests()
-    {
+    public AuthenticationHelperTests() =>
         _helper = new AuthenticationHelper();
-    }
 
     [Fact]
     public void ExtractAuthenticationDataFromContext_ShouldReturnAuthenticationDataWithCorrectValues()
@@ -22,12 +20,12 @@ public class AuthenticationHelperTests
         AuthenticationData data = _helper.ExtractAuthenticationDataFromContext(context);
 
         // Assert
-        data.Version.Should().Be(1);
-        data.AuthenticationKey.Should().Be("test");
-        data.BusinessId.Should().Be("stockportgov");
-        data.Endpoint.Should().Be("articles");
-        data.Verb.Should().Be("GET");
-        data.VersionText.Should().Be("v1");
+        Assert.Equal(1, data.Version);
+        Assert.Equal("test", data.AuthenticationKey);
+        Assert.Equal("stockportgov", data.BusinessId);
+        Assert.Equal("articles", data.Endpoint);
+        Assert.Equal("GET", data.Verb);
+        Assert.Equal("v1", data.VersionText);
     }
 
     [Theory]
@@ -43,7 +41,7 @@ public class AuthenticationHelperTests
         string returnedEndpoint = _helper.GetApiEndPoint(requestedEndpoint);
 
         // Assert
-        returnedEndpoint.Should().Be(result);
+        Assert.Equal(result, returnedEndpoint);
     }
 
     [Fact]
@@ -62,15 +60,5 @@ public class AuthenticationHelperTests
 
         // Act Assert
         Assert.Throws<AuthorizationException>(() => _helper.CheckVersionIsProvided(authData));
-    }
-
-    [Fact]
-    public void Invoke_ShouldReturnIfNoApiKeyIsInTheConfig()
-    {
-        // Arrange
-        DefaultHttpContext context = new();
-        context.Request.Path = "/v1/stockportgov/articles/test";
-        context.Request.Headers.Append("Authorization", "test");
-        context.Request.Method = "GET";
     }
 }

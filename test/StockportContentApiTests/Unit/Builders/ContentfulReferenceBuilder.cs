@@ -4,10 +4,7 @@ public class ContentfulReferenceBuilder
 {
     private string _slug = "slug";
     private string _title = "title";
-    private readonly string _teaser = "teaser";
     private string _icon = "icon";
-    private readonly DateTime _sunriseDate = new(0001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-    private readonly DateTime _sunsetDate = new(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc);
     private readonly Asset _image = new() { File = new File { Url = "image" }, SystemProperties = new SystemProperties { Type = "Asset" } };
     private List<ContentfulReference> _subItems = new();
     private List<ContentfulReference> _secondaryItems = new();
@@ -20,10 +17,10 @@ public class ContentfulReferenceBuilder
         {
             Slug = _slug,
             Title = _title,
-            Teaser = _teaser,
+            Teaser = "teaser",
             Icon = _icon,
-            SunriseDate = _sunriseDate,
-            SunsetDate = _sunsetDate,
+            SunriseDate = DateTime.MinValue,
+            SunsetDate = DateTime.MaxValue,
             Image = _image,
             SubItems = _subItems,
             SecondaryItems = _secondaryItems,

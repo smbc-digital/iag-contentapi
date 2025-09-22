@@ -1,15 +1,10 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Footer>
+public class FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                    IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory) : IContentfulFactory<ContentfulFooter, Footer>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory;
-
-    public FooterContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory, IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> socialMediaFactory)
-    {
-        _subitemFactory = subitemFactory;
-        _socialMediaFactory = socialMediaFactory;
-    }
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
+    private readonly IContentfulFactory<ContentfulSocialMediaLink, SocialMediaLink> _socialMediaFactory = socialMediaFactory;
 
     public Footer ToModel(ContentfulFooter entry)
     {
@@ -33,10 +28,12 @@ public class FooterContentfulFactory : IContentfulFactory<ContentfulFooter, Foot
             ? entry.FooterContent3
             : string.Empty;
 
-        List<SubItem> links = entry.Links.Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
+        List<SubItem> links = entry.Links
+                                .Where(link => ContentfulHelpers.EntryIsNotALink(link.Sys))
                                 .Select(_subitemFactory.ToModel).ToList();
 
-        List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks.Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
+        List<SocialMediaLink> socialMediaLinks = entry.SocialMediaLinks
+                                                    .Where(media => ContentfulHelpers.EntryIsNotALink(media.Sys))
                                                     .Select(_socialMediaFactory.ToModel).ToList();
 
         return new Footer(title, slug, links, socialMediaLinks, footerContent1, footerContent2, footerContent3);

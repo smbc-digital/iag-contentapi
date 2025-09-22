@@ -37,15 +37,14 @@ public class EventRepository : BaseRepository, IEventRepository
     private readonly string _allEventsCacheKey;
     private readonly string _eventCategoriesCacheKey;
 
-    public EventRepository(
-        ContentfulConfig contentfulConfig,
-        CacheKeyConfig cacheKeyConfig,
-        IContentfulClientManager contentfulClientManager,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
-        IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
-        ICache cache,
-        IConfiguration configuration)
+    public EventRepository(ContentfulConfig contentfulConfig,
+                        CacheKeyConfig cacheKeyConfig,
+                        IContentfulClientManager contentfulClientManager,
+                        ITimeProvider timeProvider,
+                        IContentfulFactory<ContentfulEvent, Event> contentfulFactory,
+                        IContentfulFactory<ContentfulEventHomepage, EventHomepage> contentfulEventHomepageFactory,
+                        ICache cache,
+                        IConfiguration configuration)
     {
         _contentfulFactory = contentfulFactory;
         _contentfulEventHomepageFactory = contentfulEventHomepageFactory;

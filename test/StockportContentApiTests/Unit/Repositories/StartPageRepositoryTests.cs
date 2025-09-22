@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using System.Threading.Tasks;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class StartPageRepositoryTests : TestingBaseClass
 {
@@ -6,7 +8,6 @@ public class StartPageRepositoryTests : TestingBaseClass
     private readonly Mock<IContentfulClient> _client = new();
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     private readonly StartPageRepository _repository;
-    private readonly DateComparer _comparer;
 
     public StartPageRepositoryTests()
     {
@@ -22,8 +23,6 @@ public class StartPageRepositoryTests : TestingBaseClass
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2017, 08, 01));
         
-        _comparer = new DateComparer(_mockTimeProvider.Object);
-
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager
             .Setup(client => client.GetClient(config))
@@ -45,7 +44,7 @@ public class StartPageRepositoryTests : TestingBaseClass
     }
 
     [Fact]
-    public void GetStartPage_ReturnsOKResponseWithTheContentOfStartPage_If_ThereIsItemInTheContentResponse()
+    public async Task GetStartPage_ReturnsOKResponseWithTheContentOfStartPage_If_ThereIsItemInTheContentResponse()
     {
         // Arrange
         List<Alert> _alerts = new()
@@ -86,7 +85,7 @@ public class StartPageRepositoryTests : TestingBaseClass
             .Returns(startPageItem);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("startpage_slug"));
+        HttpResponse response = await _repository.GetStartPage("startpage_slug");
         StartPage startPage = response.Get<StartPage>();
 
         // Assert
@@ -106,10 +105,10 @@ public class StartPageRepositoryTests : TestingBaseClass
     }
 
     [Fact]
-    public void GetStartPage_ReturnsNotFoundResponse_If_NoItemsInTheContentResponse()
+    public async Task GetStartPage_ReturnsNotFoundResponse_If_NoItemsInTheContentResponse()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetStartPage("startpage_slug"));
+        HttpResponse response = await _repository.GetStartPage("startpage_slug");
 
         //Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -119,7 +118,7 @@ public class StartPageRepositoryTests : TestingBaseClass
     public async Task Get_ShouldReturnNotFound_WhenNoStartPageEntriesFound()
     {
         // Act
-        var response = await _repository.Get();
+        HttpResponse response = await _repository.Get();
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

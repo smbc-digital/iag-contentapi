@@ -1,18 +1,10 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class ContactUsCategory
+public class ContactUsCategory(string title, string bodyTextLeft, string bodyTextRight, string icon)
 {
-    public string Title { get; }
-    public string BodyTextLeft { get; }
-    public string BodyTextRight { get; }
-    public string Icon { get; set; }
-
-    public ContactUsCategory(string title, string bodyTextLeft, string bodyTextRight, string icon)
-    {
-        Title = title;
-        BodyTextLeft = bodyTextLeft;
-        BodyTextRight = bodyTextRight;
-        Icon = icon;
-    }
+    public string Title { get; } = title;
+    public string BodyTextLeft { get; } = bodyTextLeft;
+    public string BodyTextRight { get; } = bodyTextRight;
+    public string Icon { get; set; } = icon;
 }

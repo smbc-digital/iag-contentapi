@@ -1,16 +1,9 @@
 namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class ExternalLink
+public class ExternalLink(string title, string url, string teaser)
 {
-    public string Title { get; set; } = string.Empty;
-    public string URL { get; set; } = string.Empty;
-    public string Teaser { get; set; } = string.Empty;
-
-    public ExternalLink(string title, string url, string teaser)
-    {
-        Title = title;
-        URL = url;
-        Teaser = teaser;
-    }
+    public string Title { get; set; } = title;
+    public string URL { get; set; } = url;
+    public string Teaser { get; set; } = teaser;
 }

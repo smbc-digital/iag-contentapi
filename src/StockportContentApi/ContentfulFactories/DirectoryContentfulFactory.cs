@@ -1,31 +1,20 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory, Directory>
+public class DirectoryContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                        IContentfulFactory<ContentfulExternalLink, ExternalLink> externalLinkFactory,
+                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
+                                        ITimeProvider timeProvider,
+                                        IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
+                                        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory) : IContentfulFactory<ContentfulDirectory, Directory>
 {
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory;
-    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory;
-
-    public DirectoryContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
-        IContentfulFactory<ContentfulExternalLink, ExternalLink> externalLinkFactory,
-        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-        IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-        ITimeProvider timeProvider,
-        IContentfulFactory<ContentfulEventBanner, EventBanner> eventBannerFactory,
-        IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory)
-    {
-        _subitemFactory = subitemFactory;
-        _externalLinkFactory = externalLinkFactory;
-        _alertFactory = alertFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _callToActionFactory = callToActionFactory;
-        _eventBannerFactory = eventBannerFactory;
-        _directoryEntryFactory = directoryEntryFactory;
-    }
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
+    private readonly IContentfulFactory<ContentfulExternalLink, ExternalLink> _externalLinkFactory = externalLinkFactory;
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulEventBanner, EventBanner> _eventBannerFactory = eventBannerFactory;
+    private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = directoryEntryFactory;
 
     public Directory ToModel(ContentfulDirectory entry)
     {
@@ -33,11 +22,12 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
             return null;
 
         IEnumerable<SubItem> subItems = entry.SubDirectories is not null
-                                            ? entry.SubDirectories?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)).Select(_subitemFactory.ToModel)
+                                            ? entry.SubDirectories?.Where(subDirectory => ContentfulHelpers.EntryIsNotALink(subDirectory.Sys))
+                                                                .Select(_subitemFactory.ToModel)
                                             : Enumerable.Empty<SubItem>();
 
-        IEnumerable<SubItem> directorySubItems = entry.SubItems?.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
-                                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+        IEnumerable<SubItem> directorySubItems = entry.SubItems?.Where(subDirectory => ContentfulHelpers.EntryIsNotALink(subDirectory.Sys)
+                                                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subDirectory.SunriseDate, subDirectory.SunsetDate))
                                                                 .Select(_subitemFactory.ToModel);
 
         subItems = directorySubItems is not null
@@ -78,11 +68,11 @@ public class DirectoryContentfulFactory : IContentfulFactory<ContentfulDirectory
                 ? _eventBannerFactory.ToModel(entry.EventBanner)
                 : new NullEventBanner(),
             
-            RelatedContent = entry.RelatedContent.Where(rc => ContentfulHelpers.EntryIsNotALink(rc.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(rc.SunriseDate, rc.SunsetDate))
+            RelatedContent = entry.RelatedContent.Where(relatedContent => ContentfulHelpers.EntryIsNotALink(relatedContent.Sys)
+                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(relatedContent.SunriseDate, relatedContent.SunsetDate))
                                 .Select(_subitemFactory.ToModel).ToList(),
             
-            ExternalLinks = entry.ExternalLinks.Where(el => ContentfulHelpers.EntryIsNotALink(el.Sys))
+            ExternalLinks = entry.ExternalLinks.Where(externalLink => ContentfulHelpers.EntryIsNotALink(externalLink.Sys))
                                 .Select(_externalLinkFactory.ToModel).ToList(),
             
             PinnedEntries = entry.PinnedEntries?.Select(_directoryEntryFactory.ToModel).ToList()

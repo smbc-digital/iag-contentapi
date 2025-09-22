@@ -14,14 +14,12 @@ public class ProfileContentfulFactoryTests
     public ProfileContentfulFactoryTests()
     {
         _contentfulProfile = new ContentfulProfileBuilder().Build();
-        _profileContentfulFactory = new ProfileContentfulFactory(
-            _crumbFactory.Object,
-            _alertFactory.Object,
-            _triviaFactory.Object,
-            _inlineQuoteFactory.Object,
-            _eventBannerFactory.Object,
-            _parentTopicFactory.Object
-        );
+        _profileContentfulFactory = new ProfileContentfulFactory(_crumbFactory.Object,
+                                                                _alertFactory.Object,
+                                                                _triviaFactory.Object,
+                                                                _inlineQuoteFactory.Object,
+                                                                _eventBannerFactory.Object,
+                                                                _parentTopicFactory.Object);
     }
 
     [Fact]
@@ -39,9 +37,9 @@ public class ProfileContentfulFactoryTests
         Assert.Empty(profile.Breadcrumbs);
         Assert.Empty(profile.Alerts);
         Assert.Empty(profile.TriviaSection);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
-        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Never);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _triviaFactory.Verify(triviaFactory => triviaFactory.ToModel(It.IsAny<ContentfulTrivia>()), Times.Never);
     }
 
     [Fact]
@@ -65,11 +63,10 @@ public class ProfileContentfulFactoryTests
         Assert.NotEmpty(profile.Breadcrumbs);
         Assert.NotEmpty(profile.Alerts);
         Assert.NotEmpty(profile.TriviaSection);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
-        _triviaFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulTrivia>()), Times.Once);
-        _inlineQuoteFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulInlineQuote>()), Times.Once);
-        _eventBannerFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulEventBanner>()), Times.Once);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
+        _triviaFactory.Verify(triviaFactory => triviaFactory.ToModel(It.IsAny<ContentfulTrivia>()), Times.Once);
+        _inlineQuoteFactory.Verify(inlineQuoteFactory => inlineQuoteFactory.ToModel(It.IsAny<ContentfulInlineQuote>()), Times.Once);
+        _eventBannerFactory.Verify(eventBannerFactory => eventBannerFactory.ToModel(It.IsAny<ContentfulEventBanner>()), Times.Once);
     }
 }

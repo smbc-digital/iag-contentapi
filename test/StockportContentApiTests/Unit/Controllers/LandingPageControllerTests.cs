@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class LandingPageControllerTests
 {
-    private readonly Mock<Func<string, string, ILandingPageRepository>> _mockCreateRepository = new();
-    private readonly Mock<ILandingPageRepository> _mockRepository = new();
+    private readonly Mock<Func<string, string, ILandingPageRepository>> _createRepository = new();
+    private readonly Mock<ILandingPageRepository> _repository = new();
     private readonly LandingPageController _controller;
 
     public LandingPageControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new LandingPageController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new LandingPageController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class LandingPageControllerTests
             Title = "title"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetLandingPage(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(landingPage));
 
@@ -37,6 +35,6 @@ public class LandingPageControllerTests
         IActionResult result = await _controller.GetLandingPage("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

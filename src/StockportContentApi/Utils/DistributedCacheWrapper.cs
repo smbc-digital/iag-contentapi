@@ -8,11 +8,9 @@ public interface IDistributedCacheWrapper
 }
 
 [ExcludeFromCodeCoverage]
-public class DistributedCacheWrapper : IDistributedCacheWrapper
+public class DistributedCacheWrapper(IDistributedCache distributedCache) : IDistributedCacheWrapper
 {
-    private readonly IDistributedCache _distributedCache;
-
-    public DistributedCacheWrapper(IDistributedCache distributedCache) => _distributedCache = distributedCache;
+    private readonly IDistributedCache _distributedCache = distributedCache;
 
     public async Task<string> GetString(string key, CancellationToken token = default)
         => await _distributedCache.GetStringAsync(key, token);

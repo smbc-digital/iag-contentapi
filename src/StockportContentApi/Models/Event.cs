@@ -100,7 +100,7 @@ public class Event
         BookingInformation = bookingInformation;
         Featured = featured;
         UpdatedAt = updatedAt;
-        Tags = tags.Select(s => s.ToLower()).ToList();
+        Tags = tags.Select(tag => tag.ToLower()).ToList();
         Alerts = alerts;
         EventCategories = eventCategories;
         Paid = paid;

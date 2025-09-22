@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class ProfileControllerTests
 {
-    private readonly Mock<Func<string, IProfileRepository>> _mockCreateRepository = new();
-    private readonly Mock<IProfileRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IProfileRepository>> _createRepository = new();
+    private readonly Mock<IProfileRepository> _repository = new();
     private readonly ProfileController _controller;
 
     public ProfileControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository.
+        _createRepository.
             Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new ProfileController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new ProfileController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class ProfileControllerTests
             Slug = "slug"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetProfile(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(profile));
 
@@ -37,7 +35,7 @@ public class ProfileControllerTests
         IActionResult result = await _controller.GetProfile("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -58,7 +56,7 @@ public class ProfileControllerTests
             },
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(profiles));
 
@@ -66,6 +64,6 @@ public class ProfileControllerTests
         IActionResult result = await _controller.Get("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

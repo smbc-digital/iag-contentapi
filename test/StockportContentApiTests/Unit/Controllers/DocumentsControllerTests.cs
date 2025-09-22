@@ -1,17 +1,15 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class DocumentsControllerTests
 {
-    private readonly Mock<IDocumentService> _mockService = new();
+    private readonly Mock<IDocumentService> _service = new();
     private readonly DocumentsController _controller;
 
     public DocumentsControllerTests()
     {
-        Mock<ILogger<DocumentsController>> mockLogger = new();
+        Mock<ILogger<DocumentsController>> logger = new();
 
-        _controller = new DocumentsController(_mockService.Object, mockLogger.Object);
+        _controller = new DocumentsController(_service.Object, logger.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class DocumentsControllerTests
             MediaType = "media type"
         };
 
-        _mockService
+        _service
             .Setup(repo => repo.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.FromResult(document));
 
@@ -37,6 +35,6 @@ public class DocumentsControllerTests
         IActionResult result = await _controller.GetSecureDocument("test-business", "group-slug", "asset-id");
 
         // Assert
-        _mockService.Verify(service => service.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _service.Verify(service => service.GetSecureDocumentByAssetId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

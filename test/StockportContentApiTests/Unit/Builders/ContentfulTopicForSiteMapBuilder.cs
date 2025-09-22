@@ -3,23 +3,19 @@
 public class ContentfulTopicForSiteMapBuilder
 {
     private string _slug = "slug";
-    private readonly DateTime _sunriseDate = DateTime.MinValue;
-    private readonly DateTime _sunsetDate = DateTime.MaxValue;
     private List<ContentfulSectionForSiteMap> _sections = new();
-    private readonly string _systemId = "id";
-    private readonly string _contentTypeSystemId = "id";
 
     public ContentfulTopicForSiteMap Build()
         => new()
         {
             Slug = _slug,
-            SunriseDate = _sunriseDate,
-            SunsetDate = _sunsetDate,
+            SunriseDate = DateTime.MaxValue,
+            SunsetDate = DateTime.MaxValue,
             Sections = _sections,
             Sys = new SystemProperties()
             {
-                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
-                Id = _systemId
+                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
+                Id = "id"
             }
         };
 

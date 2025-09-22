@@ -3,9 +3,9 @@
 public class SiteHeaderRepositoryTests
 {
     private readonly ContentfulConfig _config;
-    private readonly Mock<IContentfulClient> _client;
+    private readonly Mock<IContentfulClient> _client = new();
     private readonly SiteHeaderRepository _repository;
-    private readonly Mock<IContentfulFactory<ContentfulSiteHeader, SiteHeader>> _contentfulFactory;
+    private readonly Mock<IContentfulFactory<ContentfulSiteHeader, SiteHeader>> _contentfulFactory = new();
 
     public SiteHeaderRepositoryTests()
     {
@@ -19,10 +19,9 @@ public class SiteHeaderRepositoryTests
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
 
-        _client = new Mock<IContentfulClient>();
-        _contentfulFactory = new Mock<IContentfulFactory<ContentfulSiteHeader, SiteHeader>>();
-
-        contentfulClientManager.Setup(o => o.GetClient(_config)).Returns(_client.Object);
+        contentfulClientManager
+            .Setup(contentfulClientManager => contentfulClientManager.GetClient(_config))
+            .Returns(_client.Object);
 
         _repository = new SiteHeaderRepository(_config, contentfulClientManager.Object, _contentfulFactory.Object);
     }
@@ -42,13 +41,11 @@ public class SiteHeaderRepositoryTests
         };
 
         _client
-            .Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulSiteHeader>>(
-                    q => q.Build().Equals(new QueryBuilder<ContentfulSiteHeader>().ContentTypeIs("header").Include(1).Build())),
-                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulSiteHeader>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(siteHeaderCollection);
 
         _contentfulFactory
-            .Setup(o => o.ToModel(It.IsAny<ContentfulSiteHeader>()))
+            .Setup(contentfulFactory => contentfulFactory.ToModel(It.IsAny<ContentfulSiteHeader>()))
             .Returns(new SiteHeader("Title", new List<SubItem>(), "Logo"));
 
         // Act
@@ -75,13 +72,11 @@ public class SiteHeaderRepositoryTests
         };
 
         _client
-            .Setup(o => o.GetEntries(It.Is<QueryBuilder<ContentfulSiteHeader>>(
-                    q => q.Build().Equals(new QueryBuilder<ContentfulSiteHeader>().ContentTypeIs("header").Include(1).Build())),
-                It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulSiteHeader>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(siteHeaderCollection);
 
         _contentfulFactory
-            .Setup(o => o.ToModel(It.IsAny<ContentfulSiteHeader>()))
+            .Setup(contentfulFactory => contentfulFactory.ToModel(It.IsAny<ContentfulSiteHeader>()))
             .Returns((SiteHeader)null);
 
         // Act

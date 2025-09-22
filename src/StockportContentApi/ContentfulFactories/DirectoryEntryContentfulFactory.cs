@@ -5,7 +5,7 @@ public class DirectoryEntryContentfulFactory(IContentfulFactory<ContentfulAlert,
 {
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
-    private readonly DateComparer _dateComparer = new DateComparer(timeProvider);
+    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public DirectoryEntry ToModel(ContentfulDirectoryEntry entry)
     {

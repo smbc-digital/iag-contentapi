@@ -4,7 +4,6 @@ public class ContentfulAssetBuilder
 {
     private string _url = "image-url.jpg";
     private string _title = "title";
-    private string _type = "Asset";
     private string _fileName = "fileName";
     private string _description = "description";
     private int _size = int.MaxValue;
@@ -22,7 +21,7 @@ public class ContentfulAssetBuilder
             },
             SystemProperties = new SystemProperties
             {
-                Type = _type,
+                Type = "Asset",
                 UpdatedAt = _updatedAt
             },
             Title = _title
@@ -31,12 +30,6 @@ public class ContentfulAssetBuilder
     public ContentfulAssetBuilder Url(string url)
     {
         _url = url;
-        return this;
-    }
-
-    public ContentfulAssetBuilder Include(int include)
-    {
-        if (include > 0) { _type = "Link"; }
         return this;
     }
 

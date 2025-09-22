@@ -3,8 +3,7 @@
 public class EventHomepageContentfulFactory(IContentfulFactory<ContentfulCallToActionBanner,
                                             CallToActionBanner> callToActionFactory,
                                             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-                                            ITimeProvider timeProvider)
-    : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
+                                            ITimeProvider timeProvider) : IContentfulFactory<ContentfulEventHomepage, EventHomepage>
 {
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;

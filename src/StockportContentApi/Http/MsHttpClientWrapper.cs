@@ -10,6 +10,6 @@ public class MsHttpClientWrapper : IMsHttpClientWrapper
 {
     private readonly System.Net.Http.HttpClient _client = new();
 
-    public Task<HttpResponseMessage> GetAsync(string url)
-        => _client.GetAsync(url);
+    public Task<HttpResponseMessage> GetAsync(string url) =>
+        _client.GetAsync(url);
 }

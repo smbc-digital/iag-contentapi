@@ -8,15 +8,9 @@ public class CacheKeyConfig
     public string EventsCacheKey;
     public string NewsCacheKey;
 
-    public CacheKeyConfig(string eventsCacheKey, string newsCacheKey)
-    {
-        EventsCacheKey = eventsCacheKey;
-        NewsCacheKey = newsCacheKey;
-    }
-
     public CacheKeyConfig(string businessId)
     {
-        Utils.Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
+        Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
         BusinessId = businessId;
     }
 

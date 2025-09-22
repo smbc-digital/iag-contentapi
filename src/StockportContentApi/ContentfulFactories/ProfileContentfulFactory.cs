@@ -35,7 +35,6 @@ public class ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Cr
                         .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(_alertFactory.ToModel).ToList(),
             
-            Author = entry.Author,
             Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                             .Select(_crumbFactory.ToModel).ToList(),
@@ -46,7 +45,6 @@ public class ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Cr
             
             Teaser = entry.Teaser,
             Slug = entry.Slug,
-            Subject = entry.Subject,
             Subtitle = entry.Subtitle,
             Title = entry.Title,
             
