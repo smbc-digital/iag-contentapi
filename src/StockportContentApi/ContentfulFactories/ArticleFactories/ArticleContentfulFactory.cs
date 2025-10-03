@@ -82,7 +82,7 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
             LogoAreaTitle = entry.LogoAreaTitle,
             ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
 
-            Documents = entry.Documents.Where(document => ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+            Documents = entry.Documents.Where(document => document is not null && ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
                             .Select(_documentFactory.ToModel).ToList(),
 
             RelatedContent = entry.RelatedContent.Where(relatedContent => ContentfulHelpers.EntryIsNotALink(relatedContent.Sys)

@@ -163,8 +163,8 @@ public class NewsRepository : BaseRepository, INewsRepository
 
     private bool CheckArchivedDates(DateTime? startDate, DateTime? endDate, News news) =>
         startDate.HasValue && endDate.HasValue
-            ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateIsInThePast(news.SunsetDate)
-            : _dateComparer.SunsetDateIsInThePast(news.SunsetDate);
+            ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate)
+            : _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate);
 
     public async Task<HttpResponse> GetNewsByLimit(int limit)
     {

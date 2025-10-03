@@ -55,7 +55,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>, StartPageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>, TrustedLogoContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>, ContactUsAreaContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>, CommsContentfulFactory>();
 
         return services;
     }
@@ -397,12 +396,6 @@ public static class ServiceCollectionExtensions
                 new ContactUsAreaRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()));
-
-        services.AddSingleton<Func<string, ICommsRepository>>(p =>
-            (contentfulConfig) =>
-                new CommsRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
-                    p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulCommsHomepage, CommsHomepage>>()));
 
         return services;
     }
