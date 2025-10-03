@@ -1,28 +1,26 @@
 using AutoMapper;
-using StockportContentApi.Controllers;
 
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class EventControllerTests
 {
-    private readonly Mock<Func<string, string, IEventRepository>> _mockEventRepository = new();
-    private readonly Mock<Func<string, string, IEventCategoryRepository>> _mockCategoryRepository = new();
-    private readonly Mock<IMapper> _mockMapper = new();
-    private readonly Mock<ILogger<EventController>> _mockLogger = new();
-
+    private readonly Mock<Func<string, string, IEventRepository>> _eventRepository = new();
+    private readonly Mock<Func<string, string, IEventCategoryRepository>> _categoryRepository = new();
+    private readonly Mock<IMapper> _mapper = new();
+    private readonly Mock<ILogger<EventController>> _eventLogger = new();
     private readonly EventController _controller;
 
     public EventControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
         _controller = new EventController(
-            new(mockLogger.Object),
-            _mockEventRepository.Object,
-            _mockCategoryRepository.Object,
+            new(logger.Object),
+            _eventRepository.Object,
+            _categoryRepository.Object,
             null,
-            _mockMapper.Object,
-            _mockLogger.Object
+            _mapper.Object,
+            _eventLogger.Object
         );
     }
 
@@ -30,7 +28,7 @@ public class EventControllerTests
     public async Task GetEventCategories_ReturnsCategories()
     {
         // Arrange
-        _mockCategoryRepository
+        _categoryRepository
             .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
             .ReturnsAsync(HttpResponse.Successful(new EventCategory("category name", "category-slug", "category icon", "category image")));
 
@@ -38,18 +36,18 @@ public class EventControllerTests
         IActionResult result = await _controller.GetEventCategories("test-business");
 
         // Assert
-        _mockCategoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _categoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
     public async Task Homepage_CallsCategoryAndEventRepositories()
     {
         // Arrange
-        _mockCategoryRepository
+        _categoryRepository
             .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
             .ReturnsAsync(HttpResponse.Successful(new List<EventCategory> { new("category name", "category-slug", "category icon", "category image") }));
 
-        _mockEventRepository
+        _eventRepository
             .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventHomepage(It.IsAny<int>()))
             .ReturnsAsync(HttpResponse.Successful(new EventHomepage(new List<EventHomepageRow>() { new() })));
 
@@ -57,7 +55,7 @@ public class EventControllerTests
         IActionResult result = await _controller.Homepage("test-business");
 
         // Assert
-        _mockCategoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-        _mockEventRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _categoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _eventRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

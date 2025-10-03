@@ -18,7 +18,9 @@ public class SpotlightOnBannerContentfulFactory : IContentfulFactory<ContentfulS
             };
         }
 
-        DateTime updatedAt = entry.Sys.UpdatedAt is not null ? entry.Sys.UpdatedAt.Value : entry.Sys.PublishedAt.Value;
+        DateTime updatedAt = entry.Sys.UpdatedAt is not null
+            ? entry.Sys.UpdatedAt.Value
+            : entry.Sys.PublishedAt.Value;
 
         return new(entry.Title, image, entry.Teaser, entry.Link, updatedAt);
     }

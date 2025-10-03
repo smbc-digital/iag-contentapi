@@ -4,10 +4,10 @@ public class VideoRepositoryTests : TestingBaseClass
 {
     private readonly VideoRepository _videoRepository;
     private readonly Mock<IHttpClient> _fakeHttpClient = new();
-    private const string MockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
+    private const string mockTwentyThreeApiUrl = "https://y84kj.videomarketingplatform.co/v.ihtml/player.html?source=embed&photo%5fid=";
 
     public VideoRepositoryTests()
-        => _videoRepository = new VideoRepository(new TwentyThreeConfig(MockTwentyThreeApiUrl), _fakeHttpClient.Object);
+        => _videoRepository = new VideoRepository(new TwentyThreeConfig(mockTwentyThreeApiUrl), _fakeHttpClient.Object);
 
     [Fact]
     public void Process_ShouldReturnContentUnchanged_WhenNoVideoTagsPresent()
@@ -56,7 +56,7 @@ public class VideoRepositoryTests : TestingBaseClass
         string content = "This content contains an invalid video tag {{VIDEO:INVALID}}.";
 
         // Act
-        var exception = Record.Exception(() => _videoRepository.Process(content));
+        Exception exception = Record.Exception(() => _videoRepository.Process(content));
 
         // Assert
         Assert.Null(exception);

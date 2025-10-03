@@ -1,4 +1,6 @@
-﻿namespace StockportContentApiTests.Unit.Repositories;
+﻿using System.Threading.Tasks;
+
+namespace StockportContentApiTests.Unit.Repositories;
 
 public class PaymentRepositoryTests
 {
@@ -33,7 +35,7 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnAllPayments()
+    public async Task Get_ShouldReturnAllPayments()
     {
         // Arrange          
         List<ContentfulPayment> rawPayments = new()
@@ -54,7 +56,7 @@ public class PaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        HttpResponse response = await _repository.Get();
         List<Payment> payments = response.Get<List<Payment>>();
 
         // Assert
@@ -66,7 +68,7 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void GetPayment_ShouldGetsASinglePaymentItemFromASlug()
+    public async Task GetPayment_ShouldGetsASinglePaymentItemFromASlug()
     {
         // Arrange
         ContentfulPayment rawPayment = new ContentfulPaymentBuilder().Slug("any-payment").Build();
@@ -81,7 +83,7 @@ public class PaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("any-payment"));
+        HttpResponse response = await _repository.GetPayment("any-payment");
         Payment paymentItem = response.Get<Payment>();
 
         // Assert
@@ -95,7 +97,7 @@ public class PaymentRepositoryTests
     }
 
     [Fact]
-    public void GetPayment_ShouldReturn404ForNonExistentSlug()
+    public async Task GetPayment_ShouldReturn404ForNonExistentSlug()
     {
         // Arrange
         ContentfulCollection<ContentfulPayment> collection = new()
@@ -109,7 +111,7 @@ public class PaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url"));
+        HttpResponse response = await _repository.GetPayment("invalid-url");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

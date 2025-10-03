@@ -1,18 +1,11 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class SiteHeader
+public class SiteHeader(string title, List<SubItem> items, string logo)
 {
-    public SiteHeader(string title, List<SubItem> items, string logo)
-    {
-        Title = title;
-        Items = items;
-        Logo  = logo;
-    }
+    public string Title { get; set; } = title;
 
-    public string Title { get; set; } = string.Empty;
+    public List<SubItem> Items { get; set; } = items;
 
-    public List<SubItem> Items { get; set; } = new();
-
-    public string Logo { get; set; }
+    public string Logo { get; set; } = logo;
 }

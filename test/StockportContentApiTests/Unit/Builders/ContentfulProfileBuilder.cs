@@ -18,8 +18,6 @@ public class ContentfulProfileBuilder
             Breadcrumbs = new List<ContentfulReference> { new ContentfulReferenceBuilder().Build() },
             Sys = _sys,
             Alerts = _alerts,
-            Author = "author",
-            Subject = "subject",
             TriviaSection = new List<ContentfulTrivia>() {
                 new() {
                     Title = "trivia title",

@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class ContactUsControllerTests
 {
-    private readonly Mock<Func<string, IContactUsAreaRepository>> _mockCreateRepository = new();
-    private readonly Mock<IContactUsAreaRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IContactUsAreaRepository>> _createRepository = new();
+    private readonly Mock<IContactUsAreaRepository> _repository = new();
     private readonly ContactUsController _controller;
 
     public ContactUsControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new ContactUsController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new ContactUsController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -33,7 +31,7 @@ public class ContactUsControllerTests
                                         "inset text body",
                                         "meta description");
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetContactUsArea())
             .ReturnsAsync(HttpResponse.Successful(contactUsArea));
 
@@ -41,6 +39,6 @@ public class ContactUsControllerTests
         IActionResult result = await _controller.GetContactUsArea("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

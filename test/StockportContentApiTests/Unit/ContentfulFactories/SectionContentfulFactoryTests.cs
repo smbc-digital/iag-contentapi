@@ -10,7 +10,7 @@ public class SectionContentfulFactoryTests
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
-    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteContentfulFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>> _inlineQuoteFactory = new();
 
     public SectionContentfulFactoryTests()
     {
@@ -26,7 +26,7 @@ public class SectionContentfulFactoryTests
                                                     _timeProvider.Object,
                                                     _alertFactory.Object,
                                                     _brandingFactory.Object,
-                                                    _inlineQuoteContentfulFactory.Object);
+                                                    _inlineQuoteFactory.Object);
     }
 
     [Fact]
@@ -53,8 +53,6 @@ public class SectionContentfulFactoryTests
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),
             InlineQuotes = new List<InlineQuote>(),
-            Author = "author",
-            Subject = "subject",
             Colour = EColourScheme.Teal
         };
 
@@ -88,8 +86,6 @@ public class SectionContentfulFactoryTests
         Assert.Single(result.Profiles);
         Assert.Equal(profile, result.Profiles.First());
         Assert.Equal("slug", result.Slug);
-        Assert.Equal(DateTime.MinValue, result.SunriseDate);
-        Assert.Equal(DateTime.MinValue, result.SunsetDate);
         Assert.Equal("title", result.Title);
     }
 

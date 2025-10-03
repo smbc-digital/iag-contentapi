@@ -3,12 +3,12 @@
 public class TopicContentfulFactoryTests
 {
     private readonly ContentfulTopic _contentfulTopic;
-    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory;
-    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory;
-    private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory;
-    private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory;
-    private readonly TopicContentfulFactory _topicContentfulFactory;
+    private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subItemFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>> _eventBannerFactory = new();
+    private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselFactory = new();
+    private readonly TopicContentfulFactory _topicFactory;
     private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _topicBrandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
@@ -16,23 +16,22 @@ public class TopicContentfulFactoryTests
     public TopicContentfulFactoryTests()
     {
         _contentfulTopic = new ContentfulTopicBuilder().Build();
-        _crumbFactory = new Mock<IContentfulFactory<ContentfulReference, Crumb>>();
-        _subItemFactory = new Mock<IContentfulFactory<ContentfulReference, SubItem>>();
-        _alertFactory = new Mock<IContentfulFactory<ContentfulAlert, Alert>>();
-        _eventBannerFactory = new Mock<IContentfulFactory<ContentfulEventBanner, EventBanner>>();
-        _carouselContentFactory = new Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>>();
-        _timeProvider.Setup(o => o.Now()).Returns(new DateTime(2017, 02, 02));
-        _callToActionFactory.Setup(_ => _.ToModel(It.IsAny<ContentfulCallToActionBanner>())).Returns(new CallToActionBanner());
-        _topicContentfulFactory = new TopicContentfulFactory(
-            _subItemFactory.Object,
-            _crumbFactory.Object,
-            _alertFactory.Object,
-            _eventBannerFactory.Object,
-            _carouselContentFactory.Object,
-            _timeProvider.Object,
-            _callToActionFactory.Object,
-            _topicBrandingFactory.Object
-            );
+        _timeProvider
+            .Setup(timeProvider => timeProvider.Now())
+            .Returns(new DateTime(2017, 02, 02));
+
+        _callToActionFactory
+            .Setup(callToActionFactory => callToActionFactory.ToModel(It.IsAny<ContentfulCallToActionBanner>()))
+            .Returns(new CallToActionBanner());
+
+        _topicFactory = new TopicContentfulFactory(_subItemFactory.Object,
+                                                _crumbFactory.Object,
+                                                _alertFactory.Object,
+                                                _eventBannerFactory.Object,
+                                                _carouselFactory.Object,
+                                                _timeProvider.Object,
+                                                _callToActionFactory.Object,
+                                                _topicBrandingFactory.Object);
     }
 
     [Fact]
@@ -125,12 +124,12 @@ public class TopicContentfulFactoryTests
                                             DateTime.Now.AddDays(-1),
                                             DateTime.Now.AddDays(2),
                                             "url");
-        _carouselContentFactory
+        _carouselFactory
             .Setup(carouselFactory => carouselFactory.ToModel(It.IsAny<ContentfulCarouselContent>()))
             .Returns(carouselContent);
 
         // Act
-        Topic result = _topicContentfulFactory.ToModel(_contentfulTopic);
+        Topic result = _topicFactory.ToModel(_contentfulTopic);
 
         // Assert
         Assert.Single(result.SubItems);
@@ -168,15 +167,15 @@ public class TopicContentfulFactoryTests
         _contentfulTopic.BackgroundImage.SystemProperties.LinkType = "Link";
 
         // Act
-        Topic topic = _topicContentfulFactory.ToModel(_contentfulTopic);
+        Topic topic = _topicFactory.ToModel(_contentfulTopic);
 
         // Assert
         Assert.Empty(topic.Breadcrumbs);
         Assert.Empty(topic.SubItems);
         Assert.Empty(topic.SecondaryItems);
         Assert.Empty(topic.BackgroundImage);
-        _crumbFactory.Verify(_ => _.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
-        _subItemFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(_contentfulTopic.Breadcrumbs.First()), Times.Never);
+        _subItemFactory.Verify(subItemFactory => subItemFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 
     [Fact]
@@ -191,7 +190,7 @@ public class TopicContentfulFactoryTests
         ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
         // Act
-        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicFactory.ToModel(contentfulTopic);
 
         // Arrange
         Assert.Single(topic.Alerts);
@@ -209,7 +208,7 @@ public class TopicContentfulFactoryTests
         ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(contentfulAlerts).Build();
 
         // Act
-        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Single(topic.Alerts);
@@ -227,7 +226,7 @@ public class TopicContentfulFactoryTests
         ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
         // Act
-        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Equal(2, topic.Alerts.Count());
@@ -245,7 +244,7 @@ public class TopicContentfulFactoryTests
         ContentfulTopic contentfulTopic = new ContentfulTopicBuilder().Alerts(alerts).Build();
 
         // Act
-        Topic topic = _topicContentfulFactory.ToModel(contentfulTopic);
+        Topic topic = _topicFactory.ToModel(contentfulTopic);
 
         // Assert
         Assert.Empty(topic.Alerts);

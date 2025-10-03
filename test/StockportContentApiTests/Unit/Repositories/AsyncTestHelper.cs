@@ -1,3 +1,5 @@
+namespace StockportContentApiTests.Unit.Repositories;
+
 public static class AsyncTestHelper
 {
     private const int Timeout = 50;

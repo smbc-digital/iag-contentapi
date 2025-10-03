@@ -30,7 +30,6 @@ public class EventBuilder
     private EventFrequency _eventFrequency = EventFrequency.None;
     private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
     private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
-    private List<string> _categories = new() { "Category 1", "Category 2" };
     private readonly MapPosition _mapPosition = new() { Lat = 53.47, Lon = -2.2 };
     private string _bookingInformation = "booking information";
     private bool _featured = true;
@@ -114,27 +113,9 @@ public class EventBuilder
         return this;
     }
 
-    public EventBuilder EventCategory(List<string> categoriesList)
-    {
-        _categories = categoriesList;
-        return this;
-    }
-
     public EventBuilder EventCategories(List<EventCategory> categoriesList)
     {
         _eventCategories = categoriesList;
-        return this;
-    }
-
-    public EventBuilder EventBookingInformation(string bookingInformation)
-    {
-        _bookingInformation = bookingInformation;
-        return this;
-    }
-
-    public EventBuilder Featured(bool featured)
-    {
-        _featured = featured;
         return this;
     }
 

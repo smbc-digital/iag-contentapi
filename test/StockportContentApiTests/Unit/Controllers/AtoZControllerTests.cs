@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class AtoZControllerTests
 {
-    private readonly Mock<Func<string, IAtoZRepository>> _mockCreateRepository = new();
-    private readonly Mock<IAtoZRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IAtoZRepository>> _createRepository = new();
+    private readonly Mock<IAtoZRepository> _repository = new();
     private readonly AtoZController _controller;
 
     public AtoZControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new AtoZController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new AtoZController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class AtoZControllerTests
             new AtoZ ("Avocado", "avocado", "teaser", "article", new List < string >())
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(atoZItems));
 
@@ -37,7 +35,7 @@ public class AtoZControllerTests
         IActionResult result = await _controller.Index("A", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -50,7 +48,7 @@ public class AtoZControllerTests
             new AtoZ ("Avocado", "avocado", "teaser", "topic", new List < string >())
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(atoZItems));
 
@@ -58,6 +56,6 @@ public class AtoZControllerTests
         IActionResult result = await _controller.Index("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

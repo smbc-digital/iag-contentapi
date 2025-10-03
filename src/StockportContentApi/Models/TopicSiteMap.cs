@@ -1,16 +1,9 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class TopicSiteMap
+public class TopicSiteMap(string slug, DateTime sunriseDate, DateTime sunsetDate)
 {
-    public string Slug { get; }
-    public DateTime SunriseDate { get; }
-    public DateTime SunsetDate { get; }
-
-    public TopicSiteMap(string slug, DateTime sunriseDate, DateTime sunsetDate)
-    {
-        Slug = slug;
-        SunriseDate = sunriseDate;
-        SunsetDate = sunsetDate;
-    }
+    public string Slug { get; } = slug;
+    public DateTime SunriseDate { get; } = sunriseDate;
+    public DateTime SunsetDate { get; } = sunsetDate;
 }

@@ -5,7 +5,7 @@ public class TwentyThreeConfig
 {
     public TwentyThreeConfig(string baseUrl)
     {
-        Utils.Ensure.ArgumentNotNullOrEmpty(baseUrl, "TWENTY_THREE_BASEURL");
+        Ensure.ArgumentNotNullOrEmpty(baseUrl, "TWENTY_THREE_BASEURL");
 
         BaseUrl = baseUrl;
     }

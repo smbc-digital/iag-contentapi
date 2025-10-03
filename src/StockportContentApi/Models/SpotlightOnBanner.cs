@@ -1,11 +1,7 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class SpotlightOnBanner(string title,
-                            MediaAsset image,
-                            string teaser,
-                            string link,
-                            DateTime lastUpdated)
+public class SpotlightOnBanner(string title, MediaAsset image, string teaser, string link, DateTime lastUpdated)
 {
     public string Title { get; } = title;
     public MediaAsset Image { get; } = image;

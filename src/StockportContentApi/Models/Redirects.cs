@@ -1,37 +1,21 @@
 ﻿namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class Redirects
+public class Redirects(Dictionary<string, RedirectDictionary> shortUrlRedirects, Dictionary<string, RedirectDictionary> legacyUrlRedirects)
 {
-    public Dictionary<string, RedirectDictionary> ShortUrlRedirects;
-    public Dictionary<string, RedirectDictionary> LegacyUrlRedirects;
-
-    public Redirects(Dictionary<string, RedirectDictionary> shortUrlRedirects, Dictionary<string, RedirectDictionary> legacyUrlRedirects)
-    {
-        ShortUrlRedirects = shortUrlRedirects;
-        LegacyUrlRedirects = legacyUrlRedirects;
-    }
+    public Dictionary<string, RedirectDictionary> ShortUrlRedirects = shortUrlRedirects;
+    public Dictionary<string, RedirectDictionary> LegacyUrlRedirects = legacyUrlRedirects;
 }
 
 [ExcludeFromCodeCoverage]
 
-public class ShortUrlRedirects
+public class ShortUrlRedirects(Dictionary<string, RedirectDictionary> redirects)
 {
-    public Dictionary<string, RedirectDictionary> Redirects;
-
-    public ShortUrlRedirects(Dictionary<string, RedirectDictionary> redirects)
-    {
-        Redirects = redirects;
-    }
+    public Dictionary<string, RedirectDictionary> Redirects = redirects;
 }
 
 [ExcludeFromCodeCoverage]
-public class LegacyUrlRedirects
+public class LegacyUrlRedirects(Dictionary<string, RedirectDictionary> redirects)
 {
-    public Dictionary<string, RedirectDictionary> Redirects;
-
-    public LegacyUrlRedirects(Dictionary<string, RedirectDictionary> redirects)
-    {
-        Redirects = redirects;
-    }
+    public Dictionary<string, RedirectDictionary> Redirects = redirects;
 }

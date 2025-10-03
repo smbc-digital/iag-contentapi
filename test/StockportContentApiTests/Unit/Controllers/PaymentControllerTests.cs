@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class PaymentControllerTests
 {
-    private readonly Mock<Func<string, IPaymentRepository>> _mockCreateRepository = new();
-    private readonly Mock<IPaymentRepository> _mockRepository = new();
+    private readonly Mock<Func<string, IPaymentRepository>> _createRepository = new();
+    private readonly Mock<IPaymentRepository> _repository = new();
     private readonly PaymentController _controller;
 
     public PaymentControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -42,7 +40,7 @@ public class PaymentControllerTests
                             "payment description",
                             new List<Alert>());
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetPayment(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(payment));
 
@@ -50,7 +48,7 @@ public class PaymentControllerTests
         IActionResult result = await _controller.GetPayment("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -76,7 +74,7 @@ public class PaymentControllerTests
                             "payment description",
                             new List<Alert>());
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(payment));
 
@@ -84,6 +82,6 @@ public class PaymentControllerTests
         IActionResult result = await _controller.Index("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }

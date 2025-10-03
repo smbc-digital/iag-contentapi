@@ -29,7 +29,7 @@ public class StartPageContentfulFactoryTests
         Assert.NotNull(result.Alerts);
         Assert.NotNull(result.AlertsInline);
         Assert.NotNull(result.Breadcrumbs);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Once);
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class StartPageContentfulFactoryTests
         Assert.Empty(result.Alerts);
         Assert.Empty(result.AlertsInline);
         Assert.Empty(result.Breadcrumbs);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
-        _crumbFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Never);
+        _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()), Times.Never);
     }
 }

@@ -64,6 +64,6 @@ public class DirectoryEntryContentfulFactoryTests
         // Assert
         Assert.Empty(result.Alerts);
         Assert.Single(result.AlertsInline);
-        _alertFactory.Verify(_ => _.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
+        _alertFactory.Verify(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()), Times.Once);
     }
 }

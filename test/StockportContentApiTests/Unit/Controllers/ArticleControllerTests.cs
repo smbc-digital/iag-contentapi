@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class ArticleControllerTests
 {
-    private readonly Mock<Func<string, string, IArticleRepository>> _mockCreateRepository = new();
-    private readonly Mock<IArticleRepository> _mockRepository = new();
+    private readonly Mock<Func<string, string, IArticleRepository>> _createRepository = new();
+    private readonly Mock<IArticleRepository> _repository = new();
     private readonly ArticleController _controller;
 
     public ArticleControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new ArticleController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new ArticleController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -29,7 +27,7 @@ public class ArticleControllerTests
             Slug = "article"
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetArticle(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(article));
 
@@ -37,7 +35,7 @@ public class ArticleControllerTests
         IActionResult result = await _controller.GetArticle("article", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -50,7 +48,7 @@ public class ArticleControllerTests
             new ArticleSiteMap("article-site-map2", new DateTime().AddDays(2), new DateTime().AddDays(3)),
         };
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get())
             .ReturnsAsync(HttpResponse.Successful(articles));
 
@@ -58,6 +56,6 @@ public class ArticleControllerTests
         IActionResult result = await _controller.Index("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

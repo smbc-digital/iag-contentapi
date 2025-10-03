@@ -4,26 +4,15 @@ public class ContentfulArticleBuilder
 {
     private string _title = "title";
     private string _slug = "slug";
-    private readonly string _teaser = "teaser";
-    private readonly string _icon = "icon";
-    private readonly Asset _backgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private string _body = "body";
-    private readonly DateTime _sunriseDate = new(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc);
-    private readonly DateTime _sunsetDate = new(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc);
     private List<ContentfulAlert> _alertsInline = new() { new ContentfulAlertBuilder().Build() };
     private List<ContentfulReference> _breadcrumbs = new() { new ContentfulReferenceBuilder().Build() };
     private List<ContentfulAlert> _alerts = new() { new ContentfulAlertBuilder().Build() };
-    private readonly List<Asset> _documents = new() { new ContentfulDocumentBuilder().Build() };
-    private readonly List<ContentfulProfile> _profiles = new() { new ContentfulProfileBuilder().Build() };
-    private List<ContentfulSection> _sections = new() { new ContentfulSectionBuilder().Build() };
     private string _systemId = "id";
-    private string _contentTypeSystemId = "id";
-    private readonly DateTime _updatedAt = DateTime.Now;
-    private readonly DateTime _createdAt = DateTime.Now;
     private  string _associatedTagCategory = "dance";
     public Asset Image { get => _image; set => _image = value; }
-    private List<ContentfulTrustedLogo> _articleBranding = new()
+    private readonly List<ContentfulTrustedLogo> _articleBranding = new()
     {
         new ContentfulTrustedLogo()
         {
@@ -43,26 +32,26 @@ public class ContentfulArticleBuilder
         => new()
         {
             Alerts = _alerts,
-            BackgroundImage = _backgroundImage,
+            BackgroundImage = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
             Body = _body,
             Breadcrumbs = _breadcrumbs,
-            Documents = _documents,
-            Icon = _icon,
-            Profiles = _profiles,
+            Documents = new() { new ContentfulDocumentBuilder().Build() },
+            Icon = "icon",
+            Profiles = new() { new ContentfulProfileBuilder().Build() },
             Slug = _slug,
             Title = _title,
-            Teaser = _teaser,
-            Sections = _sections,
-            SunriseDate = _sunriseDate,
-            SunsetDate = _sunsetDate,
+            Teaser = "teaser",
+            Sections = new() { new ContentfulSectionBuilder().Build() },
+            SunriseDate = new(2016, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+            SunsetDate = new(2017, 1, 20, 0, 0, 0, DateTimeKind.Utc),
             Image = Image,
             AlertsInline = _alertsInline,
             Sys = new SystemProperties
             {
-                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = _contentTypeSystemId } },
+                ContentType = new ContentType { SystemProperties = new SystemProperties { Id = "id" } },
                 Id = _systemId,
-                UpdatedAt = _updatedAt,
-                CreatedAt = _createdAt,
+                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
             },
             TrustedLogos = _articleBranding,
             RelatedContent = _relatedContent,
@@ -87,18 +76,6 @@ public class ContentfulArticleBuilder
         return this;
     }
 
-    public ContentfulArticleBuilder Section(ContentfulSection section)
-    {
-        _sections.Add(section);
-        return this;
-    }
-
-    public ContentfulArticleBuilder WithOutSection()
-    {
-        _sections = new List<ContentfulSection>();
-        return this;
-    }
-
     public ContentfulArticleBuilder AlertsInline(List<ContentfulAlert> alertsInline)
     {
         _alertsInline = alertsInline;
@@ -120,12 +97,6 @@ public class ContentfulArticleBuilder
     public ContentfulArticleBuilder SystemId(string id)
     {
         _systemId = id;
-        return this;
-    }
-
-    public ContentfulArticleBuilder SystemContentTypeId(string id)
-    {
-        _contentTypeSystemId = id;
         return this;
     }
 

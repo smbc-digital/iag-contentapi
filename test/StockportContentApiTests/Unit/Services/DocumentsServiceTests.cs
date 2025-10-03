@@ -46,8 +46,8 @@ public class DocumentsServiceTests
             .Returns(new ContentfulConfig(string.Empty, string.Empty, string.Empty));
 
         _documentsService = new(_mockDocumentRepositoryFunc.Object,
-                                                _mockDocumentFactory.Object,
-                                                _mockContentfulConfigBuilder.Object);
+                                _mockDocumentFactory.Object,
+                                _mockContentfulConfigBuilder.Object);
     }
 
     [Fact]
@@ -60,10 +60,10 @@ public class DocumentsServiceTests
         Document result = await _documentsService.GetSecureDocumentByAssetId("stockportgov", "asset id", "slug");
 
         // Assert
-        Assert.Equal("title", result.Title);
-        Assert.Equal("url", result.Url);
-        Assert.Equal("asset id", result.AssetId);
-        Assert.Equal(22, result.Size);
+        Assert.Equal(expectedResult.Title, result.Title);
+        Assert.Equal(expectedResult.Url, result.Url);
+        Assert.Equal(expectedResult.AssetId, result.AssetId);
+        Assert.Equal(expectedResult.Size, result.Size);
     }
 
     [Fact]

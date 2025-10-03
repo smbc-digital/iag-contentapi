@@ -10,7 +10,6 @@ public class ContentfulConfig
     public string ManagementKey;
     public string Environment = "master";
 
-
     // NEW
     public ContentfulConfig(string spaceKey, string accessKey, string managementKey, string environment = "master")
     {
@@ -23,7 +22,7 @@ public class ContentfulConfig
     // OLD (FUNC)
     public ContentfulConfig(string businessId)
     {
-        Utils.Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
+        Ensure.ArgumentNotNullOrEmpty(businessId, "BUSINESS_ID");
         BusinessId = businessId;
     }
 

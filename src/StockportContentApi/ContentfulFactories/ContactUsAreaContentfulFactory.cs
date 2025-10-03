@@ -1,25 +1,16 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulContactUsArea, ContactUsArea>
+public class ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+                                            IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
+                                            ITimeProvider timeProvider,
+                                            IContentfulFactory<ContentfulAlert, Alert> alertFactory,
+                                            IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory) : IContentfulFactory<ContentfulContactUsArea, ContactUsArea>
 {
-    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory;
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory;
-    private readonly DateComparer _dateComparer;
-    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory;
-    private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory;
-
-    public ContactUsAreaContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
-                                        IContentfulFactory<ContentfulReference, Crumb> crumbFactory,
-                                        ITimeProvider timeProvider,
-                                        IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-                                        IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> contactUsCategoryFactory)
-    {
-        _subitemFactory = subitemFactory;
-        _crumbFactory = crumbFactory;
-        _dateComparer = new DateComparer(timeProvider);
-        _alertFactory = alertFactory;
-        _contactUsCategoryFactory = contactUsCategoryFactory;
-    }
+    private readonly IContentfulFactory<ContentfulReference, Crumb> _crumbFactory = crumbFactory;
+    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
+    private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
+    private readonly IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory> _contactUsCategoryFactory = contactUsCategoryFactory;
 
     public ContactUsArea ToModel(ContentfulContactUsArea entry)
     {
@@ -39,20 +30,20 @@ public class ContactUsAreaContentfulFactory : IContentfulFactory<ContentfulConta
             ? entry.InsetTextBody
             : string.Empty;
 
-        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys))
-                                    .Select(crumb => _crumbFactory.ToModel(crumb)).ToList();
+        List<Crumb> breadcrumbs = entry.Breadcrumbs.Where(breadcrumb => ContentfulHelpers.EntryIsNotALink(breadcrumb.Sys))
+                                    .Select(_crumbFactory.ToModel).ToList();
 
         List<SubItem> primaryItems = entry.PrimaryItems.Where(primItem => ContentfulHelpers.EntryIsNotALink(primItem.Sys) 
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(primItem.SunriseDate, primItem.SunsetDate))
-                                        .Select(item => _subitemFactory.ToModel(item)).ToList();
+                                        .Select(_subitemFactory.ToModel).ToList();
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
                                     && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
-                                .Select(alert => _alertFactory.ToModel(alert)).ToList();
+                                .Select(_alertFactory.ToModel).ToList();
 
         List<ContactUsCategory> contactUsCategories = entry.ContactUsCategories.Where(contactUsCategory => ContentfulHelpers.EntryIsNotALink(contactUsCategory.Sys))
-                                                        .Select(contactUsCategory => _contactUsCategoryFactory.ToModel(contactUsCategory)).ToList();
+                                                        .Select(_contactUsCategoryFactory.ToModel).ToList();
 
         return new ContactUsArea(slug, title, breadcrumbs, alerts, primaryItems, contactUsCategories, insetTextTitle, insetTextBody, entry.MetaDescription);
     }

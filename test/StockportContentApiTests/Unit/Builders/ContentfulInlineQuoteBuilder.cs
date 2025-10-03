@@ -2,7 +2,6 @@
 
 public class ContentfulInlineQuoteBuilder
 {
-    private Asset _image = new ContentfulAssetBuilder().Url("image-url.jpg").Build();
     private string _imageAltText = "image alt text";
     private string _quote = "quote";
     private string _author = "author";
@@ -12,19 +11,13 @@ public class ContentfulInlineQuoteBuilder
     public ContentfulInlineQuote Build()
         => new()
         {
-            Image = _image,
+            Image = new ContentfulAssetBuilder().Url("image-url.jpg").Build(),
             ImageAltText = _imageAltText,
             Quote = _quote,
             Author = _author,
             Slug = _slug,
             Theme = _theme,
         };
-
-    public ContentfulInlineQuoteBuilder WithImage(Asset image)
-    {
-        _image = image;
-        return this;
-    }
 
     public ContentfulInlineQuoteBuilder WithImageAltText(string imageAltText)
     {

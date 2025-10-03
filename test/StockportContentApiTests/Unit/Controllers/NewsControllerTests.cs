@@ -1,22 +1,20 @@
-using StockportContentApi.Controllers;
-
 namespace StockportContentApiTests.Unit.Controllers;
 
 public class NewsControllerTests
 {
-    private readonly Mock<Func<string, INewsRepository>> _mockCreateRepository = new();
-    private readonly Mock<INewsRepository> _mockRepository = new();
+    private readonly Mock<Func<string, INewsRepository>> _createRepository = new();
+    private readonly Mock<INewsRepository> _repository = new();
     private readonly NewsController _controller;
 
     public NewsControllerTests()
     {
-        Mock<ILogger<ResponseHandler>> mockLogger = new();
+        Mock<ILogger<ResponseHandler>> logger = new();
 
-        _mockCreateRepository
+        _createRepository
             .Setup(createRepo => createRepo(It.IsAny<string>()))
-            .Returns(_mockRepository.Object);
+            .Returns(_repository.Object);
 
-        _controller = new NewsController(new(mockLogger.Object), _mockCreateRepository.Object);
+        _controller = new NewsController(new(logger.Object), _createRepository.Object);
     }
 
     [Fact]
@@ -28,7 +26,7 @@ public class NewsControllerTests
                                 "email alerts topic id",
                                 null);
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetNewsByLimit(It.IsAny<int>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
@@ -36,7 +34,7 @@ public class NewsControllerTests
         IActionResult result = await _controller.LatestNews("test-business", 5);
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -48,7 +46,7 @@ public class NewsControllerTests
                                 "email alerts topic id",
                                 null);
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetNews(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
@@ -56,7 +54,7 @@ public class NewsControllerTests
         IActionResult result = await _controller.Detail("slug", "test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -68,7 +66,7 @@ public class NewsControllerTests
                                 "email alerts topic id",
                                 null);
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
@@ -76,7 +74,7 @@ public class NewsControllerTests
         IActionResult result = await _controller.Index("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -88,7 +86,7 @@ public class NewsControllerTests
                                 "email alerts topic id",
                                 null);
 
-        _mockRepository
+        _repository
             .Setup(repo => repo.GetArchivedNews(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
@@ -96,6 +94,6 @@ public class NewsControllerTests
         IActionResult result = await _controller.ArchivedNews("test-business");
 
         // Assert
-        _mockCreateRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
+        _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
     }
 }
