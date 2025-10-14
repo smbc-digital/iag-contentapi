@@ -10,4 +10,5 @@ public class ContentfulTrivia : IContentfulModel
     public string Statistic { get; set; } = string.Empty;
     public string StatisticSubHeading { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; }
+    public ContentfulMetadata Metadata { get; set; } = new();
 }

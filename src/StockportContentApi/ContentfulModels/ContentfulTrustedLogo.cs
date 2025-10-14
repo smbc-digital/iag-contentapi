@@ -12,4 +12,5 @@ public class ContentfulTrustedLogo : IContentfulModel
     public string Link { get; set; } = string.Empty;
 
     public SystemProperties Sys { get; set; } = new();
+    public ContentfulMetadata Metadata { get; set; } = new();
 }

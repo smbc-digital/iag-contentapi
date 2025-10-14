@@ -71,7 +71,7 @@ public class ProfileRepositoryTests
             .Returns(profile);
 
         // Act
-        HttpResponse response = await _repository.GetProfile("a-slug");
+        HttpResponse response = await _repository.GetProfile("a-slug", "tagId");
         Profile responseProfile = response.Get<Profile>();
 
         // Assert
@@ -91,7 +91,7 @@ public class ProfileRepositoryTests
             });
 
         // Act
-        HttpResponse response = await _repository.GetProfile("not-found");
+        HttpResponse response = await _repository.GetProfile("not-found", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -110,7 +110,7 @@ public class ProfileRepositoryTests
             });
 
         // Act
-        await _repository.GetProfile("fake slug");
+        await _repository.GetProfile("fake slug", "tagId");
 
         // Assert
         _client.Verify(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -128,7 +128,7 @@ public class ProfileRepositoryTests
             });
 
         // Act
-        HttpResponse response = await _repository.GetProfile("fake slug");
+        HttpResponse response = await _repository.GetProfile("fake slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -150,7 +150,7 @@ public class ProfileRepositoryTests
             });
 
         // Act
-        HttpResponse response = await _repository.GetProfile("fake slug");
+        HttpResponse response = await _repository.GetProfile("fake slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -173,7 +173,7 @@ public class ProfileRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
         IEnumerable<Profile> responseProfile = response.Get<IEnumerable<Profile>>();
 
         // Assert
@@ -193,7 +193,7 @@ public class ProfileRepositoryTests
             });
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

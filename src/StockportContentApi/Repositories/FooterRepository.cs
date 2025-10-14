@@ -2,7 +2,7 @@
 
 public interface IFooterRepository
 {
-    Task<HttpResponse> GetFooter();
+    Task<HttpResponse> GetFooter(string tagId);
 }
 
 public class FooterRepository(ContentfulConfig config,
@@ -12,9 +12,14 @@ public class FooterRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulFooter, Footer> _contentfulFactory = contentfulFactory;
 
-    public async Task<HttpResponse> GetFooter()
+    public async Task<HttpResponse> GetFooter(string tagId)
     {
-        QueryBuilder<ContentfulFooter> builder = new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1);
+        QueryBuilder<ContentfulFooter> builder = new QueryBuilder<ContentfulFooter>()
+            .ContentTypeIs("footer")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1);
+        
         ContentfulCollection<ContentfulFooter> entries = await _client.GetEntries(builder);
         ContentfulFooter entry = entries.FirstOrDefault();
 

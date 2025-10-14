@@ -2,7 +2,7 @@
 
 public interface ISiteHeaderRepository
 {
-    Task<HttpResponse> GetSiteHeader();
+    Task<HttpResponse> GetSiteHeader(string tagId);
 }
 
 public class SiteHeaderRepository(ContentfulConfig config,
@@ -12,9 +12,13 @@ public class SiteHeaderRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulSiteHeader, SiteHeader> _contentfulFactory = contentfulFactory;
 
-    public async Task<HttpResponse> GetSiteHeader()
+    public async Task<HttpResponse> GetSiteHeader(string tagId)
     {
-        QueryBuilder<ContentfulSiteHeader> builder = new QueryBuilder<ContentfulSiteHeader>().ContentTypeIs("header").Include(1);
+        QueryBuilder<ContentfulSiteHeader> builder = new QueryBuilder<ContentfulSiteHeader>()
+            .ContentTypeIs("header")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1);
 
         ContentfulCollection<ContentfulSiteHeader> entries = await _client.GetEntries(builder);
         ContentfulSiteHeader entry = entries.FirstOrDefault();

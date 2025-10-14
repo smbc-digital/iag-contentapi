@@ -35,7 +35,7 @@ public class StartPageControllerTests
                             new List<Alert>());
 
         _repository
-            .Setup(repo => repo.GetStartPage(It.IsAny<string>()))
+            .Setup(repo => repo.GetStartPage(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(startPage));
 
         // Act
@@ -78,11 +78,11 @@ public class StartPageControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(startPages));
 
         // Act
-        IActionResult result = await _controller.Get("test-business");
+        IActionResult result = await _controller.Get("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

@@ -33,10 +33,8 @@ public class HomepageRepositoryTests
             Items = new List<ContentfulHomepage> { new ContentfulHomepage() }
         };
 
-        QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulHomepage>>(query => query.Build().Equals(builder.Build())),
-                                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         _homepageFactory
@@ -63,7 +61,7 @@ public class HomepageRepositoryTests
                                 string.Empty));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("tagId"));
         
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

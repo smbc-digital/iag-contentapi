@@ -2,8 +2,8 @@
 
 public interface IStartPageRepository
 {
-    Task<HttpResponse> GetStartPage(string startPageSlug);
-    Task<HttpResponse> Get();
+    Task<HttpResponse> GetStartPage(string startPageSlug, string tagId);
+    Task<HttpResponse> Get(string tagId);
 }
 
 public class StartPageRepository(ContentfulConfig config,
@@ -15,9 +15,15 @@ public class StartPageRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
     private readonly DateComparer _dateComparer = new(timeProvider);
 
-    public async Task<HttpResponse> GetStartPage(string startPageSlug)
+    public async Task<HttpResponse> GetStartPage(string startPageSlug, string tagId)
     {
-        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").FieldEquals("fields.slug", startPageSlug).Include(3);
+        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
+            .ContentTypeIs("startPage")
+            .FieldEquals("fields.slug", startPageSlug)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(3);
+        
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);
 
         if (!entries.Any())
@@ -34,9 +40,14 @@ public class StartPageRepository(ContentfulConfig config,
             : HttpResponse.Successful(startPage);
     }
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
-        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>().ContentTypeIs("startPage").Include(3);
+        QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
+            .ContentTypeIs("startPage")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(3);
+        
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);
 
         if (!entries.Any())

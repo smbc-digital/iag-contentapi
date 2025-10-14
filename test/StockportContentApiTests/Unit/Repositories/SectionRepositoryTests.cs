@@ -51,7 +51,7 @@ public class SectionRepositoryTests
     public async Task GetSections_ReturnsSuccessResponse_WhenSectionIsFound()
     {
         // Act
-        HttpResponse response = await _repository.GetSections("section-slug");
+        HttpResponse response = await _repository.GetSections("section-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -75,7 +75,7 @@ public class SectionRepositoryTests
             .ReturnsAsync(articleCollection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

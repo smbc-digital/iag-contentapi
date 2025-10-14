@@ -2,7 +2,7 @@
 
 public interface IHomepageRepository
 {
-    Task<HttpResponse> Get();
+    Task<HttpResponse> Get(string tagId);
 }
 
 public class HomepageRepository(ContentfulConfig config,
@@ -12,9 +12,14 @@ public class HomepageRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory = homepageFactory;
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
-        QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>().ContentTypeIs("homepage").Include(2);
+        QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>()
+            .ContentTypeIs("homepage")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(2);
+        
         ContentfulCollection<ContentfulHomepage> entries = await _client.GetEntries(builder);
         ContentfulHomepage entry = entries.FirstOrDefault();
 

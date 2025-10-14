@@ -29,11 +29,11 @@ public class EventControllerTests
     {
         // Arrange
         _categoryRepository
-            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories("tagId"))
             .ReturnsAsync(HttpResponse.Successful(new EventCategory("category name", "category-slug", "category icon", "category image")));
 
         // Act
-        IActionResult result = await _controller.GetEventCategories("test-business");
+        IActionResult result = await _controller.GetEventCategories("tagId");
 
         // Assert
         _categoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -44,15 +44,15 @@ public class EventControllerTests
     {
         // Arrange
         _categoryRepository
-            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories())
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventCategories("tagId"))
             .ReturnsAsync(HttpResponse.Successful(new List<EventCategory> { new("category name", "category-slug", "category icon", "category image") }));
 
         _eventRepository
-            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventHomepage(It.IsAny<int>()))
+            .Setup(repo => repo(It.IsAny<string>(), It.IsAny<string>()).GetEventHomepage(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(HttpResponse.Successful(new EventHomepage(new List<EventHomepageRow>() { new() })));
 
         // Act
-        IActionResult result = await _controller.Homepage("test-business");
+        IActionResult result = await _controller.Homepage("tagId");
 
         // Assert
         _categoryRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

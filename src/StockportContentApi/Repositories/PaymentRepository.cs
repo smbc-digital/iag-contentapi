@@ -2,8 +2,8 @@
 
 public interface IPaymentRepository
 {
-    Task<HttpResponse> GetPayment(string slug);
-    Task<HttpResponse> Get();
+    Task<HttpResponse> GetPayment(string slug, string tagId);
+    Task<HttpResponse> Get(string tagId);
 }
 
 public class PaymentRepository(ContentfulConfig config,
@@ -13,9 +13,15 @@ public class PaymentRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulPayment, Payment> _paymentFactory = paymentFactory;
 
-    public async Task<HttpResponse> GetPayment(string slug)
+    public async Task<HttpResponse> GetPayment(string slug, string tagId)
     {
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>()
+            .ContentTypeIs("payment")
+            .FieldEquals("fields.slug", slug)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1);
+        
         ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
         ContentfulPayment entry = entries.FirstOrDefault();
 
@@ -24,9 +30,15 @@ public class PaymentRepository(ContentfulConfig config,
             : HttpResponse.Successful(_paymentFactory.ToModel(entry));
     }
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
-        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
+        QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>()
+            .ContentTypeIs("payment")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1)
+            .Limit(ContentfulQueryValues.LIMIT_MAX);
+        
         ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
         IEnumerable<ContentfulPayment> contentfulPayments = entries as IEnumerable<ContentfulPayment> ?? entries.ToList();
         IEnumerable<Payment> payments = GetAllPayments(contentfulPayments);

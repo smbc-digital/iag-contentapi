@@ -8,4 +8,5 @@ public class ContentfulContactUsCategory : IContentfulModel
     public string BodyTextRight { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; } = new();
+    public ContentfulMetadata Metadata { get; set; } = new();
 }

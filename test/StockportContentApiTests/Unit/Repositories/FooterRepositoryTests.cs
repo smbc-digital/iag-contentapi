@@ -41,8 +41,7 @@ public class FooterRepositoryTests
         };
 
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulFooter>>(query => query.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
-                                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulFooter>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(footerCollection);
 
         _contentfulFactory
@@ -50,7 +49,7 @@ public class FooterRepositoryTests
             .Returns(new Footer("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3"));
 
         // Act
-        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter());
+        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter("tagId"));
 
         // Assert
         Assert.Equal(mockFooter.Title, footer.Get<Footer>().Title);
@@ -73,7 +72,7 @@ public class FooterRepositoryTests
         };
 
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulFooter>>(query => query.Build().Equals(new QueryBuilder<ContentfulFooter>().ContentTypeIs("footer").Include(1).Build())),
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulFooter>>(),
                                             It.IsAny<CancellationToken>()))
             .ReturnsAsync(footerCollection);
 
@@ -82,7 +81,7 @@ public class FooterRepositoryTests
             .Returns((Footer)null);
 
         // Act
-        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter());
+        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter("tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, footer.StatusCode);

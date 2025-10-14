@@ -23,4 +23,5 @@ public class ContentfulHomepage : IContentfulModel
     public ContentfulCallToActionBanner CallToActionPrimary { get; set; } = null;
     public IEnumerable<ContentfulSpotlightOnBanner> SpotlightOnBanner { get; set; } = null;
     public string ImageOverlayText { get; set; } = string.Empty;
+    public ContentfulMetadata Metadata { get; set; } = new();
 }

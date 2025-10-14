@@ -11,7 +11,7 @@ public class DirectoryController(ResponseHandler handler,
     [Route("{businessId}/directories")]
     [Route("v1/{businessId}/directories")]
     public async Task<IActionResult> GetDirectories(string businessId) =>
-        await _handler.Get(() => _createDirectoryRepository(businessId).Get());
+        await _handler.Get(() => _createDirectoryRepository(businessId).Get(businessId));
 
     [HttpGet]
     [Route("{businessId}/directory/{slug}")]
@@ -20,7 +20,7 @@ public class DirectoryController(ResponseHandler handler,
     {
         try
         {
-            HttpResponse response = await _createDirectoryRepository(businessId).Get(slug);
+            HttpResponse response = await _createDirectoryRepository(businessId).Get(slug, businessId);
 
             return response.CreateResult();
         }
@@ -34,5 +34,5 @@ public class DirectoryController(ResponseHandler handler,
     [Route("{businessId}/directory-entry/{directoryEntrySlug}")]
     [Route("v1/{businessId}/directory-entry/{directoryEntrySlug}")]
     public async Task<IActionResult> GetDirectoryEntry(string directoryEntrySlug, string businessId) =>
-        await _handler.Get(() => _createDirectoryRepository(businessId).GetEntry(directoryEntrySlug));
+        await _handler.Get(() => _createDirectoryRepository(businessId).GetEntry(directoryEntrySlug, businessId));
 }

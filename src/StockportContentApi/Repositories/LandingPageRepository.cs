@@ -2,7 +2,7 @@
 
 public interface ILandingPageRepository
 {
-    Task<HttpResponse> GetLandingPage(string slug);
+    Task<HttpResponse> GetLandingPage(string slug, string tagId);
 }
 
 public class LandingPageRepository(
@@ -19,10 +19,15 @@ public class LandingPageRepository(
     private readonly NewsRepository _newsRepository = newsRepository;
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
 
-    public async Task<HttpResponse> GetLandingPage(string slug)
+    public async Task<HttpResponse> GetLandingPage(string slug, string tagId)
     {
         QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>()
-            .ContentTypeIs("landingPage").FieldEquals("fields.slug", slug).Include(2);
+            .ContentTypeIs("landingPage")
+            .FieldEquals("fields.slug", slug)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(2);
+        
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
         ContentfulLandingPage entry = entries.FirstOrDefault();
 
@@ -34,12 +39,12 @@ public class LandingPageRepository(
         if (landingPage is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, $"Landing page not found {slug}");
         
-        await ProcessLandingPageContent(landingPage);
+        await ProcessLandingPageContent(landingPage, tagId);
 
         return HttpResponse.Successful(landingPage);
     }
 
-    private async Task ProcessLandingPageContent(LandingPage landingPage)
+    private async Task ProcessLandingPageContent(LandingPage landingPage, string tagId)
     {
         if (landingPage.PageSections is null || !landingPage.PageSections.Any()) return;
 
@@ -48,19 +53,19 @@ public class LandingPageRepository(
             switch (contentBlock.ContentType)
             {
                 case "NewsBanner":
-                    await PopulateNewsContent(contentBlock);
+                    await PopulateNewsContent(contentBlock, tagId);
                     break;
 
                 case "NewsCards":
-                    await PopulateNewsCardsContent(contentBlock);
+                    await PopulateNewsCardsContent(contentBlock, tagId);
                     break;
                 
                 case "EventCards":
-                    await PopulateEventContent(contentBlock);
+                    await PopulateEventContent(contentBlock, tagId);
                     break;
 
                 case "ProfileBanner":
-                    await PopulateProfileContent(contentBlock);
+                    await PopulateProfileContent(contentBlock, tagId);
                     break;
 
                 default:
@@ -69,12 +74,12 @@ public class LandingPageRepository(
         }
     }
 
-    private async Task PopulateNewsContent(ContentBlock contentBlock)
+    private async Task PopulateNewsContent(ContentBlock contentBlock, string tagId)
     {
         if (contentBlock.SubItems?.Any() is true)
         {
             ContentBlock firstSubItem = contentBlock.SubItems.FirstOrDefault();
-            HttpResponse newsResponse = await _newsRepository.GetNews(firstSubItem.Slug);
+            HttpResponse newsResponse = await _newsRepository.GetNews(firstSubItem.Slug, tagId);
             News newsSubItem = newsResponse.Get<News>();
             
             if (newsSubItem is not null)
@@ -87,7 +92,7 @@ public class LandingPageRepository(
 
         if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
         {
-            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(1);
+            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(1, tagId);
             List<News> latestNews = latestNewsResponse.Get<List<News>>();
             if (latestNews is not null && latestNews.Any())
             {
@@ -99,23 +104,23 @@ public class LandingPageRepository(
         IEnumerable<string> tagsOrCategories = contentBlock.AssociatedTagCategory.Split(',').Select(tag => tag.Trim());
         foreach (string tagOrCategory in tagsOrCategories)
         {
-            List<News> news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory)
-                        ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory);
+            List<News> news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, tagId)
+                        ?? await _newsRepository.GetLatestNewsByTag(tagOrCategory, tagId);
 
             if (news is not null)
             {
                 contentBlock.NewsArticle = news.FirstOrDefault();
-                contentBlock.UseTag = news.First().Slug.Equals((await _newsRepository.GetLatestNewsByTag(tagOrCategory))?.First().Slug);
+                contentBlock.UseTag = news.First().Slug.Equals((await _newsRepository.GetLatestNewsByTag(tagOrCategory, tagId))?.First().Slug);
                 break;
             }
         }
     }
     
-    private async Task PopulateEventContent(ContentBlock contentBlock)
+    private async Task PopulateEventContent(ContentBlock contentBlock, string tagId)
     {
         if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
         {
-            HttpResponse upcomingEventsResponse = await _eventRepository.GetUpcomingEvents(3);
+            HttpResponse upcomingEventsResponse = await _eventRepository.GetUpcomingEvents(tagId, 3);
             List<Event> upcomingEvents = upcomingEventsResponse.Get<List<Event>>();
 
             if (upcomingEvents is not null && upcomingEvents.Any())
@@ -130,10 +135,10 @@ public class LandingPageRepository(
 
         IEnumerable<Task<List<Event>>> tasks = tagsOrCategories.Select(async tagOrCategory =>
         {
-            List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(tagOrCategory, true);
+            List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(tagOrCategory, true, tagId);
             return categoryEvents.Any()
                 ? categoryEvents
-                : await _eventRepository.GetEventsByTag(tagOrCategory, true);
+                : await _eventRepository.GetEventsByTag(tagOrCategory, true, tagId);
         });
 
         foreach (List<Event> task in await Task.WhenAll(tasks))
@@ -151,22 +156,22 @@ public class LandingPageRepository(
             .ToList();
     }
 
-    private async Task PopulateProfileContent(ContentBlock contentBlock)
+    private async Task PopulateProfileContent(ContentBlock contentBlock, string tagId)
     {
         if (contentBlock.SubItems?.Any() is false) return;
 
         ContentBlock firstSubItem = contentBlock.SubItems.First();
-        ContentfulProfile profile = await GetProfile(firstSubItem.Slug);
+        ContentfulProfile profile = await GetProfile(firstSubItem.Slug, tagId);
 
         if (profile is not null)
             contentBlock.Profile = _profileFactory.ToModel(profile);
     }
 
-    private async Task PopulateNewsCardsContent(ContentBlock contentBlock, int quantity = 3)
+    private async Task PopulateNewsCardsContent(ContentBlock contentBlock, string tagId, int quantity = 3)
     {
         if (string.IsNullOrEmpty(contentBlock.AssociatedTagCategory))
         {
-            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(quantity);
+            HttpResponse latestNewsResponse = await _newsRepository.GetNewsByLimit(quantity, tagId);
             List<News> upcomingNews = latestNewsResponse.Get<List<News>>();
 
             if (upcomingNews is not null && upcomingNews.Any())
@@ -182,11 +187,11 @@ public class LandingPageRepository(
 
         foreach (string tagOrCategory in tagsOrCategories)
         {
-            news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, quantity);
+            news = await _newsRepository.GetLatestNewsByCategory(tagOrCategory, tagId, quantity);
 
             if (news is null)
             {
-                news = await _newsRepository.GetLatestNewsByTag(tagOrCategory, quantity);
+                news = await _newsRepository.GetLatestNewsByTag(tagOrCategory, tagId, quantity);
                 contentBlock.UseTag = true;
             }
 
@@ -199,9 +204,14 @@ public class LandingPageRepository(
         }
     }
 
-    internal async Task<ContentfulProfile> GetProfile(string slug)
+    internal async Task<ContentfulProfile> GetProfile(string slug, string tagId)
     {
-        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldMatches(p => p.Slug, slug).Include(1);
+        QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>()
+            .ContentTypeIs("profile")
+            .FieldMatches(p => p.Slug, slug)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1);
         ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
 
         return profileEntries.FirstOrDefault();

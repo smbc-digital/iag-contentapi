@@ -112,7 +112,7 @@ public class LandingPageRepositoryTests
     public async Task GetLandingPage_ReturnsSuccessResponse_WhenLandingPageIsFound()
     {
         // Act
-        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -130,7 +130,7 @@ public class LandingPageRepositoryTests
             .ReturnsAsync(contentfulCollection);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("non-existent-slug");
+        HttpResponse response = await _repository.GetLandingPage("non-existent-slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -141,7 +141,7 @@ public class LandingPageRepositoryTests
     public async Task GetLandingPage_PopulatesContentBlocks_WhenPageSectionsItemsArePresent()
     {
         // Act
-        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug", "tagId");
         LandingPage responseLandingPage = response.Get<LandingPage>();
 
         // Assert
@@ -169,19 +169,19 @@ public class LandingPageRepositoryTests
         };
 
         _eventRepository
-            .Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
+            .Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()))
             .ReturnsAsync(events);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug", "tagId");
         List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(responseEvents);
         Assert.Equal(3, responseEvents.Count);
-        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -201,23 +201,23 @@ public class LandingPageRepositoryTests
         };
 
         _eventRepository
-            .Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()))
+            .Setup(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()))
             .ReturnsAsync(new List<Event>());
 
         _eventRepository
-            .Setup(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()))
+            .Setup(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()))
             .ReturnsAsync(events);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse response = await _repository.GetLandingPage("landing-page-slug", "tagId");
         List<Event> responseEvents = response.Get<LandingPage>().PageSections.First().Events;
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(responseEvents);
         Assert.Equal(3, responseEvents.Count);
-        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByCategory(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()), Times.Once);
+        _eventRepository.Verify(repository => repository.GetEventsByTag(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -253,18 +253,18 @@ public class LandingPageRepositoryTests
         };
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1))
+            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), "tagId", 1))
             .ReturnsAsync(news);
 
         // Act
-        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug", "tagId");
         News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(news.FirstOrDefault(), responseNews);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Once);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), "tagId", 1), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), "tagId", 1), Times.Once);
     }
 
     [Fact]
@@ -300,22 +300,22 @@ public class LandingPageRepositoryTests
         };
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1))
+            .Setup(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), "tagId", 1))
             .ReturnsAsync((List<News>)null);
 
         _newsRepository
-            .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1))
+            .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), "tagId", 1))
             .ReturnsAsync(news);
     
         // Act
-        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug", "tagId");
         News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(news.FirstOrDefault(), responseNews);
-        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Exactly(2));
-        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Once);
+        _newsRepository.Verify(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), "tagId", 1), Times.Exactly(2));
+        _newsRepository.Verify(repository => repository.GetLatestNewsByCategory(It.IsAny<string>(), "tagId", 1), Times.Once);
     }
 
     [Fact]
@@ -360,15 +360,15 @@ public class LandingPageRepositoryTests
         };
 
         _newsRepository
-            .Setup(repo => repo.GetNews(subItemSlug ))
+            .Setup(repo => repo.GetNews(subItemSlug, "tagId"))
             .ReturnsAsync(HttpResponse.Successful(news.FirstOrDefault()));
 
         _newsRepository
-            .Setup(repo => repo.GetNews("news-subitem-slug"))
+            .Setup(repo => repo.GetNews("news-subitem-slug", "tagId"))
             .ReturnsAsync(HttpResponse.Successful(news.First()));
 
         // Act
-        HttpResponse result = await _repository.GetLandingPage("landing-page-slug");
+        HttpResponse result = await _repository.GetLandingPage("landing-page-slug", "tagId");
         ContentBlock section = result.Get<LandingPage>().PageSections.FirstOrDefault();
 
         // Assert
@@ -376,9 +376,9 @@ public class LandingPageRepositoryTests
         Assert.NotNull(section.NewsArticle);
         Assert.Equal(news.FirstOrDefault(), section.NewsArticle);
         Assert.False(section.UseTag);
-        _newsRepository.Verify(repo => repo.GetNews(subItemSlug), Times.Once);
-        _newsRepository.Verify(repo => repo.GetLatestNewsByCategory(It.IsAny<string>(), 1), Times.Never);
-        _newsRepository.Verify(repo => repo.GetLatestNewsByTag(It.IsAny<string>(), 1), Times.Never);
+        _newsRepository.Verify(repo => repo.GetNews(subItemSlug, "tagId"), Times.Once);
+        _newsRepository.Verify(repo => repo.GetLatestNewsByCategory(It.IsAny<string>(), "tagId", 1), Times.Never);
+        _newsRepository.Verify(repo => repo.GetLatestNewsByTag(It.IsAny<string>(), "tagId", 1), Times.Never);
     }
 
     [Fact]
@@ -395,7 +395,7 @@ public class LandingPageRepositoryTests
             .ReturnsAsync(profiles);
 
         // Act
-        ContentfulProfile result = await _repository.GetProfile("test-slug");
+        ContentfulProfile result = await _repository.GetProfile("test-slug", "tagId");
 
         // Assert
         Assert.NotNull(result);
@@ -413,7 +413,7 @@ public class LandingPageRepositoryTests
             .ReturnsAsync(profiles);
 
         // Act
-        ContentfulProfile result = await _repository.GetProfile("non-existent-slug");
+        ContentfulProfile result = await _repository.GetProfile("non-existent-slug", "tagId");
 
         // Assert
         Assert.Null(result);
@@ -428,7 +428,7 @@ public class LandingPageRepositoryTests
             .ThrowsAsync(new("Contentful service error"));
 
         // Act & Assert
-        await Assert.ThrowsAsync<Exception>(() => _repository.GetProfile("test-slug"));
+        await Assert.ThrowsAsync<Exception>(() => _repository.GetProfile("test-slug", "tagId"));
     }
 
     [Fact]
@@ -462,7 +462,7 @@ public class LandingPageRepositoryTests
             .Returns(mockProfile);
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
+        HttpResponse response = await _repository.GetLandingPage("test-slug", "tagId");
         ContentBlock contentBlock = response.Get<LandingPage>().PageSections.FirstOrDefault();
 
         // Assert
@@ -491,7 +491,7 @@ public class LandingPageRepositoryTests
         };
 
         // Act
-        HttpResponse response = await _repository.GetLandingPage("test-slug");
+        HttpResponse response = await _repository.GetLandingPage("test-slug", "tagId");
         ContentBlock contentBlock = response.Get<LandingPage>().PageSections.FirstOrDefault();
 
         // Assert

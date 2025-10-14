@@ -10,5 +10,5 @@ public class ContactUsController(ResponseHandler handler,
     [Route("{businessId}/contactusarea")]
     [Route("v1/{businessId}/contactusarea")]
     public async Task<IActionResult> GetContactUsArea(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetContactUsArea());
+        await _handler.Get(() => _createRepository(businessId).GetContactUsArea(businessId));
 }

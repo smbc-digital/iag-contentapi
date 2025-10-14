@@ -11,11 +11,11 @@ public class PaymentController(ResponseHandler handler,
     [Route("{businessId}/payments/{slug}")]
     [Route("v1/{businessId}/payments/{slug}")]
     public async Task<IActionResult> GetPayment(string slug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetPayment(slug));
+        await _handler.Get(() => _createRepository(businessId).GetPayment(slug, businessId));
 
     [HttpGet]
     [Route("{businessId}/payments")]
     [Route("v1/{businessId}/payments")]
     public async Task<IActionResult> Index(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }

@@ -18,7 +18,7 @@ public class EventController(ResponseHandler handler,
     [Route("{businessId}/event-categories")]
     [Route("v1/{businessId}/event-categories")]
     public async Task<IActionResult> GetEventCategories(string businessId) =>
-        await _handler.Get(() => _eventCategoryRepository(businessId, businessId).GetEventCategories());
+        await _handler.Get(() => _eventCategoryRepository(businessId, businessId).GetEventCategories(businessId));
 
     [HttpGet]
     [Route("{businessId}/eventhomepage")]
@@ -26,12 +26,12 @@ public class EventController(ResponseHandler handler,
     public async Task<IActionResult> Homepage(string businessId)
     {
         IEventCategoryRepository categoryRepository = _eventCategoryRepository(businessId, businessId);
-        HttpResponse categoriesResponse = await categoryRepository.GetEventCategories();
+        HttpResponse categoriesResponse = await categoryRepository.GetEventCategories(businessId);
         List<EventCategory> categories = categoriesResponse.Get<List<EventCategory>>();
 
         IEventRepository repository = _eventRepository(businessId, businessId);
         int quantityWithinHomepageRows = businessId.Equals("stockroom") ? 6 : 3;
-        HttpResponse response = await repository.GetEventHomepage(quantityWithinHomepageRows);
+        HttpResponse response = await repository.GetEventHomepage(businessId, quantityWithinHomepageRows);
         EventHomepage homepage = response.Get<EventHomepage>();
         homepage.Categories = categories;
 
@@ -42,7 +42,7 @@ public class EventController(ResponseHandler handler,
     [Route("{businessId}/events/{slug}")]
     [Route("v1/{businessId}/events/{slug}")]
     public async Task<IActionResult> Detail(string slug, string businessId, [FromQuery] DateTime? date) =>
-        await _handler.Get(() => _eventRepository(businessId, businessId).GetEvent(slug, date));
+        await _handler.Get(() => _eventRepository(businessId, businessId).GetEvent(slug, date, businessId));
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut]
@@ -51,9 +51,9 @@ public class EventController(ResponseHandler handler,
     public async Task<IActionResult> UpdateEvent([FromBody] Event eventDetail, string businessId)
     {
         IEventRepository repository = _eventRepository(businessId, businessId);
-        ContentfulEvent existingEvent = await repository.GetContentfulEvent(eventDetail.Slug);
+        ContentfulEvent existingEvent = await repository.GetContentfulEvent(eventDetail.Slug, businessId);
 
-        ContentfulCollection<ContentfulEventCategory> existingCategories = await repository.GetContentfulEventCategories();
+        ContentfulCollection<ContentfulEventCategory> existingCategories = await repository.GetContentfulEventCategories(businessId);
         List<ContentfulEventCategory> referencedCategories = existingCategories.Items
             .Where(category => eventDetail.EventCategories.Any(eventCategory => category.Name.Equals(eventCategory.Name)))
             .ToList();
@@ -84,7 +84,7 @@ public class EventController(ResponseHandler handler,
                                                 [FromQuery] double latitude = 0,
                                                 [FromQuery] double longitude = 0,
                                                 [FromQuery] bool? free = null) =>
-        await _handler.Get(() => _eventRepository(businessId, businessId).Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude, free));
+        await _handler.Get(() => _eventRepository(businessId, businessId).Get(dateFrom, dateTo, category, limit, featured, tag, price, latitude, longitude, free, businessId));
 
     [HttpGet]
     [Route("{businessId}/events/by-category")]
@@ -99,8 +99,8 @@ public class EventController(ResponseHandler handler,
         try
         {
             // TODO: Change this to a service call
-            List<Event> eventsByCategory = await repository.GetEventsByCategory(category, onlyNextOccurrence);
-            List<Event> eventsByTag = await repository.GetEventsByTag(category, onlyNextOccurrence);
+            List<Event> eventsByCategory = await repository.GetEventsByCategory(category, onlyNextOccurrence, businessId);
+            List<Event> eventsByTag = await repository.GetEventsByTag(category, onlyNextOccurrence, businessId);
 
             if (eventsByCategory.Count.Equals(0) && eventsByTag.Count.Equals(0))
                 return new NotFoundObjectResult($"No events found for category {category}");
@@ -128,7 +128,7 @@ public class EventController(ResponseHandler handler,
     public async Task<IActionResult> DeleteEvent(string slug, string businessId)
     {
         IEventRepository repository = _eventRepository(businessId, businessId);
-        ContentfulEvent existingEvent = await repository.GetContentfulEvent(slug);
+        ContentfulEvent existingEvent = await repository.GetContentfulEvent(slug, businessId);
 
         return await _handler.Get(async () =>
         {

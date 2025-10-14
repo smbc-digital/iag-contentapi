@@ -10,11 +10,11 @@ public class SectionController(ResponseHandler handler,
     [Route("{businessId}/sections/{sectionSlug}")]
     [Route("v1/{businessId}/sections/{sectionSlug}")]
     public async Task<IActionResult> GetSection(string sectionSlug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetSections(sectionSlug));
+        await _handler.Get(() => _createRepository(businessId).GetSections(sectionSlug, businessId));
 
     [HttpGet]
     [Route("{businessId}/sectionsitemap")]
     [Route("v1/{businessId}/sectionsitemap")]
     public async Task<IActionResult> Get(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }

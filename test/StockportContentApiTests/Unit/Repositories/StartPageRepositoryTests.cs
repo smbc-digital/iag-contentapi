@@ -85,7 +85,7 @@ public class StartPageRepositoryTests : TestingBaseClass
             .Returns(startPageItem);
 
         // Act
-        HttpResponse response = await _repository.GetStartPage("startpage_slug");
+        HttpResponse response = await _repository.GetStartPage("startpage_slug", "tagId");
         StartPage startPage = response.Get<StartPage>();
 
         // Assert
@@ -108,7 +108,7 @@ public class StartPageRepositoryTests : TestingBaseClass
     public async Task GetStartPage_ReturnsNotFoundResponse_If_NoItemsInTheContentResponse()
     {
         // Act
-        HttpResponse response = await _repository.GetStartPage("startpage_slug");
+        HttpResponse response = await _repository.GetStartPage("startpage_slug", "tagId");
 
         //Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -118,7 +118,7 @@ public class StartPageRepositoryTests : TestingBaseClass
     public async Task Get_ShouldReturnNotFound_WhenNoStartPageEntriesFound()
     {
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

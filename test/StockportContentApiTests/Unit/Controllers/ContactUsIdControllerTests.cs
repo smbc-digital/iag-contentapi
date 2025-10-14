@@ -24,7 +24,7 @@ public class ContactUsIdControllerTests
         ContactUsId contactUsArea = new("name", "slug", "email address");
 
         _repository
-            .Setup(repo => repo.GetContactUsIds(It.IsAny<string>()))
+            .Setup(repo => repo.GetContactUsIds(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(contactUsArea));
 
         // Act

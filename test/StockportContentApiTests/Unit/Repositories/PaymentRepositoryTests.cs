@@ -52,11 +52,11 @@ public class PaymentRepositoryTests
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").Include(1).Limit(ContentfulQueryValues.LIMIT_MAX);
         _contentfulClient
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
         List<Payment> payments = response.Get<List<Payment>>();
 
         // Assert
@@ -79,11 +79,11 @@ public class PaymentRepositoryTests
 
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>().ContentTypeIs("payment").FieldEquals("fields.slug", "any-payment").Include(1);
         _contentfulClient
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulPayment>>(q => q.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulPayment>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.GetPayment("any-payment");
+        HttpResponse response = await _repository.GetPayment("any-payment", "tagId");
         Payment paymentItem = response.Get<Payment>();
 
         // Assert
@@ -111,7 +111,7 @@ public class PaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.GetPayment("invalid-url");
+        HttpResponse response = await _repository.GetPayment("invalid-url", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

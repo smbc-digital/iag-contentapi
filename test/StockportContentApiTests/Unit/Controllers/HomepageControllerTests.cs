@@ -43,11 +43,11 @@ public class HomepageControllerTests
                                 "image overlay text");
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(homepage));
 
         // Act
-        IActionResult result = await _controller.Get("test-business");
+        IActionResult result = await _controller.Get("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

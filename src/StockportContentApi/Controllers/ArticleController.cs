@@ -10,12 +10,12 @@ public class ArticleController(ResponseHandler handler,
     [Route("{businessId}/articles/{articleSlug}")]
     [Route("v1/{businessId}/articles/{articleSlug}")]
     public async Task<IActionResult> GetArticle(string articleSlug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId, businessId).GetArticle(articleSlug));
+        await _handler.Get(() => _createRepository(businessId, businessId).GetArticle(articleSlug, businessId));
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet]
     [Route("{businessId}/articleSiteMap")]
     [Route("v1/{businessId}/articleSiteMap")]
     public async Task<IActionResult> Index(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId, businessId).Get());
+        await _handler.Get(() => _createRepository(businessId, businessId).Get(businessId));
 }

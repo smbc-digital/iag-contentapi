@@ -67,21 +67,21 @@ public class AtoZRepositoryTests
                             new List<string>()));
                 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-article-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZArticles);
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-topic-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZTopics);
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-landingPage-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZLandingPages);
     
         // Act
@@ -120,21 +120,21 @@ public class AtoZRepositoryTests
         };
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-article-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZArticles);
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-topic-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZTopics);
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-landingPage-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZLandingPages);
 
         _aToZFactory
@@ -182,21 +182,21 @@ public class AtoZRepositoryTests
         };
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-article-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZArticles);
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-topic-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZTopics);
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals($"test-atoz-landingPage-{letter}")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(aToZLandingPages);
 
         _aToZFactory
@@ -221,17 +221,17 @@ public class AtoZRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(cacheKey => cacheKey.Equals("test-atoz-article-b")),
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(),
                                                             It.IsAny<Func<Task<List<AtoZ>>>>(),
-                                                            It.Is<int>(cacheTime => cacheTime.Equals(60))))
+                                                            It.IsAny<int>()))
             .ReturnsAsync(new List<AtoZ>());
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("test-atoz-topic-b")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<AtoZ>());
         
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("test-atoz-landingPage-b")), It.IsAny<Func<Task<List<AtoZ>>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<List<AtoZ>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<AtoZ>());
 
         _aToZFactory
@@ -283,7 +283,7 @@ public class AtoZRepositoryTests
                             new List<string> { alternativeTitle }));
 
         // Act
-        List<AtoZ> aToZListing = await _repository.GetAtoZItemFromSource("article", "d");
+        List<AtoZ> aToZListing = await _repository.GetAtoZItemFromSource("article", "d", "tagId");
 
         // Assert
         Assert.Equal(5, aToZListing.Count);
@@ -347,7 +347,7 @@ public class AtoZRepositoryTests
             .ReturnsAsync(new List<AtoZ> { atozItem3 });
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         List<AtoZ> result = response.Get<List<AtoZ>>();

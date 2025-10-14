@@ -28,7 +28,7 @@ public class ProfileControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetProfile(It.IsAny<string>()))
+            .Setup(repo => repo.GetProfile(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(profile));
 
         // Act
@@ -57,7 +57,7 @@ public class ProfileControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(profiles));
 
         // Act

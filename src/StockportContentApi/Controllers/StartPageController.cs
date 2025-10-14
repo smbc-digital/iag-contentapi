@@ -10,11 +10,11 @@ public class StartPageController(ResponseHandler handler,
     [Route("{businessId}/start-page/{slug}")]
     [Route("v1/{businessId}/start-page/{slug}")]
     public async Task<IActionResult> GetStartPage(string slug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetStartPage(slug));
+        await _handler.Get(() => _createRepository(businessId).GetStartPage(slug, businessId));
 
     [HttpGet]
     [Route("{businessId}/start-page/")]
     [Route("v1/{businessId}/start-page/")]
     public async Task<IActionResult> Get(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }

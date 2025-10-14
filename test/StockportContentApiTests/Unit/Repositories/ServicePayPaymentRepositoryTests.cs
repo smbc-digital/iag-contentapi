@@ -55,7 +55,7 @@ public class ServicePayPaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.GetPayment("any-payment");
+        HttpResponse response = await _repository.GetPayment("any-payment", "tagId");
         ServicePayPayment paymentItem = response.Get<ServicePayPayment>();
 
         // Assert
@@ -82,7 +82,7 @@ public class ServicePayPaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url", "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

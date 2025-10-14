@@ -34,7 +34,7 @@ public class SectionControllerTests
                             new List<InlineQuote>());
 
         _repository
-            .Setup(repo => repo.GetSections(It.IsAny<string>()))
+            .Setup(repo => repo.GetSections(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(section));
 
         // Act
@@ -61,11 +61,11 @@ public class SectionControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(sections));
 
         // Act
-        IActionResult result = await _controller.Get("test-business");
+        IActionResult result = await _controller.Get("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

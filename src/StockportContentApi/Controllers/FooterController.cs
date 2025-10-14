@@ -11,5 +11,5 @@ public class FooterController(ResponseHandler handler,
     [Route("{businessId}/footer")]
     [Route("v1/{businessId}/footer")]
     public async Task<IActionResult> GetFooter(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetFooter());
+        await _handler.Get(() => _createRepository(businessId).GetFooter(businessId));
 }

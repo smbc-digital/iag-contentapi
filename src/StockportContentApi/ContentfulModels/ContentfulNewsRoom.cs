@@ -10,4 +10,5 @@ public class ContentfulNewsRoom : IContentfulModel
     public SystemProperties Sys { get; set; } = new();
     public ContentfulCallToActionBanner CallToAction { get; set; } = null;
     public ContentfulNews FeaturedNews { get; set; } = null;
+    public ContentfulMetadata Metadata { get; set; } = new();
 }

@@ -38,7 +38,7 @@ public class ServicePayPaymentControllerTests
                             new List<Alert>());
 
         _repository
-            .Setup(repo => repo.GetPayment(It.IsAny<string>()))
+            .Setup(repo => repo.GetPayment(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(servicePayPayment));
 
         // Act

@@ -2,8 +2,8 @@
 
 public interface IProfileRepository
 {
-    Task<HttpResponse> GetProfile(string slug);
-    Task<HttpResponse> Get();
+    Task<HttpResponse> GetProfile(string slug, string tagId);
+    Task<HttpResponse> Get(string tagId);
 }
 
 public class ProfileRepository(ContentfulConfig config,
@@ -13,9 +13,15 @@ public class ProfileRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulProfile, Profile> _profileFactory = profileFactory;
 
-    public async Task<HttpResponse> GetProfile(string slug)
+    public async Task<HttpResponse> GetProfile(string slug, string tagId)
     {
-        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").FieldEquals("fields.slug", slug).Include(2);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>()
+            .ContentTypeIs("profile")
+            .FieldEquals("fields.slug", slug)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(2);
+        
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
         ContentfulProfile entry = entries.FirstOrDefault();
 
@@ -24,9 +30,14 @@ public class ProfileRepository(ContentfulConfig config,
             : HttpResponse.Successful(_profileFactory.ToModel(entry));
     }
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
-        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>().ContentTypeIs("profile").Include(1);
+        QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>()
+            .ContentTypeIs("profile")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(1);
+
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
 
         if (!entries.Any() || entries is null)
