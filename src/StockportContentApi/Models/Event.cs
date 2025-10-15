@@ -41,6 +41,7 @@ public class Event
     public string Languages { get; set; }
     public List<Event> RelatedEvents { get; set; }
     public List<CallToActionBanner> CallToActionBanners { get; set; }
+    public List<string> Websites { get; set; }
 
     public Event(string title,
                 string slug,
@@ -78,7 +79,8 @@ public class Event
                 string metaDescription,
                 string duration,
                 string languages,
-                List<CallToActionBanner> callToActionBanners)
+                List<CallToActionBanner> callToActionBanners,
+                List<string> websites)
     {
         Title = title;
         Slug = slug;
@@ -120,5 +122,6 @@ public class Event
         Duration = duration;
         Languages = languages;
         CallToActionBanners = callToActionBanners;
+        Websites = websites;
     }
 }

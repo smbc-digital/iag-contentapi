@@ -28,7 +28,8 @@ public class EventContentfulFactoryTests
                             new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
                             "slug",
                             false,
-                            string.Empty));
+                            string.Empty,
+                            new List<string>()));
 
         _eventContentfulFactory = new(_documentFactory.Object,
                                     _eventCategoryFactory.Object,

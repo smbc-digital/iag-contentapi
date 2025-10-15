@@ -31,7 +31,8 @@ public class SectionControllerTests
                             new List<TrustedLogo>(),
                             new DateTime(),
                             new List<Alert>(),
-                            new List<InlineQuote>());
+                            new List<InlineQuote>(),
+                            new List<string>());
 
         _repository
             .Setup(repo => repo.GetSections(It.IsAny<string>()))

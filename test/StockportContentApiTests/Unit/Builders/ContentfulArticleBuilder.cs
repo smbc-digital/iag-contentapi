@@ -12,6 +12,7 @@ public class ContentfulArticleBuilder
     private string _systemId = "id";
     private  string _associatedTagCategory = "dance";
     public Asset Image { get => _image; set => _image = value; }
+
     private readonly List<ContentfulTrustedLogo> _articleBranding = new()
     {
         new ContentfulTrustedLogo()
@@ -55,7 +56,8 @@ public class ContentfulArticleBuilder
             },
             TrustedLogos = _articleBranding,
             RelatedContent = _relatedContent,
-            AssociatedTagCategory = _associatedTagCategory
+            AssociatedTagCategory = _associatedTagCategory,
+            Websites = new List<string>() { "websiteId" }
         };
 
     public ContentfulArticleBuilder Slug(string slug)

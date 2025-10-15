@@ -28,7 +28,7 @@ public class ArticleControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetArticle(It.IsAny<string>()))
+            .Setup(repo => repo.GetArticle(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(article));
 
         // Act

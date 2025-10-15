@@ -15,6 +15,6 @@ public class TrustedLogoContentfulFactory : IContentfulFactory<ContentfulTrusted
             };
         }
 
-        return new TrustedLogo(entry.Title, entry.Text, image, entry.Link);
+        return new TrustedLogo(entry.Title, entry.Text, image, entry.Link, entry.Websites);
     }
 }

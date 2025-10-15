@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using StockportContentApiTests.Unit.ContentfulFactories;
-using Xunit.Sdk;
 
 namespace StockportContentApiTests.Unit.Repositories;
 
@@ -169,15 +167,15 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnSuccessfulResponse()
+    public async Task GetArticle_ShouldReturnSuccessfulResponse()
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "websiteId");
 
         // Assert
         Article resultArticle = response.Get<Article>();
@@ -189,10 +187,10 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("slug"));
+        HttpResponse response = await _repository.GetArticle("slug", "websiteId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -200,7 +198,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunriseDate()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunriseDate()
     {
         // Arrange
         _mockTimeProvider
@@ -220,14 +218,14 @@ public class ArticleRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "websiteId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunsetDate()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunsetDate()
     {
         // Arrange
         _mockTimeProvider
@@ -235,14 +233,14 @@ public class ArticleRepositoryTests
             .Returns(new DateTime(2017, 08, 01));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "websiteId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnValidSunsetAndSunriseDateWhenDateInRange()
+    public async Task GetArticle_ShouldReturnValidSunsetAndSunriseDateWhenDateInRange()
     {
         // Arrange
         _mockTimeProvider
@@ -255,18 +253,18 @@ public class ArticleRepositoryTests
             .Build();
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "websiteId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnArticleWithInlineAlerts()
+    public async Task GetArticle_ShouldReturnArticleWithInlineAlerts()
     {
         // Arrange
         List<ContentfulAlert> alertsInline = new(){
@@ -275,11 +273,11 @@ public class ArticleRepositoryTests
 
         ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-inline-alerts").WithAssociatedTagCategory(string.Empty).AlertsInline(alertsInline).Build();
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-inline-alerts"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article-with-inline-alerts", "websiteId");
 
         // Assert
         Article article = response.Get<Article>();
@@ -287,7 +285,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnArticleWithASectionThatHasAnInlineAlert()
+    public async Task GetArticle_ShouldReturnArticleWithASectionThatHasAnInlineAlert()
     {
         // Arrange
         Alert alert = new AlertBuilder().Build();
@@ -300,18 +298,19 @@ public class ArticleRepositoryTests
 
         collection.Items = new List<ContentfulArticle> { rawArticle };
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-section-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(rawArticle);
 
         _sectionFactory
             .Setup(sectionFactory => sectionFactory.ToModel(It.IsAny<ContentfulSection>()))
             .Returns(new Section()
-                {
-                    AlertsInline = new List<Alert>() { alert }
-                });
+            {
+                AlertsInline = new List<Alert>() { alert },
+                Websites = new List<string>() { "websiteId" }
+            });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-section-with-inline-alerts"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article-with-section-with-inline-alerts", "websiteId");
 
         // Assert
         Article article = response.Get<Article>();
@@ -319,7 +318,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_WithMultipleAssociatedTagCategories_ShouldFetchDistinctTop3Events()
+    public async Task GetArticle_WithMultipleAssociatedTagCategories_ShouldFetchDistinctTop3Events()
     {
         // Arrange
         List<Event> eventsFromCategory = new()
@@ -338,7 +337,7 @@ public class ArticleRepositoryTests
 
         ContentfulArticle article = new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory("dance, tag1").Build();
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(article);
 
         _eventRepository
@@ -350,7 +349,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(eventsFromTag);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "websiteId");
 
         // Assert
         Article resultArticle = response.Get<Article>();

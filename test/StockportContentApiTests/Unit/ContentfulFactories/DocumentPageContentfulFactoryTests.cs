@@ -52,7 +52,7 @@ public class DocumentPageContentfulFactoryTests
 
         _crumbFactory
             .Setup(crumbFactory => crumbFactory.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new Crumb("title", "slug", "type"));
+            .Returns(new Crumb("title", "slug", "type", new List<string>()));
 
         _timeProvider
             .Setup(timeProvider => timeProvider.Now())

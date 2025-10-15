@@ -13,6 +13,7 @@ public class CallToActionBannerContentfulFactory : IContentfulFactory<Contentful
                 Link = entry.Link,
                 Title = entry.Title,
                 Teaser = entry.Teaser,
-                Colour = entry.Colour
+                Colour = entry.Colour,
+                Websites = entry.Websites
             };
 }

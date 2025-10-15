@@ -49,7 +49,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.EndTime,
                         entry.Occurrences,
                         entry.Frequency,
-                        new List<Crumb> { new("Events", string.Empty, "events") },
+                        new List<Crumb> { new("Events", string.Empty, "events", entry.Websites) },
                         ImageConverter.SetThumbnailWithoutHeight(imageUrl, thumbnailImageUrl),
                         eventDocuments,
                         entry.MapPosition,
@@ -72,6 +72,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                         entry.MetaDescription,
                         entry.Duration,
                         entry.Languages,
-                        entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList());
+                        entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList(),
+                        entry.Websites);
     }
 }

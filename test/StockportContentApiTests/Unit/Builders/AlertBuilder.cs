@@ -10,5 +10,6 @@ public class AlertBuilder
             DateTime.MaxValue,
             "slug",
             false,
-            string.Empty);
+            string.Empty,
+            new List<string>());
 }

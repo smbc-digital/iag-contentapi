@@ -45,6 +45,7 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
                 trustedLogos,
                 updatedAt,
                 alertsInline,
-                entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList());
+                entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
+                entry.Websites);
     }
 }

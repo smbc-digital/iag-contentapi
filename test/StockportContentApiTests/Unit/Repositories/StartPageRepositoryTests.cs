@@ -76,7 +76,7 @@ public class StartPageRepositoryTests : TestingBaseClass
                                     "Lower body",
                                     "image.jpg",
                                     "icon",
-                                    new List<Crumb> { new("title", "slug", "type") },
+                                    new List<Crumb> { new("title", "slug", "type", new List<string>()) },
                                     _alerts,
                                     _inlineAlerts);
 

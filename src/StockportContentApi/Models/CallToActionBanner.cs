@@ -10,4 +10,5 @@ public class CallToActionBanner
     public string AltText { get; set; } = string.Empty;
     public string Teaser { get; set; } = string.Empty;
     public EColourScheme Colour { get; set; } = EColourScheme.Teal;
+    public List<string> Websites { get; set; } = new();
 }

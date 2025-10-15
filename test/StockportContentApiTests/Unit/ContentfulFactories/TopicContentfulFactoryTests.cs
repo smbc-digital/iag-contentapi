@@ -38,7 +38,7 @@ public class TopicContentfulFactoryTests
     public void ToModel_ShouldCreateATopicFromAContentfulTopic()
     {
         // Arrange
-        Crumb breadcrumb = new("title", "slug", "type");
+        Crumb breadcrumb = new("title", "slug", "type", new List<string>());
         _crumbFactory
             .Setup(crumb => crumb.ToModel(_contentfulTopic.Breadcrumbs.First()))
             .Returns(breadcrumb);
@@ -53,7 +53,8 @@ public class TopicContentfulFactoryTests
                             DateTime.MaxValue,
                             "image",
                             new List<SubItem>(),
-                            EColourScheme.Blue);
+                            EColourScheme.Blue,
+                            new List<string>());
         _subItemFactory
             .Setup(subItemFactory => subItemFactory.ToModel(_contentfulTopic.SubItems.First()))
             .Returns(subItem);
@@ -68,7 +69,8 @@ public class TopicContentfulFactoryTests
                                     DateTime.MaxValue,
                                     "image",
                                     new List<SubItem>(),
-                                    EColourScheme.Blue);
+                                    EColourScheme.Blue,
+                                    new List<string>());
         _subItemFactory
             .Setup(subItemFactory => subItemFactory.ToModel(_contentfulTopic.SecondaryItems.First()))
             .Returns(secondaryItem);
@@ -83,7 +85,8 @@ public class TopicContentfulFactoryTests
                                 DateTime.MaxValue,
                                 "image",
                                 new List<SubItem>(),
-                                EColourScheme.Blue);
+                                EColourScheme.Blue,
+                                new List<string>());
 
         CallToActionBanner callToAction = new()
         {
@@ -112,7 +115,8 @@ public class TopicContentfulFactoryTests
                         new DateTime(2017, 04, 10),
                         string.Empty,
                         false,
-                        string.Empty);
+                        string.Empty,
+                        new List<string>());
         _alertFactory
             .Setup(alertFactory => alertFactory.ToModel(_contentfulTopic.Alerts.First()))
             .Returns(alert);

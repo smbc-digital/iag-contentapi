@@ -18,7 +18,7 @@ public class HomepageContentfulFactoryTests
         
         _alertFactory
             .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
-            .Returns(new Alert("title", string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty));
+            .Returns(new Alert("title", string.Empty, string.Empty, DateTime.MinValue, DateTime.MaxValue, string.Empty, false, string.Empty, new List<string>()));
         
         _carouselContentFactory
             .Setup(carouselContentFactory => carouselContentFactory.ToModel(It.IsAny<ContentfulCarouselContent>()))

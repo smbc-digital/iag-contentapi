@@ -13,4 +13,5 @@ public class ContentfulProfile : ContentfulReference
     public List<ContentfulTrivia> TriviaSection { get; set; } = new();
     public ContentfulEventBanner EventsBanner { get; set; } = new();
     public EColourScheme Colour { get; set; } = EColourScheme.Teal;
+    public List<string> Websites { get; set; } = new();
 }

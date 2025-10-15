@@ -35,4 +35,5 @@ public class Article
     public IEnumerable<CallToActionBanner> CallToActionBanners { get; set; }
     public string ContentfulId { get; set; }
     public JObject RawContentful { get; set; }
+    public List<string> Websites { get; set; }
 }

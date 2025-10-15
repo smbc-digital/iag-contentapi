@@ -44,7 +44,7 @@ public class SectionContentfulFactoryTests
             Body = "body",
             Breadcrumbs = new List<Crumb>
             {
-                new("title", "slug", "type")
+                new("title", "slug", "type", new List < string >())
             },
             Alerts = new List<Alert>
             {
@@ -69,7 +69,7 @@ public class SectionContentfulFactoryTests
             .Setup(videoFactory => videoFactory.Process(_contentfulSection.Body))
             .Returns("this is processed body");
 
-        Alert alert = new("title", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty);
+        Alert alert = new("title", "body", "severity", DateTime.MinValue, DateTime.MinValue, "slug", false, string.Empty, new List<string>());
         _alertFactory
             .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
             .Returns(alert);

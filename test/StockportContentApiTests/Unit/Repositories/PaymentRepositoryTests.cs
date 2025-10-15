@@ -22,7 +22,7 @@ public class PaymentRepositoryTests
 
         _crumbFactory
             .Setup(crumb => crumb.ToModel(It.IsAny<ContentfulReference>()))
-            .Returns(new Crumb("title", "slug", "title"));
+            .Returns(new Crumb("title", "slug", "title", new List<string>()));
 
         PaymentContentfulFactory contentfulFactory = new(_alertFactory.Object, _timeProvider.Object, _crumbFactory.Object);
 

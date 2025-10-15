@@ -40,7 +40,8 @@ public class TopicRepositoryTests
                         "eventCategory",
                         new CallToActionBanner(),
                         null,
-                        string.Empty);
+                        string.Empty,
+                        new List<string>());
 
         Mock<IContentfulClientManager> contentfulClientManager = new();
         contentfulClientManager

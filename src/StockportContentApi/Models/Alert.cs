@@ -8,7 +8,8 @@ public class Alert(string title,
                 DateTime sunsetDate,
                 string slug,
                 bool isStatic,
-                string imageUrl)
+                string imageUrl,
+                List<string> websites)
 {
     public string Title { get; } = title;
     public string Body { get; } = body;
@@ -18,4 +19,5 @@ public class Alert(string title,
     public string Slug { get; set; } = slug;
     public bool IsStatic { get; set; } = isStatic;
     public string ImageUrl { get; } = imageUrl;
+    public List<string> Websites { get; set; } = websites;
 }

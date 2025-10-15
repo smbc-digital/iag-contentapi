@@ -34,35 +34,37 @@ public class ProfileContentfulFactory(IContentfulFactory<ContentfulReference, Cr
             Alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                         .Where(alert => !alert.Severity.Equals("Condolence"))
                         .Select(_alertFactory.ToModel).ToList(),
-            
+
             Body = entry.Body,
             Breadcrumbs = entry.Breadcrumbs.Where(crumb => ContentfulHelpers.EntryIsNotALink(crumb.Sys))
                             .Select(_crumbFactory.ToModel).ToList(),
 
-            Image = image,    
+            Image = image,
             ImageCaption = entry.ImageCaption,
             InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
-            
+
             Teaser = entry.Teaser,
             Slug = entry.Slug,
             Subtitle = entry.Subtitle,
             Title = entry.Title,
-            
+
             TriviaSection = entry.TriviaSection.Where(fact => ContentfulHelpers.EntryIsNotALink(fact.Sys))
                             .Select(_triviaFactory.ToModel).ToList(),
-            
+
             TriviaSubheading = !string.IsNullOrEmpty(entry.TriviaSubheading)
                 ? entry.TriviaSubheading
                 : string.Empty,
 
             EventsBanner = _eventBannerFactory.ToModel(entry.EventsBanner),
             Colour = entry.Colour,
-            
+
             InlineAlerts = entry.InlineAlerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                             .Where(alert => !alert.Severity.Equals("Condolence"))
                             .Select(_alertFactory.ToModel).ToList(),
-            
-            ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic()
+
+            ParentTopic = _parentTopicFactory.ToModel(entry) ?? new NullTopic(),
+
+            Websites = entry.Websites
         };
     }
 }

@@ -41,7 +41,8 @@ public class ProfileRepositoryTests
             ImageCaption = "imageCaption",
             Breadcrumbs = new List<Crumb>
             {
-                new("title", "slug", "type")
+                new("title", "slug", "type",
+                new List < string >())
             },
             Alerts = new List<Alert>
             {
@@ -51,7 +52,8 @@ public class ProfileRepositoryTests
                     DateTime.MinValue,
                     DateTime.MaxValue,
                     "slug",
-                    false, string.Empty)
+                    false, string.Empty,
+                    new List < string >())
             },
             TriviaSubheading = "trivia heading",
             TriviaSection = new List<Trivia>(),

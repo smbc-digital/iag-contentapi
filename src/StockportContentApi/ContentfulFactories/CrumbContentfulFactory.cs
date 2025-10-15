@@ -8,6 +8,6 @@ public class CrumbContentfulFactory : IContentfulFactory<ContentfulReference, Cr
             ? entry.Title
             : entry.Name;
 
-        return new Crumb(title, entry.Slug, entry.Sys.ContentType.SystemProperties.Id);
+        return new Crumb(title, entry.Slug, entry.Sys.ContentType.SystemProperties.Id, entry.Websites);
     }
 }

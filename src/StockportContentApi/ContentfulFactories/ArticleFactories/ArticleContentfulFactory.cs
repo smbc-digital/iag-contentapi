@@ -109,7 +109,8 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
             InlineQuotes = entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
             AssociatedTagCategory = entry.AssociatedTagCategory,
             CallToActionBanners = entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList(),
-            ContentfulId = entry.Sys.Id
+            ContentfulId = entry.Sys.Id,
+            Websites = entry.Websites
         };
     }
 }

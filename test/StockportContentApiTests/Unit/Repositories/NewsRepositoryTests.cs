@@ -11,7 +11,8 @@ public class NewsRepositoryTests
             new(2016, 08, 11),
             string.Empty,
             false,
-            string.Empty)
+            string.Empty,
+            new List < string >())
     };
 
     private readonly Mock<ICache> _cacheWrapper = new();

@@ -21,8 +21,8 @@ public class LandingPageContentfulFactoryTests
     public void ToModel_ShouldCreateALandingPageFromAContentfulLandingPage()
     {
         // Arrange
-        Crumb crumb = new("title", "slug", "type");
-        Alert alert = new("title", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty);
+        Crumb crumb = new("title", "slug", "type", new List<string>());
+        Alert alert = new("title", "body", "test", new DateTime(2017, 01, 01), new DateTime(2017, 04, 10), string.Empty, false, string.Empty, new List<string>());
         _contentfulLandingPage.Breadcrumbs = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };
         _contentfulLandingPage.Alerts = new List<ContentfulAlert>() { new ContentfulAlertBuilder().Build() };
         _contentfulLandingPage.PageSections = new List<ContentfulReference>() { new ContentfulReferenceBuilder().Build() };

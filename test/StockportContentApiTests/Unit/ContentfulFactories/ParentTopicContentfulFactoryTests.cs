@@ -20,7 +20,8 @@ public class ParentTopicContentfulFactoryTests
                                 DateTime.MaxValue,
                                 "image",
                                 new(),
-                                EColourScheme.Green));
+                                EColourScheme.Green,
+                                new List<string>()));
 
         _timeProvider
             .Setup(timeProvider => timeProvider.Now())
@@ -145,7 +146,8 @@ public class ParentTopicContentfulFactoryTests
                                 DateTime.MaxValue,
                                 string.Empty,
                                 new(),
-                                EColourScheme.Teal));
+                                EColourScheme.Teal,
+                                new List<string>()));
 
         // Act
         Topic result = _parentTopicFactory.ToModel(contentfulArticle);

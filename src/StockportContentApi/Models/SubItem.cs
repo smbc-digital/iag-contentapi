@@ -14,6 +14,7 @@ public class SubItem
     public DateTime SunsetDate { get; set; }
     public string Image { get; set; }
     public List<SubItem> SubItems { get; set; }
+    public List<string> Websites { get; set; }
 
     public SubItem() { }
 
@@ -27,7 +28,8 @@ public class SubItem
                 DateTime sunsetDate,
                 string image,
                 List<SubItem> subItems,
-                EColourScheme colourScheme)
+                EColourScheme colourScheme,
+                List<string> websites)
     {
         Slug = slug;
         Teaser = teaser;
@@ -40,5 +42,6 @@ public class SubItem
         Image = image;
         SubItems = subItems;
         ColourScheme = colourScheme;
+        Websites = websites;
     }
 }

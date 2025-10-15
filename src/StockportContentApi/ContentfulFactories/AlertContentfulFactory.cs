@@ -10,5 +10,6 @@ public class AlertContentfulFactory : IContentfulFactory<ContentfulAlert, Alert>
             entry.SunsetDate,
             entry.Slug,
             entry.IsStatic,
-            entry.Image.File.Url);
+            entry.Image.File.Url,
+            entry.Websites);
 }

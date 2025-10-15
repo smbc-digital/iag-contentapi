@@ -38,4 +38,5 @@ public class ContentfulReference : IContentfulModel
     public string AssociatedTagCategory { get; set; } = string.Empty;
     public string ScreenReader { get; set; } = string.Empty;
     public string AccountName { get; set; }
+    public List<string> Websites { get; set; } = new();
 }

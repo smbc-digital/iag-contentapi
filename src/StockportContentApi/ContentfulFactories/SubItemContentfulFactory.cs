@@ -31,7 +31,8 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                                     item.SunsetDate,
                                     GetEntryImage(item),
                                     new List<SubItem>(),
-                                    item.ColourScheme);
+                                    item.ColourScheme,
+                                    item.Websites);
                 
                 subItems.Add(newItem);
             }
@@ -51,7 +52,8 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                                     item.SunsetDate,
                                     GetEntryImage(item),
                                     new List<SubItem>(),
-                                    item.ColourScheme);
+                                    item.ColourScheme,
+                                    item.Websites);
 
                 subItems.Add(newItem);
             }
@@ -71,7 +73,8 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                                     item.SunsetDate,
                                     GetEntryImage(item),
                                     new List<SubItem>(),
-                                    item.ColourScheme);
+                                    item.ColourScheme,
+                                    item.Websites);
 
                 subItems.Add(newItem);
             }
@@ -91,7 +94,8 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                                         section.SunsetDate,
                                         GetEntryImage(section),
                                         new List<SubItem>(),
-                                        section.ColourScheme);
+                                        section.ColourScheme,
+                                        section.Websites);
 
                 subItems.Add(newSection);
             }
@@ -112,7 +116,8 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                         entry.SunsetDate,
                         image,
                         subItems,
-                        entry.ColourScheme);
+                        entry.ColourScheme,
+                        entry.Websites);
     }
 
     private static string GetEntryType(ContentfulReference entry) =>

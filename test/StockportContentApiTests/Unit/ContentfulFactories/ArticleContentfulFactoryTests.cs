@@ -165,7 +165,7 @@ public class ArticleContentfulFactoryTests
 
         _articleBrandingFactory
             .Setup(factory => factory.ToModel(It.IsAny<ContentfulTrustedLogo>()))
-            .Returns(new TrustedLogo("branding title", "branding text", new MediaAsset(), "branding-url"));
+            .Returns(new TrustedLogo("branding title", "branding text", new MediaAsset(), "branding-url", new List<string>()));
 
         // Act
         Article article = _articleFactory.ToModel(contentfulArticle);

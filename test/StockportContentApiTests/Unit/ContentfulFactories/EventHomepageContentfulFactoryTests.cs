@@ -49,7 +49,15 @@ public class EventHomepageContentfulFactoryTests
         // Arrange
         _alertFactory
             .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
-            .Returns(new Alert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()));
+            .Returns(new Alert(It.IsAny<string>(),
+                            It.IsAny<string>(),
+                            It.IsAny<string>(),
+                            It.IsAny<DateTime>(),
+                            It.IsAny<DateTime>(),
+                            It.IsAny<string>(),
+                            It.IsAny<bool>(),
+                            It.IsAny<string>(),
+                            new List<string>()));
 
         // Act
         EventHomepage result = _factory.ToModel(_entry);

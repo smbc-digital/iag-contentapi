@@ -28,7 +28,7 @@ public class EventBuilder
     private readonly List<TrustedLogo> _branding = new();
     private int _occurrences = -1;              
     private EventFrequency _eventFrequency = EventFrequency.None;
-    private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events") };
+    private readonly List<Crumb> _breadcrumbs = new() { new Crumb("Events", string.Empty, "events", new List<string>()) };
     private readonly List<Document> _documents = new() { new DocumentBuilder().Build() };
     private readonly MapPosition _mapPosition = new() { Lat = 53.47, Lon = -2.2 };
     private string _bookingInformation = "booking information";
@@ -44,7 +44,8 @@ public class EventBuilder
                 new DateTime(9999, 9, 9, 0, 0, 0, DateTimeKind.Utc),
                 "slug",
                 false,
-                string.Empty)
+                string.Empty,
+                new List<string>())
     };
     
     private List<EventCategory> _eventCategories = new();
@@ -87,7 +88,8 @@ public class EventBuilder
             _metaDescription,
             _duration,
             _languages,
-            _callToActionBanners);
+            _callToActionBanners,
+            new List<string>() { "websiteId" });
 
     public EventBuilder Slug(string slug)
     {

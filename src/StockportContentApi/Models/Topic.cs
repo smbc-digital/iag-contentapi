@@ -28,6 +28,7 @@ public class Topic
     public bool DisplayContactUs { get; }
     public CarouselContent CampaignBanner { get; set; }
     public string EventCategory { get; set; }
+    public List<string> Websites { get; set; }
 
     public Topic(string title, string slug, IEnumerable<SubItem> subItems, IEnumerable<SubItem> secondayItems)
     {
@@ -58,6 +59,7 @@ public class Topic
                 CallToActionBanner callToAction,
                 List<TrustedLogo> trustedLogos,
                 string logoAreaTitle,
+                List<string> websites,
                 bool displayContactUs = true)
     {
         Slug = slug;
@@ -81,6 +83,7 @@ public class Topic
         CampaignBanner = campaignBanner;
         CallToAction = callToAction;
         TrustedLogos = trustedLogos;
+        Websites = websites;
         LogoAreaTitle = logoAreaTitle;
     }
 }
@@ -110,6 +113,7 @@ public class NullTopic : Topic
         null,
         null,
         string.Empty,
+        null,
         true)
     {
     }

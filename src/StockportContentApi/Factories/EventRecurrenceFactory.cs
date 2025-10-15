@@ -67,7 +67,8 @@ public class EventRecurrenceFactory
             entry.MetaDescription,
             entry.Duration,
             entry.Languages,
-            entry.CallToActionBanners);
+            entry.CallToActionBanners,
+            entry.Websites);
 
     private static DateTime GetCorrespondingMonthsDay(DateTime date, int occurrence)
     {

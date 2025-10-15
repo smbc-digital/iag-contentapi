@@ -14,6 +14,7 @@ public class Section
     public List<TrustedLogo> TrustedLogos { get; set; }
     public DateTime UpdatedAt { get; set; }
     public List<InlineQuote> InlineQuotes { get; set; }
+    public List<string> Websites { get; set; }
 
     public Section(string title,
                 string slug,
@@ -25,7 +26,8 @@ public class Section
                 List<TrustedLogo> trustedLogos,
                 DateTime updatedAt,
                 IEnumerable<Alert> alertsInline,
-                List<InlineQuote> inlineQuotes)
+                List<InlineQuote> inlineQuotes,
+                List<string> websites)
     {
         Title = title;
         Slug = slug;
@@ -38,6 +40,7 @@ public class Section
         UpdatedAt = updatedAt;
         AlertsInline = alertsInline;
         InlineQuotes = inlineQuotes;
+        Websites = websites;
     }
 
     public Section()

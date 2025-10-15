@@ -10,6 +10,7 @@ public class InlineQuoteContentfulFactory : IContentfulFactory<ContentfulInlineQ
             Quote = entry.Quote,
             Author = entry.Author,
             Slug = entry.Slug,
-            Theme = entry.Theme
+            Theme = entry.Theme,
+            Websites = entry.Websites,
         };
 }

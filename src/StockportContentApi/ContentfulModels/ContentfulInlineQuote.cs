@@ -9,4 +9,5 @@ public class ContentfulInlineQuote
     public string Author { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
     public EColourScheme Theme { get; set; } = EColourScheme.Pink;
+    public List<string> Websites { get; set; } = new();
 }

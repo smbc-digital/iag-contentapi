@@ -19,6 +19,8 @@ public class Profile
     public EventBanner EventsBanner { get; set; }
     public EColourScheme Colour { get; set; } = EColourScheme.Teal;
     public Topic ParentTopic { get; set; }
+    public List<string> Websites { get; set; }
+    public string Tag { get; set; }
 
     public Profile()
     { }

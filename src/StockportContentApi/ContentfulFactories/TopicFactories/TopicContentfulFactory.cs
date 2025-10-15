@@ -93,6 +93,7 @@ public class TopicContentfulFactory(IContentfulFactory<ContentfulReference, SubI
                         callToAction,
                         trustedLogos,
                         logoAreaTitle,
+                        new List<string>(),
                         displayContactUs)
         {
             TriviaSection = new TriviaSection(entry.TriviaSubheading, trivia),
