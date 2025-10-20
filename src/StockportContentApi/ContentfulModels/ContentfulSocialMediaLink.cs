@@ -10,5 +10,4 @@ public class ContentfulSocialMediaLink : IContentfulModel
     public string AccountName { get; set; } = string.Empty;
     public string ScreenReader { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; } = new();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

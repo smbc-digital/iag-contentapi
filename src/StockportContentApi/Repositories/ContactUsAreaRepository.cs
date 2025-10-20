@@ -16,8 +16,6 @@ public class ContactUsAreaRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>()
             .ContentTypeIs("contactUsArea")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(3);
         ContentfulCollection<ContentfulContactUsArea> entries = await _client.GetEntries(builder);
         ContentfulContactUsArea entry = entries.FirstOrDefault();

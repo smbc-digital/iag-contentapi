@@ -39,8 +39,6 @@ public class DirectoryRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulDirectory> builder = new QueryBuilder<ContentfulDirectory>()
             .ContentTypeIs("directory")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulDirectory> entries = await GetAllEntriesAsync(_client, builder);
@@ -81,8 +79,6 @@ public class DirectoryRepository(ContentfulConfig config,
         QueryBuilder<ContentfulDirectory> builder = new QueryBuilder<ContentfulDirectory>()
             .ContentTypeIs("directory")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulDirectory> contentfulDirectories = await GetAllEntriesAsync(_client, builder);
@@ -119,8 +115,6 @@ public class DirectoryRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulDirectoryEntry> builder = new QueryBuilder<ContentfulDirectoryEntry>()
             .ContentTypeIs("group")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         ContentfulCollection<ContentfulDirectoryEntry> entries = await GetAllEntriesAsync(_client, builder);
         IEnumerable<ContentfulDirectoryEntry> contentfulDirectoryEntries = entries as IEnumerable<ContentfulDirectoryEntry> ?? entries.ToList();

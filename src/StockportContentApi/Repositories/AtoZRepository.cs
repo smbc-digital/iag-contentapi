@@ -105,8 +105,6 @@ public class AtoZRepository(ContentfulConfig config,
         List<AtoZ> atozList = new();
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>()
             .ContentTypeIs(contentType)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(0);
         
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);

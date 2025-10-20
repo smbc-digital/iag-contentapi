@@ -24,5 +24,4 @@ public class ContentfulNews : IContentfulModel
     public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
     public string EventsByTagOrCategory { get; set; } = string.Empty;
     public List<ContentfulEvent> Events { get; set; } = new();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

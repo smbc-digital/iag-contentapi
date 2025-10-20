@@ -20,8 +20,6 @@ public class StartPageRepository(ContentfulConfig config,
         QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
             .ContentTypeIs("startPage")
             .FieldEquals("fields.slug", startPageSlug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(3);
         
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);
@@ -44,8 +42,6 @@ public class StartPageRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulStartPage> builder = new QueryBuilder<ContentfulStartPage>()
             .ContentTypeIs("startPage")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(3);
         
         ContentfulCollection<ContentfulStartPage> entries = await _client.GetEntries(builder);

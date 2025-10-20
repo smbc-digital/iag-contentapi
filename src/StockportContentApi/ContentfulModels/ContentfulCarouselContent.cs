@@ -11,5 +11,4 @@ public class ContentfulCarouselContent : IContentfulModel
     public DateTime SunsetDate { get; set; }
     public string Url { get; set; }
     public SystemProperties Sys { get; set; } = new SystemProperties();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

@@ -19,8 +19,6 @@ public class SectionRepository(ContentfulConfig config,
 
         QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>()
                                                                 .ContentTypeIs("article")
-                                                                .FieldExists("metadata.tags")
-                                                                .FieldEquals("metadata.tags.sys.id[in]", tagId)
                                                                 .Include(2)
                                                                 .Limit(ContentfulQueryValues.LIMIT_MAX);
 
@@ -43,8 +41,6 @@ public class SectionRepository(ContentfulConfig config,
         QueryBuilder<ContentfulSection> builder = new QueryBuilder<ContentfulSection>()
                                                     .ContentTypeIs("section")
                                                     .FieldEquals("fields.slug", slug)
-                                                    .FieldExists("metadata.tags")
-                                                    .FieldEquals("metadata.tags.sys.id[in]", tagId)
                                                     .Include(3);
         
         ContentfulCollection<ContentfulSection> entries = await _client.GetEntries(builder);

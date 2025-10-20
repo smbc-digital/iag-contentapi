@@ -18,8 +18,6 @@ public class PaymentRepository(ContentfulConfig config,
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>()
             .ContentTypeIs("payment")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulPayment> entries = await _client.GetEntries(builder);
@@ -34,8 +32,6 @@ public class PaymentRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulPayment> builder = new QueryBuilder<ContentfulPayment>()
             .ContentTypeIs("payment")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1)
             .Limit(ContentfulQueryValues.LIMIT_MAX);
         

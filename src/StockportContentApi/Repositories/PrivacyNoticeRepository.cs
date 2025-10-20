@@ -19,8 +19,6 @@ public class PrivacyNoticeRepository(ContentfulConfig config,
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
             .ContentTypeIs("privacyNotice")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulPrivacyNotice> entries = await _client.GetEntries(builder);
@@ -39,8 +37,6 @@ public class PrivacyNoticeRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
             .ContentTypeIs("privacyNotice")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);
@@ -58,8 +54,6 @@ public class PrivacyNoticeRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulPrivacyNotice> builder = new QueryBuilder<ContentfulPrivacyNotice>()
             .ContentTypeIs("privacyNotice")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         IEnumerable<ContentfulPrivacyNotice> entries = await GetAllEntries(builder);

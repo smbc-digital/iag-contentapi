@@ -7,5 +7,4 @@ public class ContentfulVideo : IContentfulModel
     public string Text { get; set; }
     public string VideoEmbedCode { get; set; }
     public SystemProperties Sys { get; set; }
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

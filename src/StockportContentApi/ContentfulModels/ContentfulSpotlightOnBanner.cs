@@ -8,5 +8,4 @@ public class ContentfulSpotlightOnBanner : IContentfulModel
     public string Teaser { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
     public SystemProperties Sys { get; set; } = new();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

@@ -103,19 +103,6 @@ public class ArticleRepository(ContentfulConfig config,
         if (entry is null)
             return null;
 
-        // Query tagged profiles
-        var profileQuery = new QueryBuilder<ContentfulProfile>()
-            .ContentTypeIs("profile")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId);
-
-        var taggedProfiles = await _client.GetEntries(profileQuery); // call contentful AGAIN!
-        var taggedProfileIds = taggedProfiles.Select(profile => profile.Slug);
-
-        // Filter profiles before mapping
-        entry.Profiles = entry.Profiles
-            .Where(profile => taggedProfileIds.Contains(profile.Slug))
-            .ToList();
-
         Article article = _contentfulFactory.ToModel(entry);
 
         var contentfulEntry = new
@@ -140,8 +127,7 @@ public class ArticleRepository(ContentfulConfig config,
                 inlineQuotes = entry.InlineQuotes,
                 logoAreaTitle = entry.LogoAreaTitle,
                 trustedLogos = entry.TrustedLogos,
-                hideLastUpdated = entry.HideLastUpdated,
-                metadata = entry.Metadata
+                hideLastUpdated = entry.HideLastUpdated
             }
         };
 
@@ -155,13 +141,9 @@ public class ArticleRepository(ContentfulConfig config,
         QueryBuilder<ContentfulArticle> builder = new QueryBuilder<ContentfulArticle>()
             .ContentTypeIs("article")
             .FieldEquals("fields.slug", articleSlug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(3);
 
         ContentfulCollection<ContentfulArticle> entries = await _client.GetEntries(builder);
-
-        //var rawEntry = await _client.GetEntriesRaw();
 
         return entries.FirstOrDefault();
     }

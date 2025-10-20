@@ -24,8 +24,6 @@ public class LandingPageRepository(
         QueryBuilder<ContentfulLandingPage> builder = new QueryBuilder<ContentfulLandingPage>()
             .ContentTypeIs("landingPage")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulLandingPage> entries = await _client.GetEntries(builder);
@@ -209,8 +207,6 @@ public class LandingPageRepository(
         QueryBuilder<ContentfulProfile> profileBuilder = new QueryBuilder<ContentfulProfile>()
             .ContentTypeIs("profile")
             .FieldMatches(p => p.Slug, slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         ContentfulCollection<ContentfulProfile> profileEntries = await _client.GetEntries(profileBuilder);
 

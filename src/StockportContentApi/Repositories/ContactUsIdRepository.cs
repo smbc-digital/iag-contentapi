@@ -17,8 +17,6 @@ public class ContactUsIdRepository(ContentfulConfig config,
         QueryBuilder<ContentfulContactUsId> builder = new QueryBuilder<ContentfulContactUsId>()
             .ContentTypeIs("contactUsId")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulContactUsId> entries = await _client.GetEntries(builder);

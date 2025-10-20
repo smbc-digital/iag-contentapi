@@ -17,8 +17,6 @@ public class ServicePayPaymentRepository(ContentfulConfig config,
         QueryBuilder<ContentfulServicePayPayment> builder = new QueryBuilder<ContentfulServicePayPayment>()
             .ContentTypeIs("servicePayPayment")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulServicePayPayment> entries = await _client.GetEntries(builder);

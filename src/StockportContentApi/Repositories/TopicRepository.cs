@@ -19,8 +19,6 @@ public class TopicRepository(ContentfulConfig config, IContentfulClientManager c
         QueryBuilder<ContentfulTopic> builder = new QueryBuilder<ContentfulTopic>()
             .ContentTypeIs("topic")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulTopic> entries = await _client.GetEntries(builder);
@@ -39,8 +37,6 @@ public class TopicRepository(ContentfulConfig config, IContentfulClientManager c
     {
         QueryBuilder<ContentfulTopicForSiteMap> builder = new QueryBuilder<ContentfulTopicForSiteMap>()
             .ContentTypeIs("topic")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulTopicForSiteMap> entries = await _client.GetEntries(builder);

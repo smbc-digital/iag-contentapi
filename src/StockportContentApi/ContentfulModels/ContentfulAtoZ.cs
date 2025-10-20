@@ -12,5 +12,4 @@ public class ContentfulAtoZ : IContentfulModel
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public SystemProperties Sys { get; set; } = new SystemProperties();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

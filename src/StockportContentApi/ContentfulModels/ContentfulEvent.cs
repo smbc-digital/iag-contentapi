@@ -39,5 +39,4 @@ public class ContentfulEvent : IContentfulModel
     public string Duration { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
     public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

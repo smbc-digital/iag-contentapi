@@ -33,8 +33,6 @@ public class DocumentPageRepository(ContentfulConfig config,
         QueryBuilder<ContentfulDocumentPage> builder = new QueryBuilder<ContentfulDocumentPage>()
             .ContentTypeIs("documentPage")
             .FieldEquals("fields.slug", documentPageSlug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(3);
 
         ContentfulCollection<ContentfulDocumentPage> entries = await _client.GetEntries(builder);

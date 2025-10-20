@@ -18,5 +18,4 @@ public class ContentfulEventHomepage : IContentfulModel
     public IEnumerable<ContentfulAlert> Alerts { get; set; } = new List<ContentfulAlert>();
     public IEnumerable<ContentfulAlert> GlobalAlerts { get; set; } = new List<ContentfulAlert>();
     public ContentfulCallToActionBanner CallToAction { get; set; } = null;
-    public ContentfulMetadata Metadata { get; set; } = new();
 }

@@ -18,8 +18,6 @@ public class ProfileRepository(ContentfulConfig config,
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>()
             .ContentTypeIs("profile")
             .FieldEquals("fields.slug", slug)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(2);
         
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);
@@ -34,8 +32,6 @@ public class ProfileRepository(ContentfulConfig config,
     {
         QueryBuilder<ContentfulProfile> builder = new QueryBuilder<ContentfulProfile>()
             .ContentTypeIs("profile")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
 
         ContentfulCollection<ContentfulProfile> entries = await _client.GetEntries(builder);

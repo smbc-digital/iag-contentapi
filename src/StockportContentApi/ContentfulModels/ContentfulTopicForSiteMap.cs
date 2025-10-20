@@ -8,5 +8,4 @@ public class ContentfulTopicForSiteMap : IContentfulModel
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
     public List<ContentfulSectionForSiteMap> Sections { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
-    public ContentfulMetadata Metadata { get; set; } = new();
 }
