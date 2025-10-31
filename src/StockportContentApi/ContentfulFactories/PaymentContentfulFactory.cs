@@ -31,7 +31,6 @@ public class PaymentContentfulFactory(IContentfulFactory<ContentfulAlert, Alert>
             breadcrumbs,
             entry.ReferenceValidation,
             entry.MetaDescription,
-            entry.ReturnUrl,
             entry.CatalogueId,
             entry.AccountReference,
             entry.PaymentDescription,

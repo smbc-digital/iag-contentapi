@@ -39,8 +39,7 @@ public class HomepageControllerTests
                                 null,
                                 null,
                                 null,
-                                null,
-                                "image overlay text");
+                                null);
 
         _repository
             .Setup(repo => repo.Get())

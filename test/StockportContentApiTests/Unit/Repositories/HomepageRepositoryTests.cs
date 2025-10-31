@@ -59,8 +59,7 @@ public class HomepageRepositoryTests
                                 new CarouselContent(),
                                 new CallToActionBanner(),
                                 new CallToActionBanner(),
-                                null,
-                                string.Empty));
+                                null));
 
         // Act
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get());

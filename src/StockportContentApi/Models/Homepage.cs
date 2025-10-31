@@ -19,8 +19,7 @@ public class Homepage(string featuredTasksHeading,
                     CarouselContent campaignBanner,
                     CallToActionBanner callToAction,
                     CallToActionBanner callToActionPrimary,
-                    IEnumerable<SpotlightOnBanner> spotlightOnBanner,
-                    string imageOverlayText)
+                    IEnumerable<SpotlightOnBanner> spotlightOnBanner)
 {
     public string FeaturedTasksHeading { get; } = featuredTasksHeading;
     public string FeaturedTasksSummary { get; } = featuredTasksSummary;
@@ -35,7 +34,6 @@ public class Homepage(string featuredTasksHeading,
     public string ForegroundImageAlt { get; } = foregroundImageAlt;
     public string FreeText { get; } = freeText;
     public string Title { get; } = title;
-    public string ImageOverlayText { get; set; } = imageOverlayText;
     public string EventCategory { get; } = eventCategory;
     public string MetaDescription { get; set; } = metaDescription;
     public CarouselContent CampaignBanner { get; set; } = campaignBanner;
@@ -65,7 +63,6 @@ public class NullHomepage : Homepage
                                 new CarouselContent(),
                                 new CallToActionBanner(),
                                 new CallToActionBanner(),
-                                null,
-                                string.Empty)
+                                null)
     { }
 }

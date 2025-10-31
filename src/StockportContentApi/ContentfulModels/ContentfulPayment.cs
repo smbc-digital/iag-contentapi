@@ -12,7 +12,6 @@ public class ContentfulPayment : ContentfulReference
     public new string Icon { get; set; } = "si-coin";
     public EPaymentReferenceValidation ReferenceValidation { get; set; } = EPaymentReferenceValidation.None;
     public List<ContentfulReference> Breadcrumbs { get; set; } = new();
-    public string ReturnUrl { get; set; } = string.Empty;
     public string CatalogueId { get; set; } = string.Empty;
     public string AccountReference { get; set; } = string.Empty;
     public string PaymentDescription { get; set; } = string.Empty;

@@ -14,7 +14,6 @@ public class Payment(string title,
                     IEnumerable<Crumb> breadcrumbs,
                     EPaymentReferenceValidation referenceValidation,
                     string metaDescription,
-                    string returnUrl,
                     string catalogueId,
                     string accountReference,
                     string paymentDescription,
@@ -33,7 +32,6 @@ public class Payment(string title,
     public string Icon { get; set; } = icon;
     public EPaymentReferenceValidation ReferenceValidation { get; set; } = referenceValidation;
     public string MetaDescription { get; set; } = metaDescription;
-    public string ReturnUrl { get; set; } = returnUrl;
     public string CatalogueId { get; set; } = catalogueId;
     public string AccountReference { get; set; } = accountReference;
     public string PaymentDescription { get; set; } = paymentDescription;
