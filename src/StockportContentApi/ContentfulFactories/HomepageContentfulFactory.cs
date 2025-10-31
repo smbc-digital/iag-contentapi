@@ -96,7 +96,6 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
                             campaignBanner,
                             callToAction,
                             callToActionPrimary,
-                            spotlightOnBanner,
-                            entry.ImageOverlayText);
+                            spotlightOnBanner);
     }
 }
