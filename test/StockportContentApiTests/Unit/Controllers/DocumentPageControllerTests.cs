@@ -28,7 +28,7 @@ public class DocumentPageControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetDocumentPage(It.IsAny<string>()))
+            .Setup(repo => repo.GetDocumentPage(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(documentPage));
 
         // Act

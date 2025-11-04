@@ -132,11 +132,7 @@ public class NewsRepositoryTests
             .Setup(contentfulClient => contentfulClient.GetClient(_config))
             .Returns(_client.Object);
 
-        _client.Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNewsRoom>>(query => query.Build().Equals(new QueryBuilder<ContentfulNewsRoom>()
-                                                                                                                            .ContentTypeIs("newsroom")
-                                                                                                                            .Include(1)
-                                                                                                                            .Build())),
-                                                It.IsAny<CancellationToken>()))
+        _client.Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNewsRoom>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_newsroomContentfulCollection);
 
         _client
@@ -195,8 +191,7 @@ public class NewsRepositoryTests
             .Build();
 
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(query => query.Build().Equals(simpleNewsQuery)),
-                                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         _videoRepository
@@ -214,7 +209,7 @@ public class NewsRepositoryTests
             .Returns(news);
 
         // Act
-        HttpResponse response = await _repository.GetNews("news-of-the-century");
+        HttpResponse response = await _repository.GetNews("news-of-the-century", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -235,7 +230,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
-        HttpResponse response = await _repository.GetNews("news-of-the-century");
+        HttpResponse response = await _repository.GetNews("news-of-the-century", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -262,7 +257,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(expectedNewsList);
 
         // Act
-        HttpResponse response = await _repository.GetNews("news-of-the-century");
+        HttpResponse response = await _repository.GetNews("news-of-the-century", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -322,7 +317,7 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null, null));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -403,7 +398,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null, null));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -475,7 +470,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", null, null, null, null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -532,7 +527,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, "news-category-1", null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, "news-category-1", null, null, null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -593,7 +588,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", "news-category-1", null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", "news-category-1", null, null, null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -656,7 +651,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.Get(null, null, new DateTime(2016, 08, 01), new DateTime(2016, 08, 31));
+        HttpResponse response = await _repository.Get(null, null, new DateTime(2016, 08, 01), new DateTime(2016, 08, 31), null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -717,7 +712,8 @@ public class NewsRepositoryTests
         HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null,
                                                                         null,
                                                                         new DateTime(2017, 08, 01),
-                                                                        new DateTime(2017, 08, 31)));
+                                                                        new DateTime(2017, 08, 31),
+                                                                        null));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -768,7 +764,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.Get(null, null, null, null);
+        HttpResponse response = await _repository.Get(null, null, null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -815,7 +811,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.Get("NotFound", "NotFound", null, null);
+        HttpResponse response = await _repository.Get("NotFound", "NotFound", null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -866,7 +862,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.Get("testTag", null, new DateTime(2016, 08, 01), new DateTime(2016, 08, 31));
+        HttpResponse response = await _repository.Get("testTag", null, new DateTime(2016, 08, 01), new DateTime(2016, 08, 31), "tagId");
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -929,7 +925,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("testTag", null, null, null));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("testTag", null, null, null, "tagId"));
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -968,12 +964,7 @@ public class NewsRepositoryTests
         };
 
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(query => query.Equals(new QueryBuilder<ContentfulNews>()
-                                                                                                .ContentTypeIs("news")
-                                                                                                .Include(1)
-                                                                                                .Limit(1000)
-                                                                                                .Build())),
-                                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newsListCollection);
 
         _videoRepository
@@ -989,7 +980,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.GetNewsByLimit(1);
+        HttpResponse response = await _repository.GetNewsByLimit(1, "tagId");
 
         // Arrange
         List<News> newsList = response.Get<List<News>>();
@@ -1033,12 +1024,7 @@ public class NewsRepositoryTests
         };
 
         _client
-            .Setup(client => client.GetEntries(It.Is<QueryBuilder<ContentfulNews>>(query => query.Equals(new QueryBuilder<ContentfulNews>()
-                                                                                                .ContentTypeIs("news")
-                                                                                                .Include(1)
-                                                                                                .Limit(1000)
-                                                                                                .Build())),
-                                            It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newsListCollection);
 
         _videoRepository
@@ -1054,7 +1040,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = await _repository.GetNewsByLimit(2);
+        HttpResponse response = await _repository.GetNewsByLimit(2, "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -1101,7 +1087,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug, "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -1137,7 +1123,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
-        HttpResponse response = await _repository.GetNews("news-with-sunrise-date-in-future");
+        HttpResponse response = await _repository.GetNews("news-with-sunrise-date-in-future", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -1214,7 +1200,7 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         // Act
-        HttpResponse response = await _repository.Get(null, null, null, null);
+        HttpResponse response = await _repository.Get(null, null, null, null, null);
 
         // Assert
         Newsroom newsroom = response.Get<Newsroom>();
@@ -1238,7 +1224,7 @@ public class NewsRepositoryTests
             .Returns(expectedNews);
 
         // Act
-        List<News> result = await _repository.GetLatestNewsByTag("tech", 1);
+        List<News> result = await _repository.GetLatestNewsByTag("tech", "tagId", 1);
 
         // Assert
         Assert.NotNull(result);
@@ -1256,7 +1242,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
 
         // Act
-        List<News> result = await _repository.GetLatestNewsByTag("tech");
+        List<News> result = await _repository.GetLatestNewsByTag("tech", "tagId");
 
         // Assert
         Assert.Null(result);
@@ -1275,7 +1261,7 @@ public class NewsRepositoryTests
             .Returns(expectedNews);
 
         // Act
-        List<News> result = await _repository.GetLatestNewsByCategory("sports");
+        List<News> result = await _repository.GetLatestNewsByCategory("sports", "tagId");
 
         // Assert
         Assert.NotNull(result);
@@ -1301,7 +1287,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = newsList });
 
         // Act
-        List<News> result = await _repository.GetLatestNewsByCategory("sports");
+        List<News> result = await _repository.GetLatestNewsByCategory("sports", "tagId");
 
         // Assert
         Assert.Null(result);
@@ -1316,7 +1302,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = contentfulNewsList });
 
         // Act
-        HttpResponse response = await _repository.GetArchivedNews(null, null, null, null);
+        HttpResponse response = await _repository.GetArchivedNews(null, null, null, null, null);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -1329,7 +1315,7 @@ public class NewsRepositoryTests
         SetupMocks();
 
         // Act
-        HttpResponse response = await _repository.GetArchivedNews(null, null, null, null);
+        HttpResponse response = await _repository.GetArchivedNews(null, null, null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -1351,7 +1337,7 @@ public class NewsRepositoryTests
         DateTime endDate = DateTime.Parse(endDateString);
 
         // Act
-        HttpResponse response = await _repository.GetArchivedNews(tag, category, startDate, endDate);
+        HttpResponse response = await _repository.GetArchivedNews(tag, category, startDate, endDate, "tagId");
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert

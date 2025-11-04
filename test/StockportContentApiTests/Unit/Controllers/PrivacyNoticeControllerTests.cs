@@ -28,7 +28,7 @@ public class PrivacyNoticeControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetPrivacyNotice(It.IsAny<string>()))
+            .Setup(repo => repo.GetPrivacyNotice(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(privacyNotice));
 
         // Act
@@ -57,7 +57,7 @@ public class PrivacyNoticeControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetAllPrivacyNotices())
+            .Setup(repo => repo.GetAllPrivacyNotices(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(privacyNotices));
 
         // Act

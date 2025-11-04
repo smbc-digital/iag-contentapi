@@ -11,5 +11,5 @@ public class ServicePayPaymentController(ResponseHandler handler,
     [Route("{businessId}/service-pay-payments/{slug}")]
     [Route("v1/{businessId}/service-pay-payments/{slug}")]
     public async Task<IActionResult> GetPayment(string slug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetPayment(slug));
+        await _handler.Get(() => _createRepository(businessId).GetPayment(slug, businessId));
 }

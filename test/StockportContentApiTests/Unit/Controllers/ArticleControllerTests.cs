@@ -28,7 +28,7 @@ public class ArticleControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetArticle(It.IsAny<string>()))
+            .Setup(repo => repo.GetArticle(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(article));
 
         // Act
@@ -49,11 +49,11 @@ public class ArticleControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(articles));
 
         // Act
-        IActionResult result = await _controller.Index("test-business");
+        IActionResult result = await _controller.Index("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

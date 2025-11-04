@@ -10,11 +10,11 @@ public class PrivacyNoticeController(ResponseHandler handler,
     [Route("{businessId}/privacy-notices/{slug}")]
     [Route("v1/{businessId}/privacy-notices/{slug}")]
     public async Task<IActionResult> GetPrivacyNotice(string slug, string businessId) =>
-        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetPrivacyNotice(slug));
+        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetPrivacyNotice(slug, businessId));
 
     [HttpGet]
     [Route("{businessId}/privacy-notices")]
     [Route("v1/{businessId}/privacy-notices")]
     public async Task<IActionResult> GetAllPrivacyNotices([FromRoute] string businessId) =>
-        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetAllPrivacyNotices());
+        await _handler.Get(async () => await _privacyNoticeRepository(businessId).GetAllPrivacyNotices(businessId));
 }

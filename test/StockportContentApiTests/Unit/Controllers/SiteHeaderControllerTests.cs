@@ -26,11 +26,11 @@ public class SiteHeaderControllerTests
                             "logo");
 
         _repository
-            .Setup(repo => repo.GetSiteHeader())
+            .Setup(repo => repo.GetSiteHeader("tagId"))
             .ReturnsAsync(HttpResponse.Successful(siteHeader));
 
         // Act
-        IActionResult result = await _controller.Index("test-business");
+        IActionResult result = await _controller.Index("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

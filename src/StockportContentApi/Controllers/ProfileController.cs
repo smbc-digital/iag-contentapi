@@ -10,11 +10,11 @@ public class ProfileController(ResponseHandler handler,
     [Route("{businessId}/profiles/{profileSlug}")]
     [Route("v1/{businessId}/profiles/{profileSlug}")]
     public async Task<IActionResult> GetProfile(string profileSlug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetProfile(profileSlug));
+        await _handler.Get(() => _createRepository(businessId).GetProfile(profileSlug, businessId));
 
     [HttpGet]
     [Route("{businessId}/profiles/")]
     [Route("v1/{businessId}/profiles/")]
     public async Task<IActionResult> Get(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }

@@ -10,5 +10,5 @@ public class DocumentPageController(ResponseHandler handler,
     [Route("{businessId}/document-page/{documentPageSlug}")]
     [Route("v1/{businessId}/document-page/{documentPageSlug}")]
     public async Task<IActionResult> GetDocumentPage(string documentPageSlug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetDocumentPage(documentPageSlug));
+        await _handler.Get(() => _createRepository(businessId).GetDocumentPage(documentPageSlug, businessId));
 }

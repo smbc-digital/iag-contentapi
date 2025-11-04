@@ -35,11 +35,11 @@ public class DirectoryControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(directory));
 
         // Act
-        IActionResult result = await _controller.GetDirectories("test-business");
+        IActionResult result = await _controller.GetDirectories("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);
@@ -78,7 +78,7 @@ public class DirectoryControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetEntry(It.IsAny<string>()))
+            .Setup(repo => repo.GetEntry(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(directory));
 
         // Act

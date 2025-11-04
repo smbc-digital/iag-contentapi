@@ -10,5 +10,5 @@ public class SiteHeaderController(ResponseHandler handler,
     [Route("{businessId}/header")]
     [Route("v1/{businessId}/header")]
     public async Task <IActionResult> Index(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetSiteHeader());
+        await _handler.Get(() => _createRepository(businessId).GetSiteHeader(businessId));
 }

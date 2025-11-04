@@ -95,7 +95,7 @@ public class DirectoryRepositoryTests
             .Returns(_directory);
 
         // Act
-        Directory response = await _repository.GetDirectoryFromSource("a-slug", 2);
+        Directory response = await _repository.GetDirectoryFromSource("a-slug", 2, "tagId");
 
         // Assert
         Assert.IsType<Directory>(response);
@@ -106,7 +106,7 @@ public class DirectoryRepositoryTests
     public async Task GetDirectoryFromSource_WithSlug_Should_ReturnNull_WhenDepthLimitExceeded()
     {
         // Act
-        Directory response = await _repository.GetDirectoryFromSource("slug", 6);
+        Directory response = await _repository.GetDirectoryFromSource("slug", 6, "tagId");
 
         // Assert
         Assert.Null(response);
@@ -135,7 +135,7 @@ public class DirectoryRepositoryTests
             .Returns(_directory);
 
         // Act
-        Directory response = await _repository.GetDirectoryFromSource("non-existant-slug", 2);
+        Directory response = await _repository.GetDirectoryFromSource("non-existant-slug", 2, "tagId");
 
         // Assert
         Assert.Null(response);
@@ -150,7 +150,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(_directory);
 
         // Act
-        HttpResponse response = await _repository.Get("directory-slug");
+        HttpResponse response = await _repository.Get("directory-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -168,7 +168,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync((Directory)null);
 
         // Act
-        HttpResponse response = await _repository.Get("directory-slug");
+        HttpResponse response = await _repository.Get("directory-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -185,7 +185,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync((Directory)null);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -215,7 +215,7 @@ public class DirectoryRepositoryTests
             .Returns(_directory);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -232,7 +232,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        HttpResponse response = await _repository.GetEntry("directory-entry-slug");
+        HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -250,7 +250,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(new List<DirectoryEntry> { });
 
         // Act
-        HttpResponse response = await _repository.GetEntry("directory-entry-slug");
+        HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
@@ -267,7 +267,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(new List<DirectoryEntry> { });
 
         // Act
-        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntries();
+        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntries("tagId");
 
         // Assert
         _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
@@ -283,7 +283,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("test-directory");
+        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("test-directory", "tagId");
 
         // Assert
         Assert.Single(response);
@@ -299,7 +299,7 @@ public class DirectoryRepositoryTests
             .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
-        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("non-existant-test-directory");
+        IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("non-existant-test-directory", "tagId");
 
         // Assert
         Assert.Empty(response);
@@ -324,7 +324,7 @@ public class DirectoryRepositoryTests
             .Returns(_directoryEntry);
 
         // Act
-        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntriesFromSource();
+        IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntriesFromSource("tagId");
 
         // Assert
         Assert.IsAssignableFrom<IEnumerable<DirectoryEntry>>(response);

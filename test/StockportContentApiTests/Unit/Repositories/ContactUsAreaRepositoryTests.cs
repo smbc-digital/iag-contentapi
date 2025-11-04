@@ -63,7 +63,7 @@ public class ContactUsAreaRepositoryTests
             .ReturnsAsync(_contactUsArea);
 
         // Act
-        HttpResponse response = await _repository.GetContactUsArea();
+        HttpResponse response = await _repository.GetContactUsArea("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -81,7 +81,7 @@ public class ContactUsAreaRepositoryTests
             .Returns(_contactUsArea);
 
         // Act
-        HttpResponse response = await _repository.GetContactUsArea();
+        HttpResponse response = await _repository.GetContactUsArea("tagId");
 
         // Assert
         Assert.NotNull(response);

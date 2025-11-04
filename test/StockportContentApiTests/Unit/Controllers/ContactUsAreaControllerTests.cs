@@ -32,11 +32,11 @@ public class ContactUsControllerTests
                                         "meta description");
 
         _repository
-            .Setup(repo => repo.GetContactUsArea())
+            .Setup(repo => repo.GetContactUsArea("tagId"))
             .ReturnsAsync(HttpResponse.Successful(contactUsArea));
 
         // Act
-        IActionResult result = await _controller.GetContactUsArea("test-business");
+        IActionResult result = await _controller.GetContactUsArea("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

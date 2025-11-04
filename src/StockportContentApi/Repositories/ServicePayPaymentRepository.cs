@@ -2,7 +2,7 @@
 
 public interface IServicePayPaymentRepository
 {
-    Task<HttpResponse> GetPayment(string slug);
+    Task<HttpResponse> GetPayment(string slug, string tagId);
 }
 
 public class ServicePayPaymentRepository(ContentfulConfig config,
@@ -12,9 +12,13 @@ public class ServicePayPaymentRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulServicePayPayment, ServicePayPayment> _servicePayPaymentFactory = servicePayPaymentFactory;
 
-    public async Task<HttpResponse> GetPayment(string slug)
+    public async Task<HttpResponse> GetPayment(string slug, string tagId)
     {
-        QueryBuilder<ContentfulServicePayPayment> builder = new QueryBuilder<ContentfulServicePayPayment>().ContentTypeIs("servicePayPayment").FieldEquals("fields.slug", slug).Include(1);
+        QueryBuilder<ContentfulServicePayPayment> builder = new QueryBuilder<ContentfulServicePayPayment>()
+            .ContentTypeIs("servicePayPayment")
+            .FieldEquals("fields.slug", slug)
+            .Include(1);
+        
         ContentfulCollection<ContentfulServicePayPayment> entries = await _client.GetEntries(builder);
         ContentfulServicePayPayment entry = entries.FirstOrDefault();
 

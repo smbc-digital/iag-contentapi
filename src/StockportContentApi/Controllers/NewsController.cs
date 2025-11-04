@@ -14,19 +14,19 @@ public class NewsController(ResponseHandler handler,
             [FromQuery] string category = null,
             [FromQuery] DateTime? dateFrom = null,
             [FromQuery] DateTime? dateTo = null) =>
-        await _handler.Get(() => _newsRepository(businessId).Get(tag, category, dateFrom, dateTo));
+        await _handler.Get(() => _newsRepository(businessId).Get(tag, category, dateFrom, dateTo, businessId));
 
     [HttpGet]
     [Route("{businessId}/news/latest/{limit}")]
     [Route("v1/{businessId}/news/latest/{limit}")]
     public async Task<IActionResult> LatestNews(string businessId, int limit) =>
-        await _handler.Get(() => _newsRepository(businessId).GetNewsByLimit(limit));
+        await _handler.Get(() => _newsRepository(businessId).GetNewsByLimit(limit, businessId));
 
     [HttpGet]
     [Route("{businessId}/news/{slug}")]
     [Route("v1/{businessId}/news/{slug}")]
     public async Task<IActionResult> Detail(string slug, string businessId) =>
-        await _handler.Get(() => _newsRepository(businessId).GetNews(slug));
+        await _handler.Get(() => _newsRepository(businessId).GetNews(slug, businessId));
 
     [HttpGet]
     [Route("{businessId}/news/archive")]
@@ -36,6 +36,6 @@ public class NewsController(ResponseHandler handler,
         [FromQuery] string category = null,
         [FromQuery] DateTime? dateFrom = null,
         [FromQuery] DateTime? dateTo = null) =>
-        await _handler.Get(() => _newsRepository(businessId).GetArchivedNews(tag, category, dateFrom, dateTo));
+        await _handler.Get(() => _newsRepository(businessId).GetArchivedNews(tag, category, dateFrom, dateTo, businessId));
 
 }

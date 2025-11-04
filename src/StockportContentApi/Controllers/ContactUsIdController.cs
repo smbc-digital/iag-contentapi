@@ -11,5 +11,5 @@ public class ContactUsIdController(ResponseHandler handler,
     [Route("{businessId}/contact-us-id/{slug}")]
     [Route("v1/{businessId}/contact-us-id/{slug}")]
     public async Task<IActionResult> Detail(string slug, string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).GetContactUsIds(slug));
+        await _handler.Get(() => _createRepository(businessId).GetContactUsIds(slug, businessId));
 }

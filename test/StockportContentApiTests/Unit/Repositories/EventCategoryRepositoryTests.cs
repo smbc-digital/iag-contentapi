@@ -52,7 +52,7 @@ public class EventCategoryRepositoryTests
             .ReturnsAsync(new List<EventCategory> { rawEventCategory });
 
         // Act
-        HttpResponse response = await _repository.GetEventCategories();
+        HttpResponse response = await _repository.GetEventCategories("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -74,7 +74,7 @@ public class EventCategoryRepositoryTests
             .ReturnsAsync(new List<EventCategory>());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetEventCategories());
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetEventCategories("tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

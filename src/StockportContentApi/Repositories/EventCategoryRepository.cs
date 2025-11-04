@@ -2,7 +2,7 @@
 
 public interface IEventCategoryRepository
 {
-    public Task<HttpResponse> GetEventCategories();
+    public Task<HttpResponse> GetEventCategories(string tagId);
 }
 
 public class EventCategoryRepository : IEventCategoryRepository
@@ -29,9 +29,9 @@ public class EventCategoryRepository : IEventCategoryRepository
         _cache = cache;
     }
 
-    public async Task<HttpResponse> GetEventCategories()
+    public async Task<HttpResponse> GetEventCategories(string tagId)
     {
-        List<EventCategory> categories = await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, GetCategoriesDirect, _eventsCategoryTimeout);
+        List<EventCategory> categories = await _cache.GetFromCacheOrDirectlyAsync(_eventCategoriesCacheKey, () => GetCategoriesDirect(tagId), _eventsCategoryTimeout);
 
         if (categories is not null && !categories.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No categories returned");
@@ -41,9 +41,13 @@ public class EventCategoryRepository : IEventCategoryRepository
         return HttpResponse.Successful(categories);
     }
 
-    private async Task<List<EventCategory>> GetCategoriesDirect()
+    private async Task<List<EventCategory>> GetCategoriesDirect(string tagId)
     {
-        QueryBuilder<ContentfulEventCategory> builder = new QueryBuilder<ContentfulEventCategory>().ContentTypeIs("eventCategory");
+        QueryBuilder<ContentfulEventCategory> builder = new QueryBuilder<ContentfulEventCategory>()
+        .ContentTypeIs("eventCategory")
+        .FieldExists("metadata.tags")
+        .FieldEquals("metadata.tags.sys.id[in]", tagId);
+
         ContentfulCollection<ContentfulEventCategory> entries = await _client.GetEntries(builder);
 
         if (entries is null || !entries.Any())

@@ -28,7 +28,7 @@ public class AtoZControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get(It.IsAny<string>()))
+            .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(atoZItems));
 
         // Act
@@ -49,7 +49,7 @@ public class AtoZControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get(It.IsAny<string>()))
+            .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(atoZItems));
 
         // Act

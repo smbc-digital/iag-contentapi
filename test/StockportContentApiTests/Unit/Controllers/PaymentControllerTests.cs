@@ -40,7 +40,7 @@ public class PaymentControllerTests
                             new List<Alert>());
 
         _repository
-            .Setup(repo => repo.GetPayment(It.IsAny<string>()))
+            .Setup(repo => repo.GetPayment(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(payment));
 
         // Act
@@ -73,7 +73,7 @@ public class PaymentControllerTests
                             new List<Alert>());
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get(It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(payment));
 
         // Act

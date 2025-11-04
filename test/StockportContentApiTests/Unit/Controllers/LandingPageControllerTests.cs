@@ -28,7 +28,7 @@ public class LandingPageControllerTests
         };
 
         _repository
-            .Setup(repo => repo.GetLandingPage(It.IsAny<string>()))
+            .Setup(repo => repo.GetLandingPage(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(landingPage));
 
         // Act

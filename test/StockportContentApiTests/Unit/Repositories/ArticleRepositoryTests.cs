@@ -122,7 +122,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
         IEnumerable<ArticleSiteMap> responseArticle = response.Get<IEnumerable<ArticleSiteMap>>();
 
         // Assert
@@ -134,7 +134,7 @@ public class ArticleRepositoryTests
     public async Task Get_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
     {
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -160,7 +160,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -173,30 +173,30 @@ public class ArticleRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
             .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "tagId"));
 
         // Assert
         Article resultArticle = response.Get<Article>();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Null(resultArticle.Events);
 
-        _eventRepository.Verify(repo => repo.GetEventsByCategory(It.IsAny<string>(), true), Times.Never);
-        _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), true), Times.Never);
+        _eventRepository.Verify(repo => repo.GetEventsByCategory(It.IsAny<string>(), true, It.IsAny<string>()), Times.Never);
+        _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), true, It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
     public void GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("slug"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("slug", "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("No article found for 'slug'", response.Error);
+        Assert.Equal("No article found with slug 'slug' for 'tagId'", response.Error);
     }
 
     [Fact]
@@ -220,7 +220,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -235,7 +235,7 @@ public class ArticleRepositoryTests
             .Returns(new DateTime(2017, 08, 01));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -259,7 +259,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -279,7 +279,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-inline-alerts"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-inline-alerts", "stockportgov"));
 
         // Assert
         Article article = response.Get<Article>();
@@ -311,7 +311,7 @@ public class ArticleRepositoryTests
                 });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-section-with-inline-alerts"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-section-with-inline-alerts", "stockportgov"));
 
         // Assert
         Article article = response.Get<Article>();
@@ -342,15 +342,15 @@ public class ArticleRepositoryTests
             .ReturnsAsync(article);
 
         _eventRepository
-            .Setup(repo => repo.GetEventsByCategory("dance", true))
+            .Setup(repo => repo.GetEventsByCategory("dance", true, "tagId"))
             .ReturnsAsync(eventsFromCategory);
 
         _eventRepository
-            .Setup(repo => repo.GetEventsByTag("tag1", true))
+            .Setup(repo => repo.GetEventsByTag("tag1", true, "tagId"))
             .ReturnsAsync(eventsFromTag);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "tagId"));
 
         // Assert
         Article resultArticle = response.Get<Article>();
@@ -360,6 +360,6 @@ public class ArticleRepositoryTests
         Assert.Contains(resultArticle.Events, e => e.Slug.Equals("event3"));
         Assert.Contains(resultArticle.Events, e => e.Slug.Equals("event4"));
 
-        _eventRepository.Verify(repo => repo.GetEventsByCategory("dance", true), Times.Once);
+        _eventRepository.Verify(repo => repo.GetEventsByCategory("dance", true, "tagId"), Times.Once);
     }
 }

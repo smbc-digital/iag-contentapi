@@ -2,7 +2,7 @@
 
 public interface IDocumentPageRepository
 {
-    Task<HttpResponse> GetDocumentPage(string documentPageSlug);
+    Task<HttpResponse> GetDocumentPage(string documentPageSlug, string tagId);
 }
 
 public class DocumentPageRepository(ContentfulConfig config,
@@ -14,10 +14,10 @@ public class DocumentPageRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulDocumentPage, DocumentPage> _contentfulFactory = contentfulFactory;
 
-    public async Task<HttpResponse> GetDocumentPage(string documentPageSlug)
+    public async Task<HttpResponse> GetDocumentPage(string documentPageSlug, string tagId)
     {
         ContentfulDocumentPage entry = await _cache.GetFromCacheOrDirectlyAsync($"documentPage-{documentPageSlug}",
-            () => GetDocumentPageEntry(documentPageSlug));
+            () => GetDocumentPageEntry(documentPageSlug, tagId));
 
         DocumentPage documentPage = entry is null
             ? null
@@ -28,7 +28,7 @@ public class DocumentPageRepository(ContentfulConfig config,
             : HttpResponse.Successful(documentPage);
     }
 
-    internal async Task<ContentfulDocumentPage> GetDocumentPageEntry(string documentPageSlug)
+    internal async Task<ContentfulDocumentPage> GetDocumentPageEntry(string documentPageSlug, string tagId)
     {
         QueryBuilder<ContentfulDocumentPage> builder = new QueryBuilder<ContentfulDocumentPage>()
             .ContentTypeIs("documentPage")

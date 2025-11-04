@@ -2,8 +2,8 @@
 
 public interface ISectionRepository
 {
-    Task<HttpResponse> Get();
-    Task<HttpResponse> GetSections(string slug);
+    Task<HttpResponse> Get(string tagId);
+    Task<HttpResponse> GetSections(string slug, string tagId);
 }
 
 public class SectionRepository(ContentfulConfig config,
@@ -13,7 +13,7 @@ public class SectionRepository(ContentfulConfig config,
     private readonly IContentfulFactory<ContentfulSection, Section> _contentfulFactory = SectionBuilder;
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
         List<ContentfulSectionForSiteMap> sections = new();
 
@@ -36,7 +36,7 @@ public class SectionRepository(ContentfulConfig config,
             : HttpResponse.Successful(sections);
     }
 
-    public async Task<HttpResponse> GetSections(string slug)
+    public async Task<HttpResponse> GetSections(string slug, string tagId)
     {
         QueryBuilder<ContentfulSection> builder = new QueryBuilder<ContentfulSection>()
                                                     .ContentTypeIs("section")

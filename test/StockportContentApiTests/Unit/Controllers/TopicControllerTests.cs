@@ -27,7 +27,7 @@ public class TopicControllerTests
                         new List<SubItem>());
 
         _repository
-            .Setup(repo => repo.GetTopicByTopicSlug(It.IsAny<string>()))
+            .Setup(repo => repo.GetTopicByTopicSlug(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(topic));
 
         // Act
@@ -54,11 +54,11 @@ public class TopicControllerTests
         };
 
         _repository
-            .Setup(repo => repo.Get())
+            .Setup(repo => repo.Get("tagId"))
             .ReturnsAsync(HttpResponse.Successful(topics));
 
         // Act
-        IActionResult result = await _controller.Get("test-business");
+        IActionResult result = await _controller.Get("tagId");
 
         // Assert
         _createRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

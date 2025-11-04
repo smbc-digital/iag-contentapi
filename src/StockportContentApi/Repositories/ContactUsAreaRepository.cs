@@ -2,7 +2,7 @@
 
 public interface IContactUsAreaRepository
 {
-    Task<HttpResponse> GetContactUsArea();
+    Task<HttpResponse> GetContactUsArea(string tagId);
 }
 
 public class ContactUsAreaRepository(ContentfulConfig config,
@@ -12,9 +12,11 @@ public class ContactUsAreaRepository(ContentfulConfig config,
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory = contentfulFactory;
 
-    public async Task<HttpResponse> GetContactUsArea()
+    public async Task<HttpResponse> GetContactUsArea(string tagId)
     {
-        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>().ContentTypeIs("contactUsArea").Include(3);
+        QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>()
+            .ContentTypeIs("contactUsArea")
+            .Include(3);
         ContentfulCollection<ContentfulContactUsArea> entries = await _client.GetEntries(builder);
         ContentfulContactUsArea entry = entries.FirstOrDefault();
         ContactUsArea contactUsArea = _contentfulFactory.ToModel(entry);

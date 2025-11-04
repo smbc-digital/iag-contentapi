@@ -1,8 +1,10 @@
-﻿namespace StockportContentApi.Repositories;
+﻿using Amazon.SecretsManager.Model;
+
+namespace StockportContentApi.Repositories;
 
 public interface IAtoZRepository
 {
-    Task<HttpResponse> Get(string letter = "");
+    Task<HttpResponse> Get(string tagId, string letter = "");
 }
 
 public class AtoZRepository(ContentfulConfig config,
@@ -29,10 +31,10 @@ public class AtoZRepository(ContentfulConfig config,
         return timeout;
     }
 
-    public async Task<HttpResponse> Get(string letter = "")
+    public async Task<HttpResponse> Get(string tagId, string letter = "")
     {
         IEnumerable<AtoZ> aToZItems = string.IsNullOrEmpty(letter) 
-                            ? await GetAtoZ() 
+                            ? await GetAtoZ(tagId) 
                             : await GetAtoZ(letter);
 
         return !aToZItems.Any()
@@ -40,25 +42,25 @@ public class AtoZRepository(ContentfulConfig config,
             : HttpResponse.Successful(aToZItems.OrderBy(aToZ => aToZ.Title).ToList());
     }
 
-    public async Task<IEnumerable<AtoZ>> GetAtoZ()
+    public async Task<IEnumerable<AtoZ>> GetAtoZ(string tagId)
     {
         List<AtoZ> atozItems = new();
         foreach(string contentType in contentTypesToInclude)
         {
-            List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType), _atoZTimeout);
+            List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType, tagId), _atoZTimeout);
             atozItems.AddRange(items);
         }
 
         return atozItems;
     }
     
-    public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter)
+    public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter, string tagId)
     {
         List<AtoZ> atozItems = new();
         foreach (string contentType in contentTypesToInclude)
         {
             List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}-{letter.ToLower()}",
-                                                                        () => GetAtoZItemFromSource(contentType, letter.ToLower()),
+                                                                        () => GetAtoZItemFromSource(contentType, letter.ToLower(), tagId),
                                                                         _atoZTimeout);
             if (items is not null && items.Any())
                 atozItems.AddRange(items);
@@ -67,7 +69,7 @@ public class AtoZRepository(ContentfulConfig config,
         return atozItems;
     }
 
-    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType, string letter)
+    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType, string letter, string tagId)
     {
         List<AtoZ> atozList = new();
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
@@ -98,10 +100,13 @@ public class AtoZRepository(ContentfulConfig config,
         return atozList;
     }
 
-    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType)
+    public async Task<List<AtoZ>> GetAtoZItemFromSource(string contentType, string tagId)
     {
         List<AtoZ> atozList = new();
-        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
+        QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>()
+            .ContentTypeIs(contentType)
+            .Include(0);
+        
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
         IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True"));

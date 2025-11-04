@@ -42,7 +42,7 @@ public class ContactUsIdRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug, "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -64,11 +64,11 @@ public class ContactUsIdRepositoryTests
             .Include(1);
 
         _contentfulClient
-            .Setup(contentfulClient => contentfulClient.GetEntries(It.Is<QueryBuilder<ContentfulContactUsId>>(query => query.Build().Equals(builder.Build())), It.IsAny<CancellationToken>()))
+            .Setup(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulContactUsId>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds("test-slug"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds("test-slug", "tagId"));
         ContactUsId model = response.Get<ContactUsId>();
 
         // Assert

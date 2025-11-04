@@ -41,7 +41,7 @@ public class DocumentPageRepositoryTests
     public void GetDocumentPage_ShouldReturnNotFound_If_DocumentDoesNotExist()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug", "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -58,7 +58,7 @@ public class DocumentPageRepositoryTests
             .ReturnsAsync(contentfulDocumentPage);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug"));
+        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug", "tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -78,7 +78,7 @@ public class DocumentPageRepositoryTests
             .ReturnsAsync(contentfulCollection);
 
         // Act
-        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("slug");
+        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("slug", "tagId");
 
         // Assert
         Assert.NotNull(result);
@@ -100,7 +100,7 @@ public class DocumentPageRepositoryTests
             .ReturnsAsync(contentfulCollection);
 
         // Act
-        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("non-existing-slug");
+        ContentfulDocumentPage result = await _repository.GetDocumentPageEntry("non-existing-slug", "tagId");
 
         // Assert
         Assert.Null(result);

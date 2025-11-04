@@ -30,11 +30,11 @@ public class FooterControllerTests
                             "footer content 3");
 
         _repository
-            .Setup(repo => repo.GetFooter())
+            .Setup(repo => repo.GetFooter("tagId"))
             .ReturnsAsync(HttpResponse.Successful(footer));
 
         // Act
-        IActionResult result = await _controller.GetFooter("test-business");
+        IActionResult result = await _controller.GetFooter("tagId");
 
         // Assert
         _categoryRepository.Verify(factory => factory(It.IsAny<string>()), Times.Once);

@@ -2,8 +2,8 @@
 
 public interface IArticleRepository
 {
-    Task<HttpResponse> Get();
-    Task<HttpResponse> GetArticle(string articleSlug);
+    Task<HttpResponse> Get(string tagId);
+    Task<HttpResponse> GetArticle(string articleSlug, string tagId);
 }
 
 public class ArticleRepository(ContentfulConfig config,
@@ -25,9 +25,9 @@ public class ArticleRepository(ContentfulConfig config,
     private readonly IVideoRepository _videoRepository = videoRepository;
     private readonly RedisExpiryConfiguration _redisExpiryConfiguration = redisExpiryConfiguration.Value;
 
-    public async Task<HttpResponse> Get()
+    public async Task<HttpResponse> Get(string tagId)
     {
-        IEnumerable<ArticleSiteMap> articles = await GetArticlesFromContentful();
+        IEnumerable<ArticleSiteMap> articles = await GetArticlesFromContentful(tagId);
 
         if (articles is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found");
@@ -39,21 +39,21 @@ public class ArticleRepository(ContentfulConfig config,
             : HttpResponse.Failure(HttpStatusCode.NotFound, "No articles found within sunrise and sunset dates");
     }
 
-    public async Task<HttpResponse> GetArticle(string articleSlug)
+    public async Task<HttpResponse> GetArticle(string articleSlug, string tagId)
     {
-        Article article = await GetArticleFromCacheOrContentful(articleSlug);
+        Article article = await GetArticleFromCacheOrContentful(articleSlug, tagId);
 
         if (article is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found for '{articleSlug}'");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No article found with slug '{articleSlug}' for '{tagId}'");
 
-        await GetArticleRelatedEvents(article);
+        await GetArticleRelatedEvents(article, tagId);
 
         ProcessArticleContent(article);
 
         return HttpResponse.Successful(article);
     }
 
-    private async Task GetArticleRelatedEvents(Article article)
+    private async Task GetArticleRelatedEvents(Article article, string tagId)
     {
         if (!string.IsNullOrEmpty(article.AssociatedTagCategory))
         {
@@ -62,12 +62,12 @@ public class ArticleRepository(ContentfulConfig config,
 
             foreach (string associatedTagCategory in associatedTagsCategories)
             {
-                List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(associatedTagCategory, true);
+                List<Event> categoryEvents = await _eventRepository.GetEventsByCategory(associatedTagCategory, true, tagId);
                 if (categoryEvents is not null && categoryEvents.Any())
                     events.AddRange(categoryEvents);
                 else
                 {
-                    List<Event> tagEvents = await _eventRepository.GetEventsByTag(associatedTagCategory, true);
+                    List<Event> tagEvents = await _eventRepository.GetEventsByTag(associatedTagCategory, true, tagId);
                     if (tagEvents is not null)
                         events.AddRange(tagEvents);
                 }
@@ -83,17 +83,22 @@ public class ArticleRepository(ContentfulConfig config,
         }
     }
 
-    private async Task<IEnumerable<ArticleSiteMap>> GetArticlesFromContentful()
+    private async Task<IEnumerable<ArticleSiteMap>> GetArticlesFromContentful(string tagId)
     {
-        QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>().ContentTypeIs("article").Include(2);
+        QueryBuilder<ContentfulArticleForSiteMap> builder = new QueryBuilder<ContentfulArticleForSiteMap>()
+            .ContentTypeIs("article")
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", tagId)
+            .Include(2);
+        
         ContentfulCollection<ContentfulArticleForSiteMap> entries = await GetAllEntriesAsync(_client, builder);
 
         return entries?.Select(_contentfulFactoryArticle.ToModel);
     }
 
-    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug)
+    private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug, string tagId)
     {
-        ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug), _redisExpiryConfiguration.Articles);
+        ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug, tagId), _redisExpiryConfiguration.Articles);
 
         if (entry is null)
             return null;
@@ -131,7 +136,7 @@ public class ArticleRepository(ContentfulConfig config,
         return article;
     }
 
-    private async Task<ContentfulArticle> GetArticleEntry(string articleSlug)
+    private async Task<ContentfulArticle> GetArticleEntry(string articleSlug, string tagId=null)
     {
         QueryBuilder<ContentfulArticle> builder = new QueryBuilder<ContentfulArticle>()
             .ContentTypeIs("article")

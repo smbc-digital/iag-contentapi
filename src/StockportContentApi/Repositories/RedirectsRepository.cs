@@ -65,7 +65,12 @@ public class RedirectsRepository(IContentfulClientManager clientManager,
         ContentfulConfig config = _createConfig(businessId);
 
         _client = ClientManager.GetClient(config);
-        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>().ContentTypeIs(ContentType).Include(1);
+        QueryBuilder<ContentfulRedirect> builder = new QueryBuilder<ContentfulRedirect>()
+            .ContentTypeIs(ContentType)
+            .FieldExists("metadata.tags")
+            .FieldEquals("metadata.tags.sys.id[in]", businessId)
+            .Include(1);
+        
         ContentfulCollection<ContentfulRedirect> entries = await _client.GetEntries(builder);
 
         return !entries.Any()

@@ -49,7 +49,7 @@ public class SiteHeaderRepositoryTests
             .Returns(new SiteHeader("Title", new List<SubItem>(), "Logo"));
 
         // Act
-        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader());
+        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader("tagId"));
 
         // Assert
         Assert.Equal(mockSiteHeader.Title, siteHeader.Get<SiteHeader>().Title);
@@ -80,7 +80,7 @@ public class SiteHeaderRepositoryTests
             .Returns((SiteHeader)null);
 
         // Act
-        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader());
+        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader("tagId"));
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, siteHeader.StatusCode);

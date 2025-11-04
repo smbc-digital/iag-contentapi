@@ -10,7 +10,7 @@ public class AtoZController(ResponseHandler handler,
     [Route("{businessId}/atoz/")]
     [Route("v1/{businessId}/atoz/")]
     public async Task<IActionResult> Index(string businessId) =>
-         await _handler.Get(() => _createRepository(businessId).Get());
+         await _handler.Get(() => _createRepository(businessId).Get(businessId));
 
     [HttpGet]
     [Route("{businessId}/atoz/{letter}")]

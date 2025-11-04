@@ -27,7 +27,7 @@ public class NewsControllerTests
                                 null);
 
         _repository
-            .Setup(repo => repo.GetNewsByLimit(It.IsAny<int>()))
+            .Setup(repo => repo.GetNewsByLimit(It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
         // Act
@@ -47,7 +47,7 @@ public class NewsControllerTests
                                 null);
 
         _repository
-            .Setup(repo => repo.GetNews(It.IsAny<string>()))
+            .Setup(repo => repo.GetNews(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
         // Act
@@ -67,7 +67,7 @@ public class NewsControllerTests
                                 null);
 
         _repository
-            .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .Setup(repo => repo.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
         // Act
@@ -87,7 +87,7 @@ public class NewsControllerTests
                                 null);
 
         _repository
-            .Setup(repo => repo.GetArchivedNews(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .Setup(repo => repo.GetArchivedNews(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ReturnsAsync(HttpResponse.Successful(newsroom));
 
         // Act

@@ -69,7 +69,7 @@ public class TopicRepositoryTests
             .Returns(_topic);
 
         // Act
-        HttpResponse response = await _repository.GetTopicByTopicSlug("a-slug");
+        HttpResponse response = await _repository.GetTopicByTopicSlug("a-slug", "tagId");
 
         // Arrange
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -90,7 +90,7 @@ public class TopicRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.GetTopicByTopicSlug("not-found");
+        HttpResponse response = await _repository.GetTopicByTopicSlug("not-found", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -124,7 +124,7 @@ public class TopicRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -144,7 +144,7 @@ public class TopicRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = await _repository.Get();
+        HttpResponse response = await _repository.Get("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

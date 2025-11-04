@@ -10,11 +10,11 @@ public class TopicController(ResponseHandler handler,
     [Route("{businessId}/topics/{topicSlug}")]
     [Route("v1/{businessId}/topics/{topicSlug}")]
     public async Task<IActionResult> GetTopicByTopicSlug(string businessId, string topicSlug) =>
-        await _handler.Get(() => _createRepository(businessId).GetTopicByTopicSlug(topicSlug));
+        await _handler.Get(() => _createRepository(businessId).GetTopicByTopicSlug(topicSlug, businessId));
 
     [HttpGet]
     [Route("{businessId}/topics/")]
     [Route("v1/{businessId}/topics/")]
     public async Task<IActionResult> Get(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }

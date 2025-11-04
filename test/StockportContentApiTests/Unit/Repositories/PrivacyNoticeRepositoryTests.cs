@@ -49,7 +49,7 @@ public class PrivacyNoticeRepositoryTests
             .Returns(privacyNotice);
 
         // Act
-        HttpResponse result = await _repository.GetPrivacyNotice("test-slug");
+        HttpResponse result = await _repository.GetPrivacyNotice("test-slug", "tagId");
 
         // Assert
         _contentfulClient.Verify(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -73,7 +73,7 @@ public class PrivacyNoticeRepositoryTests
             .Returns(privacyNotice);
 
         // Act
-        HttpResponse result = await _repository.GetPrivacyNotice("test-slug");
+        HttpResponse result = await _repository.GetPrivacyNotice("test-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(result);
@@ -94,7 +94,7 @@ public class PrivacyNoticeRepositoryTests
             .ReturnsAsync(contentfulCollection);
 
         // Act
-        HttpResponse result = await _repository.GetPrivacyNotice("slug-that-returns-nothing");
+        HttpResponse result = await _repository.GetPrivacyNotice("slug-that-returns-nothing", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
@@ -119,7 +119,7 @@ public class PrivacyNoticeRepositoryTests
             .Returns(privacyNotice);
 
         // Act
-        HttpResponse result = await _repository.GetAllPrivacyNotices();
+        HttpResponse result = await _repository.GetAllPrivacyNotices("tagId");
 
         // Assert
         _contentfulClient.Verify(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -143,7 +143,7 @@ public class PrivacyNoticeRepositoryTests
             .Returns(privacyNotice);
 
         // Act
-        List<PrivacyNotice> result = await _repository.GetPrivacyNoticesByTitle("test title");
+        List<PrivacyNotice> result = await _repository.GetPrivacyNoticesByTitle("test title", "tagId");
 
         // Assert
         _contentfulClient.Verify(contentfulClient => contentfulClient.GetEntries(It.IsAny<QueryBuilder<ContentfulPrivacyNotice>>(), It.IsAny<CancellationToken>()), Times.Once);

@@ -11,5 +11,5 @@ public class HomepageController(ResponseHandler handler,
     [Route("{businessId}/homepage")]
     [Route("v1/{businessId}/homepage")]
     public async Task<IActionResult> Get(string businessId) =>
-        await _handler.Get(() => _createRepository(businessId).Get());
+        await _handler.Get(() => _createRepository(businessId).Get(businessId));
 }
