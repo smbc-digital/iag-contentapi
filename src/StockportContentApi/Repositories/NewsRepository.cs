@@ -48,8 +48,6 @@ public class NewsRepository : BaseRepository, INewsRepository
     {
         QueryBuilder<ContentfulNews> builder = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulNews> entries = await GetAllEntriesAsync(_client, builder);
@@ -202,8 +200,6 @@ public class NewsRepository : BaseRepository, INewsRepository
         QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
             .FieldMatches(n => n.Tags, tag)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
@@ -226,8 +222,6 @@ public class NewsRepository : BaseRepository, INewsRepository
         QueryBuilder<ContentfulNews> newsBuilder = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
             .FieldMatches(n => n.Categories, category)
-            .FieldExists("metadata.tags")
-            .FieldEquals("metadata.tags.sys.id[in]", tagId)
             .Include(1);
         
         ContentfulCollection<ContentfulNews> newsEntries = await _client.GetEntries(newsBuilder);
