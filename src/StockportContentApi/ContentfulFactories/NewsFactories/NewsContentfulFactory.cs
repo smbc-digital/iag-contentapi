@@ -42,7 +42,9 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Body,
                         entry.SunriseDate,
                         entry.SunsetDate,
-                        entry.Sys.UpdatedAt.Value,
+                        entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Equals(DateTime.MinValue)
+                            ? entry.LastEditorialUpdate.Value
+                            : entry.Sys.UpdatedAt.Value,
                         alerts.ToList(),
                         entry.Tags,
                         entry.Categories,
