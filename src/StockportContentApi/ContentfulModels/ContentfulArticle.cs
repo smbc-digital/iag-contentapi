@@ -16,4 +16,5 @@ public class ContentfulArticle : ContentfulReference
     public string Photographer { get; set; }
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
     public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
+    public DateTime? LastEditorialUpdate { get; set; }
 }

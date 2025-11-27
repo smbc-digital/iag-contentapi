@@ -99,7 +99,9 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
 
             UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value
                 ? sectionUpdatedAt
-                : entry.Sys.UpdatedAt.Value,
+                : entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Value.Equals(DateTime.MinValue)
+                    ? entry.LastEditorialUpdate.Value
+                    : entry.Sys.UpdatedAt.Value,
 
             PublishedOn = entry.Sys.CreatedAt.Value,
 
