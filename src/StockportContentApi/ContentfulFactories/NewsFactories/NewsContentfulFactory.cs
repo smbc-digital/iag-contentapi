@@ -29,9 +29,16 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
                                         .Select(_alertFactory.ToModel);
 
-        DateTime? updatedAt = entry.Sys.UpdatedAt is not null
-            ? entry.Sys.UpdatedAt
-            : entry.SunriseDate;
+        bool hasLastEditorialUpdate = entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Equals(DateTime.MinValue);
+        bool hasTaggedPublishedDate = entry.TaggedPublishedDate is not null && !entry.TaggedPublishedDate.Equals(DateTime.MinValue);
+
+        DateTime updatedAt = entry.Sys.UpdatedAt is null
+            ? entry.SunriseDate
+            : (hasLastEditorialUpdate && hasTaggedPublishedDate
+                ? (entry.Sys.UpdatedAt.Value.Date > entry.TaggedPublishedDate
+                    ? entry.Sys.UpdatedAt.Value
+                    : entry.LastEditorialUpdate.Value)
+                : entry.Sys.UpdatedAt.Value);
 
         return new News(entry.Title,
                         entry.Slug,
@@ -42,9 +49,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Body,
                         entry.SunriseDate,
                         entry.SunsetDate,
-                        entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Equals(DateTime.MinValue)
-                            ? entry.LastEditorialUpdate.Value
-                            : entry.Sys.UpdatedAt.Value,
+                        updatedAt,
                         alerts.ToList(),
                         entry.Tags,
                         entry.Categories,

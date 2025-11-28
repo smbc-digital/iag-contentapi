@@ -17,4 +17,5 @@ public class ContentfulArticle : ContentfulReference
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
     public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
     public DateTime? LastEditorialUpdate { get; set; }
+    public DateTime? TaggedPublishedDate { get; set; }
 }
