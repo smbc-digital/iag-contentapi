@@ -33,8 +33,13 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
             ? entry.TrustedLogos.Where(trustedLogo => trustedLogo is not null).Select(_trustedLogoFactory.ToModel).ToList()
             : new();
 
-        DateTime updatedAt = entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Equals(DateTime.MinValue)
-            ? entry.LastEditorialUpdate.Value
+        bool hasLastEditorialUpdate = entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Equals(DateTime.MinValue);
+        bool hasTaggedPublishedDate = entry.TaggedPublishedDate is not null && !entry.TaggedPublishedDate.Equals(DateTime.MinValue);
+
+        DateTime updatedAt = hasLastEditorialUpdate && hasTaggedPublishedDate
+            ? entry.Sys.UpdatedAt > entry.TaggedPublishedDate
+                ? entry.Sys.UpdatedAt.Value
+                : entry.LastEditorialUpdate.Value
             : entry.Sys.UpdatedAt.Value;
 
         return new(entry.Title,

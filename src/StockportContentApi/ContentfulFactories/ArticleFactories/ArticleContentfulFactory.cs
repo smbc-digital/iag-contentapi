@@ -31,9 +31,14 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
         DateTime sectionUpdatedAt = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
                                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
                                         .Where(section => section.Sys.UpdatedAt is not null)
-                                        .Select(section => section.Sys.UpdatedAt.Value)
-                                        .OrderByDescending(section => section)
+                                        .Select(section => GetEffectiveUpdatedAt(
+                                            section.LastEditorialUpdate,
+                                            section.TaggedPublishedDate,
+                                            section.Sys.UpdatedAt))
+                                        .OrderByDescending(date => date)
                                         .FirstOrDefault();
+
+        DateTime articleLastUpdated = GetEffectiveUpdatedAt(entry.LastEditorialUpdate, entry.TaggedPublishedDate, entry.Sys.UpdatedAt);
 
         return new()
         {
@@ -97,12 +102,10 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
                             .Where(alertInline => !alertInline.Severity.Equals("Condolence"))
                             .Select(_alertFactory.ToModel),
 
-            UpdatedAt = sectionUpdatedAt > entry.Sys.UpdatedAt.Value
+            UpdatedAt = sectionUpdatedAt > articleLastUpdated
                 ? sectionUpdatedAt
-                : entry.LastEditorialUpdate is not null && !entry.LastEditorialUpdate.Value.Equals(DateTime.MinValue)
-                    ? entry.LastEditorialUpdate.Value
-                    : entry.Sys.UpdatedAt.Value,
-
+                : articleLastUpdated,
+            
             PublishedOn = entry.Sys.CreatedAt.Value,
 
             HideLastUpdated = entry.HideLastUpdated,
@@ -113,5 +116,17 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
             CallToActionBanners = entry.CallToActionBanners.Select(_callToActionContentfulFactory.ToModel).ToList(),
             ContentfulId = entry.Sys.Id
         };
+    }
+
+    private static DateTime GetEffectiveUpdatedAt(DateTime? lastEditorialUpdate, DateTime? taggedPublishedDate, DateTime? sysUpdatedAt)
+    {
+        bool hasLastEditorialUpdate = lastEditorialUpdate is not null && !lastEditorialUpdate.Equals(DateTime.MinValue);
+        bool hasTaggedPublishedDate = taggedPublishedDate is not null && !taggedPublishedDate.Equals(DateTime.MinValue);
+
+        return hasLastEditorialUpdate && hasTaggedPublishedDate
+            ? sysUpdatedAt > taggedPublishedDate
+                ? sysUpdatedAt.Value
+                : lastEditorialUpdate.Value
+            : sysUpdatedAt ?? DateTime.MinValue;
     }
 }

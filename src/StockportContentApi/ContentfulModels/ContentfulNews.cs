@@ -25,4 +25,5 @@ public class ContentfulNews : IContentfulModel
     public string EventsByTagOrCategory { get; set; } = string.Empty;
     public List<ContentfulEvent> Events { get; set; } = new();
     public DateTime? LastEditorialUpdate { get; set; }
+    public DateTime? TaggedPublishedDate { get; set; }
 }

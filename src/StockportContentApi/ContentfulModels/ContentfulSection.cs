@@ -12,4 +12,5 @@ public class ContentfulSection : ContentfulReference
     public List<ContentfulCallToActionBanner> CallToActionBanners { get; set; } = new();
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
     public DateTime? LastEditorialUpdate { get; set; }
+    public DateTime? TaggedPublishedDate { get; set; }
 }
