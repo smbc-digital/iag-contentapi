@@ -37,7 +37,7 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
         bool hasTaggedPublishedDate = entry.TaggedPublishedDate is not null && !entry.TaggedPublishedDate.Equals(DateTime.MinValue);
 
         DateTime updatedAt = hasLastEditorialUpdate && hasTaggedPublishedDate
-            ? entry.Sys.UpdatedAt > entry.TaggedPublishedDate
+            ? TruncateToMinutes(entry.Sys.UpdatedAt.Value) > TruncateToMinutes(entry.TaggedPublishedDate.Value)
                 ? entry.Sys.UpdatedAt.Value
                 : entry.LastEditorialUpdate.Value
             : entry.Sys.UpdatedAt.Value;
@@ -54,4 +54,8 @@ public class SectionContentfulFactory(IContentfulFactory<ContentfulProfile, Prof
                 alertsInline,
                 entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList());
     }
+
+    
+    private static DateTime TruncateToMinutes(DateTime dateTime) =>
+        new(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0);
 }

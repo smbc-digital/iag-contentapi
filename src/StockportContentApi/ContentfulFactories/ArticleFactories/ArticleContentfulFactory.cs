@@ -124,9 +124,12 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
         bool hasTaggedPublishedDate = taggedPublishedDate is not null && !taggedPublishedDate.Equals(DateTime.MinValue);
 
         return hasLastEditorialUpdate && hasTaggedPublishedDate
-            ? sysUpdatedAt > taggedPublishedDate
+            ? TruncateToMinutes(sysUpdatedAt.Value) > TruncateToMinutes(taggedPublishedDate.Value)
                 ? sysUpdatedAt.Value
                 : lastEditorialUpdate.Value
             : sysUpdatedAt ?? DateTime.MinValue;
     }
+
+    private static DateTime TruncateToMinutes(DateTime dateTime) =>
+        new(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0);
 }
