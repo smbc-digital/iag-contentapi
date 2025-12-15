@@ -28,16 +28,6 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
 
     public Article ToModel(ContentfulArticle entry)
     {
-        DateTime sectionUpdatedAt = entry.Sections.Where(section => ContentfulHelpers.EntryIsNotALink(section.Sys)
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(section.SunriseDate, section.SunsetDate))
-                                        .Where(section => section.Sys.UpdatedAt is not null)
-                                        .Select(section => GetEffectiveUpdatedAt(
-                                            section.LastEditorialUpdate,
-                                            section.TaggedPublishedDate,
-                                            section.Sys.UpdatedAt))
-                                        .OrderByDescending(date => date)
-                                        .FirstOrDefault();
-
         DateTime articleLastUpdated = GetEffectiveUpdatedAt(entry.LastEditorialUpdate, entry.TaggedPublishedDate, entry.Sys.UpdatedAt);
 
         return new()
@@ -102,9 +92,7 @@ public class ArticleContentfulFactory(IContentfulFactory<ContentfulSection, Sect
                             .Where(alertInline => !alertInline.Severity.Equals("Condolence"))
                             .Select(_alertFactory.ToModel),
 
-            UpdatedAt = sectionUpdatedAt > articleLastUpdated
-                ? sectionUpdatedAt
-                : articleLastUpdated,
+            UpdatedAt = articleLastUpdated,
             
             PublishedOn = entry.Sys.CreatedAt.Value,
 
