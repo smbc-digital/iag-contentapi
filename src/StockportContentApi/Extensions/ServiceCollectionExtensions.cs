@@ -41,6 +41,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>, LandingPageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulPublicationsTemplate, PublicationsTemplate>, PublicationsTemplateContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPublicationPage, PublicationPage>, PublicationPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPublicationSection, PublicationSection>, PublicationSectionContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>, FooterContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>, NewsContentfulFactory>();
