@@ -16,7 +16,7 @@ public class PublicationTemplateRepository(
     public async Task<HttpResponse> GetPublicationTemplate(string slug, string tagId)
     {
         QueryBuilder<ContentfulPublicationTemplate> builder = new QueryBuilder<ContentfulPublicationTemplate>()
-            .ContentTypeIs("publicationsTemplate")
+            .ContentTypeIs("publicationTemplate")
             .FieldEquals("fields.slug", slug)
             .Include(10);
         
