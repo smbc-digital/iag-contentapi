@@ -1,12 +1,12 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class PublicationsTemplateContentfulFactory(IContentfulFactory<ContentfulPublicationPage, PublicationPage> publicationPageFactory,
-                                    ITimeProvider timeProvider) : IContentfulFactory<ContentfulPublicationsTemplate, PublicationsTemplate>
+public class PublicationTemplateContentfulFactory(IContentfulFactory<ContentfulPublicationPage, PublicationPage> publicationPageFactory,
+                                    ITimeProvider timeProvider) : IContentfulFactory<ContentfulPublicationTemplate, PublicationTemplate>
 {
     private readonly IContentfulFactory<ContentfulPublicationPage, PublicationPage> _publicationPageFactory = publicationPageFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
 
-    public PublicationsTemplate ToModel(ContentfulPublicationsTemplate entry)
+    public PublicationTemplate ToModel(ContentfulPublicationTemplate entry)
     {
         if (entry is null)
             return null;
@@ -20,7 +20,7 @@ public class PublicationsTemplateContentfulFactory(IContentfulFactory<Contentful
                 Description = entry.HeroImage.Description
             };
 
-        return new PublicationsTemplate
+        return new PublicationTemplate
         {
             Title = entry.Title,
             Slug = entry.Slug,

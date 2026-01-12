@@ -1,7 +1,7 @@
 namespace StockportContentApi.Models;
 
 [ExcludeFromCodeCoverage]
-public class PublicationsTemplate
+public class PublicationTemplate
 {
     public string Title { get; set; }
     public string Slug { get; set; }

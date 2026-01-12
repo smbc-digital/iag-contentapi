@@ -1,7 +1,7 @@
 namespace StockportContentApi.ContentfulModels;
 
 [ExcludeFromCodeCoverage]
-public class ContentfulPublicationsTemplate : ContentfulReference
+public class ContentfulPublicationTemplate : ContentfulReference
 {
     public Asset HeroImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public string Subtitle { get; set; } = string.Empty;
