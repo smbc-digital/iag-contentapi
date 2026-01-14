@@ -31,8 +31,7 @@ public class PublicationTemplateContentfulFactory(IContentfulFactory<ContentfulP
             PublicationPages = entry.PublicationPages.Where(page => ContentfulHelpers.EntryIsNotALink(page.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(page.SunriseDate, page.SunsetDate))
                         .Select(_publicationPageFactory.ToModel).ToList(),
-            ColourScheme = entry.ColourScheme,
-            Body = entry.Body
+            ColourScheme = entry.ColourScheme
         };
     }
 }

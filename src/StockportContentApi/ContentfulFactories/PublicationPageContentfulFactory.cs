@@ -25,7 +25,6 @@ public class PublicationPageContentfulFactory(IContentfulFactory<ContentfulPubli
             Title = entry.Title,
             Slug = entry.Slug,
             MetaDescription = entry.MetaDescription,
-            HeroImage = heroImage,
             PublicationSections = entry.PublicationSections.Where(page => ContentfulHelpers.EntryIsNotALink(page.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(page.SunriseDate, page.SunsetDate))
                         .Select(_publicationSectionFactory.ToModel).ToList(),
