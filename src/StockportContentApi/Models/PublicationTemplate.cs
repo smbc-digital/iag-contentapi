@@ -8,7 +8,8 @@ public class PublicationTemplate
     public string MetaDescription { get; set; }
     public string Subtitle { get; set; }
     public MediaAsset HeroImage { get; set; }
-    public bool DisplayReviewDate { get; set; } = true;
+    public DateTime DatePublished { get; set; }
+    public DateTime LastUpdated { get; set; }
     public List<PublicationPage> PublicationPages { get; set; } = new();
     public EColourScheme ColourScheme { get; set; }
 }

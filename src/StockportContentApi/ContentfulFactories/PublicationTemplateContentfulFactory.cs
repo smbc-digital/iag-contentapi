@@ -27,7 +27,8 @@ public class PublicationTemplateContentfulFactory(IContentfulFactory<ContentfulP
             MetaDescription = entry.MetaDescription,
             HeroImage = heroImage,
             Subtitle = entry.Subtitle,
-            DisplayReviewDate = entry.DisplayReviewDate,
+            DatePublished = entry.DatePublished,
+            LastUpdated = entry.LastUpdated,
             PublicationPages = entry.PublicationPages.Where(page => ContentfulHelpers.EntryIsNotALink(page.Sys)
                             && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(page.SunriseDate, page.SunsetDate))
                         .Select(_publicationPageFactory.ToModel).ToList(),
