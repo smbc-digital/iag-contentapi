@@ -3,7 +3,10 @@ namespace StockportContentApi.ContentfulModels;
 [ExcludeFromCodeCoverage]
 public class ContentfulPublicationPage : ContentfulReference
 {
-    public Asset HeroImage { get; set; } = new() { File = new File { Url = string.Empty }, SystemProperties = new SystemProperties { Type = "Asset" } };
     public List<ContentfulPublicationSection> PublicationSections { get; set; } = new();
     public Contentful.Core.Models.Document Body { get; set; }
+    public List<ContentfulAlert> InlineAlerts { get; set; } = new();
+    public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
+    public string LogoAreaTitle { get; set; }
+    public List<ContentfulTrustedLogo> TrustedLogos { get; set; } = new();
 }
