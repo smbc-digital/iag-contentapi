@@ -24,13 +24,10 @@ public class PublicationTemplateRepository(
         ContentfulPublicationTemplate entry = entries.FirstOrDefault();
         
         if (entry is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, "No publication template found");
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"No publication template found with slug '{slug}' for '{tagId}'");
 
         PublicationTemplate publicationTemplate = _contentfulFactory.ToModel(entry);
 
-        if (publicationTemplate is null)
-            return HttpResponse.Failure(HttpStatusCode.NotFound, $"Publication template not found {slug}");
-        
         return HttpResponse.Successful(publicationTemplate);
     }
 }

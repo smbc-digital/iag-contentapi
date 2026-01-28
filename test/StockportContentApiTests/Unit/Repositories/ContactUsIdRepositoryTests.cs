@@ -26,7 +26,7 @@ public class ContactUsIdRepositoryTests
     }
 
     [Fact]
-    public void ItGetsContactUsId()
+    public async Task ItGetsContactUsId()
     {
         // Arrange
         const string slug = "unit-test-showcase";
@@ -42,14 +42,14 @@ public class ContactUsIdRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds(slug, "tagId"));
+        HttpResponse response = await _repository.GetContactUsIds(slug, "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void ItGetsContactUsIdFromSlug()
+    public async Task ItGetsContactUsIdFromSlug()
     {
         // Arrange
         ContentfulContactUsId rawContactUs = new() { Slug = "test-slug" };
@@ -68,7 +68,7 @@ public class ContactUsIdRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetContactUsIds("test-slug", "tagId"));
+        HttpResponse response = await _repository.GetContactUsIds("test-slug", "tagId");
         ContactUsId model = response.Get<ContactUsId>();
 
         // Assert

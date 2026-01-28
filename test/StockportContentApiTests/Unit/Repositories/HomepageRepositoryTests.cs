@@ -25,7 +25,7 @@ public class HomepageRepositoryTests
     }
 
     [Fact]
-    public void Get_ReturnsHomepage()
+    public async Task Get_ReturnsHomepage()
     {
         // Arrange
         ContentfulCollection<ContentfulHomepage> collection = new()
@@ -60,7 +60,7 @@ public class HomepageRepositoryTests
                                 null));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("tagId"));
+        HttpResponse response = await _repository.Get("tagId");
         
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

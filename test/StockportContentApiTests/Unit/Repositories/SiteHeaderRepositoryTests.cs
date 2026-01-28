@@ -27,7 +27,7 @@ public class SiteHeaderRepositoryTests
     }
 
     [Fact]
-    public void GetSiteHeader_ShouldReturnASiteHeader()
+    public async Task GetSiteHeader_ShouldReturnASiteHeader()
     {
         // Arrange
         SiteHeader mockSiteHeader = new("Title", new List<SubItem>(), "Logo");
@@ -49,7 +49,7 @@ public class SiteHeaderRepositoryTests
             .Returns(new SiteHeader("Title", new List<SubItem>(), "Logo"));
 
         // Act
-        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader("tagId"));
+        HttpResponse siteHeader = await _repository.GetSiteHeader("tagId");
 
         // Assert
         Assert.Equal(mockSiteHeader.Title, siteHeader.Get<SiteHeader>().Title);
@@ -58,7 +58,7 @@ public class SiteHeaderRepositoryTests
     }
 
     [Fact]
-    public void GetSiteHeader_ShouldReturnNotFound_IfSiteHeaderIsNull()
+    public async Task GetSiteHeader_ShouldReturnNotFound_IfSiteHeaderIsNull()
     {
         // Arrange
         SiteHeader mockSiteHeader = new("Title", new List<SubItem>(), "Logo");
@@ -80,7 +80,7 @@ public class SiteHeaderRepositoryTests
             .Returns((SiteHeader)null);
 
         // Act
-        HttpResponse siteHeader = AsyncTestHelper.Resolve(_repository.GetSiteHeader("tagId"));
+        HttpResponse siteHeader = await _repository.GetSiteHeader("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, siteHeader.StatusCode);

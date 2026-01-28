@@ -38,17 +38,17 @@ public class DocumentPageRepositoryTests
     }
 
     [Fact]
-    public void GetDocumentPage_ShouldReturnNotFound_If_DocumentDoesNotExist()
+    public async Task GetDocumentPage_ShouldReturnNotFound_If_DocumentDoesNotExist()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug", "tagId"));
+        HttpResponse response = await _repository.GetDocumentPage("slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetDocumentPage_ShouldReturnSuccessfulResponse()
+    public async Task GetDocumentPage_ShouldReturnSuccessfulResponse()
     {
         // Arrange
         ContentfulDocumentPage contentfulDocumentPage = new ContentfulDocumentPageBuilder().Build();
@@ -58,7 +58,7 @@ public class DocumentPageRepositoryTests
             .ReturnsAsync(contentfulDocumentPage);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetDocumentPage("slug", "tagId"));
+        HttpResponse response = await _repository.GetDocumentPage("slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

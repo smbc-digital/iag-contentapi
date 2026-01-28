@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using StockportContentApiTests.Unit.ContentfulFactories;
-using Xunit.Sdk;
-
-namespace StockportContentApiTests.Unit.Repositories;
+﻿namespace StockportContentApiTests.Unit.Repositories;
 
 public class ArticleRepositoryTests
 {
@@ -169,7 +165,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnSuccessfulResponse()
+    public async Task GetArticle_ShouldReturnSuccessfulResponse()
     {
         // Arrange
         _cache
@@ -177,7 +173,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "tagId"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "tagId");
 
         // Assert
         Article resultArticle = response.Get<Article>();
@@ -189,10 +185,10 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_IfArticleDoesNotExist()
     {
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("slug", "tagId"));
+        HttpResponse response = await _repository.GetArticle("slug", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -200,7 +196,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunriseDate()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunriseDate()
     {
         // Arrange
         _mockTimeProvider
@@ -220,14 +216,14 @@ public class ArticleRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "stockportgov");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunsetDate()
+    public async Task GetArticle_ShouldReturnNotFoundResponse_ForNewsOutsideOfSunsetDate()
     {
         // Arrange
         _mockTimeProvider
@@ -235,14 +231,14 @@ public class ArticleRepositoryTests
             .Returns(new DateTime(2017, 08, 01));
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "stockportgov");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnValidSunsetAndSunriseDateWhenDateInRange()
+    public async Task GetArticle_ShouldReturnValidSunsetAndSunriseDateWhenDateInRange()
     {
         // Arrange
         _mockTimeProvider
@@ -259,14 +255,14 @@ public class ArticleRepositoryTests
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "stockportgov"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "stockportgov");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnArticleWithInlineAlerts()
+    public async Task GetArticle_ShouldReturnArticleWithInlineAlerts()
     {
         // Arrange
         List<ContentfulAlert> alertsInline = new(){
@@ -279,7 +275,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(rawArticle);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-inline-alerts", "stockportgov"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article-with-inline-alerts", "stockportgov");
 
         // Assert
         Article article = response.Get<Article>();
@@ -287,7 +283,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_ShouldReturnArticleWithASectionThatHasAnInlineAlert()
+    public async Task GetArticle_ShouldReturnArticleWithASectionThatHasAnInlineAlert()
     {
         // Arrange
         Alert alert = new AlertBuilder().Build();
@@ -311,7 +307,7 @@ public class ArticleRepositoryTests
                 });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article-with-section-with-inline-alerts", "stockportgov"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article-with-section-with-inline-alerts", "stockportgov");
 
         // Assert
         Article article = response.Get<Article>();
@@ -319,7 +315,7 @@ public class ArticleRepositoryTests
     }
 
     [Fact]
-    public void GetArticle_WithMultipleAssociatedTagCategories_ShouldFetchDistinctTop3Events()
+    public async Task GetArticle_WithMultipleAssociatedTagCategories_ShouldFetchDistinctTop3Events()
     {
         // Arrange
         List<Event> eventsFromCategory = new()
@@ -350,7 +346,7 @@ public class ArticleRepositoryTests
             .ReturnsAsync(eventsFromTag);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetArticle("unit-test-article", "tagId"));
+        HttpResponse response = await _repository.GetArticle("unit-test-article", "tagId");
 
         // Assert
         Article resultArticle = response.Get<Article>();
