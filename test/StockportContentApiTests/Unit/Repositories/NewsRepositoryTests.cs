@@ -265,7 +265,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnAllNewsItems()
+    public async Task Get_ShouldReturnAllNewsItems()
     {
         // Arrange
         _timeProvider
@@ -317,7 +317,7 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null, null));
+        HttpResponse response = await _repository.Get(null, null, null, null, null);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -351,7 +351,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnAllNewsItemsWhenNoNewsroomIsPresent()
+    public async Task Get_ShouldReturnAllNewsItemsWhenNoNewsroomIsPresent()
     {
         // Arrange
         _timeProvider
@@ -398,7 +398,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, null, null, null, null));
+        HttpResponse response = await _repository.Get(null, null, null, null, null);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -422,7 +422,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfNewsForTag()
+    public async Task Get_ShouldReturnListOfNewsForTag()
     {
         // Arrange
         _timeProvider
@@ -470,7 +470,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", null, null, null, null));
+        HttpResponse response = await _repository.Get("Events", null, null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -484,7 +484,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfNewsForCategory()
+    public async Task Get_ShouldReturnListOfNewsForCategory()
     {
         // Arrange
         _timeProvider
@@ -527,7 +527,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null, "news-category-1", null, null, null));
+        HttpResponse response = await _repository.Get(null, "news-category-1", null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -541,7 +541,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnListOfNewsForCategoryAndTag()
+    public async Task Get_ShouldReturnListOfNewsForCategoryAndTag()
     {
         // Arrange
         _timeProvider
@@ -588,7 +588,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("Events", "news-category-1", null, null, null));
+        HttpResponse response = await _repository.Get("Events", "news-category-1", null, null, null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -660,7 +660,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void Get_ShouldReturnNoListOfNewsForDateRange()
+    public async Task Get_ShouldReturnNoListOfNewsForDateRange()
     {
         // Arrange
         _timeProvider
@@ -709,11 +709,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get(null,
-                                                                        null,
-                                                                        new DateTime(2017, 08, 01),
-                                                                        new DateTime(2017, 08, 31),
-                                                                        null));
+        HttpResponse response = await _repository.Get(null,
+                                                    null,
+                                                    new DateTime(2017, 08, 01),
+                                                    new DateTime(2017, 08, 31),
+                                                    null);
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -871,7 +871,7 @@ public class NewsRepositoryTests
     }
     
      [Fact]
-    public void Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
+    public async Task Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
     {
         // Arrange
         const string expectedTagQueryValue = "testTag";
@@ -925,7 +925,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.Get("testTag", null, null, null, "tagId"));
+        HttpResponse response = await _repository.Get("testTag", null, null, null, "tagId");
         Newsroom newsroom = response.Get<Newsroom>();
 
         // Assert
@@ -1060,7 +1060,7 @@ public class NewsRepositoryTests
     }
 
     [Fact]
-    public void GetNews_ShouldReturnNotFoundIfNewsHasSunriseDateAfterToday()
+    public async Task GetNews_ShouldReturnNotFoundIfNewsHasSunriseDateAfterToday()
     {
         // Arrange
         const string slug = "news-with-sunrise-date-in-future";
@@ -1087,7 +1087,7 @@ public class NewsRepositoryTests
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetNews(slug, "tagId"));
+        HttpResponse response = await _repository.GetNews(slug, "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

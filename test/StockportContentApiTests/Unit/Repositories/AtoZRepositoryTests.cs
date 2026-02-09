@@ -97,7 +97,6 @@ public class AtoZRepositoryTests
     public async Task Get_ShouldReturnListOfAtoZ_WhenLetterIsB()
     {
         // Arrange
-        string letter = "b";
         List<AtoZ> aToZArticles = new()
         {
             new AtoZ("B atoztitle 1", "atozslug1", "atozteaser1", "article", new List<string> {"V atoztitle"}),

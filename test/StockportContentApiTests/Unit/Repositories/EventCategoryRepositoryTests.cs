@@ -59,7 +59,7 @@ public class EventCategoryRepositoryTests
     }
 
     [Fact]
-    public void ShouldReturnNotFoundIfNoEventCategoryFound()
+    public async Task ShouldReturnNotFoundIfNoEventCategoryFound()
     {
         // Arrange
         ContentfulCollection<ContentfulEventCategory> collection = new()
@@ -74,7 +74,7 @@ public class EventCategoryRepositoryTests
             .ReturnsAsync(new List<EventCategory>());
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetEventCategories("tagId"));
+        HttpResponse response = await _repository.GetEventCategories("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

@@ -40,6 +40,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulDirectory, Directory>, DirectoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>, DirectoryEntryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulLandingPage, LandingPage>, LandingPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPublicationTemplate, PublicationTemplate>, PublicationTemplateContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPublicationPage, PublicationPage>, PublicationPageContentfulFactory>();
+        services.AddSingleton<IContentfulFactory<ContentfulPublicationSection, PublicationSection>, PublicationSectionContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>, FooterContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulNews, News>, NewsContentfulFactory>();
@@ -301,6 +304,12 @@ public static class ServiceCollectionExtensions
                             p.GetService<IConfiguration>())),
                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
+        services.AddSingleton<Func<string, IPublicationTemplateRepository>>(p =>
+            (contentfulConfig) =>
+                new PublicationTemplateRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                    p.GetService<IContentfulFactory<ContentfulPublicationTemplate, PublicationTemplate>>(),
+                    p.GetService<IContentfulClientManager>()));
+        
         services.AddSingleton<Func<string, IProfileRepository>>(p =>
             (contentfulConfig) =>
                 new ProfileRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),

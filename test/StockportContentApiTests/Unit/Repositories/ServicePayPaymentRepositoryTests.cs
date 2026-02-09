@@ -69,7 +69,7 @@ public class ServicePayPaymentRepositoryTests
     }
 
     [Fact]
-    public void GetPayment_ShouldReturn404ForNonExistentSlug()
+    public async Task GetPayment_ShouldReturn404ForNonExistentSlug()
     {
         // Arrange
         ContentfulCollection<ContentfulServicePayPayment> collection = new()
@@ -82,7 +82,7 @@ public class ServicePayPaymentRepositoryTests
             .ReturnsAsync(collection);
 
         // Act
-        HttpResponse response = AsyncTestHelper.Resolve(_repository.GetPayment("invalid-url", "tagId"));
+        HttpResponse response = await _repository.GetPayment("invalid-url", "tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

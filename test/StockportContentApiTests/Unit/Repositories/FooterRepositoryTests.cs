@@ -27,7 +27,7 @@ public class FooterRepositoryTests
     }
 
     [Fact]
-    public void ShouldReturnAFooter()
+    public async Task ShouldReturnAFooter()
     {
         // Arrange
         Footer mockFooter = new("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3");
@@ -49,7 +49,7 @@ public class FooterRepositoryTests
             .Returns(new Footer("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3"));
 
         // Act
-        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter("tagId"));
+        HttpResponse footer = await _repository.GetFooter("tagId");
 
         // Assert
         Assert.Equal(mockFooter.Title, footer.Get<Footer>().Title);
@@ -58,7 +58,7 @@ public class FooterRepositoryTests
     }
 
     [Fact]
-    public void Footer_ShouldReturnNotFound_IfFooterIsNull()
+    public async Task Footer_ShouldReturnNotFound_IfFooterIsNull()
     {
         // Arrange
         Footer mockFooter = new("Title", "a-slug", new List<SubItem>(), new List<SocialMediaLink>(), "footerContent1", "footerContent2", "footerContent3");
@@ -81,7 +81,7 @@ public class FooterRepositoryTests
             .Returns((Footer)null);
 
         // Act
-        HttpResponse footer = AsyncTestHelper.Resolve(_repository.GetFooter("tagId"));
+        HttpResponse footer = await _repository.GetFooter("tagId");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, footer.StatusCode);
