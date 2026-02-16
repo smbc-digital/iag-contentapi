@@ -13,6 +13,7 @@ public class ContentfulContactUsIdBuilder
             Name = "name",
             Slug = "slug",
             EmailAddress = "email@example.com",
+            BccAddress = "bcc@example.com",
             Sys = _sys
         };
 }

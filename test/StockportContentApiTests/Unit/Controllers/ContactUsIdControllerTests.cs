@@ -21,7 +21,7 @@ public class ContactUsIdControllerTests
     public async Task GetContactUsIds_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange
-        ContactUsId contactUsArea = new("name", "slug", "email address");
+        ContactUsId contactUsArea = new("name", "slug", "email address", "bcc address");
 
         _repository
             .Setup(repo => repo.GetContactUsIds(It.IsAny<string>(), It.IsAny<string>()))

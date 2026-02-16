@@ -16,5 +16,6 @@ public class ContactUsIdContentfulFactoryTests
         Assert.Equal(_contentfulContactUsId.Name, contactUsId.Name);
         Assert.Equal(_contentfulContactUsId.Slug, contactUsId.Slug);
         Assert.Equal(_contentfulContactUsId.EmailAddress, contactUsId.EmailAddress);
+        Assert.Equal(_contentfulContactUsId.BccAddress, contactUsId.BccAddress);
     }
 }
