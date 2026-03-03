@@ -4,7 +4,6 @@ namespace StockportContentApiTests.Unit.ContentfulFactories;
 
 public class PublicationTemplateContentfulFactoryTests
 {
-    private readonly ITimeProvider _timeProvider = new TimeProvider();
     private readonly Mock<IContentfulFactory<ContentfulReference, Crumb>> _crumbFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulPublicationPage, PublicationPage>> _publicationPageFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _trustedLogoFactory = new();
@@ -14,7 +13,6 @@ public class PublicationTemplateContentfulFactoryTests
     public PublicationTemplateContentfulFactoryTests() =>
             _publicationTemplateFactory = new PublicationTemplateContentfulFactory(_publicationPageFactory.Object,
                                                                 _crumbFactory.Object,
-                                                                _timeProvider,
                                                                 _trustedLogoFactory.Object);
 
     [Fact]
@@ -44,22 +42,19 @@ public class PublicationTemplateContentfulFactoryTests
     }
 
     [Fact]
-    public void ToModel_ShouldNotAddBreadcrumbsOrPublicationPages_If_TheyAreLinks()
+    public void ToModel_ShouldNotAddBreadcrumbs_If_TheyAreLinks()
     {
         // Arrange
         ContentfulPublicationTemplate contentfulPublicationTemplate = new ContentfulPublicationTemplateBuilder().Build();
 
         contentfulPublicationTemplate.Breadcrumbs.First().Sys.LinkType = "Link";
-        contentfulPublicationTemplate.PublicationPages.First().Sys.LinkType = "Link";
 
         // Act
         PublicationTemplate publicationTemplate = _publicationTemplateFactory.ToModel(contentfulPublicationTemplate);
 
         // Assert
         Assert.Empty(publicationTemplate.Breadcrumbs);
-        Assert.Empty(publicationTemplate.PublicationPages);
         _crumbFactory.Verify(crumbFactory => crumbFactory.ToModel(contentfulPublicationTemplate.Breadcrumbs.First()), Times.Never);
-        _publicationPageFactory.Verify(publicationPageFactory => publicationPageFactory.ToModel(contentfulPublicationTemplate.PublicationPages.First()), Times.Never);
     }
 
     [Fact]

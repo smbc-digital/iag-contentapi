@@ -6,7 +6,6 @@ public class PublicationTemplateRepositoryTests
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulPublicationPage, PublicationPage>> _publicationPageFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulPublicationSection, PublicationSection>> _publicationSectionFactory = new();
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
     
     public PublicationTemplateRepositoryTests()
     {
@@ -20,15 +19,8 @@ public class PublicationTemplateRepositoryTests
         
         PublicationPageContentfulFactory contentfulFactory = new(
             _publicationSectionFactory.Object,
-            _mockTimeProvider.Object,
-            new Mock<IContentfulFactory<ContentfulAlert, Alert>>().Object,
-            new Mock<IContentfulFactory<ContentfulInlineQuote, InlineQuote>>().Object,
             new Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>>().Object
         );
-
-        _mockTimeProvider
-            .Setup(timeProvider => timeProvider.Now())
-            .Returns(new DateTime(2016, 10, 15));
 
         ContentfulCollection<ContentfulPublicationTemplate> collection = new()
         {
@@ -49,7 +41,6 @@ public class PublicationTemplateRepositoryTests
         _repository = new(config,
                         new PublicationTemplateContentfulFactory(_publicationPageFactory.Object,
                             new Mock<IContentfulFactory<ContentfulReference, Crumb>>().Object,
-                            _mockTimeProvider.Object,
                             new Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>>().Object),
                         contentfulClientManager.Object);
     }
