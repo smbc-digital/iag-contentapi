@@ -8,6 +8,7 @@ public class ContentBlock
     public string Teaser { get; set; }
     public string Icon { get; set; }
     public EColourScheme ColourScheme { get; set; } = EColourScheme.Multi;
+    public bool HasBackgroundColour { get; set; }
     public string Type { get; set; }
     public string ContentType { get; set; }
     public string Image { get; set; }
