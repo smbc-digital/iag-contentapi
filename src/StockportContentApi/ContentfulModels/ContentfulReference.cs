@@ -14,6 +14,7 @@ public class ContentfulReference : IContentfulModel
     public string MetaDescription { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     public EColourScheme ColourScheme { get; set; } = EColourScheme.None;
+    public bool HasBackgroundColour { get; set; } = true;
     public DateTime SunriseDate { get; set; } = DateTime.MinValue.ToUniversalTime();
     public DateTime SunsetDate { get; set; } = DateTime.MaxValue.ToUniversalTime();
     public bool Highlight { get; set; } = false;
