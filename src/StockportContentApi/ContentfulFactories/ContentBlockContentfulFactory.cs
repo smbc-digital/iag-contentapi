@@ -91,7 +91,7 @@ public class ContentBlockContentfulFactory(ITimeProvider timeProvider) : IConten
             "CallToAction" => subItemContentType.Equals("callToActionBanner"),
             "EventCards" => subItemContentType.Equals("events"),
             "FindOutMoreBanner" or "FindOutMoreCards" or "ImageBannerContentWidth" or "ImageBannerScreenWidth" or
-            "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage",
+            "StatementBannerContentWidth" or "StatementBannerScreenWidth" => subItemContentType is "article" or "topic" or "directory" or "start-page" or "landingPage" or "publicationTemplate",
             "ProfileBanner" or "ProfileCards" => subItemContentType.Equals("profile"),
             "SocialMedia" => subItemContentType.Equals("socialMediaLink"),
             "NewsBanner" => subItemContentType.Equals("news"),

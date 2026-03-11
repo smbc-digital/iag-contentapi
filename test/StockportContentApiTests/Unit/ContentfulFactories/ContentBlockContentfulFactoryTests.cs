@@ -109,6 +109,7 @@ public class ContentBlockContentfulFactoryTests
     [InlineData("ProfileBanner", "informationList", false)]
     [InlineData("SocialMedia", "socialMediaLink", true)]
     [InlineData("SocialMedia", "start-page", false)]
+    [InlineData("StatementBannerContentWidth", "publicationTemplate", true)]
     [InlineData("SubscriptionBanner", "directory", false)]
     [InlineData("TriviaList", "callToActionBanner", false)]
     [InlineData("TriviaList", "informationList", true)]
