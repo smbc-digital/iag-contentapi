@@ -8,7 +8,7 @@ public class SwaggerFilter : IDocumentFilter
         string pathStart = "/{businessId}";
         int pathLength = pathStart.Length;
 
-        foreach (KeyValuePair<string, OpenApiPathItem> item in swaggerDoc.Paths)
+        foreach (KeyValuePair<string, IOpenApiPathItem> item in swaggerDoc.Paths)
         {
             string path = item.Key;
             if (path.ToString()[..pathLength].Equals(pathStart))
