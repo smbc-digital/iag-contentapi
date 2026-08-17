@@ -36,7 +36,6 @@ try
         .ReadFrom.Configuration(context.Configuration)
         .WriteToElasticsearchAws(builder.Configuration));
 
-    // Configure Services
     string appEnvironment = builder.Environment.EnvironmentName;
     string contentRootPath = builder.Environment.ContentRootPath;
     bool useRedisSession = builder.Configuration["UseRedisSessions"].Equals("true", StringComparison.OrdinalIgnoreCase);
