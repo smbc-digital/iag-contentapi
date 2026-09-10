@@ -34,7 +34,7 @@ try
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
-        .WriteToElasticsearchAws(builder.Configuration));
+        .WriteToOpenSearchAws(builder.Configuration));
 
     string appEnvironment = builder.Environment.EnvironmentName;
     string contentRootPath = builder.Environment.ContentRootPath;
@@ -117,7 +117,7 @@ try
 
     Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
-                .WriteToElasticsearchAws(builder.Configuration)
+                .WriteToOpenSearchAws(builder.Configuration)
                 .CreateLogger();
 
     app.Run();
