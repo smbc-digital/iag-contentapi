@@ -10,10 +10,10 @@
     <UserSecretsId>4e8e9e1f-11e4-47f2-85ed-275781ef8d92</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400.27" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="4.0.100.11" />
     <PackageReference Include="contentful.aspnetcore" Version="8.6.1" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
-    <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.7.0" />
+    <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.11" />
