@@ -45,7 +45,7 @@ global using StockportContentApi.Models.Exceptions;
 global using StockportContentApi.Repositories;
 global using StockportContentApi.Services;
 global using StockportContentApi.Utils;
-global using StockportGovUK.AspNetCore.Logging.Elasticsearch.Aws;
+global using StockportGovUK.NetStandard.Logging.Opensearch.Aws;
 global using Swashbuckle.AspNetCore.SwaggerGen;
 global using Directory = StockportContentApi.Models.Directory;
 global using Document = StockportContentApi.Models.Document;
