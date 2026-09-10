@@ -32,6 +32,14 @@ try
         Log.Logger.Information($"CONTENTAPI : INITIALISE SECRETS {builder.Environment.EnvironmentName}: Load JSON Secrets from file system, {location}");
     }
 
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .WriteToOpenSearchAws(builder.Configuration)
+        .CreateLogger();
+
+    builder.Logging.ClearProviders();
+    builder.Services.AddSerilog(Log.Logger);
+
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
         .WriteToOpenSearchAws(builder.Configuration));
@@ -114,11 +122,6 @@ try
     app.UseMiddleware<AuthenticationMiddleware>();
     app.UseRouting();
     app.MapControllers();
-
-    Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration)
-                .WriteToOpenSearchAws(builder.Configuration)
-                .CreateLogger();
 
     app.Run();
 }
