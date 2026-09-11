@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace StockportContentApi.Controllers;
+﻿namespace StockportContentApi.Controllers;
 
 public class EventController(ResponseHandler handler,
                             Func<string, string, IEventRepository> eventRepository,
@@ -19,11 +17,8 @@ public class EventController(ResponseHandler handler,
     [HttpGet]
     [Route("{businessId}/event-categories")]
     [Route("v1/{businessId}/event-categories")]
-    public async Task<IActionResult> GetEventCategories(string businessId) 
-    {
-        _logger.LogError("Test log");
-        return await _handler.Get(() => _eventCategoryRepository(businessId, businessId).GetEventCategories(businessId));
-    }
+    public async Task<IActionResult> GetEventCategories(string businessId) =>
+        await _handler.Get(() => _eventCategoryRepository(businessId, businessId).GetEventCategories(businessId));
         
 
     [HttpGet]

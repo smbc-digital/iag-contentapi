@@ -1,6 +1,4 @@
-﻿using Amazon.SecretsManager.Model;
-
-namespace StockportContentApi.Repositories;
+﻿namespace StockportContentApi.Repositories;
 
 public interface IAtoZRepository
 {
@@ -44,6 +42,10 @@ public class AtoZRepository(ContentfulConfig config,
 
     public async Task<IEnumerable<AtoZ>> GetAtoZ(string tagId)
     {
+        _cache.Set("testCacheKey", "test cache value", 1);
+        var testCacheResult = _cache.TryGetValue("testCacheKey", out string result);
+        _logger.LogError($"A to Z cache test returned {testCacheResult}; Value retrieved - {result}");
+
         List<AtoZ> atozItems = new();
         foreach(string contentType in contentTypesToInclude)
         {
