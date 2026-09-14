@@ -76,39 +76,47 @@ public static class ServiceCollectionExtensions
                                             bool useLocalCache = true)
     {
         logger.Information(
-            $"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Configure redis for session management - TokenStoreUrl: {configuration["TokenStoreUrl"]} Enabled: {useRedisSession}");
+            $"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Configure redis for session management - ValkeyUrl: {configuration["ValkeyUrl"]} Enabled: {useRedisSession}");
 
         if (useRedisSession)
         {
-            string redisUrl = configuration["TokenStoreUrl"];
-            logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis URL {redisUrl}");
+            string redisUrl = configuration["ValkeyUrl"];
+            logger.Warning($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis URL {redisUrl}");
 
             string redisIp = redisUrl;
             if (!_appEnvironment.Equals("local"))
             {
                 redisIp = GetHostEntryForUrl(redisUrl, logger);
-                logger.Information($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis IP {redisIp}");
+                logger.Warning($"CONTENTAPI : ServiceCollectionsExtensions : AddCache : Using Redis IP {redisIp}");
             }
 
             string name = Assembly.GetEntryAssembly()?.GetName().Name;
 
-            services.AddStackExchangeRedisCache(options =>
+            var options = new ConfigurationOptions
             {
-                options.ConfigurationOptions = new()
-                {
-                    EndPoints =
-                    {
-                        redisIp
-                    },
-                    ClientName = name,
-                    SyncTimeout = 30000,
-                    AsyncTimeout = 30000,
-                    SocketManager = SocketManager.ThreadPool
-                };
-            });
+                EndPoints = {
+                    { redisIp, 6379 }
+                },
+                Ssl = true,
+                SslProtocols = SslProtocols.Tls12,
+                AbortOnConnectFail = false,
+                ClientName = name,
+                SyncTimeout = 30000,
+                AsyncTimeout = 30000,
+                SocketManager = SocketManager.ThreadPool
+            };
 
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisIp);
-            logger.Information(
+            options.CertificateValidation += (sender, cert, chain, errors) =>
+            {
+                if (cert is not null)
+                    return cert.Subject.Contains(".cache.amazonaws.com") || cert.Issuer.Contains("Amazon");
+
+                return false;
+            };
+
+            var redis = ConnectionMultiplexer.Connect(options);
+
+            logger.Warning(
                 $"CONTENTAPI : ServiceCollectionExtensions : Add Cache : Using Redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, $"{name}DataProtection-Keys");
         }
