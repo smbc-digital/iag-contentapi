@@ -114,6 +114,11 @@ public static class ServiceCollectionExtensions
                 return false;
             };
 
+            services.AddStackExchangeRedisCache(cacheOptions =>
+            {
+                cacheOptions.ConfigurationOptions = options;
+            });
+
             var redis = ConnectionMultiplexer.Connect(options);
 
             logger.Warning(
