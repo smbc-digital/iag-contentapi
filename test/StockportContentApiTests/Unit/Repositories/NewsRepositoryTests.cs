@@ -83,6 +83,7 @@ public class NewsRepositoryTests
                                 It.IsAny<List<string>>(),
                                 It.IsAny<List<string>>(),
                                 It.IsAny<List<InlineQuote>>(),
+                                It.IsAny<IEnumerable<Document>>(),
                                 It.IsAny<CallToActionBanner>(),
                                 It.IsAny<string>(),
                                 It.IsAny<List<TrustedLogo>>(),
@@ -201,7 +202,7 @@ public class NewsRepositoryTests
         _cacheWrapper
             .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsCollection);
-            
+
         News news = CreateTestNews("This is the news", "news-of-the-century");
 
         _newsFactory
@@ -434,7 +435,7 @@ public class NewsRepositoryTests
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
             .Returns(newsRoom);
-        
+
         News news = CreateTestNews("This is the news", "news-of-the-century");
         news.Tags = new() { "Events" };
 
@@ -672,7 +673,7 @@ public class NewsRepositoryTests
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
             .Returns(newsRoom);
-        
+
         News news = CreateTestNews("This is within the date Range", "news-of-the-century");
 
         _newsFactory
@@ -835,7 +836,7 @@ public class NewsRepositoryTests
 
         News news = CreateTestNews("This is the news", "news-of-the-century");
         news.Tags = new() { "testTag" };
-        
+
         _newsFactory
             .Setup(newsFactory => newsFactory.ToModel(It.IsAny<ContentfulNews>()))
             .Returns(news);
@@ -869,8 +870,8 @@ public class NewsRepositoryTests
         Assert.Equal(2, newsroom.News.Count);
         Assert.Contains(newsroom.News.First().Tags, t => t.Equals("testTag"));
     }
-    
-     [Fact]
+
+    [Fact]
     public async Task Get_ShouldReturnNewsItemsWithTagsContainingMatchingTagsWithHash()
     {
         // Arrange
@@ -880,7 +881,7 @@ public class NewsRepositoryTests
             .Returns(new DateTime(2016, 08, 5));
 
         Newsroom newsRoom = new(_alerts, true, "test-id", null);
-        
+
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
             .Returns(newsRoom);
@@ -946,7 +947,7 @@ public class NewsRepositoryTests
         _newsRoomContentfulFactory
             .Setup(newsRoomFactory => newsRoomFactory.ToModel(It.IsAny<ContentfulNewsRoom>()))
             .Returns(newsRoom);
-        
+
         _newsFactory
             .Setup(newsFactory => newsFactory.ToModel(It.IsAny<ContentfulNews>()))
             .Returns<ContentfulNews>(entry => CreateTestNews(entry.Title, entry.Slug, entry.SunriseDate, entry.SunsetDate));
@@ -1379,6 +1380,7 @@ public class NewsRepositoryTests
                 contentfulNews.Categories,
                 null,
                 null,
+                null,
                 string.Empty,
                 null,
                 null,
@@ -1431,6 +1433,7 @@ public class NewsRepositoryTests
             _alerts,
             new(),
             _newsCategories,
+            null,
             null,
             null,
             string.Empty,
