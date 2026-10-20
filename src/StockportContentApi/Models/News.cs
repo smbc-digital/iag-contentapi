@@ -15,6 +15,7 @@ public class News(string title,
                 List<string> tags,
                 List<string> categories,
                 List<InlineQuote> inlineQuotes,
+                IEnumerable<Document> documents,
                 CallToActionBanner callToAction,
                 string logoAreaTitle,
                 List<TrustedLogo> trustedLogos,
@@ -37,6 +38,7 @@ public class News(string title,
     public List<string> Categories { get; } = categories;
     public List<InlineQuote> InlineQuotes { get; set; } = inlineQuotes;
     public CallToActionBanner CallToAction { get; init; } = callToAction;
+    public IEnumerable<Document> Documents { get; set; } = documents;
     public string LogoAreaTitle { get; set; } = logoAreaTitle;
     public List<TrustedLogo> TrustedLogos { get; set; } = trustedLogos;
     public TrustedLogo FeaturedLogo { get; set; } = featuredLogo;

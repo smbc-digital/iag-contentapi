@@ -3,6 +3,7 @@ namespace StockportContentApi.ContentfulFactories.NewsFactories;
 public class NewsContentfulFactory(IVideoRepository videoRepository,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                 ITimeProvider timeProvider,
+                                IContentfulFactory<Asset, Document> documentFactory,
                                 IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
                                 IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
                                 IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulNews, News>
@@ -10,6 +11,7 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
     private readonly IVideoRepository _videoRepository = videoRepository;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
+    private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
     private readonly IContentfulFactory<ContentfulInlineQuote, InlineQuote> _inlineQuoteContentfulFactory = inlineQuoteContentfulFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
@@ -54,6 +56,9 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
                         entry.Tags,
                         entry.Categories,
                         entry.InlineQuotes.Select(_inlineQuoteContentfulFactory.ToModel).ToList(),
+                        entry.Documents.Where(document => document is not null 
+                                && ContentfulHelpers.EntryIsNotALink(document.SystemProperties))
+                            .Select(_documentFactory.ToModel).ToList(),
                         _callToActionFactory.ToModel(entry.CallToAction),
                         entry.LogoAreaTitle,
                         entry.TrustedLogos is not null
