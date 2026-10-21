@@ -18,6 +18,7 @@ public class ContentfulNews : IContentfulModel
     public List<string> Categories { get; set; } = new();
     public SystemProperties Sys { get; set; } = new();
     public List<ContentfulInlineQuote> InlineQuotes { get; set; } = new();
+    public List<Asset> Documents { get; set; } = new();
     public ContentfulCallToActionBanner CallToAction { get; init; }
     public ContentfulTrustedLogo FeaturedLogo { get; set; }
     public string LogoAreaTitle { get; set; }

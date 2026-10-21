@@ -44,7 +44,7 @@ public class LandingPageRepositoryTests
         _timeProvider
             .Setup(time => time.Now())
             .Returns(DateTime.Today.AddDays(1));
-        
+
         Mock<IContentfulClientManager> contentfulClientManager = SetupContentfulClientManager(config);
 
         _configuration
@@ -68,7 +68,7 @@ public class LandingPageRepositoryTests
                             _cacheWrapper.Object,
                             _configuration.Object,
                             _eventRepository.Object);
-        
+
         _repository = new(config,
                         _contentfulFactory.Object,
                         contentfulClientManager.Object,
@@ -81,7 +81,7 @@ public class LandingPageRepositoryTests
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = [contentfulLandingPage] };
 
         _contentfulClient
-            .Setup(client =>client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
+            .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
 
         _contentfulFactory
@@ -104,7 +104,7 @@ public class LandingPageRepositoryTests
         contentfulClientManager
             .Setup(client => client.GetClient(config))
             .Returns(_contentfulClient.Object);
-        
+
         return contentfulClientManager;
     }
 
@@ -124,7 +124,7 @@ public class LandingPageRepositoryTests
     {
         // Arrange
         ContentfulCollection<ContentfulLandingPage> contentfulCollection = new() { Items = Enumerable.Empty<ContentfulLandingPage>() };
-        
+
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulLandingPage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contentfulCollection);
@@ -245,6 +245,7 @@ public class LandingPageRepositoryTests
                 It.IsAny<List<string>>(),
                 new List<string>() { "some-category" },
                 It.IsAny<List<InlineQuote>>(),
+                It.IsAny<IEnumerable<Document>>(),
                 It.IsAny<CallToActionBanner>(),
                 It.IsAny<string>(),
                 It.IsAny<List<TrustedLogo>>(),
@@ -292,6 +293,7 @@ public class LandingPageRepositoryTests
                     new List<string>() { "some-tag" },
                     It.IsAny<List<string>>(),
                     It.IsAny<List<InlineQuote>>(),
+                    It.IsAny<IEnumerable<Document>>(),
                     It.IsAny<CallToActionBanner>(),
                     It.IsAny<string>(),
                     It.IsAny<List<TrustedLogo>>(),
@@ -306,7 +308,7 @@ public class LandingPageRepositoryTests
         _newsRepository
             .Setup(repository => repository.GetLatestNewsByTag(It.IsAny<string>(), "tagId", 1))
             .ReturnsAsync(news);
-    
+
         // Act
         HttpResponse result = await _repository.GetLandingPage("landing-page-slug", "tagId");
         News responseNews = result.Get<LandingPage>().PageSections.FirstOrDefault().NewsArticle;
@@ -322,7 +324,7 @@ public class LandingPageRepositoryTests
     public async Task PopulateNewsContent_ShouldUseNewsSubItem_WhenValidSubItemExists()
     {
         // Arrange
-        var subItemSlug = "news-subitem-slug";
+        string subItemSlug = "news-subitem-slug";
         List<News> news = new()
         {
             new News("this is the title",
@@ -339,6 +341,7 @@ public class LandingPageRepositoryTests
                     It.IsAny<List<string>>(),
                     It.IsAny<List<string>>(),
                     It.IsAny<List<InlineQuote>>(),
+                    It.IsAny<IEnumerable<Document>>(),
                     It.IsAny<CallToActionBanner>(),
                     It.IsAny<string>(),
                     It.IsAny<List<TrustedLogo>>(),
@@ -449,14 +452,14 @@ public class LandingPageRepositoryTests
 
         ContentfulProfile mockContentfulProfile = new() { Slug = "profile-slug" };
         Profile mockProfile = new() { Slug = "profile-slug" };
-        
+
         _contentfulClient
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulProfile>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulProfile>
             {
                 Items = new List<ContentfulProfile> { mockContentfulProfile }
             });
-        
+
         _profileFactory
             .Setup(factory => factory.ToModel(mockContentfulProfile))
             .Returns(mockProfile);

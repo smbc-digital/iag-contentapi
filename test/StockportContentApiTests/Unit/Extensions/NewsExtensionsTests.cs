@@ -4,10 +4,12 @@ public class NewsExtensionsTests
 {
     private readonly Mock<ITimeProvider> _timeProvider = new();
 
-    public NewsExtensionsTests() =>
+    public NewsExtensionsTests()
+    {
         _timeProvider
             .Setup(timeProvider => timeProvider.Now())
             .Returns(new DateTime(2016, 12, 07));
+    }
 
     [Fact]
     public void ShouldReturnTwoDatesForNewsItems()
@@ -30,6 +32,7 @@ public class NewsExtensionsTests
                     new List<string>(),
                     null,
                     null,
+                    null,
                     string.Empty,
                     null,
                     null,
@@ -47,6 +50,7 @@ public class NewsExtensionsTests
                     new List<Alert>(),
                     new List<string>(),
                     new List<string>(),
+                    null,
                     null,
                     null,
                     string.Empty,
@@ -90,6 +94,7 @@ public class NewsExtensionsTests
                     new List<string>(),
                     null,
                     null,
+                    null,
                     string.Empty,
                     null,
                     null,
@@ -107,6 +112,7 @@ public class NewsExtensionsTests
                     new List<Alert>(),
                     new List<string>(),
                     new List<string>(),
+                    null,
                     null,
                     null,
                     string.Empty,
@@ -148,6 +154,7 @@ public class NewsExtensionsTests
                     new List<string>(),
                     null,
                     null,
+                    null,
                     string.Empty,
                     null,
                     null,
@@ -165,6 +172,7 @@ public class NewsExtensionsTests
                     new List<Alert>(),
                     new List<string>(),
                     new List<string>(),
+                    null,
                     null,
                     null,
                     string.Empty,
@@ -186,6 +194,7 @@ public class NewsExtensionsTests
                     new List<string>(),
                     null,
                     null,
+                    null,
                     string.Empty,
                     null,
                     null,
@@ -203,6 +212,7 @@ public class NewsExtensionsTests
                     new List<Alert>(),
                     new List<string>(),
                     new List<string>(),
+                    null,
                     null,
                     null,
                     string.Empty,
