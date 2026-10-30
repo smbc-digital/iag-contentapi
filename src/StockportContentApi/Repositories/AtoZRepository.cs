@@ -11,14 +11,14 @@ public class AtoZRepository(ContentfulConfig config,
                             ITimeProvider timeProvider,
                             ICache cache,
                             IConfiguration configuration,
-                            ILogger logger) : BaseRepository, IAtoZRepository
+                            ILogger<AtoZRepository> logger) : BaseRepository, IAtoZRepository
 {
     private readonly IContentfulClient _client = contentfulClientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulAtoZ, AtoZ> _contentfulAtoZFactory = contentfulAtoZFactory;
     private readonly DateComparer _dateComparer = new(timeProvider);
     private readonly ICache _cache = cache;
     private readonly int _atoZTimeout = GetCacheConfiguration(configuration);
-    private readonly ILogger _logger = logger;
+    private readonly ILogger<AtoZRepository> _logger = logger;
     private readonly List<string> contentTypesToInclude = new() { "article", "topic", "landingPage" };
 
     private static int GetCacheConfiguration(IConfiguration configuration)
@@ -31,8 +31,8 @@ public class AtoZRepository(ContentfulConfig config,
 
     public async Task<HttpResponse> Get(string tagId, string letter = "")
     {
-        IEnumerable<AtoZ> aToZItems = string.IsNullOrEmpty(letter) 
-                            ? await GetAtoZ(tagId) 
+        IEnumerable<AtoZ> aToZItems = string.IsNullOrEmpty(letter)
+                            ? await GetAtoZ(tagId)
                             : await GetAtoZ(letter);
 
         return !aToZItems.Any()
@@ -42,12 +42,9 @@ public class AtoZRepository(ContentfulConfig config,
 
     public async Task<IEnumerable<AtoZ>> GetAtoZ(string tagId)
     {
-        _cache.Set("testCacheKey", "test cache value", 1);
-        var testCacheResult = _cache.TryGetValue("testCacheKey", out string result);
-        _logger.LogError($"A to Z cache test returned {testCacheResult}; Value retrieved - {result}");
-
         List<AtoZ> atozItems = new();
-        foreach(string contentType in contentTypesToInclude)
+        
+        foreach (string contentType in contentTypesToInclude)
         {
             List<AtoZ> items = await _cache.GetFromCacheOrDirectlyAsync($"{config.BusinessId}-atoz-{contentType}", () => GetAtoZItemFromSource(contentType, tagId), _atoZTimeout);
             atozItems.AddRange(items);
@@ -55,7 +52,7 @@ public class AtoZRepository(ContentfulConfig config,
 
         return atozItems;
     }
-    
+
     public async Task<IEnumerable<AtoZ>> GetAtoZ(string letter, string tagId)
     {
         List<AtoZ> atozItems = new();
@@ -77,10 +74,10 @@ public class AtoZRepository(ContentfulConfig config,
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>().ContentTypeIs(contentType).Include(0);
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
-        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True")
-                                                                && entry.Title.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase)
+        IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => (entry.DisplayOnAZ.Equals("True")
+                                                                && entry.Title.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase))
                                                                 || entry.Name.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase)
-                                                                || (entry.AlternativeTitles is not null 
+                                                                || (entry.AlternativeTitles is not null
                                                                 && entry.AlternativeTitles.Any(alternativeTitle => alternativeTitle.StartsWith(letter, StringComparison.CurrentCultureIgnoreCase))));
 
         if (entriesWithDisplayOn is not null)
@@ -108,7 +105,7 @@ public class AtoZRepository(ContentfulConfig config,
         QueryBuilder<ContentfulAtoZ> builder = new QueryBuilder<ContentfulAtoZ>()
             .ContentTypeIs(contentType)
             .Include(0);
-        
+
         ContentfulCollection<ContentfulAtoZ> entries = await GetAllEntriesAsync(_client, builder, _logger);
 
         IEnumerable<ContentfulAtoZ> entriesWithDisplayOn = entries?.Where(entry => entry.DisplayOnAZ.Equals("True"));
