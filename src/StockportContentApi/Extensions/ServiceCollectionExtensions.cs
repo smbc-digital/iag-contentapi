@@ -92,7 +92,7 @@ public static class ServiceCollectionExtensions
 
             string name = Assembly.GetEntryAssembly()?.GetName().Name;
 
-            var options = new ConfigurationOptions
+            ConfigurationOptions options = new()
             {
                 EndPoints = {
                     { redisIp, 6379 }
@@ -119,7 +119,7 @@ public static class ServiceCollectionExtensions
                 cacheOptions.ConfigurationOptions = options;
             });
 
-            var redis = ConnectionMultiplexer.Connect(options);
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(options);
 
             logger.Warning(
                 $"CONTENTAPI : ServiceCollectionExtensions : Add Cache : Using Redis for session management - url {redisUrl}, ip {redisIp}, Name {name}");
@@ -133,8 +133,10 @@ public static class ServiceCollectionExtensions
         }
 
         if (useRedisSession || useLocalCache)
+        {
             services.AddScoped<IDistributedCacheWrapper>(p =>
                 new DistributedCacheWrapper(p.GetService<IDistributedCache>()));
+        }
 
         services.AddSingleton<ICache>(p => new Cache(p.GetService<IDistributedCacheWrapper>(),
             p.GetService<ILogger<ICache>>(), useRedisSession, useLocalCache));
@@ -155,7 +157,7 @@ public static class ServiceCollectionExtensions
                 .Add($"{businessId.ToUpper()}_EventsCacheKey", configuration[$"{businessId}:EventsCacheKey"])
                 .Add($"{businessId.ToUpper()}_NewsCacheKey", configuration[$"{businessId}:NewsCacheKey"])
                 .Build();
-       
+
         services.AddTransient(_ => createCacheKeyConfig);
 
         return services;
@@ -211,7 +213,7 @@ public static class ServiceCollectionExtensions
                     serviceProvider.GetService<ITimeProvider>(),
                     serviceProvider.GetService<ICache>(),
                     serviceProvider.GetService<IConfiguration>(),
-                    serviceProvider.GetService<ILogger>()));
+                    serviceProvider.GetService<ILogger<AtoZRepository>>()));
 
         services.AddSingleton<Func<string, IPrivacyNoticeRepository>>(serviceProvider =>
             (contentfulConfig) =>
@@ -322,14 +324,14 @@ public static class ServiceCollectionExtensions
                 new PublicationTemplateRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulPublicationTemplate, PublicationTemplate>>(),
                     p.GetService<IContentfulClientManager>()));
-        
+
         services.AddSingleton<Func<string, IProfileRepository>>(p =>
             (contentfulConfig) =>
                 new ProfileRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulProfile, Profile>>()));
 
-        services.AddSingleton<Func<string, IPaymentRepository>>( p =>
+        services.AddSingleton<Func<string, IPaymentRepository>>(p =>
             (contentfulConfig) =>
                 new PaymentRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
@@ -360,7 +362,7 @@ public static class ServiceCollectionExtensions
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulStartPage, StartPage>>(),
                     p.GetService<ITimeProvider>()));
-        
+
         services.AddSingleton<Func<string, IFooterRepository>>(p =>
             (contentfulConfig) =>
                 new FooterRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
@@ -396,24 +398,24 @@ public static class ServiceCollectionExtensions
                 new SectionRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulSection, Section>>(),
                     p.GetService<IContentfulClientManager>()));
-        
+
         services.AddSingleton<Func<string, ITopicRepository>>(p =>
             (contentfulConfig) =>
                 new TopicRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulTopic, Topic>>(),
                     p.GetService<IContentfulFactory<ContentfulTopicForSiteMap, TopicSiteMap>>()));
-        
+
         services.AddSingleton<RedirectsRepository>();
         services.AddSingleton<IAuthenticationHelper>(p => new AuthenticationHelper());
-        
+
         services.AddSingleton<Func<string, IContactUsIdRepository>>(p =>
             (contentfulConfig) =>
-                new ContactUsIdRepository( p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                new ContactUsIdRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulFactory<ContentfulContactUsId, ContactUsId>>(),
                     p.GetService<IContentfulClientManager>()));
 
-        services.AddSingleton<Func<string, IContactUsAreaRepository>>( p =>
+        services.AddSingleton<Func<string, IContactUsAreaRepository>>(p =>
             (contentfulConfig) =>
                 new ContactUsAreaRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
