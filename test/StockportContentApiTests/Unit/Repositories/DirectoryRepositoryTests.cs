@@ -57,8 +57,8 @@ public class DirectoryRepositoryTests
             .Returns(_contentfulClient.Object);
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulDirectory>>>>(), It.IsAny<int>()))
-            .ReturnsAsync((IList<ContentfulDirectory>)null);
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulDirectory>>>>(), It.IsAny<int>()))
+            .Returns((IList<ContentfulDirectory>)null);
 
         _options
             .Setup(options => options.Value)
@@ -146,8 +146,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
-            .ReturnsAsync(_directory);
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
+            .Returns(_directory);
 
         // Act
         HttpResponse response = await _repository.Get("directory-slug", "tagId");
@@ -156,7 +156,7 @@ public class DirectoryRepositoryTests
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(response.Get<Directory>(), _directory);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -164,15 +164,15 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
-            .ReturnsAsync((Directory)null);
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
+            .Returns((Directory)null);
 
         // Act
         HttpResponse response = await _repository.Get("directory-slug", "tagId");
 
         // Assert
         Assert.IsType<HttpResponse>(response);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -181,8 +181,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
-            .ReturnsAsync((Directory)null);
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
+            .Returns((Directory)null);
 
         // Act
         HttpResponse response = await _repository.Get("tagId");
@@ -228,8 +228,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Returns(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
         HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
@@ -238,7 +238,7 @@ public class DirectoryRepositoryTests
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(response.Get<DirectoryEntry>(), _directoryEntry);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -246,8 +246,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<DirectoryEntry> { });
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Returns(new List<DirectoryEntry> { });
 
         // Act
         HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
@@ -255,7 +255,7 @@ public class DirectoryRepositoryTests
         // Assert
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectly(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -263,14 +263,14 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<DirectoryEntry> { });
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Returns(new List<DirectoryEntry> { });
 
         // Act
         IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntries("tagId");
 
         // Assert
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
         Assert.IsAssignableFrom<IEnumerable<DirectoryEntry>>(response);
     }
 
@@ -279,8 +279,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Returns(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
         IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("test-directory", "tagId");
@@ -295,8 +295,8 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Returns(new List<DirectoryEntry> { _directoryEntry });
 
         // Act
         IEnumerable<DirectoryEntry> response = await _repository.GetDirectoryEntriesForDirectory("non-existant-test-directory", "tagId");
