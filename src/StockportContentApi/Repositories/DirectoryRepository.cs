@@ -28,7 +28,7 @@ public class DirectoryRepository(ContentfulConfig config,
 
     public async Task<HttpResponse> Get(string slug, string tagId)
     {
-        Directory directory = await _cache.GetFromCacheOrDirectlyAsync(slug, () => GetDirectoryFromSource(slug, 0, tagId), _redisExpiryConfiguration.Directory);
+        Directory directory = _cache.GetFromCacheOrDirectlyWithLocking(slug, () => GetDirectoryFromSource(slug, 0, tagId), _redisExpiryConfiguration.Directory);
 
         return directory is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
@@ -92,7 +92,7 @@ public class DirectoryRepository(ContentfulConfig config,
 
         Task<Directory>[] contentfulSubDirectoriesTasks = contentfulDirectory
             .SubDirectories?.Select(async subDirectory =>
-                await _cache.GetFromCacheOrDirectlyAsync(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1, tagId), _redisExpiryConfiguration.Directory)).ToArray();
+                 _cache.GetFromCacheOrDirectlyWithLocking(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1, tagId), _redisExpiryConfiguration.Directory)).ToArray();
 
         if (contentfulSubDirectoriesTasks is not null)
         {
@@ -104,7 +104,7 @@ public class DirectoryRepository(ContentfulConfig config,
     }
 
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries(string tagId) =>
-        await _cache.GetFromCacheOrDirectlyAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(tagId), _redisExpiryConfiguration.Directory);
+         _cache.GetFromCacheOrDirectlyWithLocking("directory-entries-all", () => GetAllDirectoryEntriesFromSource(tagId), _redisExpiryConfiguration.Directory);
 
     internal async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug, string tagId) =>
         (await GetAllDirectoryEntries(tagId))

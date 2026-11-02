@@ -18,6 +18,8 @@ public interface ICache
     T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
+    T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod);
+    T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     void RemoveItemFromCache(string cacheKey);
 }
 
@@ -31,6 +33,8 @@ public class Cache(IDistributedCacheWrapper memoryCache,
     private readonly IDistributedCacheWrapper _memoryCache = memoryCache;
     private readonly bool _useLocalCache = useLocalCache;
     private readonly bool _useRedisCache = useRedisCache;
+    private readonly Lock _cacheLock = new();
+
 
     public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod) =>
         GetFromCacheOrDirectly(cacheKey, fallbackMethod, 60);
@@ -67,6 +71,18 @@ public class Cache(IDistributedCacheWrapper memoryCache,
         }
 
         return result;
+    }
+
+    public T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod)
+        => GetFromCacheOrDirectlyWithLocking(cacheKey, fallbackMethod, 60);
+        
+
+    public T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
+    {
+        lock (_cacheLock)
+        {
+            return GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes).Result;
+        }
     }
 
     public void RemoveItemFromCache(string cacheKey) =>
