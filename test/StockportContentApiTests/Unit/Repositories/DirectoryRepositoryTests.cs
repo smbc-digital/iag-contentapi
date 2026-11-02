@@ -255,7 +255,7 @@ public class DirectoryRepositoryTests
         // Assert
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectly(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLocking(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
