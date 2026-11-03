@@ -75,4 +75,34 @@ public class CacheTests
 
     public async Task<string> TestFallbackMethodAsync() =>
         await Task.FromResult("Contentful Data");
+
+    [Fact]
+    public async Task ShouldOnlyCallFallbackOnceForConcurrentRequestsToSameKey()
+    {
+        string cachedData = string.Empty;
+        int fallbackCalls = 0;
+
+        _distributedCacheWrapper
+            .Setup(distributedCacheWrapper => distributedCacheWrapper.GetString(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => cachedData);
+        _distributedCacheWrapper
+            .Setup(distributedCacheWrapper => distributedCacheWrapper.SetString(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+            .Callback<string, string, int>((_, value, _) => cachedData = value);
+
+        async Task<string> Fallback()
+        {
+            Interlocked.Increment(ref fallbackCalls);
+            await Task.Delay(50);
+            return "Contentful Data";
+        }
+
+        Task<string>[] requests = Enumerable.Range(0, 10)
+            .Select(_ => _cacheWrapper.GetFromCacheOrDirectlyWithLockingAsync("same-key", Fallback, 60))
+            .ToArray();
+
+        string[] results = await Task.WhenAll(requests);
+
+        Assert.All(results, result => Assert.Equal("Contentful Data", result));
+        Assert.Equal(1, fallbackCalls);
+    }
 }

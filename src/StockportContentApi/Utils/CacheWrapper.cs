@@ -1,4 +1,6 @@
-﻿namespace StockportContentApi.Utils;
+﻿using System.Collections.Concurrent;
+
+namespace StockportContentApi.Utils;
 
 public enum CacheDurationMins
 {
@@ -18,8 +20,8 @@ public interface ICache
     T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
-    T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod);
-    T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
+    Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
+    Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     void RemoveItemFromCache(string cacheKey);
 }
 
@@ -33,7 +35,7 @@ public class Cache(IDistributedCacheWrapper memoryCache,
     private readonly IDistributedCacheWrapper _memoryCache = memoryCache;
     private readonly bool _useLocalCache = useLocalCache;
     private readonly bool _useRedisCache = useRedisCache;
-    private readonly Lock _cacheLock = new();
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _cacheLocks = new();
 
 
     public T GetFromCacheOrDirectly<T>(string cacheKey, Func<T> fallbackMethod) =>
@@ -60,7 +62,12 @@ public class Cache(IDistributedCacheWrapper memoryCache,
 
     public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
     {
-        if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
+        (bool Found, T Value) cacheResult = (false, default);
+        if ((_useRedisCache || _useLocalCache) && minutes > 0)
+            cacheResult = await TryGetValueAsync<T>(cacheKey);
+
+        T result = cacheResult.Value;
+        if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || cacheResult.Found is false)
         {
             _logger.LogInformation(
                 $"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
@@ -73,15 +80,21 @@ public class Cache(IDistributedCacheWrapper memoryCache,
         return result;
     }
 
-    public T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod)
-        => GetFromCacheOrDirectlyWithLocking(cacheKey, fallbackMethod, 60);
-        
+    public Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod) =>
+        GetFromCacheOrDirectlyWithLockingAsync(cacheKey, fallbackMethod, 60);
 
-    public T GetFromCacheOrDirectlyWithLocking<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
+    public async Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
     {
-        lock (_cacheLock)
+        SemaphoreSlim cacheLock = _cacheLocks.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
+
+        await cacheLock.WaitAsync();
+        try
         {
-            return GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes).Result;
+            return await GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes);
+        }
+        finally
+        {
+            cacheLock.Release();
         }
     }
 
@@ -101,6 +114,49 @@ public class Cache(IDistributedCacheWrapper memoryCache,
         catch (Exception ex)
         {
             _logger.LogError(ex, $"CacheWrapper : Set : Error setting key {cacheKey}");
+        }
+    }
+
+    private async Task<(bool Found, T Value)> TryGetValueAsync<T>(object key)
+    {
+        T value = default;
+
+        if (_memoryCache is null)
+        {
+            _logger.LogError("CacheWrapper : TryGetValue<T> : Cache is missing");
+            return (false, value);
+        }
+
+        string returnData;
+        try
+        {
+            returnData = await _memoryCache.GetString(key.ToString());
+
+            if (string.IsNullOrEmpty(returnData))
+            {
+                _logger.LogDebug(
+                    $"CacheWrapper : TryGetValueAsync<T> : data returned for key {key} was either null or empty");
+                return (false, value);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(new(), ex,
+                "CacheWrapper : TryGetValueAsync<T> : An error occurred trying to read from Redis");
+            return (false, value);
+        }
+
+        try
+        {
+            value = JsonConvert.DeserializeObject<T>(returnData);
+            _logger.LogDebug($"CacheWrapper : TryGetValueAsync<T> : Key {key} found in cache of type: {typeof(T)}");
+            return (value is not null, value);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(new(), ex,
+                $"CacheWrapper : TryGetValueAsync<T> : error deserilizing cached data for key '{key}' with value {returnData}");
+            return (false, value);
         }
     }
 

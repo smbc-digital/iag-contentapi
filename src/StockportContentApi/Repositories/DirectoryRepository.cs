@@ -28,7 +28,7 @@ public class DirectoryRepository(ContentfulConfig config,
 
     public async Task<HttpResponse> Get(string slug, string tagId)
     {
-        Directory directory = _cache.GetFromCacheOrDirectlyWithLocking(slug, () => GetDirectoryFromSource(slug, 0, tagId), _redisExpiryConfiguration.Directory);
+        Directory directory = await _cache.GetFromCacheOrDirectlyWithLockingAsync(slug, () => GetDirectoryFromSource(slug, 0, tagId), _redisExpiryConfiguration.Directory);
 
         return directory is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
@@ -90,21 +90,19 @@ public class DirectoryRepository(ContentfulConfig config,
         Directory directory = _directoryFactory.ToModel(contentfulDirectory);
         directory.Entries = await GetDirectoryEntriesForDirectory(directory.Slug, tagId);
 
-        Task<Directory>[] contentfulSubDirectoriesTasks = contentfulDirectory
-            .SubDirectories?.Select(async subDirectory =>
-                 _cache.GetFromCacheOrDirectlyWithLocking(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1, tagId), _redisExpiryConfiguration.Directory)).ToArray();
-
-        if (contentfulSubDirectoriesTasks is not null)
+        if (contentfulDirectory.SubDirectories is not null)
         {
-            Task.WaitAll(contentfulSubDirectoriesTasks);
-            directory.SubDirectories = contentfulSubDirectoriesTasks.Select(tsk => tsk.Result);
+            Directory[] subDirectories = await Task.WhenAll(contentfulDirectory.SubDirectories.Select(subDirectory =>
+                _cache.GetFromCacheOrDirectlyWithLockingAsync(subDirectory.Slug, () => GetDirectoryFromSource(subDirectory.Slug, depth + 1, tagId), _redisExpiryConfiguration.Directory)));
+
+            directory.SubDirectories = subDirectories;
         }
 
         return directory;
     }
 
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries(string tagId) =>
-         _cache.GetFromCacheOrDirectlyWithLocking("directory-entries-all", () => GetAllDirectoryEntriesFromSource(tagId), _redisExpiryConfiguration.Directory);
+         await _cache.GetFromCacheOrDirectlyWithLockingAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(tagId), _redisExpiryConfiguration.Directory);
 
     internal async Task<IEnumerable<DirectoryEntry>> GetDirectoryEntriesForDirectory(string slug, string tagId) =>
         (await GetAllDirectoryEntries(tagId))
