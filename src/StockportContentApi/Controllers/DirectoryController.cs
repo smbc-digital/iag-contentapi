@@ -14,6 +14,12 @@ public class DirectoryController(ResponseHandler handler,
         await _handler.Get(() => _createDirectoryRepository(businessId).Get(businessId));
 
     [HttpGet]
+    [Route("{businessId}/libraries")]
+    [Route("v1/{businessId}/libraries")]
+    public async Task<IActionResult> GetLibraries(string businessId) =>
+        await _handler.Get(() => _createDirectoryRepository(businessId).GetLibraries());
+
+    [HttpGet]
     [Route("{businessId}/directory/{slug}")]
     [Route("v1/{businessId}/directory/{slug}")]
     public async Task<IActionResult> GetDirectory(string slug, string businessId)

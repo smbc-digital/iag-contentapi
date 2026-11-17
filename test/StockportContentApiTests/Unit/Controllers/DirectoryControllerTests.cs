@@ -46,6 +46,23 @@ public class DirectoryControllerTests
     }
 
     [Fact]
+    public async Task GetLibraries_ReturnsRepositoryResponse()
+    {
+        // Arrange
+        _repository
+            .Setup(repo => repo.GetLibraries())
+            .ReturnsAsync(HttpResponse.Successful("[]"));
+        
+        // Act
+        IActionResult result = await _controller.GetLibraries("test-business");
+
+        // Assert
+        Assert.IsType<ObjectResult>(result);
+        _createRepository.Verify(factory => factory("test-business"), Times.Once);
+        _repository.Verify(repo => repo.GetLibraries(), Times.Once);
+    }
+
+    [Fact]
     public async Task GetDirectory_ReturnsOkResult_WhenRepositoryReturnsSuccessfulResponse()
     {
         // Arrange

@@ -274,6 +274,7 @@ public static class ServiceCollectionExtensions
             (contentfulConfig) =>
                 new DirectoryRepository(
                     p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
+                    p.GetService<IConverseClient>(),
                     p.GetService<IContentfulClientManager>(),
                     p.GetService<IContentfulFactory<ContentfulDirectory, Directory>>(),
                     p.GetService<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>>(),

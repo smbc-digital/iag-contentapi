@@ -9,6 +9,7 @@ public class DirectoryRepositoryTests
     private readonly Directory _directory;
     private readonly DirectoryEntry _directoryEntry;
     private readonly Mock<IContentfulClient> _contentfulClient = new();
+    private readonly Mock<IConverseClient> _converseClient = new();
     private readonly Mock<IContentfulFactory<ContentfulDirectory, Directory>> _directoryFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry>> _directoryEntryFactory = new();
     private readonly Mock<ICache> _cache = new();
@@ -65,12 +66,27 @@ public class DirectoryRepositoryTests
             .Returns(new RedisExpiryConfiguration { Directory = 1 });
 
         _repository = new DirectoryRepository(config,
+                                            _converseClient.Object,
                                             contentfulClientManager.Object,
                                             _directoryFactory.Object,
                                             _directoryEntryFactory.Object,
                                             _cache.Object,
                                             _options.Object);
 }
+
+    [Fact]
+    public async Task GetLibraries_ReturnsConverseResponse()
+    {
+        // Arrange
+        const string librariesJson = "[{\"name\":\"library\"}]";
+        _converseClient.Setup(client => client.GetLibraries()).ReturnsAsync(librariesJson);
+
+        // Act
+        HttpResponse response = await _repository.GetLibraries();
+        
+        // Assert
+        Assert.Equal(librariesJson, response.Get<string>());
+    }
 
     [Fact]
     public async Task GetDirectoryFromSource_WithSlug_Should_ReturnCorrectType()

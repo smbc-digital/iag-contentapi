@@ -73,6 +73,12 @@ try
 
     builder.Services.AddRedirects(builder.Configuration);
     builder.Services.AddContentfulConfig(builder.Configuration);
+    builder.Services.AddSingleton(new ConverseConfig()
+        .Add("ConverseApiBaseUrl", builder.Configuration["ConverseApiBaseUrl"])
+        .Add("ConverseApiKey", builder.Configuration["ConverseApiKey"])
+        .Build());
+    
+    builder.Services.AddHttpClient<IConverseClient, ConverseClient>();
     builder.Services.AddCacheKeyConfig(builder.Configuration);
     builder.Services.AddOptions();
     builder.Services.AddContentfulClients();

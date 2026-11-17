@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+
 [assembly: InternalsVisibleTo("StockportContentApiTests")]
 namespace StockportContentApi.Repositories;
 
@@ -6,11 +7,12 @@ public interface IDirectoryRepository
 {
     Task<HttpResponse> Get(string tagId);
     Task<HttpResponse> Get(string slug, string tagId);
+    Task<HttpResponse> GetLibraries();
     Task<HttpResponse> GetEntry(string slug, string tagId);
 }
 
 public class DirectoryRepository(ContentfulConfig config,
-                                ConverseConfig converseConfig,
+                                IConverseClient converseClient,
                                 IContentfulClientManager clientManager,
                                 IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
                                 IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
@@ -18,6 +20,7 @@ public class DirectoryRepository(ContentfulConfig config,
                                 IOptions<RedisExpiryConfiguration> redisExpiryConfiguration) : BaseRepository, IDirectoryRepository
 {
     private readonly IContentfulClient _client = clientManager.GetClient(config);
+    private readonly IConverseClient _converseClient = converseClient;
     private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory = directoryFactory;
     private readonly IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> _directoryEntryFactory = directoryEntryFactory;
     private readonly ICache _cache = cache;
@@ -33,6 +36,12 @@ public class DirectoryRepository(ContentfulConfig config,
         return directory is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory not found {slug}")
             : HttpResponse.Successful(directory);
+    }
+
+    public async Task<HttpResponse> GetLibraries()
+    {
+        string librariesJson = await _converseClient.GetLibraries();
+        return HttpResponse.Successful(librariesJson);
     }
 
     public async Task<HttpResponse> Get(string tagId)
@@ -99,7 +108,7 @@ public class DirectoryRepository(ContentfulConfig config,
         }
 
         return directory;
-    }
+    } 
 
     internal async Task<IEnumerable<DirectoryEntry>> GetAllDirectoryEntries(string tagId) =>
          await _cache.GetFromCacheOrDirectlyWithLockingAsync("directory-entries-all", () => GetAllDirectoryEntriesFromSource(tagId), _redisExpiryConfiguration.Directory);
