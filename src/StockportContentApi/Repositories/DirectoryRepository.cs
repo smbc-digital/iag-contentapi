@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Amazon.SecretsManager.Model;
 [assembly: InternalsVisibleTo("StockportContentApiTests")]
 namespace StockportContentApi.Repositories;
 
@@ -11,6 +10,7 @@ public interface IDirectoryRepository
 }
 
 public class DirectoryRepository(ContentfulConfig config,
+                                ConverseConfig converseConfig,
                                 IContentfulClientManager clientManager,
                                 IContentfulFactory<ContentfulDirectory, Directory> directoryFactory,
                                 IContentfulFactory<ContentfulDirectoryEntry, DirectoryEntry> directoryEntryFactory,
