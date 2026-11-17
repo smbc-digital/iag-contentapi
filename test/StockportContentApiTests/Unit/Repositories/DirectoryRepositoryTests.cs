@@ -243,6 +243,50 @@ public class DirectoryRepositoryTests
     public async Task GetEntry_WithSlug_Should_ReturnSuccess()
     {
         // Arrange
+        _directoryEntry.Directories = new List<MinimalDirectory>
+        {
+            new("libraries", "Libraries")
+        };
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
+        _converseClient
+            .Setup(client => client.GetLibraryByNameId("directoryentryname"))
+            .ReturnsAsync(new ConverseLibrary
+            {
+                LibraryName = "Converse Library Name",
+                LibraryAddress = "Converse Library Address",
+                IsOpenPlus = true,
+                MondayOpen = "09:00:00",
+                MondayClose = "17:00:00",
+                MondayStaffedOpen = "10:00:00",
+                MondayStaffedClose = "16:00:00"
+            });
+
+        // Act
+        HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
+
+        // Assert
+        Assert.IsType<HttpResponse>(response);
+        DirectoryEntry result = response.Get<DirectoryEntry>();
+        Assert.NotSame(result, _directoryEntry);
+        Assert.Equal("Converse Library Name", result.Name);
+        Assert.Equal("Converse Library Address", result.Address);
+        Assert.True(result.IsOpenPlus);
+        Assert.Equal("09:00:00", result.MondayOpen);
+        Assert.Equal("17:00:00", result.MondayClose);
+        Assert.Equal("10:00:00", result.MondayStaffedOpen);
+        Assert.Equal("16:00:00", result.MondayStaffedClose);
+        Assert.Equal("Directory entry name", _directoryEntry.Name);
+        _converseClient.Verify(client => client.GetLibraryByNameId("directoryentryname"), Times.Once);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEntry_WithSlug_ShouldNotEnrichEntryOutsideLibrariesDirectory()
+    {
+        // Arrange
         _cache
             .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<DirectoryEntry> { _directoryEntry });
@@ -251,10 +295,9 @@ public class DirectoryRepositoryTests
         HttpResponse response = await _repository.GetEntry("directory-entry-slug", "tagId");
 
         // Assert
-        Assert.IsType<HttpResponse>(response);
-        Assert.Equal(response.Get<DirectoryEntry>(), _directoryEntry);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        Assert.Same(_directoryEntry, response.Get<DirectoryEntry>());
+        _converseClient.Verify(client => client.GetLibraryByNameId(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]

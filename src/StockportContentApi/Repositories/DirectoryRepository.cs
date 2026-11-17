@@ -19,6 +19,8 @@ public class DirectoryRepository(ContentfulConfig config,
                                 ICache cache,
                                 IOptions<RedisExpiryConfiguration> redisExpiryConfiguration) : BaseRepository, IDirectoryRepository
 {
+    private const string LibrariesDirectorySlug = "libraries";
+
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IConverseClient _converseClient = converseClient;
     private readonly IContentfulFactory<ContentfulDirectory, Directory> _directoryFactory = directoryFactory;
@@ -75,9 +77,23 @@ public class DirectoryRepository(ContentfulConfig config,
         IEnumerable<DirectoryEntry> directoryEntries = await GetAllDirectoryEntries(tagId);
         DirectoryEntry directoryEntry = directoryEntries?.SingleOrDefault(directoryEntry => directoryEntry.Slug.Equals(slug));
 
-        return directoryEntry is null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}")
-            : HttpResponse.Successful(directoryEntry);
+        if (directoryEntry is null)
+            return HttpResponse.Failure(HttpStatusCode.NotFound, $"Directory entry not found {slug}");
+
+        if (directoryEntry.Directories?.Any(directory =>
+                string.Equals(directory.Slug, LibrariesDirectorySlug, StringComparison.OrdinalIgnoreCase)) != true)
+            return HttpResponse.Successful(directoryEntry);
+
+        return HttpResponse.Successful(directoryEntry.WithLibrary(
+            await _converseClient.GetLibraryByNameId(ToLibraryNameId(directoryEntry.Name))));
+    }
+
+    private static string ToLibraryNameId(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new InvalidOperationException("Directory entry has no name for Converse library lookup.");
+
+        return string.Concat(name.Where(character => !char.IsWhiteSpace(character))).ToLowerInvariant();
     }
 
     internal async Task<Directory> GetDirectoryFromSource(string slug, int depth, string tagId)
