@@ -43,7 +43,7 @@ public class EventRepositoryTests
             .Returns("60");
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>
             {
                 new()
@@ -56,7 +56,7 @@ public class EventRepositoryTests
             });
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulCollection<ContentfulEventCategory>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulCollection<ContentfulEventCategory>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulEventCategory>
             {
                 Items = new List<ContentfulEventCategory>
@@ -68,6 +68,10 @@ public class EventRepositoryTests
                 }
                 
             });
+
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulEventHomepage>>>(), It.IsAny<int>()))
+            .Returns((string _, Func<Task<ContentfulEventHomepage>> fallback, int _) => fallback());
 
         _eventFactory
             .Setup(factory => factory.ToModel(It.IsAny<ContentfulEvent>()))
@@ -146,7 +150,30 @@ public class EventRepositoryTests
         await _repository.GetEventHomepage("tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "testEventsCacheKey-homepage-tagId",
+            It.IsAny<Func<Task<ContentfulEventHomepage>>>(),
+            60), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEventHomepage_ShouldUseCachedHomepageEntry()
+    {
+        // Arrange
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "testEventsCacheKey-homepage-tagId",
+                It.IsAny<Func<Task<ContentfulEventHomepage>>>(),
+                60))
+            .ReturnsAsync(new ContentfulEventHomepage());
+
+        // Act
+        await _repository.GetEventHomepage("tagId");
+
+        // Assert
+        _contentfulClient.Verify(
+            client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulEventHomepage>>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
@@ -156,7 +183,7 @@ public class EventRepositoryTests
         await _repository.GetContentfulEventCategories("tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulCollection<ContentfulEventCategory>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulCollection<ContentfulEventCategory>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -176,7 +203,7 @@ public class EventRepositoryTests
         await _repository.GetEvent("Slug", DateTime.Today.AddDays(1), "tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -211,7 +238,7 @@ public class EventRepositoryTests
         await _repository.Get(DateTime.Today.AddDays(1), DateTime.Today.AddDays(1), "Category", 0, true, "Tag", "Price", 0, 0, false, "tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -219,7 +246,7 @@ public class EventRepositoryTests
     {
         // Arrange
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>());
 
         _eventFactory
@@ -254,7 +281,7 @@ public class EventRepositoryTests
                 .Build);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>
             {
                 new ContentfulEventBuilder().Build(),
@@ -281,7 +308,7 @@ public class EventRepositoryTests
     {
         // Arrange
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>
             {
                 new ContentfulEventBuilder().Build()
@@ -299,7 +326,7 @@ public class EventRepositoryTests
         await _repository.GetEventsByCategory(category, onlyNextOccurrence, "tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Theory]
@@ -311,7 +338,7 @@ public class EventRepositoryTests
     {
         // Arrange
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>
             {
                 new ContentfulEventBuilder().Build()
@@ -329,7 +356,7 @@ public class EventRepositoryTests
         await _repository.GetEventsByTag(tagRequested, onlyNextOccurrence, "tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -373,7 +400,7 @@ public class EventRepositoryTests
     {
         // Arrange
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<ContentfulEvent>
             {
                 new ContentfulEventBuilder().Build()
@@ -390,7 +417,7 @@ public class EventRepositoryTests
         await _repository.GetLinkedEvents<ContentfulEvent>("Slug", "tagId");
 
         // Assert
-        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IList<ContentfulEvent>>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
