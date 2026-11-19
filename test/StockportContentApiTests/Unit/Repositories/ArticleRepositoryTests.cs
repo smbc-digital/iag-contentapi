@@ -37,7 +37,7 @@ public class ArticleRepositoryTests
 
         _mockOptions
             .Setup(options => options.Value)
-            .Returns(new RedisExpiryConfiguration { Articles = 60 });
+            .Returns(new RedisExpiryConfiguration { Articles = 10 });
 
         ArticleContentfulFactory contentfulFactory = new(
             _sectionFactory.Object,
@@ -169,7 +169,10 @@ public class ArticleRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.IsAny<string>(), It.IsAny<Func<Task<ContentfulArticle>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-article-unit-test-article",
+                It.IsAny<Func<Task<ContentfulArticle>>>(),
+                10))
             .ReturnsAsync(new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory(string.Empty).Build());
 
         // Act
@@ -182,6 +185,10 @@ public class ArticleRepositoryTests
 
         _eventRepository.Verify(repo => repo.GetEventsByCategory(It.IsAny<string>(), true, It.IsAny<string>()), Times.Never);
         _eventRepository.Verify(repo => repo.GetEventsByTag(It.IsAny<string>(), true, It.IsAny<string>()), Times.Never);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "test-article-unit-test-article",
+            It.IsAny<Func<Task<ContentfulArticle>>>(),
+            10), Times.Once);
     }
 
     [Fact]
@@ -251,7 +258,10 @@ public class ArticleRepositoryTests
             .Build();
 
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-article-unit-test-article",
+                It.IsAny<Func<Task<ContentfulArticle>>>(),
+                10))
             .ReturnsAsync(rawArticle);
 
         // Act
@@ -271,7 +281,10 @@ public class ArticleRepositoryTests
 
         ContentfulArticle rawArticle = new ContentfulArticleBuilder().Slug("unit-test-article-with-inline-alerts").WithAssociatedTagCategory(string.Empty).AlertsInline(alertsInline).Build();
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-article-unit-test-article-with-inline-alerts",
+                It.IsAny<Func<Task<ContentfulArticle>>>(),
+                10))
             .ReturnsAsync(rawArticle);
 
         // Act
@@ -296,7 +309,10 @@ public class ArticleRepositoryTests
 
         collection.Items = new List<ContentfulArticle> { rawArticle };
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article-with-section-with-inline-alerts")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-article-unit-test-article-with-section-with-inline-alerts",
+                It.IsAny<Func<Task<ContentfulArticle>>>(),
+                10))
             .ReturnsAsync(rawArticle);
 
         _sectionFactory
@@ -334,7 +350,10 @@ public class ArticleRepositoryTests
 
         ContentfulArticle article = new ContentfulArticleBuilder().Slug("unit-test-article").WithAssociatedTagCategory("dance, tag1").Build();
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync(It.Is<string>(s => s.Equals("article-unit-test-article")), It.IsAny<Func<Task<ContentfulArticle>>>(), It.Is<int>(s => s.Equals(60))))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-article-unit-test-article",
+                It.IsAny<Func<Task<ContentfulArticle>>>(),
+                10))
             .ReturnsAsync(article);
 
         _eventRepository

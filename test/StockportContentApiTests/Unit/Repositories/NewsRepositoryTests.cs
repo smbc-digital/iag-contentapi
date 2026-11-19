@@ -200,7 +200,7 @@ public class NewsRepositoryTests
             .Returns(contentfulNews.Body);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsCollection);
 
         News news = CreateTestNews("This is the news", "news-of-the-century");
@@ -215,6 +215,10 @@ public class NewsRepositoryTests
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(news, response.Get<News>());
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "news-all",
+            It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+            60), Times.Once);
     }
 
     [Fact]
@@ -227,7 +231,7 @@ public class NewsRepositoryTests
         };
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
@@ -254,7 +258,7 @@ public class NewsRepositoryTests
         };
 
         _cacheWrapper
-            .Setup(cacheWrapper => cacheWrapper.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cacheWrapper => cacheWrapper.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(expectedNewsList);
 
         // Act
@@ -302,15 +306,15 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(contentfulNewsRoom);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
             .ReturnsAsync(new List<string> { "Benefits", "foo", "Council leader" });
 
         _videoRepository
@@ -391,11 +395,11 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -463,11 +467,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -520,11 +524,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -581,11 +585,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -644,11 +648,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -702,11 +706,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -757,11 +761,11 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -804,11 +808,11 @@ public class NewsRepositoryTests
         };
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -855,11 +859,11 @@ public class NewsRepositoryTests
         };
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -918,11 +922,11 @@ public class NewsRepositoryTests
 
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -973,11 +977,11 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -1033,11 +1037,11 @@ public class NewsRepositoryTests
             .Returns("The news");
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(new ContentfulNewsRoom { Title = "test" });
 
         // Act
@@ -1084,7 +1088,7 @@ public class NewsRepositoryTests
             .Returns(newsWithSunriseDateInFuture.Body);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
@@ -1120,7 +1124,7 @@ public class NewsRepositoryTests
             .Returns(newsWithSunsetDateInPast.Body);
 
         _cacheWrapper
-            .Setup(wrapper => wrapper.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(wrapper => wrapper.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(collection.Items.ToList());
 
         // Act
@@ -1185,15 +1189,15 @@ public class NewsRepositoryTests
             .ReturnsAsync(newsListCollection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsListCollection.Items.ToList());
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(contentfulNewsRoom);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
             .ReturnsAsync(new List<string> { "Benefits", "foo", "Council leader" });
 
         _videoRepository
@@ -1216,6 +1220,13 @@ public class NewsRepositoryTests
     public async Task GetLatestNewsByTag_ShouldReturnNews_WhenValidNewsIsFound()
     {
         // Arrange
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "news-latest-tag-tech",
+                It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+                60))
+            .Returns((string _, Func<Task<IList<ContentfulNews>>> fallback, int _) => fallback());
+
         _client
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = contentfulNewsList });
@@ -1230,6 +1241,10 @@ public class NewsRepositoryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedNews, result.FirstOrDefault());
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "news-latest-tag-tech",
+            It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+            60), Times.Once);
     }
 
     [Fact]
@@ -1237,6 +1252,13 @@ public class NewsRepositoryTests
     {
         // Arrange
         List<ContentfulNews> newsList = new();
+
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "news-latest-tag-tech",
+                It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+                60))
+            .Returns((string _, Func<Task<IList<ContentfulNews>>> fallback, int _) => fallback());
 
         _client
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
@@ -1253,6 +1275,13 @@ public class NewsRepositoryTests
     public async Task GetLatestNewsByCategory_ShouldReturnNews_WhenValidNewsIsFound()
     {
         // Arrange
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "news-latest-category-sports",
+                It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+                60))
+            .Returns((string _, Func<Task<IList<ContentfulNews>>> fallback, int _) => fallback());
+
         _client
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ContentfulCollection<ContentfulNews> { Items = contentfulNewsList });
@@ -1267,6 +1296,10 @@ public class NewsRepositoryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedNews, result.FirstOrDefault());
+        _cacheWrapper.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "news-latest-category-sports",
+            It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+            60), Times.Once);
     }
 
     [Fact]
@@ -1282,6 +1315,13 @@ public class NewsRepositoryTests
                 SunsetDate = DateTime.Now.AddDays(-5)
             }
         };
+
+        _cacheWrapper
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "news-latest-category-sports",
+                It.IsAny<Func<Task<IList<ContentfulNews>>>>(),
+                60))
+            .Returns((string _, Func<Task<IList<ContentfulNews>>> fallback, int _) => fallback());
 
         _client
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulNews>>(), It.IsAny<CancellationToken>()))
@@ -1403,15 +1443,15 @@ public class NewsRepositoryTests
             .ReturnsAsync(collection);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", It.IsAny<Func<Task<IList<ContentfulNews>>>>(), 60))
             .ReturnsAsync(newsList);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", It.IsAny<Func<Task<ContentfulNewsRoom>>>(), 60))
             .ReturnsAsync(contentfulNewsRoom);
 
         _cacheWrapper
-            .Setup(cache => cache.GetFromCacheOrDirectlyAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("news-categories", It.IsAny<Func<Task<List<string>>>>(), 60))
             .ReturnsAsync(new List<string> { "Benefits", "foo", "Council leader" });
 
         _videoRepository

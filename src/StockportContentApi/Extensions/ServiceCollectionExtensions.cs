@@ -419,7 +419,9 @@ public static class ServiceCollectionExtensions
             (contentfulConfig) =>
                 new ContactUsAreaRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>()));
+                    p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>(),
+                    p.GetService<ICache>(),
+                    p.GetService<IConfiguration>()));
 
         return services;
     }

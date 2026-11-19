@@ -3,6 +3,8 @@ public class ContactUsAreaRepositoryTests
 {    
     private readonly Mock<IContentfulClient> _contentfulClient = new();
     private readonly Mock<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>> _contentfulFactory = new();
+    private readonly Mock<ICache> _cache = new();
+    private readonly Mock<IConfiguration> _configuration = new();
     private readonly ContactUsAreaRepository _repository;
     private readonly ContactUsArea _contactUsArea = new("title",
                                                         "slug",
@@ -29,7 +31,23 @@ public class ContactUsAreaRepositoryTests
             .Setup(factory => factory.ToModel(contentfulContactUsArea))
             .Returns(_contactUsArea);
 
-        _repository = new ContactUsAreaRepository(config, contentfulClientManager.Object, _contentfulFactory.Object);
+        _configuration
+            .Setup(configuration => configuration["redisExpiryTimes:ContactUsArea"])
+            .Returns("60");
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-contact-us-area",
+                It.IsAny<Func<Task<ContentfulContactUsArea>>>(),
+                60))
+            .Returns((string _, Func<Task<ContentfulContactUsArea>> fallback, int _) => fallback());
+
+        _repository = new ContactUsAreaRepository(
+            config,
+            contentfulClientManager.Object,
+            _contentfulFactory.Object,
+            _cache.Object,
+            _configuration.Object);
     }
 
     private Mock<IContentfulClientManager> SetupContentfulClientManager(ContentfulConfig config)
@@ -86,5 +104,9 @@ public class ContactUsAreaRepositoryTests
         // Assert
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "test-contact-us-area",
+            It.IsAny<Func<Task<ContentfulContactUsArea>>>(),
+            60), Times.Once);
     }
 }

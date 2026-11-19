@@ -98,7 +98,10 @@ public class ArticleRepository(ContentfulConfig config,
 
     private async Task<Article> GetArticleFromCacheOrContentful(string articleSlug, string tagId)
     {
-        ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyAsync($"article-{articleSlug}", () => GetArticleEntry(articleSlug, tagId), _redisExpiryConfiguration.Articles);
+        ContentfulArticle entry = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
+            $"{config.BusinessId}-article-{articleSlug}",
+            () => GetArticleEntry(articleSlug, tagId),
+            _redisExpiryConfiguration.Articles);
 
         if (entry is null)
             return null;
