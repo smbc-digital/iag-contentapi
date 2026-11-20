@@ -50,7 +50,7 @@ public class Cache(IDistributedCacheWrapper memoryCache,
     {
         if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
         {
-            _logger.LogInformation(
+            _logger.LogWarning(
                 "Cache miss or bypass for {CacheKey}; retrieving from {DataSource}",
                 cacheKey,
                 "Contentful");
