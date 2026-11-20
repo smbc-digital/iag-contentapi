@@ -354,7 +354,8 @@ public static class ServiceCollectionExtensions
             (contentfulConfig) =>
                 new HomepageRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>()));
+                    p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>(),
+                    p.GetService<ICache>()));
 
         services.AddSingleton<Func<string, IStartPageRepository>>(p =>
             (contentfulConfig) =>

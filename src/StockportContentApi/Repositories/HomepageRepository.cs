@@ -7,12 +7,29 @@ public interface IHomepageRepository
 
 public class HomepageRepository(ContentfulConfig config,
                                 IContentfulClientManager clientManager,
-                                IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory) : IHomepageRepository
+                                IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory,
+                                ICache cache) : IHomepageRepository
 {
+    private const int CacheDurationMinutes = 10;
+
     private readonly IContentfulClient _client = clientManager.GetClient(config);
     private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory = homepageFactory;
+    private readonly ICache _cache = cache;
 
     public async Task<HttpResponse> Get(string tagId)
+    {
+        ContentfulHomepage entry = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
+            $"{config.BusinessId}-homepage-{tagId}",
+            () => GetHomepageEntry(tagId),
+            CacheDurationMinutes,
+            "Contentful");
+
+        return entry is null
+            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No homepage found")
+            : HttpResponse.Successful(_homepageFactory.ToModel(entry));
+    }
+
+    private async Task<ContentfulHomepage> GetHomepageEntry(string tagId)
     {
         QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>()
             .ContentTypeIs("homepage")
@@ -21,10 +38,6 @@ public class HomepageRepository(ContentfulConfig config,
             .Include(2);
         
         ContentfulCollection<ContentfulHomepage> entries = await _client.GetEntries(builder);
-        ContentfulHomepage entry = entries.FirstOrDefault();
-
-        return entry is null
-            ? HttpResponse.Failure(HttpStatusCode.NotFound, "No homepage found")
-            : HttpResponse.Successful(_homepageFactory.ToModel(entry));
+        return entries.FirstOrDefault();
     }
 }

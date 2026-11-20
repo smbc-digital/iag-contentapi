@@ -21,7 +21,11 @@ public interface ICache
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
     Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
-    Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
+    Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(
+        string cacheKey,
+        Func<Task<T>> fallbackMethod,
+        int minutes,
+        string dataSource = "Contentful");
     void RemoveItemFromCache(string cacheKey);
 }
 
@@ -46,12 +50,20 @@ public class Cache(IDistributedCacheWrapper memoryCache,
         if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || TryGetValue(cacheKey, out T result) is false)
         {
             _logger.LogInformation(
-                $"CacheWrapper : GetFromCacheOrDirectly<T> : key {cacheKey} not found, getting value for fallback method");
+                "Cache miss or bypass for {CacheKey}; retrieving from {DataSource}",
+                cacheKey,
+                "Contentful");
 
             result = fallbackMethod();
 
             if (_useRedisCache && minutes > 0 && _memoryCache is not null && result is not null)
                 Set(cacheKey, result, minutes);
+        }
+        else
+        {
+            _logger.LogInformation(
+                "Cache hit for {CacheKey}",
+                cacheKey);
         }
 
         return result;
@@ -60,7 +72,14 @@ public class Cache(IDistributedCacheWrapper memoryCache,
     public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod) =>
         await GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, 60);
 
-    public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
+    public async Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes) =>
+        await GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes, "Contentful");
+
+    private async Task<T> GetFromCacheOrDirectlyAsync<T>(
+        string cacheKey,
+        Func<Task<T>> fallbackMethod,
+        int minutes,
+        string dataSource)
     {
         (bool Found, T Value) cacheResult = (false, default);
         if ((_useRedisCache || _useLocalCache) && minutes > 0)
@@ -70,11 +89,17 @@ public class Cache(IDistributedCacheWrapper memoryCache,
         if (!_useRedisCache && !_useLocalCache || minutes.Equals(0) || cacheResult.Found is false)
         {
             _logger.LogInformation(
-                $"CacheWrapper : GetFromCacheOrDirectlyAsync<T> : Key '{cacheKey}' not found in cache of type: {typeof(T)}");
+                "Cache miss or bypass for {CacheKey}; retrieving from {DataSource}",
+                cacheKey,
+                dataSource);
             result = await fallbackMethod();
 
             if ((_useRedisCache || _useLocalCache) && minutes > 0 && _memoryCache is not null && result is not null)
                 Set(cacheKey, result, minutes);
+        }
+        else
+        {
+            _logger.LogInformation("Cache hit for {CacheKey}", cacheKey);
         }
 
         return result;
@@ -83,14 +108,18 @@ public class Cache(IDistributedCacheWrapper memoryCache,
     public Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod) =>
         GetFromCacheOrDirectlyWithLockingAsync(cacheKey, fallbackMethod, 60);
 
-    public async Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes)
+    public async Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(
+        string cacheKey,
+        Func<Task<T>> fallbackMethod,
+        int minutes,
+        string dataSource = "Contentful")
     {
         SemaphoreSlim cacheLock = _cacheLocks.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
 
         await cacheLock.WaitAsync();
         try
         {
-            return await GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes);
+            return await GetFromCacheOrDirectlyAsync(cacheKey, fallbackMethod, minutes, dataSource);
         }
         finally
         {
