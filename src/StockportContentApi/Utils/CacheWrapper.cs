@@ -21,11 +21,12 @@ public interface ICache
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     Task<T> GetFromCacheOrDirectlyAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
     Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod);
+    Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod, int minutes);
     Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(
         string cacheKey,
         Func<Task<T>> fallbackMethod,
         int minutes,
-        string dataSource = "Contentful");
+        string dataSource);
     void RemoveItemFromCache(string cacheKey);
 }
 
@@ -107,6 +108,12 @@ public class Cache(IDistributedCacheWrapper memoryCache,
 
     public Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(string cacheKey, Func<Task<T>> fallbackMethod) =>
         GetFromCacheOrDirectlyWithLockingAsync(cacheKey, fallbackMethod, 60);
+
+    public Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(
+        string cacheKey,
+        Func<Task<T>> fallbackMethod,
+        int minutes) =>
+        GetFromCacheOrDirectlyWithLockingAsync(cacheKey, fallbackMethod, minutes, "Contentful");
 
     public async Task<T> GetFromCacheOrDirectlyWithLockingAsync<T>(
         string cacheKey,
