@@ -57,7 +57,7 @@ public class EventRepository : BaseRepository, IEventRepository
         _configuration = configuration;
         int.TryParse(_configuration["redisExpiryTimes:Events"], out _eventsTimeout);
         _timeProvider = timeProvider;
-        _allEventsCacheKey = $"{_cacheKeyConfig.EventsCacheKey}-all";
+        _allEventsCacheKey = $"{_cacheKeyConfig.EventsCacheKey}-all-mapped-v1";
         _eventCategoriesCacheKey = $"{_cacheKeyConfig.EventsCacheKey}-categories";
         _eventHomepageCacheKey = $"{_cacheKeyConfig.EventsCacheKey}-homepage";
     }
@@ -88,7 +88,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     private async Task<EventHomepage> AddHomepageRowEvents(EventHomepage homepage, string tagId, int quantity = 3)
     {
-        IList<ContentfulEvent> events = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> events = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         List<Event> liveEvents = GetAllEventsAndTheirRecurrences(events)
                                     .Where(singleEvent => _dateComparer.EventIsInTheFuture(singleEvent.EventDate, singleEvent.StartTime, singleEvent.EndTime))
@@ -139,7 +139,7 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<HttpResponse> GetEvent(string slug, DateTime? date, string tagId)
     {
         // does this need to retrieve all events and their occurrences??
-        IList<ContentfulEvent> cachedEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> cachedEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
         IEnumerable<Event> allEvents = GetAllEventsAndTheirRecurrences(cachedEntries);
         Event selectedEvent = allEvents.FirstOrDefault(singleEvent => singleEvent.Slug.Equals(slug));
 
@@ -173,7 +173,7 @@ public class EventRepository : BaseRepository, IEventRepository
     public async Task<HttpResponse> Get(DateTime? dateFrom, DateTime? dateTo, string category, int limit,
         bool? displayFeatured, string tag, string price, double latitude, double longitude, bool? free, string tagId)
     {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found");
@@ -255,7 +255,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     public virtual async Task<List<Event>> GetEventsByCategory(string category, bool onlyNextOccurrence, string tagId)
     {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(evnt => string.IsNullOrWhiteSpace(category)
@@ -275,7 +275,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     public virtual async Task<List<Event>> GetEventsByTag(string tag, bool onlyNextOccurrence, string tagId)
     {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(evnt => string.IsNullOrWhiteSpace(tag)
@@ -318,19 +318,31 @@ public class EventRepository : BaseRepository, IEventRepository
         return entries.Any() ? entries.ToList() : null;
     }
 
-    public IEnumerable<Event> GetAllEventsAndTheirRecurrences(IEnumerable<ContentfulEvent> entries)
+    private async Task<IList<Event>> GetAllMappedEvents(string tagId)
+    {
+        IList<ContentfulEvent> entries = await GetAllEvents(tagId);
+
+        return entries?.Select(_contentfulFactory.ToModel).ToList();
+    }
+
+    public IEnumerable<Event> GetAllEventsAndTheirRecurrences(IEnumerable<Event> entries)
     {
         List<Event> entriesList = new();
 
-        foreach (ContentfulEvent entry in entries)
+        foreach (Event entry in entries)
         {
-            Event eventItem = _contentfulFactory.ToModel(entry);
+            Event eventItem = entry.WithAlerts(entry.Alerts
+                .Where(alert => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                .ToList());
             entriesList.Add(eventItem);
             entriesList.AddRange(new EventRecurrenceFactory().GetRecurringEventsOfEvent(eventItem));
         }
 
         return entriesList;
     }
+
+    public IEnumerable<Event> GetAllEventsAndTheirRecurrences(IEnumerable<ContentfulEvent> entries) =>
+        GetAllEventsAndTheirRecurrences(entries.Select(_contentfulFactory.ToModel));
 
     private bool CheckDates(DateTime? startDate, DateTime? endDate, Event events) =>
         startDate.HasValue && endDate.HasValue
@@ -339,7 +351,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     public async Task<List<Event>> GetLinkedEvents<T>(string slug, string tagId)
     {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
                                 .Where(evnt => _dateComparer.EventDateIsBetweenTodayAndLater(evnt.EventDate))
@@ -351,7 +363,7 @@ public class EventRepository : BaseRepository, IEventRepository
         return GetNextOccurenceOfEvents(events);
     }
 
-    public List<Event> GetRelatedEvents(IList<ContentfulEvent> entries, string slug, List<string> categoryNames, List<string> categorySlugs, List<string> tags)
+    public List<Event> GetRelatedEvents(IList<Event> entries, string slug, List<string> categoryNames, List<string> categorySlugs, List<string> tags)
     {
         List<Event> events = GetAllEventsAndTheirRecurrences(entries)
             .Where(evnt => !evnt.Slug.Equals(slug))
@@ -366,6 +378,9 @@ public class EventRepository : BaseRepository, IEventRepository
 
         return GetNextOccurenceOfEvents(events);
     }
+
+    public List<Event> GetRelatedEvents(IList<ContentfulEvent> entries, string slug, List<string> categoryNames, List<string> categorySlugs, List<string> tags) =>
+        GetRelatedEvents(entries.Select(_contentfulFactory.ToModel).ToList(), slug, categoryNames, categorySlugs, tags);
 
     public async Task<ContentfulEvent> GetContentfulEvent(string slug, string tagId)
     {
@@ -384,7 +399,7 @@ public class EventRepository : BaseRepository, IEventRepository
 
     public async Task<HttpResponse> GetUpcomingEvents(string tagId, int quantity = 3)
     {
-        IList<ContentfulEvent> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllEvents(tagId), _eventsTimeout);
+        IList<Event> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(_allEventsCacheKey, () => GetAllMappedEvents(tagId), _eventsTimeout);
 
         if (entries is null || !entries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No events found.");

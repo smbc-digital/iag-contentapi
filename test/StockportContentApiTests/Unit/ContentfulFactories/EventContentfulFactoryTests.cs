@@ -5,7 +5,6 @@ public class EventContentfulFactoryTests
     private readonly ContentfulEvent _contentfulEvent;
     private readonly Mock<IContentfulFactory<Asset, Document>> _documentFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
-    private readonly Mock<ITimeProvider> _timeProvider = new();
     private readonly Mock<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>> _brandingFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventCategory, EventCategory>> _eventCategoryFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner>> _callToActionFactory = new();
@@ -14,10 +13,6 @@ public class EventContentfulFactoryTests
     public EventContentfulFactoryTests()
     {
         _contentfulEvent = new ContentfulEventBuilder().Build();
-
-        _timeProvider
-            .Setup(time => time.Now())
-            .Returns(new DateTime(2017, 01, 01));
 
         _alertFactory
             .Setup(alert => alert.ToModel(It.IsAny<ContentfulAlert>()))
@@ -34,8 +29,7 @@ public class EventContentfulFactoryTests
                                     _eventCategoryFactory.Object,
                                     _brandingFactory.Object,
                                     _alertFactory.Object,
-                                    _callToActionFactory.Object,
-                                    _timeProvider.Object);
+                                    _callToActionFactory.Object);
     }
 
     [Fact]
@@ -83,5 +77,18 @@ public class EventContentfulFactoryTests
         // Assert
         Assert.Empty(result.ImageUrl);
         Assert.Empty(result.ThumbnailImageUrl);
+    }
+
+    [Fact]
+    public void ToModel_ShouldMapAlertsThatAreNotYetActive()
+    {
+        // Arrange
+        _contentfulEvent.Alerts[0].SunriseDate = DateTime.UtcNow.AddDays(1);
+
+        // Act
+        _eventContentfulFactory.ToModel(_contentfulEvent);
+
+        // Assert
+        _alertFactory.Verify(factory => factory.ToModel(_contentfulEvent.Alerts[0]), Times.Once);
     }
 }

@@ -4,15 +4,13 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
                             IContentfulFactory<ContentfulEventCategory, EventCategory> eventCategoryFactory,
                             IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory,
                             IContentfulFactory<ContentfulAlert, Alert> alertFactory,
-                            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory,
-                            ITimeProvider timeProvider) : IContentfulFactory<ContentfulEvent, Event>
+                            IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionContentfulFactory) : IContentfulFactory<ContentfulEvent, Event>
 {
     private readonly IContentfulFactory<Asset, Document> _documentFactory = documentFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulEventCategory, EventCategory> _eventCategoryFactory = eventCategoryFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionContentfulFactory = callToActionContentfulFactory;
-    private readonly DateComparer _dateComparer = new(timeProvider);
 
     public Event ToModel(ContentfulEvent entry)
     {
@@ -29,8 +27,7 @@ public class EventContentfulFactory(IContentfulFactory<Asset, Document> document
 
         IEnumerable<EventCategory> categories = entry.EventCategories.Select(_eventCategoryFactory.ToModel);
 
-        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+        List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys))
                                 .Where(alert => !alert.Severity.Equals("Condolence"))
                                 .Select(_alertFactory.ToModel).ToList();
         

@@ -136,4 +136,11 @@ public class EventBuilder
         _tags = tags;
         return this;
     }
+
+    public EventBuilder Alerts(List<Alert> alerts)
+    {
+        _alerts.Clear();
+        _alerts.AddRange(alerts);
+        return this;
+    }
 }

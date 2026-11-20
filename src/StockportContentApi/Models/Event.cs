@@ -121,4 +121,50 @@ public class Event
         Languages = languages;
         CallToActionBanners = callToActionBanners;
     }
+
+    internal Event WithAlerts(List<Alert> alerts)
+    {
+        Event eventWithAlerts = new(Title,
+                                    Slug,
+                                    Teaser,
+                                    ImageUrl,
+                                    Description,
+                                    Fee,
+                                    Location,
+                                    SubmittedBy,
+                                    EventDate,
+                                    StartTime,
+                                    EndTime,
+                                    Occurrences,
+                                    EventFrequency,
+                                    Breadcrumbs,
+                                    ThumbnailImageUrl,
+                                    Documents,
+                                    MapPosition,
+                                    Featured,
+                                    BookingInformation,
+                                    UpdatedAt,
+                                    Tags,
+                                    alerts,
+                                    EventCategories,
+                                    Free,
+                                    Paid,
+                                    LogoAreaTitle,
+                                    TrustedLogos,
+                                    PhoneNumber,
+                                    Email,
+                                    Website,
+                                    Facebook,
+                                    Instagram,
+                                    LinkedIn,
+                                    MetaDescription,
+                                    Duration,
+                                    Languages,
+                                    CallToActionBanners)
+        {
+            RelatedEvents = RelatedEvents
+        };
+
+        return eventWithAlerts;
+    }
 }
