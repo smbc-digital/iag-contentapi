@@ -55,7 +55,29 @@ public class CacheTests
 
         // Assert
         Assert.Equal("Contentful Data", result);
-        LogTesting.Assert(_logger, LogLevel.Information, "Key 'test-key' not found in cache of type: System.String");
+        LogTesting.Assert(
+            _logger,
+            LogLevel.Information,
+            "Cache miss or bypass for test-key; retrieving from Contentful");
+    }
+
+    [Fact]
+    public async Task ShouldLogDataSourceWhenCacheMissRequiresFallback()
+    {
+        _distributedCacheWrapper
+            .Setup(distributedCacheWrapper => distributedCacheWrapper.GetString(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(string.Empty);
+
+        await _cacheWrapper.GetFromCacheOrDirectlyWithLockingAsync(
+            "homepage-tag",
+            TestFallbackMethodAsync,
+            10,
+            "Contentful");
+
+        LogTesting.Assert(
+            _logger,
+            LogLevel.Information,
+            "Cache miss or bypass for homepage-tag; retrieving from Contentful");
     }
 
     [Fact]
@@ -71,6 +93,7 @@ public class CacheTests
 
         // Assert
         Assert.Equal("Cache Data", result);
+        LogTesting.Assert(_logger, LogLevel.Information, "Cache hit for test-key");
     }
 
     public async Task<string> TestFallbackMethodAsync() =>

@@ -5,6 +5,7 @@ public class HomepageRepositoryTests
     private readonly HomepageRepository _repository;
     private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory = new();
     private readonly Mock<IContentfulClient> _client = new();
+    private readonly Mock<ICache> _cache = new();
 
     public HomepageRepositoryTests()
     {
@@ -21,7 +22,7 @@ public class HomepageRepositoryTests
             .Setup(client => client.GetClient(config))
             .Returns(_client.Object);
 
-        _repository = new HomepageRepository(config, contentfulClientManager.Object, _homepageFactory.Object);
+        _repository = new HomepageRepository(config, contentfulClientManager.Object, _homepageFactory.Object, _cache.Object);
     }
 
     [Fact]
@@ -36,6 +37,14 @@ public class HomepageRepositoryTests
         _client
             .Setup(client => client.GetEntries(It.IsAny<QueryBuilder<ContentfulHomepage>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(collection);
+
+        _cache
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+                "test-homepage-tagId",
+                It.IsAny<Func<Task<ContentfulHomepage>>>(),
+                10,
+                "Contentful"))
+            .Returns((string cacheKey, Func<Task<ContentfulHomepage>> fallback, int minutes, string dataSource) => fallback());
 
         _homepageFactory
             .Setup(homepage => homepage.ToModel(It.IsAny<ContentfulHomepage>()))
@@ -64,5 +73,13 @@ public class HomepageRepositoryTests
         
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
+            "test-homepage-tagId",
+            It.IsAny<Func<Task<ContentfulHomepage>>>(),
+            10,
+            "Contentful"), Times.Once);
+        _client.Verify(client => client.GetEntries(
+            It.IsAny<QueryBuilder<ContentfulHomepage>>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 }
