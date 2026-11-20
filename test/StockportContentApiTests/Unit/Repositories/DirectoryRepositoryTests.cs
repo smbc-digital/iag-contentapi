@@ -146,7 +146,7 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("test-directory-directory-slug", It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()))
             .ReturnsAsync(_directory);
 
         // Act
@@ -156,7 +156,7 @@ public class DirectoryRepositoryTests
         Assert.IsType<HttpResponse>(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(response.Get<Directory>(), _directory);
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("test-directory-directory-slug", It.IsAny<Func<Task<Directory>>>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -263,14 +263,14 @@ public class DirectoryRepositoryTests
     {
         // Arrange
         _cache
-            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
+            .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("test-directory-entries-all", It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<DirectoryEntry> { });
 
         // Act
         IEnumerable<DirectoryEntry> response = await _repository.GetAllDirectoryEntries("tagId");
 
         // Assert
-        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
+        _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync("test-directory-entries-all", It.IsAny<Func<Task<IEnumerable<DirectoryEntry>>>>(), It.IsAny<int>()), Times.Once);
         Assert.IsAssignableFrom<IEnumerable<DirectoryEntry>>(response);
     }
 

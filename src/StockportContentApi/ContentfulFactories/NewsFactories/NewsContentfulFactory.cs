@@ -1,12 +1,17 @@
 namespace StockportContentApi.ContentfulFactories.NewsFactories;
 
+public interface INewsContentfulFactory : IContentfulFactory<ContentfulNews, News>
+{
+    News ToCacheModel(ContentfulNews entry);
+}
+
 public class NewsContentfulFactory(IVideoRepository videoRepository,
                                 IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                 ITimeProvider timeProvider,
                                 IContentfulFactory<Asset, Document> documentFactory,
                                 IContentfulFactory<ContentfulInlineQuote, InlineQuote> inlineQuoteContentfulFactory,
                                 IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-                                IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : IContentfulFactory<ContentfulNews, News>
+                                IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> trustedLogoFactory) : INewsContentfulFactory
 {
     private readonly IVideoRepository _videoRepository = videoRepository;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
@@ -16,7 +21,13 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
     private readonly IContentfulFactory<ContentfulTrustedLogo, TrustedLogo> _trustedLogoFactory = trustedLogoFactory;
 
-    public News ToModel(ContentfulNews entry)
+    public News ToModel(ContentfulNews entry) =>
+        ToModel(entry, includeInactiveAlerts: false);
+
+    public News ToCacheModel(ContentfulNews entry) =>
+        ToModel(entry, includeInactiveAlerts: true);
+
+    private News ToModel(ContentfulNews entry, bool includeInactiveAlerts)
     {
         string imageUrl = entry.Image?.SystemProperties is not null && ContentfulHelpers.EntryIsNotALink(entry.Image.SystemProperties) 
             ? entry.Image.File.Url 
@@ -26,8 +37,8 @@ public class NewsContentfulFactory(IVideoRepository videoRepository,
             ? entry.TeaserImage.File.Url 
             : string.Empty;
 
-        IEnumerable<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys) 
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+        IEnumerable<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
+                                            && (includeInactiveAlerts || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate)))
                                         .Where(alert => !alert.Severity.Equals("Condolence"))
                                         .Select(_alertFactory.ToModel);
 

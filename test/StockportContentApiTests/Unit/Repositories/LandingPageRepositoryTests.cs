@@ -9,7 +9,7 @@ public class LandingPageRepositoryTests
     private readonly Mock<IContentfulFactory<ContentfulEvent, Event>> _eventFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulEventHomepage, EventHomepage>> _eventHomepageFactory = new();
     private readonly Mock<EventRepository> _eventRepository = new();
-    private readonly Mock<IContentfulFactory<ContentfulNews, News>> _newsFactory = new();
+    private readonly Mock<INewsContentfulFactory> _newsFactory = new();
     private readonly Mock<NewsRepository> _newsRepository = new();
     private readonly Mock<IContentfulFactory<ContentfulNewsRoom, Newsroom>> _newsRoomFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulProfile, Profile>> _profileFactory = new();

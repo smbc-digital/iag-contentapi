@@ -45,7 +45,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulPublicationSection, PublicationSection>, PublicationSectionContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulFooter, Footer>, FooterContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulSiteHeader, SiteHeader>, SiteHeaderContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulNews, News>, NewsContentfulFactory>();
+        services.AddSingleton<NewsContentfulFactory>();
+        services.AddSingleton<INewsContentfulFactory>(p => p.GetRequiredService<NewsContentfulFactory>());
+        services.AddSingleton<IContentfulFactory<ContentfulNews, News>>(p => p.GetRequiredService<NewsContentfulFactory>());
         services.AddSingleton<IContentfulFactory<ContentfulNewsRoom, Newsroom>, NewsRoomContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulEventCategory, EventCategory>, EventCategoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulArticle, Article>, ArticleContentfulFactory>();
@@ -305,7 +307,7 @@ public static class ServiceCollectionExtensions
                     new(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                         p.GetService<ITimeProvider>(),
                         p.GetService<IContentfulClientManager>(),
-                        p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                        p.GetService<INewsContentfulFactory>(),
                         p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                         p.GetService<ICache>(),
                         p.GetService<IConfiguration>(),
@@ -381,7 +383,7 @@ public static class ServiceCollectionExtensions
                 new NewsRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<ITimeProvider>(),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulNews, News>>(),
+                    p.GetService<INewsContentfulFactory>(),
                     p.GetService<IContentfulFactory<ContentfulNewsRoom, Newsroom>>(),
                     p.GetService<ICache>(),
                     p.GetService<IConfiguration>(),

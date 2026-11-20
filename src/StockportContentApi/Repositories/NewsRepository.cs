@@ -14,7 +14,7 @@ public interface INewsRepository
 public class NewsRepository : BaseRepository, INewsRepository
 {
     private readonly ITimeProvider _timeProvider;
-    private readonly IContentfulFactory<ContentfulNews, News> _newsContentfulFactory;
+    private readonly INewsContentfulFactory _newsContentfulFactory;
     private readonly IContentfulFactory<ContentfulNewsRoom, Newsroom> _newsRoomContentfulFactory;
     private readonly DateComparer _dateComparer;
     private readonly ICache _cache;
@@ -22,11 +22,15 @@ public class NewsRepository : BaseRepository, INewsRepository
     private readonly IConfiguration _configuration;
     private readonly int _newsTimeout;
     private readonly EventRepository _eventRepository;
+    private readonly string _businessId;
+
+    private string GetCacheKey(string key) =>
+        $"{_businessId}-{key}";
 
     public NewsRepository(ContentfulConfig config,
                         ITimeProvider timeProvider,
                         IContentfulClientManager contentfulClientManager,
-                        IContentfulFactory<ContentfulNews, News> newsContentfulFactory,
+                        INewsContentfulFactory newsContentfulFactory,
                         IContentfulFactory<ContentfulNewsRoom, Newsroom> newsRoomContentfulFactory,
                         ICache cache,
                         IConfiguration configuration,
@@ -37,6 +41,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         _newsRoomContentfulFactory = newsRoomContentfulFactory;
         _dateComparer = new DateComparer(timeProvider);
         _client = contentfulClientManager.GetClient(config);
+        _businessId = config.BusinessId.ToLowerInvariant();
         _cache = cache;
         _configuration = configuration;
         _eventRepository = eventRepository;
@@ -44,7 +49,7 @@ public class NewsRepository : BaseRepository, INewsRepository
         int.TryParse(_configuration["redisExpiryTimes:News"], out _newsTimeout);
     }
 
-    private async Task<IList<ContentfulNews>> GetAllNews(string tagId)
+    private async Task<IList<News>> GetAllNews(string tagId)
     {
         QueryBuilder<ContentfulNews> builder = new QueryBuilder<ContentfulNews>()
             .ContentTypeIs("news")
@@ -54,7 +59,7 @@ public class NewsRepository : BaseRepository, INewsRepository
 
         return !entries.Any()
             ? null
-            : entries.ToList();
+            : entries.Select(_newsContentfulFactory.ToCacheModel).ToList();
     }
 
     private async Task<ContentfulNewsRoom> GetNewsRoom(string tagId)
@@ -80,8 +85,9 @@ public class NewsRepository : BaseRepository, INewsRepository
 
     public virtual async Task<HttpResponse> GetNews(string slug, string tagId)
     {
-        IList<ContentfulNews> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", () => GetAllNews(tagId), _newsTimeout);
-        ContentfulNews entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
+        IList<News> entries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("news-mapped-all"), () => GetAllNews(tagId), _newsTimeout);
+        FilterActiveAlerts(entries);
+        News entry = entries.Where(e => e.Slug.Equals(slug)).FirstOrDefault();
 
         if (entry is not null && !_dateComparer.DateNowIsAfterSunriseDate(entry.SunriseDate))
             entry = null;
@@ -104,9 +110,7 @@ public class NewsRepository : BaseRepository, INewsRepository
                 events.AddRange(task);
             }
 
-            News newsArticle = _newsContentfulFactory.ToModel(entry);
-
-            newsArticle.Events = events
+            entry.Events = events
                 .GroupBy(evnt => evnt.Slug)
                 .Select(g => g.First())
                 .OrderBy(evnt => evnt.EventDate)
@@ -118,26 +122,27 @@ public class NewsRepository : BaseRepository, INewsRepository
         
         return entry is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, $"No news found for '{slug}'")
-            : HttpResponse.Successful(_newsContentfulFactory.ToModel(entry));
+            : HttpResponse.Successful(entry);
     }
 
     public async Task<HttpResponse> Get(string tag, string category, DateTime? startDate, DateTime? endDate, string tagId)
     {
         Newsroom newsroom = new(new List<Alert>(), false, string.Empty, null);
-        ContentfulNewsRoom newsRoomEntry = await _cache.GetFromCacheOrDirectlyWithLockingAsync("newsroom", () => GetNewsRoom(tagId), _newsTimeout);
+        ContentfulNewsRoom newsRoomEntry = await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("newsroom"), () => GetNewsRoom(tagId), _newsTimeout);
         List<string> categories;
 
         if (newsRoomEntry is not null)
             newsroom = _newsRoomContentfulFactory.ToModel(newsRoomEntry);
 
-        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", () => GetAllNews(tagId), _newsTimeout);
-        IEnumerable<ContentfulNews> filteredEntries = newsEntries
+        IList<News> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("news-mapped-all"), () => GetAllNews(tagId), _newsTimeout);
+        FilterActiveAlerts(newsEntries);
+        IEnumerable<News> filteredEntries = newsEntries
             .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue));
 
         if (!filteredEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<News> newsArticles = filteredEntries.Select(_newsContentfulFactory.ToModel)
+        List<News> newsArticles = filteredEntries
                                     .GetNewsDates(out List<DateTime> dates, _timeProvider)
                                     .GetNewsYears(out List<int> years, _timeProvider)
                                     .Where(news => CheckDates(startDate, endDate, news))
@@ -174,14 +179,21 @@ public class NewsRepository : BaseRepository, INewsRepository
             ? _dateComparer.SunriseDateIsBetweenStartAndEndDates(news.SunriseDate, startDate.Value, endDate.Value) && _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate)
             : _dateComparer.SunsetDateTimeIsInThePast(news.SunsetDate);
 
+    private void FilterActiveAlerts(IEnumerable<News> newsEntries)
+    {
+        foreach (News news in newsEntries)
+            news.Alerts.RemoveAll(alert => !_dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate));
+    }
+
     public async Task<HttpResponse> GetNewsByLimit(int limit, string tagId)
     {
-        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", () => GetAllNews(tagId), _newsTimeout);
+        IList<News> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("news-mapped-all"), () => GetAllNews(tagId), _newsTimeout);
 
         if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        List<News> newsArticles = newsEntries.Select(_newsContentfulFactory.ToModel)
+        FilterActiveAlerts(newsEntries);
+        List<News> newsArticles = newsEntries
                                     .Where(news => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(news.SunriseDate, news.SunsetDate))
                                     .OrderByDescending(o => o.SunriseDate)
                                     .Take(limit)
@@ -193,7 +205,7 @@ public class NewsRepository : BaseRepository, INewsRepository
     }
 
     public async Task<List<string>> GetCategories() =>
-        await _cache.GetFromCacheOrDirectlyWithLockingAsync("news-categories", GetNewsCategories, _newsTimeout);
+        await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("news-categories"), GetNewsCategories, _newsTimeout);
 
     public virtual async Task<List<News>> GetLatestNewsByTag(string tag, string tagId, int quantity = 1)
     {
@@ -203,7 +215,7 @@ public class NewsRepository : BaseRepository, INewsRepository
             .Include(1);
         
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync<IList<ContentfulNews>>(
-            $"news-latest-tag-{tag}",
+            GetCacheKey($"news-latest-tag-{tag}"),
             async () => (await _client.GetEntries(newsBuilder)).ToList(),
             _newsTimeout);
         List<ContentfulNews> contentfulNews = newsEntries
@@ -228,7 +240,7 @@ public class NewsRepository : BaseRepository, INewsRepository
             .Include(1);
         
         IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync<IList<ContentfulNews>>(
-            $"news-latest-category-{category}",
+            GetCacheKey($"news-latest-category-{category}"),
             async () => (await _client.GetEntries(newsBuilder)).ToList(),
             _newsTimeout);
         List<ContentfulNews> contentfulNews = newsEntries
@@ -248,19 +260,19 @@ public class NewsRepository : BaseRepository, INewsRepository
     public async Task<HttpResponse> GetArchivedNews(string tag, string category, DateTime? startDate, DateTime? endDate, string tagId)
     {
         Newsroom newsroom = new(new List<Alert>(), false, string.Empty, null);
-        IList<ContentfulNews> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync("news-all", () => GetAllNews(tagId), _newsTimeout);
+        IList<News> newsEntries = await _cache.GetFromCacheOrDirectlyWithLockingAsync(GetCacheKey("news-mapped-all"), () => GetAllNews(tagId), _newsTimeout);
         List<string> categories;
 
         if (newsEntries is null || !newsEntries.Any())
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No news found");
 
-        IEnumerable<ContentfulNews> filteredEntries = newsEntries
+        FilterActiveAlerts(newsEntries);
+        IEnumerable<News> filteredEntries = newsEntries
             .Where(news => tag is null || news.Tags.Any(t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase)))
             .Where(news => !news.SunriseDate.Equals(DateTime.MinValue) && !news.SunsetDate.Equals(DateTime.MinValue))
             .Where(news => news.SunriseDate <= _timeProvider.Now());
 
         List<News> archivedNewsEntries = filteredEntries
-            .Select(_newsContentfulFactory.ToModel)
             .GetNewsDates(out List<DateTime> dates, _timeProvider)
             .GetNewsYears(out List<int> years, _timeProvider)
             .Where(news => CheckArchivedDates(startDate, endDate, news))
