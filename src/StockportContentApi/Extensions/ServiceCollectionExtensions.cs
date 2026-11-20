@@ -18,9 +18,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulContactUsId, ContactUsId>, ContactUsIdContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulReference, Crumb>, CrumbContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulCarouselContent, CarouselContent>, CarouselContentContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>, SubItemContentfulFactory>();
+        services.AddSingleton<SubItemContentfulFactory>();
+        services.AddSingleton<ISubItemContentfulFactory>(p => p.GetRequiredService<SubItemContentfulFactory>());
+        services.AddSingleton<IContentfulFactory<ContentfulReference, SubItem>>(p => p.GetRequiredService<SubItemContentfulFactory>());
         services.AddSingleton<IContentfulFactory<ContentfulReference, ContentBlock>, ContentBlockContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>, HomepageContentfulFactory>();
+        services.AddSingleton<HomepageContentfulFactory>();
+        services.AddSingleton<IHomepageContentfulFactory>(p => p.GetRequiredService<HomepageContentfulFactory>());
+        services.AddSingleton<IContentfulFactory<ContentfulHomepage, Homepage>>(p => p.GetRequiredService<HomepageContentfulFactory>());
         services.AddSingleton<IContentfulFactory<ContentfulAlert, Alert>, AlertContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulContactUsCategory, ContactUsCategory>, ContactUsCategoryContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulRedirect, BusinessIdToRedirects>, RedirectContentfulFactory>();
@@ -59,7 +63,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentfulFactory<ContentfulArticle, Topic>, ParentTopicContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulStartPage, StartPage>, StartPageContentfulFactory>();
         services.AddSingleton<IContentfulFactory<ContentfulTrustedLogo, TrustedLogo>, TrustedLogoContentfulFactory>();
-        services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>, ContactUsAreaContentfulFactory>();
+        services.AddSingleton<ContactUsAreaContentfulFactory>();
+        services.AddSingleton<IContactUsAreaContentfulFactory>(p => p.GetRequiredService<ContactUsAreaContentfulFactory>());
+        services.AddSingleton<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>(p => p.GetRequiredService<ContactUsAreaContentfulFactory>());
 
         return services;
     }
@@ -356,7 +362,7 @@ public static class ServiceCollectionExtensions
             (contentfulConfig) =>
                 new HomepageRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulHomepage, Homepage>>(),
+                    p.GetService<IHomepageContentfulFactory>(),
                     p.GetService<ICache>()));
 
         services.AddSingleton<Func<string, IStartPageRepository>>(p =>
@@ -422,7 +428,7 @@ public static class ServiceCollectionExtensions
             (contentfulConfig) =>
                 new ContactUsAreaRepository(p.GetService<Func<string, ContentfulConfig>>()(contentfulConfig),
                     p.GetService<IContentfulClientManager>(),
-                    p.GetService<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>>(),
+                    p.GetService<IContactUsAreaContentfulFactory>(),
                     p.GetService<ICache>(),
                     p.GetService<IConfiguration>()));
 

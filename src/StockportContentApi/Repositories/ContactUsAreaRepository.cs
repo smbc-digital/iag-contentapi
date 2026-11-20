@@ -7,37 +7,39 @@ public interface IContactUsAreaRepository
 
 public class ContactUsAreaRepository(ContentfulConfig config,
                                     IContentfulClientManager clientManager,
-                                    IContentfulFactory<ContentfulContactUsArea, ContactUsArea> contentfulFactory,
+                                    IContactUsAreaContentfulFactory contentfulFactory,
                                     ICache cache,
                                     IConfiguration configuration) : IContactUsAreaRepository
 {
     private readonly IContentfulClient _client = clientManager.GetClient(config);
-    private readonly IContentfulFactory<ContentfulContactUsArea, ContactUsArea> _contentfulFactory = contentfulFactory;
+    private readonly IContactUsAreaContentfulFactory _contentfulFactory = contentfulFactory;
     private readonly ICache _cache = cache;
     private readonly int _contactUsAreaTimeout = GetCacheConfiguration(configuration);
 
     public async Task<HttpResponse> GetContactUsArea(string tagId)
     {
-        ContentfulContactUsArea entry = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
-            $"{config.BusinessId}-contact-us-area",
+        ContactUsArea contactUsArea = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
+            $"{config.BusinessId}-contact-us-area-mapped",
             GetContactUsAreaFromSource,
             _contactUsAreaTimeout);
-        ContactUsArea contactUsArea = _contentfulFactory.ToModel(entry);
 
         if (contactUsArea is null)
             return HttpResponse.Failure(HttpStatusCode.NotFound, "No contact us area found");
 
-        return HttpResponse.Successful(contactUsArea);
+        return HttpResponse.Successful(_contentfulFactory.FilterForCurrentDate(contactUsArea));
     }
 
-    private async Task<ContentfulContactUsArea> GetContactUsAreaFromSource()
+    private async Task<ContactUsArea> GetContactUsAreaFromSource()
     {
         QueryBuilder<ContentfulContactUsArea> builder = new QueryBuilder<ContentfulContactUsArea>()
             .ContentTypeIs("contactUsArea")
             .Include(3);
         ContentfulCollection<ContentfulContactUsArea> entries = await _client.GetEntries(builder);
+        ContentfulContactUsArea entry = entries.FirstOrDefault();
 
-        return entries.FirstOrDefault();
+        return entry is null
+            ? null
+            : _contentfulFactory.ToCacheModel(entry);
     }
 
     private static int GetCacheConfiguration(IConfiguration configuration)

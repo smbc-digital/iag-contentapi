@@ -7,29 +7,29 @@ public interface IHomepageRepository
 
 public class HomepageRepository(ContentfulConfig config,
                                 IContentfulClientManager clientManager,
-                                IContentfulFactory<ContentfulHomepage, Homepage> homepageFactory,
+                                IHomepageContentfulFactory homepageFactory,
                                 ICache cache) : IHomepageRepository
 {
     private const int CacheDurationMinutes = 10;
 
     private readonly IContentfulClient _client = clientManager.GetClient(config);
-    private readonly IContentfulFactory<ContentfulHomepage, Homepage> _homepageFactory = homepageFactory;
+    private readonly IHomepageContentfulFactory _homepageFactory = homepageFactory;
     private readonly ICache _cache = cache;
 
     public async Task<HttpResponse> Get(string tagId)
     {
-        ContentfulHomepage entry = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
-            $"{config.BusinessId}-homepage-{tagId}",
-            () => GetHomepageEntry(tagId),
+        Homepage homepage = await _cache.GetFromCacheOrDirectlyWithLockingAsync(
+            $"{config.BusinessId}-homepage-mapped-{tagId}",
+            () => GetHomepageFromSource(tagId),
             CacheDurationMinutes,
             "Contentful");
 
-        return entry is null
+        return homepage is null
             ? HttpResponse.Failure(HttpStatusCode.NotFound, "No homepage found")
-            : HttpResponse.Successful(_homepageFactory.ToModel(entry));
+            : HttpResponse.Successful(_homepageFactory.FilterForCurrentDate(homepage));
     }
 
-    private async Task<ContentfulHomepage> GetHomepageEntry(string tagId)
+    private async Task<Homepage> GetHomepageFromSource(string tagId)
     {
         QueryBuilder<ContentfulHomepage> builder = new QueryBuilder<ContentfulHomepage>()
             .ContentTypeIs("homepage")
@@ -38,6 +38,10 @@ public class HomepageRepository(ContentfulConfig config,
             .Include(2);
         
         ContentfulCollection<ContentfulHomepage> entries = await _client.GetEntries(builder);
-        return entries.FirstOrDefault();
+        ContentfulHomepage entry = entries.FirstOrDefault();
+
+        return entry is null
+            ? null
+            : _homepageFactory.ToCacheModel(entry);
     }
 }

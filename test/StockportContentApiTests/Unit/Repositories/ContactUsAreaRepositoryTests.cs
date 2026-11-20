@@ -2,7 +2,7 @@
 public class ContactUsAreaRepositoryTests
 {    
     private readonly Mock<IContentfulClient> _contentfulClient = new();
-    private readonly Mock<IContentfulFactory<ContentfulContactUsArea, ContactUsArea>> _contentfulFactory = new();
+    private readonly Mock<IContactUsAreaContentfulFactory> _contentfulFactory = new();
     private readonly Mock<ICache> _cache = new();
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly ContactUsAreaRepository _repository;
@@ -28,8 +28,12 @@ public class ContactUsAreaRepositoryTests
             .ReturnsAsync(contentfulCollection);
         
         _contentfulFactory
-            .Setup(factory => factory.ToModel(contentfulContactUsArea))
+            .Setup(factory => factory.ToCacheModel(contentfulContactUsArea))
             .Returns(_contactUsArea);
+
+        _contentfulFactory
+            .Setup(factory => factory.FilterForCurrentDate(It.IsAny<ContactUsArea>()))
+            .Returns<ContactUsArea>(contactUsArea => contactUsArea);
 
         _configuration
             .Setup(configuration => configuration["redisExpiryTimes:ContactUsArea"])
@@ -37,10 +41,10 @@ public class ContactUsAreaRepositoryTests
 
         _cache
             .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
-                "test-contact-us-area",
-                It.IsAny<Func<Task<ContentfulContactUsArea>>>(),
+                "test-contact-us-area-mapped",
+                It.IsAny<Func<Task<ContactUsArea>>>(),
                 60))
-            .Returns((string _, Func<Task<ContentfulContactUsArea>> fallback, int _) => fallback());
+            .Returns((string _, Func<Task<ContactUsArea>> fallback, int _) => fallback());
 
         _repository = new ContactUsAreaRepository(
             config,
@@ -92,10 +96,8 @@ public class ContactUsAreaRepositoryTests
     public async Task GetContactUsArea_ReturnsSuccess_WhenContactUsAreaIsNotNull()
     {
         // Arrange
-        ContentfulContactUsArea contentfulContactUsArea = new ContentfulContactUsAreaBuilder().Slug("test-slug").Build();      
-        
         _contentfulFactory
-            .Setup(factory => factory.ToModel(contentfulContactUsArea))
+            .Setup(factory => factory.ToCacheModel(It.IsAny<ContentfulContactUsArea>()))
             .Returns(_contactUsArea);
 
         // Act
@@ -105,8 +107,9 @@ public class ContactUsAreaRepositoryTests
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
-            "test-contact-us-area",
-            It.IsAny<Func<Task<ContentfulContactUsArea>>>(),
+            "test-contact-us-area-mapped",
+            It.IsAny<Func<Task<ContactUsArea>>>(),
             60), Times.Once);
+        _contentfulFactory.Verify(factory => factory.ToCacheModel(It.IsAny<ContentfulContactUsArea>()), Times.Once);
     }
 }

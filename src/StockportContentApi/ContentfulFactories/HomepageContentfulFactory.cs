@@ -1,20 +1,32 @@
 ﻿namespace StockportContentApi.ContentfulFactories;
 
-public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, SubItem> subitemFactory,
+public interface IHomepageContentfulFactory : IContentfulFactory<ContentfulHomepage, Homepage>
+{
+    Homepage ToCacheModel(ContentfulHomepage entry);
+    Homepage FilterForCurrentDate(Homepage entry);
+}
+
+public class HomepageContentfulFactory(ISubItemContentfulFactory subitemFactory,
                                     IContentfulFactory<ContentfulAlert, Alert> alertFactory,
                                     IContentfulFactory<ContentfulCarouselContent, CarouselContent> carouselFactory,
                                     ITimeProvider timeProvider,
                                     IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> callToActionFactory,
-                                    IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightOnBanner) : IContentfulFactory<ContentfulHomepage, Homepage>
+                                    IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> spotlightOnBanner) : IHomepageContentfulFactory
 {
     private readonly DateComparer _dateComparer = new(timeProvider);
-    private readonly IContentfulFactory<ContentfulReference, SubItem> _subitemFactory = subitemFactory;
+    private readonly ISubItemContentfulFactory _subitemFactory = subitemFactory;
     private readonly IContentfulFactory<ContentfulAlert, Alert> _alertFactory = alertFactory;
     private readonly IContentfulFactory<ContentfulCarouselContent, CarouselContent> _carouselFactory = carouselFactory;
     private readonly IContentfulFactory<ContentfulCallToActionBanner, CallToActionBanner> _callToActionFactory = callToActionFactory;
     private readonly IContentfulFactory<ContentfulSpotlightOnBanner, SpotlightOnBanner> _spotlightOnBanner = spotlightOnBanner;
 
-    public Homepage ToModel(ContentfulHomepage entry)
+    public Homepage ToModel(ContentfulHomepage entry) =>
+        ToModel(entry, includeInactiveItems: false);
+
+    public Homepage ToCacheModel(ContentfulHomepage entry) =>
+        ToModel(entry, includeInactiveItems: true);
+
+    private Homepage ToModel(ContentfulHomepage entry, bool includeInactiveItems)
     {
         string featuredTasksHeading = !string.IsNullOrEmpty(entry.FeaturedTasksHeading)
             ? entry.FeaturedTasksHeading
@@ -53,19 +65,25 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
             : string.Empty;
 
         List<SubItem> featuredTasks = entry.FeaturedTasks.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(_subitemFactory.ToModel).ToList();
+                                            && (includeInactiveItems || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate)))
+                                        .Select(subItem => includeInactiveItems
+                                            ? _subitemFactory.ToCacheModel(subItem)
+                                            : _subitemFactory.ToModel(subItem))
+                                        .ToList();
 
         List<SubItem> featuredTopics = entry.FeaturedTopics.Where(subItem => ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                            && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
-                                        .Select(_subitemFactory.ToModel).ToList();
+                                            && (includeInactiveItems || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate)))
+                                        .Select(subItem => includeInactiveItems
+                                            ? _subitemFactory.ToCacheModel(subItem)
+                                            : _subitemFactory.ToModel(subItem))
+                                        .ToList();
 
         List<Alert> alerts = entry.Alerts.Where(alert => ContentfulHelpers.EntryIsNotALink(alert.Sys)
-                                    && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+                                    && (includeInactiveItems || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate)))
                                 .Select(_alertFactory.ToModel).ToList();
 
         List<CarouselContent> carouselContents = entry.CarouselContents.Where(subItem => subItem.Sys is not null && ContentfulHelpers.EntryIsNotALink(subItem.Sys)
-                                                        && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate))
+                                                        && (includeInactiveItems || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(subItem.SunriseDate, subItem.SunsetDate)))
                                                     .Select(_carouselFactory.ToModel).ToList();
 
         CarouselContent campaignBanner = _carouselFactory.ToModel(entry.CampaignBanner);
@@ -97,5 +115,43 @@ public class HomepageContentfulFactory(IContentfulFactory<ContentfulReference, S
                             callToAction,
                             callToActionPrimary,
                             spotlightOnBanner);
+    }
+
+    public Homepage FilterForCurrentDate(Homepage entry)
+    {
+        List<SubItem> featuredTasks = entry.FeaturedTasks
+            .Where(item => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
+            .Select(_subitemFactory.FilterForCurrentDate)
+            .ToList();
+        List<SubItem> featuredTopics = entry.FeaturedTopics
+            .Where(item => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
+            .Select(_subitemFactory.FilterForCurrentDate)
+            .ToList();
+        List<Alert> alerts = entry.Alerts
+            .Where(alert => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(alert.SunriseDate, alert.SunsetDate))
+            .ToList();
+        List<CarouselContent> carouselContents = entry.CarouselContents
+            .Where(carousel => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(carousel.SunriseDate, carousel.SunsetDate))
+            .ToList();
+
+        return new Homepage(entry.FeaturedTasksHeading,
+            entry.FeaturedTasksSummary,
+            featuredTasks,
+            featuredTopics,
+            alerts,
+            carouselContents,
+            entry.BackgroundImage,
+            entry.ForegroundImage,
+            entry.ForegroundImageLocation,
+            entry.ForegroundImageLink,
+            entry.ForegroundImageAlt,
+            entry.FreeText,
+            entry.Title,
+            entry.EventCategory,
+            entry.MetaDescription,
+            entry.CampaignBanner,
+            entry.CallToAction,
+            entry.CallToActionPrimary,
+            entry.SpotlightOnBanner);
     }
 }

@@ -3,7 +3,7 @@
 public class HomepageRepositoryTests
 {
     private readonly HomepageRepository _repository;
-    private readonly Mock<IContentfulFactory<ContentfulHomepage, Homepage>> _homepageFactory = new();
+    private readonly Mock<IHomepageContentfulFactory> _homepageFactory = new();
     private readonly Mock<IContentfulClient> _client = new();
     private readonly Mock<ICache> _cache = new();
 
@@ -40,14 +40,14 @@ public class HomepageRepositoryTests
 
         _cache
             .Setup(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
-                "test-homepage-tagId",
-                It.IsAny<Func<Task<ContentfulHomepage>>>(),
+                "test-homepage-mapped-tagId",
+                It.IsAny<Func<Task<Homepage>>>(),
                 10,
                 "Contentful"))
-            .Returns((string cacheKey, Func<Task<ContentfulHomepage>> fallback, int minutes, string dataSource) => fallback());
+            .Returns((string cacheKey, Func<Task<Homepage>> fallback, int minutes, string dataSource) => fallback());
 
         _homepageFactory
-            .Setup(homepage => homepage.ToModel(It.IsAny<ContentfulHomepage>()))
+            .Setup(homepage => homepage.ToCacheModel(It.IsAny<ContentfulHomepage>()))
             .Returns(new Homepage(string.Empty,
                                 string.Empty,
                                 new List<SubItem>(),
@@ -68,18 +68,24 @@ public class HomepageRepositoryTests
                                 new CallToActionBanner(),
                                 null));
 
+        _homepageFactory
+            .Setup(homepage => homepage.FilterForCurrentDate(It.IsAny<Homepage>()))
+            .Returns<Homepage>(homepage => homepage);
+
         // Act
         HttpResponse response = await _repository.Get("tagId");
         
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _cache.Verify(cache => cache.GetFromCacheOrDirectlyWithLockingAsync(
-            "test-homepage-tagId",
-            It.IsAny<Func<Task<ContentfulHomepage>>>(),
+            "test-homepage-mapped-tagId",
+            It.IsAny<Func<Task<Homepage>>>(),
             10,
             "Contentful"), Times.Once);
         _client.Verify(client => client.GetEntries(
             It.IsAny<QueryBuilder<ContentfulHomepage>>(),
             It.IsAny<CancellationToken>()), Times.Once);
+        _homepageFactory.Verify(factory => factory.ToCacheModel(It.IsAny<ContentfulHomepage>()), Times.Once);
+        _homepageFactory.Verify(factory => factory.FilterForCurrentDate(It.IsAny<Homepage>()), Times.Once);
     }
 }

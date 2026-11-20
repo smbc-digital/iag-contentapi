@@ -157,6 +157,20 @@ public class SubItemContentfulFactoryTests
     }
 
     [Fact]
+    public void ToCacheModel_ShouldRetainInactiveChildItemsForRequestTimeFiltering()
+    {
+        ContentfulReference child = new ContentfulReferenceBuilder().Build();
+        child.SunriseDate = new DateTime(2017, 02, 01);
+
+        ContentfulReference parent = new ContentfulReferenceBuilder()
+            .SubItems(new() { child })
+            .Build();
+
+        Assert.Empty(_subItemFactory.ToModel(parent).SubItems);
+        Assert.Single(_subItemFactory.ToCacheModel(parent).SubItems);
+    }
+
+    [Fact]
     public void ToModel_ShouldSetPaymentsGroupIconCorrectly_WhenNonSet()
     {
         // Arrange

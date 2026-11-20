@@ -3,7 +3,7 @@
 public class HomepageContentfulFactoryTests
 {
     private readonly HomepageContentfulFactory _homepageContentfulFactory;
-    private readonly Mock<IContentfulFactory<ContentfulReference, SubItem>> _subitemFactory = new();
+    private readonly Mock<ISubItemContentfulFactory> _subitemFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulAlert, Alert>> _alertFactory = new();
     private readonly Mock<IContentfulFactory<ContentfulCarouselContent, CarouselContent>> _carouselContentFactory = new();
     private readonly Mock<ITimeProvider> _timeProvider = new();
@@ -15,6 +15,14 @@ public class HomepageContentfulFactoryTests
         _subitemFactory
             .Setup(subitemFactory => subitemFactory.ToModel(It.IsAny<ContentfulReference>()))
             .Returns(new SubItemBuilder().Build());
+
+        _subitemFactory
+            .Setup(subitemFactory => subitemFactory.ToCacheModel(It.IsAny<ContentfulReference>()))
+            .Returns(new SubItemBuilder().Build());
+
+        _subitemFactory
+            .Setup(subitemFactory => subitemFactory.FilterForCurrentDate(It.IsAny<SubItem>()))
+            .Returns<SubItem>(subItem => subItem);
         
         _alertFactory
             .Setup(alertFactory => alertFactory.ToModel(It.IsAny<ContentfulAlert>()))
@@ -55,5 +63,73 @@ public class HomepageContentfulFactoryTests
 
         // Assert
         Assert.Equal("meta description", homepage.MetaDescription);
+    }
+
+    [Fact]
+    public void FilterForCurrentDate_ShouldReevaluateCachedHomepageContent()
+    {
+        DateTime now = new(2017, 01, 01);
+        DateTime sunriseDate = now.AddDays(1);
+        _timeProvider.Setup(timeProvider => timeProvider.Now()).Returns(() => now);
+
+        ContentfulReference featuredTask = new ContentfulReferenceBuilder().Build();
+        ContentfulReference featuredTopic = new ContentfulReferenceBuilder().Build();
+        featuredTask.SunriseDate = sunriseDate;
+        featuredTopic.SunriseDate = sunriseDate;
+        SubItem cachedSubItem = new SubItemBuilder().Build();
+        cachedSubItem.SunriseDate = sunriseDate;
+
+        ContentfulAlert contentfulAlert = new ContentfulAlertBuilder().WithSunriseDate(sunriseDate).Build();
+        Alert cachedAlert = new("title",
+            string.Empty,
+            string.Empty,
+            sunriseDate,
+            DateTime.MaxValue,
+            string.Empty,
+            false,
+            string.Empty);
+        ContentfulCarouselContent contentfulCarousel = new ContentfulCarouselContentBuilder().Build();
+        contentfulCarousel.SunriseDate = sunriseDate;
+        CarouselContent cachedCarousel = new(string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            sunriseDate,
+            DateTime.MaxValue,
+            string.Empty);
+
+        _subitemFactory.Setup(factory => factory.ToCacheModel(featuredTask)).Returns(cachedSubItem);
+        _subitemFactory.Setup(factory => factory.ToCacheModel(featuredTopic)).Returns(cachedSubItem);
+        _alertFactory.Setup(factory => factory.ToModel(contentfulAlert)).Returns(cachedAlert);
+        _carouselContentFactory.Setup(factory => factory.ToModel(contentfulCarousel)).Returns(cachedCarousel);
+
+        ContentfulHomepage entry = new ContentfulHomepageBuilder().Build();
+        entry.FeaturedTasks = new List<ContentfulReference> { featuredTask };
+        entry.FeaturedTopics = new List<ContentfulReference> { featuredTopic };
+        entry.Alerts = new List<ContentfulAlert> { contentfulAlert };
+        entry.CarouselContents = new List<ContentfulCarouselContent> { contentfulCarousel };
+
+        Homepage cached = _homepageContentfulFactory.ToCacheModel(entry);
+
+        Assert.Single(cached.FeaturedTasks);
+        Assert.Single(cached.FeaturedTopics);
+        Assert.Single(cached.Alerts);
+        Assert.Single(cached.CarouselContents);
+
+        Homepage hidden = _homepageContentfulFactory.FilterForCurrentDate(cached);
+        Assert.Empty(hidden.FeaturedTasks);
+        Assert.Empty(hidden.FeaturedTopics);
+        Assert.Empty(hidden.Alerts);
+        Assert.Empty(hidden.CarouselContents);
+
+        now = sunriseDate;
+        Homepage visible = _homepageContentfulFactory.FilterForCurrentDate(cached);
+
+        Assert.Single(visible.FeaturedTasks);
+        Assert.Single(visible.FeaturedTopics);
+        Assert.Single(visible.Alerts);
+        Assert.Single(visible.CarouselContents);
+        Assert.Single(cached.FeaturedTasks);
+        Assert.Single(cached.Alerts);
     }
 }

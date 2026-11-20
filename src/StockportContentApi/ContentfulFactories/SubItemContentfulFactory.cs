@@ -2,11 +2,39 @@
 
 namespace StockportContentApi.ContentfulFactories;
 
-public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulFactory<ContentfulReference, SubItem>
+public interface ISubItemContentfulFactory : IContentfulFactory<ContentfulReference, SubItem>
+{
+    SubItem ToCacheModel(ContentfulReference entry);
+    SubItem FilterForCurrentDate(SubItem entry);
+}
+
+public class SubItemContentfulFactory(ITimeProvider timeProvider) : ISubItemContentfulFactory
 {
     private readonly DateComparer _dateComparer = new(timeProvider);
 
-    public SubItem ToModel(ContentfulReference entry)
+    public SubItem ToModel(ContentfulReference entry) =>
+        ToModel(entry, includeInactiveItems: false);
+
+    public SubItem ToCacheModel(ContentfulReference entry) =>
+        ToModel(entry, includeInactiveItems: true);
+
+    public SubItem FilterForCurrentDate(SubItem entry) =>
+        new(entry.Slug,
+            entry.Title,
+            entry.Teaser,
+            entry.TeaserImage,
+            entry.Icon,
+            entry.Type,
+            entry.SunriseDate,
+            entry.SunsetDate,
+            entry.Image,
+            entry.SubItems?
+                .Where(item => _dateComparer.DateNowIsWithinSunriseAndSunsetDates(item.SunriseDate, item.SunsetDate))
+                .Select(FilterForCurrentDate)
+                .ToList() ?? new(),
+            entry.ColourScheme);
+
+    private SubItem ToModel(ContentfulReference entry, bool includeInactiveItems)
     {
         string type = GetEntryType(entry);
         string image = GetEntryImage(entry);
@@ -19,7 +47,7 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
 
         if (entry.SubItems is not null)
         {
-            foreach (ContentfulReference item in entry.SubItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.SubItems.Where(item => EntryIsValid(item, includeInactiveItems)))
             {
                 SubItem newItem = new(item.Slug,
                                     GetEntryTitle(item),
@@ -39,7 +67,7 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
 
         if (entry.SecondaryItems is not null)
         {
-            foreach (ContentfulReference item in entry.SecondaryItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.SecondaryItems.Where(item => EntryIsValid(item, includeInactiveItems)))
             {
                 SubItem newItem = new(item.Slug,
                                     GetEntryTitle(item),
@@ -59,7 +87,7 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
 
         if (entry.TertiaryItems is not null)
         {
-            foreach (ContentfulReference item in entry.TertiaryItems.Where(EntryIsValid))
+            foreach (ContentfulReference item in entry.TertiaryItems.Where(item => EntryIsValid(item, includeInactiveItems)))
             {
                 SubItem newItem = new(item.Slug,
                                     GetEntryTitle(item),
@@ -79,7 +107,7 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
 
         if (entry.Sections is not null)
         {
-            foreach (ContentfulSection section in entry.Sections.Where(EntryIsValid))
+            foreach (ContentfulSection section in entry.Sections.Where(section => EntryIsValid(section, includeInactiveItems)))
             {
                 SubItem newSection = new($"{entry.Slug}/{section.Slug}",
                                         section.Title,
@@ -137,6 +165,7 @@ public class SubItemContentfulFactory(ITimeProvider timeProvider) : IContentfulF
                 ? entry.Title
                 : entry.Name;
 
-    private bool EntryIsValid(ContentfulReference entry) =>
-        ContentfulHelpers.EntryIsNotALink(entry.Sys) && _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate);
+    private bool EntryIsValid(ContentfulReference entry, bool includeInactiveItems) =>
+        ContentfulHelpers.EntryIsNotALink(entry.Sys)
+        && (includeInactiveItems || _dateComparer.DateNowIsWithinSunriseAndSunsetDates(entry.SunriseDate, entry.SunsetDate));
 }
